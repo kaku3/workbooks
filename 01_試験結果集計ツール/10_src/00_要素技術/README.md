@@ -110,18 +110,25 @@ npm install
 ```
 
 
-## sample-read.js
+## samples
 
-VS Code で、新規作成してコードを書く。
+|ファイル |内容 |
+|---|---|
+|sample-hello-world.js |Hello World を表示する。 |
+|sample-yargs.js |起動引数解析サンプル。 |
+|sample-excel-read.js |Excel読み込みサンプル。 |
+|sample-file-io.js |file読み書きサンプル。 |
+|sample-json-io.js |json読み書きサンプル。 |
+|sample-arrays.js |配列操作サンプル。 |
+|sample-glob.js|フォルダ内ファイル取得サンプル。 |
 
-@import "./sample-read.js" {code_block=true class="line-numbers"}
 
-
-## 実行
+### sample実行
 
 VS Code で、`/01_試験結果集計ツール/10_src/00_要素技術` フォルダを右クリック > 統合ターミナルで開くを選択し、統合ターミナルを開く。
-以下コマンドを実行。
+実行したいサンプルを、各ファイルの内容に従って実行。
 
+例)sample-hello-world.js
 ```sh
-node sample-read.js
+node sample-hello-world.js
 ```

@@ -1,3 +1,9 @@
+// package追加 :
+// npm install xlsx --save
+//
+// 実行 :
+// node ./sample-excel-read.js
+
 const XLSX = require('xlsx')
 
 // excel ファイル読み込み
