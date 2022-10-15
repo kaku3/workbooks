@@ -46,6 +46,7 @@ try {
     header: [ 'no', 'category', 'title', 'content', 'expect', 'result', 'tester', 'testDate', 'remarks']
   })
 
+  // 件数と、ステータス毎の集計
   const count = tests.length
   const ok = tests.filter(test => test.result === 'OK').length
   const ng = tests.filter(test => test.result === 'NG').length
