@@ -54,7 +54,7 @@ try {
   const confirmOk = tests.filter(test => test.result === '確認OK').length
   const fixOk = tests.filter(test => test.result === '修正OK').length
 
-  const testFile = {
+  const test = {
     file: args.inExcel,
     count,
     ok,
@@ -66,7 +66,7 @@ try {
   }
   console.info({ count, ok, ng, pending, confirmOk, fixOk })
 
-  fs.writeFileSync(args.outJson, JSON.stringify(testFile), "utf-8")
+  fs.writeFileSync(args.outJson, JSON.stringify(test), "utf-8")
 } catch(e) {
   console.error(e.message)
 }

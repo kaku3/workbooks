@@ -1,0 +1,6 @@
+{
+  "name": "sample2",
+  "version": "1.0.0",
+  "main": "aggregation.js",
+  "license": "MIT"
+}
