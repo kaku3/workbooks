@@ -40,12 +40,32 @@ try {
 
   // *header : 後でプログラムで利用しやすいようにしておく。
   // header を指定する場合は、1行目を読み飛ばす必要があるため、range.s.r = 1 (start, row = 0 -> 1) としておく。
-  const json = xlsx.utils.sheet_to_json(sheet, {
+  const tests = xlsx.utils.sheet_to_json(sheet, {
     range,
     blankrows: false,
     header: [ 'no', 'category', 'title', 'content', 'expect', 'result', 'tester', 'testDate', 'remarks']
   })
-  fs.writeFileSync(args.outJson, JSON.stringify(json, null, 2), "utf-8")
+
+  const count = tests.length
+  const ok = tests.filter(test => test.result === 'OK').length
+  const ng = tests.filter(test => test.result === 'NG').length
+  const pending = tests.filter(test => test.result === '保留').length
+  const confirmOk = tests.filter(test => test.result === '確認OK').length
+  const fixOk = tests.filter(test => test.result === '修正OK').length
+
+  const testFile = {
+    file: args.inExcel,
+    count,
+    ok,
+    ng,
+    pending,
+    confirmOk,
+    fixOk,
+    tests
+  }
+  console.info({ count, ok, ng, pending, confirmOk, fixOk })
+
+  fs.writeFileSync(args.outJson, JSON.stringify(testFile), "utf-8")
 } catch(e) {
   console.error(e.message)
 }
