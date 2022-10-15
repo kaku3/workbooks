@@ -1,0 +1,11 @@
+{
+  "name": "sample01",
+  "version": "1.0.0",
+  "main": "aggregation.js",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "xlsx": "^0.18.5",
+    "yargs": "^17.6.0"
+  }
+}
