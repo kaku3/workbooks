@@ -53,12 +53,11 @@ console.groupEnd()
 
 /**
  * 試験仕様書を Test として読み込む
- * @param {*} fileName 試験仕様書 Excel ファイル名
+ * @param {*} excelPath 試験仕様書 Excel ファイルパス
  * @returns 
  */
-function readExcelAsTest(fileName) {
+function readExcelAsTest(excelPath) {
   try {
-    const excelPath = path.join(args.inExcelFolder, fileName)
     const book = xlsx.readFile(excelPath)
     const sheet = book.Sheets['単体試験']
     const range = xlsx.utils.decode_range(sheet['!ref'])
@@ -73,7 +72,7 @@ function readExcelAsTest(fileName) {
     })
 
     return {
-      file: fileName,
+      file: path.basename(excelPath),
       tests
     }
   } catch(e) {
@@ -118,7 +117,7 @@ const excelFiles = glob('*.xlsx', {
 console.group('---- main')
 excelFiles.forEach(f => {
   console.log(f)
-  let test = readExcelAsTest(f)
+  let test = readExcelAsTest(path.join(args.inExcelFolder, f))
   if(test) {
     test = aggreagetTest(test)
     tests.push(test)
