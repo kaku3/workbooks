@@ -20,9 +20,13 @@
 // 視覚的に進捗が分かりやすくなる。
 
 const fs = require('fs')
+const path = require('path')
+const glob = require('glob').sync
 const xlsx = require('xlsx')
 const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
+const {
+  hideBin
+} = require('yargs/helpers')
 
 // yargs で必須パラメータの定義 / parse
 // 引数に不備があるとパラメータ表示、エラー表示して終了してくれる。
@@ -31,19 +35,103 @@ const args = yargs(hideBin(process.argv))
     inExcelFolder: {
       description: '試験項目書が格納されているフォルダ',
       demandOption: true,
-      alias: 'i' 
+      alias: 'i'
     },
     outJson: {
       description: '出力 json',
       demandOption: true,
-      alias: 'o' 
+      alias: 'o'
     },
   })
   .usage('[usage]node $0 -i in -o out/test.json')
   .argv
 
-console.info('---- args')
+console.group('---- args')
 console.info('inExcelFolder', args.inExcelFolder)
 console.info('outJson', args.outJson)
-console.info('---- args')
-  
+console.groupEnd()
+
+/**
+ * 試験仕様書を Test として読み込む
+ * @param {*} fileName 試験仕様書 Excel ファイル名
+ * @returns 
+ */
+function readExcelAsTest(fileName) {
+  try {
+    const excelPath = path.join(args.inExcelFolder, fileName)
+    const book = xlsx.readFile(excelPath)
+    const sheet = book.Sheets['単体試験']
+    const range = xlsx.utils.decode_range(sheet['!ref'])
+    range.s.r = 1
+
+    // *header : 後でプログラムで利用しやすいようにしておく。
+    // header を指定する場合は、1行目を読み飛ばす必要があるため、range.s.r = 1 (start, row = 0 -> 1) としておく。
+    const tests = xlsx.utils.sheet_to_json(sheet, {
+      range,
+      blankrows: false,
+      header: ['no', 'category', 'title', 'content', 'expect', 'result', 'tester', 'testDate', 'remarks']
+    })
+
+    return {
+      file: fileName,
+      tests
+    }
+  } catch(e) {
+    console.error(e.message)
+    return null
+  }
+}
+
+/**
+ * Test を集計する。
+ * @param {*} test 
+ * @returns 
+ */
+function aggreagetTest(test) {
+  const tests = test.tests
+  const count = tests.length
+  const ok = tests.filter(t => t.result === 'OK').length
+  const ng = tests.filter(t => t.result === 'NG').length
+  const pending = tests.filter(t => t.result === '保留').length
+  const confirmOk = tests.filter(t => t.result === '確認OK').length
+  const fixOk = tests.filter(t => t.result === '修正OK').length
+
+  console.info({ count, ok, ng, pending, confirmOk, fixOk })
+  return {
+    ...test,
+    count,
+    ok,
+    ng,
+    pending,
+    confirmOk,
+    fixOk,
+    tests
+  }
+}
+
+const tests = []
+
+const excelFiles = glob('*.xlsx', {
+  cwd: args.inExcelFolder
+})
+
+console.group('---- main')
+excelFiles.forEach(f => {
+  console.log(f)
+  let test = readExcelAsTest(f)
+  if(test) {
+    test = aggreagetTest(test)
+    tests.push(test)
+  }
+})
+console.groupEnd()
+
+if(tests.length > 0) {
+  try {
+    fs.writeFileSync(args.outJson, JSON.stringify(tests), "utf-8")
+  } catch(e) {
+    console.error(e.message)
+  }
+} else {
+  console.warn('Excel ファイルがありませんでした。')
+}
