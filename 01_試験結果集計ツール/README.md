@@ -4,6 +4,8 @@ nodejs 学習用課題。
 
 本稿に含まれるもの。
 
+※[VS Code](https://code.visualstudio.com/download) + [Markdown Preview Enhanced](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced) で参照してください。
+
 - [課題](./00_docs/%E6%A6%82%E8%A6%81.md)
 - 要素技術
   - [nodejs 基本](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/README.md)
