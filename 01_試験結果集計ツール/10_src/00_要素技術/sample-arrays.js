@@ -30,21 +30,21 @@ const scores = [
     science: 30,
     society: 60
   },
-]
+];
 
-console.log('国語 50 点以上のデータ')
+console.log('国語 50 点以上のデータ');
 console.log(
   scores.filter(s => s.japanese >= 50)
-)
+);
 
-console.log('国語の平均点')
+console.log('国語の平均点');
 console.log(
   scores
     .map(s => s.japanese)
     .reduce((a, v) => a += v) / scores.length
-)
+);
 
-console.log('各人のデータに合計点を追加')
+console.log('各人のデータに合計点を追加');
 console.log(
   scores.map(s => {
     s.total = [ 'japanese', 'english', 'math', 'science', 'society' ]
@@ -52,4 +52,4 @@ console.log(
       .reduce((a, v) => a += v)
     return s
   })
-)
+);

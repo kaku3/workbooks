@@ -5,40 +5,40 @@
 
 // 指定されたフォルダ内のファイル一覧を取得
 
-const glob = require('glob').sync
+const glob = require('glob').sync;
 
 const jsonFiles = glob(
   '**/*.json',      // ** : サブフォルダも含めて検索
   {
     cwd: './files'  // ファイル検索ルート
   }
-)
+);
 
 // 色々な for 文で表示サンプル
 
-console.group('Array.forEach')
+console.group('Array.forEach');
 jsonFiles.forEach(file => {
   console.log(file)
-})
-console.groupEnd()
+});
+console.groupEnd();
 
-console.group('for of jsonFiles')
+console.group('for of jsonFiles');
 for(file of jsonFiles) {
-  console.log(file)
+  console.log(file);
 }
-console.groupEnd()
+console.groupEnd();
 
-console.group('for in jsonFiles')
+console.group('for in jsonFiles');
 for(i in jsonFiles) {
-  console.log(jsonFiles[i])
+  console.log(jsonFiles[i]);
 }
-console.groupEnd()
+console.groupEnd();
 
-console.group('for ;;')
+console.group('for ;;');
 for(let i = 0; i < jsonFiles.length; i++) {
-  console.log(jsonFiles[i])
+  console.log(jsonFiles[i]);
 }
-console.groupEnd()
+console.groupEnd();
 
 // メモ : for of と for in
 // of : value

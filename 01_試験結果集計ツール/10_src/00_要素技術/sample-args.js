@@ -8,18 +8,18 @@
 // それを毎回読み取って解釈する（パースする）のは面倒くさいので、yargs を利用してパースする。
 // ググると様々なパッケージが出てくるので好みに合うものを利用するとよい。
 
-const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
 
 // コマンドラインに指定された引数をそのまま表示。
-console.log(process.argv)
+console.log(process.argv);
 
 // yargs でパースした結果を表示
-const argv = yargs(hideBin(process.argv)).argv
+const argv = yargs(hideBin(process.argv)).argv;
 
-console.log('option', argv.option)
-console.log('t', argv.t)
-console.log('key', argv.key)
+console.log('option', argv.option);
+console.log('t', argv.t);
+console.log('key', argv.key);
 
 //------------------------------------------------------------------------------
 // メモ： コマンドライン引数の `-`, `--` について

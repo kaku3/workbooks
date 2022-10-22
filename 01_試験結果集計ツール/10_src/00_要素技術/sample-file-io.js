@@ -11,18 +11,18 @@
 // 実行 :
 // node ./sample-file-io.js
 
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 
 const fileFolder = './files'
 
 // utf-8 としてファイル読み込み
-let text = fs.readFileSync(path.join(fileFolder, 'in.txt'), 'utf-8')
+let text = fs.readFileSync(path.join(fileFolder, 'in.txt'), 'utf-8');
 
 // 編集
-text += '-sample'
+text += '-sample';
 
-fs.writeFileSync(path.join(fileFolder, 'out.txt'), text, 'utf-8')
+fs.writeFileSync(path.join(fileFolder, 'out.txt'), text, 'utf-8');
 
 //------------------------------------------------------------------------------
 // メモ：sync について
