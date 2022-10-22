@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <!--
+      styling
+      https://datatables.net/manual/styling/classes
+    -->
+    <table id="test-summary" class="stripe hover compact" style="width: 100%;"></table>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>    
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+    <script id="test-data" type="application/json">
+      [{"file":"00_起動パラメータ-単体試験項目書.xlsx","tests":[{"no":1000,"category":"起動パラメータ不足","title":"inFile 指定なし","content":"・以下コマンドを実行\r\nnode aggregation.js -o /out/test.json\r\n","expect":"オプション:\r\n      --help     ヘルプを表示                                             [真偽]\r\n      --version  バージョンを表示                                         [真偽]\r\n  -i, --inExcel   試験項目書 Excel                                         [必須]\r\n  -o, --outJson  出力 json                                                [必須]\r\n\r\n必須の引数が見つかりません: inExcel","result":"OK","tester":"田中","testDate":44844},{"no":1001,"title":"outFile 指定なし","content":"・以下コマンドを実行\r\nnode aggregation.js -i in/unknown.xlsx","expect":"オプション:\r\n      --help     ヘルプを表示                                             [真偽]\r\n      --version  バージョンを表示                                         [真偽]\r\n  -i, --inExcel   試験項目書 Excel                                         [必須]\r\n  -o, --outJson  出力 json                                                [必須]\r\n\r\n必須の引数が見つかりません: outJson","result":"OK","tester":"佐藤","testDate":44845},{"no":1010,"category":"起動パラメータ不正","title":"存在しないExcelファイル","content":"・以下コマンドを実行\r\nnode aggregation.js -i in/unknown.xlsx -o out/test.json\r\n","expect":"以下エラーメッセージが表示されること。\r\n\r\nENOENT: no such file or directory, open '.unknown.xlsx'","result":"OK","tester":"鈴木","testDate":44846},{"no":1020,"title":"存在しない出力フォルダ","content":"・以下コマンドを実行\r\nnode aggregation.js -i in/sample-単体試験項目書.xlsx -o unknown/test.json\r\n","expect":"以下エラーメッセージが表示されること。\r\n\r\nENOENT: no such file or directory, open 'unknown\\test.json'","result":"OK","tester":"田中","testDate":44847}],"count":4,"ok":4,"ng":0,"pending":0,"confirmOk":0,"fixOk":0},{"file":"01_解析-単体試験項目書.xlsx","tests":[{"no":1000,"category":"ファイルフォーマット","title":"仕様通りのExcelファイル","content":"・以下コマンドを実行\r\nnode aggregation.js -i in/sample-単体試験項目書.xlsx -o out/test.json\r\n","expect":"指定された excel ファイルを読み込み、集計結果が json として保存されること。","result":"OK","tester":"佐藤","testDate":44848},{"no":1001,"title":"仕様と異なるExcelファイル","content":"・以下コマンドを実行\r\nnode aggregation.js ./試験項目書/error-単体試験項目書.xlsx\r\n","expect":"以下エラーメッセージが表示されること。\r\n\r\n試験項目書ではありません。\r\n","result":"NG","tester":"鈴木","testDate":44849},{"no":1100,"category":"正常系","title":"正しいフォーマットのExcel\r\n存在する出力フォルダ","content":"・以下コマンドを実行\r\nnode aggregation.js -i in/sample-単体試験項目書.xlsx -o out/test.json\r\n","expect":"in/sample-単体試験項目書.xlsx の内容が、out/test.json に出力される。","result":"OK","tester":"田中","testDate":44850}],"count":3,"ok":2,"ng":1,"pending":0,"confirmOk":0,"fixOk":0}]
+    </script>
+    <script>
+      // $(function(){}) = document.ready() : ページの読み込みが終わった時点で実行
+      $(function() {
+        // データ取得
+        const testData =JSON.parse($('#test-data').text());
+
+        // json -> 表示したい項目の配列に変換
+        const data = testData.map(d => {
+          return [
+            d.file,
+            d.count,
+            d.ok,
+            d.ng,
+            d.pending,
+            d.confirmOk,
+            d.fixOk
+          ];
+        });
+        // { title: '{title}' } 形式の配列でカラム定義
+        const columns = [
+          'file',
+          'count',
+          'ok',
+          'ng',
+          'pending',
+          'confirmOk',
+          'fixOk'
+        ].map(t => ({ title: t}));
+
+        $('#test-summary').DataTable({
+          data,
+          columns
+        });
+        // json の項目名と変数名が同じ場合は省略可能。以下と同義
+        // {
+        //   data: data,
+        //   columns: columns
+        // }
+        
+      });
+    </script>
+  </body>
+</html>
