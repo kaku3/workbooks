@@ -10,23 +10,23 @@
 // 難しい動詞になったり、複数の動詞になる場合は関数の実装自体が複雑なことが懸念される。
 //
 // (悪いかもしれない例)
-// readAndAggregateExcel()
+// readAndAggregateExcel();
 // 実際は、エクセルを試験項目として読み込んで、それを集計しているハズなので以下の様な関数になっている方がよさそう。
-// const test = readExcelAsTest()
-// test = aggreagetTest(test)
+// const test = readExcelAsTest();
+// test = aggreagetTest(test);
 //
 // - Excel : 条件付き書式
 // ステータスに応じて行の色を設定している。
 // 視覚的に進捗が分かりやすくなる。
 
-const fs = require('fs')
-const path = require('path')
-const glob = require('glob').sync
-const xlsx = require('xlsx')
-const yargs = require('yargs/yargs')
+const fs = require('fs');
+const path = require('path');
+const glob = require('glob').sync;
+const xlsx = require('xlsx');
+const yargs = require('yargs/yargs');
 const {
   hideBin
-} = require('yargs/helpers')
+} = require('yargs/helpers');
 
 // yargs で必須パラメータの定義 / parse
 // 引数に不備があるとパラメータ表示、エラー表示して終了してくれる。
@@ -44,12 +44,12 @@ const args = yargs(hideBin(process.argv))
     },
   })
   .usage('[usage]node $0 -i in -o out/test.json')
-  .argv
+  .argv;
 
-console.group('---- args')
-console.info('inExcelFolder', args.inExcelFolder)
-console.info('outJson', args.outJson)
-console.groupEnd()
+console.group('---- args');
+console.info('inExcelFolder', args.inExcelFolder);
+console.info('outJson', args.outJson);
+console.groupEnd();
 
 /**
  * 試験仕様書を Test として読み込む
@@ -58,10 +58,10 @@ console.groupEnd()
  */
 function readExcelAsTest(excelPath) {
   try {
-    const book = xlsx.readFile(excelPath)
-    const sheet = book.Sheets['単体試験']
-    const range = xlsx.utils.decode_range(sheet['!ref'])
-    range.s.r = 1
+    const book = xlsx.readFile(excelPath);
+    const sheet = book.Sheets['単体試験'];
+    const range = xlsx.utils.decode_range(sheet['!ref']);
+    range.s.r = 1;
 
     // *header : 後でプログラムで利用しやすいようにしておく。
     // header を指定する場合は、1行目を読み飛ばす必要があるため、range.s.r = 1 (start, row = 0 -> 1) としておく。
@@ -69,15 +69,15 @@ function readExcelAsTest(excelPath) {
       range,
       blankrows: false,
       header: ['no', 'category', 'title', 'content', 'expect', 'result', 'tester', 'testDate', 'remarks']
-    })
+    });
 
     return {
       file: path.basename(excelPath),
       tests
-    }
+    };
   } catch(e) {
-    console.error(e.message)
-    return null
+    console.error(e.message);
+    return null;
   }
 }
 
@@ -87,15 +87,15 @@ function readExcelAsTest(excelPath) {
  * @returns 
  */
 function aggreagetTest(test) {
-  const tests = test.tests
-  const count = tests.length
-  const ok = tests.filter(t => t.result === 'OK').length
-  const ng = tests.filter(t => t.result === 'NG').length
-  const pending = tests.filter(t => t.result === '保留').length
-  const confirmOk = tests.filter(t => t.result === '確認OK').length
-  const fixOk = tests.filter(t => t.result === '修正OK').length
+  const tests = test.tests;
+  const count = tests.length;
+  const ok = tests.filter(t => t.result === 'OK').length;
+  const ng = tests.filter(t => t.result === 'NG').length;
+  const pending = tests.filter(t => t.result === '保留').length;
+  const confirmOk = tests.filter(t => t.result === '確認OK').length;
+  const fixOk = tests.filter(t => t.result === '修正OK').length;
 
-  console.info({ count, ok, ng, pending, confirmOk, fixOk })
+  console.info({ count, ok, ng, pending, confirmOk, fixOk });
   return {
     ...test,
     count,
@@ -105,32 +105,32 @@ function aggreagetTest(test) {
     confirmOk,
     fixOk,
     tests
-  }
+  };
 }
 
-const tests = []
+const tests = [];
 
 const excelFiles = glob('*.xlsx', {
   cwd: args.inExcelFolder
-})
+});
 
-console.group('---- main')
+console.group('---- main');
 excelFiles.forEach(f => {
-  console.log(f)
-  let test = readExcelAsTest(path.join(args.inExcelFolder, f))
+  console.log(f);
+  let test = readExcelAsTest(path.join(args.inExcelFolder, f));
   if(test) {
-    test = aggreagetTest(test)
-    tests.push(test)
+    test = aggreagetTest(test);
+    tests.push(test);
   }
-})
-console.groupEnd()
+});
+console.groupEnd();
 
 if(tests.length > 0) {
   try {
-    fs.writeFileSync(args.outJson, JSON.stringify(tests), "utf-8")
+    fs.writeFileSync(args.outJson, JSON.stringify(tests), "utf-8");
   } catch(e) {
-    console.error(e.message)
+    console.error(e.message);
   }
 } else {
-  console.warn('Excel ファイルがありませんでした。')
+  console.warn('Excel ファイルがありませんでした。');
 }
