@@ -1,0 +1,28 @@
+@startuml 集計2
+
+!include ./style.inc
+
+hide footbox
+
+actor user
+participant node as "node.js"
+participant js as "集計ツール\naggregation.js"
+participant folder as "試験項目書\nフォルダ"
+participant excel as "試験項目書\nエクセル"
+participant json as "集計結果.json"
+
+user -> node : node aggregation.js\n -i 試験項目書フォルダ\n -o 集計結果.json
+activate node
+    node -> js : 読み込み
+    node <-- js
+    node -> folder : ファイル一覧取得
+    node <-- folder
+    loop ファイル数分ループ
+        node -> excel : 読み込み
+        node <-- excel
+        node -> node : 解析 / 集計
+    end
+    node -> json : 出力
+deactivate node
+
+@enduml
