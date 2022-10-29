@@ -66,7 +66,7 @@ function readExcelAsTest(excelPath) {
  * @param {*} test 
  */
 function addDisplayTestDate(test) {
-  test.tests.forEach(t => t.displayTestDate = t.testDate ? df('MM/dd', ExcelDate.dateFromSn(t.testDate)) : '')
+  test.tests.forEach(t => t.displayTestDate = t.testDate ? df('yyyy/MM/dd', ExcelDate.dateFromSn(t.testDate)) : '')
   return test
 }
 
