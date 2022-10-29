@@ -7,6 +7,8 @@ const {
   hideBin
 } = require('yargs/helpers');
 
+const df = require('date-format')
+const ExcelDate = require('./utils/ExcelDate')
 
 
 const args = yargs(hideBin(process.argv))
@@ -59,6 +61,16 @@ function readExcelAsTest(excelPath) {
 }
 
 /**
+ * [追加仕様_集計_1]
+ * 各試験結果レコードに、displayTestDate を追加する
+ * @param {*} test 
+ */
+function addDisplayTestDate(test) {
+  test.tests.forEach(t => t.displayTestDate = t.testDate ? df('MM/dd', ExcelDate.dateFromSn(t.testDate)) : '')
+  return test
+}
+
+/**
  * Test を集計する。
  * @param {*} test 
  * @returns 
@@ -94,10 +106,11 @@ const excelFiles = glob('*.xlsx', {
 console.group('---- main');
 excelFiles.forEach(f => {
   console.log(f);
-  let test = readExcelAsTest(path.join(args.inExcelFolder, f));
-  if(test) {
-    test = aggreagetTest(test);
-    tests.push(test);
+  let testFile = readExcelAsTest(path.join(args.inExcelFolder, f));
+  if(testFile) {
+    testFile = addDisplayTestDate(testFile);
+    testFile = aggreagetTest(testFile);
+    tests.push(testFile);
   }
 });
 console.groupEnd();
