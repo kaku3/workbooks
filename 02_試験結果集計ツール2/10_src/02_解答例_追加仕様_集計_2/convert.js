@@ -61,7 +61,6 @@ function readExcelAsTest(excelPath) {
 }
 
 /**
- * [追加仕様_集計_1]
  * 各試験結果レコードに、displayTestDate を追加する
  * @param {*} test 
  */
@@ -97,30 +96,52 @@ function aggreagetTest(test) {
   };
 }
 
-const tests = [];
+function readExcelFiles() {
+  const testFiles = [];
 
-const excelFiles = glob('*.xlsx', {
-  cwd: args.inExcelFolder
-});
+  const excelFiles = glob('*.xlsx', {
+    cwd: args.inExcelFolder
+  });
+  
+  excelFiles.forEach(f => {
+    console.log(f);
+    let testFile = readExcelAsTest(path.join(args.inExcelFolder, f));
+    if(testFile) {
+      testFile = addDisplayTestDate(testFile);
+      testFile = aggreagetTest(testFile);
+      testFiles.push(testFile);
+    }
+  });
+  return testFiles;
+}
 
-console.group('---- main');
-excelFiles.forEach(f => {
-  console.log(f);
-  let testFile = readExcelAsTest(path.join(args.inExcelFolder, f));
-  if(testFile) {
-    testFile = addDisplayTestDate(testFile);
-    testFile = aggreagetTest(testFile);
-    tests.push(testFile);
+/**
+ * 
+ * @param {*} tests 
+ */
+function aggreagetByDate(tests) {
+  // 日付を重複なく、小さい順に並べ替えて取得
+  const _dates = Array.from(new Set(tests.map(t => t.testDate))).sort((v1, v2) => v1 - v2)
+  console.log(_dates);
+
+
+}
+
+function main() {
+  const testFiles = readExcelFiles();
+  if(testFiles.length === 0) {
+    console.warn('Excel ファイルがありませんでした。');
+    return;
   }
-});
-console.groupEnd();
+  const tests = testFiles.flatMap(f => f.tests)
 
-if(tests.length > 0) {
+  const dates = aggreagetByDate(tests)
+
   try {
-    fs.writeFileSync(args.outJson, JSON.stringify(tests), "utf-8");
+    fs.writeFileSync(args.outJson, JSON.stringify(testFiles), "utf-8");
   } catch(e) {
     console.error(e.message);
   }
-} else {
-  console.warn('Excel ファイルがありませんでした。');
 }
+
+main();
