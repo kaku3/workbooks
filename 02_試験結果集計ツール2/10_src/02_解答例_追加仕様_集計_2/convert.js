@@ -116,15 +116,56 @@ function readExcelFiles() {
 }
 
 /**
- * 
+ * 日別集計
  * @param {*} tests 
  */
 function aggreagetByDate(tests) {
   // 日付を重複なく、小さい順に並べ替えて取得
-  const _dates = Array.from(new Set(tests.map(t => t.testDate))).sort((v1, v2) => v1 - v2)
-  console.log(_dates);
+  const _dates = Array.from(new Set(tests.map(t => t.testDate))).sort((v1, v2) => v1 - v2);
+  // 各日付のデータを集めて、人毎の件数を集計
+  const dates = _dates.map(d => {
+    const _tests = tests.filter(t => t.testDate === d);
 
+    const date = { date: d, displayTestDate: _tests[0].displayTestDate };
+    date.count = _tests.length
+    for(const test of _tests) {
+      if(!date[test.tester]) {
+        date[test.tester] = 0;
+      }
+      date[test.tester]++;
+    }
+    return date;
+  });
+  return dates;
+}
 
+/**
+ * 人別集計
+ * @param {*} tests 
+ * @param {*} dates 
+ * @returns 
+ */
+function aggregateByTesters(tests, dates) {
+  // テスターを重複なく取得
+  const _testers = Array.from(new Set(tests.map(t => t.tester)));
+  // テスター毎に、日別集計からそのテスターのレコードを取得して集計
+  const testers = _testers.map(tester => {
+    const _dates = dates.filter(d => d[tester]).map(d => {
+      return {
+        date: d.date,
+        displayTestDate: d.displayTestDate,
+        count: d[tester]
+      };
+    });
+    const count = _dates.map(d => d.count).reduce((a, v) => a + v)
+
+    return {
+      tester,
+      count,
+      dates: _dates
+    }
+  });
+  return testers;
 }
 
 function main() {
@@ -133,12 +174,18 @@ function main() {
     console.warn('Excel ファイルがありませんでした。');
     return;
   }
-  const tests = testFiles.flatMap(f => f.tests)
+  
+  const tests = testFiles.flatMap(f => f.tests);
 
-  const dates = aggreagetByDate(tests)
+  const dates = aggreagetByDate(tests);
+  const testers = aggregateByTesters(tests, dates);
 
   try {
-    fs.writeFileSync(args.outJson, JSON.stringify(testFiles), "utf-8");
+    fs.writeFileSync(args.outJson, JSON.stringify({
+      testFiles,
+      dates,
+      testers
+    }), "utf-8");
   } catch(e) {
     console.error(e.message);
   }
