@@ -3,7 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title><%- title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <link href="css/main.css" rel="stylesheet">
   </head>
   <body>
     <%#
@@ -14,9 +18,36 @@
       変数出力 : %- ... % (html escape なし)
       変数出力 : %= ... % (html escape あり)
       js出力  : % ... %
-    %> 
-    <h1><%- title %></h1>
-    <table id="test-summary" class="stripe hover compact" style="width: 100%;"></table>
+    %>
+    <div class="container mx-auto">
+      <h1 class="font-bold text-xl"><%- title %></h1>
+      <div class="
+        block p-6 bg-white rounded-lg
+        border border-gray-200
+        shadow-md
+        dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+      >
+        <table id="test-summary" class="stripe hover compact"></table>
+      </div>
+      <div class="grid grid-cols-2">
+        <div class="
+          block p-6 bg-white rounded-lg
+          border border-gray-200
+          shadow-md
+          dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+        >
+          <table id="test-date-summary" class="stripe hover compact"></table>
+        </div>
+        <div class="
+          block p-6 bg-white rounded-lg
+          border border-gray-200
+          shadow-md
+          dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+        >
+          <table id="test-tester-summary" class="stripe hover compact"></table>
+        </div>
+      </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>    
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
@@ -26,10 +57,13 @@
     </script>
     <script>
       $(function() {
-        // データ取得
         const testData =JSON.parse($('#test-data').text());
+        renderTableTestSummary(testData.testFiles);
+        renderTableTestDatesSummary(testData.dates);
+        renderTableTestTestersSummary(testData.testers);
+      });
 
-        // fields で表示 field を定義し、data, columns それぞれを fields より生成する
+      function renderTableTestSummary(testFiles) {
         const fields = [
           'file',
           'count',
@@ -39,14 +73,42 @@
           'confirmOk',
           'fixOk'
         ]
-        const data = testData.map(d => fields.map(f => d[f]));
+        const data = testFiles.map(d => fields.map(f => d[f]));
         const columns = fields.map(t => ({ title: t}));
 
         $('#test-summary').DataTable({
           data,
           columns
         });
-      });
+      }
+
+      function renderTableTestDatesSummary(dates) {
+        // displayTestDate, count,  tester1, tester2, ... を求める。
+        const fields = Array.from(new Set(dates.flatMap(d => Object.keys(d))));
+        fields.splice(0, 1) // date を除外
+        const data = dates.map(d => fields.map(f => d[f] ? d[f] : ''))
+        const columns = fields.map(f => ({ title: f }));
+        // displayTestDate, count はテーブルのラベルとして分かりづらいので修正
+        columns[0].title = '日付';
+        columns[1].title = '合計';
+
+        $('#test-date-summary').DataTable({
+          data,
+          columns
+        });
+      }
+      function renderTableTestTestersSummary(testers) {
+        const columns = [
+          { title: 'テスター', data: 'tester' },
+          { title: '合計', data: 'count' }
+        ]
+
+        $('#test-tester-summary').DataTable({
+          data: testers,
+          columns
+        });
+      }
+
     </script>
   </body>
 </html>
