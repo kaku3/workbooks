@@ -47,10 +47,20 @@
           <table id="test-tester-summary" class="stripe hover compact"></table>
         </div>
       </div>
+      <div class="
+        block p-6 bg-white rounded-lg
+        border border-gray-200
+        shadow-md
+        dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+      >
+        <canvas id="test-chart"></canvas>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>    
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script id="test-data" type="application/json">
       <%- testData %>
@@ -61,8 +71,11 @@
         renderTableTestSummary(testData.testFiles);
         renderTableTestDatesSummary(testData.dates);
         renderTableTestTestersSummary(testData.testers);
+
+        renderChart(testData.dates);
       });
 
+      // table 描画 : ファイルごと
       function renderTableTestSummary(testFiles) {
         const fields = [
           'file',
@@ -82,6 +95,7 @@
         });
       }
 
+      // table 描画 : 日ごと
       function renderTableTestDatesSummary(dates) {
         // displayTestDate, count,  tester1, tester2, ... を求める。
         const fields = Array.from(new Set(dates.flatMap(d => Object.keys(d))));
@@ -97,6 +111,8 @@
           columns
         });
       }
+
+      // table 描画 : テスターごと
       function renderTableTestTestersSummary(testers) {
         const columns = [
           { title: 'テスター', data: 'tester' },
@@ -107,6 +123,36 @@
           data: testers,
           columns
         });
+      }
+
+      // chart 描画
+      function renderChart(dates) {
+        const labels = dates.map(d => d.displayTestDate);
+        const data = {
+          labels,
+          datasets: [{
+            label: '消化数',
+            borderColor: 'rgb(0,0,255)',
+            borderWidth: 1,
+            data: dates.map(d => d.count)
+          }]
+        }
+        const config = {
+          type: 'line',
+          data,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        }
+
+        const chart = new Chart(
+          document.getElementById('test-chart').getContext('2d'),
+          config
+        );
       }
 
     </script>
