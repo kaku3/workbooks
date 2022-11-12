@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%- title %></title>
+    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <%#
+      EJS (Embedded JavaScript templating.)
+      参考 : https://ejs.co/
+
+      コメント行 : %# ... %
+      変数出力 : %- ... % (html escape なし)
+      変数出力 : %= ... % (html escape あり)
+      js出力  : % ... %
+    %> 
+    <h1><%- title %></h1>
+    <table id="test-summary" class="stripe hover compact" style="width: 100%;"></table>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>    
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
+    <script id="test-data" type="application/json">
+      <%- testData %>
+    </script>
+    <script>
+      $(function() {
+        // データ取得
+        const testData =JSON.parse($('#test-data').text());
+
+        // fields で表示 field を定義し、data, columns それぞれを fields より生成する
+        const fields = [
+          'file',
+          'count',
+          'ok',
+          'ng',
+          'pending',
+          'confirmOk',
+          'fixOk'
+        ]
+        const data = testData.map(d => fields.map(f => d[f]));
+        const columns = fields.map(t => ({ title: t}));
+
+        $('#test-summary').DataTable({
+          data,
+          columns
+        });
+      });
+    </script>
+  </body>
+</html>
