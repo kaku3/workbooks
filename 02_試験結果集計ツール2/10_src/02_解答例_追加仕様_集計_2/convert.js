@@ -121,7 +121,7 @@ function readExcelFiles() {
  */
 function aggreagetByDate(tests) {
   // 日付を重複なく、小さい順に並べ替えて取得
-  const _dates = Array.from(new Set(tests.map(t => t.testDate))).sort((v1, v2) => v1 - v2);
+  const _dates = Array.from(new Set(tests.filter(t => 'testDate' in t).map(t => t.testDate))).sort((v1, v2) => v1 - v2);
   // 各日付のデータを集めて、人毎の件数を集計
   const dates = _dates.map(d => {
     const _tests = tests.filter(t => t.testDate === d);
@@ -147,7 +147,7 @@ function aggreagetByDate(tests) {
  */
 function aggregateByTesters(tests, dates) {
   // テスターを重複なく取得
-  const _testers = Array.from(new Set(tests.map(t => t.tester)));
+  const _testers = Array.from(new Set(tests.filter(t => 'tester' in t).map(t => t.tester)));
   // テスター毎に、日別集計からそのテスターのレコードを取得して集計
   const testers = _testers.map(tester => {
     const _dates = dates.filter(d => d[tester]).map(d => {
