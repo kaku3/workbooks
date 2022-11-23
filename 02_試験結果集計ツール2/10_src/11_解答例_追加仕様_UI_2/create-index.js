@@ -8,7 +8,7 @@ ejs.renderFile(
   './templates/index2.html.ejs',
   // template に渡すパラメータ(json形式)
   {
-    title: '解答例 : 追加仕様UI1',
+    title: '解答例 : 追加仕様UI2',
     testData
   },
   // 置き換え結果を受け取るコールバック

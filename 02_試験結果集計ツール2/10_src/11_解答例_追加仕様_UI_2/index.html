@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>解答例 : 追加仕様UI1</title>
+    <title>解答例 : 追加仕様UI2</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -12,7 +12,7 @@
   <body>
     
     <div class="container mx-auto">
-      <h1 class="font-bold text-xl">解答例 : 追加仕様UI1</h1>
+      <h1 class="font-bold text-xl">解答例 : 追加仕様UI2</h1>
       <div class="
         block p-6 bg-white rounded-lg
         border border-gray-200
@@ -64,7 +64,7 @@
         renderTableTestDatesSummary(testData.dates);
         renderTableTestTestersSummary(testData.testers);
 
-        renderChart(testData.dates);
+        renderBarndownChart(testData);
       });
 
       // table 描画 : ファイルごと
@@ -118,7 +118,18 @@
       }
 
       // chart 描画
-      function renderChart(dates) {
+      function renderBarndownChart(testData) {
+        // 試験件数
+        let count = testData.testFiles.reduce((a, v) => a += v.count, 0);
+        const dates = testData.dates;
+        const counts = dates.map(d => d.count);
+        
+        // 日々の消化数を減算していく
+        for(let c in counts) {
+          count -= counts[c];
+          counts[c] = count;
+        }
+
         const labels = dates.map(d => d.displayTestDate);
         const data = {
           labels,
@@ -126,9 +137,9 @@
             label: '消化数',
             borderColor: 'rgb(0,0,255)',
             borderWidth: 1,
-            data: dates.map(d => d.count)
+            data: counts
           }]
-        }
+        };
         const config = {
           type: 'line',
           data,
@@ -139,7 +150,7 @@
               }
             }
           }
-        }
+        };
 
         const chart = new Chart(
           document.getElementById('test-chart').getContext('2d'),
