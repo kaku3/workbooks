@@ -23,3 +23,4 @@
 
 ![バーンダウンチャート](./00_docs/images/%E3%83%90%E3%83%BC%E3%83%B3%E3%83%80%E3%82%A6%E3%83%B3%E3%83%81%E3%83%A3%E3%83%BC%E3%83%88.png)
 
+![React Dashboard](./00_docs/images/react-dashboard.png)
