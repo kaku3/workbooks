@@ -12,19 +12,18 @@ import {
 
 import testData from '../data/test.json'
 
+const testers = testData.testers;
+
 const fields = [
-  'file',
-  'count',
-  'ok',
-  'ng',
-  'pending',
-  'confirmOk',
-  'fixOk'
+  'tester',
+  'count'
 ]
-const rows = testData.testFiles.map(d => fields.map(f => d[f]));
+const rows = testers.map(d => fields.map(f => d[f] ? d[f] : ''))
 
+fields[0] = 'テスター';
+fields[1] = '合計';
 
-export default function UserSummaryTable() {
+export default function DateSummaryTable() {
   return (
     <Card>
       <TableContainer component={Paper}>
