@@ -12,18 +12,20 @@ import {
 
 import testData from '../data/test.json'
 
-const testers = testData.testers;
-
-const fields = [
-  'tester',
-  'count'
-]
-const rows = testers.map(d => fields.map(f => d[f] ? d[f] : ''))
-
-fields[0] = 'テスター';
-fields[1] = '合計';
 
 export default function DateSummaryTable() {
+
+  const testers = testData.testers;
+
+  const fields = [
+    'tester',
+    'count'
+  ]
+  const rows = testers.map(d => fields.map(f => d[f] ? d[f] : ''))
+  
+  fields[0] = 'テスター';
+  fields[1] = '合計';
+  
   return (
     <Card>
       <TableContainer component={Paper}>

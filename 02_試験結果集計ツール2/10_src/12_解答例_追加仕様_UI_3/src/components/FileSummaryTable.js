@@ -12,19 +12,20 @@ import {
 
 import testData from '../data/test.json'
 
-const fields = [
-  'file',
-  'count',
-  'ok',
-  'ng',
-  'pending',
-  'confirmOk',
-  'fixOk'
-]
-const rows = testData.testFiles.map(d => fields.map(f => d[f]));
-
 
 export default function FileSummaryTable() {
+
+  const fields = [
+    'file',
+    'count',
+    'ok',
+    'ng',
+    'pending',
+    'confirmOk',
+    'fixOk'
+  ]
+  const rows = testData.testFiles.map(d => fields.map(f => d[f]));
+  
   return (
     <Card>
       <TableContainer component={Paper}>
