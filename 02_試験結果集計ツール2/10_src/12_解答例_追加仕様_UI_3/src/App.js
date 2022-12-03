@@ -4,6 +4,7 @@ import './App.css';
 import FileSummaryTable from './components/FileSummaryTable';
 import DateSummaryTable from './components/DateSummaryTable';
 import UserSummaryTable from './components/UserSummaryTable';
+import BurndownChart from './components/BurndownChart';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Grid sm={6}><UserSummaryTable /></Grid>
         </Grid>
         <Grid item>
-          chart1
+          <BurndownChart />
         </Grid>
       </Grid>
     </div>
