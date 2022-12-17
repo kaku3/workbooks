@@ -1,0 +1,219 @@
+html {
+  -webkit-print-color-adjust: exact;
+}
+
+.markdown-preview.markdown-preview {
+  // modify your style here
+  // eg: background-color: blue;
+
+  font-family: Meiryo, メイリオ;
+
+  p {
+    margin-bottom: .25rem;
+    line-height: 1.4;
+    font-size: .95rem;
+    color: #444;
+    text-indent: .5rem;
+  }
+  h1, h2, h3, h4, h5 {
+    margin-bottom: .25rem;
+    padding-bottom: 0;
+    color: #444;
+  }
+  h1 {
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: normal;
+    counter-reset: h2SectionCounter;
+    border-bottom: 1px solid #444;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    border-bottom: 1px solid #444;
+    &:not(.toc) {
+      counter-increment: h2SectionCounter;
+      counter-reset: h3SectionCounter;
+    }
+  }
+  h3 {
+    font-size: 1.1rem;
+    counter-increment: h3SectionCounter;
+    counter-reset: h4SectionCounter;
+  }
+  h4 {
+    font-size: 1.1rem;
+    counter-increment: h4SectionCounter;
+    counter-reset: h5SectionCounter;
+  }
+  h5 {
+    font-size: 1rem;
+    counter-increment: h5SectionCounter;
+  }
+  h2:before {
+    content: counter(h2SectionCounter) ".";
+  }
+  h3:before {
+    content: counter(h2SectionCounter) "." counter(h3SectionCounter) ".";
+  }
+  h4:before {
+    content: counter(h2SectionCounter) "." counter(h3SectionCounter) "." counter(h4SectionCounter) ".";
+  }
+  h5:before {
+    content: counter(h2SectionCounter) "." counter(h3SectionCounter) "." counter(h4SectionCounter) "." counter(h5SectionCounter) ".";
+  }
+  hr {
+    margin: .5rem 0;
+    height: 1px;
+
+  }
+  li {
+    font-size: .9rem;
+  }
+  table {
+    thead {
+      tr {
+        th {
+          padding: .25rem .5rem;
+          font-size: .8rem;
+          font-weight: normal;
+          background: #f8f8f8;
+        }
+      }
+    }
+    td {
+      padding: .25rem .5rem;
+      font-size: .75rem;
+    }
+  }
+  img {
+    margin: 2rem auto;
+    border: 1px solid rgba(0,0,0, .2);
+  }
+  svg {
+    margin: 2rem auto;
+  }
+
+  .mermaid {
+    background: #f8f8f8;
+    g:first-child {
+      &.actor {
+        display: none;
+      }
+    }
+    .actor {
+      &+text {
+        font-size: .8rem;
+      }
+    }
+  }
+
+  // 目次
+  [data-cmd=toc] + ul {
+    margin-top: 0!important;
+    margin-bottom: 0!important;
+    padding: .5rem;
+    list-style: none;
+    background-color: #eee;
+    + ul {
+      margin-top: .25rem!important;
+    }
+    li {
+      margin-bottom: 0!important;
+      font-size: .8rem;
+      line-height: 1.5;
+      a {
+        color: #444;
+        font-size: .8rem;
+        &:hover {
+          text-decoration: underline!important;
+        }
+      }
+    }
+    > li {
+      counter-increment: h2counter;
+      counter-reset: h3counter;
+      > a:before {
+        content: counter(h2counter) ".";
+      }
+      ul {
+        padding: 0 1rem!important;
+        list-style: none;
+      }
+      > ul > li {
+        counter-increment: h3counter;
+        counter-reset: h4counter;
+        > a:before {
+          content: counter(h2counter) "." counter(h3counter) ".";
+        }
+        > ul > li {
+          counter-increment: h4counter;
+          counter-reset: h5counter;
+          > a:before {
+            content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) ".";
+          }
+          > ul > li {
+            counter-increment: h5counter;
+            > a:before {
+              content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) ".";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media print {}
+}
+
+.md-sidebar-toc {
+  ul {
+    margin-top: 0!important;
+    margin-bottom: 0!important;
+    & + ul {
+      margin-top: .25rem!important;
+    }
+    li {
+      margin-bottom: 0!important;
+      font-size: .8rem;
+      line-height: 1.5;
+      a {
+        color: #444;
+        font-size: .8rem;
+        &:hover {
+          text-decoration: underline!important;
+        }
+      }
+    }
+  }
+  & > ul > li {
+    counter-increment: h2SidebarCounter;
+    counter-reset: h3SidebarCounter;
+    & > a:before {
+      content: counter(h2SidebarCounter) ".";
+    }
+    ul {
+      padding: 0 .25rem!important;
+    }
+    > ul > li {
+      counter-increment: h3SidebarCounter;
+      counter-reset: h4SidebarCounter;
+      > a:before {
+        content: counter(h2SidebarCounter) "." counter(h3SidebarCounter) ".";
+      }
+      > ul > li {
+        counter-increment: h4SidebarCounter;
+        counter-reset: h5SidebarCounter;
+        > a:before {
+          content: counter(h2SidebarCounter) "." counter(h3SidebarCounter) "." counter(h4SidebarCounter) ".";
+        }
+        > ul > li {
+          counter-increment: h5SidebarCounter;
+          > a:before {
+            content: counter(h2SidebarCounter) "." counter(h3SidebarCounter) "." counter(h4SidebarCounter) "." counter(h5SidebarCounter) ".";
+          }
+        }
+      }
+    }
+  }
+}
