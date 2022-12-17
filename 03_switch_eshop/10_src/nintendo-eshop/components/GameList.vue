@@ -80,10 +80,10 @@
     >
       <template #[`item.TitleName`]="{ item }">
         <div class="d-flex __clickable" @click="onShowPage(item)">
-          <v-img
+          <!-- <v-img
             :src="item.ScreenshotImgURL"
             max-width="172"
-          />
+          /> -->
           <div>
             <div class="text-h6 pa-1">
               {{ item.TitleName }}
