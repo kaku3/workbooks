@@ -20,7 +20,7 @@ async function getGames() {
 // ※存在しないファイルだけ取得
 async function getGameDetail(game) {
   console.log(`+ getGameDetail(${game.InitialCode}, ${game.TitleName})`)
-  const file = `./data/games/${game.InitialCode}.json`;
+  const file = `./data/details/${game.InitialCode}.json`;
 
   if(fs.existsSync(file)) {
     console.log(`- skip : getGameDetail(${game.InitialCode}, ${game.TitleName})`);
