@@ -53,6 +53,7 @@
           v-model="selectedMinPrice"
           :items="[ '500', '1000', '1500', '2000', '3000', '4000', '5000' ]"
           label="価格(MIN)"
+          clearable
           dense
         />
       </v-col>
@@ -61,6 +62,7 @@
           v-model="selectedMaxPrice"
           :items="[ '500', '1000', '1500', '2000', '3000', '4000', '5000' ]"
           label="価格(MAX)"
+          clearable
           dense
         />
       </v-col>
