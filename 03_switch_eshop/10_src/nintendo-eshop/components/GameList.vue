@@ -2,7 +2,7 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="2" class="left">
         <v-text-field
           v-model="searchTitle"
           label="タイトル"
@@ -10,10 +10,6 @@
           hide-details
           dense
         />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="3">
         <v-autocomplete
           v-model="selectedMaker"
           :items="makers"
@@ -22,9 +18,8 @@
           small-chips
           clearable
           dense
+          class="mt-8"
         />
-      </v-col>
-      <v-col cols="3">
         <v-autocomplete
           v-model="selectedCategories"
           :items="categories"
@@ -32,11 +27,11 @@
           multiple
           chips
           small-chips
+          deletable-chips
           clearable
           dense
+          class="mt-8"
         />
-      </v-col>
-      <v-col cols="2">
         <v-autocomplete
           v-model="selectedPlayers"
           :items="players"
@@ -44,84 +39,87 @@
           multiple
           chips
           small-chips
+          deletable-chips
           clearable
           dense
+          class="mt-8"
         />
-      </v-col>
-      <v-col cols="2">
         <v-select
           v-model="selectedMinPrice"
           :items="[ '500', '1000', '1500', '2000', '3000', '4000', '5000' ]"
           label="価格(MIN)"
           clearable
           dense
+          class="mt-8"
         />
-      </v-col>
-      <v-col cols="2">
         <v-select
           v-model="selectedMaxPrice"
           :items="[ '500', '1000', '1500', '2000', '3000', '4000', '5000' ]"
           label="価格(MAX)"
           clearable
           dense
+          class="mt-4"
         />
       </v-col>
-    </v-row>
-    <v-data-table
-      :headers="gameHeaders"
-      :items="filteredGames"
-      :footer-props="{
-        'items-per-page-options': [ 200 ]
-      }"
-      :ites-per-page="200"
-      height="calc(100vh - 256px)"
-      fixed-header
-      dense
-    >
-      <template #[`item.TitleName`]="{ item }">
-        <div class="d-flex __clickable" @click="onShowPage(item)">
-          <!-- <v-img
-            :src="item.ScreenshotImgURL"
-            max-width="172"
-          /> -->
-          <div>
-            <div class="text-h6 pa-1">
-              {{ item.TitleName }}
-            </div>
-            <div class="mt-2">
-              <v-chip
-                v-for="(c, i) in item._categories"
-                :key="i"
-                x-small
-                class="mx-1 mb-1"
-              >
-                {{ c }}
-              </v-chip>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #[`item._players`]="{ item }">
-        <div
-          v-for="(p, i) in item._players"
-          :key="i"
-          class="d-flex"
+      <v-col cols="10">
+        <v-data-table
+          :headers="gameHeaders"
+          :items="filteredGames"
+          :footer-props="{
+            'items-per-page-options': [ 200 ]
+          }"
+          :ites-per-page="200"
+          height="calc(100vh - 192px)"
+          fixed-header
+          dense
         >
-          <div class="__players__key">
-            {{ p.key }}
-          </div>
-          <div class="__players__value">
-            {{ p.value }}
-          </div>
-        </div>
-      </template>
-    </v-data-table>
+          <template #[`item.TitleName`]="{ item }">
+            <div class="d-flex __clickable" @click="onShowPage(item)">
+              <v-img
+                :src="`/images/eshop/games/${item.InitialCode}.jpg`"
+                max-width="172"
+              />
+              <div>
+                <div class="text-h6 pa-1">
+                  {{ item.TitleName }}
+                </div>
+                <div class="mt-2">
+                  <v-chip
+                    v-for="(c, i) in item._categories"
+                    :key="i"
+                    x-small
+                    class="mx-1 mb-1"
+                    @click.stop="onClickCategory(c)"
+                  >
+                    {{ c }}
+                  </v-chip>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template #[`item._players`]="{ item }">
+            <div
+              v-for="(p, i) in item._players"
+              :key="i"
+              class="d-flex"
+            >
+              <div class="__players__key">
+                {{ p.key }}
+              </div>
+              <div class="__players__value">
+                {{ p.value }}
+              </div>
+            </div>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
-import GAMES from '~/assets/data/games.json'
-import DETAILS from '~/assets/data/index.js'
+import GAMES from '~/assets/eshop/games.json'
+import DETAILS from '~/assets/eshop/index.js'
 
 const BASE_URL = 'https://store-jp.nintendo.com/list/software/'
 
@@ -200,11 +198,20 @@ export default {
     onShowPage (game) {
       this.selectedGame = game
       window.open(this.showPageUrl, '_blank')
+    },
+    onClickCategory (c) {
+      if (!this.selectedCategories.includes(c)) {
+        this.selectedCategories.push(c)
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+
+.left {
+  background-color: #f0f0f0;
+}
 .__clickable {
   cursor: pointer;
 }
