@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="2" class="left">
+      <v-col cols="2" class="teal lighten-5">
         <v-text-field
           v-model="searchTitle"
           label="タイトル"
@@ -45,7 +45,7 @@
         />
         <v-select
           v-model="selectedMinPrice"
-          :items="[ '500', '1000', '1500', '2000', '3000', '4000', '5000' ]"
+          :items="PRICES"
           label="価格(MIN)"
           clearable
           dense
@@ -53,7 +53,7 @@
         />
         <v-select
           v-model="selectedMaxPrice"
-          :items="[ '500', '1000', '1500', '2000', '3000', '4000', '5000' ]"
+          :items="PRICES"
           label="価格(MAX)"
           clearable
           dense
@@ -122,9 +122,18 @@ import DETAILS from '~/assets/eshop/index.js'
 
 const BASE_URL = 'https://store-jp.nintendo.com/list/software/'
 
+// 最大プレイ人数を取得
+function maxPlayerCount (v) {
+  const counts = v.replace('人', '').split('〜').map(v => Number(v)).filter(v => !isNaN(v))
+  const count = counts.reduce((a, v) => Math.max(a, Number(v)), 0)
+  return count
+}
+
 export default {
   name: 'GameList',
   data: () => {
+    const PRICES = ['500', '1000', '1500', '2000', '3000', '4000', '5000']
+
     const games = GAMES
       .map((g) => {
         const detail = DETAILS[g.InitialCode]
@@ -136,8 +145,12 @@ export default {
       })
     const makers = games.map(g => g.MakerName).sort()
     const categories = Array.from(new Set(games.flatMap(g => g._categories))).sort()
-    const players = Array.from(new Set(games.flatMap(g => g._players).map(p => p.value))).sort()
+    const players = Array.from(new Set(games.flatMap(g => g._players).map(p => p.value))).sort((v0, v1) => {
+      // 最大プレイ人数順でソート
+      return maxPlayerCount(v0) - maxPlayerCount(v1)
+    })
     return {
+      PRICES,
       games,
       makers,
       categories,
@@ -207,10 +220,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
-.left {
-  background-color: #f0f0f0;
-}
 .__clickable {
   cursor: pointer;
 }
