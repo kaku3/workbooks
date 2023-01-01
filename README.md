@@ -45,7 +45,8 @@
 
 ## プログラム学習について
 
-プログラムの学習については、[Udemy](https://www.udemy.com/ja/courses/it-and-software/)　や、書籍でとにかく身につくまで反復を繰り返すことをオススメします。
+プログラムの学習についても、本リポジトリの問題集で可能ですが量が少ないです。
+[Udemy](https://www.udemy.com/ja/courses/it-and-software/)　や、書籍でとにかく身につくまで反復を繰り返すことをオススメします。
 『言語』の習得には、とにもかくにも反復演習が必要です。テキストをなぞるだけではなく、**パズルを解くように楽しみながら課題を整理、理解して、ロジックやアルゴリズムに落とし込んでプログラムを書く** といったアウトプットを繰り返すことが重要かと思います。
 
 
@@ -67,3 +68,4 @@
 |---|---|---|
 |[試験進捗集計ツール](./01_%E8%A9%A6%E9%A8%93%E7%B5%90%E6%9E%9C%E9%9B%86%E8%A8%88%E3%83%84%E3%83%BC%E3%83%AB/)   |試験項目書を解析して、試験結果・進捗の集計を行う。|nodejs, html, javascript, jQuery
 |[試験進捗集計ツール2](./02_%E8%A9%A6%E9%A8%93%E7%B5%90%E6%9E%9C%E9%9B%86%E8%A8%88%E3%83%84%E3%83%BC%E3%83%AB2/)   |試験進捗集計ツール機能追加。デイリー/担当者単位集計|nodejs, html, javascript, jQuery, DataTable, Chart.js, Tailwind CSS, React
+|[Switch ソフトウェア一覧](./03_switch_eshop/)|My Nintendo Store ゲーム一覧 |nodejs, got, cheerio, sharp, axios, Nuxt.js, Vue.js, Vuetify
