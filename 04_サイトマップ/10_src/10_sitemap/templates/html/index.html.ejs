@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>sitemap - project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.3/fc-4.0.1/fh-3.2.0/rg-1.1.4/sc-2.0.5/sl-1.3.3/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.css"/>
+
+    <link rel="stylesheet" type="text/css" href="styles/main.css"/>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <ul class="nav nav-tabs sticky-top" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-content-list" role="tab" aria-controls="tab-list" aria-selected="false">一覧</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab-content-sitemap" role="tab" aria-controls="tab-sitemap" aria-selected="true">サイトマップ</a>
+          </li>
+          <div class="layout-tools position-absolute top-0 end-0">
+            <i class="mdi mdi-chevron-left" role="change-left-pane-column-count" data-count="-2"></i>
+            <input id="left-pane-column-count" type="number" min="2" max="10" value="8" class="no-spin" />
+            <i class="mdi mdi-chevron-right" role="change-left-pane-column-count" data-count="2"></i>
+            <div id="page-layout-button"><i class="mdi mdi-align-horizontal-distribute"></i></div>
+          </div>
+        </ul>
+      </div>
+
+      <div class="row pane-container">
+        <div class="col-8" role="left-pane">
+          <div class="tab-content">
+            <div class="tab-pane fade" id="tab-content-list" role="tabpanel" aria-labelledby="tab-content-list">
+              <table id="page-list" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="no">id</th>
+                    <th class="system">システム</th>
+                    <th class="title">タイトル</th>
+                    <th class="path">path</th>
+                    <th class="comment">備考</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% trees.forEach((pages, categoryId) => { %>
+                    <% Object.values(pages).filter(page => !page.terminal).forEach((page) => { %>
+                      <tr data-category-id="<%- categoryId %>" data-path="<%- page.path %>" data-alert="<%- page.alert %>">
+                        <td class="no"><%- page.no %></td>
+                        <td class="system"><%- page.system %></td>
+                        <td class="title"><%- page.title %></td>
+                        <td class="path"><%- page.path %></td>
+                        <td class="comment"><div><%- page.comment ? page.comment.replace(/\r?\n/g, '<br />') : '' %></div></td>
+                      </tr>
+                    <% }) %>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade show active" id="tab-content-sitemap" role="tabpanel" aria-labelledby="tab-content-sitemap">
+              <div class="sitemap-container-wrapper">
+                <div class="sitemap-container">
+  <%- sitemapConnector %>
+  <%- sitemap %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>        
+        <div class="col-4" role="right-pane">
+          <div id="page-container" class="card d-none">
+            <h5 role="title" class="card-title"></h5>
+            <div class="card-body">
+              <div role="path" class="card-text"></div>
+              <h6>仕様 : </h6>
+              <p role="comment" class="card-text"></p>
+            </div>
+            <section id="links-container">
+              <h6>画面遷移 : </h6>
+              <div role="links-container"></div>
+            </section>
+            <section id="screen-container">
+              <div class="card-body">
+                <h6>画面 : </h6>
+              </div>
+              <a id="page-image-lightbox" data-lightbox="page-image">
+                <img id="page-image" class="card-img-top" />
+              </a>
+            </section>
+            <section id="mails-container">
+              <div class="card-body">
+                <h6>メール : </h6>
+              </div>
+              <ul role="mails-container" class="list-group"></ul>
+            </section>
+        </div>
+        </div>        
+      </div>
+    </div>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.3/fc-4.0.1/fh-3.2.0/rg-1.1.4/sc-2.0.5/sl-1.3.3/datatables.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+    <script>
+      const trees = <%- JSON.stringify(trees) %>
+      $(function() {
+        let tableInitialized = false
+        $('a[data-bs-toggle=tab]').on('shown.bs.tab', function(e) {
+          const id = $(this).attr('href')
+          if(!tableInitialized && id === '#tab-content-list') {
+            initPageList()
+            tableInitialized = true
+          }
+        })
+        // svg 描画
+        initSvg()
+
+        // イベント初期化
+        $('[role=sitemap-page]', '.sitemap-container').on('click', (e) => {
+          onChangeSitemapPage($(e.currentTarget))
+        })
+
+        $('[role=change-left-pane-column-count]').on('click', function (e) {
+          const d = parseInt($(this).data('count'))
+          const c = $('#left-pane-column-count')
+
+          console.log({d, c, v: c.val()})
+          let v = parseInt(c.val()) + d
+          v = d < 0 ? Math.max(v, 2) : Math.min(v, 10)
+          c.val(v)
+          onChangeLayout()
+        })
+
+        $('#left-pane-column-count').on('change', function(e) {
+          onChangeLayout()
+        })
+
+        $('#page-layout-button').on('click', function(e) {
+          const l = $('#page-layout-button')
+          l.toggleClass('vertical')
+          onChangeLayout()
+        })
+      })
+      function onChangeLayout() {
+        const l = $('#page-layout-button')
+        const c = $('#left-pane-column-count').val()
+
+        if(l.hasClass('vertical')) {
+          $('[role=left-pane]').removeClass()
+          $('[role=right-pane]').removeClass()
+          $('[role=left-pane]').addClass('col-12')
+          $('[role=right-pane]').addClass('col-12')
+
+          $('.pane-container').addClass('vertical')
+        } else {
+          $('[role=left-pane]').removeClass()
+          $('[role=right-pane]').removeClass()
+          $('[role=left-pane]').addClass(`col-${c}`)
+          $('[role=right-pane]').addClass(`col-${12 - c}`)
+
+          $('.pane-container').removeClass('vertical')
+        }
+      }
+
+      function onChangeSitemapPage(e) {
+        $('[role=sitemap-page]', '.sitemap-container').removeClass('active hover')
+        e.addClass('active')
+
+        updatePage(e)
+      }
+
+      // page描画
+      function updatePage(e) {
+        const categoryId = e.data('category-id')
+        const page = trees[categoryId][e.data('path')]
+
+        const p = $('#page-container')
+        const links = $('[role=links-container]', p)
+        const mails = $('[role=mails-container]', p)
+
+        p.removeClass('d-none')
+
+        links.empty()
+        mails.empty()
+
+        $('#page-image-lightbox', p).attr('href', page.image)
+        $('img#page-image', p).attr('src', page.image)
+        $('[role=title]', p).text(page.title)
+        $('[role=path]', p).text(page.path)
+        $('[role=comment]', p).html(page.comment ? page.comment.replace(/\n/g, '<br />') : '')
+
+        if(page.terminal || page.noImage) {
+          $('#screen-container').addClass('d-none')
+        } else {
+          $('#screen-container').removeClass('d-none')
+        }
+
+        // link 描画
+        if(!page.terminal && page.links) { 
+          page.links.forEach(l => {
+            const label = (l.label && l.label[0] === '$') ? l.label.substr(1) : l.label
+            const invalid = l.invalid ? 'invalid' : ''
+            links.append(`
+              <div class="group-item group-item-action ${invalid}" data-to="${l.to}">
+                <div class="label">${linkLabel(label)}</div>
+                <div class="link">${l.to}</div>
+              </div>`)
+          })
+          $('.group-item', links).on('click', e => {
+            const to = $(e.currentTarget).data('to')
+            const t = trees[categoryId][to]
+            if(t) {
+              const c = $('.sitemap-container-wrapper')
+              const pp = $(`[data-category-id="${categoryId}"][data-path="${t.path}"]`, '.sitemap-container')
+              onChangeSitemapPage(pp)
+              c.animate({
+                scrollTop: Math.max(pp.position().top - c.height() / 4, 0),
+                scrollLeft: Math.max(pp.position().left - c.width() / 4, 0)
+              })
+            }
+          })
+          $('.group-item', links).hover(
+            function() {
+              const to = $(this).data('to')
+              console.log(to)
+              $(`[role="sitemap-page"][data-category-id="${categoryId}"][data-path="${to}"]`).addClass('hover')
+            },
+            function() {
+              const to = $(this).data('to')
+              console.log(to)
+              $(`[role="sitemap-page"][data-category-id="${categoryId}"][data-path="${to}"]`).removeClass('hover')
+            }
+          )
+          $('#links-container').removeClass('d-none')
+        } else {
+          $('#links-container').addClass('d-none')
+        }
+
+        // mail 描画
+        if(!page.terminal && page.mails) {
+          page.mails.forEach(m => {
+            mails.append(
+              `<li class="list-group-item"><p>${m.condition}</p>
+                <a id="page-image-lightbox" data-lightbox="mail-images" href="images/mails/${m.to}.png" data-title="${m.condition}">
+                  <img class="img-fluid" src="images/mails/${m.to}.png" />
+                </a>
+              </li>`)
+          })
+          $('#mails-container').removeClass('d-none')
+        } else {
+          $('#mails-container').addClass('d-none')
+        }
+      }
+      // svg 描画
+      function initSvg() {
+        $('> path', '.sitemap-container .sitemap-connector').each((i, e) => {
+          const [ c, f, t, linkId ] = $(e).attr('id').split('-')
+          let offsetY = parseInt($(e).data('offset-y'))
+
+          const from = $(`#page-${f}`, '.sitemap-container')
+          const to = $(`#page-${t}`, '.sitemap-container')
+
+          if(from.length && to.length) {
+            const p0 = getSitemapPageCenter(from)
+            const p1 = getSitemapPageCenter(to)
+
+            if(p0.x > p1.x) {
+              $(e).attr('stroke-dasharray', '10')
+              p0.y -= 10
+              p1.y -= 10
+            }
+
+            const path = `M ${p0.x} ${p0.y} L ${p1.x} ${p1.y}`
+            $(e).attr('d', path)
+
+            const text = $(`#text-${f}-${t}-${linkId}`, '.sitemap-container .sitemap-connector')
+            text.attr('x', Math.abs(p1.x + p0.x) / 2)
+            text.attr('y', Math.abs(p1.y + p0.y) / 2 + offsetY)
+          }
+        })
+
+        $('.sitemap-container .sitemap-connector').removeClass('d-none')
+      }
+      // 一覧テーブル初期化
+      function initPageList() {
+        const table = $('#page-list').DataTable({
+          dom: '<"table-tool"<"filter"f><"count"i>>t',
+          language: {
+            info: '_TOTAL_ pages',
+            infoFiltered: '/ _MAX_ pages'
+          },
+          // select: {
+          //   style: 'single'
+          // },
+          paging: false,
+          scrollY: 'calc(100vh - 128px)',
+          scrollCollapse: true,
+          // order: [
+          //   [4, "desc"],
+          //   [5, "desc"],
+          //   [3, "desc"]
+          // ]
+        })
+        $('#page-list tbody').on('click', 'tr', function(e) {
+          const o = $(e.currentTarget)
+          const categoryId = o.data('category-id')
+          const path = o.data('path')
+          updatePage(o)
+
+          const pp = $(`[data-category-id="${categoryId}"][data-path="${path}"]`, '.sitemap-container')
+          onChangeSitemapPage(pp)
+        })
+
+        $('#page-list tbody').on('click', 'tr td.comment > div', function(e) {
+          $(this).toggleClass('open')
+        })
+      }
+
+      function getSitemapPageCenter(e) {
+        return {
+          x: e.position().left + e.width() / 2,
+          y: e.position().top + parseInt(e.css('marginTop'), 10) + e.height() / 2
+        }
+      }
+
+      function linkLabel(label) {
+        return label
+          .replace(/^\$?MENU\./, '<span class="mdi mdi-menu"></span>')
+          .replace(/^\$?FOOTER\./, '<span class="mdi mdi-page-layout-footer"></span>')
+          .replace(/^\$?ICON\./, '<span class="mdi mdi-link-box-variant-outline"></span>')
+          .replace(/^\$?MAIL\./, '<span class="mdi mdi-email-outline"></span>')
+          .replace(/\.WINDOW\./, '<span class="mdi mdi-open-in-new"></span>')
+      }
+
+    </script>
+    <script>
+jQuery.prototype.mousedragscrollable = function () {
+  let target;
+  $(this).each(function (i, e) {
+    $(e).mousedown(function (event) {
+      event.preventDefault();
+      target = $(e);
+      $(e).data({
+        down: true,
+        move: false,
+        x: event.clientX,
+        y: event.clientY,
+        scrollleft: $(e).scrollLeft(),
+        scrolltop: $(e).scrollTop(),
+      });
+      return false;
+    });
+    $(e).click(function (event) {
+      if ($(e).data("move")) {
+        return false;
+      }
+    });
+  });
+  $(document)
+    .mousemove(function (event) {
+      if ($(target).data("down")) {
+        event.preventDefault();
+        let move_x = $(target).data("x") - event.clientX;
+        let move_y = $(target).data("y") - event.clientY;
+        if (move_x !== 0 || move_y !== 0) {
+          $(target).data("move", true);
+        } else {
+          return;
+        }
+        $(target).scrollLeft($(target).data("scrollleft") + move_x);
+        $(target).scrollTop($(target).data("scrolltop") + move_y);
+        return false;
+      }
+    })
+    .mouseup(function (event) {
+      $(target).data("down", false);
+      return false;
+    });
+};
+$(".sitemap-container-wrapper").mousedragscrollable();      
+    </script>
+  </body>
+</html>
