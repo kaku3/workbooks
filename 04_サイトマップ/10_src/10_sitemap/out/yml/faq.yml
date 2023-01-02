@@ -1,0 +1,18 @@
+# page title
+title: "FAQ"
+# url path.
+path: /faq
+# スクリーンショット path。ない場合は空欄
+images: ""
+# 説明
+description: |-
+  {説明文}
+# label text, to url を配列形式で記載
+links:
+  - label: "お問い合わせ新規"
+    to: "./contact_form"
+
+# sitemap での深さを指定する時に利用
+# depth: 0
+# sitemap での上の要素からの相対位置を指定する時に利用
+span: 3

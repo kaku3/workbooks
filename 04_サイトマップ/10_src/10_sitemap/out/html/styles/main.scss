@@ -1,0 +1,378 @@
+// vscode : Live Sass Compiler
+//https://marketplace.visualstudio.com/items?itemName=ritwickdey.live-sass
+$color-alert: #FF8A80;
+$color-hover: #FFE57F;
+$color-select: #FFD740;
+
+* {
+  color: #222;
+}
+
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+  -moz-appearance:textfield !important;
+}
+
+.nav.nav-tabs {
+  &.sticky-top {
+    background: #B0BEC5;
+  }
+  
+  .nav-link {
+    padding: .25rem 1rem .25rem;
+    font-size: .8rem;
+    border-radius: 0;
+
+    &.active {
+      font-weight: bold;
+      box-shadow: 1px 0 1px 0 rgba(0, 0, 0, .1), -1px 0 1px 0 rgba(0, 0, 0, .1);
+    }
+
+    &:not(.active) {
+      color: #444;
+      background-color: #B0BEC5;
+    }
+  }
+}
+
+.layout-tools {
+  padding: .05rem .5rem;
+
+  [role=change-left-pane-column-count] {
+    cursor: pointer;
+  }
+  input {
+    font-size: .8rem;
+  }
+}
+
+#page-layout-button {
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.vertical {
+    transform: rotate(90deg);
+  }
+}
+
+
+[role=left-pane] {
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+[role=right-pane] {
+  background-color: #eee;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+.sitemap-container-wrapper {
+  height: calc(100vh - 30px);
+  overflow: auto;
+}
+
+.pane-container {
+  &.vertical {
+    max-height: calc(100vh - 30px);
+    overflow: auto;
+  }
+  &:not(.vertical) {
+    [role=left-pane], [role=right-pane] {
+      height: calc(100vh - 30px);
+    }
+  }
+}
+
+.sitemap-container {
+  position: relative;
+  width: 2480px;
+  white-space: nowrap;
+
+  background-color: #fefefe;
+  background-image: linear-gradient(0deg, transparent 15px, #ddd 16px), linear-gradient(90deg, transparent 15px, #ddd 16px);
+  background-size: 16px 16px;
+
+  .sitemap-connector {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    path {
+      stroke: #aaa;
+      stroke-width: 1;
+
+      &.terminal {
+        stroke: #03A9F4;
+        stroke-width: .5;
+      }
+    }
+    text {
+      stroke: #888;
+      stroke-width: .1;
+
+      &.terminal {
+        stroke: #03A9F4;
+      }    
+    }
+  }
+}
+
+.sitemap-container {
+  h3 {
+    padding: .25rem;
+    font-size: 1rem;
+    font-weight: normal;
+    background-color: #eee;
+    border-bottom: 1px solid #888;
+    border-radius: 4px;
+  }
+
+  section + h3 {
+    margin-top: 1.5rem;
+  }
+
+  .sitemap-category {
+    padding: .5rem;
+  }
+
+  .sitemap-col {
+    display: inline-block;
+    vertical-align: top;
+
+    .card {
+      cursor: pointer;
+      border: 1px solid rgba(0, 0, 0, .4);
+      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .2);
+    
+      transition: all 0.3s ease;
+
+      &.no-image {
+        background-color: $color-alert!important;
+      }
+
+      &.terminal {
+        margin-top: .5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: #eee;
+        border-radius: 1.5rem;
+
+        .title {
+          position: absolute;
+          left: 1.75rem;
+        }
+        
+        .path {
+          display: none;
+        }
+  
+      }
+
+      &.offset {
+        cursor: default;
+        min-height: 2.5rem;
+        opacity: 0;
+      }
+      
+      &:not(.offset):hover, &.hover {
+        background-color: $color-hover;        
+      }
+      &.active {
+        background-color: $color-select;
+      }
+
+      .card-body {
+        padding: .25rem .25rem .1rem;
+
+        > * {
+          padding: 0;
+        }        
+        .title {
+          font-size: .7rem;
+          font-weight: bold;
+          color: #222;
+          border-bottom: 1px solid #ccc;
+        }
+        .path {
+          font-size: .6rem;
+          color: #666;
+        }
+      }
+    }
+    
+    .card + .card {
+      margin-top: 2rem;
+    }
+
+    .card.terminal + .card, .card + .card.terminal {
+      margin-top: 2.5rem;
+    }
+  }
+  
+  .sitemap-col + .sitemap-col {
+    margin-left: 6rem;
+  }
+}
+
+
+[role=right-pane] {
+  &.col-12 #links-container .group-item {
+    width: 12.5%;
+  }
+  &.col-10 #links-container .group-item {
+    width: 16.6%;
+  }
+  &.col-8 #links-container .group-item {
+    width: 20%;
+  }
+  &.col-6 #links-container .group-item {
+    width: 25%;
+  }
+  &.col-4 #links-container .group-item {
+    width: 50%;
+  }
+  &.col-2 #links-container .group-item {
+    width: 100%;
+  }
+}
+
+
+#page-container {
+  margin: 1rem 0;
+  box-shadow: 0 2px 10px 0px rgba(0,0,0, .4);
+
+  .card-body {
+    padding: .5rem;
+  }
+  img {
+    border-radius: 0!important;
+  }
+  .card-title {
+    padding: .25rem;
+    font-size: 1rem;
+    font-weight: normal;
+    color: white;
+    background-color: #222;
+  }
+  h6 {
+    margin-top: 1rem;
+    margin-bottom: .25rem;
+    padding-left: .25rem;
+    border-left: 4px solid #222;
+  }
+  [role=path] {
+    margin-bottom: 1rem;
+    font-size: .8rem;
+    color: #666;
+    border-bottom: 1px solid #eee;
+  }
+  [role=comment] {
+    font-size: .9rem;
+    color: #888;
+  }
+  #links-container {
+    h6 {
+      margin-left: .5rem;
+    }
+    [role=links-container] {
+      display: flex;
+      flex-wrap: wrap;
+      .group-item {
+        padding: .25rem;
+        border: 1px solid #ddd;
+
+        &:hover {
+          background-color: $color-hover;
+        }
+
+        .label {
+          font-size: .8rem;
+        }
+        .link {
+          font-size: .6rem;
+        }
+      }
+    }
+  }
+
+  .group-item-action {
+    cursor: pointer;
+  }
+  .group-item.invalid {
+    background-color: $color-alert!important;
+  }
+}
+
+
+#tab-content-list {
+  min-width: 1024px;
+  overflow: auto;
+
+
+  .table-tool {
+    display: flex;
+    padding: .5rem;
+  }
+  
+  .table-tool .count {
+    margin-left: auto;
+  }  
+
+  th, td {
+    padding: .25rem;
+    font-size: .7rem;
+  }
+  th {
+    background-color: #eee;
+  }
+
+  tr {
+    cursor: pointer;
+  }
+
+  .no {
+    min-width: 2rem!important;
+    max-width: 2rem!important;
+    width: 2rem!important;
+  }
+  .system {
+    min-width: 3rem!important;
+    max-width: 3rem!important;
+    width: 3rem!important;
+  }
+  .title {
+    min-width: 16rem!important;
+    max-width: 16rem!important;
+    width: 16rem!important;
+  }
+  
+  .path {
+    min-width: 16rem!important;
+    max-width: 16rem!important;
+    width: 16rem!important;
+  }
+  
+  .comment {
+    padding: 0;
+    > div {
+      max-height: 4rem;
+      overflow: hidden;
+
+      &.open {
+        max-height: fit-content;
+      }
+    }
+  }
+}
+
+#tab-list {
+  max-height: 80vh;
+
+  tr[data-alert=true] > td {
+    background-color: $color-alert!important;  
+  }
+}

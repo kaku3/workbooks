@@ -36,10 +36,9 @@
                 <thead>
                   <tr>
                     <th class="no">id</th>
-                    <th class="system">システム</th>
                     <th class="title">タイトル</th>
                     <th class="path">path</th>
-                    <th class="comment">備考</th>
+                    <th class="comment">仕様</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -47,7 +46,6 @@
                     <% Object.values(pages).filter(page => !page.terminal).forEach((page) => { %>
                       <tr data-category-id="<%- categoryId %>" data-path="<%- page.path %>" data-alert="<%- page.alert %>">
                         <td class="no"><%- page.no %></td>
-                        <td class="system"><%- page.system %></td>
                         <td class="title"><%- page.title %></td>
                         <td class="path"><%- page.path %></td>
                         <td class="comment"><div><%- page.comment ? page.comment.replace(/\r?\n/g, '<br />') : '' %></div></td>

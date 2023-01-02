@@ -1,0 +1,13 @@
+# page title
+title: "タグ詳細"
+# url path.
+path: /tags/{tag_id}/view
+# スクリーンショット path。ない場合は空欄
+images: ""
+# 説明
+description: |-
+  {説明文}
+# label text, to url を配列形式で記載
+links:
+  - label: "{リンクテキスト}"
+    to: "{リンク先URL}"

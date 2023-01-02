@@ -1,0 +1,19 @@
+# page title
+title: "ユーザー一覧"
+# url path.
+path: /users
+# スクリーンショット path。ない場合は空欄
+images: ""
+# 説明
+description: |-
+  {説明文}
+# label text, to url を配列形式で記載
+links:
+  - label: "ユーザー追加"
+    to: "/users/add"
+  - label: "ユーザー閲覧{user_id}"
+    to: "/users/{user_id}/view"
+  - label: "ユーザー編集{user_id}"
+    to: "/users/{user_id}/edit"
+  - label: "ユーザー削除{user_id}"
+    to: "/users/{user_id}/remove"

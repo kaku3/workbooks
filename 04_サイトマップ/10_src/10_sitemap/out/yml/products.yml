@@ -1,0 +1,24 @@
+# page title
+title: "製品一覧"
+# url path.
+path: /products
+# スクリーンショット path。ない場合は空欄
+images: ""
+# 説明
+description: |-
+  {説明文}
+# label text, to url を配列形式で記載
+links:
+  - label: "製品情報追加"
+    to: "/products/add"
+  - label: "製品情報閲覧{product_id}"
+    to: "/products/{product_id}/view"
+  - label: "製品情報編集{product_id}"
+    to: "/products/{product_id}/edit"
+  - label: "製品情報削除{product_id}"
+    to: "/products/{product_id}/remove"
+
+# sitemap での深さを指定する時に利用
+# depth: 0
+# sitemap での上の要素からの相対位置を指定する時に利用
+span: 3

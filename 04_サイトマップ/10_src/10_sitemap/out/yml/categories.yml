@@ -1,0 +1,24 @@
+# page title
+title: "カテゴリー一覧"
+# url path.
+path: /categories
+# スクリーンショット path。ない場合は空欄
+images: ""
+# 説明
+description: |-
+  {説明文}
+# label text, to url を配列形式で記載
+links:
+  - label: "カテゴリー追加"
+    to: "/categories/add"
+  - label: "カテゴリー閲覧{category_id}"
+    to: "/categories/{category_id}/view"
+  - label: "カテゴリー編集{category_id}"
+    to: "/categories/{category_id}/edit"
+  - label: "カテゴリー削除{category_id}"
+    to: "/categories/{category_id}/remove"
+
+# sitemap での深さを指定する時に利用
+# depth: 0
+# sitemap での上の要素からの相対位置を指定する時に利用
+span: 3

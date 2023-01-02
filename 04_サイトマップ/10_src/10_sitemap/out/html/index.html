@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>sitemap - project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.3/fc-4.0.1/fh-3.2.0/rg-1.1.4/sc-2.0.5/sl-1.3.3/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.css"/>
+
+    <link rel="stylesheet" type="text/css" href="styles/main.css"/>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <ul class="nav nav-tabs sticky-top" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" data-bs-toggle="tab" href="#tab-content-list" role="tab" aria-controls="tab-list" aria-selected="false">一覧</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tab-content-sitemap" role="tab" aria-controls="tab-sitemap" aria-selected="true">サイトマップ</a>
+          </li>
+          <div class="layout-tools position-absolute top-0 end-0">
+            <i class="mdi mdi-chevron-left" role="change-left-pane-column-count" data-count="-2"></i>
+            <input id="left-pane-column-count" type="number" min="2" max="10" value="8" class="no-spin" />
+            <i class="mdi mdi-chevron-right" role="change-left-pane-column-count" data-count="2"></i>
+            <div id="page-layout-button"><i class="mdi mdi-align-horizontal-distribute"></i></div>
+          </div>
+        </ul>
+      </div>
+
+      <div class="row pane-container">
+        <div class="col-8" role="left-pane">
+          <div class="tab-content">
+            <div class="tab-pane fade" id="tab-content-list" role="tabpanel" aria-labelledby="tab-content-list">
+              <table id="page-list" class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="no">id</th>
+                    <th class="title">タイトル</th>
+                    <th class="path">path</th>
+                    <th class="comment">仕様</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                    
+                      <tr data-category-id="0" data-path="/top" data-alert="true">
+                        <td class="no">1</td>
+                        <td class="title">TOP</td>
+                        <td class="path">/top</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/search" data-alert="true">
+                        <td class="no">2</td>
+                        <td class="title">検索</td>
+                        <td class="path">/search</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/users" data-alert="true">
+                        <td class="no">3</td>
+                        <td class="title">ユーザー一覧</td>
+                        <td class="path">/users</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/users/add" data-alert="true">
+                        <td class="no">4</td>
+                        <td class="title">ユーザー追加</td>
+                        <td class="path">/users/add</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/users/{user_id}/view" data-alert="true">
+                        <td class="no">5</td>
+                        <td class="title">ユーザー詳細</td>
+                        <td class="path">/users/{user_id}/view</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/users/{user_id}/edit" data-alert="true">
+                        <td class="no">6</td>
+                        <td class="title">ユーザー編集</td>
+                        <td class="path">/users/{user_id}/edit</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/users/{user_id}/remove" data-alert="true">
+                        <td class="no">7</td>
+                        <td class="title">ユーザー削除</td>
+                        <td class="path">/users/{user_id}/remove</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/categories" data-alert="true">
+                        <td class="no">8</td>
+                        <td class="title">カテゴリー一覧</td>
+                        <td class="path">/categories</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/categories/add" data-alert="true">
+                        <td class="no">9</td>
+                        <td class="title">カテゴリー追加</td>
+                        <td class="path">/categories/add</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/categories/{category_id}/view" data-alert="true">
+                        <td class="no">10</td>
+                        <td class="title">カテゴリー詳細</td>
+                        <td class="path">/categories/{category_id}/view</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/categories/{category_id}/edit" data-alert="true">
+                        <td class="no">11</td>
+                        <td class="title">カテゴリー編集</td>
+                        <td class="path">/categories/{category_id}/edit</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/categories/{category_id}/remove" data-alert="true">
+                        <td class="no">12</td>
+                        <td class="title">カテゴリー削除</td>
+                        <td class="path">/categories/{category_id}/remove</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/tags" data-alert="true">
+                        <td class="no">13</td>
+                        <td class="title">タグ一覧</td>
+                        <td class="path">/tags</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/tags/add" data-alert="true">
+                        <td class="no">14</td>
+                        <td class="title">タグ追加</td>
+                        <td class="path">/tags/add</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/tags/{tag_id}/view" data-alert="true">
+                        <td class="no">15</td>
+                        <td class="title">タグ詳細</td>
+                        <td class="path">/tags/{tag_id}/view</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/tags/{tag_id}/edit" data-alert="true">
+                        <td class="no">16</td>
+                        <td class="title">タグ編集</td>
+                        <td class="path">/tags/{tag_id}/edit</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/tags/{tag_id}/remove" data-alert="true">
+                        <td class="no">17</td>
+                        <td class="title">タグ削除</td>
+                        <td class="path">/tags/{tag_id}/remove</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/products" data-alert="true">
+                        <td class="no">18</td>
+                        <td class="title">製品一覧</td>
+                        <td class="path">/products</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/products/add" data-alert="true">
+                        <td class="no">19</td>
+                        <td class="title">製品追加</td>
+                        <td class="path">/products/add</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/products/{product_id}/view" data-alert="true">
+                        <td class="no">20</td>
+                        <td class="title">製品詳細</td>
+                        <td class="path">/products/{product_id}/view</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/products/{product_id}/edit" data-alert="true">
+                        <td class="no">21</td>
+                        <td class="title">製品編集</td>
+                        <td class="path">/products/{product_id}/edit</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/products/{product_id}/remove" data-alert="true">
+                        <td class="no">22</td>
+                        <td class="title">製品削除</td>
+                        <td class="path">/products/{product_id}/remove</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/faq" data-alert="true">
+                        <td class="no">23</td>
+                        <td class="title">FAQ</td>
+                        <td class="path">/faq</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/contact_form" data-alert="true">
+                        <td class="no">24</td>
+                        <td class="title">お問い合わせ新規</td>
+                        <td class="path">/contact_form</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/contact_confirm" data-alert="true">
+                        <td class="no">25</td>
+                        <td class="title">お問い合わせ確認</td>
+                        <td class="path">/contact_confirm</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                      <tr data-category-id="0" data-path="/contact_done" data-alert="true">
+                        <td class="no">26</td>
+                        <td class="title">お問い合わせ完了</td>
+                        <td class="path">/contact_done</td>
+                        <td class="comment"><div></div></td>
+                      </tr>
+                    
+                  
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade show active" id="tab-content-sitemap" role="tabpanel" aria-labelledby="tab-content-sitemap">
+              <div class="sitemap-container-wrapper">
+                <div class="sitemap-container">
+  <svg class="sitemap-connector d-none"><path id="connector-1-2-0" data-offset-y="0" class="" /><text id="text-1-2-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">検索バー</text><path id="connector-1-3-1" data-offset-y="0" class="" /><text id="text-1-3-1" text-anchor="middle" font-size="8" stroke-width="0.25" class="">ユーザー一覧</text><path id="connector-1-8-2" data-offset-y="0" class="" /><text id="text-1-8-2" text-anchor="middle" font-size="8" stroke-width="0.25" class="">カテゴリ一覧</text><path id="connector-1-13-3" data-offset-y="0" class="" /><text id="text-1-13-3" text-anchor="middle" font-size="8" stroke-width="0.25" class="">タグ一覧</text><path id="connector-1-18-4" data-offset-y="0" class="" /><text id="text-1-18-4" text-anchor="middle" font-size="8" stroke-width="0.25" class="">製品一覧</text><path id="connector-1-23-5" data-offset-y="0" class="" /><text id="text-1-23-5" text-anchor="middle" font-size="8" stroke-width="0.25" class="">FAQ</text><path id="connector-3-4-0" data-offset-y="0" class="" /><text id="text-3-4-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">ユーザー追加</text><path id="connector-3-5-1" data-offset-y="0" class="" /><text id="text-3-5-1" text-anchor="middle" font-size="8" stroke-width="0.25" class="">ユーザー閲覧{user_id}</text><path id="connector-3-6-2" data-offset-y="0" class="" /><text id="text-3-6-2" text-anchor="middle" font-size="8" stroke-width="0.25" class="">ユーザー編集{user_id}</text><path id="connector-3-7-3" data-offset-y="0" class="" /><text id="text-3-7-3" text-anchor="middle" font-size="8" stroke-width="0.25" class="">ユーザー削除{user_id}</text><path id="connector-8-9-0" data-offset-y="0" class="" /><text id="text-8-9-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">カテゴリー追加</text><path id="connector-8-10-1" data-offset-y="0" class="" /><text id="text-8-10-1" text-anchor="middle" font-size="8" stroke-width="0.25" class="">カテゴリー閲覧{category_id}</text><path id="connector-8-11-2" data-offset-y="0" class="" /><text id="text-8-11-2" text-anchor="middle" font-size="8" stroke-width="0.25" class="">カテゴリー編集{category_id}</text><path id="connector-8-12-3" data-offset-y="0" class="" /><text id="text-8-12-3" text-anchor="middle" font-size="8" stroke-width="0.25" class="">カテゴリー削除{category_id}</text><path id="connector-13-14-0" data-offset-y="0" class="" /><text id="text-13-14-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">タグ追加</text><path id="connector-13-15-1" data-offset-y="0" class="" /><text id="text-13-15-1" text-anchor="middle" font-size="8" stroke-width="0.25" class="">タグ閲覧{tag_id}</text><path id="connector-13-16-2" data-offset-y="0" class="" /><text id="text-13-16-2" text-anchor="middle" font-size="8" stroke-width="0.25" class="">タグ編集{tag_id}</text><path id="connector-13-17-3" data-offset-y="0" class="" /><text id="text-13-17-3" text-anchor="middle" font-size="8" stroke-width="0.25" class="">タグ削除{tag_id}</text><path id="connector-18-19-0" data-offset-y="0" class="" /><text id="text-18-19-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">製品情報追加</text><path id="connector-18-20-1" data-offset-y="0" class="" /><text id="text-18-20-1" text-anchor="middle" font-size="8" stroke-width="0.25" class="">製品情報閲覧{product_id}</text><path id="connector-18-21-2" data-offset-y="0" class="" /><text id="text-18-21-2" text-anchor="middle" font-size="8" stroke-width="0.25" class="">製品情報編集{product_id}</text><path id="connector-18-22-3" data-offset-y="0" class="" /><text id="text-18-22-3" text-anchor="middle" font-size="8" stroke-width="0.25" class="">製品情報削除{product_id}</text><path id="connector-23-24-0" data-offset-y="0" class="" /><text id="text-23-24-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">お問い合わせ新規</text><path id="connector-24-25-0" data-offset-y="0" class="" /><text id="text-24-25-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">お問い合わせ確認</text><path id="connector-25-26-0" data-offset-y="0" class="" /><text id="text-25-26-0" text-anchor="middle" font-size="8" stroke-width="0.25" class="">確認</text></svg>
+  <h3>sample</h3><section id="category-0" class="sitemap-category">          <div class="sitemap-col">            <div id="page-1" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/top">  <div class="card-body">    <div class="title">TOP</div>    <div class="path">/top</div>  </div></div>                          </div>          <div class="sitemap-col">            <div id="page-2" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/search">  <div class="card-body">    <div class="title">検索</div>    <div class="path">/search</div>  </div></div>                <div id="page-3" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/users">  <div class="card-body">    <div class="title">ユーザー一覧</div>    <div class="path">/users</div>  </div></div>                <div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div id="page-8" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/categories">  <div class="card-body">    <div class="title">カテゴリー一覧</div>    <div class="path">/categories</div>  </div></div>                <div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div id="page-13" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/tags">  <div class="card-body">    <div class="title">タグ一覧</div>    <div class="path">/tags</div>  </div></div>                <div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div id="page-18" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/products">  <div class="card-body">    <div class="title">製品一覧</div>    <div class="path">/products</div>  </div></div>                <div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div id="page-23" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/faq">  <div class="card-body">    <div class="title">FAQ</div>    <div class="path">/faq</div>  </div></div>                          </div>          <div class="sitemap-col">            <div class="card offset"></div><div id="page-4" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/users/add">  <div class="card-body">    <div class="title">ユーザー追加</div>    <div class="path">/users/add</div>  </div></div>                <div id="page-5" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/users/{user_id}/view">  <div class="card-body">    <div class="title">ユーザー詳細</div>    <div class="path">/users/{user_id}/view</div>  </div></div>                <div id="page-6" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/users/{user_id}/edit">  <div class="card-body">    <div class="title">ユーザー編集</div>    <div class="path">/users/{user_id}/edit</div>  </div></div>                <div id="page-7" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/users/{user_id}/remove">  <div class="card-body">    <div class="title">ユーザー削除</div>    <div class="path">/users/{user_id}/remove</div>  </div></div>                <div id="page-9" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/categories/add">  <div class="card-body">    <div class="title">カテゴリー追加</div>    <div class="path">/categories/add</div>  </div></div>                <div id="page-10" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/categories/{category_id}/view">  <div class="card-body">    <div class="title">カテゴリー詳細</div>    <div class="path">/categories/{category_id}/view</div>  </div></div>                <div id="page-11" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/categories/{category_id}/edit">  <div class="card-body">    <div class="title">カテゴリー編集</div>    <div class="path">/categories/{category_id}/edit</div>  </div></div>                <div id="page-12" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/categories/{category_id}/remove">  <div class="card-body">    <div class="title">カテゴリー削除</div>    <div class="path">/categories/{category_id}/remove</div>  </div></div>                <div id="page-14" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/tags/add">  <div class="card-body">    <div class="title">タグ追加</div>    <div class="path">/tags/add</div>  </div></div>                <div id="page-15" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/tags/{tag_id}/view">  <div class="card-body">    <div class="title">タグ詳細</div>    <div class="path">/tags/{tag_id}/view</div>  </div></div>                <div id="page-16" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/tags/{tag_id}/edit">  <div class="card-body">    <div class="title">タグ編集</div>    <div class="path">/tags/{tag_id}/edit</div>  </div></div>                <div id="page-17" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/tags/{tag_id}/remove">  <div class="card-body">    <div class="title">タグ削除</div>    <div class="path">/tags/{tag_id}/remove</div>  </div></div>                <div id="page-19" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/products/add">  <div class="card-body">    <div class="title">製品追加</div>    <div class="path">/products/add</div>  </div></div>                <div id="page-20" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/products/{product_id}/view">  <div class="card-body">    <div class="title">製品詳細</div>    <div class="path">/products/{product_id}/view</div>  </div></div>                <div id="page-21" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/products/{product_id}/edit">  <div class="card-body">    <div class="title">製品編集</div>    <div class="path">/products/{product_id}/edit</div>  </div></div>                <div id="page-22" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/products/{product_id}/remove">  <div class="card-body">    <div class="title">製品削除</div>    <div class="path">/products/{product_id}/remove</div>  </div></div>                <div id="page-24" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/contact_form">  <div class="card-body">    <div class="title">お問い合わせ新規</div>    <div class="path">/contact_form</div>  </div></div>                          </div>          <div class="sitemap-col">            <div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div id="page-25" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/contact_confirm">  <div class="card-body">    <div class="title">お問い合わせ確認</div>    <div class="path">/contact_confirm</div>  </div></div>                          </div>          <div class="sitemap-col">            <div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div class="card offset"></div><div id="page-26" class="card  no-image" role="sitemap-page" data-category-id="0" data-path="/contact_done">  <div class="card-body">    <div class="title">お問い合わせ完了</div>    <div class="path">/contact_done</div>  </div></div>                          </div></section>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>        
+        <div class="col-4" role="right-pane">
+          <div id="page-container" class="card d-none">
+            <h5 role="title" class="card-title"></h5>
+            <div class="card-body">
+              <div role="path" class="card-text"></div>
+              <h6>仕様 : </h6>
+              <p role="comment" class="card-text"></p>
+            </div>
+            <section id="links-container">
+              <h6>画面遷移 : </h6>
+              <div role="links-container"></div>
+            </section>
+            <section id="screen-container">
+              <div class="card-body">
+                <h6>画面 : </h6>
+              </div>
+              <a id="page-image-lightbox" data-lightbox="page-image">
+                <img id="page-image" class="card-img-top" />
+              </a>
+            </section>
+            <section id="mails-container">
+              <div class="card-body">
+                <h6>メール : </h6>
+              </div>
+              <ul role="mails-container" class="list-group"></ul>
+            </section>
+        </div>
+        </div>        
+      </div>
+    </div>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.3/fc-4.0.1/fh-3.2.0/rg-1.1.4/sc-2.0.5/sl-1.3.3/datatables.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+    <script>
+      const trees = [{"/top":{"title":"TOP","path":"/top","images":"","description":"{説明文}","links":[{"label":"検索バー","to":"/search"},{"label":"ユーザー一覧","to":"/users"},{"label":"カテゴリ一覧","to":"/categories"},{"label":"タグ一覧","to":"/tags"},{"label":"製品一覧","to":"/products"},{"label":"FAQ","to":"/faq"}],"categoryId":0,"categoryName":"sample","terminal":false,"id":1,"no":1,"depth":0,"comment":"","image":"./images/top.png","noImage":true,"alert":true,"position":0},"/search":{"title":"検索","path":"/search","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":2,"no":2,"parentPath":"/top","depth":1,"comment":"","image":"./images/search.png","noImage":true,"alert":true,"position":0},"/users":{"title":"ユーザー一覧","path":"/users","images":"","description":"{説明文}","links":[{"label":"ユーザー追加","to":"/users/add"},{"label":"ユーザー閲覧{user_id}","to":"/users/{user_id}/view"},{"label":"ユーザー編集{user_id}","to":"/users/{user_id}/edit"},{"label":"ユーザー削除{user_id}","to":"/users/{user_id}/remove"}],"categoryId":0,"categoryName":"sample","terminal":false,"id":3,"no":3,"parentPath":"/top","depth":1,"comment":"","image":"./images/users.png","noImage":true,"alert":true,"position":1},"/users/add":{"title":"ユーザー追加","path":"/users/add","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":4,"no":4,"parentPath":"/users","depth":2,"comment":"","image":"./images/users/add.png","noImage":true,"alert":true,"position":1},"/users/{user_id}/view":{"title":"ユーザー詳細","path":"/users/{user_id}/view","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":5,"no":5,"parentPath":"/users","depth":2,"comment":"","image":"./images/users/{user_id}/view.png","noImage":true,"alert":true,"position":2},"/users/{user_id}/edit":{"title":"ユーザー編集","path":"/users/{user_id}/edit","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":6,"no":6,"parentPath":"/users","depth":2,"comment":"","image":"./images/users/{user_id}/edit.png","noImage":true,"alert":true,"position":3},"/users/{user_id}/remove":{"title":"ユーザー削除","path":"/users/{user_id}/remove","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":7,"no":7,"parentPath":"/users","depth":2,"comment":"","image":"./images/users/{user_id}/remove.png","noImage":true,"alert":true,"position":4},"/categories":{"title":"カテゴリー一覧","path":"/categories","images":"","description":"{説明文}","links":[{"label":"カテゴリー追加","to":"/categories/add"},{"label":"カテゴリー閲覧{category_id}","to":"/categories/{category_id}/view"},{"label":"カテゴリー編集{category_id}","to":"/categories/{category_id}/edit"},{"label":"カテゴリー削除{category_id}","to":"/categories/{category_id}/remove"}],"span":3,"categoryId":0,"categoryName":"sample","terminal":false,"id":8,"no":8,"parentPath":"/top","depth":1,"comment":"","image":"./images/categories.png","noImage":true,"alert":true,"position":5},"/categories/add":{"title":"カテゴリー追加","path":"/categories/add","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":9,"no":9,"parentPath":"/categories","depth":2,"comment":"","image":"./images/categories/add.png","noImage":true,"alert":true,"position":5},"/categories/{category_id}/view":{"title":"カテゴリー詳細","path":"/categories/{category_id}/view","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":10,"no":10,"parentPath":"/categories","depth":2,"comment":"","image":"./images/categories/{category_id}/view.png","noImage":true,"alert":true,"position":6},"/categories/{category_id}/edit":{"title":"カテゴリー編集","path":"/categories/{category_id}/edit","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":11,"no":11,"parentPath":"/categories","depth":2,"comment":"","image":"./images/categories/{category_id}/edit.png","noImage":true,"alert":true,"position":7},"/categories/{category_id}/remove":{"title":"カテゴリー削除","path":"/categories/{category_id}/remove","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":12,"no":12,"parentPath":"/categories","depth":2,"comment":"","image":"./images/categories/{category_id}/remove.png","noImage":true,"alert":true,"position":8},"/tags":{"title":"タグ一覧","path":"/tags","images":"","description":"{説明文}","links":[{"label":"タグ追加","to":"/tags/add"},{"label":"タグ閲覧{tag_id}","to":"/tags/{tag_id}/view"},{"label":"タグ編集{tag_id}","to":"/tags/{tag_id}/edit"},{"label":"タグ削除{tag_id}","to":"/tags/{tag_id}/remove"}],"span":3,"categoryId":0,"categoryName":"sample","terminal":false,"id":13,"no":13,"parentPath":"/top","depth":1,"comment":"","image":"./images/tags.png","noImage":true,"alert":true,"position":9},"/tags/add":{"title":"タグ追加","path":"/tags/add","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":14,"no":14,"parentPath":"/tags","depth":2,"comment":"","image":"./images/tags/add.png","noImage":true,"alert":true,"position":9},"/tags/{tag_id}/view":{"title":"タグ詳細","path":"/tags/{tag_id}/view","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":15,"no":15,"parentPath":"/tags","depth":2,"comment":"","image":"./images/tags/{tag_id}/view.png","noImage":true,"alert":true,"position":10},"/tags/{tag_id}/edit":{"title":"タグ編集","path":"/tags/{tag_id}/edit","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":16,"no":16,"parentPath":"/tags","depth":2,"comment":"","image":"./images/tags/{tag_id}/edit.png","noImage":true,"alert":true,"position":11},"/tags/{tag_id}/remove":{"title":"タグ削除","path":"/tags/{tag_id}/remove","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":17,"no":17,"parentPath":"/tags","depth":2,"comment":"","image":"./images/tags/{tag_id}/remove.png","noImage":true,"alert":true,"position":12},"/products":{"title":"製品一覧","path":"/products","images":"","description":"{説明文}","links":[{"label":"製品情報追加","to":"/products/add"},{"label":"製品情報閲覧{product_id}","to":"/products/{product_id}/view"},{"label":"製品情報編集{product_id}","to":"/products/{product_id}/edit"},{"label":"製品情報削除{product_id}","to":"/products/{product_id}/remove"}],"span":3,"categoryId":0,"categoryName":"sample","terminal":false,"id":18,"no":18,"parentPath":"/top","depth":1,"comment":"","image":"./images/products.png","noImage":true,"alert":true,"position":13},"/products/add":{"title":"製品追加","path":"/products/add","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":19,"no":19,"parentPath":"/products","depth":2,"comment":"","image":"./images/products/add.png","noImage":true,"alert":true,"position":13},"/products/{product_id}/view":{"title":"製品詳細","path":"/products/{product_id}/view","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":20,"no":20,"parentPath":"/products","depth":2,"comment":"","image":"./images/products/{product_id}/view.png","noImage":true,"alert":true,"position":14},"/products/{product_id}/edit":{"title":"製品編集","path":"/products/{product_id}/edit","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":21,"no":21,"parentPath":"/products","depth":2,"comment":"","image":"./images/products/{product_id}/edit.png","noImage":true,"alert":true,"position":15},"/products/{product_id}/remove":{"title":"製品削除","path":"/products/{product_id}/remove","images":"","description":"{説明文}","links":[{"label":"{リンクテキスト}","to":"{リンク先URL}","invalid":true}],"categoryId":0,"categoryName":"sample","terminal":false,"id":22,"no":22,"parentPath":"/products","depth":2,"comment":"","image":"./images/products/{product_id}/remove.png","noImage":true,"alert":true,"position":16},"/faq":{"title":"FAQ","path":"/faq","images":"","description":"{説明文}","links":[{"label":"お問い合わせ新規","to":"/contact_form"}],"span":3,"categoryId":0,"categoryName":"sample","terminal":false,"id":23,"no":23,"parentPath":"/top","depth":1,"comment":"","image":"./images/faq.png","noImage":true,"alert":true,"position":17},"/contact_form":{"title":"お問い合わせ新規","path":"/contact_form","images":"","description":"{説明文}","links":[{"label":"お問い合わせ確認","to":"/contact_confirm"}],"categoryId":0,"categoryName":"sample","terminal":false,"id":24,"no":24,"parentPath":"/faq","depth":2,"comment":"","image":"./images/contact_form.png","noImage":true,"alert":true,"position":17},"/contact_confirm":{"title":"お問い合わせ確認","path":"/contact_confirm","images":"","description":"{説明文}","links":[{"label":"確認","to":"/contact_done"}],"categoryId":0,"categoryName":"sample","terminal":false,"id":25,"no":25,"parentPath":"/contact_form","depth":3,"comment":"","image":"./images/contact_confirm.png","noImage":true,"alert":true,"position":17},"/contact_done":{"title":"お問い合わせ完了","path":"/contact_done","images":"","description":"{説明文}","categoryId":0,"categoryName":"sample","terminal":false,"id":26,"no":26,"parentPath":"/contact_confirm","depth":4,"comment":"","image":"./images/contact_done.png","noImage":true,"alert":true,"position":17}}]
+      $(function() {
+        let tableInitialized = false
+        $('a[data-bs-toggle=tab]').on('shown.bs.tab', function(e) {
+          const id = $(this).attr('href')
+          if(!tableInitialized && id === '#tab-content-list') {
+            initPageList()
+            tableInitialized = true
+          }
+        })
+        // svg 描画
+        initSvg()
+
+        // イベント初期化
+        $('[role=sitemap-page]', '.sitemap-container').on('click', (e) => {
+          onChangeSitemapPage($(e.currentTarget))
+        })
+
+        $('[role=change-left-pane-column-count]').on('click', function (e) {
+          const d = parseInt($(this).data('count'))
+          const c = $('#left-pane-column-count')
+
+          console.log({d, c, v: c.val()})
+          let v = parseInt(c.val()) + d
+          v = d < 0 ? Math.max(v, 2) : Math.min(v, 10)
+          c.val(v)
+          onChangeLayout()
+        })
+
+        $('#left-pane-column-count').on('change', function(e) {
+          onChangeLayout()
+        })
+
+        $('#page-layout-button').on('click', function(e) {
+          const l = $('#page-layout-button')
+          l.toggleClass('vertical')
+          onChangeLayout()
+        })
+      })
+      function onChangeLayout() {
+        const l = $('#page-layout-button')
+        const c = $('#left-pane-column-count').val()
+
+        if(l.hasClass('vertical')) {
+          $('[role=left-pane]').removeClass()
+          $('[role=right-pane]').removeClass()
+          $('[role=left-pane]').addClass('col-12')
+          $('[role=right-pane]').addClass('col-12')
+
+          $('.pane-container').addClass('vertical')
+        } else {
+          $('[role=left-pane]').removeClass()
+          $('[role=right-pane]').removeClass()
+          $('[role=left-pane]').addClass(`col-${c}`)
+          $('[role=right-pane]').addClass(`col-${12 - c}`)
+
+          $('.pane-container').removeClass('vertical')
+        }
+      }
+
+      function onChangeSitemapPage(e) {
+        $('[role=sitemap-page]', '.sitemap-container').removeClass('active hover')
+        e.addClass('active')
+
+        updatePage(e)
+      }
+
+      // page描画
+      function updatePage(e) {
+        const categoryId = e.data('category-id')
+        const page = trees[categoryId][e.data('path')]
+
+        const p = $('#page-container')
+        const links = $('[role=links-container]', p)
+        const mails = $('[role=mails-container]', p)
+
+        p.removeClass('d-none')
+
+        links.empty()
+        mails.empty()
+
+        $('#page-image-lightbox', p).attr('href', page.image)
+        $('img#page-image', p).attr('src', page.image)
+        $('[role=title]', p).text(page.title)
+        $('[role=path]', p).text(page.path)
+        $('[role=comment]', p).html(page.comment ? page.comment.replace(/\n/g, '<br />') : '')
+
+        if(page.terminal || page.noImage) {
+          $('#screen-container').addClass('d-none')
+        } else {
+          $('#screen-container').removeClass('d-none')
+        }
+
+        // link 描画
+        if(!page.terminal && page.links) { 
+          page.links.forEach(l => {
+            const label = (l.label && l.label[0] === '$') ? l.label.substr(1) : l.label
+            const invalid = l.invalid ? 'invalid' : ''
+            links.append(`
+              <div class="group-item group-item-action ${invalid}" data-to="${l.to}">
+                <div class="label">${linkLabel(label)}</div>
+                <div class="link">${l.to}</div>
+              </div>`)
+          })
+          $('.group-item', links).on('click', e => {
+            const to = $(e.currentTarget).data('to')
+            const t = trees[categoryId][to]
+            if(t) {
+              const c = $('.sitemap-container-wrapper')
+              const pp = $(`[data-category-id="${categoryId}"][data-path="${t.path}"]`, '.sitemap-container')
+              onChangeSitemapPage(pp)
+              c.animate({
+                scrollTop: Math.max(pp.position().top - c.height() / 4, 0),
+                scrollLeft: Math.max(pp.position().left - c.width() / 4, 0)
+              })
+            }
+          })
+          $('.group-item', links).hover(
+            function() {
+              const to = $(this).data('to')
+              console.log(to)
+              $(`[role="sitemap-page"][data-category-id="${categoryId}"][data-path="${to}"]`).addClass('hover')
+            },
+            function() {
+              const to = $(this).data('to')
+              console.log(to)
+              $(`[role="sitemap-page"][data-category-id="${categoryId}"][data-path="${to}"]`).removeClass('hover')
+            }
+          )
+          $('#links-container').removeClass('d-none')
+        } else {
+          $('#links-container').addClass('d-none')
+        }
+
+        // mail 描画
+        if(!page.terminal && page.mails) {
+          page.mails.forEach(m => {
+            mails.append(
+              `<li class="list-group-item"><p>${m.condition}</p>
+                <a id="page-image-lightbox" data-lightbox="mail-images" href="images/mails/${m.to}.png" data-title="${m.condition}">
+                  <img class="img-fluid" src="images/mails/${m.to}.png" />
+                </a>
+              </li>`)
+          })
+          $('#mails-container').removeClass('d-none')
+        } else {
+          $('#mails-container').addClass('d-none')
+        }
+      }
+      // svg 描画
+      function initSvg() {
+        $('> path', '.sitemap-container .sitemap-connector').each((i, e) => {
+          const [ c, f, t, linkId ] = $(e).attr('id').split('-')
+          let offsetY = parseInt($(e).data('offset-y'))
+
+          const from = $(`#page-${f}`, '.sitemap-container')
+          const to = $(`#page-${t}`, '.sitemap-container')
+
+          if(from.length && to.length) {
+            const p0 = getSitemapPageCenter(from)
+            const p1 = getSitemapPageCenter(to)
+
+            if(p0.x > p1.x) {
+              $(e).attr('stroke-dasharray', '10')
+              p0.y -= 10
+              p1.y -= 10
+            }
+
+            const path = `M ${p0.x} ${p0.y} L ${p1.x} ${p1.y}`
+            $(e).attr('d', path)
+
+            const text = $(`#text-${f}-${t}-${linkId}`, '.sitemap-container .sitemap-connector')
+            text.attr('x', Math.abs(p1.x + p0.x) / 2)
+            text.attr('y', Math.abs(p1.y + p0.y) / 2 + offsetY)
+          }
+        })
+
+        $('.sitemap-container .sitemap-connector').removeClass('d-none')
+      }
+      // 一覧テーブル初期化
+      function initPageList() {
+        const table = $('#page-list').DataTable({
+          dom: '<"table-tool"<"filter"f><"count"i>>t',
+          language: {
+            info: '_TOTAL_ pages',
+            infoFiltered: '/ _MAX_ pages'
+          },
+          // select: {
+          //   style: 'single'
+          // },
+          paging: false,
+          scrollY: 'calc(100vh - 128px)',
+          scrollCollapse: true,
+          // order: [
+          //   [4, "desc"],
+          //   [5, "desc"],
+          //   [3, "desc"]
+          // ]
+        })
+        $('#page-list tbody').on('click', 'tr', function(e) {
+          const o = $(e.currentTarget)
+          const categoryId = o.data('category-id')
+          const path = o.data('path')
+          updatePage(o)
+
+          const pp = $(`[data-category-id="${categoryId}"][data-path="${path}"]`, '.sitemap-container')
+          onChangeSitemapPage(pp)
+        })
+
+        $('#page-list tbody').on('click', 'tr td.comment > div', function(e) {
+          $(this).toggleClass('open')
+        })
+      }
+
+      function getSitemapPageCenter(e) {
+        return {
+          x: e.position().left + e.width() / 2,
+          y: e.position().top + parseInt(e.css('marginTop'), 10) + e.height() / 2
+        }
+      }
+
+      function linkLabel(label) {
+        return label
+          .replace(/^\$?MENU\./, '<span class="mdi mdi-menu"></span>')
+          .replace(/^\$?FOOTER\./, '<span class="mdi mdi-page-layout-footer"></span>')
+          .replace(/^\$?ICON\./, '<span class="mdi mdi-link-box-variant-outline"></span>')
+          .replace(/^\$?MAIL\./, '<span class="mdi mdi-email-outline"></span>')
+          .replace(/\.WINDOW\./, '<span class="mdi mdi-open-in-new"></span>')
+      }
+
+    </script>
+    <script>
+jQuery.prototype.mousedragscrollable = function () {
+  let target;
+  $(this).each(function (i, e) {
+    $(e).mousedown(function (event) {
+      event.preventDefault();
+      target = $(e);
+      $(e).data({
+        down: true,
+        move: false,
+        x: event.clientX,
+        y: event.clientY,
+        scrollleft: $(e).scrollLeft(),
+        scrolltop: $(e).scrollTop(),
+      });
+      return false;
+    });
+    $(e).click(function (event) {
+      if ($(e).data("move")) {
+        return false;
+      }
+    });
+  });
+  $(document)
+    .mousemove(function (event) {
+      if ($(target).data("down")) {
+        event.preventDefault();
+        let move_x = $(target).data("x") - event.clientX;
+        let move_y = $(target).data("y") - event.clientY;
+        if (move_x !== 0 || move_y !== 0) {
+          $(target).data("move", true);
+        } else {
+          return;
+        }
+        $(target).scrollLeft($(target).data("scrollleft") + move_x);
+        $(target).scrollTop($(target).data("scrolltop") + move_y);
+        return false;
+      }
+    })
+    .mouseup(function (event) {
+      $(target).data("down", false);
+      return false;
+    });
+};
+$(".sitemap-container-wrapper").mousedragscrollable();      
+    </script>
+  </body>
+</html>
