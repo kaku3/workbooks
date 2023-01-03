@@ -1,0 +1,23 @@
+# page title
+title: "タグ詳細"
+# url path.
+path: /tags/{tag_id}/view
+# スクリーンショット path。ない場合は空欄
+image: /tags/{tag_id}/view.drawio.png
+# 複数枚ある場合は、imagesを利用
+# images:
+#   - xxx
+#   - yyy
+
+# 説明
+description: |-
+  {説明文}
+# label text, to url を配列形式で記載
+links:
+  - label: "{リンクテキスト}"
+    to: "{リンク先URL}"
+
+# sitemap での深さを指定する時に利用
+# depth: 0
+# sitemap での上の要素からの相対位置を指定する時に利用
+# span: 0
