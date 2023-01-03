@@ -3,7 +3,12 @@ title: "{{title}}"
 # url path.
 path: {{path}}
 # スクリーンショット path。ない場合は空欄
-images: ""
+image: {{image}}
+# 複数枚ある場合は、imagesを利用
+# images:
+#   - xxx
+#   - yyy
+
 # 説明
 description: |-
   {{description}}
