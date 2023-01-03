@@ -31,7 +31,7 @@ const args = yargs(hideBin(process.argv))
   })
   .default('rootPath', '/')
   .default('categoryName', 'sample')
-  .usage('[usage]node $0 -i in/sitemap.src -o out -r /some/service -n sample')
+  .usage('[usage]node $0 -i in/sitemap.csv -o out -r /some/service -n sample')
   .argv;
 
 const ymlPageTemplate = fs.readFileSync('templates/yml/page.yml', 'utf-8');
