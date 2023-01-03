@@ -3,22 +3,28 @@ title: "タグ一覧"
 # url path.
 path: /tags
 # スクリーンショット path。ない場合は空欄
-images: ""
+image: /tags.drawio.png
+# 複数枚ある場合は、imagesを利用
+# images:
+#   - xxx
+#   - yyy
+
 # 説明
 description: |-
   {説明文}
 # label text, to url を配列形式で記載
 links:
   - label: "タグ追加"
-    to: "/tags/add"
-  - label: "タグ閲覧{tag_id}"
-    to: "/tags/{tag_id}/view"
-  - label: "タグ編集{tag_id}"
-    to: "/tags/{tag_id}/edit"
-  - label: "タグ削除{tag_id}"
-    to: "/tags/{tag_id}/remove"
+    to: /tags/add
+  - label: "タグ詳細"
+    to: /tags/{tag_id}/view
+  - label: "タグ編集"
+    to: /tags/{tag_id}/edit
+  - label: "タグ削除"
+    to: /tags/{tag_id}/remove
 
 # sitemap での深さを指定する時に利用
 # depth: 0
 # sitemap での上の要素からの相対位置を指定する時に利用
 span: 3
+

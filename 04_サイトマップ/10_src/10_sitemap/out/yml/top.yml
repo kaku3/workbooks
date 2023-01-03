@@ -3,21 +3,31 @@ title: "TOP"
 # url path.
 path: /top
 # スクリーンショット path。ない場合は空欄
-images: ""
+image: /top.drawio.png
+# 複数枚ある場合は、imagesを利用
+# images:
+#   - xxx
+#   - yyy
+
 # 説明
 description: |-
   {説明文}
 # label text, to url を配列形式で記載
 links:
-  - label: "検索バー"
-    to: "./search"
+  - label: "検索"
+    to: /search
   - label: "ユーザー一覧"
-    to: "./users"
+    to: /users
   - label: "カテゴリ一覧"
-    to: "./categories"
+    to: /categories
   - label: "タグ一覧"
-    to: "./tags"
+    to: /tags
   - label: "製品一覧"
-    to: "./products"
+    to: /products
   - label: "FAQ"
-    to: "./faq"
+    to: /faq
+
+# sitemap での深さを指定する時に利用
+# depth: 0
+# sitemap での上の要素からの相対位置を指定する時に利用
+# span: 0
