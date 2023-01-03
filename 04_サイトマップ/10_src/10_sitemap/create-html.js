@@ -45,7 +45,6 @@ function calcDepth(tree, me) {
 }
 
 function buildTree(categoryId, category) {
-  console.log(categoryId, category)
   const tree = {};
   category.pages.forEach(p => {
     tree[p.path] = p;
@@ -73,11 +72,11 @@ function buildTree(categoryId, category) {
     // link 部を aタグに置き換え
     t.comment = t.comment ? t.comment.replace(/(https?:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)/g, '<a href="$1" target="_blank">$1</a>') : '';
 
-    // 画像非存在フラグが立っていなければ画像として扱う
+    // 終端フラグが立っていなければ画像がある
     if(!t.terminal) {
       const img = t.image || (t.path.substr(1).replace(/#/, '_') + ".png");
-      t.image = `./images/${img}`;
-      t.noImage = !fs.existsSync(path.join('html', t.image));
+      t.image = path.join('./images', img);
+      t.noImage = !fs.existsSync(path.join(args.outFolder, t.image));
       if(t.noImage) {
         console.log(`image not found : ${t.image}`);
       }
@@ -95,7 +94,6 @@ function buildCategory(categoryId, category) {
 
   const maxDepth = Object.values(tree).map(t => t.depth).reduce((a, v) => Math.max(a, v));
 
-
   // リンク接続線
   const connectors = Object.values(tree)
     .filter(t => t.links)
@@ -103,7 +101,7 @@ function buildCategory(categoryId, category) {
       const d = Object.values(tree).find(d => d.path === l.to);
       if(!d) {
         if(!l.to.startsWith('$')) {
-          console.group(`link not found`);
+          console.group(`link not found[$]`);
           console.log(`${t.categoryName}, ${t.no}, ${t.title}, ${t.path}`);
           console.log(`${l.label}, ${l.to}`);
           console.groupEnd();

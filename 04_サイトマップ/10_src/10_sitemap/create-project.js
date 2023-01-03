@@ -31,7 +31,7 @@ const args = yargs(hideBin(process.argv))
   })
   .default('rootPath', '/')
   .default('categoryName', 'sample')
-  .usage('[usage]node $0 -i in/sitemap.src -o out/yml -r /some/service -n sample')
+  .usage('[usage]node $0 -i in/sitemap.src -o out -r /some/service -n sample')
   .argv;
 
 const ymlPageTemplate = fs.readFileSync('templates/yml/page.yml', 'utf-8');
@@ -43,19 +43,25 @@ const rows = parse(csv);
 
 // ヘッダ行を除外
 rows.shift();
-for(let [ title, _path, description ] of rows) {
+for(let [ title, _path, description, template ] of rows) {
+
+
   const pagePath = path.join(args.rootPath, _path).replace(/\\/g, '/');
-  _path += '.yml'
+  const ymlPath = _path + '.yml'
+
+  // template 画像を、path と同名のフォルダにコピーする
+  copyTemplateImage(template, pagePath)
+
 
   // _path にフォルダがあればフォルダを作成する。
   const paths = _path.split('/');
   paths.pop();
 
-  const d = path.join(args.outFolder, paths.join('/'));
+  const d = path.join(args.outFolder, 'yml', paths.join('/'));
   if(!fs.existsSync(d)) {
     fs.mkdirSync(d, { recursive: true});
   }
-  const f = path.join(args.outFolder, _path);
+  const f = path.join(args.outFolder, 'yml', ymlPath);
   const yml = nunjucks.compile(ymlPageTemplate);
   if(!fs.existsSync(f)) {
     fs.writeFileSync(
@@ -63,16 +69,37 @@ for(let [ title, _path, description ] of rows) {
       yml.render({
         title,
         path: pagePath,
+        image: pagePath + '.drawio.png',
         description: description || '{説明文}'
       }),
       'utf-8'
     );
   }
-  sitemap.push(`      - !!inc/file ${_path}`);
+  sitemap.push(`      - !!inc/file ${ymlPath}`);
 }
 sitemap = sitemap.join('\n');
 
-const sitemapFile = path.join(args.outFolder, '@sitemap-index.yml');
+const sitemapFile = path.join(args.outFolder, 'yml/@sitemap-index.yml');
 if(!fs.existsSync(sitemapFile)) {
   fs.writeFileSync(sitemapFile, sitemap, 'utf-8');
+}
+
+/**
+ * template フォルダの template 画像をコピーする。
+ * @param {*} src 
+ * @param {*} _path 
+ */
+function copyTemplateImage(src, _path) {
+  const imgPath = path.join(args.outFolder, 'html/images', _path + '.drawio.png');
+
+  // すでにある場合は上書きしない。
+  if(fs.existsSync(imgPath)) {
+    return;
+  }
+
+  // フォルダが存在しなければ作成して、テンプレートファイルをコピー
+  if(!fs.existsSync(path.dirname(imgPath))) {
+    fs.mkdirSync(path.dirname(imgPath));
+  }
+  fs.copyFileSync(path.join('templates/images', src), imgPath);
 }
