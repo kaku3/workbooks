@@ -70,3 +70,4 @@
 |[試験進捗集計ツール2](./02_%E8%A9%A6%E9%A8%93%E7%B5%90%E6%9E%9C%E9%9B%86%E8%A8%88%E3%83%84%E3%83%BC%E3%83%AB2/)   |試験進捗集計ツール機能追加。デイリー/担当者単位集計|nodejs, html, javascript, jQuery, DataTable, Chart.js, Tailwind CSS, React
 |[Switch ソフトウェア一覧](./03_switch_eshop/)|My Nintendo Store ゲーム一覧 |nodejs, got, cheerio, sharp, axios, Nuxt.js, Vue.js, Vuetify
 |[インタラクティブサイトマップ](./04_インタラクティブサイトマップ/)|爆速サイトマップ作成ツール | nodejs, html, jQuery
+|[家計簿](./05_家計簿/) | レシート読み取り(OCR)家計簿のPoCを行う。| nodejs, Cloud Vision API, Nuxt.js, Vue.js, Vuetify, 凸包
