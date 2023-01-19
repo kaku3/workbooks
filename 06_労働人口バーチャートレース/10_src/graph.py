@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # 国立社会保障・人口問題研究所
@@ -19,8 +18,8 @@ bcr.bar_chart_race(
     sort='asc',
     fixed_order=False, 
     fixed_max=True,
-    steps_per_period=15,
-    period_length=900,
+    steps_per_period=5,
+    period_length=500,
     title='出典 : 国立社会保障・人口問題研究所\n人口ピラミッドのデータ（1965～2065年）(単位1,000人)', 
     bar_size=.95, 
     shared_fontdict=None, 
