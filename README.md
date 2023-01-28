@@ -71,3 +71,4 @@
 |[Switch ソフトウェア一覧](./03_switch_eshop/)|My Nintendo Store ゲーム一覧 |nodejs, got, cheerio, sharp, axios, Nuxt.js, Vue.js, Vuetify
 |[インタラクティブサイトマップ](./04_インタラクティブサイトマップ/)|爆速サイトマップ作成ツール | nodejs, html, jQuery
 |[家計簿](./05_家計簿/) | レシート読み取り(OCR)家計簿のPoCを行う。| nodejs, Cloud Vision API, Nuxt.js, Vue.js, Vuetify, 凸包
+|[労働問題と詐欺グラフ](./06_労働問題と詐欺グラフ/)| バーチャートレース（グラフ）作成を行う。| Python, Pandas
