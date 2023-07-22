@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="styles/main.scss" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title">
+                <div class="location d-flex">
+                  <label for="address" class="h4">現在地</label>
+                  <div id="address" class="ps-4"></div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <h4 class="item">予算</h4>
+                  <div id="budget-container" class="mt-1"></div>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <h4 class="item">ジャンル</h4>
+                  <div id="genre-container" class="mt-1"></div>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col">
+                  <button id="search" class="btn btn-primary">さがす</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <ul id="search-result-container" class="list-group"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <a href="http://webservice.recruit.co.jp/"><img src="http://webservice.recruit.co.jp/banner/hotpepper-m.gif" alt="ホットペッパー Webサービス" width="88" height="35" border="0" title="ホットペッパー Webサービス"></a>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script type="application/javascript" src="_api-key.js"></script>
+    <script>
+      $(function() {
+        let budgets = []
+        let genres = []
+        if('geolocation' in navigator) {
+          init();
+        }
+        async function init() {
+          navigator.geolocation.getCurrentPosition(async (position) => {
+            setupAddress(position);
+            setupBudget(position);
+            setupGenre(position);
+            setupSearch(position);
+          });
+        }
+  
+        async function setupAddress(position) {
+          const _a = await getAddress(position);
+          const formattedAddresses = [ _a[2], _a[1], _a[0] ]
+          const el = formattedAddresses.map(a => `<span>${a}</span>`);
+          $('#address').empty().append(el);
+        }
+        async function setupBudget(position) {
+          const { results } = await api('budget');
+
+          // 検索して結果が０件の項目は避ける
+          let _budgets = await Promise.all(results.budget.map(async (v) => {
+            const r = await search(position, [v.code], null);
+            return (r?.length > 0) ? v : null;
+          }));
+          _budgets = _budgets.filter(v => v !== null);
+
+          const el = _budgets.map(v => `<input type="checkbox" class="btn-check" id="${v.code}"><label class="btn btn-outline-primary" for="${v.code}">${v.name}</label>`)
+          $('#budget-container').empty().append(el);
+          $('#budget-container > input[type="checkbox"]').on('click', function() {
+            const code = $(this).attr('id');
+            if($(this).is(':checked')) {
+              budgets.push(code);
+            } else {
+              budgets = budgets.filter(c => c != code)
+            }
+            // 2つまでしか選べないので、２つ以上選択されたら選択の古い順から選択解除する。
+            if(budgets.length > 2) {
+              budgets.shift()
+              $('#budget-container > input[type="checkbox"]').prop('checked', false);
+              budgets.forEach(c => {
+                $(`#budget-container > input#${c}`).prop('checked', true);
+              })
+            }
+          })
+        }
+        async function setupGenre(position) {
+          const { results } = await api('genre');
+
+          // 検索して結果が０件の項目は避ける
+          let _genres = await Promise.all(results.genre.map(async (v) => {
+            const r = await search(position, null, [v.code]);
+            return (r?.length > 0) ? v : null;
+          }));
+          _genres = _genres.filter(v => v !== null);
+
+          const el = _genres.map(v => `<input type="checkbox" class="btn-check" id="${v.code}"><label class="btn btn-outline-primary" for="${v.code}">${v.name}</label>`)
+          $('#genre-container').empty().append(el);
+          $('#genre-container > input[type="checkbox"]').on('click', function() {
+            const code = $(this).attr('id');
+            if($(this).is(':checked')) {
+              genres.push(code);
+            } else {
+              genres = genres.filter(c => c != code)
+            }
+          })
+        }
+
+        function setupSearch(position) {
+          $('#search').on('click', async function() {
+            const shop = await search(position, budgets, genres);
+            updateSearchResult(shop);
+            console.log(shop)
+          })
+        }
+
+        async function search(position, _budgets, _genres) {
+          let query = `lat=${position.coords.latitude}&lng=${position.coords.longitude}`;
+          if(_budgets?.length > 0) {
+            query += "&budget=" + _budgets.join(',');
+          }
+          if(_genres?.length > 0) {
+            query += "&genre=" + _genres.join(',');
+          }
+
+          const { results } = await api('gourmet', query);
+          return results.shop;
+        }
+  
+        function updateSearchResult(shops) {
+          const el = shops.map(s => {
+            return `
+              <li class="list-group-item">
+                <div class="head d-flex justify-content-between">
+                  <div class="name h5"><a href="${s.urls.pc}" target="_blank">${s.name}<i class="fa fa-external-link ms-2"></i></a></div>
+                  <div class="badge bg-secondary align-self-start">${s.genre.name}</div>
+                </div>
+                <div class="d-flex budget pb-2">
+                  <div class="key">予算 : </div>
+                  <div class="value">${s.budget.average}</div>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                  <div class="info d-flex flex-column justify-content-between">
+                    <div class="catch">${s.catch}</div>
+                    <div class="access"><a href="http://local.google.co.jp/maps?q=${s.address}+${s.name}" target="_blank">${s.access}<i class="fa fa-external-link ms-2"></i></a></div>
+                  </div>
+                  <div class="thumbnail">
+                    <img class="rounded" src="${s.logo_image}" />
+                  </div>
+                </div>
+              </li>
+            `
+          })
+          $('#search-result-container').empty().append(el);
+        }
+  
+        async function getAddress(position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          
+          const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+          
+          try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.display_name) {
+              return data.display_name.split(",").map(a => a.trim());
+            } else {
+              console.log('住所情報が見つかりませんでした。');
+            }
+          } catch(error) {
+            console.error('error : getAddress', error);
+          }
+        }
+  
+        async function api(api, param) {
+          const url = `https://webservice.recruit.co.jp/hotpepper/${api}/v1/?key=${HOTPEPPER_API_KEY}&format=json&${param}`
+          try {
+            const response = await fetch(url);
+            return await response.json();
+          } catch(error) {
+            console.error(`error : ${api}`, error);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
