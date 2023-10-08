@@ -117,6 +117,9 @@ $(function() {
 
     // 画面イメージ
     console.log(url);
+    if(url === '/') {
+      url = '/_root'
+    }
     const $pageImage = $(`<img class="page-image" src="./images${url}.png" />`);
     $pageImage.on("error", function() {
       $(this).remove();
