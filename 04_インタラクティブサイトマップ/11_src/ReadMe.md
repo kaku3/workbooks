@@ -14,7 +14,7 @@ cd 11_src
 # 初回のみ
 npm i
 
-node create-page-data.js --i {Excelファイルパス} --o {サイトマップ出力フォルダ}
+node create-sitemap.js --i {Excelファイルパス} --o {サイトマップ出力フォルダ}
 # 例)
-# node create-page-data.js --i .\samples\画面設計_sample_ECサイト.xlsx --o out/ECサイト
+# node create-sitemap.js --i .\samples\画面設計_sample_ECサイト.xlsx --o out/ECサイト
 ```
