@@ -1,0 +1,150 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+
+  #sitemap-container-wrapper {
+    width: 70%;
+    overflow: auto;
+  }
+
+  #sitemap-container {
+    position: relative;
+    padding: 20px;
+    min-height: calc(100vh - 40px);
+
+    background-image: linear-gradient(0deg, transparent calc(100% - 1px), #f0f0f0 calc(100% - 1px)),
+      linear-gradient(90deg, transparent calc(100% - 1px), #f0f0f0 calc(100% - 1px));
+    background-size: 16px 16px;
+    background-repeat: repeat;
+    background-position: center center;
+
+    > svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+    }
+    > svg  > path {
+      stroke: #aaa;
+      stroke-width: 1;
+      fill: none;
+    }
+  }
+
+  #page-information-container {
+    width: 30%;
+    background-color: #f0f0f0;
+    overflow: auto;
+  }
+}
+
+#sitemap-container {
+  display: flex;
+
+  .level-container {
+    padding-right: 80px;
+
+    .page {
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+      margin-bottom: 20px;
+      min-width: 240px;
+      height: 40px;
+
+      background: #eee;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px 2px rgba(0, 0, 0, .25);
+      overflow: hidden;
+
+      &.empty {
+        opacity: 0;
+      }
+
+      &.active {
+        background-color: orange;
+      }
+
+      &.link {
+        background-color: orange;
+      }
+
+      > * {
+        text-wrap: nowrap;
+      }
+
+      .name {
+        padding: .1rem .25rem 0;
+        font-size: .8rem;
+        border-bottom: 1px solid #222;
+      }
+
+      .url {
+        padding: .1rem .5rem;
+        color: #444;
+        background-color: #ddd;
+        font-size: .7rem;
+      }
+    }
+  }
+}
+
+#page-information-container {
+  > .header {
+    padding: .25rem;
+    font-weight: bold;
+    font-size: .8rem;
+    color: white;
+    background: #444;
+  }
+  > .name {
+    padding: .5rem;
+    background: #ddd;
+    border-bottom: 1px solid #ccc;
+  }
+  > .page-image {
+    width: 100%;
+  }
+  > .content {
+    padding: .25rem;
+    font-size: .8rem;
+  }
+
+  .links-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    >.link {
+      cursor: pointer;
+      width: calc(50% - 2px);
+      font-size: .8rem;
+      color: #222;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 2px;
+      text-decoration: none;
+
+      &:hover {
+        background: orange;
+      }
+
+      .layout {
+        padding: .1rem .25rem 0;
+        font-size: .6rem;
+        color: #444;
+        background: #ddd;
+        border-bottom: 1px solid #ccc;
+      }
+      .name {
+        padding: .25rem;
+      }
+    }
+  }
+}
