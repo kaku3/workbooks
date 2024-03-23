@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>労働力調査 / 基本集計　全都道府県 長期時系列データ</title>
+  <style>
+    .container {
+      margin: .5rem;
+      width: 100%;
+      background-color: white;
+
+      .charts-container {
+        display: flex;
+        flex-wrap: wrap;
+
+        > * {
+          text-align: center;
+          width: 100%;
+        }
+
+        @media screen and (min-width: 768px) {
+          .nop-pie-chart-container {
+            width: 30%;
+          }
+          .nop-bar1-chart-container {
+            width: 70%;
+          }
+        }
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <select id="number-of-people-type"></select>
+      <select id="chart-type">
+    </header>
+    </select>
+    <div class="charts-container">
+      <div class="nop-pie-chart-container">
+        <div class="label"></div>
+        <canvas id="nop-pie-chart"></canvas>
+      </div>
+      <div class="nop-bar1-chart-container">
+        <canvas id="nop-bar1-chart"></canvas>
+      </div>
+    </div>
+    <div>
+      <div>出典：e-Stat</div>
+      <a href="https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200531&tstat=000000110001&cycle=0&tclass1=000001040276&tclass2=000001011681&stat_infid=000001082683&tclass3val=0">
+        労働力調査 / 基本集計　全都道府県 長期時系列データ : 年齢階級（5歳階級）別労働力人口及び労働力人口比率
+      </a>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0 "></script>
+
+  <script src="./populartion-producible.js"></script>
+  <script src="./populartion-workable.js"></script>
+  <script src="./populartion-working.js"></script>
+  <script>
+    const BACKGROUND_COLORS = [
+      '#E3F2FD',
+      '#BBDEFB',
+      '#90CAF9',
+      '#FFF59D',
+      '#FFF176',
+      '#FFEE58',
+      '#FDD835',
+      '#FFAB91',
+      '#FF8A65',
+      '#FF7043',
+      '#F4511E',
+      '#E64A19'
+    ];
+
+    const NUMBER_OF_PEOPLE_TYPES = {
+      "生産年齢人口": PRODUCIBLE,
+      "労働力人口": WORKABLES,
+      "就業者人口": WORKINGS,
+    };
+    const CHART_TYPES = {
+      "5才単位": {
+        labels: [
+          "15 ~ 19",
+          "20 ~ 24",
+          "25 ~ 29",
+          "30 ~ 34",
+          "35 ~ 39",
+          "40 ~ 44",
+          "45 ~ 49",
+          "50 ~ 54",
+          "55 ~ 59",
+          "60 ~ 64",
+          "65 ~ ",
+        ],
+        f: (nops) => {
+          return nops;
+        }
+      },
+      "10才単位": {
+        labels: [
+          "15 ~ 19",
+          "20 ~ 29",
+          "30 ~ 39",
+          "40 ~ 49",
+          "50 ~ 59",
+          "60 ~ ",
+        ],
+        f: (nops) => {
+          return [
+            nops[0],
+            nops[1] + nops[2],
+            nops[3] + nops[4],
+            nops[5] + nops[6],
+            nops[7] + nops[8],
+            nops[9] + nops[10]
+          ]
+        }
+      },
+      "ロール単位": {
+        labels: [
+          "メンバー:15 ~ 24",
+          "サブリーダー:25 ~ 29",
+          "リーダー:30 ~ 39",
+          "プレマネ:40 ~ 49",
+          "シニアプレマネ:50 ~",
+          "隠居したい:60 ~",
+        ],
+        f: (nops) => {
+          return [
+            nops[0] + nops[1],
+            nops[2],
+            nops[3] + nops[4],
+            nops[5] + nops[6],
+            nops[7] + nops[8],
+            nops[9] + nops[10]
+          ]
+        }
+      },
+      "~40~50~65~": {
+        labels: [
+          "15 ~ 39",
+          "40 ~ 49",
+          "50 ~ 64",
+          "65 ~",
+        ],
+        f: (nops) => {
+          return [
+            nops[0] + nops[1] + nops[2] + nops[3] + nops[4],
+            nops[5] + nops[6],
+            nops[7] + nops[8] + nops[9],
+            nops[10]
+          ]
+        }
+      },
+    };
+    let yearIndex = 0;
+    let NUMBER_OF_PEOPLES = NUMBER_OF_PEOPLE_TYPES[Object.keys(NUMBER_OF_PEOPLE_TYPES)[0]];
+    let chartType = CHART_TYPES[Object.keys(CHART_TYPES)[0]];
+    let pieChart = null;
+    let bar1Chart = null;
+
+    $(function() {
+      const $numberOfPeopleType = $('#number-of-people-type');
+      for(const o of Object.keys(NUMBER_OF_PEOPLE_TYPES)) {
+        $numberOfPeopleType.append(`<option value="${o}">${o}</option>`);
+      }
+      $numberOfPeopleType.on('change', function(e) {
+        NUMBER_OF_PEOPLES = NUMBER_OF_PEOPLE_TYPES[$(this).val()];
+
+        updateChart(chartType);
+      });
+      const $chartType = $('#chart-type');
+      for(const o of Object.keys(CHART_TYPES)) {
+        $chartType.append(`<option value="${o}">${o}</option>`);
+      }
+      $chartType.on('change', function(e) {
+        chartType = CHART_TYPES[$(this).val()];
+        updateChart(chartType);
+      });
+      updateChart(chartType);
+
+      setInterval(transition, 500);      
+    });
+    function updateChart(chartType) {
+      const year = getYear();
+      $('.nop-pie-chart-container > .label').text(year);
+      setupPieChart( NUMBER_OF_PEOPLES[year]);
+      setupBar1Chart();
+    }
+
+    function setupBar1Chart() {
+      const ctx = $(`#nop-bar1-chart`).get(0);
+      const c = BACKGROUND_COLORS.length / chartType.labels.length;
+      const datasets = chartType.labels.map((v, i) => {
+        const data = Object.values(NUMBER_OF_PEOPLES).map(nop => chartType.f(nop)[i])
+        const backgroundColors = data.map((d, ii) => BACKGROUND_COLORS[Math.floor(ii * c)]);
+        return {
+          label: v,
+          data,
+          backgroundColor: backgroundColors[i]
+        }
+      });
+
+      if(bar1Chart) {
+        bar1Chart.destroy();
+      }
+      bar1Chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(NUMBER_OF_PEOPLES),
+          datasets
+        },
+        options: {
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              beginAtZero: true,
+              stacked: true
+            }
+          }
+        },
+      });
+    }
+
+    function setupPieChart(nops) {
+      const ctx = $(`#nop-pie-chart`).get(0);
+      if(pieChart) {
+        pieChart.destroy();
+      }
+      const data = chartType.f(nops);
+      const c = BACKGROUND_COLORS.length / data.length;
+      const backgroundColor = data.map((d, i) => BACKGROUND_COLORS[Math.floor(i * c)]);
+
+      pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: chartType.labels,
+          datasets: [
+            {
+              backgroundColor,
+              data
+            }
+          ]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+          plugins: {
+            legend: {
+              display: false
+            },
+            datalabels: {
+              formatter: function(value, context) { 
+                return context.chart.data.labels[context.dataIndex] + '\n' + value;
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function transition(){
+      const year = getYear();
+      const nops =  NUMBER_OF_PEOPLES[year];
+
+      yearIndex = (yearIndex + 1) % Object.keys(NUMBER_OF_PEOPLES).length;
+
+      if(pieChart) {
+        $('.nop-pie-chart-container > .label').text(year);
+        pieChart.data.datasets[0].data = chartType.f(nops);
+        pieChart.update();
+      }
+    }
+    function getYear() {
+      return Object.keys(NUMBER_OF_PEOPLES)[yearIndex];
+    }
+  </script>
+</body>
+</html>
+
