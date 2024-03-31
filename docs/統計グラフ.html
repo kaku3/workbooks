@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>統計グラフ一覧</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      nav {
+        width: 100%;
+        background: #ccc;
+        ul {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          li {
+            cursor: pointer;
+            padding: .25rem .5rem;
+            background-color: #eee;
+            border-bottom: 1px solid #ccc;
+          }
+        }
+      }
+
+      main {
+        width: 100%;
+        height: 100vh;
+        overflow: auto;
+
+        iframe {
+          border: none;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      @media screen and (min-width: 768px) {
+        display: flex;
+  
+        > * {
+          height: 100vh;
+          overflow: auto;
+        }
+  
+        nav {
+          width: 200px;
+        }
+        main {
+          flex-grow: 1;
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul id="statistics-list">
+      </ul>
+    </nav>
+    <main>
+      <iframe></iframe>
+    </main>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+  <script>
+    $(function() {
+      console.log("test");
+      const STATISTICS = [
+        { label: "人口推移", url: "./00_人口推移/index.html" },
+        { label: "媒体別広告費の推移", url: "./10_媒体別広告費の推移/index.html" }
+      ];
+      const $statisticsList = $('#statistics-list');
+      for(const o of STATISTICS) {
+        $statisticsList.append(`
+          <li data-href="${o.url}">${o.label}</li>
+        `);
+      }
+      $statisticsList.find('li').on('click', function(e) {
+        const href = $(this).data('href');
+        $('iframe').attr('src', href);
+      });
+      $statisticsList.find('li:first-child').trigger('click');
+    });
+  </script>
+</body>
+</html>
