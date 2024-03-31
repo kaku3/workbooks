@@ -57,6 +57,17 @@
         労働力調査 / 基本集計　全都道府県 長期時系列データ : 年齢階級（5歳階級）別労働力人口及び労働力人口比率
       </a>
     </div>
+
+    <div class="nop-bar2-chart-container" style="min-height: 35vh;">
+      <canvas id="nop-bar2-chart"></canvas>
+    </div>
+    <div>
+      <div>（出典）：トップページ > 関係情報 > 調査研究報告書（毎年継続している調査） > ICTの経済分析に関する調査</div>
+      <a href="https://www.soumu.go.jp/johotsusintokei/link/link03_03.html">
+        （出典）令和4年度：付属資料 [単位 : 1,000人]
+      </a>
+    </div>
+
   </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
@@ -64,9 +75,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0 "></script>
 
-  <script src="./populartion-producible.js"></script>
-  <script src="./populartion-workable.js"></script>
-  <script src="./populartion-working.js"></script>
+  <script src="./population-producible.js"></script>
+  <script src="./population-workable.js"></script>
+  <script src="./population-working.js"></script>
+  <script src="./population-it-workers.js"></script>
   <script>
     const BACKGROUND_COLORS = [
       '#E3F2FD',
@@ -190,7 +202,9 @@
       });
       updateChart(chartType);
 
-      setInterval(transition, 500);      
+      setInterval(transition, 500);
+      
+      setupBar2Chart();
     });
     function updateChart(chartType) {
       const year = getYear();
@@ -203,7 +217,7 @@
       const ctx = $(`#nop-bar1-chart`).get(0);
       const c = BACKGROUND_COLORS.length / chartType.labels.length;
       const datasets = chartType.labels.map((v, i) => {
-        const data = Object.values(NUMBER_OF_PEOPLES).map(nop => chartType.f(nop)[i])
+        const data = Object.values(NUMBER_OF_PEOPLES).map(nop => chartType.f(nop)[i]);
         const backgroundColors = data.map((d, ii) => BACKGROUND_COLORS[Math.floor(ii * c)]);
         return {
           label: v,
@@ -287,6 +301,45 @@
     function getYear() {
       return Object.keys(NUMBER_OF_PEOPLES)[yearIndex];
     }
+
+    function setupBar2Chart() {
+      const LABELS = [ "ソフトウェア", "情報処理・提供サービス" ];
+      const ctx = $(`#nop-bar2-chart`).get(0);
+      const c = BACKGROUND_COLORS.length / LABELS.length;
+      const datasets = LABELS.map((v, i) => {
+        const data = Object.values(IT_WORKERS).map(nop => nop[i]);
+        const backgroundColors = data.map((d, ii) => BACKGROUND_COLORS[Math.floor(ii * c)]);
+        return {
+          label: v,
+          data,
+          backgroundColor: backgroundColors[i]
+        }
+      });
+
+      if(bar1Chart) {
+        bar1Chart.destroy();
+      }
+      bar1Chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(IT_WORKERS),
+          datasets
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              beginAtZero: true,
+              stacked: true
+            }
+          }
+        },
+      });
+    }
+
   </script>
 </body>
 </html>
