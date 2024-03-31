@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>統計グラフ一覧</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   <style>
     body {
       margin: 0;
@@ -11,6 +12,7 @@
     }
     .container {
       nav {
+        position: relative;
         width: 100%;
         background: #ccc;
         ul {
@@ -24,14 +26,33 @@
             border-bottom: 1px solid #ccc;
           }
         }
+        #xs-header {
+          display: flex;
+          justify-content: space-between;
+
+          background: white;
+          border-bottom: 1px solid #eee;
+
+          &:not(.open) {
+            + .nav-menu {
+              display: none;
+            }
+          }
+
+          > [role=toggle-nav-menu] {
+            margin-left: auto;
+          }
+        }
       }
 
       main {
         width: 100%;
-        height: 100vh;
+        height: calc(100vh - 24px);
         overflow: auto;
 
         iframe {
+          margin-top: .5rem;
+          margin-bottom: .5rem;
           border: none;
           width: 100%;
           height: 100%;
@@ -48,6 +69,10 @@
   
         nav {
           width: 200px;
+
+          #xs-header {
+            display: none;
+          }
         }
         main {
           flex-grow: 1;
@@ -59,8 +84,14 @@
 <body>
   <div class="container">
     <nav>
-      <ul id="statistics-list">
-      </ul>
+      <div id="xs-header" class="open">
+        <div role="toggle-nav-menu" class="material-symbols-outlined">
+          close
+        </div> 
+      </div>
+      <div class="nav-menu">
+        <ul id="statistics-list"></ul>
+      </div>
     </nav>
     <main>
       <iframe></iframe>
@@ -85,6 +116,12 @@
         $('iframe').attr('src', href);
       });
       $statisticsList.find('li:first-child').trigger('click');
+
+      const $xsHeader = $('#xs-header');
+      $xsHeader.find('[role=toggle-nav-menu]').on('click', function(e) {
+        $xsHeader.toggleClass('open');
+        $(this).text($xsHeader.hasClass('open') ? 'close' : 'menu');
+      })
     });
   </script>
 </body>
