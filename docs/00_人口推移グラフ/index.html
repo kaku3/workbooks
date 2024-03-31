@@ -17,6 +17,9 @@
         > * {
           text-align: center;
           width: 100%;
+          > * {
+            margin: .5rem;
+          }
         }
 
         @media screen and (min-width: 768px) {
@@ -44,7 +47,7 @@
         <div class="label"></div>
         <canvas id="nop-pie-chart"></canvas>
       </div>
-      <div class="nop-bar1-chart-container">
+      <div class="nop-bar1-chart-container" style="min-height: 35vh;">
         <canvas id="nop-bar1-chart"></canvas>
       </div>
     </div>
@@ -219,6 +222,7 @@
           datasets
         },
         options: {
+          maintainAspectRatio: false,
           scales: {
             x: {
               stacked: true
