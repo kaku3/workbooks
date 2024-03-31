@@ -29,9 +29,13 @@
         #xs-header {
           display: flex;
           justify-content: space-between;
+          align-items: center;
 
-          background: white;
-          border-bottom: 1px solid #eee;
+          height: 32px;
+
+          color: white;
+          background: #009688;
+          border-bottom: 1px solid #004D40;
 
           &:not(.open) {
             + .nav-menu {
@@ -39,15 +43,29 @@
             }
           }
 
+          h1 {
+            padding: .25rem .5rem;
+            font-size: 1rem;
+            font-weight: normal;
+          }
+    
           > [role=toggle-nav-menu] {
             margin-left: auto;
           }
+        }
+        .nav-menu {
+          margin: 0 auto;
+          width: calc(100% - .5rem);
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+          box-shadow: 0 2px 2px 2px rgba(0,0,0, .25);
+          overflow: hidden;
         }
       }
 
       main {
         width: 100%;
-        height: calc(100vh - 24px);
+        height: calc(100vh - 32px);
         overflow: auto;
 
         iframe {
@@ -71,7 +89,13 @@
           width: 200px;
 
           #xs-header {
-            display: none;
+            [role=toggle-nav-menu] {
+              display: none;
+            }
+          }
+          .nav-menu {
+            margin: 0;
+            width: 100%;
           }
         }
         main {
@@ -85,6 +109,7 @@
   <div class="container">
     <nav>
       <div id="xs-header" class="open">
+        <h1>統計グラフ</h1>
         <div role="toggle-nav-menu" class="material-symbols-outlined">
           close
         </div> 
@@ -103,6 +128,7 @@
       console.log("test");
       const STATISTICS = [
         { label: "人口推移", url: "./00_人口推移/index.html" },
+        { label: "IT投資", url: "./01_IT投資/index.html" },
         { label: "媒体別広告費の推移", url: "./10_媒体別広告費の推移/index.html" }
       ];
       const $statisticsList = $('#statistics-list');

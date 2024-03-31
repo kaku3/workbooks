@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日本の媒体別広告費の推移</title>
+  <style>
+    .container {
+      margin: .5rem;
+      width: 100%;
+      background-color: white;
+
+      .charts-container {
+        display: flex;
+        flex-wrap: wrap;
+
+        > * {
+          text-align: center;
+          width: 100%;
+          > * {
+            margin: .5rem;
+          }
+        }
+
+        @media screen and (min-width: 768px) {
+          .pie-chart-container {
+            width: 30%;
+          }
+          .bar1-chart-container {
+            width: 70%;
+          }
+        }
+      }
+
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <select id="statistics-type"></select>
+      <select id="chart-type">
+    </header>
+    </select>
+    <div class="charts-container">
+      <div class="pie-chart-container">
+        <div class="label"></div>
+        <canvas id="pie-chart"></canvas>
+      </div>
+      <div class="bar1-chart-container" style="min-height: 35vh;">
+        <canvas id="bar1-chart"></canvas>
+      </div>
+    </div>
+    <div>
+      <div>（出典）：トップページ > 関係情報 > 調査研究報告書（毎年継続している調査） > ICTの経済分析に関する調査</div>
+      <a href="https://www.soumu.go.jp/johotsusintokei/link/link03_03.html">
+        （出典）令和4年度：付属資料
+      </a>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0 "></script>
+
+  <script src="./investment-jps.js"></script>
+  <script src="./investment-uss.js"></script>
+  <script>
+    const BACKGROUND_COLORS = [
+      '#E3F2FD',
+      '#BBDEFB',
+      '#90CAF9',
+      '#FFF59D',
+      '#FFF176',
+      '#FFEE58',
+      '#FDD835',
+      '#FFAB91',
+      '#FF8A65',
+      '#FF7043',
+      '#F4511E',
+      '#E64A19'
+    ];
+
+    const STATISTICS_TYPES = {
+      "日本のIT投資(単位：10億円)": INVESTMENT_JPS,
+      "米国のIT投資(単位：100万ドル)": INVESTMENT_USS,
+    };
+    const CHART_TYPES = {
+      "区分": {
+        labels: [
+          "電気通信機器", "電子計算機本体\n同付属装置", "ソフトウェア"
+        ],
+        f: (vs) => {
+          return vs;
+        }
+      },
+    };
+    let yearIndex = 0;
+    let STATISTICS_VALUES = STATISTICS_TYPES[Object.keys(STATISTICS_TYPES)[0]];
+    let chartType = CHART_TYPES[Object.keys(CHART_TYPES)[0]];
+    let pieChart = null;
+    let bar1Chart = null;
+
+    $(function() {
+      const $statisticsType = $('#statistics-type');
+      for(const o of Object.keys(STATISTICS_TYPES)) {
+        $statisticsType.append(`<option value="${o}">${o}</option>`);
+      }
+      $statisticsType.on('change', function(e) {
+        STATISTICS_VALUES = STATISTICS_TYPES[$(this).val()];
+
+        updateChart(chartType);
+      });
+      const $chartType = $('#chart-type');
+      for(const o of Object.keys(CHART_TYPES)) {
+        $chartType.append(`<option value="${o}">${o}</option>`);
+      }
+      $chartType.on('change', function(e) {
+        chartType = CHART_TYPES[$(this).val()];
+        updateChart(chartType);
+      });
+      updateChart(chartType);
+
+      setInterval(transition, 500);      
+    });
+    function updateChart(chartType) {
+      const year = getYear();
+      $('.pie-chart-container > .label').text(year);
+      setupPieChart( STATISTICS_VALUES[year]);
+      setupBar1Chart();
+    }
+
+    function setupBar1Chart() {
+      const ctx = $(`#bar1-chart`).get(0);
+      const c = BACKGROUND_COLORS.length / chartType.labels.length;
+      const datasets = chartType.labels.map((v, i) => {
+        const data = Object.values(STATISTICS_VALUES).map(nop => chartType.f(nop)[i])
+        const backgroundColors = data.map((d, ii) => BACKGROUND_COLORS[Math.floor(ii * c)]);
+        return {
+          label: v,
+          data,
+          backgroundColor: backgroundColors[i]
+        }
+      });
+
+      if(bar1Chart) {
+        bar1Chart.destroy();
+      }
+      bar1Chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(STATISTICS_VALUES),
+          datasets
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              stacked: false
+            },
+            y: {
+              beginAtZero: true,
+              stacked: false
+            }
+          }
+        },
+      });
+    }
+
+    function setupPieChart(nops) {
+      const ctx = $(`#pie-chart`).get(0);
+      if(pieChart) {
+        pieChart.destroy();
+      }
+      const data = chartType.f(nops);
+      const c = BACKGROUND_COLORS.length / data.length;
+      const backgroundColor = data.map((d, i) => BACKGROUND_COLORS[Math.floor(i * c)]);
+
+      pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: chartType.labels,
+          datasets: [
+            {
+              backgroundColor,
+              data
+            }
+          ]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+          plugins: {
+            legend: {
+              display: false
+            },
+            datalabels: {
+              formatter: function(value, context) { 
+                return context.chart.data.labels[context.dataIndex] + '\n' + value;
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function transition(){
+      const year = getYear();
+      const nops =  STATISTICS_VALUES[year];
+
+      yearIndex = (yearIndex + 1) % Object.keys(STATISTICS_VALUES).length;
+
+      if(pieChart) {
+        $('.pie-chart-container > .label').text(year);
+        pieChart.data.datasets[0].data = chartType.f(nops);
+        pieChart.update();
+      }
+    }
+    function getYear() {
+      return Object.keys(STATISTICS_VALUES)[yearIndex];
+    }
+  </script>
+</body>
+</html>
+
