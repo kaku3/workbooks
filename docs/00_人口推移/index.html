@@ -181,6 +181,7 @@
     let chartType = CHART_TYPES[Object.keys(CHART_TYPES)[0]];
     let pieChart = null;
     let bar1Chart = null;
+    let bar2Chart = null;
 
     $(function() {
       const $numberOfPeopleType = $('#number-of-people-type');
@@ -316,10 +317,10 @@
         }
       });
 
-      if(bar1Chart) {
-        bar1Chart.destroy();
+      if(bar2Chart) {
+        bar2Chart.destroy();
       }
-      bar1Chart = new Chart(ctx, {
+      bar2Chart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: Object.keys(IT_WORKERS),
