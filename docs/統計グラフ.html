@@ -37,9 +37,11 @@
           background: #009688;
           border-bottom: 1px solid #004D40;
 
-          &:not(.open) {
-            + .nav-menu {
-              display: none;
+          @media screen and (max-width: 767px) {
+            &:not(.open) {
+              + .nav-menu {
+                display: none;
+              }
             }
           }
 
@@ -66,12 +68,11 @@
 
       main {
         width: 100%;
-        height: calc(100vh - 32px);
-        overflow: auto;
+        height: 100vh;
+        overflow: hidden;
 
         iframe {
-          margin-top: .5rem;
-          margin-bottom: .5rem;
+          margin: 0;
           border: none;
           width: 100%;
           height: 100%;
@@ -132,7 +133,14 @@
         { label: "IT投資額の推移", url: "./01_IT投資/index.html" },
         { label: "媒体別広告費の推移", url: "./10_媒体別広告費の推移/index.html" }
       ];
+      const $xsHeader = $('#xs-header');
       const $statisticsList = $('#statistics-list');
+
+      $xsHeader.find('[role=toggle-nav-menu]').on('click', function(e) {
+        $xsHeader.toggleClass('open');
+        updateNavMenuIcon();
+      });
+
       for(const o of STATISTICS) {
         $statisticsList.append(`
           <li data-href="${o.url}">${o.label}</li>
@@ -140,16 +148,25 @@
       }
       $statisticsList.find('li').on('click', function(e) {
         const href = $(this).data('href');
+        const label = $(this).text();
+
         $('iframe').attr('src', href);
+
+        $xsHeader.find('h1').text(label);
+
+        $xsHeader.removeClass('open');
+        updateNavMenuIcon();
       });
       $statisticsList.find('li:first-child').trigger('click');
-
-      const $xsHeader = $('#xs-header');
-      $xsHeader.find('[role=toggle-nav-menu]').on('click', function(e) {
-        $xsHeader.toggleClass('open');
-        $(this).text($xsHeader.hasClass('open') ? 'close' : 'menu');
-      })
+      $xsHeader.addClass('open');
+      updateNavMenuIcon();
     });
+    function updateNavMenuIcon() {
+      const $xsHeader = $('#xs-header');
+      $xsHeader
+        .find('[role=toggle-nav-menu]')
+        .text($xsHeader.hasClass('open') ? 'close' : 'menu');
+    }
   </script>
 </body>
 </html>
