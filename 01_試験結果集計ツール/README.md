@@ -6,7 +6,7 @@
 
 本稿に含まれるもの。
 
-- [課題](./00_docs/%E6%A6%82%E8%A6%81.md)
+- [課題](./00_docs/%E5%95%8F%E9%A1%8C%E9%9B%86.md)
 - 要素技術
   - [nodejs 基本](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/README.md)
   - [Hello World](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-hello-world.js)
