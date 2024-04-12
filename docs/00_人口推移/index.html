@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>労働力調査 / 基本集計　全都道府県 長期時系列データ</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   <style>
     .container {
       margin: .5rem;
@@ -34,6 +35,22 @@
 
     }
   </style>
+
+  <style>
+    .range-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      [role=toggle-play] {
+        cursor: pointer;
+      }
+
+      .range-slider {
+        width: calc(100% - 24px - 2rem);
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -44,6 +61,12 @@
     </select>
     <div class="charts-container">
       <div class="nop-pie-chart-container">
+        <div class="range-container">
+          <div role="toggle-play" class="material-symbols-outlined">
+            stop
+          </div> 
+          <input class="range-slider" type="range" value="0" min="0" max="0">
+        </div>
         <div class="label"></div>
         <canvas id="nop-pie-chart"></canvas>
       </div>
@@ -202,11 +225,43 @@
         updateChart(chartType);
       });
       updateChart(chartType);
-
-      setInterval(transition, 500);
       
       setupBar2Chart();
+
+      setupTogglePlay();
     });
+
+    function setupTogglePlay() {
+      let timerId = -1;
+
+      const $toggle = $('[role=toggle-play]');
+      const $range = $('.range-slider');
+      const range = Object.keys(NUMBER_OF_PEOPLES);
+
+      $range.attr('min', range[0]);
+      $range.attr('max', range[range.length - 1]);
+
+      $range.on('change', function(e) {
+        updatePieChart($(this).val());
+      })
+
+      $toggle.on('click', function(e) {
+        const state = $toggle.text() === 'play_arrow' ? 'stop' : 'play_arrow' ;
+        $toggle.text(state);
+
+        if(timerId !== -1) {
+          clearInterval(timerId);
+          timerId = -1;
+          $range.prop('disabled', false);
+        }
+        if(state === 'play_arrow') {
+          timerId = setInterval(transition, 500);
+          $range.prop('disabled', true);
+        }
+      })
+      $toggle.trigger('click');
+    }
+
     function updateChart(chartType) {
       const year = getYear();
       $('.nop-pie-chart-container > .label').text(year);
@@ -289,16 +344,19 @@
 
     function transition(){
       const year = getYear();
-      const nops =  NUMBER_OF_PEOPLES[year];
-
+      updatePieChart(year);
       yearIndex = (yearIndex + 1) % Object.keys(NUMBER_OF_PEOPLES).length;
-
+    }
+    function updatePieChart(year) {
       if(pieChart) {
+        const nops =  NUMBER_OF_PEOPLES[year];
+        $('.range-slider').val(year);
         $('.nop-pie-chart-container > .label').text(year);
         pieChart.data.datasets[0].data = chartType.f(nops);
         pieChart.update();
       }
     }
+
     function getYear() {
       return Object.keys(NUMBER_OF_PEOPLES)[yearIndex];
     }
