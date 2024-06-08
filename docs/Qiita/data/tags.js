@@ -135,15 +135,8 @@ const TAGS = {
     "アニメーション",
   ],
 
-  "バージョン管理とデプロイ": [
-    "Git",
-    "GitHub",
-    "GitLab",
-    "Docker",
-    "Kubernetes",
-  ],
-
   "その他技術": [
+    "Docker",
     "OCR",
     "OpenCV",
     "Pandas",
