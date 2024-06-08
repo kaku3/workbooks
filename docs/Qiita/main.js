@@ -106,7 +106,9 @@ $(function() {
   function searchByTag(tag) {
     console.log('+ searchByTag', tag);
 
-    const searchedArticles = ARTICLES.filter(a => a.tags.some(t => t.name === tag)).sort();
+    const re = new  RegExp(`^${tag}$`, 'i')
+
+    const searchedArticles = ARTICLES.filter(a => a.tags.some(t => re.test(t.name))).sort();
     drawArticles(searchedArticles, '.search-result[role=articles]', `タグ : ${tag}`);
   }
   function findByIds(ids, target, label) {
@@ -133,7 +135,9 @@ $(function() {
       `);
       const $tags = $('<ul class="tags-container"></ul>');
       for(const tag of TAGS[section]) {
-        const count = articleTags.filter(t => t == tag).length;
+        const re = new  RegExp(`^${tag}$`, 'i')
+
+        const count = articleTags.filter(t => re.test(t)).length;
         if(count > 0) {
           $tags.append(`<li class="tag-menu-tag"><a name="${tag}"><span>${tag}</span><span>${count}</span></a></li>`);
         }
