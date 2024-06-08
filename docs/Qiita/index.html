@@ -369,10 +369,14 @@
         $tagMenu.find('li.tag-menu-section > .name').on('click', function(e) {
           const tagSection = $(this).attr('name');
           searchByTagSection(tagSection);
+
+          $('.search-result[role=articles]')[0].scrollIntoView({ behavior: 'smooth' });
         });
         $tagMenu.find('li.tag-menu-section .tag-menu-tag > a').on('click', function(e) {
           const tag = $(this).attr('name');
           searchByTag(tag);
+
+          $('.search-result[role=articles]')[0].scrollIntoView({ behavior: 'smooth' });
         });
 
       }
@@ -409,7 +413,7 @@
           const _tags = article.tags.map(tag => {
             return `
               <li>
-                <div class="article-tag">${tag.name}</div>
+                <div name="${tag.name}" class="article-tag">${tag.name}</div>
               </li>
             `;
           }).sort().join('');
@@ -424,6 +428,16 @@
         }
         $articles.append($label);
         $articles.append($articlesContainer);
+
+        $articles.find('.article-tag').on('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          
+          const tag = $(this).attr('name');
+          searchByTag(tag);
+
+          $('.search-result[role=articles]')[0].scrollIntoView({ behavior: 'smooth' });
+        })
       }
     });
   </script>
