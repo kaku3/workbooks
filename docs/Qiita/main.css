@@ -282,7 +282,7 @@ body {
 
 }
 
-.recommends-container {
+.recommends-container, .rankings-likes-container {
   margin-top: 2rem;
 
   >label {

@@ -25,7 +25,7 @@ $(function() {
   
   drawTagMenu();
   drawTagSections();
-  findByIds(
+  filterByIds(
     [
       "2c8d4d783be7ce4fc9ea",
       "0bf1703cb8d6f84afbc5",
@@ -33,7 +33,7 @@ $(function() {
     '.recommend-1[role=articles]',
     '新卒エンジニア向け手紙'
   );
-  findByIds(
+  filterByIds(
     [
       "fb949aa1a53f1f71c796",
       "aa2f81cf1e3974b8ad3a",
@@ -43,7 +43,7 @@ $(function() {
     '.recommend-2[role=articles]',
     '新卒エンジニア向け記事'
   );
-  findByIds(
+  filterByIds(
     [
       "cafccb1ee631d9f61190",
       "422b5427024d29da6a6e",
@@ -51,7 +51,7 @@ $(function() {
     '.recommend-3[role=articles]',
     'パイセン向け記事'
   );
-  findByIds(
+  filterByIds(
     [
       "34b40446337a59213a75",
       "f8411523cce000de750e",
@@ -60,14 +60,21 @@ $(function() {
     '.recommend-4[role=articles]',
     '...は難しいシリーズ'
   );
-  findByIds(
+  filterByIds(
     [
       "03aae7b9e3c70c55f513",
       "3378ea55b1240d7360a1",
     ],
-    '.recommend-3[role=articles]',
+    '.recommend-5[role=articles]',
     '営業A短編シリーズ'
   );
+  filterByLikesCount(
+    10,
+    '.rankings-likes[role=articles]',
+    'いいね順'
+  );
+
+
   initKeywordFilter();
   initMenu();
 
@@ -125,10 +132,22 @@ $(function() {
    * @param {*} target 
    * @param {*} label 
    */
-  function findByIds(ids, target, label) {
-    console.log('+ findByIds', ids);
+  function filterByIds(ids, target, label) {
+    console.log('+ filterByIds', ids);
 
-    const foundArticles = ARTICLES.filter(a => ids.includes(a.id)).sort();
+    const foundArticles = ARTICLES.filter(a => ids.includes(a.id)).sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+    drawArticles(foundArticles, target, label);
+  }
+
+  /**
+   * いいね順で記事取得
+   * @param {*} count 
+   * @param {*} target 
+   * @param {*} label 
+   */
+  function filterByLikesCount(count, target, label) {
+    console.log('+ filterByLkesCount', count);
+    const foundArticles = ARTICLES.sort((a, b) => b.likes_count - a.likes_count).slice(0, count);
     drawArticles(foundArticles, target, label);
   }
 
