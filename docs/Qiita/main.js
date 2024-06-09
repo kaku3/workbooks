@@ -69,18 +69,37 @@ $(function() {
     '営業A短編シリーズ'
   );
   filterByLikesCount(
-    10,
+    20,
     '.rankings-likes[role=articles]',
-    'いいね順'
+    'Top20'
+  );
+  filterByStocksCount(
+    20,
+    '.rankings-stocks[role=articles]',
+    'Top20'
   );
 
 
   initKeywordFilter();
   initMenu();
+  initTab();
 
   function initMenu() {
     $('#toggle-navigation-menu').on('click', function(e) {
       $('nav').toggleClass('open');
+    });
+  }
+
+  function initTab() {
+    $('.tab-navigation > .tab-navigation-item').on('click', function(e) {
+      if($(this).hasClass('active')) {
+        return;
+      }
+      $(this).parent().find('.tab-navigation-item').removeClass('active');
+      $(this).addClass('active');
+      const id = '#' + $(this).data('tab-contents');
+      $('.tab-contents > .tab-contents-container').removeClass('active');
+      $(`.tab-contents > ${id}`).addClass('active');
     });
   }
 
@@ -146,8 +165,20 @@ $(function() {
    * @param {*} label 
    */
   function filterByLikesCount(count, target, label) {
-    console.log('+ filterByLkesCount', count);
+    console.log('+ filterByLikesCount', count);
     const foundArticles = ARTICLES.sort((a, b) => b.likes_count - a.likes_count).slice(0, count);
+    drawArticles(foundArticles, target, label);
+  }
+
+  /**
+   * ストック順で記事取得
+   * @param {*} count 
+   * @param {*} target 
+   * @param {*} label 
+   */
+  function filterByStocksCount(count, target, label) {
+    console.log('+ filterByStocksCount', count);
+    const foundArticles = ARTICLES.sort((a, b) => b.stocks_count - a.stocks_count).slice(0, count);
     drawArticles(foundArticles, target, label);
   }
 

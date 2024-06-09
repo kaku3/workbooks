@@ -28,18 +28,26 @@
       <ul role="tag-sections" class="tag-sections"></ul>
 
       <section role="articles" class="search-result"></section>
-      <section class="recommends-container">
-        <label>おすすめ記事</label>
-        <section role="articles" class="recommend-1"></section>
-        <section role="articles" class="recommend-2"></section>
-        <section role="articles" class="recommend-3"></section>
-        <section role="articles" class="recommend-4"></section>
-        <section role="articles" class="recommend-5"></section>
-      </section>
-      <section class="rankings-likes-container">
-        <label>いいね順</label>
-        <section role="articles" class="rankings-likes"></section>
-      </section>
+      <div class="tab-navigation">
+        <div data-tab-contents="recommends" class="tab-navigation-item active">おすすめ記事</div>
+        <div data-tab-contents="likes" class="tab-navigation-item">いいね順</div>
+        <div data-tab-contents="stocks" class="tab-navigation-item">ストック順</div>
+      </div>
+      <div class="tab-contents">
+        <section id="recommends" class="tab-contents-container active">
+          <section role="articles" class="recommend-1"></section>
+          <section role="articles" class="recommend-2"></section>
+          <section role="articles" class="recommend-3"></section>
+          <section role="articles" class="recommend-4"></section>
+          <section role="articles" class="recommend-5"></section>
+        </section>
+        <section id="likes" class="tab-contents-container">
+          <section role="articles" class="rankings-likes"></section>
+        </section>
+        <section id="stocks" class="tab-contents-container">
+          <section role="articles" class="rankings-stocks"></section>
+        </section>
+      </div>
 
       <footer>
         <div class="section">Links</div>
