@@ -96,6 +96,10 @@ $(function() {
 
   }
 
+  /**
+   * TagSection による記事検索
+   * @param {*} tagSection 
+   */
   function searchByTagSection(tagSection) {
     console.log('+ searchByTagSection', tagSection);
     const tags = TAGS[tagSection];
@@ -103,6 +107,10 @@ $(function() {
     const searchedArticles = ARTICLES.filter(a => a.tags.some(t => tags.includes(t.name))).sort();
     drawArticles(searchedArticles, '.search-result[role=articles]', `カテゴリ : ${tagSection}`);
   }
+  /**
+   * Tag による記事検索
+   * @param {*} tag 
+   */
   function searchByTag(tag) {
     console.log('+ searchByTag', tag);
 
@@ -111,6 +119,12 @@ $(function() {
     const searchedArticles = ARTICLES.filter(a => a.tags.some(t => re.test(t.name))).sort();
     drawArticles(searchedArticles, '.search-result[role=articles]', `タグ : ${tag}`);
   }
+  /**
+   * id 配列で記事取得
+   * @param {*} ids 
+   * @param {*} target 
+   * @param {*} label 
+   */
   function findByIds(ids, target, label) {
     console.log('+ findByIds', ids);
 
@@ -118,6 +132,9 @@ $(function() {
     drawArticles(foundArticles, target, label);
   }
 
+  /**
+   * 左メニュー描画
+   */
   function drawTagMenu() {
     const articleTags = ARTICLES.flatMap(a => a.tags.map(t => t.name));
     const $tagMenu = $('[role=tag-menu]');
@@ -160,6 +177,9 @@ $(function() {
     });
   }
 
+  /**
+   * TagSection 一覧描画
+   */
   function drawTagSections() {
     const $tagSections = $('[role=tag-sections]');
     const $tagsContainer = $('[role=tags-container]');
@@ -180,6 +200,12 @@ $(function() {
     });
   }
 
+  /**
+   * 記事リスト描画
+   * @param {*} articles 描画対象記事リスト
+   * @param {*} target 描画先
+   * @param {*} label ラベル
+   */
   function drawArticles(articles, target, label) {
     console.log('+ drawArticles', articles);
     const $articles = $(target).empty();
@@ -197,8 +223,22 @@ $(function() {
       $articlesContainer.append(`
         <li>
           <a role="qiita-link" data-id="${article.id}" href="${article.url}" target="qiita">
-            <span>${article.title}</span>
-            <ul class="article-tags-container">${_tags}</ul>
+            <div class="article-title">${article.title}</div>
+            <div class="article-information">
+              <div class="favorite count">
+                <span class="material-symbols-outlined">
+                  favorite
+                </span>
+                <span>${article.likes_count}</span>
+              </div>
+              <div class="stock count">
+                <span class="material-symbols-outlined">
+                  save
+                </span>              
+                <span>${article.stocks_count}</span>
+              </div>
+              <ul class="article-tags-container">${_tags}</ul>
+            </div>
           </a>
         </li>
       `);

@@ -3,14 +3,14 @@ const ARTICLES = [
     "rendered_body": "<h2 data-sourcepos=\"1:1-1:15\">\n<span id=\"はじめに\" class=\"fragment\"></span><a href=\"#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB\"><i class=\"fa fa-link\"></i></a>はじめに</h2>\n<p data-sourcepos=\"3:1-4:174\">AIを活用していますか？<br>\nちょっと分からないことや欲しいプログラムがある時に適当に聞くと嫌な顔ひとつせずに気前よく回答してくれて便利ですよね？</p>\n<p data-sourcepos=\"6:1-6:366\">それまでは、忙しそうなパイセンの顔色を伺って、話しかけても大丈夫そうなタイミングを見計らって、あらかじめ要点をまとめておいた質問を持っていって、緊張しながら質問してよく分からなくても一旦引き下がって調べて…なんてことをしていなかったでしょうか？</p>\n<p data-sourcepos=\"8:1-8:189\">もうそんな生活には戻りたくないし戻れないとは思うのですが、ここに重大な罠がありませんか…？ということを考えてみたいと思います。</p>\n<h2 data-sourcepos=\"10:1-10:47\">\n<span id=\"it業界で言うところの仕事って\" class=\"fragment\"></span><a href=\"#it%E6%A5%AD%E7%95%8C%E3%81%A7%E8%A8%80%E3%81%86%E3%81%A8%E3%81%93%E3%82%8D%E3%81%AE%E4%BB%95%E4%BA%8B%E3%81%A3%E3%81%A6\"><i class=\"fa fa-link\"></i></a>IT業界で言うところの仕事って？</h2>\n<p data-sourcepos=\"12:1-12:167\">IT業界では、発注者よりなんらかの依頼を受けて、その依頼通りのモノを成果物として期日通りに納品することが仕事です。</p>\n<p data-sourcepos=\"14:1-15:192\">依頼通りのモノを作る過程として、要件定義、外部設計、開発、試験等の工程が存在し、そのどこかの工程の担当者の一人として、前工程での成果物を元に成果物を作成し後工程に流していく <strong>バケツリレー</strong> をみんなで行っているかと思います。<br>\nアジャイルの場合はバケツの運び方が変わりますが、誰かからの何らかの依頼をバケツに詰めてぐるぐる回して誰かに渡していると思います。</p>\n<p data-sourcepos=\"17:1-17:185\">いずれにしても、<strong>前工程の人が『思った通り』の物を成果物として作成して期日通りに納品</strong> することを仕事として考察していきます。</p>\n<h2 data-sourcepos=\"19:1-19:36\">\n<span id=\"成果物が曖昧なんだが\" class=\"fragment\"></span><a href=\"#%E6%88%90%E6%9E%9C%E7%89%A9%E3%81%8C%E6%9B%96%E6%98%A7%E3%81%AA%E3%82%93%E3%81%A0%E3%81%8C\"><i class=\"fa fa-link\"></i></a>成果物が曖昧なんだが…</h2>\n<p data-sourcepos=\"21:1-21:135\">発注側の担当者が要件定義書に「タイヤが２つついた乗り物」が欲しいとだけ書いてきたとします。</p>\n<p data-sourcepos=\"23:1-23:324\">この文章からは、欲しい乗り物が自転車なのかセグウェイなのかは読み取れないですし、自転車にしても電動なのか、かっこいいロードバイクなのかなどは書いた本人の頭の中にしか答えはなさそうなので<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>AIに聞いても分からなそうです。</p>\n<p data-sourcepos=\"25:1-26:66\">さて。<br>\nこれを、どのように確認したらよいでしょうか？</p>\n<p data-sourcepos=\"28:1-28:252\">ここで、高確率でかっこいいロードバイクな自転車な気がするからと確認せずにロードバイクを作ったら、実は欲しいのはセグウェイでした、という場合には大事故となってしまいます。</p>\n<h2 data-sourcepos=\"30:1-30:60\">\n<span id=\"どうやったら確認ができるようになるの\" class=\"fragment\"></span><a href=\"#%E3%81%A9%E3%81%86%E3%82%84%E3%81%A3%E3%81%9F%E3%82%89%E7%A2%BA%E8%AA%8D%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88%E3%81%86%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%AE\"><i class=\"fa fa-link\"></i></a>どうやったら確認ができるようになるの？</h2>\n<p data-sourcepos=\"32:1-33:75\">「要件　確認方法」などでググるでしょうか？<br>\nあるいは、ハウツー本を求めて本屋に走るでしょうか？</p>\n<p data-sourcepos=\"35:1-36:222\">この課題は発注側と受注側の「コミュニケーション」の課題に分類されると思います。<br>\n「コミュニケーション」の課題は、何をどう感じるかが人によって異なることもあり、こうした方がよいというベストプラクティスはあっても正解はない課題です。</p>\n<p data-sourcepos=\"38:1-38:297\">ですので、Web検索をしたり、本を読んだりしてセオリーを学ぶことは重要ですが、考え方が十分に馴染んでいて息を吐くように質疑応答ができるようになっていないと実践は難しいというのは想像に難しくないですよね。</p>\n<p data-sourcepos=\"40:1-40:15\">そうです。</p>\n<p data-sourcepos=\"42:1-42:208\"><strong>「コミュニケーション」の問題は、多くの人と様々なケースで細かく何度も実践して経験値を得ることで少しずつレベルを上げていくしかないのです。</strong></p>\n<p data-sourcepos=\"44:1-44:300\">そう考えると、冒頭の、忙しそうなパイセンと怯えながら質問する後輩は、ストレスのあるやりとりを「経験値が入るタスク」と捉えていれば、仕事上で大変価値のあるスキルの経験値を入手できていたことが分かります。</p>\n<ul data-sourcepos=\"46:1-58:0\">\n<li data-sourcepos=\"46:1-52:0\">\n<p data-sourcepos=\"46:3-46:29\">忙しそうなパイセン</p>\n<ul data-sourcepos=\"47:5-52:0\">\n<li data-sourcepos=\"47:5-49:37\">説明が通じた？\n<ul data-sourcepos=\"48:9-49:37\">\n<li data-sourcepos=\"48:9-48:37\">なぜ通じなかった？</li>\n<li data-sourcepos=\"49:9-49:37\">どうすれば通じる？</li>\n</ul>\n</li>\n<li data-sourcepos=\"50:5-50:27\">質問に答えたか</li>\n<li data-sourcepos=\"51:5-52:0\">etc…</li>\n</ul>\n</li>\n<li data-sourcepos=\"53:1-58:0\">\n<p data-sourcepos=\"53:3-53:35\">怯えながら質問する後輩</p>\n<ul data-sourcepos=\"54:5-58:0\">\n<li data-sourcepos=\"54:5-54:42\">話しかけるタイミングは？</li>\n<li data-sourcepos=\"55:5-55:33\">質問内容の過不足？</li>\n<li data-sourcepos=\"56:5-56:12\">メモ</li>\n<li data-sourcepos=\"57:5-58:0\">etc…</li>\n</ul>\n</li>\n</ul>\n<p data-sourcepos=\"59:1-60:281\">ここでパイセン側が感じるストレスは発注者が感じるであろうストレスを疑似体験できるという貴重な機会であるとも考えられます。<br>\n相手のことを想像できるようになれば、質問票を100件まとめて送られても答えられないから、優先度の高い10件に絞って質問しよう、といったホスピタリティに満ちた判断もできるようになるかもしれません。</p>\n<p data-sourcepos=\"62:1-62:180\">AIは、このストレスフルだけれども<strong>仕事上重要なスキルの経験値を入手できる機会を奪っている</strong>とも言えるのではないでしょうか？</p>\n<h2 data-sourcepos=\"64:1-64:12\">\n<span id=\"まとめ\" class=\"fragment\"></span><a href=\"#%E3%81%BE%E3%81%A8%E3%82%81\"><i class=\"fa fa-link\"></i></a>まとめ</h2>\n<p data-sourcepos=\"66:1-66:346\">案件の予算や期間が厳しくなってきていますが、作業者が細かい作業はAIと壁打ちをしながら進めてもらえれば、さほど指示者の工数をかけることなく期間内に結果を出せていると感じるので、目先のアウトプットを出すためにはAIが必須とは感じています。</p>\n<p data-sourcepos=\"68:1-68:185\">ただ、結果として、PMや窓口不足問題といった大きな問題に拍車をかけるような流れになっていないかという可能性を考察してみました。</p>\n<p data-sourcepos=\"70:1-70:212\">今現在PMをやっている人が仕事をしながら自然に習得していたスキルが、なんらかの代替手段を用意しないと習得できなくなっていることが懸念されました。</p>\n<p data-sourcepos=\"72:1-73:87\">未来のAIが進化して、人と人のやり取りの部分もフォローしてくれるとしたら、どのような世界になるのでしょうか。<br>\n映画『マトリックス』のような世界になっていくのでしょうか。</p>\n<p data-sourcepos=\"75:1-75:225\">個人的には、今しばらくは <strong>『プロジェクトにおいてモノを作るために必要なコミュニケーション力』</strong> がますます重要視されていくのではないかと思ってはいます。</p>\n<p data-sourcepos=\"77:1-77:45\">みんなで仲良く頑張りましょう。</p>\n<h2 data-sourcepos=\"79:1-79:78\">\n<span id=\"おまけ０仕事のコミュ力が上がるかもしれない書籍\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%90%E4%BB%95%E4%BA%8B%E3%81%AE%E3%82%B3%E3%83%9F%E3%83%A5%E5%8A%9B%E3%81%8C%E4%B8%8A%E3%81%8C%E3%82%8B%E3%81%8B%E3%82%82%E3%81%97%E3%82%8C%E3%81%AA%E3%81%84%E6%9B%B8%E7%B1%8D\"><i class=\"fa fa-link\"></i></a>おまけ０（仕事のコミュ力が上がるかもしれない書籍）</h2>\n<ul data-sourcepos=\"81:1-86:0\">\n<li data-sourcepos=\"81:1-82:0\">\n<p data-sourcepos=\"81:3-81:98\"><a href=\"https://www.amazon.co.jp/dp/4087213129\" rel=\"nofollow noopener\" target=\"_blank\">なぜ働いていると本が読めなくなるのか</a></p>\n</li>\n<li data-sourcepos=\"83:1-84:0\">\n<p data-sourcepos=\"83:3-83:140\"><a href=\"https://www.amazon.co.jp/dp/4798159832\" rel=\"nofollow noopener\" target=\"_blank\">ホスピタリティを育てる物語 「感動の接客」ができるようになる14の力</a></p>\n</li>\n<li data-sourcepos=\"85:1-86:0\">\n<p data-sourcepos=\"85:3-85:128\"><a href=\"https://www.amazon.co.jp/dp/4569845991\" rel=\"nofollow noopener\" target=\"_blank\">「具体⇄抽象」トレーニング 思考力が飛躍的にアップする29問</a></p>\n</li>\n</ul>\n<h2 data-sourcepos=\"87:1-87:54\">\n<span id=\"おまけ１新卒エンジニア向け手紙\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%91%E6%96%B0%E5%8D%92%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E5%90%91%E3%81%91%E6%89%8B%E7%B4%99\"><i class=\"fa fa-link\"></i></a>おまけ１（新卒エンジニア向け手紙）</h2>\n<p data-sourcepos=\"89:1-89:50\"><iframe id=\"qiita-embed-content__95a6bb67f51597004a0005eb1c360a75\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__95a6bb67f51597004a0005eb1c360a75\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F2c8d4d783be7ce4fc9ea\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"91:1-91:50\"><iframe id=\"qiita-embed-content__4692c3e4593d4e1c24e84c83a0c57fa4\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__4692c3e4593d4e1c24e84c83a0c57fa4\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F0bf1703cb8d6f84afbc5\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"93:1-93:54\">\n<span id=\"おまけ２新卒エンジニア向け記事\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%92%E6%96%B0%E5%8D%92%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E5%90%91%E3%81%91%E8%A8%98%E4%BA%8B\"><i class=\"fa fa-link\"></i></a>おまけ２（新卒エンジニア向け記事）</h2>\n<p data-sourcepos=\"95:1-95:50\"><iframe id=\"qiita-embed-content__b619986cea4344f7bdc515fa6a429be3\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b619986cea4344f7bdc515fa6a429be3\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Ffb949aa1a53f1f71c796\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"97:1-97:50\"><iframe id=\"qiita-embed-content__b207c1c4152524a5970176cf73e825e4\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b207c1c4152524a5970176cf73e825e4\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Faa2f81cf1e3974b8ad3a\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"99:1-99:50\"><iframe id=\"qiita-embed-content__67695ba0cd92a809b06182e02405f883\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__67695ba0cd92a809b06182e02405f883\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F937354cc180c8bee823b\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"101:1-101:50\"><iframe id=\"qiita-embed-content__b5a342af6ae0163978d6e93c2fff8016\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b5a342af6ae0163978d6e93c2fff8016\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Fb1c94328f273c750286b\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"103:1-103:45\">\n<span id=\"おまけ３パイセン向け記事\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%93%E3%83%91%E3%82%A4%E3%82%BB%E3%83%B3%E5%90%91%E3%81%91%E8%A8%98%E4%BA%8B\"><i class=\"fa fa-link\"></i></a>おまけ３（パイセン向け記事）</h2>\n<p data-sourcepos=\"105:1-105:50\"><iframe id=\"qiita-embed-content__b07bdbcfa04abf7cdca054c3ccdfb58b\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b07bdbcfa04abf7cdca054c3ccdfb58b\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Fcafccb1ee631d9f61190\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"107:1-107:50\"><iframe id=\"qiita-embed-content__93d9eb74da0e596abfc63fe932a7c027\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__93d9eb74da0e596abfc63fe932a7c027\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F422b5427024d29da6a6e\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"109:1-109:48\">\n<span id=\"おまけ４は難しいシリーズ\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%94%E3%81%AF%E9%9B%A3%E3%81%97%E3%81%84%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA\"><i class=\"fa fa-link\"></i></a>おまけ４（...は難しいシリーズ）</h2>\n<p data-sourcepos=\"111:1-111:50\"><iframe id=\"qiita-embed-content__031da57b18fe0cbe86230219afdceb66\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__031da57b18fe0cbe86230219afdceb66\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F34b40446337a59213a75\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"113:1-113:50\"><iframe id=\"qiita-embed-content__0f7abae22d7046c7dbae57fa149271f2\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__0f7abae22d7046c7dbae57fa149271f2\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Ff8411523cce000de750e\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"115:1-115:50\"><iframe id=\"qiita-embed-content__363dcb66d299a458605ad37a81e4c233\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__363dcb66d299a458605ad37a81e4c233\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F5b11d2e1aace73c36340\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"117:1-117:46\">\n<span id=\"おまけ５営業a短編シリーズ\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%95%E5%96%B6%E6%A5%ADa%E7%9F%AD%E7%B7%A8%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA\"><i class=\"fa fa-link\"></i></a>おまけ５（営業A短編シリーズ）</h2>\n<p data-sourcepos=\"119:1-119:50\"><iframe id=\"qiita-embed-content__d9d298b3bb4451d1b459d5b47a4b4f32\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__d9d298b3bb4451d1b459d5b47a4b4f32\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F03aae7b9e3c70c55f513\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"121:1-121:50\"><iframe id=\"qiita-embed-content__e4f515e5f1040424550c8828753199c0\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__e4f515e5f1040424550c8828753199c0\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F3378ea55b1240d7360a1\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"123:1-123:66\">\n<span id=\"おまけ６エンジニアのためのお仕事問題集\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%96%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AE%E3%81%8A%E4%BB%95%E4%BA%8B%E5%95%8F%E9%A1%8C%E9%9B%86\"><i class=\"fa fa-link\"></i></a>おまけ６（エンジニアのためのお仕事問題集）</h2>\n<p data-sourcepos=\"125:1-126:30\">2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで<strong>無料</strong>公開してます(不定期更新)。<br>\nよろしければどうぞ。</p>\n<p data-sourcepos=\"128:1-128:83\"><a href=\"https://github.com/kaku3/workbooks\" rel=\"nofollow noopener\" target=\"_blank\">エンジニアのためのお仕事問題集</a></p>\n<section class=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p data-sourcepos=\"131:7-131:135\">要求仕様書からそのまま転記していた場合、要求仕様書を書いた人ではないと分からないです。 <a href=\"#fnref-1\" class=\"\">↩</a></p>\n</li>\n</ol>\n</section>\n",
     "body": "## はじめに\n\nAIを活用していますか？\nちょっと分からないことや欲しいプログラムがある時に適当に聞くと嫌な顔ひとつせずに気前よく回答してくれて便利ですよね？\n\nそれまでは、忙しそうなパイセンの顔色を伺って、話しかけても大丈夫そうなタイミングを見計らって、あらかじめ要点をまとめておいた質問を持っていって、緊張しながら質問してよく分からなくても一旦引き下がって調べて…なんてことをしていなかったでしょうか？\n\nもうそんな生活には戻りたくないし戻れないとは思うのですが、ここに重大な罠がありませんか…？ということを考えてみたいと思います。\n\n## IT業界で言うところの仕事って？\n\nIT業界では、発注者よりなんらかの依頼を受けて、その依頼通りのモノを成果物として期日通りに納品することが仕事です。\n\n依頼通りのモノを作る過程として、要件定義、外部設計、開発、試験等の工程が存在し、そのどこかの工程の担当者の一人として、前工程での成果物を元に成果物を作成し後工程に流していく **バケツリレー** をみんなで行っているかと思います。\nアジャイルの場合はバケツの運び方が変わりますが、誰かからの何らかの依頼をバケツに詰めてぐるぐる回して誰かに渡していると思います。\n\nいずれにしても、**前工程の人が『思った通り』の物を成果物として作成して期日通りに納品** することを仕事として考察していきます。\n\n## 成果物が曖昧なんだが…\n\n発注側の担当者が要件定義書に「タイヤが２つついた乗り物」が欲しいとだけ書いてきたとします。\n\nこの文章からは、欲しい乗り物が自転車なのかセグウェイなのかは読み取れないですし、自転車にしても電動なのか、かっこいいロードバイクなのかなどは書いた本人の頭の中にしか答えはなさそうなので[^1]AIに聞いても分からなそうです。\n\nさて。\nこれを、どのように確認したらよいでしょうか？\n\nここで、高確率でかっこいいロードバイクな自転車な気がするからと確認せずにロードバイクを作ったら、実は欲しいのはセグウェイでした、という場合には大事故となってしまいます。\n\n## どうやったら確認ができるようになるの？\n\n「要件　確認方法」などでググるでしょうか？\nあるいは、ハウツー本を求めて本屋に走るでしょうか？\n\nこの課題は発注側と受注側の「コミュニケーション」の課題に分類されると思います。\n「コミュニケーション」の課題は、何をどう感じるかが人によって異なることもあり、こうした方がよいというベストプラクティスはあっても正解はない課題です。\n\nですので、Web検索をしたり、本を読んだりしてセオリーを学ぶことは重要ですが、考え方が十分に馴染んでいて息を吐くように質疑応答ができるようになっていないと実践は難しいというのは想像に難しくないですよね。\n\nそうです。\n\n**「コミュニケーション」の問題は、多くの人と様々なケースで細かく何度も実践して経験値を得ることで少しずつレベルを上げていくしかないのです。**\n\nそう考えると、冒頭の、忙しそうなパイセンと怯えながら質問する後輩は、ストレスのあるやりとりを「経験値が入るタスク」と捉えていれば、仕事上で大変価値のあるスキルの経験値を入手できていたことが分かります。\n\n- 忙しそうなパイセン\n    - 説明が通じた？\n        - なぜ通じなかった？\n        - どうすれば通じる？\n    - 質問に答えたか\n    - etc…\n\n- 怯えながら質問する後輩\n    - 話しかけるタイミングは？\n    - 質問内容の過不足？\n    - メモ\n    - etc…\n\nここでパイセン側が感じるストレスは発注者が感じるであろうストレスを疑似体験できるという貴重な機会であるとも考えられます。\n相手のことを想像できるようになれば、質問票を100件まとめて送られても答えられないから、優先度の高い10件に絞って質問しよう、といったホスピタリティに満ちた判断もできるようになるかもしれません。\n\nAIは、このストレスフルだけれども**仕事上重要なスキルの経験値を入手できる機会を奪っている**とも言えるのではないでしょうか？\n\n## まとめ\n\n案件の予算や期間が厳しくなってきていますが、作業者が細かい作業はAIと壁打ちをしながら進めてもらえれば、さほど指示者の工数をかけることなく期間内に結果を出せていると感じるので、目先のアウトプットを出すためにはAIが必須とは感じています。\n\nただ、結果として、PMや窓口不足問題といった大きな問題に拍車をかけるような流れになっていないかという可能性を考察してみました。\n\n今現在PMをやっている人が仕事をしながら自然に習得していたスキルが、なんらかの代替手段を用意しないと習得できなくなっていることが懸念されました。\n\n未来のAIが進化して、人と人のやり取りの部分もフォローしてくれるとしたら、どのような世界になるのでしょうか。\n映画『マトリックス』のような世界になっていくのでしょうか。\n\n個人的には、今しばらくは **『プロジェクトにおいてモノを作るために必要なコミュニケーション力』** がますます重要視されていくのではないかと思ってはいます。\n\nみんなで仲良く頑張りましょう。\n\n## おまけ０（仕事のコミュ力が上がるかもしれない書籍）\n\n- [なぜ働いていると本が読めなくなるのか](https://www.amazon.co.jp/dp/4087213129)\n\n- [ホスピタリティを育てる物語 「感動の接客」ができるようになる14の力](https://www.amazon.co.jp/dp/4798159832)\n\n- [「具体⇄抽象」トレーニング 思考力が飛躍的にアップする29問](https://www.amazon.co.jp/dp/4569845991)\n\n## おまけ１（新卒エンジニア向け手紙）\n\nhttps://qiita.com/kaku3/items/2c8d4d783be7ce4fc9ea\n\nhttps://qiita.com/kaku3/items/0bf1703cb8d6f84afbc5\n\n## おまけ２（新卒エンジニア向け記事）\n\nhttps://qiita.com/kaku3/items/fb949aa1a53f1f71c796\n\nhttps://qiita.com/kaku3/items/aa2f81cf1e3974b8ad3a\n\nhttps://qiita.com/kaku3/items/937354cc180c8bee823b\n\nhttps://qiita.com/kaku3/items/b1c94328f273c750286b\n\n## おまけ３（パイセン向け記事）\n\nhttps://qiita.com/kaku3/items/cafccb1ee631d9f61190\n\nhttps://qiita.com/kaku3/items/422b5427024d29da6a6e\n\n## おまけ４（...は難しいシリーズ）\n\nhttps://qiita.com/kaku3/items/34b40446337a59213a75\n\nhttps://qiita.com/kaku3/items/f8411523cce000de750e\n\nhttps://qiita.com/kaku3/items/5b11d2e1aace73c36340\n\n## おまけ５（営業A短編シリーズ）\n\nhttps://qiita.com/kaku3/items/03aae7b9e3c70c55f513\n\nhttps://qiita.com/kaku3/items/3378ea55b1240d7360a1\n\n## おまけ６（エンジニアのためのお仕事問題集）\n\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで**無料**公開してます(不定期更新)。\nよろしければどうぞ。\n\n[エンジニアのためのお仕事問題集](https://github.com/kaku3/workbooks)\n\n\n[^1]: 要求仕様書からそのまま転記していた場合、要求仕様書を書いた人ではないと分からないです。\n",
     "coediting": false,
-    "comments_count": 2,
+    "comments_count": 4,
     "created_at": "2024-05-18T14:38:33+09:00",
     "group": null,
     "id": "37a43cfa143361f50315",
-    "likes_count": 16,
+    "likes_count": 94,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 14,
+    "stocks_count": 84,
     "tags": [
       {
         "name": "ポエム",
@@ -40,7 +40,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -54,7 +54,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 9220,
+    "page_views_count": 103892,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -70,7 +70,7 @@ const ARTICLES = [
     "likes_count": 2,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 3,
+    "stocks_count": 4,
     "tags": [
       {
         "name": "ポエム",
@@ -100,7 +100,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -114,7 +114,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2176,
+    "page_views_count": 2514,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -127,7 +127,7 @@ const ARTICLES = [
     "created_at": "2024-04-20T14:24:53+09:00",
     "group": null,
     "id": "1000774f223dfc3ae383",
-    "likes_count": 18,
+    "likes_count": 20,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 19,
@@ -160,7 +160,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -174,7 +174,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 10029,
+    "page_views_count": 10595,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -187,7 +187,7 @@ const ARTICLES = [
     "created_at": "2024-04-06T15:23:07+09:00",
     "group": null,
     "id": "9d7283cb557e3f3e67b7",
-    "likes_count": 28,
+    "likes_count": 30,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 25,
@@ -212,7 +212,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -226,7 +226,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 13492,
+    "page_views_count": 13937,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -239,10 +239,10 @@ const ARTICLES = [
     "created_at": "2024-04-01T01:03:26+09:00",
     "group": null,
     "id": "f3dd9920b1dd29550ac0",
-    "likes_count": 254,
+    "likes_count": 256,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 265,
+    "stocks_count": 274,
     "tags": [
       {
         "name": "初心者",
@@ -260,7 +260,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -274,7 +274,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 50892,
+    "page_views_count": 52018,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -312,7 +312,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -326,7 +326,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3123,
+    "page_views_count": 3268,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -339,10 +339,10 @@ const ARTICLES = [
     "created_at": "2024-01-13T17:51:28+09:00",
     "group": null,
     "id": "2a91956cbbc489108875",
-    "likes_count": 120,
+    "likes_count": 121,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 116,
+    "stocks_count": 117,
     "tags": [
       {
         "name": "ポエム",
@@ -356,7 +356,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -370,7 +370,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 31074,
+    "page_views_count": 31375,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -400,7 +400,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -414,7 +414,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 94388,
+    "page_views_count": 94719,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -430,7 +430,7 @@ const ARTICLES = [
     "likes_count": 2,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 1,
+    "stocks_count": 2,
     "tags": [
       {
         "name": "HTML",
@@ -460,7 +460,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -474,7 +474,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1882,
+    "page_views_count": 2037,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -512,7 +512,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -526,7 +526,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5061,
+    "page_views_count": 5157,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -564,7 +564,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -578,7 +578,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14562,
+    "page_views_count": 14718,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -620,7 +620,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -634,7 +634,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 32221,
+    "page_views_count": 32421,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -647,7 +647,7 @@ const ARTICLES = [
     "created_at": "2023-08-26T16:44:19+09:00",
     "group": null,
     "id": "d519a2b0e35a7a269ea4",
-    "likes_count": 22,
+    "likes_count": 23,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 26,
@@ -672,7 +672,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -686,7 +686,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5095,
+    "page_views_count": 5315,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -702,7 +702,7 @@ const ARTICLES = [
     "likes_count": 316,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 261,
+    "stocks_count": 263,
     "tags": [
       {
         "name": "ポエム",
@@ -720,7 +720,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -734,7 +734,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 73086,
+    "page_views_count": 73443,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -768,7 +768,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -782,7 +782,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14565,
+    "page_views_count": 14644,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -812,7 +812,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -826,7 +826,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3388,
+    "page_views_count": 3457,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -856,7 +856,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -870,7 +870,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 18578,
+    "page_views_count": 18715,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -904,7 +904,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -918,7 +918,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1617,
+    "page_views_count": 1666,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -931,10 +931,10 @@ const ARTICLES = [
     "created_at": "2023-07-08T15:52:46+09:00",
     "group": null,
     "id": "422b5427024d29da6a6e",
-    "likes_count": 63,
+    "likes_count": 64,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 50,
+    "stocks_count": 51,
     "tags": [
       {
         "name": "アジャイル",
@@ -952,7 +952,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -966,7 +966,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 22956,
+    "page_views_count": 23172,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1012,7 +1012,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1026,7 +1026,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2710,
+    "page_views_count": 2834,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1039,7 +1039,7 @@ const ARTICLES = [
     "created_at": "2023-06-17T17:12:40+09:00",
     "group": null,
     "id": "75d98759609820595bc6",
-    "likes_count": 28,
+    "likes_count": 29,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 24,
@@ -1064,7 +1064,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1078,7 +1078,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8289,
+    "page_views_count": 8397,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1120,7 +1120,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1134,7 +1134,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 4051,
+    "page_views_count": 4137,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1147,10 +1147,10 @@ const ARTICLES = [
     "created_at": "2023-06-04T12:11:54+09:00",
     "group": null,
     "id": "34b40446337a59213a75",
-    "likes_count": 277,
+    "likes_count": 279,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 225,
+    "stocks_count": 226,
     "tags": [
       {
         "name": "ポエム",
@@ -1176,7 +1176,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1190,7 +1190,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 46106,
+    "page_views_count": 46497,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1228,7 +1228,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1242,7 +1242,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 24499,
+    "page_views_count": 24700,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1280,7 +1280,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1294,7 +1294,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 16651,
+    "page_views_count": 16773,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1307,10 +1307,10 @@ const ARTICLES = [
     "created_at": "2023-05-05T16:48:29+09:00",
     "group": null,
     "id": "cafccb1ee631d9f61190",
-    "likes_count": 374,
+    "likes_count": 379,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 430,
+    "stocks_count": 433,
     "tags": [
       {
         "name": "ポエム",
@@ -1332,7 +1332,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1346,7 +1346,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 70650,
+    "page_views_count": 71221,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1384,7 +1384,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1398,7 +1398,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2759,
+    "page_views_count": 2814,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1411,10 +1411,10 @@ const ARTICLES = [
     "created_at": "2023-04-22T14:32:54+09:00",
     "group": null,
     "id": "b1c94328f273c750286b",
-    "likes_count": 26,
+    "likes_count": 27,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 18,
+    "stocks_count": 19,
     "tags": [
       {
         "name": "ポエム",
@@ -1436,7 +1436,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1450,7 +1450,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5208,
+    "page_views_count": 5473,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1492,7 +1492,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1506,7 +1506,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 9299,
+    "page_views_count": 9353,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1544,7 +1544,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1558,7 +1558,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5880,
+    "page_views_count": 6174,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1571,10 +1571,10 @@ const ARTICLES = [
     "created_at": "2023-03-21T16:29:50+09:00",
     "group": null,
     "id": "2c8d4d783be7ce4fc9ea",
-    "likes_count": 143,
+    "likes_count": 144,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 91,
+    "stocks_count": 97,
     "tags": [
       {
         "name": "ポエム",
@@ -1596,7 +1596,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1610,7 +1610,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 28510,
+    "page_views_count": 29014,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1648,7 +1648,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1662,7 +1662,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11753,
+    "page_views_count": 12046,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1708,7 +1708,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1722,7 +1722,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2184,
+    "page_views_count": 2227,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1760,7 +1760,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1774,7 +1774,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5617,
+    "page_views_count": 5649,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1820,7 +1820,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1834,7 +1834,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 18214,
+    "page_views_count": 18250,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1847,7 +1847,7 @@ const ARTICLES = [
     "created_at": "2023-01-02T02:20:26+09:00",
     "group": null,
     "id": "3378ea55b1240d7360a1",
-    "likes_count": 31,
+    "likes_count": 32,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 16,
@@ -1872,7 +1872,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1886,7 +1886,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11645,
+    "page_views_count": 11920,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1932,7 +1932,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1946,7 +1946,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1545,
+    "page_views_count": 1570,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1959,7 +1959,7 @@ const ARTICLES = [
     "created_at": "2022-10-29T20:42:55+09:00",
     "group": null,
     "id": "03aae7b9e3c70c55f513",
-    "likes_count": 76,
+    "likes_count": 77,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 24,
@@ -1976,7 +1976,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -1990,7 +1990,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 25319,
+    "page_views_count": 25699,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2024,7 +2024,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2038,7 +2038,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2402,
+    "page_views_count": 2491,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2080,7 +2080,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2094,7 +2094,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1666,
+    "page_views_count": 1694,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2132,7 +2132,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2146,7 +2146,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2231,
+    "page_views_count": 2246,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2180,7 +2180,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2194,7 +2194,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1666,
+    "page_views_count": 1688,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2228,7 +2228,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2242,7 +2242,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11203,
+    "page_views_count": 11234,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2276,7 +2276,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2290,7 +2290,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 7826,
+    "page_views_count": 8075,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2303,10 +2303,10 @@ const ARTICLES = [
     "created_at": "2022-04-02T17:00:03+09:00",
     "group": null,
     "id": "fb949aa1a53f1f71c796",
-    "likes_count": 108,
+    "likes_count": 113,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 76,
+    "stocks_count": 80,
     "tags": [
       {
         "name": "ポエム",
@@ -2328,7 +2328,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2342,7 +2342,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 26024,
+    "page_views_count": 26605,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2355,10 +2355,10 @@ const ARTICLES = [
     "created_at": "2022-03-26T16:44:59+09:00",
     "group": null,
     "id": "f8411523cce000de750e",
-    "likes_count": 83,
+    "likes_count": 84,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 48,
+    "stocks_count": 49,
     "tags": [
       {
         "name": "ポエム",
@@ -2384,7 +2384,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2398,7 +2398,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 25092,
+    "page_views_count": 25520,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2444,7 +2444,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2458,7 +2458,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5830,
+    "page_views_count": 6090,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2500,7 +2500,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2514,7 +2514,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1468,
+    "page_views_count": 1490,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2560,7 +2560,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2574,7 +2574,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 7450,
+    "page_views_count": 7577,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2612,7 +2612,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2626,7 +2626,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2129,
+    "page_views_count": 2171,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2672,7 +2672,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2686,7 +2686,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2793,
+    "page_views_count": 2822,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2724,7 +2724,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2738,7 +2738,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8603,
+    "page_views_count": 8627,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2780,7 +2780,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2794,7 +2794,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1432,
+    "page_views_count": 1465,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2828,7 +2828,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2842,7 +2842,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3880,
+    "page_views_count": 3914,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2876,7 +2876,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2890,7 +2890,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1986,
+    "page_views_count": 2006,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2924,7 +2924,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2938,7 +2938,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2924,
+    "page_views_count": 2944,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2980,7 +2980,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -2994,7 +2994,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3152,
+    "page_views_count": 3181,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3036,7 +3036,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3050,7 +3050,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1743,
+    "page_views_count": 1769,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3084,7 +3084,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3098,7 +3098,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2499,
+    "page_views_count": 2525,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3136,7 +3136,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3150,7 +3150,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2474,
+    "page_views_count": 2507,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3192,7 +3192,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3206,7 +3206,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1894,
+    "page_views_count": 1921,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3240,7 +3240,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3254,7 +3254,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1691,
+    "page_views_count": 1717,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3296,7 +3296,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3310,7 +3310,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1604,
+    "page_views_count": 1632,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3344,7 +3344,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3358,7 +3358,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1023,
+    "page_views_count": 1043,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3404,7 +3404,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3418,7 +3418,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3856,
+    "page_views_count": 3938,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3456,7 +3456,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3470,7 +3470,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1382,
+    "page_views_count": 1396,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3516,7 +3516,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3530,7 +3530,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11654,
+    "page_views_count": 11957,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3568,7 +3568,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3582,7 +3582,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2051,
+    "page_views_count": 2071,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3624,7 +3624,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3638,7 +3638,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 906,
+    "page_views_count": 915,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3680,7 +3680,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3694,7 +3694,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5860,
+    "page_views_count": 6028,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3740,7 +3740,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3754,7 +3754,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 4197,
+    "page_views_count": 4268,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3792,7 +3792,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3806,7 +3806,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1070,
+    "page_views_count": 1100,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3848,7 +3848,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3862,7 +3862,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1874,
+    "page_views_count": 1881,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3908,7 +3908,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3922,7 +3922,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3490,
+    "page_views_count": 3537,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3964,7 +3964,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -3978,7 +3978,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2321,
+    "page_views_count": 2327,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4020,7 +4020,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4034,7 +4034,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2165,
+    "page_views_count": 2173,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4076,7 +4076,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4090,7 +4090,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3325,
+    "page_views_count": 3388,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4128,7 +4128,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4142,7 +4142,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5773,
+    "page_views_count": 5845,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4184,7 +4184,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4198,7 +4198,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1271,
+    "page_views_count": 1289,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4236,7 +4236,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4250,7 +4250,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1884,
+    "page_views_count": 1939,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4288,7 +4288,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4302,7 +4302,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 825,
+    "page_views_count": 834,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4340,7 +4340,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4354,7 +4354,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1065,
+    "page_views_count": 1078,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4396,7 +4396,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4410,7 +4410,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2154,
+    "page_views_count": 2193,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4444,7 +4444,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4458,7 +4458,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1073,
+    "page_views_count": 1109,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4504,7 +4504,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4518,7 +4518,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1583,
+    "page_views_count": 1596,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4560,7 +4560,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4574,7 +4574,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1824,
+    "page_views_count": 1860,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4620,7 +4620,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4634,7 +4634,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1878,
+    "page_views_count": 1916,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4676,7 +4676,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4690,7 +4690,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2213,
+    "page_views_count": 2251,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4736,7 +4736,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4750,7 +4750,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3481,
+    "page_views_count": 3527,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4792,7 +4792,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4806,7 +4806,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 12096,
+    "page_views_count": 12239,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4844,7 +4844,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4858,7 +4858,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1754,
+    "page_views_count": 1780,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4871,10 +4871,10 @@ const ARTICLES = [
     "created_at": "2020-09-05T18:15:37+09:00",
     "group": null,
     "id": "abe98001f74025cec422",
-    "likes_count": 90,
+    "likes_count": 93,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 117,
+    "stocks_count": 122,
     "tags": [
       {
         "name": "HTML",
@@ -4904,7 +4904,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4918,7 +4918,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14321,
+    "page_views_count": 14673,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4956,7 +4956,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -4970,7 +4970,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2626,
+    "page_views_count": 2715,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5004,7 +5004,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5018,7 +5018,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1352,
+    "page_views_count": 1417,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5060,7 +5060,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5074,7 +5074,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3684,
+    "page_views_count": 3699,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5116,7 +5116,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5130,7 +5130,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6134,
+    "page_views_count": 6168,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5168,7 +5168,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5182,7 +5182,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2762,
+    "page_views_count": 2767,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5220,7 +5220,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5234,7 +5234,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1944,
+    "page_views_count": 1961,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5272,7 +5272,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5286,7 +5286,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1739,
+    "page_views_count": 1745,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5328,7 +5328,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5342,7 +5342,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1119,
+    "page_views_count": 1126,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5376,7 +5376,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5390,7 +5390,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1553,
+    "page_views_count": 1563,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5420,7 +5420,7 @@ const ARTICLES = [
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
       "facebook_id": "",
       "followees_count": 3,
-      "followers_count": 599,
+      "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
       "items_count": 102,
@@ -5434,7 +5434,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 933,
+    "page_views_count": 939,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false

@@ -215,7 +215,7 @@ body {
     li {
       border-bottom: 1px solid #ccc;
 
-      a {
+      a[role=qiita-link] {
         cursor: pointer;
         display: block;
         padding: .5rem;
@@ -229,9 +229,24 @@ body {
           background-color: #eee;
         }
 
-        [role=qiita-link] {
-          display: block;
-          padding: .5rem;
+        .article-title {
+          padding: 0 .5rem;
+          font-size: 1rem;
+        }
+        .article-information {
+          display: flex;
+          gap: .5rem;
+          
+          .count {
+            display: flex;
+            align-items: center;
+            font-size: .8rem;
+            color: #aaa;
+
+            > span:first-child {
+              scale: .5;
+            }
+          }
         }
 
         .article-tags-container {
@@ -239,7 +254,7 @@ body {
           flex-wrap: wrap;
           justify-content: end;
           list-style: none;
-          margin: 0;
+          margin: 0 0 0 auto;
           padding: 0;
           gap: .25rem;
 
