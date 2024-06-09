@@ -32,7 +32,7 @@ async function fetch(token, user) {
   console.groupEnd();
   console.info(articles.length);
   fs.writeFileSync(
-    'data/articles.js',
+    'templates/data/articles.js',
     'const ARTICLES = ' + JSON.stringify(articles, null, 2),
     'utf-8'
   );

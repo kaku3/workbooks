@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kaku3 - Qiita記事</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="./main.css" />
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul role="tag-menu"></ul>
+    </nav>
+    <main class="main">
+      <header>
+        <h1 class="title">kaku3 - Qiita記事一覧</h1>
+        <span id="toggle-navigation-menu" class="material-symbols-outlined">
+          menu
+        </span>
+      </header>
+      <form class="keyword-filter">
+        <span class="material-symbols-outlined">
+          search
+        </span>
+        <input id="keyword" type="text" placeholder="検索ワードを入力"/>
+      </form>
+      <ul role="tag-sections" class="tag-sections"></ul>
+
+      <section role="articles" class="search-result"></section>
+      <section class="recommends-container">
+        <label>おすすめ記事</label>
+        <section role="articles" class="recommend-1"></section>
+        <section role="articles" class="recommend-2"></section>
+        <section role="articles" class="recommend-3"></section>
+        <section role="articles" class="recommend-4"></section>
+        <section role="articles" class="recommend-5"></section>
+      </section>
+      <footer>
+        <div class="section">Links</div>
+        <ul class="links">
+          <li>
+            <a href="https://github.com/kaku3/workbooks">エンジニアのためのお仕事問題集</a>
+          </li>
+        </ul>
+        <div>最終更新日 : 2024-06-09</div>
+        <div class="copyright">&copy; kaku3</div>
+      </footer>
+    </main>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+  <script src="./data/articles.js"></script>
+  <script src="./data/tags.js"></script>
+  <script src="./main.js"></script>
+
+  </script>
+</body>
+</html>
