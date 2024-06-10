@@ -1,5 +1,61 @@
 const ARTICLES = [
   {
+    "rendered_body": "<h2 data-sourcepos=\"1:1-1:15\">\n<span id=\"はじめに\" class=\"fragment\"></span><a href=\"#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB\"><i class=\"fa fa-link\"></i></a>はじめに</h2>\n<p data-sourcepos=\"3:1-3:275\">Qiitaに記事を投稿する時に、せっかくなので（？）以前に書いた記事も読んでもらえたらいいなと過去記事の中でもオススメっぽいもののリンクをつけていたのですが、「長い」とコメントを頂きまして。</p>\n<p data-sourcepos=\"5:1-5:234\">どうせなら、ただオススメ記事リンクを作るのではなくて、検索やいいね順表示なんかも対応してついでにソース公開したらいいのではと思い、そんなサイトを作りました。</p>\n<ul data-sourcepos=\"7:1-9:0\">\n<li data-sourcepos=\"7:1-7:81\">サイトは<a href=\"https://kaku3.github.io/workbooks/Qiita/\" rel=\"nofollow noopener\" target=\"_blank\">こちら(GitHub Pages)</a>\n</li>\n<li data-sourcepos=\"8:1-9:0\">ソースは<a href=\"https://github.com/kaku3/workbooks/tree/main/09_Qiita%E8%A8%98%E4%BA%8B%E7%B0%A1%E6%98%93%E4%B8%80%E8%A6%A7/10_src\" rel=\"nofollow noopener\" target=\"_blank\">こちら(GitHub)</a>\n</li>\n</ul>\n<p data-sourcepos=\"10:1-10:253\">QiitaのAPIを用いてデータを取得して、簡単な html + js + css で表示しているだけですので、データの差し替えを行えば、汎用の投稿記事のインデックスとしてもご利用いただけると思います。</p>\n<ul data-sourcepos=\"12:1-14:0\">\n<li data-sourcepos=\"12:1-14:0\">図：そんなサイト<br>\n<a href=\"https://camo.qiitausercontent.com/475b95cdaac46a01c5bb1b7d4a3cf0bd733c5396/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f32363261383263622d633261322d643936312d333232372d6637636633656636306163382e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=3608c0d96442ce27ded2447324350a80\" alt=\"投稿記事インデックス.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=616c6d640d07887f6cecde644d13085f 1x\" loading=\"lazy\"></a>\n</li>\n</ul>\n<p data-sourcepos=\"15:1-15:155\">本稿では、Qiita投稿記事のインデックスサイトを制作するにあたって検討したことなどを書いておこうと思います。</p>\n<h2 data-sourcepos=\"17:1-17:27\">\n<span id=\"課題長いおまけ\" class=\"fragment\"></span><a href=\"#%E8%AA%B2%E9%A1%8C%E9%95%B7%E3%81%84%E3%81%8A%E3%81%BE%E3%81%91\"><i class=\"fa fa-link\"></i></a>課題：長いおまけ</h2>\n<p data-sourcepos=\"19:1-20:51\">コメントを頂いたのは、以下の「おまけ」となります。<br>\n確かに長いのでなんとかしたいです。</p>\n<ul data-sourcepos=\"22:1-24:0\">\n<li data-sourcepos=\"22:1-24:0\">図：長いおまけ<br>\n<a href=\"https://camo.qiitausercontent.com/1ed8320ab56a0e3f7f4c2b98e89beb52b8d518fa/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f63336161306135342d343264622d666238612d313535322d6334663062636463333066372e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fc3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=044aa96d33da27ee9223afb25c84134f\" alt=\"長いおまけ.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fc3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=a576a87b8ffa9c65af83abba5e932bb3 1x\" loading=\"lazy\"></a>\n</li>\n</ul>\n<h2 data-sourcepos=\"25:1-25:15\">\n<span id=\"要件定義\" class=\"fragment\"></span><a href=\"#%E8%A6%81%E4%BB%B6%E5%AE%9A%E7%BE%A9\"><i class=\"fa fa-link\"></i></a>要件定義</h2>\n<p data-sourcepos=\"27:1-27:87\">さっくりとサイトを作るので、以下の通り要件を定義しました。</p>\n<ul data-sourcepos=\"29:1-43:0\">\n<li data-sourcepos=\"29:1-32:0\">\n<p data-sourcepos=\"29:3-31:78\">メンテナンス性が高いこと<br>\n今後記事追加を行った時のメンテナンス作業が大変であると更新されなくなります。<br>\nメンテナンス作業は簡単であることが望ましいでしょう。</p>\n</li>\n<li data-sourcepos=\"33:1-36:0\">\n<p data-sourcepos=\"33:3-35:108\">Qiita 側の負荷を上げないこと<br>\nAPI を用いてユーザーに対する記事一覧を取得できます。<br>\nただ、そのAPIの呼び出し回数が多くなりすぎないようにした方がいいでしょう。</p>\n</li>\n<li data-sourcepos=\"37:1-39:0\">\n<p data-sourcepos=\"37:3-38:108\">費用が発生しないこと<br>\n営利目的ではないので、収入がなくても運用を継続できることが望ましいです。</p>\n</li>\n<li data-sourcepos=\"40:1-43:0\">\n<p data-sourcepos=\"40:3-42:105\">最小のページ遷移であること<br>\nリンクによるページ遷移毎にユーザーの離脱が懸念されます。<br>\n最小のページ遷移でなるべく多くの記事の一覧を見られるようにしたいです。</p>\n</li>\n</ul>\n<h2 data-sourcepos=\"44:1-44:30\">\n<span id=\"設計検討全体構成\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E5%85%A8%E4%BD%93%E6%A7%8B%E6%88%90\"><i class=\"fa fa-link\"></i></a>設計検討：全体構成</h2>\n<p data-sourcepos=\"46:1-47:144\">そんなに頻繁に更新する必要もないので、Qiita API で自分の記事一覧を取得して、json を保存する方針としてみました。<br>\n取得した json を読み込んで、検索やリスト表示をできる簡単な html を作成するのがよいかなと考えました。</p>\n<p data-sourcepos=\"49:1-49:45\">以下に構成図を載せておきます。</p>\n<ul data-sourcepos=\"51:1-57:0\">\n<li data-sourcepos=\"51:1-57:0\">\n<p data-sourcepos=\"51:3-52:129\">図：構成図<br>\n<a href=\"https://camo.qiitausercontent.com/24328e5193996b55c9862212eb0bc403d34fa9d6/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f64666565363838392d376263312d326636632d343736352d6239343632363135353633622e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fdfee6889-7bc1-2f6c-4765-b9462615563b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8bf5e74aaa3be96d993cf285689e2a4a\" alt=\"設計.drawio.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/dfee6889-7bc1-2f6c-4765-b9462615563b.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fdfee6889-7bc1-2f6c-4765-b9462615563b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=ef05d21ca160a55e53f1f1ac47e92d99 1x\" loading=\"lazy\"></a></p>\n<ul data-sourcepos=\"54:5-57:0\">\n<li data-sourcepos=\"54:5-54:132\">素の html ファイルでは json をそのまま読み込めないので、js ファイルとして保存としています</li>\n<li data-sourcepos=\"55:5-55:100\">取得には nodejs + axios を利用しましたが、好みの言語でよいと思います</li>\n<li data-sourcepos=\"56:5-57:0\">GPT先生に要件をざっくり伝えると大体作ってくれると思います</li>\n</ul>\n</li>\n</ul>\n<h2 data-sourcepos=\"58:1-58:24\">\n<span id=\"設計検討タグ\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E3%82%BF%E3%82%B0\"><i class=\"fa fa-link\"></i></a>設計検討：タグ</h2>\n<p data-sourcepos=\"60:1-61:273\">記事の検索用にキーワード検索も作成しますが、わたしの記事について能動的にキーワード検索を行うユーザーがいるとは考えにくいです。<br>\nそれよりは、何らかのキーワードを入力することなく、画面上に何か気になるキーワードが配置されていて、それをクリックすることで『何らかの記事一覧が表示される仕組み』があるとよさそうです。</p>\n<h3 data-sourcepos=\"63:1-63:31\">\n<span id=\"1-タグをベタで表示\" class=\"fragment\"></span><a href=\"#1-%E3%82%BF%E3%82%B0%E3%82%92%E3%83%99%E3%82%BF%E3%81%A7%E8%A1%A8%E7%A4%BA\"><i class=\"fa fa-link\"></i></a>1. タグをベタで表示</h3>\n<p data-sourcepos=\"65:1-66:220\">Qiitaの記事には最大5つまでのタグをつけられるので、そのタグを表示する事を考えます。<br>\nタグの横にその記事がついているタグの件数も表示してあげたら大分親切でしょう、という仮定で試作をすることにしましたが、<strong>仮説はまったく的外れでした。</strong></p>\n<p data-sourcepos=\"68:1-68:222\">試作したデータを確認すると、<strong>100種類を超えるタグがついているが、そのほとんどのタグが 1記事でしか利用されていない</strong>というカオスな状況になっていました。</p>\n<ul data-sourcepos=\"70:1-72:0\">\n<li data-sourcepos=\"70:1-72:0\">図：ほとんど一度しか使われていないタグ<br>\n<a href=\"https://camo.qiitausercontent.com/c14e1bd574e85bcc4caf7753df51d25e1ee7f53d/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36386363393939362d643264332d343331322d396131622d3736386636653837666165662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68cc9996-d2d3-4312-9a1b-768f6e87faef.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a6eb0f22d8a60df04e06f06d5d843930\" alt=\"タグ一覧.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68cc9996-d2d3-4312-9a1b-768f6e87faef.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68cc9996-d2d3-4312-9a1b-768f6e87faef.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=872dd1b3c99227491aad689b1006b31f 1x\" loading=\"lazy\"></a>\n</li>\n</ul>\n<p data-sourcepos=\"73:1-73:369\">このタグを辞書順でソートして表示して『お好きなものをクリックしてください』と言ってもなかなかクリックしてもらえないでしょうし、クリックしてくれたとしても、１件しか結果が出てこないのはユーザー体験としては微妙で、クリックしてもらえなくなりそうです。</p>\n<h3 data-sourcepos=\"75:1-75:31\">\n<span id=\"2-タグをグループ化\" class=\"fragment\"></span><a href=\"#2-%E3%82%BF%E3%82%B0%E3%82%92%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E5%8C%96\"><i class=\"fa fa-link\"></i></a>2. タグをグループ化</h3>\n<p data-sourcepos=\"77:1-77:156\">ということで、タグをある程度意味のあるグループでグループ化することにします。（上図の色のついた帯の単位）</p>\n<p data-sourcepos=\"79:1-80:240\">このグループ化ですが <strong>GPT4o に、『いい感じにグループ化して』</strong> とお願いしてさっくりグループを作ってもらいました。（特に難しいプロンプトは指定していないです。）<br>\n若干微妙なところもあったので手で修正しましたが、大体はいい感じでした。こういうところこそ人間が考えるべきと思っていたのですが、そうでもないのだなあと思いました。</p>\n<h3 data-sourcepos=\"82:1-82:36\">\n<span id=\"3-アコーディオンui化\" class=\"fragment\"></span><a href=\"#3-%E3%82%A2%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%82%AA%E3%83%B3ui%E5%8C%96\"><i class=\"fa fa-link\"></i></a>3. アコーディオンUI化？</h3>\n<p data-sourcepos=\"84:1-85:218\">100種類を超えるタグを縦に並べると1画面に収まりません。<br>\nアコーディオンUIにすれば収まりもよくなりますが、タググループをクリックしてわざわざ中身を見てもらえるかというとそんなこともないような気がしました。</p>\n<h3 data-sourcepos=\"87:1-87:43\">\n<span id=\"4-タググループの一覧を表示\" class=\"fragment\"></span><a href=\"#4-%E3%82%BF%E3%82%B0%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%AE%E4%B8%80%E8%A6%A7%E3%82%92%E8%A1%A8%E7%A4%BA\"><i class=\"fa fa-link\"></i></a>4. タググループの一覧を表示</h3>\n<p data-sourcepos=\"89:1-89:159\">であれば、左メニューとは別にページの上部にタググループ一覧を表示する欄を設けるのがよいのではと考えました。</p>\n<p data-sourcepos=\"91:1-91:140\"><a href=\"https://camo.qiitausercontent.com/60577c2bd1d94dda8958b6b80bf36354f9c03006/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36383034326333392d346332642d393531662d653431332d6338376330656562633961332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68042c39-4c2d-951f-e413-c87c0eebc9a3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2aecaac3f5e7d0c9326d60b47fa7362c\" alt=\"タググループ一覧.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68042c39-4c2d-951f-e413-c87c0eebc9a3.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68042c39-4c2d-951f-e413-c87c0eebc9a3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=18530574f3b51fba2f3ee118906ae094 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"93:1-93:314\">タググループに件数をつけたい気持ちにもなりましたが、ユーザー的には「興味のあるトピックをクリックする」のであって、「10件記事のあるトピックをクリックするのではない」という整理にして件数をつけるのは見送りました。</p>\n<p data-sourcepos=\"95:1-95:116\"><strong>『思いついたものをすべて実装しない』</strong> ことも個人開発では大事かなと思います。</p>\n<h2 data-sourcepos=\"97:1-97:69\">\n<span id=\"設計検討おすすめ記事いいね順ストック順\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E8%A8%98%E4%BA%8B%E3%81%84%E3%81%84%E3%81%AD%E9%A0%86%E3%82%B9%E3%83%88%E3%83%83%E3%82%AF%E9%A0%86\"><i class=\"fa fa-link\"></i></a>設計検討：おすすめ記事・いいね順・ストック順</h2>\n<p data-sourcepos=\"99:1-100:118\">このサイトを作る元々の目的は「おまけ記事リンク」の表示なので、この記事リストがファーストビューに入ることが優先順位としては高いです。ひょっとしたら検索ボックスやタググループよりも上に表示された方がよいのではということも検討しましたが、更新頻度も高いわけではないので現在の配置順序としました。<br>\n2回以上訪問される方が、すぐに新しい情報にアクセスできたらいいなという整理です。</p>\n<p data-sourcepos=\"102:1-103:165\">そして、ここは仮説の域を出ませんが、いいね数やストック数の多い記事程読みたくなる可能性が高いと思われたのでそれらの値も表示するようにしてみました。であれば、いいね数やストック数のランキングも近くに配置した方がよいという考えで、タブUIで配置してみました。<br>\nランキングは、Top20も見ると飽きるかなというところで、ページャーなども設けず、Top20が表示されるだけのUIとしました。</p>\n<p data-sourcepos=\"105:1-105:134\"><a href=\"https://camo.qiitausercontent.com/ce98ceb161d8a9be37632e08585fd4b750e52d7c/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f35646432663637662d646437342d386339322d343434362d6335616163633934326163662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5dd2f67f-dd74-8c92-4446-c5aacc942acf.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8e492ce3c09c4c1d94fa8fd64273f336\" alt=\"おすすめ記事.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5dd2f67f-dd74-8c92-4446-c5aacc942acf.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5dd2f67f-dd74-8c92-4446-c5aacc942acf.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=11b8301860bee4fd7a589983666da9c3 1x\" loading=\"lazy\"></a></p>\n<h2 data-sourcepos=\"107:1-107:26\">\n<span id=\"設計検討タブui\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E3%82%BF%E3%83%96ui\"><i class=\"fa fa-link\"></i></a>設計検討：タブUI</h2>\n<p data-sourcepos=\"109:1-109:218\">『全体的にデザインには凝らない』というコンセプトで作っていますが、ここだけ「あまり見かけないUI」にして気を引けないか試してみることにしてみました。</p>\n<p data-sourcepos=\"111:1-111:40\"><strong>クリックしてほしいので。</strong></p>\n<p data-sourcepos=\"113:1-113:124\"><a href=\"https://camo.qiitausercontent.com/c3d88a8b7a82f518a6e9fb4a6d782678a879e845/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38353035613735352d666130642d376666652d323635382d3366343233643937613366362e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8505a755-fa0d-7ffe-2658-3f423d97a3f6.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=92f2a4ba404af1f8977c62093df0f46b\" alt=\"タブUI.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8505a755-fa0d-7ffe-2658-3f423d97a3f6.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8505a755-fa0d-7ffe-2658-3f423d97a3f6.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=87eabe3688c4922fc04699a488ddf33d 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"115:1-116:106\">地味にタブの重ね合わせをしました。<br>\ncss だけで簡単にできるかな？とGPT先生に聞いたらサクッと教えてくれました。</p>\n<h2 data-sourcepos=\"118:1-118:12\">\n<span id=\"まとめ\" class=\"fragment\"></span><a href=\"#%E3%81%BE%E3%81%A8%E3%82%81\"><i class=\"fa fa-link\"></i></a>まとめ</h2>\n<p data-sourcepos=\"120:1-122:225\">今回のUI設計では、<strong>100種類を超える多種多様なタグを並べてもクリックされないのでは？</strong> という仮説を立てました。<br>\nこういう仮説自体は今のところAIは立ててくれない気がしています。<br>\nただ、「タグをまとめたら便利になるハズなのでまとめて」と問いかければ、複雑なプロンプトなどを書かなくても、かなりいい感じの回答をくれる実感もあります。</p>\n<p data-sourcepos=\"124:1-124:219\">そうしてみると、人間としては、仮説を立てたり、やりたいことを明確にしていくなど能動的に動くことの重要度が上がっていくのかもなとぼんやり思いました。</p>\n<h2 data-sourcepos=\"126:1-126:12\">\n<span id=\"おまけ\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91\"><i class=\"fa fa-link\"></i></a>おまけ</h2>\n<ul data-sourcepos=\"128:1-132:0\">\n<li data-sourcepos=\"128:1-129:92\">\n<a href=\"https://kaku3.github.io/workbooks/Qiita/\" rel=\"nofollow noopener\" target=\"_blank\">kaku3 - Qiita記事一覧</a><br>\nポエム多め。PM、メンター、未経験エンジニアや新卒向け記事など。</li>\n<li data-sourcepos=\"130:1-132:0\">\n<a href=\"https://github.com/kaku3/workbooks\" rel=\"nofollow noopener\" target=\"_blank\">エンジニアのためのお仕事問題集</a><br>\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで<strong>無料</strong>公開してます(不定期更新)。</li>\n</ul>\n<p data-sourcepos=\"133:1-133:30\">よろしければどうぞ。</p>\n",
+    "body": "## はじめに\n\nQiitaに記事を投稿する時に、せっかくなので（？）以前に書いた記事も読んでもらえたらいいなと過去記事の中でもオススメっぽいもののリンクをつけていたのですが、「長い」とコメントを頂きまして。\n\nどうせなら、ただオススメ記事リンクを作るのではなくて、検索やいいね順表示なんかも対応してついでにソース公開したらいいのではと思い、そんなサイトを作りました。\n\n- サイトは[こちら(GitHub Pages)](https://kaku3.github.io/workbooks/Qiita/)\n- ソースは[こちら(GitHub)](https://github.com/kaku3/workbooks/tree/main/09_Qiita%E8%A8%98%E4%BA%8B%E7%B0%A1%E6%98%93%E4%B8%80%E8%A6%A7/10_src)\n\nQiitaのAPIを用いてデータを取得して、簡単な html + js + css で表示しているだけですので、データの差し替えを行えば、汎用の投稿記事のインデックスとしてもご利用いただけると思います。\n\n- 図：そんなサイト\n![投稿記事インデックス.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png)\n\n本稿では、Qiita投稿記事のインデックスサイトを制作するにあたって検討したことなどを書いておこうと思います。\n\n## 課題：長いおまけ\n\nコメントを頂いたのは、以下の「おまけ」となります。\n確かに長いのでなんとかしたいです。\n\n- 図：長いおまけ\n![長いおまけ.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png)\n\n## 要件定義\n\nさっくりとサイトを作るので、以下の通り要件を定義しました。\n\n- メンテナンス性が高いこと\n今後記事追加を行った時のメンテナンス作業が大変であると更新されなくなります。\nメンテナンス作業は簡単であることが望ましいでしょう。\n\n- Qiita 側の負荷を上げないこと\nAPI を用いてユーザーに対する記事一覧を取得できます。\nただ、そのAPIの呼び出し回数が多くなりすぎないようにした方がいいでしょう。\n\n- 費用が発生しないこと\n営利目的ではないので、収入がなくても運用を継続できることが望ましいです。\n\n- 最小のページ遷移であること\nリンクによるページ遷移毎にユーザーの離脱が懸念されます。\n最小のページ遷移でなるべく多くの記事の一覧を見られるようにしたいです。\n\n## 設計検討：全体構成\n\nそんなに頻繁に更新する必要もないので、Qiita API で自分の記事一覧を取得して、json を保存する方針としてみました。\n取得した json を読み込んで、検索やリスト表示をできる簡単な html を作成するのがよいかなと考えました。\n\n以下に構成図を載せておきます。\n\n- 図：構成図\n![設計.drawio.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/dfee6889-7bc1-2f6c-4765-b9462615563b.png)\n\n    - 素の html ファイルでは json をそのまま読み込めないので、js ファイルとして保存としています\n    - 取得には nodejs + axios を利用しましたが、好みの言語でよいと思います\n    - GPT先生に要件をざっくり伝えると大体作ってくれると思います\n\n## 設計検討：タグ\n\n記事の検索用にキーワード検索も作成しますが、わたしの記事について能動的にキーワード検索を行うユーザーがいるとは考えにくいです。\nそれよりは、何らかのキーワードを入力することなく、画面上に何か気になるキーワードが配置されていて、それをクリックすることで『何らかの記事一覧が表示される仕組み』があるとよさそうです。\n\n### 1. タグをベタで表示\n\nQiitaの記事には最大5つまでのタグをつけられるので、そのタグを表示する事を考えます。\nタグの横にその記事がついているタグの件数も表示してあげたら大分親切でしょう、という仮定で試作をすることにしましたが、**仮説はまったく的外れでした。**\n\n試作したデータを確認すると、**100種類を超えるタグがついているが、そのほとんどのタグが 1記事でしか利用されていない**というカオスな状況になっていました。\n\n- 図：ほとんど一度しか使われていないタグ\n![タグ一覧.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68cc9996-d2d3-4312-9a1b-768f6e87faef.png)\n\nこのタグを辞書順でソートして表示して『お好きなものをクリックしてください』と言ってもなかなかクリックしてもらえないでしょうし、クリックしてくれたとしても、１件しか結果が出てこないのはユーザー体験としては微妙で、クリックしてもらえなくなりそうです。\n\n### 2. タグをグループ化\n\nということで、タグをある程度意味のあるグループでグループ化することにします。（上図の色のついた帯の単位）\n\nこのグループ化ですが **GPT4o に、『いい感じにグループ化して』** とお願いしてさっくりグループを作ってもらいました。（特に難しいプロンプトは指定していないです。）\n若干微妙なところもあったので手で修正しましたが、大体はいい感じでした。こういうところこそ人間が考えるべきと思っていたのですが、そうでもないのだなあと思いました。\n\n### 3. アコーディオンUI化？\n\n100種類を超えるタグを縦に並べると1画面に収まりません。\nアコーディオンUIにすれば収まりもよくなりますが、タググループをクリックしてわざわざ中身を見てもらえるかというとそんなこともないような気がしました。\n\n### 4. タググループの一覧を表示\n\nであれば、左メニューとは別にページの上部にタググループ一覧を表示する欄を設けるのがよいのではと考えました。\n\n![タググループ一覧.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68042c39-4c2d-951f-e413-c87c0eebc9a3.png)\n\nタググループに件数をつけたい気持ちにもなりましたが、ユーザー的には「興味のあるトピックをクリックする」のであって、「10件記事のあるトピックをクリックするのではない」という整理にして件数をつけるのは見送りました。\n\n**『思いついたものをすべて実装しない』** ことも個人開発では大事かなと思います。\n\n## 設計検討：おすすめ記事・いいね順・ストック順\n\nこのサイトを作る元々の目的は「おまけ記事リンク」の表示なので、この記事リストがファーストビューに入ることが優先順位としては高いです。ひょっとしたら検索ボックスやタググループよりも上に表示された方がよいのではということも検討しましたが、更新頻度も高いわけではないので現在の配置順序としました。\n2回以上訪問される方が、すぐに新しい情報にアクセスできたらいいなという整理です。\n\nそして、ここは仮説の域を出ませんが、いいね数やストック数の多い記事程読みたくなる可能性が高いと思われたのでそれらの値も表示するようにしてみました。であれば、いいね数やストック数のランキングも近くに配置した方がよいという考えで、タブUIで配置してみました。\nランキングは、Top20も見ると飽きるかなというところで、ページャーなども設けず、Top20が表示されるだけのUIとしました。\n\n![おすすめ記事.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5dd2f67f-dd74-8c92-4446-c5aacc942acf.png)\n\n## 設計検討：タブUI\n\n『全体的にデザインには凝らない』というコンセプトで作っていますが、ここだけ「あまり見かけないUI」にして気を引けないか試してみることにしてみました。\n\n**クリックしてほしいので。**\n\n![タブUI.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8505a755-fa0d-7ffe-2658-3f423d97a3f6.png)\n\n地味にタブの重ね合わせをしました。\ncss だけで簡単にできるかな？とGPT先生に聞いたらサクッと教えてくれました。\n\n## まとめ\n\n今回のUI設計では、**100種類を超える多種多様なタグを並べてもクリックされないのでは？** という仮説を立てました。\nこういう仮説自体は今のところAIは立ててくれない気がしています。\nただ、「タグをまとめたら便利になるハズなのでまとめて」と問いかければ、複雑なプロンプトなどを書かなくても、かなりいい感じの回答をくれる実感もあります。\n\nそうしてみると、人間としては、仮説を立てたり、やりたいことを明確にしていくなど能動的に動くことの重要度が上がっていくのかもなとぼんやり思いました。\n\n## おまけ\n\n- [kaku3 - Qiita記事一覧](https://kaku3.github.io/workbooks/Qiita/)\nポエム多め。PM、メンター、未経験エンジニアや新卒向け記事など。\n- [エンジニアのためのお仕事問題集](https://github.com/kaku3/workbooks)\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで**無料**公開してます(不定期更新)。\n\nよろしければどうぞ。\n",
+    "coediting": false,
+    "comments_count": 0,
+    "created_at": "2024-06-10T01:18:37+09:00",
+    "group": null,
+    "id": "f83558da152495b2ae91",
+    "likes_count": 2,
+    "private": false,
+    "reactions_count": 0,
+    "stocks_count": 1,
+    "tags": [
+      {
+        "name": "ポエム",
+        "versions": []
+      },
+      {
+        "name": "設計",
+        "versions": []
+      },
+      {
+        "name": "AI",
+        "versions": []
+      },
+      {
+        "name": "個人開発",
+        "versions": []
+      }
+    ],
+    "title": "Qiita投稿記事のインデックスサイトをつくってみた",
+    "updated_at": "2024-06-10T01:18:37+09:00",
+    "url": "https://qiita.com/kaku3/items/f83558da152495b2ae91",
+    "user": {
+      "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
+      "facebook_id": "",
+      "followees_count": 3,
+      "followers_count": 611,
+      "github_login_name": "kaku3",
+      "id": "kaku3",
+      "items_count": 103,
+      "linkedin_id": "",
+      "location": "",
+      "name": "",
+      "organization": "",
+      "permanent_id": 136165,
+      "profile_image_url": "https://qiita-image-store.s3.amazonaws.com/0/136165/profile-images/1473719863",
+      "team_only": false,
+      "twitter_screen_name": "kaku3",
+      "website_url": ""
+    },
+    "page_views_count": 306,
+    "team_membership": null,
+    "organization_url_name": null,
+    "slide": false
+  },
+  {
     "rendered_body": "<h2 data-sourcepos=\"1:1-1:15\">\n<span id=\"はじめに\" class=\"fragment\"></span><a href=\"#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB\"><i class=\"fa fa-link\"></i></a>はじめに</h2>\n<p data-sourcepos=\"3:1-4:174\">AIを活用していますか？<br>\nちょっと分からないことや欲しいプログラムがある時に適当に聞くと嫌な顔ひとつせずに気前よく回答してくれて便利ですよね？</p>\n<p data-sourcepos=\"6:1-6:366\">それまでは、忙しそうなパイセンの顔色を伺って、話しかけても大丈夫そうなタイミングを見計らって、あらかじめ要点をまとめておいた質問を持っていって、緊張しながら質問してよく分からなくても一旦引き下がって調べて…なんてことをしていなかったでしょうか？</p>\n<p data-sourcepos=\"8:1-8:189\">もうそんな生活には戻りたくないし戻れないとは思うのですが、ここに重大な罠がありませんか…？ということを考えてみたいと思います。</p>\n<h2 data-sourcepos=\"10:1-10:47\">\n<span id=\"it業界で言うところの仕事って\" class=\"fragment\"></span><a href=\"#it%E6%A5%AD%E7%95%8C%E3%81%A7%E8%A8%80%E3%81%86%E3%81%A8%E3%81%93%E3%82%8D%E3%81%AE%E4%BB%95%E4%BA%8B%E3%81%A3%E3%81%A6\"><i class=\"fa fa-link\"></i></a>IT業界で言うところの仕事って？</h2>\n<p data-sourcepos=\"12:1-12:167\">IT業界では、発注者よりなんらかの依頼を受けて、その依頼通りのモノを成果物として期日通りに納品することが仕事です。</p>\n<p data-sourcepos=\"14:1-15:192\">依頼通りのモノを作る過程として、要件定義、外部設計、開発、試験等の工程が存在し、そのどこかの工程の担当者の一人として、前工程での成果物を元に成果物を作成し後工程に流していく <strong>バケツリレー</strong> をみんなで行っているかと思います。<br>\nアジャイルの場合はバケツの運び方が変わりますが、誰かからの何らかの依頼をバケツに詰めてぐるぐる回して誰かに渡していると思います。</p>\n<p data-sourcepos=\"17:1-17:185\">いずれにしても、<strong>前工程の人が『思った通り』の物を成果物として作成して期日通りに納品</strong> することを仕事として考察していきます。</p>\n<h2 data-sourcepos=\"19:1-19:36\">\n<span id=\"成果物が曖昧なんだが\" class=\"fragment\"></span><a href=\"#%E6%88%90%E6%9E%9C%E7%89%A9%E3%81%8C%E6%9B%96%E6%98%A7%E3%81%AA%E3%82%93%E3%81%A0%E3%81%8C\"><i class=\"fa fa-link\"></i></a>成果物が曖昧なんだが…</h2>\n<p data-sourcepos=\"21:1-21:135\">発注側の担当者が要件定義書に「タイヤが２つついた乗り物」が欲しいとだけ書いてきたとします。</p>\n<p data-sourcepos=\"23:1-23:324\">この文章からは、欲しい乗り物が自転車なのかセグウェイなのかは読み取れないですし、自転車にしても電動なのか、かっこいいロードバイクなのかなどは書いた本人の頭の中にしか答えはなさそうなので<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>AIに聞いても分からなそうです。</p>\n<p data-sourcepos=\"25:1-26:66\">さて。<br>\nこれを、どのように確認したらよいでしょうか？</p>\n<p data-sourcepos=\"28:1-28:252\">ここで、高確率でかっこいいロードバイクな自転車な気がするからと確認せずにロードバイクを作ったら、実は欲しいのはセグウェイでした、という場合には大事故となってしまいます。</p>\n<h2 data-sourcepos=\"30:1-30:60\">\n<span id=\"どうやったら確認ができるようになるの\" class=\"fragment\"></span><a href=\"#%E3%81%A9%E3%81%86%E3%82%84%E3%81%A3%E3%81%9F%E3%82%89%E7%A2%BA%E8%AA%8D%E3%81%8C%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88%E3%81%86%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%AE\"><i class=\"fa fa-link\"></i></a>どうやったら確認ができるようになるの？</h2>\n<p data-sourcepos=\"32:1-33:75\">「要件　確認方法」などでググるでしょうか？<br>\nあるいは、ハウツー本を求めて本屋に走るでしょうか？</p>\n<p data-sourcepos=\"35:1-36:222\">この課題は発注側と受注側の「コミュニケーション」の課題に分類されると思います。<br>\n「コミュニケーション」の課題は、何をどう感じるかが人によって異なることもあり、こうした方がよいというベストプラクティスはあっても正解はない課題です。</p>\n<p data-sourcepos=\"38:1-38:297\">ですので、Web検索をしたり、本を読んだりしてセオリーを学ぶことは重要ですが、考え方が十分に馴染んでいて息を吐くように質疑応答ができるようになっていないと実践は難しいというのは想像に難しくないですよね。</p>\n<p data-sourcepos=\"40:1-40:15\">そうです。</p>\n<p data-sourcepos=\"42:1-42:208\"><strong>「コミュニケーション」の問題は、多くの人と様々なケースで細かく何度も実践して経験値を得ることで少しずつレベルを上げていくしかないのです。</strong></p>\n<p data-sourcepos=\"44:1-44:300\">そう考えると、冒頭の、忙しそうなパイセンと怯えながら質問する後輩は、ストレスのあるやりとりを「経験値が入るタスク」と捉えていれば、仕事上で大変価値のあるスキルの経験値を入手できていたことが分かります。</p>\n<ul data-sourcepos=\"46:1-58:0\">\n<li data-sourcepos=\"46:1-52:0\">\n<p data-sourcepos=\"46:3-46:29\">忙しそうなパイセン</p>\n<ul data-sourcepos=\"47:5-52:0\">\n<li data-sourcepos=\"47:5-49:37\">説明が通じた？\n<ul data-sourcepos=\"48:9-49:37\">\n<li data-sourcepos=\"48:9-48:37\">なぜ通じなかった？</li>\n<li data-sourcepos=\"49:9-49:37\">どうすれば通じる？</li>\n</ul>\n</li>\n<li data-sourcepos=\"50:5-50:27\">質問に答えたか</li>\n<li data-sourcepos=\"51:5-52:0\">etc…</li>\n</ul>\n</li>\n<li data-sourcepos=\"53:1-58:0\">\n<p data-sourcepos=\"53:3-53:35\">怯えながら質問する後輩</p>\n<ul data-sourcepos=\"54:5-58:0\">\n<li data-sourcepos=\"54:5-54:42\">話しかけるタイミングは？</li>\n<li data-sourcepos=\"55:5-55:33\">質問内容の過不足？</li>\n<li data-sourcepos=\"56:5-56:12\">メモ</li>\n<li data-sourcepos=\"57:5-58:0\">etc…</li>\n</ul>\n</li>\n</ul>\n<p data-sourcepos=\"59:1-60:281\">ここでパイセン側が感じるストレスは発注者が感じるであろうストレスを疑似体験できるという貴重な機会であるとも考えられます。<br>\n相手のことを想像できるようになれば、質問票を100件まとめて送られても答えられないから、優先度の高い10件に絞って質問しよう、といったホスピタリティに満ちた判断もできるようになるかもしれません。</p>\n<p data-sourcepos=\"62:1-62:180\">AIは、このストレスフルだけれども<strong>仕事上重要なスキルの経験値を入手できる機会を奪っている</strong>とも言えるのではないでしょうか？</p>\n<h2 data-sourcepos=\"64:1-64:12\">\n<span id=\"まとめ\" class=\"fragment\"></span><a href=\"#%E3%81%BE%E3%81%A8%E3%82%81\"><i class=\"fa fa-link\"></i></a>まとめ</h2>\n<p data-sourcepos=\"66:1-66:346\">案件の予算や期間が厳しくなってきていますが、作業者が細かい作業はAIと壁打ちをしながら進めてもらえれば、さほど指示者の工数をかけることなく期間内に結果を出せていると感じるので、目先のアウトプットを出すためにはAIが必須とは感じています。</p>\n<p data-sourcepos=\"68:1-68:185\">ただ、結果として、PMや窓口不足問題といった大きな問題に拍車をかけるような流れになっていないかという可能性を考察してみました。</p>\n<p data-sourcepos=\"70:1-70:212\">今現在PMをやっている人が仕事をしながら自然に習得していたスキルが、なんらかの代替手段を用意しないと習得できなくなっていることが懸念されました。</p>\n<p data-sourcepos=\"72:1-73:87\">未来のAIが進化して、人と人のやり取りの部分もフォローしてくれるとしたら、どのような世界になるのでしょうか。<br>\n映画『マトリックス』のような世界になっていくのでしょうか。</p>\n<p data-sourcepos=\"75:1-75:225\">個人的には、今しばらくは <strong>『プロジェクトにおいてモノを作るために必要なコミュニケーション力』</strong> がますます重要視されていくのではないかと思ってはいます。</p>\n<p data-sourcepos=\"77:1-77:45\">みんなで仲良く頑張りましょう。</p>\n<h2 data-sourcepos=\"79:1-79:78\">\n<span id=\"おまけ０仕事のコミュ力が上がるかもしれない書籍\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%90%E4%BB%95%E4%BA%8B%E3%81%AE%E3%82%B3%E3%83%9F%E3%83%A5%E5%8A%9B%E3%81%8C%E4%B8%8A%E3%81%8C%E3%82%8B%E3%81%8B%E3%82%82%E3%81%97%E3%82%8C%E3%81%AA%E3%81%84%E6%9B%B8%E7%B1%8D\"><i class=\"fa fa-link\"></i></a>おまけ０（仕事のコミュ力が上がるかもしれない書籍）</h2>\n<ul data-sourcepos=\"81:1-86:0\">\n<li data-sourcepos=\"81:1-82:0\">\n<p data-sourcepos=\"81:3-81:98\"><a href=\"https://www.amazon.co.jp/dp/4087213129\" rel=\"nofollow noopener\" target=\"_blank\">なぜ働いていると本が読めなくなるのか</a></p>\n</li>\n<li data-sourcepos=\"83:1-84:0\">\n<p data-sourcepos=\"83:3-83:140\"><a href=\"https://www.amazon.co.jp/dp/4798159832\" rel=\"nofollow noopener\" target=\"_blank\">ホスピタリティを育てる物語 「感動の接客」ができるようになる14の力</a></p>\n</li>\n<li data-sourcepos=\"85:1-86:0\">\n<p data-sourcepos=\"85:3-85:128\"><a href=\"https://www.amazon.co.jp/dp/4569845991\" rel=\"nofollow noopener\" target=\"_blank\">「具体⇄抽象」トレーニング 思考力が飛躍的にアップする29問</a></p>\n</li>\n</ul>\n<h2 data-sourcepos=\"87:1-87:54\">\n<span id=\"おまけ１新卒エンジニア向け手紙\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%91%E6%96%B0%E5%8D%92%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E5%90%91%E3%81%91%E6%89%8B%E7%B4%99\"><i class=\"fa fa-link\"></i></a>おまけ１（新卒エンジニア向け手紙）</h2>\n<p data-sourcepos=\"89:1-89:50\"><iframe id=\"qiita-embed-content__95a6bb67f51597004a0005eb1c360a75\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__95a6bb67f51597004a0005eb1c360a75\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F2c8d4d783be7ce4fc9ea\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"91:1-91:50\"><iframe id=\"qiita-embed-content__4692c3e4593d4e1c24e84c83a0c57fa4\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__4692c3e4593d4e1c24e84c83a0c57fa4\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F0bf1703cb8d6f84afbc5\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"93:1-93:54\">\n<span id=\"おまけ２新卒エンジニア向け記事\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%92%E6%96%B0%E5%8D%92%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E5%90%91%E3%81%91%E8%A8%98%E4%BA%8B\"><i class=\"fa fa-link\"></i></a>おまけ２（新卒エンジニア向け記事）</h2>\n<p data-sourcepos=\"95:1-95:50\"><iframe id=\"qiita-embed-content__b619986cea4344f7bdc515fa6a429be3\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b619986cea4344f7bdc515fa6a429be3\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Ffb949aa1a53f1f71c796\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"97:1-97:50\"><iframe id=\"qiita-embed-content__b207c1c4152524a5970176cf73e825e4\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b207c1c4152524a5970176cf73e825e4\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Faa2f81cf1e3974b8ad3a\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"99:1-99:50\"><iframe id=\"qiita-embed-content__67695ba0cd92a809b06182e02405f883\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__67695ba0cd92a809b06182e02405f883\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F937354cc180c8bee823b\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"101:1-101:50\"><iframe id=\"qiita-embed-content__b5a342af6ae0163978d6e93c2fff8016\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b5a342af6ae0163978d6e93c2fff8016\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Fb1c94328f273c750286b\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"103:1-103:45\">\n<span id=\"おまけ３パイセン向け記事\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%93%E3%83%91%E3%82%A4%E3%82%BB%E3%83%B3%E5%90%91%E3%81%91%E8%A8%98%E4%BA%8B\"><i class=\"fa fa-link\"></i></a>おまけ３（パイセン向け記事）</h2>\n<p data-sourcepos=\"105:1-105:50\"><iframe id=\"qiita-embed-content__b07bdbcfa04abf7cdca054c3ccdfb58b\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__b07bdbcfa04abf7cdca054c3ccdfb58b\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Fcafccb1ee631d9f61190\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"107:1-107:50\"><iframe id=\"qiita-embed-content__93d9eb74da0e596abfc63fe932a7c027\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__93d9eb74da0e596abfc63fe932a7c027\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F422b5427024d29da6a6e\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"109:1-109:48\">\n<span id=\"おまけ４は難しいシリーズ\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%94%E3%81%AF%E9%9B%A3%E3%81%97%E3%81%84%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA\"><i class=\"fa fa-link\"></i></a>おまけ４（...は難しいシリーズ）</h2>\n<p data-sourcepos=\"111:1-111:50\"><iframe id=\"qiita-embed-content__031da57b18fe0cbe86230219afdceb66\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__031da57b18fe0cbe86230219afdceb66\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F34b40446337a59213a75\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"113:1-113:50\"><iframe id=\"qiita-embed-content__0f7abae22d7046c7dbae57fa149271f2\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__0f7abae22d7046c7dbae57fa149271f2\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2Ff8411523cce000de750e\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"115:1-115:50\"><iframe id=\"qiita-embed-content__363dcb66d299a458605ad37a81e4c233\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__363dcb66d299a458605ad37a81e4c233\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F5b11d2e1aace73c36340\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"117:1-117:46\">\n<span id=\"おまけ５営業a短編シリーズ\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%95%E5%96%B6%E6%A5%ADa%E7%9F%AD%E7%B7%A8%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA\"><i class=\"fa fa-link\"></i></a>おまけ５（営業A短編シリーズ）</h2>\n<p data-sourcepos=\"119:1-119:50\"><iframe id=\"qiita-embed-content__d9d298b3bb4451d1b459d5b47a4b4f32\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__d9d298b3bb4451d1b459d5b47a4b4f32\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F03aae7b9e3c70c55f513\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<p data-sourcepos=\"121:1-121:50\"><iframe id=\"qiita-embed-content__e4f515e5f1040424550c8828753199c0\" src=\"https://qiita.com/embed-contents/link-card#qiita-embed-content__e4f515e5f1040424550c8828753199c0\" data-content=\"https%3A%2F%2Fqiita.com%2Fkaku3%2Fitems%2F3378ea55b1240d7360a1\" frameborder=\"0\" scrolling=\"no\" loading=\"lazy\" style=\"width:100%;\" height=\"29\">\n</iframe>\n</p>\n<h2 data-sourcepos=\"123:1-123:66\">\n<span id=\"おまけ６エンジニアのためのお仕事問題集\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91%EF%BC%96%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AE%E3%81%8A%E4%BB%95%E4%BA%8B%E5%95%8F%E9%A1%8C%E9%9B%86\"><i class=\"fa fa-link\"></i></a>おまけ６（エンジニアのためのお仕事問題集）</h2>\n<p data-sourcepos=\"125:1-126:30\">2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで<strong>無料</strong>公開してます(不定期更新)。<br>\nよろしければどうぞ。</p>\n<p data-sourcepos=\"128:1-128:83\"><a href=\"https://github.com/kaku3/workbooks\" rel=\"nofollow noopener\" target=\"_blank\">エンジニアのためのお仕事問題集</a></p>\n<section class=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p data-sourcepos=\"131:7-131:135\">要求仕様書からそのまま転記していた場合、要求仕様書を書いた人ではないと分からないです。 <a href=\"#fnref-1\" class=\"\">↩</a></p>\n</li>\n</ol>\n</section>\n",
     "body": "## はじめに\n\nAIを活用していますか？\nちょっと分からないことや欲しいプログラムがある時に適当に聞くと嫌な顔ひとつせずに気前よく回答してくれて便利ですよね？\n\nそれまでは、忙しそうなパイセンの顔色を伺って、話しかけても大丈夫そうなタイミングを見計らって、あらかじめ要点をまとめておいた質問を持っていって、緊張しながら質問してよく分からなくても一旦引き下がって調べて…なんてことをしていなかったでしょうか？\n\nもうそんな生活には戻りたくないし戻れないとは思うのですが、ここに重大な罠がありませんか…？ということを考えてみたいと思います。\n\n## IT業界で言うところの仕事って？\n\nIT業界では、発注者よりなんらかの依頼を受けて、その依頼通りのモノを成果物として期日通りに納品することが仕事です。\n\n依頼通りのモノを作る過程として、要件定義、外部設計、開発、試験等の工程が存在し、そのどこかの工程の担当者の一人として、前工程での成果物を元に成果物を作成し後工程に流していく **バケツリレー** をみんなで行っているかと思います。\nアジャイルの場合はバケツの運び方が変わりますが、誰かからの何らかの依頼をバケツに詰めてぐるぐる回して誰かに渡していると思います。\n\nいずれにしても、**前工程の人が『思った通り』の物を成果物として作成して期日通りに納品** することを仕事として考察していきます。\n\n## 成果物が曖昧なんだが…\n\n発注側の担当者が要件定義書に「タイヤが２つついた乗り物」が欲しいとだけ書いてきたとします。\n\nこの文章からは、欲しい乗り物が自転車なのかセグウェイなのかは読み取れないですし、自転車にしても電動なのか、かっこいいロードバイクなのかなどは書いた本人の頭の中にしか答えはなさそうなので[^1]AIに聞いても分からなそうです。\n\nさて。\nこれを、どのように確認したらよいでしょうか？\n\nここで、高確率でかっこいいロードバイクな自転車な気がするからと確認せずにロードバイクを作ったら、実は欲しいのはセグウェイでした、という場合には大事故となってしまいます。\n\n## どうやったら確認ができるようになるの？\n\n「要件　確認方法」などでググるでしょうか？\nあるいは、ハウツー本を求めて本屋に走るでしょうか？\n\nこの課題は発注側と受注側の「コミュニケーション」の課題に分類されると思います。\n「コミュニケーション」の課題は、何をどう感じるかが人によって異なることもあり、こうした方がよいというベストプラクティスはあっても正解はない課題です。\n\nですので、Web検索をしたり、本を読んだりしてセオリーを学ぶことは重要ですが、考え方が十分に馴染んでいて息を吐くように質疑応答ができるようになっていないと実践は難しいというのは想像に難しくないですよね。\n\nそうです。\n\n**「コミュニケーション」の問題は、多くの人と様々なケースで細かく何度も実践して経験値を得ることで少しずつレベルを上げていくしかないのです。**\n\nそう考えると、冒頭の、忙しそうなパイセンと怯えながら質問する後輩は、ストレスのあるやりとりを「経験値が入るタスク」と捉えていれば、仕事上で大変価値のあるスキルの経験値を入手できていたことが分かります。\n\n- 忙しそうなパイセン\n    - 説明が通じた？\n        - なぜ通じなかった？\n        - どうすれば通じる？\n    - 質問に答えたか\n    - etc…\n\n- 怯えながら質問する後輩\n    - 話しかけるタイミングは？\n    - 質問内容の過不足？\n    - メモ\n    - etc…\n\nここでパイセン側が感じるストレスは発注者が感じるであろうストレスを疑似体験できるという貴重な機会であるとも考えられます。\n相手のことを想像できるようになれば、質問票を100件まとめて送られても答えられないから、優先度の高い10件に絞って質問しよう、といったホスピタリティに満ちた判断もできるようになるかもしれません。\n\nAIは、このストレスフルだけれども**仕事上重要なスキルの経験値を入手できる機会を奪っている**とも言えるのではないでしょうか？\n\n## まとめ\n\n案件の予算や期間が厳しくなってきていますが、作業者が細かい作業はAIと壁打ちをしながら進めてもらえれば、さほど指示者の工数をかけることなく期間内に結果を出せていると感じるので、目先のアウトプットを出すためにはAIが必須とは感じています。\n\nただ、結果として、PMや窓口不足問題といった大きな問題に拍車をかけるような流れになっていないかという可能性を考察してみました。\n\n今現在PMをやっている人が仕事をしながら自然に習得していたスキルが、なんらかの代替手段を用意しないと習得できなくなっていることが懸念されました。\n\n未来のAIが進化して、人と人のやり取りの部分もフォローしてくれるとしたら、どのような世界になるのでしょうか。\n映画『マトリックス』のような世界になっていくのでしょうか。\n\n個人的には、今しばらくは **『プロジェクトにおいてモノを作るために必要なコミュニケーション力』** がますます重要視されていくのではないかと思ってはいます。\n\nみんなで仲良く頑張りましょう。\n\n## おまけ０（仕事のコミュ力が上がるかもしれない書籍）\n\n- [なぜ働いていると本が読めなくなるのか](https://www.amazon.co.jp/dp/4087213129)\n\n- [ホスピタリティを育てる物語 「感動の接客」ができるようになる14の力](https://www.amazon.co.jp/dp/4798159832)\n\n- [「具体⇄抽象」トレーニング 思考力が飛躍的にアップする29問](https://www.amazon.co.jp/dp/4569845991)\n\n## おまけ１（新卒エンジニア向け手紙）\n\nhttps://qiita.com/kaku3/items/2c8d4d783be7ce4fc9ea\n\nhttps://qiita.com/kaku3/items/0bf1703cb8d6f84afbc5\n\n## おまけ２（新卒エンジニア向け記事）\n\nhttps://qiita.com/kaku3/items/fb949aa1a53f1f71c796\n\nhttps://qiita.com/kaku3/items/aa2f81cf1e3974b8ad3a\n\nhttps://qiita.com/kaku3/items/937354cc180c8bee823b\n\nhttps://qiita.com/kaku3/items/b1c94328f273c750286b\n\n## おまけ３（パイセン向け記事）\n\nhttps://qiita.com/kaku3/items/cafccb1ee631d9f61190\n\nhttps://qiita.com/kaku3/items/422b5427024d29da6a6e\n\n## おまけ４（...は難しいシリーズ）\n\nhttps://qiita.com/kaku3/items/34b40446337a59213a75\n\nhttps://qiita.com/kaku3/items/f8411523cce000de750e\n\nhttps://qiita.com/kaku3/items/5b11d2e1aace73c36340\n\n## おまけ５（営業A短編シリーズ）\n\nhttps://qiita.com/kaku3/items/03aae7b9e3c70c55f513\n\nhttps://qiita.com/kaku3/items/3378ea55b1240d7360a1\n\n## おまけ６（エンジニアのためのお仕事問題集）\n\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで**無料**公開してます(不定期更新)。\nよろしければどうぞ。\n\n[エンジニアのためのお仕事問題集](https://github.com/kaku3/workbooks)\n\n\n[^1]: 要求仕様書からそのまま転記していた場合、要求仕様書を書いた人ではないと分からないです。\n",
     "coediting": false,
@@ -10,7 +66,7 @@ const ARTICLES = [
     "likes_count": 94,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 84,
+    "stocks_count": 85,
     "tags": [
       {
         "name": "ポエム",
@@ -43,7 +99,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -54,7 +110,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 103892,
+    "page_views_count": 104159,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -103,7 +159,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -114,7 +170,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2514,
+    "page_views_count": 2526,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -163,7 +219,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -174,7 +230,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 10595,
+    "page_views_count": 10616,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -215,7 +271,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -226,7 +282,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 13937,
+    "page_views_count": 13954,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -263,7 +319,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -274,7 +330,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 52018,
+    "page_views_count": 52068,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -315,7 +371,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -326,7 +382,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3268,
+    "page_views_count": 3274,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -359,7 +415,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -370,7 +426,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 31375,
+    "page_views_count": 31382,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -403,7 +459,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -414,7 +470,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 94719,
+    "page_views_count": 94738,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -463,7 +519,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -474,7 +530,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2037,
+    "page_views_count": 2040,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -515,7 +571,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -526,7 +582,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5157,
+    "page_views_count": 5161,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -567,7 +623,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -578,7 +634,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14718,
+    "page_views_count": 14723,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -623,7 +679,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -634,7 +690,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 32421,
+    "page_views_count": 32438,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -675,7 +731,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -686,7 +742,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5315,
+    "page_views_count": 5332,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -723,7 +779,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -734,7 +790,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 73443,
+    "page_views_count": 73491,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -771,7 +827,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -782,7 +838,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14644,
+    "page_views_count": 14645,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -815,7 +871,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -826,7 +882,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3457,
+    "page_views_count": 3464,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -859,7 +915,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -870,7 +926,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 18715,
+    "page_views_count": 18731,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -907,7 +963,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -955,7 +1011,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -966,7 +1022,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 23172,
+    "page_views_count": 23174,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1015,7 +1071,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1026,7 +1082,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2834,
+    "page_views_count": 2841,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1067,7 +1123,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1078,7 +1134,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8397,
+    "page_views_count": 8402,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1123,7 +1179,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1134,7 +1190,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 4137,
+    "page_views_count": 4142,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1179,7 +1235,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1190,7 +1246,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 46497,
+    "page_views_count": 46510,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1231,7 +1287,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1242,7 +1298,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 24700,
+    "page_views_count": 24706,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1283,7 +1339,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1294,7 +1350,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 16773,
+    "page_views_count": 16778,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1335,7 +1391,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1346,7 +1402,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 71221,
+    "page_views_count": 71239,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1387,7 +1443,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1398,7 +1454,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2814,
+    "page_views_count": 2822,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1439,7 +1495,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1450,7 +1506,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5473,
+    "page_views_count": 5477,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1495,7 +1551,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1506,7 +1562,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 9353,
+    "page_views_count": 9355,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1547,7 +1603,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1558,7 +1614,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6174,
+    "page_views_count": 6180,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1599,7 +1655,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1610,7 +1666,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 29014,
+    "page_views_count": 29026,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1651,7 +1707,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1662,7 +1718,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 12046,
+    "page_views_count": 12053,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1711,7 +1767,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1722,7 +1778,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2227,
+    "page_views_count": 2233,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1763,7 +1819,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1774,7 +1830,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5649,
+    "page_views_count": 5656,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1823,7 +1879,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1834,7 +1890,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 18250,
+    "page_views_count": 18251,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1875,7 +1931,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1886,7 +1942,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11920,
+    "page_views_count": 11927,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1935,7 +1991,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1979,7 +2035,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1990,7 +2046,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 25699,
+    "page_views_count": 25706,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2027,7 +2083,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2038,7 +2094,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2491,
+    "page_views_count": 2496,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2083,7 +2139,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2135,7 +2191,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2146,7 +2202,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2246,
+    "page_views_count": 2248,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2183,7 +2239,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2194,7 +2250,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1688,
+    "page_views_count": 1690,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2231,7 +2287,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2242,7 +2298,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11234,
+    "page_views_count": 11235,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2279,7 +2335,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2290,7 +2346,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8075,
+    "page_views_count": 8078,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2331,7 +2387,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2342,7 +2398,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 26605,
+    "page_views_count": 26619,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2387,7 +2443,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2398,7 +2454,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 25520,
+    "page_views_count": 25534,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2447,7 +2503,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2458,7 +2514,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6090,
+    "page_views_count": 6113,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2503,7 +2559,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2563,7 +2619,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2574,7 +2630,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 7577,
+    "page_views_count": 7580,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2615,7 +2671,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2626,7 +2682,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2171,
+    "page_views_count": 2172,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2675,7 +2731,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2686,7 +2742,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2822,
+    "page_views_count": 2825,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2727,7 +2783,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2738,7 +2794,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8627,
+    "page_views_count": 8628,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2783,7 +2839,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2794,7 +2850,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1465,
+    "page_views_count": 1466,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2831,7 +2887,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2842,7 +2898,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3914,
+    "page_views_count": 3917,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2879,7 +2935,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2927,7 +2983,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2983,7 +3039,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2994,7 +3050,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3181,
+    "page_views_count": 3184,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3039,7 +3095,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3050,7 +3106,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1769,
+    "page_views_count": 1770,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3087,7 +3143,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3098,7 +3154,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2525,
+    "page_views_count": 2526,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3139,7 +3195,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3195,7 +3251,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3206,7 +3262,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1921,
+    "page_views_count": 1922,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3243,7 +3299,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3299,7 +3355,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3347,7 +3403,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3407,7 +3463,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3418,7 +3474,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3938,
+    "page_views_count": 3944,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3459,7 +3515,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3470,7 +3526,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1396,
+    "page_views_count": 1397,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3519,7 +3575,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3530,7 +3586,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11957,
+    "page_views_count": 11972,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3571,7 +3627,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3627,7 +3683,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3683,7 +3739,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3694,7 +3750,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6028,
+    "page_views_count": 6035,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3743,7 +3799,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3754,7 +3810,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 4268,
+    "page_views_count": 4272,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3795,7 +3851,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3851,7 +3907,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3911,7 +3967,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3922,7 +3978,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3537,
+    "page_views_count": 3548,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3967,7 +4023,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3978,7 +4034,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2327,
+    "page_views_count": 2328,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4023,7 +4079,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4079,7 +4135,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4090,7 +4146,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3388,
+    "page_views_count": 3394,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4131,7 +4187,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4142,7 +4198,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5845,
+    "page_views_count": 5848,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4187,7 +4243,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4198,7 +4254,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1289,
+    "page_views_count": 1290,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4239,7 +4295,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4250,7 +4306,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1939,
+    "page_views_count": 1942,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4291,7 +4347,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4302,7 +4358,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 834,
+    "page_views_count": 835,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4343,7 +4399,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4399,7 +4455,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4410,7 +4466,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2193,
+    "page_views_count": 2199,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4447,7 +4503,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4458,7 +4514,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1109,
+    "page_views_count": 1119,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4507,7 +4563,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4518,7 +4574,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1596,
+    "page_views_count": 1597,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4563,7 +4619,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4574,7 +4630,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1860,
+    "page_views_count": 1866,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4623,7 +4679,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4634,7 +4690,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1916,
+    "page_views_count": 1917,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4679,7 +4735,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4690,7 +4746,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2251,
+    "page_views_count": 2258,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4739,7 +4795,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4750,7 +4806,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3527,
+    "page_views_count": 3528,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4795,7 +4851,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4806,7 +4862,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 12239,
+    "page_views_count": 12249,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4847,7 +4903,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4858,7 +4914,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1780,
+    "page_views_count": 1781,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4907,7 +4963,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4918,7 +4974,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14673,
+    "page_views_count": 14686,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4959,7 +5015,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4970,7 +5026,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2715,
+    "page_views_count": 2717,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5007,7 +5063,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5018,7 +5074,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1417,
+    "page_views_count": 1419,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5063,7 +5119,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5074,7 +5130,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3699,
+    "page_views_count": 3701,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5119,7 +5175,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5171,7 +5227,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5223,7 +5279,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5234,7 +5290,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1961,
+    "page_views_count": 1963,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5275,7 +5331,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5286,7 +5342,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1745,
+    "page_views_count": 1746,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5331,7 +5387,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5379,7 +5435,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5423,7 +5479,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 102,
+      "items_count": 103,
       "linkedin_id": "",
       "location": "",
       "name": "",

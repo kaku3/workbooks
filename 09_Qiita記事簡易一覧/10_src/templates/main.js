@@ -78,6 +78,11 @@ $(function() {
     '.rankings-stocks[role=articles]',
     'Top20'
   );
+  filterByDateDesc(
+    3,
+    '.search-result[role=articles]',
+    '新着'
+  );
 
 
   initKeywordFilter();
@@ -145,6 +150,14 @@ $(function() {
     const searchedArticles = ARTICLES.filter(a => a.tags.some(t => re.test(t.name))).sort();
     drawArticles(searchedArticles, '.search-result[role=articles]', `タグ : ${tag}`);
   }
+
+  function filterByDateDesc(count, target, label) {
+    console.log('+ filterByDateDesc', count);
+
+    const foundArticles = ARTICLES.sort((a, b) => a.updated_at < b.updated_at ? 1 : -1).slice(0, count);
+    drawArticles(foundArticles, target, label);
+  }
+
   /**
    * id 配列で記事取得
    * @param {*} ids 
