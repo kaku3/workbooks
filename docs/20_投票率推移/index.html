@@ -16,24 +16,38 @@
         flex-wrap: wrap;
 
         > * {
-          text-align: center;
+          display: flex;
+          flex-direction: column;
           width: 100%;
+
+          text-align: center;
           > * {
             margin: .5rem;
           }
+          @media screen and (min-width: 768px) {
+            &:first-child {
+              width: 30%;
+            }
+            &:last-child {
+              width: 70%;
+            }
+          }
         }
 
-        @media screen and (min-width: 768px) {
-          .nop-pie-chart-container {
-            width: 30%;
-          }
-          .nop-bar1-chart-container {
-            width: 70%;
-          }
-        }
       }
 
-    }    
+    }
+ 
+    .election-chart-container {
+      overflow: auto;
+    }
+    .chart-wrapper {
+      height: 40vh;
+    }
+
+    footer {
+      text-align: center;
+    }
   </style>
 
   <style>
@@ -59,15 +73,21 @@
       <select id="chart-type"></select>
     </header>
     <div class="charts-container">
-      <div class="election-chart-container">
+      <div class="election-transition-chart-container">
+        <div class="chart-wrapper">
+          <canvas id="election-transition-chart"></canvas>
+        </div>
         <div class="range-container">
           <div role="toggle-play" class="material-symbols-outlined">
             stop
           </div> 
           <input class="range-slider" type="range" value="0" min="0" max="0">
         </div>
-        <div class="label"></div>
-        <canvas id="election-bar-chart" height="40vh"></canvas>
+      </div>
+      <div class="election-chart-container">
+        <div class="chart-wrapper">
+          <canvas id="election-bar-chart"></canvas>
+        </div>
       </div>
     </div>
     <footer>
@@ -97,15 +117,13 @@
       '#F4511E',
       '#E64A19'
     ];
-    const ELECTION_TYPES = {
-      "ALL": VOTE_RATES,
-      ...Array.from(new Set(VOTE_RATES.map(v => v.election)))
-        .sort()
-        .reduce((a, v) => {
-          a[v] = VOTE_RATES.filter(vv => vv.election === v);
-          return a;
-        }, {})
-    };
+    const ELECTION_TYPES = Array.from(new Set(VOTE_RATES.map(v => v.election)))
+      .sort()
+      .reduce((a, v) => {
+        a[v] = VOTE_RATES.filter(vv => vv.election === v);
+        return a;
+      }, {});
+
     const CHART_TYPES = {
       "~ 39, ~ 59, 60 ~": {
         labels: [
@@ -169,6 +187,9 @@
     let chartValues = ELECTION_TYPES[defaultElectionType];
     let chartType = CHART_TYPES[Object.keys(CHART_TYPES)[0]];
 
+    let transitionChart = null;
+    let barChart = null;
+
     $(function() {
       const $electionType = $('#election-type');
       for(const o of Object.keys(ELECTION_TYPES)) {
@@ -177,7 +198,7 @@
       $electionType.on('change', function(e) {
         chartValues = ELECTION_TYPES[$(this).val()];
 
-        setupChart();
+        setupCharts();
       });
       $electionType.find(`[value=${defaultElectionType}]`).prop('selected', true);
       const $chartType = $('#chart-type');
@@ -186,28 +207,37 @@
       }
       $chartType.on('change', function(e) {
         chartType = CHART_TYPES[$(this).val()];
-        setupChart();
+        setupCharts();
       });
-      setupChart();
+      setupCharts();
 
       setupTogglePlay();
   
     });
+
+    function setupTogglePlayRange() {
+      const $toggle = $('[role=toggle-play]');
+      const $range = $('.range-slider');
+      const range = chartValues.map(v => Number(v.date));
+
+      console.log(range);
+
+      $range.attr('min', range[0]);
+      $range.attr('max', range[range.length - 1]);
+    }
 
     function setupTogglePlay() {
       let timerId = -1;
 
       const $toggle = $('[role=toggle-play]');
       const $range = $('.range-slider');
-      const range = chartValues.map(v => v.date);
 
-      console.log(range);
-
-      $range.attr('min', range[0]);
-      $range.attr('max', range[range.length - 1]);
+      setupTogglePlayRange();
 
       $range.on('change', function(e) {
-        yearIndex = range.find(r => r === $(this).val());
+        const v = Number($(this).val());
+        const range = chartValues.map(v => Number(v.date));
+        yearIndex = range.findIndex(r => r >= v);
         updateChart();
       })
 
@@ -221,34 +251,101 @@
           $range.prop('disabled', false);
         }
         if(state === 'play_arrow') {
-          timerId = setInterval(transition, 500);
+          timerId = setInterval(transition, 1000);
           $range.prop('disabled', true);
         }
       })
       $toggle.trigger('click');
     }
 
-    let barChart = null;
-    function updateChart() {
-      year = getYear();
-
-      console.log(year, chartType, chartValues);
-    }
-
-    function setupChart() {
-      const dates = chartValues.map(d => d.date);
+    function getTransitionChartDatasets(year) {
+      const c = BACKGROUND_COLORS.length / chartType.labels.length;
       const datasets = chartType.labels.map((v, i) => {
-        const data = chartValues.map(v => chartType.f(v.values)[i]);
-        const backgroundColor = BACKGROUND_COLORS[i];
+        const data = [ chartType.f(chartValues.find(v => v.date === year).values)[i] ];
+        const backgroundColor = BACKGROUND_COLORS[Math.floor(i * c)];
         return {
           label: v,
           data,
           backgroundColor
         }
       });
-      console.log(datasets);
+      return datasets;      
+    }
 
-      const ctx = $(`#election-bar-chart`).get(0);
+    function updateChart() {
+      const year = getYear();
+
+      if(transitionChart) {
+        const datasets = getTransitionChartDatasets(year);
+        transitionChart.data = {
+          labels: [ year ],
+          datasets
+        }
+        transitionChart.update('none');
+      }
+    }
+
+    function setupCharts() {
+      setupTogglePlayRange();
+
+      setupTransitionChart();
+      setupChart();
+    }
+
+    function setupTransitionChart() {
+      const year = getYear();
+      const datasets = getTransitionChartDatasets(year);
+      
+      const $chart = $(`#election-transition-chart`);
+      const ctx = $chart.get(0);
+
+      if(transitionChart) {
+        transitionChart.destroy();
+      }
+      transitionChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [ year ],
+          datasets
+        },
+        plugins: [ChartDataLabels],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,          
+          plugins: {
+            datalabels: {
+              formatter: function(value, context) {
+                return context.dataset.label;
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });      
+    }
+
+    function setupChart() {
+      const dates = chartValues.map(d => d.date);
+      const c = BACKGROUND_COLORS.length / chartType.labels.length;
+      const datasets = chartType.labels.map((v, i) => {
+        const data = chartValues.map(v => chartType.f(v.values)[i]);
+        const backgroundColor = BACKGROUND_COLORS[Math.floor(i * c)];
+        return {
+          label: v,
+          data,
+          backgroundColor
+        }
+      });
+
+      const $chart = $(`#election-bar-chart`);
+      const ctx = $chart.get(0);
+
+      $chart.parent('.election-chart-wrapper').css('width', Math.max(800, dates.length * chartType.labels.length * 40));
       if(barChart) {
         barChart.destroy();
       }
@@ -260,6 +357,8 @@
         },
         plugins: [ChartDataLabels],
         options: {
+          responsive: true,
+          maintainAspectRatio: false,          
           plugins: {
             datalabels: {
               formatter: function(value, context) {
@@ -269,7 +368,8 @@
           },
           scales: {
             y: {
-              beginAtZero: true
+              beginAtZero: true,
+              max: 100
             }
           }
         }
@@ -278,10 +378,15 @@
 
     function transition(){
       yearIndex = (yearIndex + 1) % chartValues.length;
+
+      $('.range-slider').val(Number(getYear()));
       updateChart();
     }
       
     function getYear() {
+      if(yearIndex >= chartValues.length ) {
+        yearIndex = 0;
+      }
       return chartValues[yearIndex].date;
     }
   </script>
