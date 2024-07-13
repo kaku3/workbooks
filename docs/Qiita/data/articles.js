@@ -1,5 +1,61 @@
 const ARTICLES = [
   {
+    "rendered_body": "<h2 data-sourcepos=\"1:1-1:15\">\n<span id=\"はじめに\" class=\"fragment\"></span><a href=\"#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB\"><i class=\"fa fa-link\"></i></a>はじめに</h2>\n<p data-sourcepos=\"3:1-3:159\">こんにちは。新卒の方々が新人研修から戻ってきて部署に配属される時期かと思いますがいかがお過ごしでしょうか？</p>\n<p data-sourcepos=\"5:1-6:30\">後輩はできましたか？<br>\nうまくやれてますか？</p>\n<p data-sourcepos=\"8:1-9:141\">コーチングやアンガーマネジメントなどのハウツー・マニュアル本などを読み漁っていますでしょうか？<br>\n読んだ時はなるほどと思うものの右から左にすり抜けて何も実践できていないなどありますでしょうか？</p>\n<p data-sourcepos=\"11:1-11:162\">あるいは、そもそも自分のことで手一杯だし、育ててもどうせ転職してしまうだろうからと放置していますでしょうか？</p>\n<p data-sourcepos=\"13:1-13:265\">タイパ重視の自己責任世代（？）的には手っ取り早くうまくやれる方法がほしいのかなと思うのですが、<strong>人間</strong>というものを理解がメンタリングには必要では？という切り口で考察をしてみます。</p>\n<h2 data-sourcepos=\"15:1-15:54\">\n<span id=\"人間自分と相手を理解する必要性\" class=\"fragment\"></span><a href=\"#%E4%BA%BA%E9%96%93%E8%87%AA%E5%88%86%E3%81%A8%E7%9B%B8%E6%89%8B%E3%82%92%E7%90%86%E8%A7%A3%E3%81%99%E3%82%8B%E5%BF%85%E8%A6%81%E6%80%A7\"><i class=\"fa fa-link\"></i></a>人間（自分と相手）を理解する必要性</h2>\n<p data-sourcepos=\"17:1-17:129\"><a href=\"https://www.amazon.co.jp/dp/4344433122\" rel=\"nofollow noopener\" target=\"_blank\">スピリチュアルズ「わたし」の謎</a>という本を最近読んでいます。</p>\n<p data-sourcepos=\"19:1-19:381\">ものすごくたくさん『人間』というものについて『そうなんだすげーな』って思うようなことが書かれていて、『人間』と相対した時にどのように振る舞うべきか、自分がどのような性質を持っていてどのような思考をするのかを客観的に見る機会になっていてよいと感じています。</p>\n<p data-sourcepos=\"21:1-21:195\">ただ、400ページ超の分厚い本な上に、明日役に立つことが書いてあるわけでもないのでなかなか読み進められていないことも白状しておきます。</p>\n<p data-sourcepos=\"23:1-23:297\">何らかのバグで障害が発生した時に、闇雲にコードを直してもバグが直らないのと同様に、人間に対して何らかの指示や指導がうまく通らなかった時に、闇雲に指示の方法を変えてもカイゼンするのは難しいと思います。</p>\n<p data-sourcepos=\"25:1-25:255\">更に難しいことに、相手がコンピュータであれば、書いたコードの受け止め方は同じですが、相手が人間であれば書いたドキュメントや話したことばの受け止め方が一人ひとり異なります。</p>\n<p data-sourcepos=\"27:1-27:85\"><strong>『自分の普通や当然と、相手の普通や当然が異なります。』</strong></p>\n<p data-sourcepos=\"29:1-29:310\">人は一人ひとり違うので、マニュアル本にある「作者の観測範囲において多くのケースに適用可能な汎用的なこと」では、<strong>あなたの目の前の相手</strong>に対してどのように立ち振舞うべきかに <strong>対処できないのが普通</strong> かと思います。</p>\n<p data-sourcepos=\"31:1-31:324\">そうして考えていくと、指示した通りの結果や、指導した通りの学習成果を相手に出してもらいたいのであれば、 <strong>『自分と相手および関係性などを理解した上で、何をどう伝えるのかを考える』</strong> ことが必要になってくるように思えます。</p>\n<h2 data-sourcepos=\"33:1-33:42\">\n<span id=\"共感力とメンタライジング力\" class=\"fragment\"></span><a href=\"#%E5%85%B1%E6%84%9F%E5%8A%9B%E3%81%A8%E3%83%A1%E3%83%B3%E3%82%BF%E3%83%A9%E3%82%A4%E3%82%B8%E3%83%B3%E3%82%B0%E5%8A%9B\"><i class=\"fa fa-link\"></i></a>共感力とメンタライジング力</h2>\n<p data-sourcepos=\"35:1-35:126\">自分や相手を理解するための必要な要素に、共感力やメンタライジング力があると思います。</p>\n<p data-sourcepos=\"37:1-37:321\">痛いと思っている人がいたら、自分も痛いと感じる能力が共感力、痛いと思っているらしい人がいて「状況から推察するにタンスのカドに小指をぶつけて痛いらしい。それは痛いよね。」と理解する能力がメンタライジング力だそうです。</p>\n<p data-sourcepos=\"39:1-40:156\">この共感力とメンタライジング力の高低で人の傾向が分類できるそうです。<br>\n人は一人ひとり違いますが、傾向を把握することは人と相対する時の作戦を絞れるので大きく役に立つと思います。</p>\n<p data-sourcepos=\"42:1-42:162\"><a href=\"https://camo.qiitausercontent.com/3c3397e214876f240b05531ee1c075716a1f0582/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30336536303065342d306430342d383133352d386263612d6638666638346562653564612e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F03e600e4-0d04-8135-8bca-f8ff84ebe5da.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ded47f95cf7aa80db75c467a5e12e68b\" alt=\"共感力とメンタライジング力.drawio.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/03e600e4-0d04-8135-8bca-f8ff84ebe5da.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F03e600e4-0d04-8135-8bca-f8ff84ebe5da.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=3785957a47a1378f88c62961f3be8fd8 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"44:1-44:105\">(出典 : <a href=\"https://www.amazon.co.jp/dp/4344433122\" rel=\"nofollow noopener\" target=\"_blank\">スピリチュアルズ「わたし」の謎</a> より)</p>\n<p data-sourcepos=\"46:1-46:48\">この図には大分衝撃を受けました。</p>\n<p data-sourcepos=\"48:1-48:311\">共感力・メンタライジング力とも高い「コミュ力が高い人」がお金を稼げそうですが、実際にはそうではなくて、<strong>リーダーに向いていてお金を稼げる人は、メンタライジング力は高いが共感力が低い「サイコな人」</strong> だそうです。</p>\n<p data-sourcepos=\"50:1-50:360\">タンスのカドに小指をぶつけたあなたを見て「うわ大丈夫？痛そう～」と心配してくれるコミュ力が高い人はリーダーには向いていなくて、「そりゃ痛いだろうけど、わたしにできることは特に何もないな」と塩対応するサイコな人がリーダーに向いているようです。</p>\n<p data-sourcepos=\"52:1-52:372\">指示を出す「わたし」がどのタイプで、指示を受ける「相手」がどのタイプかを観察や会話によって把握すると、なぜ指示が <strong>『思った通り』</strong> 伝わらないのか、どのように伝えれば <strong>『思った通り』</strong> 伝わるのかをざっくり推察することができるようになるかもしれません。</p>\n<p data-sourcepos=\"54:1-54:315\">※こちらは書籍を読んでの「わたし」の解釈が含まれてしまっていますので、興味のある方や詳しく知りたい方はぜひ書籍の方を読んでみてください。他にもアメリカの大統領選挙での人々の操作など様々なトピックが載っています。</p>\n<h2 data-sourcepos=\"56:1-56:66\">\n<span id=\"共感力やメンタライジング力は鍛えられるの\" class=\"fragment\"></span><a href=\"#%E5%85%B1%E6%84%9F%E5%8A%9B%E3%82%84%E3%83%A1%E3%83%B3%E3%82%BF%E3%83%A9%E3%82%A4%E3%82%B8%E3%83%B3%E3%82%B0%E5%8A%9B%E3%81%AF%E9%8D%9B%E3%81%88%E3%82%89%E3%82%8C%E3%82%8B%E3%81%AE\"><i class=\"fa fa-link\"></i></a>共感力やメンタライジング力は鍛えられるの？</h2>\n<p data-sourcepos=\"58:1-59:213\">共感力、メンタライジング力とも遺伝によるところが大きいようですが、鍛えることはできるそうです。<br>\nただ、カイゼンには莫大な時間がかかったりするので、自分や相手の性質を理解して何をどう鍛えるとよいのかを話し合えたりするとよさそうに思えました。</p>\n<p data-sourcepos=\"61:1-61:28\">(Claude3 による鍛え方)</p>\n<blockquote data-sourcepos=\"62:1-70:153\">\n<p data-sourcepos=\"62:3-62:30\">共感力を高める方法:</p>\n<ul data-sourcepos=\"63:3-66:1\">\n<li data-sourcepos=\"63:3-63:156\">アクティブリスニングの練習: 相手の話を集中して聴き、言葉だけでなく感情や非言語的な表現にも注意を払う。</li>\n<li data-sourcepos=\"64:3-64:153\">文学や芸術作品への接触: 小説を読んだり映画を鑑賞したりして、多様な人物の内面世界や感情体験に触れる。</li>\n<li data-sourcepos=\"65:3-66:1\">ボランティア活動への参加: 異なる背景を持つ人々と交流し、直接的な経験を通じて他者理解を深める。</li>\n</ul>\n<p data-sourcepos=\"67:3-67:48\">メンタライジング力を高める方法:</p>\n<ul data-sourcepos=\"68:3-70:153\">\n<li data-sourcepos=\"68:3-68:150\">視点取得の練習: 日常的な出来事や人々の行動について、意識的に他者の立場に立って考える習慣をつける。</li>\n<li data-sourcepos=\"69:3-69:150\">感情日記をつける: 自分や周囲の人の感情や思考を観察し、記録することで、心の状態への気づきを高める。</li>\n<li data-sourcepos=\"70:3-70:153\">ロールプレイングの実践: 様々な役割や立場を演じることで、異なる視点や思考パターンを体験的に理解する。</li>\n</ul>\n</blockquote>\n<h2 data-sourcepos=\"72:1-72:12\">\n<span id=\"まとめ\" class=\"fragment\"></span><a href=\"#%E3%81%BE%E3%81%A8%E3%82%81\"><i class=\"fa fa-link\"></i></a>まとめ</h2>\n<p data-sourcepos=\"74:1-75:234\">メンターである自分にとって一番分かりやすい説明が、メンティーである相手にとって一番分かりやすい説明である可能性はものすごく低いと考えます。<br>\n自分にとって最適な説明で理解ができるのであれば、自分と同等のスキルや知識を持っている可能性が高く、そもそもメンタリングされる必要がないと考えられるからです。</p>\n<p data-sourcepos=\"77:1-77:396\">「自分が理解すること」と、「相手に説明すること」では全く別のスキルが必要で、相手に説明するスキルは <strong>『相手に説明する』</strong> ことでしか身につきませんし、抽象的なスキルとして保持しておいて、相手に合わせて細かくチューニングして具体化して使うような類のスキルかと思います。</p>\n<p data-sourcepos=\"79:1-79:213\">ここで、共感力やメンタライジング力がほどよいバランスであることは「相手が理解できる説明」ができるようになるための一要素なのかもなと感じました。</p>\n<p data-sourcepos=\"81:1-81:162\">…と、色々難しく書いてきましたが、ひとことでまとめると <strong>「相手と協力してうまくやる」</strong> のが大事だと思います。</p>\n<p data-sourcepos=\"83:1-83:317\">長期的に見れば、お互いに協調行動を取ることで全体<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>としては一番良い結果が得られるのを漠然とみんな理解しているけれども、教えない<sup><a href=\"#fn-2\" id=\"fnref-2\">2</a></sup>、転職する、といった行動を取ってしまうのは囚人のジレンマのようだなぁと思いました。</p>\n<p data-sourcepos=\"85:1-85:126\">メンター、メンティーに限らず、メンバーやお客様とも協力してうまくやれるといいですね。</p>\n<h2 data-sourcepos=\"87:1-87:12\">\n<span id=\"おまけ\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91\"><i class=\"fa fa-link\"></i></a>おまけ</h2>\n<ul data-sourcepos=\"89:1-94:0\">\n<li data-sourcepos=\"89:1-91:0\">\n<p data-sourcepos=\"89:3-90:92\"><a href=\"https://kaku3.github.io/workbooks/Qiita/\" rel=\"nofollow noopener\" target=\"_blank\">kaku3 - Qiita記事一覧</a><br>\nポエム多め。PM、メンター、未経験エンジニアや新卒向け記事など。</p>\n</li>\n<li data-sourcepos=\"92:1-94:0\">\n<p data-sourcepos=\"92:3-93:136\"><a href=\"https://github.com/kaku3/workbooks\" rel=\"nofollow noopener\" target=\"_blank\">エンジニアのためのお仕事問題集</a><br>\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで無料公開してます(不定期更新)。</p>\n</li>\n</ul>\n<p data-sourcepos=\"95:1-95:30\">よろしければどうぞ。</p>\n<section class=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p data-sourcepos=\"97:7-97:150\">やんちゃな人がいるかもしれない状況では求人の単価を上げられないので給与も上がらないかもしれない。 <a href=\"#fnref-1\" class=\"\">↩</a></p>\n</li>\n<li id=\"fn-2\">\n<p data-sourcepos=\"98:7-98:126\">予算や工数やスケジュールの関係で教育ができないということはママあるかもしれない。 <a href=\"#fnref-2\" class=\"\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "body": "## はじめに\n\nこんにちは。新卒の方々が新人研修から戻ってきて部署に配属される時期かと思いますがいかがお過ごしでしょうか？\n\n後輩はできましたか？\nうまくやれてますか？\n\nコーチングやアンガーマネジメントなどのハウツー・マニュアル本などを読み漁っていますでしょうか？\n読んだ時はなるほどと思うものの右から左にすり抜けて何も実践できていないなどありますでしょうか？\n\nあるいは、そもそも自分のことで手一杯だし、育ててもどうせ転職してしまうだろうからと放置していますでしょうか？\n\nタイパ重視の自己責任世代（？）的には手っ取り早くうまくやれる方法がほしいのかなと思うのですが、**人間**というものを理解がメンタリングには必要では？という切り口で考察をしてみます。\n\n## 人間（自分と相手）を理解する必要性\n\n[スピリチュアルズ「わたし」の謎](https://www.amazon.co.jp/dp/4344433122)という本を最近読んでいます。\n\nものすごくたくさん『人間』というものについて『そうなんだすげーな』って思うようなことが書かれていて、『人間』と相対した時にどのように振る舞うべきか、自分がどのような性質を持っていてどのような思考をするのかを客観的に見る機会になっていてよいと感じています。\n\nただ、400ページ超の分厚い本な上に、明日役に立つことが書いてあるわけでもないのでなかなか読み進められていないことも白状しておきます。\n\n何らかのバグで障害が発生した時に、闇雲にコードを直してもバグが直らないのと同様に、人間に対して何らかの指示や指導がうまく通らなかった時に、闇雲に指示の方法を変えてもカイゼンするのは難しいと思います。\n\n更に難しいことに、相手がコンピュータであれば、書いたコードの受け止め方は同じですが、相手が人間であれば書いたドキュメントや話したことばの受け止め方が一人ひとり異なります。\n\n**『自分の普通や当然と、相手の普通や当然が異なります。』**\n\n人は一人ひとり違うので、マニュアル本にある「作者の観測範囲において多くのケースに適用可能な汎用的なこと」では、**あなたの目の前の相手**に対してどのように立ち振舞うべきかに **対処できないのが普通** かと思います。\n\nそうして考えていくと、指示した通りの結果や、指導した通りの学習成果を相手に出してもらいたいのであれば、 **『自分と相手および関係性などを理解した上で、何をどう伝えるのかを考える』** ことが必要になってくるように思えます。\n\n## 共感力とメンタライジング力\n\n自分や相手を理解するための必要な要素に、共感力やメンタライジング力があると思います。\n\n痛いと思っている人がいたら、自分も痛いと感じる能力が共感力、痛いと思っているらしい人がいて「状況から推察するにタンスのカドに小指をぶつけて痛いらしい。それは痛いよね。」と理解する能力がメンタライジング力だそうです。\n\nこの共感力とメンタライジング力の高低で人の傾向が分類できるそうです。\n人は一人ひとり違いますが、傾向を把握することは人と相対する時の作戦を絞れるので大きく役に立つと思います。\n\n![共感力とメンタライジング力.drawio.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/03e600e4-0d04-8135-8bca-f8ff84ebe5da.png)\n\n(出典 : [スピリチュアルズ「わたし」の謎](https://www.amazon.co.jp/dp/4344433122) より)\n\nこの図には大分衝撃を受けました。\n\n共感力・メンタライジング力とも高い「コミュ力が高い人」がお金を稼げそうですが、実際にはそうではなくて、**リーダーに向いていてお金を稼げる人は、メンタライジング力は高いが共感力が低い「サイコな人」** だそうです。\n\nタンスのカドに小指をぶつけたあなたを見て「うわ大丈夫？痛そう～」と心配してくれるコミュ力が高い人はリーダーには向いていなくて、「そりゃ痛いだろうけど、わたしにできることは特に何もないな」と塩対応するサイコな人がリーダーに向いているようです。\n\n指示を出す「わたし」がどのタイプで、指示を受ける「相手」がどのタイプかを観察や会話によって把握すると、なぜ指示が **『思った通り』** 伝わらないのか、どのように伝えれば **『思った通り』** 伝わるのかをざっくり推察することができるようになるかもしれません。\n\n※こちらは書籍を読んでの「わたし」の解釈が含まれてしまっていますので、興味のある方や詳しく知りたい方はぜひ書籍の方を読んでみてください。他にもアメリカの大統領選挙での人々の操作など様々なトピックが載っています。\n\n## 共感力やメンタライジング力は鍛えられるの？\n\n共感力、メンタライジング力とも遺伝によるところが大きいようですが、鍛えることはできるそうです。\nただ、カイゼンには莫大な時間がかかったりするので、自分や相手の性質を理解して何をどう鍛えるとよいのかを話し合えたりするとよさそうに思えました。\n\n(Claude3 による鍛え方)\n> 共感力を高める方法:\n> - アクティブリスニングの練習: 相手の話を集中して聴き、言葉だけでなく感情や非言語的な表現にも注意を払う。\n> - 文学や芸術作品への接触: 小説を読んだり映画を鑑賞したりして、多様な人物の内面世界や感情体験に触れる。\n> - ボランティア活動への参加: 異なる背景を持つ人々と交流し、直接的な経験を通じて他者理解を深める。\n>\n> メンタライジング力を高める方法:\n> - 視点取得の練習: 日常的な出来事や人々の行動について、意識的に他者の立場に立って考える習慣をつける。\n> - 感情日記をつける: 自分や周囲の人の感情や思考を観察し、記録することで、心の状態への気づきを高める。\n> - ロールプレイングの実践: 様々な役割や立場を演じることで、異なる視点や思考パターンを体験的に理解する。\n\n## まとめ\n\nメンターである自分にとって一番分かりやすい説明が、メンティーである相手にとって一番分かりやすい説明である可能性はものすごく低いと考えます。\n自分にとって最適な説明で理解ができるのであれば、自分と同等のスキルや知識を持っている可能性が高く、そもそもメンタリングされる必要がないと考えられるからです。\n\n「自分が理解すること」と、「相手に説明すること」では全く別のスキルが必要で、相手に説明するスキルは **『相手に説明する』** ことでしか身につきませんし、抽象的なスキルとして保持しておいて、相手に合わせて細かくチューニングして具体化して使うような類のスキルかと思います。\n\nここで、共感力やメンタライジング力がほどよいバランスであることは「相手が理解できる説明」ができるようになるための一要素なのかもなと感じました。\n\n…と、色々難しく書いてきましたが、ひとことでまとめると **「相手と協力してうまくやる」** のが大事だと思います。\n\n長期的に見れば、お互いに協調行動を取ることで全体[^1]としては一番良い結果が得られるのを漠然とみんな理解しているけれども、教えない[^2]、転職する、といった行動を取ってしまうのは囚人のジレンマのようだなぁと思いました。\n\nメンター、メンティーに限らず、メンバーやお客様とも協力してうまくやれるといいですね。\n\n## おまけ\n\n- [kaku3 - Qiita記事一覧](https://kaku3.github.io/workbooks/Qiita/)\nポエム多め。PM、メンター、未経験エンジニアや新卒向け記事など。\n\n- [エンジニアのためのお仕事問題集](https://github.com/kaku3/workbooks)\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで無料公開してます(不定期更新)。\n\nよろしければどうぞ。\n\n[^1]: やんちゃな人がいるかもしれない状況では求人の単価を上げられないので給与も上がらないかもしれない。\n[^2]: 予算や工数やスケジュールの関係で教育ができないということはママあるかもしれない。\n",
+    "coediting": false,
+    "comments_count": 0,
+    "created_at": "2024-07-13T18:13:17+09:00",
+    "group": null,
+    "id": "656e8a144c98e7209ad9",
+    "likes_count": 0,
+    "private": false,
+    "reactions_count": 0,
+    "stocks_count": 0,
+    "tags": [
+      {
+        "name": "ポエム",
+        "versions": []
+      },
+      {
+        "name": "教育",
+        "versions": []
+      },
+      {
+        "name": "メンター",
+        "versions": []
+      },
+      {
+        "name": "新人プログラマ応援",
+        "versions": []
+      }
+    ],
+    "title": "よきメンターになろう : 共感力とメンタライジング力",
+    "updated_at": "2024-07-13T18:13:17+09:00",
+    "url": "https://qiita.com/kaku3/items/656e8a144c98e7209ad9",
+    "user": {
+      "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
+      "facebook_id": "",
+      "followees_count": 3,
+      "followers_count": 611,
+      "github_login_name": "kaku3",
+      "id": "kaku3",
+      "items_count": 104,
+      "linkedin_id": "",
+      "location": "",
+      "name": "",
+      "organization": "",
+      "permanent_id": 136165,
+      "profile_image_url": "https://qiita-image-store.s3.amazonaws.com/0/136165/profile-images/1473719863",
+      "team_only": false,
+      "twitter_screen_name": "kaku3",
+      "website_url": ""
+    },
+    "page_views_count": 24,
+    "team_membership": null,
+    "organization_url_name": null,
+    "slide": false
+  },
+  {
     "rendered_body": "<h2 data-sourcepos=\"1:1-1:15\">\n<span id=\"はじめに\" class=\"fragment\"></span><a href=\"#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB\"><i class=\"fa fa-link\"></i></a>はじめに</h2>\n<p data-sourcepos=\"3:1-3:275\">Qiitaに記事を投稿する時に、せっかくなので（？）以前に書いた記事も読んでもらえたらいいなと過去記事の中でもオススメっぽいもののリンクをつけていたのですが、「長い」とコメントを頂きまして。</p>\n<p data-sourcepos=\"5:1-5:234\">どうせなら、ただオススメ記事リンクを作るのではなくて、検索やいいね順表示なんかも対応してついでにソース公開したらいいのではと思い、そんなサイトを作りました。</p>\n<ul data-sourcepos=\"7:1-9:0\">\n<li data-sourcepos=\"7:1-7:81\">サイトは<a href=\"https://kaku3.github.io/workbooks/Qiita/\" rel=\"nofollow noopener\" target=\"_blank\">こちら(GitHub Pages)</a>\n</li>\n<li data-sourcepos=\"8:1-9:0\">ソースは<a href=\"https://github.com/kaku3/workbooks/tree/main/09_Qiita%E8%A8%98%E4%BA%8B%E7%B0%A1%E6%98%93%E4%B8%80%E8%A6%A7/10_src\" rel=\"nofollow noopener\" target=\"_blank\">こちら(GitHub)</a>\n</li>\n</ul>\n<p data-sourcepos=\"10:1-10:253\">QiitaのAPIを用いてデータを取得して、簡単な html + js + css で表示しているだけですので、データの差し替えを行えば、汎用の投稿記事のインデックスとしてもご利用いただけると思います。</p>\n<ul data-sourcepos=\"12:1-14:0\">\n<li data-sourcepos=\"12:1-14:0\">図：そんなサイト<br>\n<a href=\"https://camo.qiitausercontent.com/475b95cdaac46a01c5bb1b7d4a3cf0bd733c5396/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f32363261383263622d633261322d643936312d333232372d6637636633656636306163382e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=3608c0d96442ce27ded2447324350a80\" alt=\"投稿記事インデックス.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=616c6d640d07887f6cecde644d13085f 1x\" loading=\"lazy\"></a>\n</li>\n</ul>\n<p data-sourcepos=\"15:1-15:155\">本稿では、Qiita投稿記事のインデックスサイトを制作するにあたって検討したことなどを書いておこうと思います。</p>\n<h2 data-sourcepos=\"17:1-17:27\">\n<span id=\"課題長いおまけ\" class=\"fragment\"></span><a href=\"#%E8%AA%B2%E9%A1%8C%E9%95%B7%E3%81%84%E3%81%8A%E3%81%BE%E3%81%91\"><i class=\"fa fa-link\"></i></a>課題：長いおまけ</h2>\n<p data-sourcepos=\"19:1-20:51\">コメントを頂いたのは、以下の「おまけ」となります。<br>\n確かに長いのでなんとかしたいです。</p>\n<ul data-sourcepos=\"22:1-24:0\">\n<li data-sourcepos=\"22:1-24:0\">図：長いおまけ<br>\n<a href=\"https://camo.qiitausercontent.com/1ed8320ab56a0e3f7f4c2b98e89beb52b8d518fa/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f63336161306135342d343264622d666238612d313535322d6334663062636463333066372e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fc3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=044aa96d33da27ee9223afb25c84134f\" alt=\"長いおまけ.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fc3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=a576a87b8ffa9c65af83abba5e932bb3 1x\" loading=\"lazy\"></a>\n</li>\n</ul>\n<h2 data-sourcepos=\"25:1-25:15\">\n<span id=\"要件定義\" class=\"fragment\"></span><a href=\"#%E8%A6%81%E4%BB%B6%E5%AE%9A%E7%BE%A9\"><i class=\"fa fa-link\"></i></a>要件定義</h2>\n<p data-sourcepos=\"27:1-27:87\">さっくりとサイトを作るので、以下の通り要件を定義しました。</p>\n<ul data-sourcepos=\"29:1-43:0\">\n<li data-sourcepos=\"29:1-32:0\">\n<p data-sourcepos=\"29:3-31:78\">メンテナンス性が高いこと<br>\n今後記事追加を行った時のメンテナンス作業が大変であると更新されなくなります。<br>\nメンテナンス作業は簡単であることが望ましいでしょう。</p>\n</li>\n<li data-sourcepos=\"33:1-36:0\">\n<p data-sourcepos=\"33:3-35:108\">Qiita 側の負荷を上げないこと<br>\nAPI を用いてユーザーに対する記事一覧を取得できます。<br>\nただ、そのAPIの呼び出し回数が多くなりすぎないようにした方がいいでしょう。</p>\n</li>\n<li data-sourcepos=\"37:1-39:0\">\n<p data-sourcepos=\"37:3-38:108\">費用が発生しないこと<br>\n営利目的ではないので、収入がなくても運用を継続できることが望ましいです。</p>\n</li>\n<li data-sourcepos=\"40:1-43:0\">\n<p data-sourcepos=\"40:3-42:105\">最小のページ遷移であること<br>\nリンクによるページ遷移毎にユーザーの離脱が懸念されます。<br>\n最小のページ遷移でなるべく多くの記事の一覧を見られるようにしたいです。</p>\n</li>\n</ul>\n<h2 data-sourcepos=\"44:1-44:30\">\n<span id=\"設計検討全体構成\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E5%85%A8%E4%BD%93%E6%A7%8B%E6%88%90\"><i class=\"fa fa-link\"></i></a>設計検討：全体構成</h2>\n<p data-sourcepos=\"46:1-47:144\">そんなに頻繁に更新する必要もないので、Qiita API で自分の記事一覧を取得して、json を保存する方針としてみました。<br>\n取得した json を読み込んで、検索やリスト表示をできる簡単な html を作成するのがよいかなと考えました。</p>\n<p data-sourcepos=\"49:1-49:45\">以下に構成図を載せておきます。</p>\n<ul data-sourcepos=\"51:1-57:0\">\n<li data-sourcepos=\"51:1-57:0\">\n<p data-sourcepos=\"51:3-52:129\">図：構成図<br>\n<a href=\"https://camo.qiitausercontent.com/24328e5193996b55c9862212eb0bc403d34fa9d6/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f64666565363838392d376263312d326636632d343736352d6239343632363135353633622e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fdfee6889-7bc1-2f6c-4765-b9462615563b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8bf5e74aaa3be96d993cf285689e2a4a\" alt=\"設計.drawio.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/dfee6889-7bc1-2f6c-4765-b9462615563b.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fdfee6889-7bc1-2f6c-4765-b9462615563b.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=ef05d21ca160a55e53f1f1ac47e92d99 1x\" loading=\"lazy\"></a></p>\n<ul data-sourcepos=\"54:5-57:0\">\n<li data-sourcepos=\"54:5-54:132\">素の html ファイルでは json をそのまま読み込めないので、js ファイルとして保存としています</li>\n<li data-sourcepos=\"55:5-55:100\">取得には nodejs + axios を利用しましたが、好みの言語でよいと思います</li>\n<li data-sourcepos=\"56:5-57:0\">GPT先生に要件をざっくり伝えると大体作ってくれると思います</li>\n</ul>\n</li>\n</ul>\n<h2 data-sourcepos=\"58:1-58:24\">\n<span id=\"設計検討タグ\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E3%82%BF%E3%82%B0\"><i class=\"fa fa-link\"></i></a>設計検討：タグ</h2>\n<p data-sourcepos=\"60:1-61:273\">記事の検索用にキーワード検索も作成しますが、わたしの記事について能動的にキーワード検索を行うユーザーがいるとは考えにくいです。<br>\nそれよりは、何らかのキーワードを入力することなく、画面上に何か気になるキーワードが配置されていて、それをクリックすることで『何らかの記事一覧が表示される仕組み』があるとよさそうです。</p>\n<h3 data-sourcepos=\"63:1-63:31\">\n<span id=\"1-タグをベタで表示\" class=\"fragment\"></span><a href=\"#1-%E3%82%BF%E3%82%B0%E3%82%92%E3%83%99%E3%82%BF%E3%81%A7%E8%A1%A8%E7%A4%BA\"><i class=\"fa fa-link\"></i></a>1. タグをベタで表示</h3>\n<p data-sourcepos=\"65:1-66:220\">Qiitaの記事には最大5つまでのタグをつけられるので、そのタグを表示する事を考えます。<br>\nタグの横にその記事がついているタグの件数も表示してあげたら大分親切でしょう、という仮定で試作をすることにしましたが、<strong>仮説はまったく的外れでした。</strong></p>\n<p data-sourcepos=\"68:1-68:222\">試作したデータを確認すると、<strong>100種類を超えるタグがついているが、そのほとんどのタグが 1記事でしか利用されていない</strong>というカオスな状況になっていました。</p>\n<ul data-sourcepos=\"70:1-72:0\">\n<li data-sourcepos=\"70:1-72:0\">図：ほとんど一度しか使われていないタグ<br>\n<a href=\"https://camo.qiitausercontent.com/c14e1bd574e85bcc4caf7753df51d25e1ee7f53d/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36386363393939362d643264332d343331322d396131622d3736386636653837666165662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68cc9996-d2d3-4312-9a1b-768f6e87faef.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a6eb0f22d8a60df04e06f06d5d843930\" alt=\"タグ一覧.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68cc9996-d2d3-4312-9a1b-768f6e87faef.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68cc9996-d2d3-4312-9a1b-768f6e87faef.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=872dd1b3c99227491aad689b1006b31f 1x\" loading=\"lazy\"></a>\n</li>\n</ul>\n<p data-sourcepos=\"73:1-73:369\">このタグを辞書順でソートして表示して『お好きなものをクリックしてください』と言ってもなかなかクリックしてもらえないでしょうし、クリックしてくれたとしても、１件しか結果が出てこないのはユーザー体験としては微妙で、クリックしてもらえなくなりそうです。</p>\n<h3 data-sourcepos=\"75:1-75:31\">\n<span id=\"2-タグをグループ化\" class=\"fragment\"></span><a href=\"#2-%E3%82%BF%E3%82%B0%E3%82%92%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E5%8C%96\"><i class=\"fa fa-link\"></i></a>2. タグをグループ化</h3>\n<p data-sourcepos=\"77:1-77:156\">ということで、タグをある程度意味のあるグループでグループ化することにします。（上図の色のついた帯の単位）</p>\n<p data-sourcepos=\"79:1-80:240\">このグループ化ですが <strong>GPT4o に、『いい感じにグループ化して』</strong> とお願いしてさっくりグループを作ってもらいました。（特に難しいプロンプトは指定していないです。）<br>\n若干微妙なところもあったので手で修正しましたが、大体はいい感じでした。こういうところこそ人間が考えるべきと思っていたのですが、そうでもないのだなあと思いました。</p>\n<h3 data-sourcepos=\"82:1-82:36\">\n<span id=\"3-アコーディオンui化\" class=\"fragment\"></span><a href=\"#3-%E3%82%A2%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%82%AA%E3%83%B3ui%E5%8C%96\"><i class=\"fa fa-link\"></i></a>3. アコーディオンUI化？</h3>\n<p data-sourcepos=\"84:1-85:218\">100種類を超えるタグを縦に並べると1画面に収まりません。<br>\nアコーディオンUIにすれば収まりもよくなりますが、タググループをクリックしてわざわざ中身を見てもらえるかというとそんなこともないような気がしました。</p>\n<h3 data-sourcepos=\"87:1-87:43\">\n<span id=\"4-タググループの一覧を表示\" class=\"fragment\"></span><a href=\"#4-%E3%82%BF%E3%82%B0%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%AE%E4%B8%80%E8%A6%A7%E3%82%92%E8%A1%A8%E7%A4%BA\"><i class=\"fa fa-link\"></i></a>4. タググループの一覧を表示</h3>\n<p data-sourcepos=\"89:1-89:159\">であれば、左メニューとは別にページの上部にタググループ一覧を表示する欄を設けるのがよいのではと考えました。</p>\n<p data-sourcepos=\"91:1-91:140\"><a href=\"https://camo.qiitausercontent.com/60577c2bd1d94dda8958b6b80bf36354f9c03006/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36383034326333392d346332642d393531662d653431332d6338376330656562633961332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68042c39-4c2d-951f-e413-c87c0eebc9a3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=2aecaac3f5e7d0c9326d60b47fa7362c\" alt=\"タググループ一覧.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68042c39-4c2d-951f-e413-c87c0eebc9a3.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F68042c39-4c2d-951f-e413-c87c0eebc9a3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=18530574f3b51fba2f3ee118906ae094 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"93:1-93:314\">タググループに件数をつけたい気持ちにもなりましたが、ユーザー的には「興味のあるトピックをクリックする」のであって、「10件記事のあるトピックをクリックするのではない」という整理にして件数をつけるのは見送りました。</p>\n<p data-sourcepos=\"95:1-95:116\"><strong>『思いついたものをすべて実装しない』</strong> ことも個人開発では大事かなと思います。</p>\n<h2 data-sourcepos=\"97:1-97:69\">\n<span id=\"設計検討おすすめ記事いいね順ストック順\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E3%81%8A%E3%81%99%E3%81%99%E3%82%81%E8%A8%98%E4%BA%8B%E3%81%84%E3%81%84%E3%81%AD%E9%A0%86%E3%82%B9%E3%83%88%E3%83%83%E3%82%AF%E9%A0%86\"><i class=\"fa fa-link\"></i></a>設計検討：おすすめ記事・いいね順・ストック順</h2>\n<p data-sourcepos=\"99:1-100:118\">このサイトを作る元々の目的は「おまけ記事リンク」の表示なので、この記事リストがファーストビューに入ることが優先順位としては高いです。ひょっとしたら検索ボックスやタググループよりも上に表示された方がよいのではということも検討しましたが、更新頻度も高いわけではないので現在の配置順序としました。<br>\n2回以上訪問される方が、すぐに新しい情報にアクセスできたらいいなという整理です。</p>\n<p data-sourcepos=\"102:1-103:165\">そして、ここは仮説の域を出ませんが、いいね数やストック数の多い記事程読みたくなる可能性が高いと思われたのでそれらの値も表示するようにしてみました。であれば、いいね数やストック数のランキングも近くに配置した方がよいという考えで、タブUIで配置してみました。<br>\nランキングは、Top20も見ると飽きるかなというところで、ページャーなども設けず、Top20が表示されるだけのUIとしました。</p>\n<p data-sourcepos=\"105:1-105:134\"><a href=\"https://camo.qiitausercontent.com/ce98ceb161d8a9be37632e08585fd4b750e52d7c/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f35646432663637662d646437342d386339322d343434362d6335616163633934326163662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5dd2f67f-dd74-8c92-4446-c5aacc942acf.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8e492ce3c09c4c1d94fa8fd64273f336\" alt=\"おすすめ記事.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5dd2f67f-dd74-8c92-4446-c5aacc942acf.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5dd2f67f-dd74-8c92-4446-c5aacc942acf.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=11b8301860bee4fd7a589983666da9c3 1x\" loading=\"lazy\"></a></p>\n<h2 data-sourcepos=\"107:1-107:26\">\n<span id=\"設計検討タブui\" class=\"fragment\"></span><a href=\"#%E8%A8%AD%E8%A8%88%E6%A4%9C%E8%A8%8E%E3%82%BF%E3%83%96ui\"><i class=\"fa fa-link\"></i></a>設計検討：タブUI</h2>\n<p data-sourcepos=\"109:1-109:218\">『全体的にデザインには凝らない』というコンセプトで作っていますが、ここだけ「あまり見かけないUI」にして気を引けないか試してみることにしてみました。</p>\n<p data-sourcepos=\"111:1-111:40\"><strong>クリックしてほしいので。</strong></p>\n<p data-sourcepos=\"113:1-113:124\"><a href=\"https://camo.qiitausercontent.com/c3d88a8b7a82f518a6e9fb4a6d782678a879e845/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38353035613735352d666130642d376666652d323635382d3366343233643937613366362e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8505a755-fa0d-7ffe-2658-3f423d97a3f6.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=92f2a4ba404af1f8977c62093df0f46b\" alt=\"タブUI.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8505a755-fa0d-7ffe-2658-3f423d97a3f6.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8505a755-fa0d-7ffe-2658-3f423d97a3f6.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=87eabe3688c4922fc04699a488ddf33d 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"115:1-116:106\">地味にタブの重ね合わせをしました。<br>\ncss だけで簡単にできるかな？とGPT先生に聞いたらサクッと教えてくれました。</p>\n<h2 data-sourcepos=\"118:1-118:12\">\n<span id=\"まとめ\" class=\"fragment\"></span><a href=\"#%E3%81%BE%E3%81%A8%E3%82%81\"><i class=\"fa fa-link\"></i></a>まとめ</h2>\n<p data-sourcepos=\"120:1-122:225\">今回のUI設計では、<strong>100種類を超える多種多様なタグを並べてもクリックされないのでは？</strong> という仮説を立てました。<br>\nこういう仮説自体は今のところAIは立ててくれない気がしています。<br>\nただ、「タグをまとめたら便利になるハズなのでまとめて」と問いかければ、複雑なプロンプトなどを書かなくても、かなりいい感じの回答をくれる実感もあります。</p>\n<p data-sourcepos=\"124:1-124:219\">そうしてみると、人間としては、仮説を立てたり、やりたいことを明確にしていくなど能動的に動くことの重要度が上がっていくのかもなとぼんやり思いました。</p>\n<h2 data-sourcepos=\"126:1-126:12\">\n<span id=\"おまけ\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%81%BE%E3%81%91\"><i class=\"fa fa-link\"></i></a>おまけ</h2>\n<ul data-sourcepos=\"128:1-132:0\">\n<li data-sourcepos=\"128:1-129:92\">\n<a href=\"https://kaku3.github.io/workbooks/Qiita/\" rel=\"nofollow noopener\" target=\"_blank\">kaku3 - Qiita記事一覧</a><br>\nポエム多め。PM、メンター、未経験エンジニアや新卒向け記事など。</li>\n<li data-sourcepos=\"130:1-132:0\">\n<a href=\"https://github.com/kaku3/workbooks\" rel=\"nofollow noopener\" target=\"_blank\">エンジニアのためのお仕事問題集</a><br>\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで<strong>無料</strong>公開してます(不定期更新)。</li>\n</ul>\n<p data-sourcepos=\"133:1-133:30\">よろしければどうぞ。</p>\n",
     "body": "## はじめに\n\nQiitaに記事を投稿する時に、せっかくなので（？）以前に書いた記事も読んでもらえたらいいなと過去記事の中でもオススメっぽいもののリンクをつけていたのですが、「長い」とコメントを頂きまして。\n\nどうせなら、ただオススメ記事リンクを作るのではなくて、検索やいいね順表示なんかも対応してついでにソース公開したらいいのではと思い、そんなサイトを作りました。\n\n- サイトは[こちら(GitHub Pages)](https://kaku3.github.io/workbooks/Qiita/)\n- ソースは[こちら(GitHub)](https://github.com/kaku3/workbooks/tree/main/09_Qiita%E8%A8%98%E4%BA%8B%E7%B0%A1%E6%98%93%E4%B8%80%E8%A6%A7/10_src)\n\nQiitaのAPIを用いてデータを取得して、簡単な html + js + css で表示しているだけですので、データの差し替えを行えば、汎用の投稿記事のインデックスとしてもご利用いただけると思います。\n\n- 図：そんなサイト\n![投稿記事インデックス.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/262a82cb-c2a2-d961-3227-f7cf3ef60ac8.png)\n\n本稿では、Qiita投稿記事のインデックスサイトを制作するにあたって検討したことなどを書いておこうと思います。\n\n## 課題：長いおまけ\n\nコメントを頂いたのは、以下の「おまけ」となります。\n確かに長いのでなんとかしたいです。\n\n- 図：長いおまけ\n![長いおまけ.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c3aa0a54-42db-fb8a-1552-c4f0bcdc30f7.png)\n\n## 要件定義\n\nさっくりとサイトを作るので、以下の通り要件を定義しました。\n\n- メンテナンス性が高いこと\n今後記事追加を行った時のメンテナンス作業が大変であると更新されなくなります。\nメンテナンス作業は簡単であることが望ましいでしょう。\n\n- Qiita 側の負荷を上げないこと\nAPI を用いてユーザーに対する記事一覧を取得できます。\nただ、そのAPIの呼び出し回数が多くなりすぎないようにした方がいいでしょう。\n\n- 費用が発生しないこと\n営利目的ではないので、収入がなくても運用を継続できることが望ましいです。\n\n- 最小のページ遷移であること\nリンクによるページ遷移毎にユーザーの離脱が懸念されます。\n最小のページ遷移でなるべく多くの記事の一覧を見られるようにしたいです。\n\n## 設計検討：全体構成\n\nそんなに頻繁に更新する必要もないので、Qiita API で自分の記事一覧を取得して、json を保存する方針としてみました。\n取得した json を読み込んで、検索やリスト表示をできる簡単な html を作成するのがよいかなと考えました。\n\n以下に構成図を載せておきます。\n\n- 図：構成図\n![設計.drawio.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/dfee6889-7bc1-2f6c-4765-b9462615563b.png)\n\n    - 素の html ファイルでは json をそのまま読み込めないので、js ファイルとして保存としています\n    - 取得には nodejs + axios を利用しましたが、好みの言語でよいと思います\n    - GPT先生に要件をざっくり伝えると大体作ってくれると思います\n\n## 設計検討：タグ\n\n記事の検索用にキーワード検索も作成しますが、わたしの記事について能動的にキーワード検索を行うユーザーがいるとは考えにくいです。\nそれよりは、何らかのキーワードを入力することなく、画面上に何か気になるキーワードが配置されていて、それをクリックすることで『何らかの記事一覧が表示される仕組み』があるとよさそうです。\n\n### 1. タグをベタで表示\n\nQiitaの記事には最大5つまでのタグをつけられるので、そのタグを表示する事を考えます。\nタグの横にその記事がついているタグの件数も表示してあげたら大分親切でしょう、という仮定で試作をすることにしましたが、**仮説はまったく的外れでした。**\n\n試作したデータを確認すると、**100種類を超えるタグがついているが、そのほとんどのタグが 1記事でしか利用されていない**というカオスな状況になっていました。\n\n- 図：ほとんど一度しか使われていないタグ\n![タグ一覧.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68cc9996-d2d3-4312-9a1b-768f6e87faef.png)\n\nこのタグを辞書順でソートして表示して『お好きなものをクリックしてください』と言ってもなかなかクリックしてもらえないでしょうし、クリックしてくれたとしても、１件しか結果が出てこないのはユーザー体験としては微妙で、クリックしてもらえなくなりそうです。\n\n### 2. タグをグループ化\n\nということで、タグをある程度意味のあるグループでグループ化することにします。（上図の色のついた帯の単位）\n\nこのグループ化ですが **GPT4o に、『いい感じにグループ化して』** とお願いしてさっくりグループを作ってもらいました。（特に難しいプロンプトは指定していないです。）\n若干微妙なところもあったので手で修正しましたが、大体はいい感じでした。こういうところこそ人間が考えるべきと思っていたのですが、そうでもないのだなあと思いました。\n\n### 3. アコーディオンUI化？\n\n100種類を超えるタグを縦に並べると1画面に収まりません。\nアコーディオンUIにすれば収まりもよくなりますが、タググループをクリックしてわざわざ中身を見てもらえるかというとそんなこともないような気がしました。\n\n### 4. タググループの一覧を表示\n\nであれば、左メニューとは別にページの上部にタググループ一覧を表示する欄を設けるのがよいのではと考えました。\n\n![タググループ一覧.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/68042c39-4c2d-951f-e413-c87c0eebc9a3.png)\n\nタググループに件数をつけたい気持ちにもなりましたが、ユーザー的には「興味のあるトピックをクリックする」のであって、「10件記事のあるトピックをクリックするのではない」という整理にして件数をつけるのは見送りました。\n\n**『思いついたものをすべて実装しない』** ことも個人開発では大事かなと思います。\n\n## 設計検討：おすすめ記事・いいね順・ストック順\n\nこのサイトを作る元々の目的は「おまけ記事リンク」の表示なので、この記事リストがファーストビューに入ることが優先順位としては高いです。ひょっとしたら検索ボックスやタググループよりも上に表示された方がよいのではということも検討しましたが、更新頻度も高いわけではないので現在の配置順序としました。\n2回以上訪問される方が、すぐに新しい情報にアクセスできたらいいなという整理です。\n\nそして、ここは仮説の域を出ませんが、いいね数やストック数の多い記事程読みたくなる可能性が高いと思われたのでそれらの値も表示するようにしてみました。であれば、いいね数やストック数のランキングも近くに配置した方がよいという考えで、タブUIで配置してみました。\nランキングは、Top20も見ると飽きるかなというところで、ページャーなども設けず、Top20が表示されるだけのUIとしました。\n\n![おすすめ記事.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5dd2f67f-dd74-8c92-4446-c5aacc942acf.png)\n\n## 設計検討：タブUI\n\n『全体的にデザインには凝らない』というコンセプトで作っていますが、ここだけ「あまり見かけないUI」にして気を引けないか試してみることにしてみました。\n\n**クリックしてほしいので。**\n\n![タブUI.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8505a755-fa0d-7ffe-2658-3f423d97a3f6.png)\n\n地味にタブの重ね合わせをしました。\ncss だけで簡単にできるかな？とGPT先生に聞いたらサクッと教えてくれました。\n\n## まとめ\n\n今回のUI設計では、**100種類を超える多種多様なタグを並べてもクリックされないのでは？** という仮説を立てました。\nこういう仮説自体は今のところAIは立ててくれない気がしています。\nただ、「タグをまとめたら便利になるハズなのでまとめて」と問いかければ、複雑なプロンプトなどを書かなくても、かなりいい感じの回答をくれる実感もあります。\n\nそうしてみると、人間としては、仮説を立てたり、やりたいことを明確にしていくなど能動的に動くことの重要度が上がっていくのかもなとぼんやり思いました。\n\n## おまけ\n\n- [kaku3 - Qiita記事一覧](https://kaku3.github.io/workbooks/Qiita/)\nポエム多め。PM、メンター、未経験エンジニアや新卒向け記事など。\n- [エンジニアのためのお仕事問題集](https://github.com/kaku3/workbooks)\n2030年にIT人材が最大79万人不足するとのことで、学習用の資料をgitで**無料**公開してます(不定期更新)。\n\nよろしければどうぞ。\n",
     "coediting": false,
@@ -10,7 +66,7 @@ const ARTICLES = [
     "likes_count": 2,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 1,
+    "stocks_count": 2,
     "tags": [
       {
         "name": "ポエム",
@@ -39,7 +95,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -50,7 +106,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 306,
+    "page_views_count": 1082,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -63,10 +119,10 @@ const ARTICLES = [
     "created_at": "2024-05-18T14:38:33+09:00",
     "group": null,
     "id": "37a43cfa143361f50315",
-    "likes_count": 94,
+    "likes_count": 98,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 85,
+    "stocks_count": 90,
     "tags": [
       {
         "name": "ポエム",
@@ -99,7 +155,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -110,7 +166,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 104159,
+    "page_views_count": 107642,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -159,7 +215,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -170,7 +226,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2526,
+    "page_views_count": 2804,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -219,7 +275,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -230,7 +286,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 10616,
+    "page_views_count": 11038,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -243,10 +299,10 @@ const ARTICLES = [
     "created_at": "2024-04-06T15:23:07+09:00",
     "group": null,
     "id": "9d7283cb557e3f3e67b7",
-    "likes_count": 30,
+    "likes_count": 31,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 25,
+    "stocks_count": 27,
     "tags": [
       {
         "name": "ポエム",
@@ -271,7 +327,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -282,7 +338,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 13954,
+    "page_views_count": 14251,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -295,10 +351,10 @@ const ARTICLES = [
     "created_at": "2024-04-01T01:03:26+09:00",
     "group": null,
     "id": "f3dd9920b1dd29550ac0",
-    "likes_count": 256,
+    "likes_count": 259,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 274,
+    "stocks_count": 277,
     "tags": [
       {
         "name": "初心者",
@@ -319,7 +375,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -330,7 +386,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 52068,
+    "page_views_count": 53017,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -371,7 +427,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -382,7 +438,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3274,
+    "page_views_count": 3383,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -395,7 +451,7 @@ const ARTICLES = [
     "created_at": "2024-01-13T17:51:28+09:00",
     "group": null,
     "id": "2a91956cbbc489108875",
-    "likes_count": 121,
+    "likes_count": 122,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 117,
@@ -415,7 +471,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -426,7 +482,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 31382,
+    "page_views_count": 31674,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -442,7 +498,7 @@ const ARTICLES = [
     "likes_count": 330,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 261,
+    "stocks_count": 260,
     "tags": [
       {
         "name": "ポエム",
@@ -459,7 +515,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -470,7 +526,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 94738,
+    "page_views_count": 95130,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -519,7 +575,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -530,7 +586,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2040,
+    "page_views_count": 2237,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -571,7 +627,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -582,7 +638,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5161,
+    "page_views_count": 5276,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -623,7 +679,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -634,7 +690,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14723,
+    "page_views_count": 14844,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -679,7 +735,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -690,7 +746,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 32438,
+    "page_views_count": 32644,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -731,7 +787,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -742,7 +798,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5332,
+    "page_views_count": 5609,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -755,10 +811,10 @@ const ARTICLES = [
     "created_at": "2023-08-19T18:38:15+09:00",
     "group": null,
     "id": "a6291ba623b739f35c46",
-    "likes_count": 316,
+    "likes_count": 320,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 263,
+    "stocks_count": 266,
     "tags": [
       {
         "name": "ポエム",
@@ -779,7 +835,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -790,7 +846,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 73491,
+    "page_views_count": 73908,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -827,7 +883,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -838,7 +894,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14645,
+    "page_views_count": 14713,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -871,7 +927,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -882,7 +938,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3464,
+    "page_views_count": 3538,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -915,7 +971,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -926,7 +982,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 18731,
+    "page_views_count": 18922,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -963,7 +1019,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -974,7 +1030,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1666,
+    "page_views_count": 1717,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1011,7 +1067,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1022,7 +1078,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 23174,
+    "page_views_count": 23303,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1071,7 +1127,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1082,7 +1138,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2841,
+    "page_views_count": 2988,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1123,7 +1179,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1134,7 +1190,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8402,
+    "page_views_count": 8522,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1179,7 +1235,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1190,7 +1246,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 4142,
+    "page_views_count": 4225,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1203,7 +1259,7 @@ const ARTICLES = [
     "created_at": "2023-06-04T12:11:54+09:00",
     "group": null,
     "id": "34b40446337a59213a75",
-    "likes_count": 279,
+    "likes_count": 280,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 226,
@@ -1235,7 +1291,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1246,7 +1302,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 46510,
+    "page_views_count": 46815,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1259,10 +1315,10 @@ const ARTICLES = [
     "created_at": "2023-05-20T17:29:21+09:00",
     "group": null,
     "id": "9763f547d497e6f02caf",
-    "likes_count": 69,
+    "likes_count": 68,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 36,
+    "stocks_count": 35,
     "tags": [
       {
         "name": "ポエム",
@@ -1287,7 +1343,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1298,7 +1354,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 24706,
+    "page_views_count": 24832,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1314,7 +1370,7 @@ const ARTICLES = [
     "likes_count": 26,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 22,
+    "stocks_count": 23,
     "tags": [
       {
         "name": "テスト",
@@ -1339,7 +1395,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1350,7 +1406,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 16778,
+    "page_views_count": 16867,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1366,7 +1422,7 @@ const ARTICLES = [
     "likes_count": 379,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 433,
+    "stocks_count": 434,
     "tags": [
       {
         "name": "ポエム",
@@ -1391,7 +1447,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1402,7 +1458,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 71239,
+    "page_views_count": 71615,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1443,7 +1499,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1454,7 +1510,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2822,
+    "page_views_count": 2879,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1467,7 +1523,7 @@ const ARTICLES = [
     "created_at": "2023-04-22T14:32:54+09:00",
     "group": null,
     "id": "b1c94328f273c750286b",
-    "likes_count": 27,
+    "likes_count": 29,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 19,
@@ -1495,7 +1551,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1506,7 +1562,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5477,
+    "page_views_count": 5571,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1551,7 +1607,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1562,7 +1618,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 9355,
+    "page_views_count": 9406,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1603,7 +1659,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1614,7 +1670,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6180,
+    "page_views_count": 6289,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1655,7 +1711,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1666,7 +1722,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 29026,
+    "page_views_count": 29217,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1707,7 +1763,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1718,7 +1774,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 12053,
+    "page_views_count": 12167,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1767,7 +1823,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1778,7 +1834,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2233,
+    "page_views_count": 2314,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1819,7 +1875,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1830,7 +1886,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5656,
+    "page_views_count": 5729,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1879,7 +1935,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1890,7 +1946,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 18251,
+    "page_views_count": 18315,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1931,7 +1987,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -1942,7 +1998,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11927,
+    "page_views_count": 12031,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1991,7 +2047,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2002,7 +2058,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1570,
+    "page_views_count": 1595,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2035,7 +2091,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2046,7 +2102,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 25706,
+    "page_views_count": 25864,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2083,7 +2139,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2094,7 +2150,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2496,
+    "page_views_count": 2586,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2139,7 +2195,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2150,7 +2206,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1694,
+    "page_views_count": 1714,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2191,7 +2247,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2202,7 +2258,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2248,
+    "page_views_count": 2279,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2239,7 +2295,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2250,7 +2306,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1690,
+    "page_views_count": 1714,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2287,7 +2343,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2298,7 +2354,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11235,
+    "page_views_count": 11284,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2311,7 +2367,7 @@ const ARTICLES = [
     "created_at": "2022-04-06T01:44:12+09:00",
     "group": null,
     "id": "937354cc180c8bee823b",
-    "likes_count": 27,
+    "likes_count": 28,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 15,
@@ -2335,7 +2391,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2346,7 +2402,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8078,
+    "page_views_count": 8164,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2362,7 +2418,7 @@ const ARTICLES = [
     "likes_count": 113,
     "private": false,
     "reactions_count": 0,
-    "stocks_count": 80,
+    "stocks_count": 79,
     "tags": [
       {
         "name": "ポエム",
@@ -2387,7 +2443,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2398,7 +2454,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 26619,
+    "page_views_count": 26814,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2443,7 +2499,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2454,7 +2510,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 25534,
+    "page_views_count": 25733,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2503,7 +2559,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2514,7 +2570,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6113,
+    "page_views_count": 6504,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2559,7 +2615,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2570,7 +2626,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1490,
+    "page_views_count": 1539,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2619,7 +2675,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2630,7 +2686,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 7580,
+    "page_views_count": 7751,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2671,7 +2727,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2682,14 +2738,14 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2172,
+    "page_views_count": 2210,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
   },
   {
-    "rendered_body": "<h2 data-sourcepos=\"1:1-1:31\">\n<span id=\"why-デザインパターン\" class=\"fragment\"></span><a href=\"#why-%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3\"><i class=\"fa fa-link\"></i></a>Why デザインパターン</h2>\n<p data-sourcepos=\"3:1-3:60\">職業プログラマのみなさんおはこんばんわ。</p>\n<p data-sourcepos=\"5:1-5:198\">大量にプログラムを書く仕事を想像してプログラマになられたかもしれませんが、<strong>大量にプログラムを読む仕事</strong> をなさっているでしょうか？<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>\n<p data-sourcepos=\"7:1-7:361\">規模の大きな開発や、短期間での開発に対応するためには、既存プロジェクトのソース、オープンソースやフレームワークのソースなど、<strong>他人の書いたソースを読んで理解して利用する</strong>必要があるため、プログラムを書く機会より読む機会が増えていると思います。</p>\n<p data-sourcepos=\"9:1-11:24\">ここで困ったことが一つあります。<br>\n<strong>『プログラムはコンピューターが理解できさえすればどのように書いてあっても動く』</strong><br>\nということです。</p>\n<p data-sourcepos=\"13:1-13:191\">例えば、変数名を <code>hoge</code> と定義したプログラムは動作しますが、書いた本人以外の他人がそのプログラムの意図を理解するのは困難でしょう。</p>\n<p data-sourcepos=\"15:1-15:234\">あるいは、一つの関数が1000行のプログラムも動作しますが、他人が読むことは大変困難でしょう。悪いことに<strong>書いた本人ですら3ヶ月後には読めない</strong>こともあるでしょう。</p>\n<p data-sourcepos=\"17:1-18:120\">これらは極端な事例ですが、**「誰が設計しても、このケースではこう設計するのが妥当」**というベストプラクティスに沿って職業プログラマ全員が読んだり書いたりすれば毎回コーディングや設計で悩んだり悩まされたりしなくてよくなるはずです。<br>\nこれがデザインパターンが生まれた理由であり、わたし達が学習する理由かと思います。</p>\n<p data-sourcepos=\"20:1-20:318\">残念なことに実装ありきの解説で敷居が高かったり、利用頻度がそこまで高くなかったりして微妙かなと思うところもありますが、知識として知っておいて損はないかと思いますので身近なユースケースを上げて説明したいと思います。</p>\n<h2 data-sourcepos=\"23:1-23:40\">\n<span id=\"生成に関するパターン1---5\" class=\"fragment\"></span><a href=\"#%E7%94%9F%E6%88%90%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B31---5\"><i class=\"fa fa-link\"></i></a>生成に関するパターン(1 - 5)</h2>\n<table data-sourcepos=\"25:1-31:80\">\n<thead>\n<tr data-sourcepos=\"25:1-25:51\">\n<th data-sourcepos=\"25:2-25:28\">デザインパターン</th>\n<th data-sourcepos=\"25:30-25:50\">ユースケース</th>\n</tr>\n</thead>\n<tbody>\n<tr data-sourcepos=\"27:1-27:146\">\n<td data-sourcepos=\"27:2-27:82\"><a href=\"#1-abstract-factory%E6%8A%BD%E8%B1%A1%E7%9A%84%E3%81%AA%E5%B7%A5%E5%A0%B4\">1. Abstract Factory(抽象的な工場) </a></td>\n<td data-sourcepos=\"27:84-27:146\">ココイチはカレー工場で、二郎はラーメン工場</td>\n</tr>\n<tr data-sourcepos=\"28:1-28:122\">\n<td data-sourcepos=\"28:2-28:46\"><a href=\"#2-builder%E5%BB%BA%E7%AF%89%E8%80%85\">2. Builder(建築者)</a></td>\n<td data-sourcepos=\"28:48-28:122\">ベースの武器と素材や不要な武器と金を渡して武器強化</td>\n</tr>\n<tr data-sourcepos=\"29:1-29:179\">\n<td data-sourcepos=\"29:2-29:133\"><a href=\"#3-factory-methodfactory%E3%81%AB%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E7%94%9F%E6%88%90%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89\">3. Factory Method(Factoryにオブジェクト生成メソッド)</a></td>\n<td data-sourcepos=\"29:135-29:179\">餅は餅屋に、カレーはカレー屋に</td>\n</tr>\n<tr data-sourcepos=\"30:1-30:89\">\n<td data-sourcepos=\"30:2-30:43\"><a href=\"#4-prototype%E9%9B%9B%E5%BD%A2\">4. Prototype(雛形)</a></td>\n<td data-sourcepos=\"30:45-30:89\">セントラルキッチンでスープ製造</td>\n</tr>\n<tr data-sourcepos=\"31:1-31:80\">\n<td data-sourcepos=\"31:2-31:43\"><a href=\"#5-singleton%E5%8D%98%E4%B8%80\">5. Singleton(単一)</a></td>\n<td data-sourcepos=\"31:45-31:80\">セントラルキッチンは一つ</td>\n</tr>\n</tbody>\n</table>\n<h2 data-sourcepos=\"34:1-34:41\">\n<span id=\"構造に関するパターン6---12\" class=\"fragment\"></span><a href=\"#%E6%A7%8B%E9%80%A0%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B36---12\"><i class=\"fa fa-link\"></i></a>構造に関するパターン(6 - 12)</h2>\n<table data-sourcepos=\"36:1-44:159\">\n<thead>\n<tr data-sourcepos=\"36:1-36:48\">\n<th data-sourcepos=\"36:2-36:28\">デザインパターン</th>\n<th data-sourcepos=\"36:30-36:47\">超入門概要</th>\n</tr>\n</thead>\n<tbody>\n<tr data-sourcepos=\"38:1-38:56\">\n<td data-sourcepos=\"38:2-38:40\"><a href=\"#6-adapter%E9%81%A9%E5%90%88\">6. Adapter(適合)</a></td>\n<td data-sourcepos=\"38:42-38:56\">居抜き店舗</td>\n</tr>\n<tr data-sourcepos=\"39:1-39:57\">\n<td data-sourcepos=\"39:2-39:32\"><a href=\"#7-bridge%E6%A9%8B\">7. Bridge(橋)</a></td>\n<td data-sourcepos=\"39:34-39:57\">展示場とイベント</td>\n</tr>\n<tr data-sourcepos=\"40:1-40:78\">\n<td data-sourcepos=\"40:2-40:50\"><a href=\"#8-composite%E8%A4%87%E5%90%88%E7%89%A9\">8. Composite(複合物)</a></td>\n<td data-sourcepos=\"40:52-40:78\">ゲームオブジェクト</td>\n</tr>\n<tr data-sourcepos=\"41:1-41:94\">\n<td data-sourcepos=\"41:2-41:50\"><a href=\"#9-decorator%E8%A3%85%E9%A3%BE%E8%80%85\">9. Decorator(装飾者)</a></td>\n<td data-sourcepos=\"41:52-41:94\">PSストアセールと消費税(悪い例)</td>\n</tr>\n<tr data-sourcepos=\"42:1-42:74\">\n<td data-sourcepos=\"42:2-42:40\"><a href=\"#10-facade%E7%AA%93%E5%8F%A3\">10. Facade(窓口)</a></td>\n<td data-sourcepos=\"42:42-42:74\">区役所とウーバーイーツ</td>\n</tr>\n<tr data-sourcepos=\"43:1-43:71\">\n<td data-sourcepos=\"43:2-43:46\"><a href=\"#11-flyweight%E8%BB%BD%E9%87%8F\">11. Flyweight(軽量)</a></td>\n<td data-sourcepos=\"43:48-43:71\">ネットフリックス</td>\n</tr>\n<tr data-sourcepos=\"44:1-44:159\">\n<td data-sourcepos=\"44:2-44:44\"><a href=\"#12-proxy%E4%BB%A3%E7%90%86%E4%BA%BA\">12. Proxy(代理人)</a></td>\n<td data-sourcepos=\"44:46-44:159\">カリスマ経営者率いるプログラミングスクール、オフショア窓口、美容院、メルカリ</td>\n</tr>\n</tbody>\n</table>\n<h2 data-sourcepos=\"46:1-46:59\">\n<span id=\"振る舞いに関するパターン13---23執筆中\" class=\"fragment\"></span><a href=\"#%E6%8C%AF%E3%82%8B%E8%88%9E%E3%81%84%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B313---23%E5%9F%B7%E7%AD%86%E4%B8%AD\"><i class=\"fa fa-link\"></i></a>振る舞いに関するパターン(13 - 23)(執筆中)</h2>\n<table data-sourcepos=\"48:1-60:295\">\n<thead>\n<tr data-sourcepos=\"48:1-48:51\">\n<th data-sourcepos=\"48:2-48:28\">デザインパターン</th>\n<th data-sourcepos=\"48:30-48:50\">ユースケース</th>\n</tr>\n</thead>\n<tbody>\n<tr data-sourcepos=\"50:1-50:138\">\n<td data-sourcepos=\"50:2-50:86\"><a href=\"#13-chain-of-responsibility%E8%B2%AC%E4%BB%BB%E3%81%AE%E9%8E%96\">13. Chain of Responsibility(責任の鎖)</a></td>\n<td data-sourcepos=\"50:88-50:138\">お前じゃ話にならん店長を呼んでこい</td>\n</tr>\n<tr data-sourcepos=\"51:1-51:91\">\n<td data-sourcepos=\"51:2-51:66\"><a href=\"#14-command%E6%89%8B%E9%A0%86%E6%9B%B8%E9%80%9A%E3%82%8A%E3%82%84%E3%81%A3%E3%81%A6\">14. Command(コマンド)</a></td>\n<td data-sourcepos=\"51:68-51:91\">手順書通りやって</td>\n</tr>\n<tr data-sourcepos=\"52:1-52:129\">\n<td data-sourcepos=\"52:2-52:92\"><a href=\"#15-interpreterrpg%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9E\">15. Interpreter(インタプリタ)</a></td>\n<td data-sourcepos=\"52:94-52:129\">RPGゲームのスクリプト言語</td>\n</tr>\n<tr data-sourcepos=\"53:1-53:144\">\n<td data-sourcepos=\"53:2-53:92\"><a href=\"#16-iterator%E5%8F%A4%E3%81%84%E8%A8%AD%E8%A8%88%E9%96%A2%E6%95%B0%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%82%92%E3%81%97%E3%82%88%E3%81%86\">16. Iterator(繰り返し)</a></td>\n<td data-sourcepos=\"53:94-53:144\">古い設計。関数型プログラムをしよう</td>\n</tr>\n<tr data-sourcepos=\"54:1-54:81\">\n<td data-sourcepos=\"54:2-54:62\"><a href=\"#17-mediatorses%E3%81%A8%E6%8C%87%E6%8F%AE%E5%91%BD%E4%BB%A4\">17. Mediator(指揮命令)</a></td>\n<td data-sourcepos=\"54:64-54:81\">SESと指揮命令</td>\n</tr>\n<tr data-sourcepos=\"55:1-55:106\">\n<td data-sourcepos=\"55:2-55:72\"><a href=\"#18-memento%E8%A8%98%E5%BF%B5%E5%93%81%E3%82%88%E3%82%8A%E3%82%BB%E3%83%BC%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF\">18. Memento(記念品)</a></td>\n<td data-sourcepos=\"55:74-55:106\">記念品よりセーブデータ</td>\n</tr>\n<tr data-sourcepos=\"56:1-56:90\">\n<td data-sourcepos=\"56:2-56:65\"><a href=\"#19-observer%E6%96%B0%E5%88%8A%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E6%A9%9F%E8%83%BD\">19. Observer(観測者)</a></td>\n<td data-sourcepos=\"56:67-56:90\">新刊お知らせ機能</td>\n</tr>\n<tr data-sourcepos=\"57:1-57:75\">\n<td data-sourcepos=\"57:2-57:53\"><a href=\"#20-state%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E9%81%B8%E6%8A%9E\">20. State(状態)</a></td>\n<td data-sourcepos=\"57:55-57:75\">キャラクタ選択</td>\n</tr>\n<tr data-sourcepos=\"58:1-58:114\">\n<td data-sourcepos=\"58:2-58:74\"><a href=\"#21-strategy%E6%88%A6%E7%95%A5%E3%81%8B%E6%88%A6%E8%A1%93%E3%81%8B%E3%81%9D%E3%82%8C%E3%81%8C%E5%95%8F%E9%A1%8C%E3%81%A0\">21. Strategy(戦略)</a></td>\n<td data-sourcepos=\"58:76-58:114\">戦略か戦術か、それが問題だ</td>\n</tr>\n<tr data-sourcepos=\"59:1-59:149\">\n<td data-sourcepos=\"59:2-59:130\"><a href=\"#22-template-method%E5%AD%A6%E7%BF%92%E6%8C%87%E5%B0%8E%E8%A6%81%E7%B6%B1\">22. Template Method(テンプレートメソッド)</a></td>\n<td data-sourcepos=\"59:132-59:149\">学習指導要綱</td>\n</tr>\n<tr data-sourcepos=\"60:1-60:295\">\n<td data-sourcepos=\"60:2-60:228\"><a href=\"#23-visitor%E3%82%A6%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%83%9E%E3%83%83%E3%82%AF%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%E3%81%A8%E3%83%A4%E3%83%9E%E3%83%88%E3%81%A8%E4%BD%90%E5%B7%9D%E3%81%A8\">23. Visitor(訪問者)</a></td>\n<td data-sourcepos=\"60:230-60:295\">ウーバーとマックデリバリーとヤマトと佐川と…</td>\n</tr>\n</tbody>\n</table>\n<h3 data-sourcepos=\"63:1-63:43\">\n<span id=\"1-abstract-factory抽象的な工場\" class=\"fragment\"></span><a href=\"#1-abstract-factory%E6%8A%BD%E8%B1%A1%E7%9A%84%E3%81%AA%E5%B7%A5%E5%A0%B4\"><i class=\"fa fa-link\"></i></a>1. Abstract Factory(抽象的な工場)</h3>\n<p data-sourcepos=\"65:1-65:72\">１つ目からちょっと何言ってるか分からないですね。</p>\n<p data-sourcepos=\"67:1-68:147\">晩ごはんを食べるプログラムを書くとしましょうか。<br>\nココイチならカレー、二郎ならラーメンが食べられますが、まだ今日はどちらを食べたいか決まってません。</p>\n<p data-sourcepos=\"70:1-71:272\">この様な時に、晩ごはん工場をAbstract Factory と見立てて、ココイチや二郎をFactoryと見立てて、プログラムを書くとはっきり食べたいモノが決まってなくてもプログラムが書けます。<br>\nまた、急に気が変わってサイゼの辛味チキンが食べたくなったとしても、サイゼリヤを Factory として実装して、サイゼリヤを create するだけでその後晩ごはんを食べる処理などは修正が不要となります。</p>\n<p data-sourcepos=\"73:1-73:131\"><a href=\"https://camo.qiitausercontent.com/702cde0d44ceb0f1dfc2ff771afbb4738b524818/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30323039313761632d323538642d613166632d353237302d3762336633306162626339342e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F020917ac-258d-a1fc-5270-7b3f30abbc94.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=82ca0e2d96b30f820cd4d0f445092543\" alt=\"AbstractFactory.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/020917ac-258d-a1fc-5270-7b3f30abbc94.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F020917ac-258d-a1fc-5270-7b3f30abbc94.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=04ef4329105cea9bc3b9a0d635e9b3e9 1x\" loading=\"lazy\"></a></p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"75:1-81:3\">\n<div class=\"code-lang\"><span class=\"bold\">AbstractFactorySnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"nc\">SupperFactory</span> <span class=\"n\">factory</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">CocoichiFactory</span><span class=\"o\">();</span>\n\n<span class=\"c1\">// 以下のコードは店(Factory)によらず共通</span>\n<span class=\"n\">factory</span><span class=\"o\">.</span><span class=\"na\">createFood</span><span class=\"o\">(</span><span class=\"mi\">800</span><span class=\"o\">);</span>\n<span class=\"o\">...</span>\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"83:1-83:25\">\n<span id=\"2-builder建築者\" class=\"fragment\"></span><a href=\"#2-builder%E5%BB%BA%E7%AF%89%E8%80%85\"><i class=\"fa fa-link\"></i></a>2. Builder(建築者)</h3>\n<p data-sourcepos=\"85:1-85:67\">2つ目もちょっと何言ってるか分からないですね。</p>\n<p data-sourcepos=\"87:1-87:126\">『建築者に渡すべきものを渡して結果を取得する方法』だけ取り決めとくという考え方です。</p>\n<p data-sourcepos=\"89:1-90:171\">身近な例だと、ソシャゲの武器強化などでしょうか。<br>\n<code>Equipment</code> は <code>Material</code> から派生しておくと、強化用素材だけではなく、不要な武器防具も強化用素材として利用できそうですね。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"92:1-99:3\">\n<div class=\"code-lang\"><span class=\"bold\">LeveledEquipmentBuilder.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">interface</span> <span class=\"nc\">LeveledEquipmentBuilder</span> <span class=\"o\">{</span>\n  <span class=\"kt\">void</span> <span class=\"nf\">setTarget</span><span class=\"o\">(</span><span class=\"nc\">Equipment</span> <span class=\"n\">equipment</span><span class=\"o\">);</span>  <span class=\"c1\">// 強化対象</span>\n  <span class=\"kt\">void</span> <span class=\"nf\">addMaterial</span><span class=\"o\">(</span><span class=\"nc\">Material</span> <span class=\"n\">material</span><span class=\"o\">);</span> <span class=\"c1\">// 強化用素材</span>\n  <span class=\"kt\">void</span> <span class=\"nf\">setMoney</span><span class=\"o\">(</span><span class=\"kt\">int</span> <span class=\"n\">money</span><span class=\"o\">);</span> <span class=\"c1\">// 強化費用</span>\n  <span class=\"nc\">Equipment</span> <span class=\"nf\">build</span><span class=\"o\">();</span>    <span class=\"c1\">// 結果取得</span>\n<span class=\"o\">}</span>\n</code></pre></div>\n</div>\n<p data-sourcepos=\"101:1-102:168\">課金アイテムなどで成功率を上げられるなら、<code>addSuccessRate</code> といったインターフェイスも追加する必要があるでしょう。<br>\n武器強化機能は様々なソシャゲで見かけ今や実装必須の機能と言えるので再利用可能なコードにしておくと便利そうですね。</p>\n<p data-sourcepos=\"104:1-104:123\"><a href=\"https://camo.qiitausercontent.com/d0515989165803032e08e5f41ce96e5618102cae/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f63346330623566342d313265362d333363612d646163392d6238633734386139346236312e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fc4c0b5f4-12e6-33ca-dac9-b8c748a94b61.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=8dc528b04aee12c7b7205962626317fc\" alt=\"Builder.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c4c0b5f4-12e6-33ca-dac9-b8c748a94b61.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fc4c0b5f4-12e6-33ca-dac9-b8c748a94b61.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=4cff09d42a82b8fc263305cf3cdddd7d 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"107:1-107:69\">\n<span id=\"3-factory-methodfactoryにオブジェクト生成メソッド\" class=\"fragment\"></span><a href=\"#3-factory-methodfactory%E3%81%AB%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E7%94%9F%E6%88%90%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89\"><i class=\"fa fa-link\"></i></a>3. Factory Method(Factoryにオブジェクト生成メソッド)</h3>\n<p data-sourcepos=\"109:1-109:166\"><code>Abstract Factory</code> の章で、カレーやラーメンを<code>Food</code>として定義していましたが、カレーはカレーだしラーメンはラーメンです。</p>\n<p data-sourcepos=\"111:1-111:135\"><a href=\"https://camo.qiitausercontent.com/df249c5a3d19a7153ed77a662aa10cb2b2dc641a/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36323435653466362d386230652d623438662d336534302d3762623862393565386233322e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ceadf4466b39ec2971cbcbe8276e230b\" alt=\"FactoryMethod(Food).png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=87923a7841124a0759039b455571bbb2 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"113:1-113:440\">カレーにはごはんやナンがつきますが、ラーメンに小ライスがつくことはありますが、ナンがくっつくことはわたしが知る限りではないです。これらを <code>Food</code> で管理するように設計した場合、ラーメンにナンをくっつけることもできてしまいます。なかなか興味深い<code>Food</code>の完成となるわけですが、プログラムとしては危険です。</p>\n<p data-sourcepos=\"115:1-115:157\">ココイチや二郎に Factory Method を持たせることで、うっかりカレー屋でラーメンを提供するのを防ぐことができます。</p>\n<p data-sourcepos=\"117:1-117:136\"><a href=\"https://camo.qiitausercontent.com/da93a10475dd0ebc40951489de4362b5bf2318b9/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38396632316232302d613935662d316466392d656432622d3166656237643135346330312e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F89f21b20-a95f-1df9-ed2b-1feb7d154c01.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ccf2bcc0c1c518beaead987b2f3b77df\" alt=\"FactoryMethod(class).png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/89f21b20-a95f-1df9-ed2b-1feb7d154c01.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F89f21b20-a95f-1df9-ed2b-1feb7d154c01.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=fae1b1edc7b58a87413bf7151bc27c1c 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"120:1-120:24\">\n<span id=\"4-prototype雛形\" class=\"fragment\"></span><a href=\"#4-prototype%E9%9B%9B%E5%BD%A2\"><i class=\"fa fa-link\"></i></a>4. Prototype(雛形)</h3>\n<p data-sourcepos=\"122:1-124:114\">これは、町田商店のセントラルキッチンですね。<br>\n各店舗で同じ様にスープを１から炊かないで、セントラルキッチンでスープを作って各店舗に配送。<br>\nひと味足りないと感じる方もいるかもしれませんが、大変合理的な考え方ですよね。</p>\n<p data-sourcepos=\"126:1-126:162\">プログラムは手間暇かけても丹精込めても書いた通りにしか動かないので、プロトタイプ作ってコピーすればよいです。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"128:1-151:3\">\n<div class=\"code-lang\"><span class=\"bold\">PrototypeSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">class</span> <span class=\"nc\">CentralKitchen</span> <span class=\"o\">{</span>\n    <span class=\"nc\">Soup</span> <span class=\"nf\">createSoup</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// すごく大変な工程でスープを作る</span>\n        <span class=\"k\">return</span> <span class=\"n\">soup</span><span class=\"o\">;</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n\n<span class=\"kd\">class</span> <span class=\"nc\">ShopKitchen</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// セントラルキッチンで作ったスープを足していく。</span>\n    <span class=\"c1\">// スープを作るメソッドは存在しない。</span>\n    <span class=\"kt\">void</span> <span class=\"nf\">addSoup</span><span class=\"o\">(</span><span class=\"nc\">Soup</span> <span class=\"n\">soup</span><span class=\"o\">);</span>\n<span class=\"o\">}</span>\n\n<span class=\"o\">...</span>\n\n<span class=\"c1\">// セントラルキッチンでスープを作って、各店舗に配送</span>\n<span class=\"nc\">ShopKitchen</span> <span class=\"n\">shopKitchens</span><span class=\"o\">[]</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">ShopKitchen</span><span class=\"o\">[{</span><span class=\"n\">店舗数</span><span class=\"o\">}];</span>\n<span class=\"nc\">Soup</span> <span class=\"n\">amazingSoup</span> <span class=\"o\">=</span> <span class=\"o\">(</span><span class=\"k\">new</span> <span class=\"nc\">CentralKitchen</span><span class=\"o\">()).</span><span class=\"na\">createSoup</span><span class=\"o\">()</span>\n<span class=\"k\">for</span><span class=\"o\">(</span><span class=\"nc\">ShopKitchen</span> <span class=\"n\">k</span> <span class=\"o\">:</span> <span class=\"n\">shopKitchens</span><span class=\"o\">)</span> <span class=\"o\">{</span>\n    <span class=\"n\">k</span><span class=\"o\">.</span><span class=\"na\">addSoup</span><span class=\"o\">(</span><span class=\"n\">amazingSoup</span><span class=\"o\">);</span>\n<span class=\"o\">}</span>\n\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"154:1-154:24\">\n<span id=\"5-singleton単一\" class=\"fragment\"></span><a href=\"#5-singleton%E5%8D%98%E4%B8%80\"><i class=\"fa fa-link\"></i></a>5. Singleton(単一)</h3>\n<p data-sourcepos=\"156:1-156:245\"><code>Prototype</code> の章のサンプルコードで勘のよい方は気づいたかもしれませんが、プログラム上では、セントラルキッチンが作り放題ですね。これを出来なくするパターンが<code>Singleton</code>です。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"158:1-172:3\">\n<div class=\"code-lang\"><span class=\"bold\">SingletonSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">class</span> <span class=\"nc\">CentralKitchen</span> <span class=\"o\">{</span>\n    <span class=\"kd\">private</span> <span class=\"kd\">static</span> <span class=\"nc\">CentralKitchen</span> <span class=\"n\">instance</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">CentralKitchen</span><span class=\"o\">();</span>\n    <span class=\"kd\">private</span> <span class=\"nf\">CentralKitchen</span><span class=\"o\">(){}</span> <span class=\"c1\">// private にして外部から呼べなくする。</span>\n\n    <span class=\"kd\">public</span> <span class=\"kd\">static</span> <span class=\"nc\">CentralKitchen</span> <span class=\"nf\">getInstance</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"k\">return</span> <span class=\"n\">instance</span><span class=\"o\">;</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n\n<span class=\"o\">...</span>\n\n<span class=\"nc\">Soup</span> <span class=\"n\">soup</span> <span class=\"o\">=</span> <span class=\"nc\">CentralKitchen</span><span class=\"o\">.</span><span class=\"na\">getInstance</span><span class=\"o\">().</span><span class=\"na\">createSoup</span><span class=\"o\">()</span>\n\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"175:1-175:22\">\n<span id=\"6-adapter適合\" class=\"fragment\"></span><a href=\"#6-adapter%E9%81%A9%E5%90%88\"><i class=\"fa fa-link\"></i></a>6. Adapter(適合)</h3>\n<p data-sourcepos=\"177:1-177:414\">美味しいラーメンを作る自信があるのでラーメン店を作りたいが、お金もないし、店舗のデザインなどについては全くの素人だとします。店舗のキッチン設備や什器がある程度整った『居抜き店舗』を見つけて改装すれば、１からラーメン屋を作るよりは手間がかからないことでしょう。これが<code>Adapter</code>です。</p>\n<p data-sourcepos=\"179:1-179:123\"><a href=\"https://camo.qiitausercontent.com/4ddef271ea4406bc8e05dd743365a66433eea801/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36663832386663362d386532352d343333612d623964302d3933656239373735623666332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6f828fc6-8e25-433a-b9d0-93eb9775b6f3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=602571b778a4b987cfc3f25bd1f76b65\" alt=\"Adapter.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6f828fc6-8e25-433a-b9d0-93eb9775b6f3.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6f828fc6-8e25-433a-b9d0-93eb9775b6f3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=edc6ec057d92baf9eda3db82ec0277fc 1x\" loading=\"lazy\"></a></p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"181:1-203:3\">\n<div class=\"code-lang\"><span class=\"bold\">AdapterSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">class</span> <span class=\"nc\">UnpopularDiner</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// 目も当てられないぐらい汚いキッチン</span>\n    <span class=\"c1\">// ぐちゃぐちゃな店内</span>\n    <span class=\"c1\">// なるべくそのまま利用したい</span>\n<span class=\"o\">}</span>\n\n<span class=\"kd\">interface</span> <span class=\"nc\">CommonNoodleShop</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// ラーメン屋として一般的に必要なメニューを定義</span>\n<span class=\"o\">}</span>\n\n<span class=\"c1\">// 不人気店をベースにして作った、一般的なラーメンメニューを取り揃えた、わたしの素敵なラーメン店</span>\n<span class=\"kd\">class</span> <span class=\"nc\">MyAwesomeNoodleShop</span> <span class=\"kd\">extends</span> <span class=\"nc\">UnpopularDiner</span> <span class=\"kd\">implements</span> <span class=\"nc\">CommonNoodleShop</span> <span class=\"o\">{</span>\n    <span class=\"nc\">Ramen</span> <span class=\"nf\">getShoyuRamen</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// ラーメンを実装。</span>\n        <span class=\"c1\">// UnpopularDiner の設備(プロパティ・メソッド)はすべて使える。</span>\n        <span class=\"c1\">// 汚いキッチンを使って美味しいラーメンを作る。</span>\n        <span class=\"c1\">// ...</span>\n        <span class=\"k\">return</span> <span class=\"n\">ramen</span><span class=\"o\">;</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n\n</code></pre></div>\n</div>\n<p data-sourcepos=\"205:1-205:406\">実際のプロジェクトでは、極めて重要だが解析困難なビジネスロジックが記述された class に遭遇することがある。そのような class は 1[byte] でも修正したら動かなくなる絶妙な実装であるため、Adapter を用いて本体にはなるべく触らない様にすることで安全に再利用することを検討するかもしれません。</p>\n<h3 data-sourcepos=\"208:1-208:18\">\n<span id=\"7-bridge橋\" class=\"fragment\"></span><a href=\"#7-bridge%E6%A9%8B\"><i class=\"fa fa-link\"></i></a>7. Bridge(橋)</h3>\n<p data-sourcepos=\"210:1-210:409\">様々な展示場がありイベントがあります。イベントの主催者や出展者は、展示場とは別の所で準備をして展示場に入り展示を行います。コミケ、ゲームショー、あるいはモーターショーといった展示の実装には、ビックサイト側は関与していません。この関係性を <code>Bridge</code> で表すと下図のようになります。</p>\n<p data-sourcepos=\"212:1-212:122\"><a href=\"https://camo.qiitausercontent.com/539824974175f89606fbeb4e3e5271bd0741f24f/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38633034616439642d613963342d316630322d306562322d3464646537373561663663372e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7f7bea8d449286252de26ad2c056866f\" alt=\"Bridge.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=b8c276c0e352128b9d6dc377384b7df5 1x\" loading=\"lazy\"></a></p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"214:1-219:3\">\n<div class=\"code-lang\"><span class=\"bold\">BridgeSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"c1\">// ビックサイトでコミケ開催</span>\n<span class=\"nc\">ComicmarketEvent</span> <span class=\"n\">comicmarketEvent</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">ComicmarketEvent</span><span class=\"o\">();</span>\n<span class=\"nc\">Exhibition</span> <span class=\"n\">e</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">BigsightExhibition</span><span class=\"o\">(</span><span class=\"n\">comicmarketEvent</span><span class=\"o\">);</span>\n<span class=\"n\">e</span><span class=\"o\">.</span><span class=\"na\">doExhibition</span><span class=\"o\">();</span>\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"221:1-221:27\">\n<span id=\"8-composite複合物\" class=\"fragment\"></span><a href=\"#8-composite%E8%A4%87%E5%90%88%E7%89%A9\"><i class=\"fa fa-link\"></i></a>8. Composite(複合物)</h3>\n<p data-sourcepos=\"223:1-224:159\">枝と葉を同じ様に処理するとか、容器と中身を同じ様に処理すると再帰的処理が簡単になるパターン。<br>\nフォルダとファイルが一般的で分かりやすい例かと思いますが、ここではやはりゲームを例に説明したいと思います。</p>\n<p data-sourcepos=\"226:1-228:129\">3Dのゲームを想像してください。世界(<code>Scene</code>)の中には背景(<code>Background</code>)、プレイヤー(<code>Player</code>)、武器(<code>Weapon</code>)、弾(<code>Bullet</code>)、アイテムボックス(<code>ItemBox</code>)やアイテム(<code>Item</code>)などのオブジェクト等があると思います。<code>item</code>はアイテムボックスの中にあったり地面(<code>Ground</code>)に転がっていたりプレイヤーに拾われたりします。<br>\nプレイヤーはオブジェクトですが、武器を所持するオブジェクトであったりもします。<br>\nまた、オブジェクトとして意識されることはあまりないと思いますが光源やカメラもあります。</p>\n<p data-sourcepos=\"230:1-230:298\">これらのゲームオブジェクト(<code>GameObject</code>)の配置や状態はゲームの進行状況によって頻繁に変更する必要がありますし、それらの操作を個別に考えるのは大変なので、<code>Composite</code>パターンで表現されることが多い様に思います。</p>\n<p data-sourcepos=\"232:1-233:96\">管理イメージを図にすると下図の様になります。<br>\n(instance と class 表現が混じっていますが…よろしく解釈してください。)</p>\n<p data-sourcepos=\"235:1-235:125\"><a href=\"https://camo.qiitausercontent.com/df3e5e5373f311217e7b027e5db4208c28259875/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f34383262383339622d626334362d353539632d356138332d6536333533633661333330352e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F482b839b-bc46-559c-5a83-e6353c6a3305.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=748a44491b562ea25a8848481137a42a\" alt=\"Composite.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/482b839b-bc46-559c-5a83-e6353c6a3305.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F482b839b-bc46-559c-5a83-e6353c6a3305.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=861a0cc6bb3e84057f9b8e77d4135891 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"238:1-238:27\">\n<span id=\"9-decorator装飾者\" class=\"fragment\"></span><a href=\"#9-decorator%E8%A3%85%E9%A3%BE%E8%80%85\"><i class=\"fa fa-link\"></i></a>9. Decorator(装飾者)</h3>\n<p data-sourcepos=\"240:1-243:122\">PSストアセール、利用してますか？<br>\nちょいちょい色々なセールをやってて、その都度いくつかのゲームがお得なプライスで購入できますね。<br>\n消費税の処理は通常価格と割引後の価格に対して適用されます。<br>\nこれを<code>decorator</code>で実装すればセールの影響を受けない処理を書けそうで書けなさそうです。</p>\n<p data-sourcepos=\"245:1-245:125\"><a href=\"https://camo.qiitausercontent.com/cf9729bd9baff96abba2c7e449421b341307d7fb/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f64316461393233312d373735652d366233332d313333322d3439366238313637633639352e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fd1da9231-775e-6b33-1332-496b8167c695.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=99f9d658813961620484a4c47634c357\" alt=\"Decorator.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/d1da9231-775e-6b33-1332-496b8167c695.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Fd1da9231-775e-6b33-1332-496b8167c695.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=a9eaa2ef3063897e5fc0b8a2a56a2af8 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"247:1-247:189\">確かに、消費税コード部分やセール部分は変更が不要だしシンプルですが、この実装ではセール毎にコード修正が必要となってしまいます。</p>\n<div class=\"code-frame\" data-lang=\"text\" data-sourcepos=\"249:1-267:3\"><div class=\"highlight\"><pre><code>//----------------------------------------\n// 通常時コード\nProduct p = new Product();\nProduct taxedProduct = new TaxedProduct(p);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n//----------------------------------------\n// セール時コード\nProduct p = new Product();\nProduct saledProduct = new SaledProduct(p);\nProduct taxedProduct = new TaxedProduct(saledProduct);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n</code></pre></div></div>\n<p data-sourcepos=\"269:1-271:90\">ビジネス要件である、PSStore のセールがどの様な周期でどの様な製品に対して行われているかを理解しないで実装したのでしょうか。<br>\nセールや消費税適用前後で値段しか変わらないのにPSStoreに並べる商品自体を<code>interface</code>として定義している点も意味不明ですね。<br>\nでは、<code>PSStorePrice</code> にすればいいかというとそうでもなさそうです。</p>\n<p data-sourcepos=\"273:1-273:210\">近視眼的にデザインパターンを適用しても、再利用性が上がらない上にメンテナンスを行う人などに不快感を与える可能性もあるので注意が必要そうです。</p>\n<h3 data-sourcepos=\"276:1-276:22\">\n<span id=\"10-facade窓口\" class=\"fragment\"></span><a href=\"#10-facade%E7%AA%93%E5%8F%A3\"><i class=\"fa fa-link\"></i></a>10. Facade(窓口)</h3>\n<p data-sourcepos=\"277:1-278:185\">区役所で住民票を取るとします。区役所は巨大な建物で大変多くの業務を行っているが、住民票発行の窓口に行けばとりあえず住民票を取る事がでます。<br>\n適切な窓口が設定されることで区役所の業務すべてを把握することなく円滑に目的を達成できるようにするためのパターンが<code>Facade</code>です。</p>\n<p data-sourcepos=\"280:1-281:204\">配達に関する機能を持っているため、単純な窓口ではないですがウーバーイーツを想像してみましょう。<br>\n利用者はウーバーイーツの裏にある複雑な仕組みを意識することなく簡単なインターフェースで様々な食料を手に入れる事ができるようになりました。</p>\n<p data-sourcepos=\"283:1-283:61\">これが<code>Facade(窓口)</code>を利用するメリットです。</p>\n<p data-sourcepos=\"285:1-285:246\">コードを<code>Facade</code>パターンで書けば分りやすくなるのではなく、 <strong>『<code>Facade</code>パターンを利用した方が自然に記述できる外部設計に対して<code>Facade</code>を適用する』</strong> と考えると良いと思います。</p>\n<p data-sourcepos=\"287:1-287:122\"><a href=\"https://camo.qiitausercontent.com/cfc45eec868f07dbb47e319aada4aba14f54d2e9/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30343336613439352d353531642d336666652d336539312d3262366366623732613262332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6589a46a1d5d81168099873b90eb3e35\" alt=\"Facade.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=fa4e9e884f96c39aa88a687afa73d79f 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"289:1-290:155\">人間向けの言語で書かれた外部設計を、コンピューターに分かる様に翻訳するのが職業プログラミングです。<br>\nクラス名に<code>Facade</code>とつける時点で、外部設計からは読み取れない複雑な翻訳（実装）になっているかもしれません。</p>\n<h3 data-sourcepos=\"293:1-293:25\">\n<span id=\"11-flyweight軽量\" class=\"fragment\"></span><a href=\"#11-flyweight%E8%BB%BD%E9%87%8F\"><i class=\"fa fa-link\"></i></a>11. Flyweight(軽量)</h3>\n<p data-sourcepos=\"294:1-295:243\">ネットフリックスは、知らない人はあまりいないと思いますが動画見放題のサブスクサービスです。<br>\nそんなネットフリックスも、創業当時は実店舗を持ってDVDレンタルのビジネスを行っていたのですが、業態を大幅に転換し紆余曲折を経て現在のサービスを提供するに至りました。</p>\n<p data-sourcepos=\"297:1-297:236\">現CEOのリード・ヘイスティングスや初代CEOのマーク・ランドルフが <code>Flyweightパターン</code> を適用しようと思ったかどうかは知りませんが、 <code>Flyweightパターン</code> で表現できそうです。</p>\n<p data-sourcepos=\"299:1-299:125\"><a href=\"https://camo.qiitausercontent.com/404814aa5b536fbf5f296aeed0b4da9d32e88868/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38626234613264662d333731652d633133632d363831392d3538356433343737376332652e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8bb4a2df-371e-c13c-6819-585d34777c2e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a726b978e5b28fe05c36d986a3b41553\" alt=\"Flyweight.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8bb4a2df-371e-c13c-6819-585d34777c2e.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8bb4a2df-371e-c13c-6819-585d34777c2e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=43055cc82fa885fd70aa07adf93053f1 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"301:1-302:118\">(参考)<br>\n<a href=\"https://www.dhbr.net/articles/-/7044\" rel=\"nofollow noopener\" target=\"_blank\">ネットフリックスという世界的企業はいかに誕生したのか</a></p>\n<h3 data-sourcepos=\"305:1-305:24\">\n<span id=\"12-proxy代理人\" class=\"fragment\"></span><a href=\"#12-proxy%E4%BB%A3%E7%90%86%E4%BA%BA\"><i class=\"fa fa-link\"></i></a>12. Proxy(代理人)</h3>\n<p data-sourcepos=\"306:1-308:138\">コードレベルで考えると Adapter パターンとの違いが分かりづらいため、ここでも人間世界で起きている事例で考えます。<br>\n例えば、何かやらかした際に、法廷で争わなければいけなくなりますが、おそらく多くの人は法律の知識がないため弁護士を代理人として立てると思います。<br>\nこのような、『何らかの意味ある代理行為』がデザインパターンで定義されていることかと思います。</p>\n<p data-sourcepos=\"310:1-310:102\">代理行為には様々な種類がありますが、本章では以下に４種類列挙します。</p>\n<h4 data-sourcepos=\"312:1-312:85\">\n<span id=\"カリスマ経営者率いるプログラミングスクールa-virtual-proxy\" class=\"fragment\"></span><a href=\"#%E3%82%AB%E3%83%AA%E3%82%B9%E3%83%9E%E7%B5%8C%E5%96%B6%E8%80%85%E7%8E%87%E3%81%84%E3%82%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B9%E3%82%AF%E3%83%BC%E3%83%ABa-virtual-proxy\"><i class=\"fa fa-link\"></i></a>カリスマ経営者率いるプログラミングスクール(A virtual proxy)</h4>\n<p data-sourcepos=\"313:1-314:204\">カリスマ経営者の有名なITスクールに入ると、カリスマ経営者に教えてもらえてプログラムが書けるような気分になります。<br>\n実際にはカリスマ経営者は、社員やバイトの先生に何らかの方針を伝えるのみで、教育行為の大半は社員やバイトの先生が行うことになると思います。</p>\n<p data-sourcepos=\"316:1-316:222\">カリスマ経営者は、カリスマとして活動したり経営者として活動したりするのが忙しいので全ての生徒の相手ができないため、代理で教える先生が必要となります。</p>\n<p data-sourcepos=\"318:1-318:131\"><a href=\"https://camo.qiitausercontent.com/0f97e54088cdb40c1f66142d89c2b4fa1881d3f6/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f34633634666437642d633933342d393535362d323666302d6633383764356561633836352e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F4c64fd7d-c934-9556-26f0-f387d5eac865.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=798476363f23454ef44985c655b7350c\" alt=\"A virtual proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/4c64fd7d-c934-9556-26f0-f387d5eac865.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F4c64fd7d-c934-9556-26f0-f387d5eac865.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=15220359b4f523ea35c6437de6a1f7f6 1x\" loading=\"lazy\"></a></p>\n<h4 data-sourcepos=\"321:1-321:42\">\n<span id=\"オフショア窓口a-remote-proxy\" class=\"fragment\"></span><a href=\"#%E3%82%AA%E3%83%95%E3%82%B7%E3%83%A7%E3%82%A2%E7%AA%93%E5%8F%A3a-remote-proxy\"><i class=\"fa fa-link\"></i></a>オフショア窓口(A remote proxy)</h4>\n<p data-sourcepos=\"322:1-323:234\">単価の安い海外にIT業務の委託を行いたいですが、英語が分かりませんし、海外に行って仕事を発注するのも大変です。<br>\n一方、単価の安い国側でも単価の高い日本の仕事がほしいですが、日本に移住するのも大変ですし生活コストが上がってしまうため安い単価で仕事が受けられなくなります。</p>\n<p data-sourcepos=\"325:1-325:146\">日本語と現地語が話せるPMを日本事務所に配置することで現地からの業務提供を円滑に行うことができます。</p>\n<p data-sourcepos=\"327:1-327:130\"><a href=\"https://camo.qiitausercontent.com/039e7b0044d2a18aa5968d58f94eefd2107b419c/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f66336662343535382d323962322d363964362d363161312d3939323938356366306436342e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Ff3fb4558-29b2-69d6-61a1-992985cf0d64.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ff227552e145b136073ee89512b35ceb\" alt=\"A remote proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/f3fb4558-29b2-69d6-61a1-992985cf0d64.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Ff3fb4558-29b2-69d6-61a1-992985cf0d64.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=d98f8c2da0965ca7b8b66b62de6f1590 1x\" loading=\"lazy\"></a></p>\n<h4 data-sourcepos=\"330:1-330:34\">\n<span id=\"美容院a-protective-proxy\" class=\"fragment\"></span><a href=\"#%E7%BE%8E%E5%AE%B9%E9%99%A2a-protective-proxy\"><i class=\"fa fa-link\"></i></a>美容院(A protective proxy)</h4>\n<p data-sourcepos=\"331:1-332:84\">多くの人は、髪の毛を自分で切ることができますが、それをしようとは思いません。イケてない髪型になったら取り返しがつかないからです。<br>\nかっこよく（かわいく）切ってくれる人に頼むのが安全です。</p>\n<p data-sourcepos=\"334:1-334:134\"><a href=\"https://camo.qiitausercontent.com/d364f761e8e0262f6fc79b4d9b6f8c582bd2b276/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30623633616630632d393164302d333765612d396263662d3762653535613439313833362e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0b63af0c-91d0-37ea-9bcf-7be55a491836.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=04a0f9ab3ada927ccd8410e882b6043f\" alt=\"A protective proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0b63af0c-91d0-37ea-9bcf-7be55a491836.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0b63af0c-91d0-37ea-9bcf-7be55a491836.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=0f788b18aeff262197cea1de884383b3 1x\" loading=\"lazy\"></a></p>\n<h4 data-sourcepos=\"337:1-337:32\">\n<span id=\"メルカリa-smart-proxy\" class=\"fragment\"></span><a href=\"#%E3%83%A1%E3%83%AB%E3%82%AB%E3%83%AAa-smart-proxy\"><i class=\"fa fa-link\"></i></a>メルカリ(A smart proxy)</h4>\n<p data-sourcepos=\"338:1-339:216\">いらなくなった古着を売るとして、友達に声をかけるなど色々な手段があると思いますが、メルカリに出品される方も多いのではないでしょうか。<br>\n家の前に置いておいても誰かの目に止まり購入されることはほぼないと思いますが、メルカリに出品しておくとあなたに代わって古着を売り飛ばしてくれます。</p>\n<p data-sourcepos=\"341:1-341:129\"><a href=\"https://camo.qiitausercontent.com/cba2cdbcc4ecdeedf1d9c433c5aeadff2e8a5265/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f39663765623930652d646236372d623563372d386630632d6266376530626436343833652e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=791614dffd0f80a5e7fb640a0d450eb5\" alt=\"A smart proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=db4b5d4b9d4d1629ff02020c3542e241 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"344:1-345:176\">(参考)<br>\n<a href=\"https://stackoverflow.com/questions/37692814/what-is-the-exact-difference-between-adapter-and-proxy-patterns\" rel=\"nofollow noopener\" target=\"_blank\">What is the exact difference between Adapter and Proxy patterns?</a></p>\n<h3 data-sourcepos=\"348:1-348:45\">\n<span id=\"13-chain-of-responsibility責任の鎖\" class=\"fragment\"></span><a href=\"#13-chain-of-responsibility%E8%B2%AC%E4%BB%BB%E3%81%AE%E9%8E%96\"><i class=\"fa fa-link\"></i></a>13. Chain of Responsibility(責任の鎖)</h3>\n<p data-sourcepos=\"349:1-349:368\">大勢のお客で賑わっている居酒屋での出来事です。炭酸麦茶を頼んで30分以上経ちますがまだ届きません。いい加減遅いなと思いテーブルの呼び出しベルを押し店員を呼び出し「オーダー入ってます？」とすまなそうに確認して炭酸麦茶を提供してもらうことができました。</p>\n<p data-sourcepos=\"351:1-351:357\">一方隣の席からは「お前じゃ話にならん、店長を呼んでこい」という怒鳴り声が聞こえてきました。興味津々でそちらの席を横目で観察したところ、バイトリーダーらしき人物が出てきて謝罪をするも結局店長は出てこないという様子を目撃することになりました。</p>\n<p data-sourcepos=\"353:1-354:264\">これが、責任の鎖です。<br>\nこの居酒屋のスタッフは、バイト→バイトリーダー→雇われ店長→本部マネージャー→本部社長と言った責任の鎖でつながれており、顧客の怒り度に対して誰がどう対処するかを規定しています。</p>\n<div class=\"code-frame\" data-lang=\"text\" data-sourcepos=\"356:1-431:3\"><div class=\"highlight\"><pre><code>public abstract class Responsible {\n    private Responsible next = null;\n    private String name = null;\n\n    public Responsible(String name){\n        this.name = name;\n    }\n    public Responsible setNext(Responsible next){\n        this.next = next;\n        return next;\n    }\n    public final void handle(Claim claim){\n        if(canHandle(claim)) {\n            doHandle(claim);\n        } else if(next != null) {\n            next.handle(claim);\n        }else{\n            //FIXME: Something to do.\n        }\n    }\n    protected abstract boolean canHandle(Claim claim);\n    protected abstract void doHandle(Claim claim);\n}\n\n// バイト\npublic class PartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // オーダーされた商品を持ってくる\n    }\n}\n\n// バイトリーダー\npublic class HeadOfPartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // 次回使える5%引きチケットを渡す\n    }\n}\n\n// 雇われ店長\npublic class StoreManager extends Responsible {\n    public StoreManager(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        throw new UnsupportedOperationException(); \n    }\n}\n\n</code></pre></div></div>\n<h3 data-sourcepos=\"433:1-433:41\">\n<span id=\"14-command手順書通りやって\" class=\"fragment\"></span><a href=\"#14-command%E6%89%8B%E9%A0%86%E6%9B%B8%E9%80%9A%E3%82%8A%E3%82%84%E3%81%A3%E3%81%A6\"><i class=\"fa fa-link\"></i></a>14. Command(手順書通りやって)</h3>\n<p data-sourcepos=\"435:1-436:152\">作業の手順を書いた手順書があります。コピーすれば複数の手順書にできますし、いろいろな人に渡して作業をお願いすることができます。<br>\nCommand パターンは、「手順書」と「依頼」を表すパターンです。手順の内容は実際の手順書によって異なります。</p>\n<p data-sourcepos=\"438:1-439:341\">「銀座のコーラを買ってくる」依頼であれば「銀座への行き方」などが手順書に定義されます。「銀座に行く」手順書と「コーラを買う」手順書を分ければ、買い物コマンドを作るだけで銀座での買い物はし放題かもしれません。<br>\nコマンドを実行した結果としてコーラを受け取りたいですし、コーラ以外にも焼きそばやパンも食べたいとなると、戻り値が <code>void</code> では受け取れず、また、コーラ買ってくるまでの間他の事をしていたいとなると、非同期での実行が必要になってきます。</p>\n<p data-sourcepos=\"441:1-441:159\">適用自体は簡単ですが、要件をよく確認して設計しないといたずらに複雑なコードになるだけなので注意が必要です。</p>\n<p data-sourcepos=\"443:1-443:123\"><a href=\"https://camo.qiitausercontent.com/fdb3fe04ef153503e8b21007b7b1ef37b06472d1/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36616137353537302d373966632d343734312d646533612d6461643464383264653266662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6aa75570-79fc-4741-de3a-dad4d82de2ff.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7133d0c3b07cbef125170916a8e85c47\" alt=\"Command.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6aa75570-79fc-4741-de3a-dad4d82de2ff.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6aa75570-79fc-4741-de3a-dad4d82de2ff.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f98d4758366925138264f281be9b226e 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"445:1-445:57\">\n<span id=\"15-interpreterrpgゲームのスクリプト言語\" class=\"fragment\"></span><a href=\"#15-interpreterrpg%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9E\"><i class=\"fa fa-link\"></i></a>15. Interpreter(RPGゲームのスクリプト言語)</h3>\n<p data-sourcepos=\"447:1-448:207\">スクリプト言語がインタプリタによって実行されているかは一旦横においておくことにします。<br>\nデザインパターンとして学ぶべきことは「業務上の課題を解決するためになんらかの文法の言語を作りそれを解析して動かす」パターンということです。</p>\n<p data-sourcepos=\"450:1-453:280\">RPGゲームを作る場合を例に考察してみましょう。<br>\nRPGゲームは、街の入り口に立っている町人Aに「ようこそラダトームのまちへ」と喋らせたり、主人公やライバルキャラクターに小芝居させながら大量の会話をさせるなどのイベントシーンが必要です。これらのイベントシーンをプログラマがアセンブラやC言語などのプログラム言語で書くのは非常に大変です。<br>\nゲームの企画やプランナーの人が「talk(charaA, ようこそラダトームのまちへ)」と書いたら町人Aがセリフをしゃべってくれる仕組みがあったらどうでしょうか。いちいちプログラマにお願いして嫌な顔をされながらイベントを作るよりは遥かに簡単そうです。一方のプログラマはバトルプログラムやエフェクトプログラムに集中できそうで win win です。<br>\nこの時に作る <code>talk()</code> 等を解析して動かすプログラムを巨大な if 文で作ると大変なので、インタプリタを作って Composite パターンなどに当てはまるように解析して実行していくのがインタプリタパターンです。</p>\n<p data-sourcepos=\"455:1-455:163\">昔は毎回スクリプトエンジンを手作りしていましたが最近は<a href=\"https://ja.wikipedia.org/wiki/Lua\" rel=\"nofollow noopener\" target=\"_blank\">Lua言語</a>が人気があるようですね。</p>\n<h3 data-sourcepos=\"457:1-457:69\">\n<span id=\"16-iterator古い設計関数型プログラムをしよう\" class=\"fragment\"></span><a href=\"#16-iterator%E5%8F%A4%E3%81%84%E8%A8%AD%E8%A8%88%E9%96%A2%E6%95%B0%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%82%92%E3%81%97%E3%82%88%E3%81%86\"><i class=\"fa fa-link\"></i></a>16. Iterator(古い設計。関数型プログラムをしよう)</h3>\n<p data-sourcepos=\"459:1-460:314\">iterator パターンは、配列やリストに含まれる要素に対して何らかの処理を行うパターンです。<br>\n<code>hasNext()</code>, <code>getNext()</code> などのメソッドを見かけたら iterator パターンでなんらかの集合の要素を取得しているんだなと見てもらえば良いと思いますが、近代言語ではよりよい方法が提供されているので敢えて実装しない方がよいでしょう。</p>\n<p data-sourcepos=\"462:1-462:123\">配列操作用のメソッドに関数を渡す事で配列の全ての要素に対して任意の処理を行えます。</p>\n<div class=\"code-frame\" data-lang=\"text\" data-sourcepos=\"464:1-474:3\"><div class=\"highlight\"><pre><code>例)\nfind(f) : f関数の戻り値が true の要素を返す（１つ）\nfilter(f) : f関数の戻り値が true の要素を返す（複数）\nmap(f) : f関数の戻り値の配列に map する\nreduce(f) : 配列の要素に対してfで与えられる関数を順次実行した結果を返す（１つ）\nsome(f) : f関数の戻り値が true の要素があるか？\nevery(f) : f関数の戻り値がすべて true か？\nflatMap(f) : f関数の戻り値（配列）を全て連結した配列を返す\n...\n</code></pre></div></div>\n<p data-sourcepos=\"476:1-476:137\">余計なことは覚えずに、js では Array クラスのメソッド、Java では StreamApi を利用するとよいでしょう。</p>\n<p data-sourcepos=\"478:1-478:103\">参考)<a href=\"https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array\" rel=\"nofollow noopener\" target=\"_blank\">MDN Array</a></p>\n<h3 data-sourcepos=\"481:1-481:36\">\n<span id=\"17-mediatorsesと指揮命令\" class=\"fragment\"></span><a href=\"#17-mediatorses%E3%81%A8%E6%8C%87%E6%8F%AE%E5%91%BD%E4%BB%A4\"><i class=\"fa fa-link\"></i></a>17. Mediator(SESと指揮命令)</h3>\n<p data-sourcepos=\"483:1-483:172\">Mediator(仲介役)というとあまり見かけない表現かと思いますが、われわれの仕事現場に目を向けると分かりやすい例があります。</p>\n<p data-sourcepos=\"485:1-485:295\">ITプロジェクトで協力会社さんに参画頂いた際、参画者の性質を見てAさんは開発、Bさんは試験などおおよその方針を指揮命令者が出していると思います。Mediator パターンで実現したいのはこの指揮命令による秩序です。</p>\n<p data-sourcepos=\"487:1-487:297\">ただ、SESで参画している協力会社さん同士が直接業務に関する指示を行ってはいけないにも関わらず、指揮命令者の指示を待っていると仕事が進まないので、直接会話して仕事を進めているケースもあるかもしれません。</p>\n<p data-sourcepos=\"489:1-489:298\">現実の世界でも必ずしもうまく機能しないケース（指揮命令系統が複雑になるだけで仕事が進まない）もある通り、Mediatorパターンを適用する際には、本当にMediatorが必要なのかをよく考えて適用する必要があるでしょう。</p>\n<p data-sourcepos=\"491:1-491:124\"><a href=\"https://camo.qiitausercontent.com/852d9b7aad3ebdc1a0bd2ce60461f8e6f2f84aba/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f33376334613632642d393831392d366239382d356339372d6138343030366465643764662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F37c4a62d-9819-6b98-5c97-a84006ded7df.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e7d8b7fc50f2512690fb23478f8e7a6a\" alt=\"Mediator.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/37c4a62d-9819-6b98-5c97-a84006ded7df.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F37c4a62d-9819-6b98-5c97-a84006ded7df.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=15d79191506ad08c83d70d87feab6879 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"494:1-494:50\">\n<span id=\"18-memento記念品よりセーブデータ\" class=\"fragment\"></span><a href=\"#18-memento%E8%A8%98%E5%BF%B5%E5%93%81%E3%82%88%E3%82%8A%E3%82%BB%E3%83%BC%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF\"><i class=\"fa fa-link\"></i></a>18. Memento(記念品よりセーブデータ)</h3>\n<p data-sourcepos=\"496:1-497:228\">令和の世の中で、Memento(記念品、形見)と言われて日常で馴染み深い人は少数派の様に思います。<br>\nコンピューターゲームを遊んで、次の日その続きから遊ぶために、その時の状態を保存したセーブデータを作ったことがある人はそれなりにいるのではないでしょうか。</p>\n<p data-sourcepos=\"499:1-499:145\">Mementoパターンは、ある時点での処理の続きを再開できるように必要なデータを保存しておくパターンです。</p>\n<p data-sourcepos=\"501:1-502:121\">セーブデータは、次回からゲームを再開するために、その時点での所持金や経験値やレベルなどのプレイヤーの状態を表す変数が保存されますが、その時点での画面の映像などは保存されません。<br>\nMementoパターンでも同様に、プログラムの動作に必要な最小限のデータのみを保存します。</p>\n<p data-sourcepos=\"504:1-504:123\"><a href=\"https://camo.qiitausercontent.com/1e9cfce0e2cc2fedc82bdb3cc46de089a2e7d117/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f39656166303233352d303163642d343563612d353362372d3231333231343832366433632e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9eaf0235-01cd-45ca-53b7-213214826d3c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=44a66138726e298cd92a6a4ca2011356\" alt=\"Memento.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9eaf0235-01cd-45ca-53b7-213214826d3c.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9eaf0235-01cd-45ca-53b7-213214826d3c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=b0343e057b9df365d6ba2a4a8d3a0249 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"507:1-507:42\">\n<span id=\"19-observer新刊お知らせ機能\" class=\"fragment\"></span><a href=\"#19-observer%E6%96%B0%E5%88%8A%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E6%A9%9F%E8%83%BD\"><i class=\"fa fa-link\"></i></a>19. Observer(新刊お知らせ機能)</h3>\n<p data-sourcepos=\"509:1-509:372\">Observer(観測者)パターンは、言葉の響きからすると観測者が Polling などして何かを観測するように思えますが、実際は、「新刊お知らせ機能」の様に、「読んでる漫画の新刊がでたら通知してくれ」と登録しておくと、新刊が出た際に Observer(観測者)に通知が来るパターンです。</p>\n<p data-sourcepos=\"511:1-511:255\">タイマーなどで定期監視をしなくてよいためコンピュータに対する負荷も少なく、「新刊が出た」などのイベントに対して処理を実行できるイベントドリブンの考え方も人間に優しいです。</p>\n<p data-sourcepos=\"513:1-513:246\">Angular や Vue や React などに実装されているデータバインディングがあるとほとんど無用になるのですがちょっとうまく動かない時に利用する watch がObserver の考え方と近いと思います。</p>\n<p data-sourcepos=\"515:1-515:124\"><a href=\"https://camo.qiitausercontent.com/8e6e25b05825b93790398ee4c1d6393f74eb1c6f/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f35353535643732372d313133352d326436332d663132302d6562623463656365353539362e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5555d727-1135-2d63-f120-ebb4cece5596.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=5771850e0fd954780a9411560059e21b\" alt=\"Observer.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5555d727-1135-2d63-f120-ebb4cece5596.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5555d727-1135-2d63-f120-ebb4cece5596.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=16a9805b3eb653c3d975b696c86d8395 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"518:1-518:36\">\n<span id=\"20-stateキャラクタ選択\" class=\"fragment\"></span><a href=\"#20-state%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E9%81%B8%E6%8A%9E\"><i class=\"fa fa-link\"></i></a>20. State(キャラクタ選択)</h3>\n<p data-sourcepos=\"520:1-520:254\">執筆時点の流行に乗ると、ELDEN RING での放浪剣士や素寒貧といった素性選択かと思いますが、戦士や魔法使いなどの職業の例えの方が普遍的で分かりやすそうなのでそちらで話を進めます。</p>\n<p data-sourcepos=\"522:1-522:342\">プレイヤーの選択により、プレイヤーの操作するキャラクターが「戦士」や「魔法使い」になるゲームがあったとします。「戦士」は剣や盾などを装備しての近接攻撃が得意で、魔法使いは杖やローブなどが装備可能で魔法による遠距離攻撃が得意です。</p>\n<p data-sourcepos=\"524:1-525:147\">AボタンやBボタンを押下時のイベント関数に「もし戦士だったら」とか、「もし魔法使いだったら」といったコードを書くのは一見直感的です。<br>\n最初に戦士しかいないところに魔法使いを追加したらその様なコードを書くことも往々にしてあるでしょう。</p>\n<p data-sourcepos=\"527:1-527:393\">ただこれが、複雑なコマンド入力でキャラクタ固有スキル発動もしたい、職業によって固有のスキルツリーも持ちたいとなってくると「もし戦士だったら」という分岐をどこに書いたらいいかがよく分からなくなってきます。拡張が辛くなってきた時がリファクタリング適正期かと思います。</p>\n<p data-sourcepos=\"529:1-529:369\">仕様書も書かずにノリで拡張したコードであれば、新たにプロジェクトに追加されたメンバーに新ジョブ「僧侶」の実装を依頼することも難しいでしょうし、ゲームをやらないメンバーはスキルツリーのコードが職業によって分岐があることに気がつかないかもしれません。</p>\n<p data-sourcepos=\"531:1-531:240\">そこで、状態(職業)毎にクラスを定義して各クラスに対して定められたアクションの実装を行えば、自然かつ拡張性の高いクラス定義を行えるという考え方が State パターンです。</p>\n<p data-sourcepos=\"533:1-533:4\">例)</p>\n<ul data-sourcepos=\"534:1-541:0\">\n<li data-sourcepos=\"534:1-536:93\">攻撃行動\n<ul data-sourcepos=\"535:5-536:93\">\n<li data-sourcepos=\"535:5-535:84\">「戦士という状態」のプレイヤーが攻撃をすれば剣を振る</li>\n<li data-sourcepos=\"536:5-536:93\">「魔法使いという状態」のプレイヤーが攻撃をすれば魔法を詠唱</li>\n</ul>\n</li>\n<li data-sourcepos=\"537:1-539:96\">防御行動\n<ul data-sourcepos=\"538:5-539:96\">\n<li data-sourcepos=\"538:5-538:87\">「戦士という状態」のプレイヤーが防御をすれば盾を構える</li>\n<li data-sourcepos=\"539:5-539:96\">「魔法使いという状態」のプレイヤーが防御をしても何もできない</li>\n</ul>\n</li>\n<li data-sourcepos=\"540:1-541:0\">etc...</li>\n</ul>\n<p data-sourcepos=\"542:1-542:121\"><a href=\"https://camo.qiitausercontent.com/6a912caf2789e073a6935b9c9181aa6bab5fd5ab/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f37326461623938622d306566342d386632332d666162302d3035393236366264666261332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F72dab98b-0ef4-8f23-fab0-059266bdfba3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ead338dbb853bc3070d091ec821262fc\" alt=\"State.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/72dab98b-0ef4-8f23-fab0-059266bdfba3.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F72dab98b-0ef4-8f23-fab0-059266bdfba3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=1a3fc783d6ec40b65c97fb2c3eb9c8e3 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"544:1-544:385\"><code>jobState.attacAction()</code> でそれぞれの職業に応じた攻撃を行えるといった実装になるため、ここに「騎士」や「僧侶」を追加しても <code>Player</code> クラスやその他のコードの変更は不要で、<code>KnightState</code> や <code>ClericState</code> といった新規追加クラスに対してコードを書けばよいというのも精神衛生上よいです。</p>\n<p data-sourcepos=\"546:1-546:243\">職業を状態と捉えるかどうかは議論がありそうですが、デザインパターンの本質としてはパターンを適用することでコードが分かりやすくなるかどうかというところだと思います。</p>\n<h3 data-sourcepos=\"548:1-548:57\">\n<span id=\"21-strategy戦略か戦術かそれが問題だ\" class=\"fragment\"></span><a href=\"#21-strategy%E6%88%A6%E7%95%A5%E3%81%8B%E6%88%A6%E8%A1%93%E3%81%8B%E3%81%9D%E3%82%8C%E3%81%8C%E5%95%8F%E9%A1%8C%E3%81%A0\"><i class=\"fa fa-link\"></i></a>21. Strategy(戦略か戦術か、それが問題だ)</h3>\n<p data-sourcepos=\"550:1-551:147\">戦略を定義したクラスを用意してそれを入れ替えれば、コードの修正範囲は小さいという考え方のパターンですが、ストラテジーパターンで作られているJavaのソートは、皆さんご存知の通り大変冗長なコードになっています。<br>\n戦術レベルの内容を戦略で解決するというデザインが適切ではないというポピュラーな例と言えるでしょう。</p>\n<p data-sourcepos=\"553:1-553:152\">Strategy は適用すべきところに適用することにして、ソートは Lambda や Comparator を利用して書くのがよいでしょう。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"555:1-587:3\">\n<div class=\"code-lang\"><span class=\"bold\">SortSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"c1\">// 【冗長】昇順ソート戦略</span>\n<span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">ascSortStoratagy</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;()</span> <span class=\"o\">{</span>\n    <span class=\"nd\">@Override</span>\n    <span class=\"kd\">public</span> <span class=\"kt\">int</span> <span class=\"nf\">compare</span><span class=\"o\">(</span><span class=\"nc\">String</span> <span class=\"n\">s1</span><span class=\"o\">,</span> <span class=\"nc\">String</span> <span class=\"n\">s2</span><span class=\"o\">)</span> <span class=\"o\">{</span>\n        <span class=\"k\">return</span> <span class=\"n\">s1</span><span class=\"o\">.</span><span class=\"na\">compareTo</span><span class=\"o\">(</span><span class=\"n\">s2</span><span class=\"o\">);</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">};</span>\n\n<span class=\"c1\">// 【冗長】降順ソート戦略</span>\n<span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">descSortStoratagy</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;()</span> <span class=\"o\">{</span>\n    <span class=\"nd\">@Override</span>\n    <span class=\"kd\">public</span> <span class=\"kt\">int</span> <span class=\"nf\">compare</span><span class=\"o\">(</span><span class=\"nc\">String</span> <span class=\"n\">s1</span><span class=\"o\">,</span> <span class=\"nc\">String</span> <span class=\"n\">s2</span><span class=\"o\">)</span> <span class=\"o\">{</span>\n        <span class=\"k\">return</span> <span class=\"n\">s2</span><span class=\"o\">.</span><span class=\"na\">compareTo</span><span class=\"o\">(</span><span class=\"n\">s1</span><span class=\"o\">);</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">};</span>\n\n<span class=\"c1\">// 【冗長】昇順ソート戦略でソート</span>\n<span class=\"nc\">List</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">sortedItems</span> <span class=\"o\">=</span> <span class=\"n\">items</span><span class=\"o\">.</span><span class=\"na\">stream</span><span class=\"o\">()</span>\n    <span class=\"o\">.</span><span class=\"na\">sorted</span><span class=\"o\">(</span><span class=\"n\">ascSortStoratagy</span><span class=\"o\">)</span>   <span class=\"c1\">// 別途定義した昇順ストラテジーを指定。インラインでも書けるが冗長</span>\n    <span class=\"o\">.</span><span class=\"na\">collect</span><span class=\"o\">(</span><span class=\"nc\">Collectors</span><span class=\"o\">.</span><span class=\"na\">toList</span><span class=\"o\">());</span>\n\n<span class=\"c1\">// Lambda でソート</span>\n<span class=\"nc\">List</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">sortedItems</span> <span class=\"o\">=</span> <span class=\"n\">items</span><span class=\"o\">.</span><span class=\"na\">stream</span><span class=\"o\">()</span>\n    <span class=\"o\">.</span><span class=\"na\">sorted</span><span class=\"o\">((</span><span class=\"n\">s1</span><span class=\"o\">,</span> <span class=\"n\">s2</span><span class=\"o\">)</span> <span class=\"o\">-&gt;</span> <span class=\"n\">s1</span><span class=\"o\">.</span><span class=\"na\">compareTo</span><span class=\"o\">(</span><span class=\"n\">s2</span><span class=\"o\">))</span>   <span class=\"c1\">// Lambda 式で直接定義</span>\n    <span class=\"o\">.</span><span class=\"na\">collect</span><span class=\"o\">(</span><span class=\"nc\">Collectors</span><span class=\"o\">.</span><span class=\"na\">toList</span><span class=\"o\">());</span>\n\n<span class=\"c1\">// Comparator でソート</span>\n<span class=\"c1\">// クラスのフィールドを比較する場合は、Comparator.comparing を利用する</span>\n<span class=\"nc\">List</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">sortedItems</span> <span class=\"o\">=</span> <span class=\"n\">items</span><span class=\"o\">.</span><span class=\"na\">stream</span><span class=\"o\">()</span>\n    <span class=\"o\">.</span><span class=\"na\">sorted</span><span class=\"o\">(</span><span class=\"nc\">Comparator</span><span class=\"o\">.</span><span class=\"na\">naturalOrder</span><span class=\"o\">())</span>  <span class=\"c1\">// 昇順</span>\n    <span class=\"o\">.</span><span class=\"na\">collect</span><span class=\"o\">(</span><span class=\"nc\">Collectors</span><span class=\"o\">.</span><span class=\"na\">toList</span><span class=\"o\">())</span>\n</code></pre></div>\n</div>\n<p data-sourcepos=\"589:1-590:106\">(参考)<br>\n<a href=\"https://qiita.com/KevinFQ/items/09c73cc76cb646ae63f4\" id=\"reference-c6ea2aae38f24e924d8d\">Comparatorを使ってListをソートする方法</a></p>\n<h3 data-sourcepos=\"592:1-592:43\">\n<span id=\"22-template-method学習指導要綱\" class=\"fragment\"></span><a href=\"#22-template-method%E5%AD%A6%E7%BF%92%E6%8C%87%E5%B0%8E%E8%A6%81%E7%B6%B1\"><i class=\"fa fa-link\"></i></a>22. Template Method(学習指導要綱)</h3>\n<p data-sourcepos=\"594:1-596:134\">日本には様々な学校がありますが、そこで提供される教育はおよそ同じような内容でしょう。<br>\n年間にどれぐらい授業があって、どんなふうに教育しなさい、というのが学習指導要綱として定められているからです。<br>\nその学習指導要綱に沿って各教員が教育を行う、というのが Template Method の考え方に近いでしょう。</p>\n<p data-sourcepos=\"598:1-599:238\">ところで、複雑すぎる Template Method はシステムの品質を上げません。実装が困難で、実装者による個人差が大きく出てしまうからです。<br>\nTemplate Method を実装することが教員に要求されていますが、実装次第で東大合格者が出たり学級崩壊が起きたり、過労で離任が発生したりもしていることからも分かるでしょう。</p>\n<p data-sourcepos=\"601:1-601:285\">本稿を書くにあたって<a href=\"https://www.mext.go.jp/component/a_menu/education/micro_detail/__icsFiles/afieldfile/2019/03/18/1387017_001.pdf\" rel=\"nofollow noopener\" target=\"_blank\">【総則編】小学校学習指導要領（平成29年告示）解説</a>を一読しましたが、これは大変だなと思いました。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"603:1-633:3\"><div class=\"highlight\"><pre><code><span class=\"c1\">// 学習指導要綱</span>\n<span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kd\">class</span> <span class=\"nc\">CurriculumGuideline</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// 授業の準備をする</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">prepareClassroom</span><span class=\"o\">();</span>\n    <span class=\"c1\">// 授業をする</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">doClassroom</span><span class=\"o\">();</span>\n    <span class=\"c1\">// 宿題をつくる</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">makeHomework</span><span class=\"o\">();</span>\n    <span class=\"c1\">// 宿題を採点する</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">checkHomework</span><span class=\"o\">();</span>\n\n    <span class=\"c1\">// and so on...</span>\n<span class=\"o\">}</span>\n\n<span class=\"c1\">// 怠け者先生</span>\n<span class=\"kd\">public</span> <span class=\"kd\">class</span> <span class=\"nc\">LazyTeacher</span> <span class=\"kd\">extends</span> <span class=\"nc\">CurriculumGuideline</span> <span class=\"o\">{</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">prepareClassroom</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">doClassroom</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">makeHomework</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">checkHomework</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n</code></pre></div></div>\n<p data-sourcepos=\"635:1-635:300\">一方で、コンビニやファミレスのアルバイト作業は作業のテンプレート化がうまくできていて結果に差異が少ない様に思えます。たまに例外が発生して twitter などで炎上していますが、作業要項の問題とは考えにくいです。</p>\n<p data-sourcepos=\"637:1-637:121\">Template Method はシステムを捉えるのに必須な考え方ですが、適用が難しいという印象です。</p>\n<h3 data-sourcepos=\"640:1-640:83\">\n<span id=\"23-visitorウーバーとマックデリバリーとヤマトと佐川と\" class=\"fragment\"></span><a href=\"#23-visitor%E3%82%A6%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%83%9E%E3%83%83%E3%82%AF%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%E3%81%A8%E3%83%A4%E3%83%9E%E3%83%88%E3%81%A8%E4%BD%90%E5%B7%9D%E3%81%A8\"><i class=\"fa fa-link\"></i></a>23. Visitor(ウーバーとマックデリバリーとヤマトと佐川と…)</h3>\n<p data-sourcepos=\"642:1-645:318\">家に来そうなVisitor(訪問者)を列挙してみました。<br>\nウーバーが顧客の家を訪問したら『お金をもらって商品を渡す』という行為をします。<br>\n訪問者側に、訪問時の処理を実装するのが Visitor パターンです。<br>\nこの様な実装にしておくと、顧客に断りなく値上げをしたりサービスの質を落とすこともやり放題…ではなく、アルゴリズムをオブジェクトの構造から分離ができますが、少々大掛かりなパターンであまり利用することはない印象です。</p>\n<p data-sourcepos=\"647:1-647:123\"><a href=\"https://camo.qiitausercontent.com/ac43225d638207361d557bba8ca52c0ec40a2a89/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30633531356633362d373031652d623137352d363733392d3230396334386331616637322e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0c515f36-701e-b175-6739-209c48c1af72.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9b529318c7d507cb0bc7e6dfcad21bbd\" alt=\"Visitor.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0c515f36-701e-b175-6739-209c48c1af72.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0c515f36-701e-b175-6739-209c48c1af72.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=5f194e2cc9188c65cecbdd534d1f1eff 1x\" loading=\"lazy\"></a></p>\n<h2 data-sourcepos=\"650:1-650:15\">\n<span id=\"おわりに\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%82%8F%E3%82%8A%E3%81%AB\"><i class=\"fa fa-link\"></i></a>おわりに</h2>\n<p data-sourcepos=\"652:1-653:135\">ちょいちょい時間を見つけて更新していたら１年ぐらいかかりましたが、全部書けてよかったです。<br>\nなんとなく意識高く難しく感じる『デザインパターン』を少しでも身近に感じて頂けたら幸いです。</p>\n<p data-sourcepos=\"655:1-656:240\">デザインパターンは偉大な先人達が開発する時の <strong>『ベストプラクティス』</strong> をパターンとして抽出してくれたものなので学びは多いです。<br>\n近代開発からすると、冗長なパターンが多い様な気もしなくはないですが、設計の考え方をうまく学んで、よりよいコードを書くのに役立てて頂けたらいいのかなと思いました。</p>\n<p data-sourcepos=\"659:1-661:60\">(参考サイト)<br>\n<a href=\"https://www.techscore.com/tech/DesignPattern/index.html/\" rel=\"nofollow noopener\" target=\"_blank\">TECHSCORE デザインパターン</a><br>\n<a href=\"https://refactoring.guru/design-patterns/\" rel=\"nofollow noopener\" target=\"_blank\">DESIGN PATTERNS</a></p>\n<section class=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p data-sourcepos=\"664:7-664:90\">実際は大量のドキュメントを書いたり試験したりもする仕事。 <a href=\"#fnref-1\" class=\"\">↩</a></p>\n</li>\n</ol>\n</section>\n",
-    "body": "## Why デザインパターン\n\n職業プログラマのみなさんおはこんばんわ。\n\n大量にプログラムを書く仕事を想像してプログラマになられたかもしれませんが、**大量にプログラムを読む仕事** をなさっているでしょうか？[^1]\n\n規模の大きな開発や、短期間での開発に対応するためには、既存プロジェクトのソース、オープンソースやフレームワークのソースなど、**他人の書いたソースを読んで理解して利用する**必要があるため、プログラムを書く機会より読む機会が増えていると思います。\n\nここで困ったことが一つあります。\n**『プログラムはコンピューターが理解できさえすればどのように書いてあっても動く』**\nということです。\n\n例えば、変数名を `hoge` と定義したプログラムは動作しますが、書いた本人以外の他人がそのプログラムの意図を理解するのは困難でしょう。\n\nあるいは、一つの関数が1000行のプログラムも動作しますが、他人が読むことは大変困難でしょう。悪いことに**書いた本人ですら3ヶ月後には読めない**こともあるでしょう。\n\nこれらは極端な事例ですが、**「誰が設計しても、このケースではこう設計するのが妥当」**というベストプラクティスに沿って職業プログラマ全員が読んだり書いたりすれば毎回コーディングや設計で悩んだり悩まされたりしなくてよくなるはずです。\nこれがデザインパターンが生まれた理由であり、わたし達が学習する理由かと思います。\n\n残念なことに実装ありきの解説で敷居が高かったり、利用頻度がそこまで高くなかったりして微妙かなと思うところもありますが、知識として知っておいて損はないかと思いますので身近なユースケースを上げて説明したいと思います。\n\n\n## 生成に関するパターン(1 - 5)\n\n|デザインパターン   |ユースケース   |\n|---|---|\n|[1. Abstract Factory(抽象的な工場) ](#1-abstract-factory抽象的な工場)|ココイチはカレー工場で、二郎はラーメン工場\n|[2. Builder(建築者)](#2-builder建築者) |ベースの武器と素材や不要な武器と金を渡して武器強化\n|[3. Factory Method(Factoryにオブジェクト生成メソッド)](#3-factory-methodfactoryにオブジェクト生成メソッド)|餅は餅屋に、カレーはカレー屋に\n|[4. Prototype(雛形)](#4-prototype雛形)|セントラルキッチンでスープ製造\n|[5. Singleton(単一)](#5-singleton単一)|セントラルキッチンは一つ\n\n\n## 構造に関するパターン(6 - 12)\n\n|デザインパターン   |超入門概要   |\n|---|---|\n|[6. Adapter(適合)](#6-adapter適合) |居抜き店舗\n|[7. Bridge(橋)](#7-bridge橋) |展示場とイベント\n|[8. Composite(複合物)](#8-composite複合物) |ゲームオブジェクト\n|[9. Decorator(装飾者)](#9-decorator装飾者) |PSストアセールと消費税(悪い例)\n|[10. Facade(窓口)](#10-facade窓口) |区役所とウーバーイーツ\n|[11. Flyweight(軽量)](#11-flyweight軽量) |ネットフリックス\n|[12. Proxy(代理人)](#12-proxy代理人) |カリスマ経営者率いるプログラミングスクール、オフショア窓口、美容院、メルカリ\n\n## 振る舞いに関するパターン(13 - 23)(執筆中)\n\n|デザインパターン   |ユースケース   |\n|---|---|\n|[13. Chain of Responsibility(責任の鎖)](#13-chain-of-responsibility責任の鎖) |お前じゃ話にならん店長を呼んでこい\n|[14. Command(コマンド)](#14-command手順書通りやって) |手順書通りやって\n|[15. Interpreter(インタプリタ)](#15-interpreterrpgゲームのスクリプト言語) |RPGゲームのスクリプト言語\n|[16. Iterator(繰り返し)](#16-iterator古い設計関数型プログラムをしよう) |古い設計。関数型プログラムをしよう\n|[17. Mediator(指揮命令)](#17-mediatorsesと指揮命令) |SESと指揮命令\n|[18. Memento(記念品)](#18-memento記念品よりセーブデータ) |記念品よりセーブデータ\n|[19. Observer(観測者)](#19-observer新刊お知らせ機能) |新刊お知らせ機能\n|[20. State(状態)](#20-stateキャラクタ選択) |キャラクタ選択\n|[21. Strategy(戦略)](#21-strategy戦略か戦術かそれが問題だ) |戦略か戦術か、それが問題だ\n|[22. Template Method(テンプレートメソッド)](#22-template-method%E5%AD%A6%E7%BF%92%E6%8C%87%E5%B0%8E%E8%A6%81%E7%B6%B1) |学習指導要綱\n|[23. Visitor(訪問者)](#23-visitor%E3%82%A6%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%83%9E%E3%83%83%E3%82%AF%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%E3%81%A8%E3%83%A4%E3%83%9E%E3%83%88%E3%81%A8%E4%BD%90%E5%B7%9D%E3%81%A8) |ウーバーとマックデリバリーとヤマトと佐川と…\n\n\n### 1. Abstract Factory(抽象的な工場)\n\n１つ目からちょっと何言ってるか分からないですね。\n\n晩ごはんを食べるプログラムを書くとしましょうか。\nココイチならカレー、二郎ならラーメンが食べられますが、まだ今日はどちらを食べたいか決まってません。\n\nこの様な時に、晩ごはん工場をAbstract Factory と見立てて、ココイチや二郎をFactoryと見立てて、プログラムを書くとはっきり食べたいモノが決まってなくてもプログラムが書けます。\nまた、急に気が変わってサイゼの辛味チキンが食べたくなったとしても、サイゼリヤを Factory として実装して、サイゼリヤを create するだけでその後晩ごはんを食べる処理などは修正が不要となります。\n\n![AbstractFactory.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/020917ac-258d-a1fc-5270-7b3f30abbc94.png)\n\n``` AbstractFactorySnippet.java\nSupperFactory factory = new CocoichiFactory();\n\n// 以下のコードは店(Factory)によらず共通\nfactory.createFood(800);\n...\n```\n\n### 2. Builder(建築者)\n\n2つ目もちょっと何言ってるか分からないですね。\n\n『建築者に渡すべきものを渡して結果を取得する方法』だけ取り決めとくという考え方です。\n\n身近な例だと、ソシャゲの武器強化などでしょうか。\n`Equipment` は `Material` から派生しておくと、強化用素材だけではなく、不要な武器防具も強化用素材として利用できそうですね。\n\n``` LeveledEquipmentBuilder.java\ninterface LeveledEquipmentBuilder {\n  void setTarget(Equipment equipment);  // 強化対象\n  void addMaterial(Material material); // 強化用素材\n  void setMoney(int money); // 強化費用\n  Equipment build();    // 結果取得\n}\n```\n\n課金アイテムなどで成功率を上げられるなら、`addSuccessRate` といったインターフェイスも追加する必要があるでしょう。\n武器強化機能は様々なソシャゲで見かけ今や実装必須の機能と言えるので再利用可能なコードにしておくと便利そうですね。\n\n![Builder.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c4c0b5f4-12e6-33ca-dac9-b8c748a94b61.png)\n\n\n### 3. Factory Method(Factoryにオブジェクト生成メソッド)\n\n`Abstract Factory` の章で、カレーやラーメンを`Food`として定義していましたが、カレーはカレーだしラーメンはラーメンです。\n\n![FactoryMethod(Food).png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png)\n\nカレーにはごはんやナンがつきますが、ラーメンに小ライスがつくことはありますが、ナンがくっつくことはわたしが知る限りではないです。これらを `Food` で管理するように設計した場合、ラーメンにナンをくっつけることもできてしまいます。なかなか興味深い`Food`の完成となるわけですが、プログラムとしては危険です。\n\nココイチや二郎に Factory Method を持たせることで、うっかりカレー屋でラーメンを提供するのを防ぐことができます。\n\n![FactoryMethod(class).png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/89f21b20-a95f-1df9-ed2b-1feb7d154c01.png)\n\n\n### 4. Prototype(雛形)\n\nこれは、町田商店のセントラルキッチンですね。\n各店舗で同じ様にスープを１から炊かないで、セントラルキッチンでスープを作って各店舗に配送。\nひと味足りないと感じる方もいるかもしれませんが、大変合理的な考え方ですよね。\n\nプログラムは手間暇かけても丹精込めても書いた通りにしか動かないので、プロトタイプ作ってコピーすればよいです。\n\n``` PrototypeSnippet.java\nclass CentralKitchen {\n    Soup createSoup() {\n        // すごく大変な工程でスープを作る\n        return soup;\n    }\n}\n\nclass ShopKitchen {\n    // セントラルキッチンで作ったスープを足していく。\n    // スープを作るメソッドは存在しない。\n    void addSoup(Soup soup);\n}\n\n...\n\n// セントラルキッチンでスープを作って、各店舗に配送\nShopKitchen shopKitchens[] = new ShopKitchen[{店舗数}];\nSoup amazingSoup = (new CentralKitchen()).createSoup()\nfor(ShopKitchen k : shopKitchens) {\n    k.addSoup(amazingSoup);\n}\n\n```\n\n\n### 5. Singleton(単一)\n\n`Prototype` の章のサンプルコードで勘のよい方は気づいたかもしれませんが、プログラム上では、セントラルキッチンが作り放題ですね。これを出来なくするパターンが`Singleton`です。\n\n``` SingletonSnippet.java\nclass CentralKitchen {\n    private static CentralKitchen instance = new CentralKitchen();\n    private CentralKitchen(){} // private にして外部から呼べなくする。\n\n    public static CentralKitchen getInstance() {\n        return instance;\n    }\n}\n\n...\n\nSoup soup = CentralKitchen.getInstance().createSoup()\n\n```\n\n\n### 6. Adapter(適合)\n\n美味しいラーメンを作る自信があるのでラーメン店を作りたいが、お金もないし、店舗のデザインなどについては全くの素人だとします。店舗のキッチン設備や什器がある程度整った『居抜き店舗』を見つけて改装すれば、１からラーメン屋を作るよりは手間がかからないことでしょう。これが`Adapter`です。\n\n![Adapter.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6f828fc6-8e25-433a-b9d0-93eb9775b6f3.png)\n\n``` AdapterSnippet.java\nclass UnpopularDiner {\n    // 目も当てられないぐらい汚いキッチン\n    // ぐちゃぐちゃな店内\n    // なるべくそのまま利用したい\n}\n\ninterface CommonNoodleShop {\n    // ラーメン屋として一般的に必要なメニューを定義\n}\n\n// 不人気店をベースにして作った、一般的なラーメンメニューを取り揃えた、わたしの素敵なラーメン店\nclass MyAwesomeNoodleShop extends UnpopularDiner implements CommonNoodleShop {\n    Ramen getShoyuRamen() {\n        // ラーメンを実装。\n        // UnpopularDiner の設備(プロパティ・メソッド)はすべて使える。\n        // 汚いキッチンを使って美味しいラーメンを作る。\n        // ...\n        return ramen;\n    }\n}\n\n```\n\n実際のプロジェクトでは、極めて重要だが解析困難なビジネスロジックが記述された class に遭遇することがある。そのような class は 1[byte] でも修正したら動かなくなる絶妙な実装であるため、Adapter を用いて本体にはなるべく触らない様にすることで安全に再利用することを検討するかもしれません。\n\n\n### 7. Bridge(橋)\n\n様々な展示場がありイベントがあります。イベントの主催者や出展者は、展示場とは別の所で準備をして展示場に入り展示を行います。コミケ、ゲームショー、あるいはモーターショーといった展示の実装には、ビックサイト側は関与していません。この関係性を `Bridge` で表すと下図のようになります。\n\n![Bridge.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png)\n\n``` BridgeSnippet.java\n// ビックサイトでコミケ開催\nComicmarketEvent comicmarketEvent = new ComicmarketEvent();\nExhibition e = new BigsightExhibition(comicmarketEvent);\ne.doExhibition();\n```\n\n### 8. Composite(複合物)\n\n枝と葉を同じ様に処理するとか、容器と中身を同じ様に処理すると再帰的処理が簡単になるパターン。\nフォルダとファイルが一般的で分かりやすい例かと思いますが、ここではやはりゲームを例に説明したいと思います。\n\n3Dのゲームを想像してください。世界(`Scene`)の中には背景(`Background`)、プレイヤー(`Player`)、武器(`Weapon`)、弾(`Bullet`)、アイテムボックス(`ItemBox`)やアイテム(`Item`)などのオブジェクト等があると思います。`item`はアイテムボックスの中にあったり地面(`Ground`)に転がっていたりプレイヤーに拾われたりします。\nプレイヤーはオブジェクトですが、武器を所持するオブジェクトであったりもします。\nまた、オブジェクトとして意識されることはあまりないと思いますが光源やカメラもあります。\n\nこれらのゲームオブジェクト(`GameObject`)の配置や状態はゲームの進行状況によって頻繁に変更する必要がありますし、それらの操作を個別に考えるのは大変なので、`Composite`パターンで表現されることが多い様に思います。\n\n管理イメージを図にすると下図の様になります。\n(instance と class 表現が混じっていますが…よろしく解釈してください。)\n\n![Composite.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/482b839b-bc46-559c-5a83-e6353c6a3305.png)\n\n\n### 9. Decorator(装飾者) \n\nPSストアセール、利用してますか？\nちょいちょい色々なセールをやってて、その都度いくつかのゲームがお得なプライスで購入できますね。\n消費税の処理は通常価格と割引後の価格に対して適用されます。\nこれを`decorator`で実装すればセールの影響を受けない処理を書けそうで書けなさそうです。\n\n![Decorator.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/d1da9231-775e-6b33-1332-496b8167c695.png)\n\n確かに、消費税コード部分やセール部分は変更が不要だしシンプルですが、この実装ではセール毎にコード修正が必要となってしまいます。\n\n```\n//----------------------------------------\n// 通常時コード\nProduct p = new Product();\nProduct taxedProduct = new TaxedProduct(p);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n//----------------------------------------\n// セール時コード\nProduct p = new Product();\nProduct saledProduct = new SaledProduct(p);\nProduct taxedProduct = new TaxedProduct(saledProduct);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n```\n\nビジネス要件である、PSStore のセールがどの様な周期でどの様な製品に対して行われているかを理解しないで実装したのでしょうか。\nセールや消費税適用前後で値段しか変わらないのにPSStoreに並べる商品自体を`interface`として定義している点も意味不明ですね。\nでは、`PSStorePrice` にすればいいかというとそうでもなさそうです。\n\n近視眼的にデザインパターンを適用しても、再利用性が上がらない上にメンテナンスを行う人などに不快感を与える可能性もあるので注意が必要そうです。\n\n\n### 10. Facade(窓口) \n区役所で住民票を取るとします。区役所は巨大な建物で大変多くの業務を行っているが、住民票発行の窓口に行けばとりあえず住民票を取る事がでます。\n適切な窓口が設定されることで区役所の業務すべてを把握することなく円滑に目的を達成できるようにするためのパターンが`Facade`です。\n\n配達に関する機能を持っているため、単純な窓口ではないですがウーバーイーツを想像してみましょう。\n利用者はウーバーイーツの裏にある複雑な仕組みを意識することなく簡単なインターフェースで様々な食料を手に入れる事ができるようになりました。\n\nこれが`Facade(窓口)`を利用するメリットです。\n\nコードを`Facade`パターンで書けば分りやすくなるのではなく、 **『`Facade`パターンを利用した方が自然に記述できる外部設計に対して`Facade`を適用する』** と考えると良いと思います。\n\n![Facade.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png)\n\n人間向けの言語で書かれた外部設計を、コンピューターに分かる様に翻訳するのが職業プログラミングです。\nクラス名に`Facade`とつける時点で、外部設計からは読み取れない複雑な翻訳（実装）になっているかもしれません。\n\n\n### 11. Flyweight(軽量)\nネットフリックスは、知らない人はあまりいないと思いますが動画見放題のサブスクサービスです。\nそんなネットフリックスも、創業当時は実店舗を持ってDVDレンタルのビジネスを行っていたのですが、業態を大幅に転換し紆余曲折を経て現在のサービスを提供するに至りました。\n\n現CEOのリード・ヘイスティングスや初代CEOのマーク・ランドルフが `Flyweightパターン` を適用しようと思ったかどうかは知りませんが、 `Flyweightパターン` で表現できそうです。\n\n![Flyweight.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8bb4a2df-371e-c13c-6819-585d34777c2e.png)\n\n(参考)\n[ネットフリックスという世界的企業はいかに誕生したのか](https://www.dhbr.net/articles/-/7044)\n\n\n### 12. Proxy(代理人)\nコードレベルで考えると Adapter パターンとの違いが分かりづらいため、ここでも人間世界で起きている事例で考えます。\n例えば、何かやらかした際に、法廷で争わなければいけなくなりますが、おそらく多くの人は法律の知識がないため弁護士を代理人として立てると思います。\nこのような、『何らかの意味ある代理行為』がデザインパターンで定義されていることかと思います。\n\n代理行為には様々な種類がありますが、本章では以下に４種類列挙します。\n\n#### カリスマ経営者率いるプログラミングスクール(A virtual proxy)\nカリスマ経営者の有名なITスクールに入ると、カリスマ経営者に教えてもらえてプログラムが書けるような気分になります。\n実際にはカリスマ経営者は、社員やバイトの先生に何らかの方針を伝えるのみで、教育行為の大半は社員やバイトの先生が行うことになると思います。\n\nカリスマ経営者は、カリスマとして活動したり経営者として活動したりするのが忙しいので全ての生徒の相手ができないため、代理で教える先生が必要となります。\n\n![A virtual proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/4c64fd7d-c934-9556-26f0-f387d5eac865.png)\n\n\n#### オフショア窓口(A remote proxy)\n単価の安い海外にIT業務の委託を行いたいですが、英語が分かりませんし、海外に行って仕事を発注するのも大変です。\n一方、単価の安い国側でも単価の高い日本の仕事がほしいですが、日本に移住するのも大変ですし生活コストが上がってしまうため安い単価で仕事が受けられなくなります。\n\n日本語と現地語が話せるPMを日本事務所に配置することで現地からの業務提供を円滑に行うことができます。\n\n![A remote proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/f3fb4558-29b2-69d6-61a1-992985cf0d64.png)\n\n\n#### 美容院(A protective proxy)\n多くの人は、髪の毛を自分で切ることができますが、それをしようとは思いません。イケてない髪型になったら取り返しがつかないからです。\nかっこよく（かわいく）切ってくれる人に頼むのが安全です。\n\n![A protective proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0b63af0c-91d0-37ea-9bcf-7be55a491836.png)\n\n\n#### メルカリ(A smart proxy)\nいらなくなった古着を売るとして、友達に声をかけるなど色々な手段があると思いますが、メルカリに出品される方も多いのではないでしょうか。\n家の前に置いておいても誰かの目に止まり購入されることはほぼないと思いますが、メルカリに出品しておくとあなたに代わって古着を売り飛ばしてくれます。\n\n![A smart proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png)\n\n\n(参考)\n[What is the exact difference between Adapter and Proxy patterns?](https://stackoverflow.com/questions/37692814/what-is-the-exact-difference-between-adapter-and-proxy-patterns)\n\n\n### 13. Chain of Responsibility(責任の鎖)\n大勢のお客で賑わっている居酒屋での出来事です。炭酸麦茶を頼んで30分以上経ちますがまだ届きません。いい加減遅いなと思いテーブルの呼び出しベルを押し店員を呼び出し「オーダー入ってます？」とすまなそうに確認して炭酸麦茶を提供してもらうことができました。\n\n一方隣の席からは「お前じゃ話にならん、店長を呼んでこい」という怒鳴り声が聞こえてきました。興味津々でそちらの席を横目で観察したところ、バイトリーダーらしき人物が出てきて謝罪をするも結局店長は出てこないという様子を目撃することになりました。\n\nこれが、責任の鎖です。\nこの居酒屋のスタッフは、バイト→バイトリーダー→雇われ店長→本部マネージャー→本部社長と言った責任の鎖でつながれており、顧客の怒り度に対して誰がどう対処するかを規定しています。\n\n```\npublic abstract class Responsible {\n    private Responsible next = null;\n    private String name = null;\n\n    public Responsible(String name){\n        this.name = name;\n    }\n    public Responsible setNext(Responsible next){\n        this.next = next;\n        return next;\n    }\n    public final void handle(Claim claim){\n        if(canHandle(claim)) {\n            doHandle(claim);\n        } else if(next != null) {\n            next.handle(claim);\n        }else{\n            //FIXME: Something to do.\n        }\n    }\n    protected abstract boolean canHandle(Claim claim);\n    protected abstract void doHandle(Claim claim);\n}\n\n// バイト\npublic class PartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // オーダーされた商品を持ってくる\n    }\n}\n\n// バイトリーダー\npublic class HeadOfPartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // 次回使える5%引きチケットを渡す\n    }\n}\n\n// 雇われ店長\npublic class StoreManager extends Responsible {\n    public StoreManager(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        throw new UnsupportedOperationException(); \n    }\n}\n\n```\n\n### 14. Command(手順書通りやって)\n\n作業の手順を書いた手順書があります。コピーすれば複数の手順書にできますし、いろいろな人に渡して作業をお願いすることができます。\nCommand パターンは、「手順書」と「依頼」を表すパターンです。手順の内容は実際の手順書によって異なります。\n\n「銀座のコーラを買ってくる」依頼であれば「銀座への行き方」などが手順書に定義されます。「銀座に行く」手順書と「コーラを買う」手順書を分ければ、買い物コマンドを作るだけで銀座での買い物はし放題かもしれません。\nコマンドを実行した結果としてコーラを受け取りたいですし、コーラ以外にも焼きそばやパンも食べたいとなると、戻り値が `void` では受け取れず、また、コーラ買ってくるまでの間他の事をしていたいとなると、非同期での実行が必要になってきます。\n\n適用自体は簡単ですが、要件をよく確認して設計しないといたずらに複雑なコードになるだけなので注意が必要です。\n\n![Command.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6aa75570-79fc-4741-de3a-dad4d82de2ff.png)\n\n### 15. Interpreter(RPGゲームのスクリプト言語)\n\nスクリプト言語がインタプリタによって実行されているかは一旦横においておくことにします。\nデザインパターンとして学ぶべきことは「業務上の課題を解決するためになんらかの文法の言語を作りそれを解析して動かす」パターンということです。\n\nRPGゲームを作る場合を例に考察してみましょう。\nRPGゲームは、街の入り口に立っている町人Aに「ようこそラダトームのまちへ」と喋らせたり、主人公やライバルキャラクターに小芝居させながら大量の会話をさせるなどのイベントシーンが必要です。これらのイベントシーンをプログラマがアセンブラやC言語などのプログラム言語で書くのは非常に大変です。\nゲームの企画やプランナーの人が「talk(charaA, ようこそラダトームのまちへ)」と書いたら町人Aがセリフをしゃべってくれる仕組みがあったらどうでしょうか。いちいちプログラマにお願いして嫌な顔をされながらイベントを作るよりは遥かに簡単そうです。一方のプログラマはバトルプログラムやエフェクトプログラムに集中できそうで win win です。\nこの時に作る `talk()` 等を解析して動かすプログラムを巨大な if 文で作ると大変なので、インタプリタを作って Composite パターンなどに当てはまるように解析して実行していくのがインタプリタパターンです。\n\n昔は毎回スクリプトエンジンを手作りしていましたが最近は[Lua言語](https://ja.wikipedia.org/wiki/Lua)が人気があるようですね。\n\n### 16. Iterator(古い設計。関数型プログラムをしよう)\n\niterator パターンは、配列やリストに含まれる要素に対して何らかの処理を行うパターンです。\n`hasNext()`, `getNext()` などのメソッドを見かけたら iterator パターンでなんらかの集合の要素を取得しているんだなと見てもらえば良いと思いますが、近代言語ではよりよい方法が提供されているので敢えて実装しない方がよいでしょう。\n\n配列操作用のメソッドに関数を渡す事で配列の全ての要素に対して任意の処理を行えます。\n\n```\n例)\nfind(f) : f関数の戻り値が true の要素を返す（１つ）\nfilter(f) : f関数の戻り値が true の要素を返す（複数）\nmap(f) : f関数の戻り値の配列に map する\nreduce(f) : 配列の要素に対してfで与えられる関数を順次実行した結果を返す（１つ）\nsome(f) : f関数の戻り値が true の要素があるか？\nevery(f) : f関数の戻り値がすべて true か？\nflatMap(f) : f関数の戻り値（配列）を全て連結した配列を返す\n...\n```\n\n余計なことは覚えずに、js では Array クラスのメソッド、Java では StreamApi を利用するとよいでしょう。\n\n参考)[MDN Array](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array)\n\n\n### 17. Mediator(SESと指揮命令)\n\nMediator(仲介役)というとあまり見かけない表現かと思いますが、われわれの仕事現場に目を向けると分かりやすい例があります。\n\nITプロジェクトで協力会社さんに参画頂いた際、参画者の性質を見てAさんは開発、Bさんは試験などおおよその方針を指揮命令者が出していると思います。Mediator パターンで実現したいのはこの指揮命令による秩序です。\n\nただ、SESで参画している協力会社さん同士が直接業務に関する指示を行ってはいけないにも関わらず、指揮命令者の指示を待っていると仕事が進まないので、直接会話して仕事を進めているケースもあるかもしれません。\n\n現実の世界でも必ずしもうまく機能しないケース（指揮命令系統が複雑になるだけで仕事が進まない）もある通り、Mediatorパターンを適用する際には、本当にMediatorが必要なのかをよく考えて適用する必要があるでしょう。\n\n![Mediator.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/37c4a62d-9819-6b98-5c97-a84006ded7df.png)\n\n\n### 18. Memento(記念品よりセーブデータ)\n\n令和の世の中で、Memento(記念品、形見)と言われて日常で馴染み深い人は少数派の様に思います。\nコンピューターゲームを遊んで、次の日その続きから遊ぶために、その時の状態を保存したセーブデータを作ったことがある人はそれなりにいるのではないでしょうか。\n\nMementoパターンは、ある時点での処理の続きを再開できるように必要なデータを保存しておくパターンです。\n\nセーブデータは、次回からゲームを再開するために、その時点での所持金や経験値やレベルなどのプレイヤーの状態を表す変数が保存されますが、その時点での画面の映像などは保存されません。\nMementoパターンでも同様に、プログラムの動作に必要な最小限のデータのみを保存します。\n\n![Memento.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9eaf0235-01cd-45ca-53b7-213214826d3c.png)\n\n\n### 19. Observer(新刊お知らせ機能)\n\nObserver(観測者)パターンは、言葉の響きからすると観測者が Polling などして何かを観測するように思えますが、実際は、「新刊お知らせ機能」の様に、「読んでる漫画の新刊がでたら通知してくれ」と登録しておくと、新刊が出た際に Observer(観測者)に通知が来るパターンです。\n\nタイマーなどで定期監視をしなくてよいためコンピュータに対する負荷も少なく、「新刊が出た」などのイベントに対して処理を実行できるイベントドリブンの考え方も人間に優しいです。\n\nAngular や Vue や React などに実装されているデータバインディングがあるとほとんど無用になるのですがちょっとうまく動かない時に利用する watch がObserver の考え方と近いと思います。\n\n![Observer.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5555d727-1135-2d63-f120-ebb4cece5596.png)\n\n\n### 20. State(キャラクタ選択)\n\n執筆時点の流行に乗ると、ELDEN RING での放浪剣士や素寒貧といった素性選択かと思いますが、戦士や魔法使いなどの職業の例えの方が普遍的で分かりやすそうなのでそちらで話を進めます。\n\nプレイヤーの選択により、プレイヤーの操作するキャラクターが「戦士」や「魔法使い」になるゲームがあったとします。「戦士」は剣や盾などを装備しての近接攻撃が得意で、魔法使いは杖やローブなどが装備可能で魔法による遠距離攻撃が得意です。\n\nAボタンやBボタンを押下時のイベント関数に「もし戦士だったら」とか、「もし魔法使いだったら」といったコードを書くのは一見直感的です。\n最初に戦士しかいないところに魔法使いを追加したらその様なコードを書くことも往々にしてあるでしょう。\n\nただこれが、複雑なコマンド入力でキャラクタ固有スキル発動もしたい、職業によって固有のスキルツリーも持ちたいとなってくると「もし戦士だったら」という分岐をどこに書いたらいいかがよく分からなくなってきます。拡張が辛くなってきた時がリファクタリング適正期かと思います。\n\n仕様書も書かずにノリで拡張したコードであれば、新たにプロジェクトに追加されたメンバーに新ジョブ「僧侶」の実装を依頼することも難しいでしょうし、ゲームをやらないメンバーはスキルツリーのコードが職業によって分岐があることに気がつかないかもしれません。\n\nそこで、状態(職業)毎にクラスを定義して各クラスに対して定められたアクションの実装を行えば、自然かつ拡張性の高いクラス定義を行えるという考え方が State パターンです。\n\n例)\n- 攻撃行動\n    - 「戦士という状態」のプレイヤーが攻撃をすれば剣を振る\n    - 「魔法使いという状態」のプレイヤーが攻撃をすれば魔法を詠唱\n- 防御行動\n    - 「戦士という状態」のプレイヤーが防御をすれば盾を構える\n    - 「魔法使いという状態」のプレイヤーが防御をしても何もできない\n- etc...\n\n![State.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/72dab98b-0ef4-8f23-fab0-059266bdfba3.png)\n\n`jobState.attacAction()` でそれぞれの職業に応じた攻撃を行えるといった実装になるため、ここに「騎士」や「僧侶」を追加しても `Player` クラスやその他のコードの変更は不要で、`KnightState` や `ClericState` といった新規追加クラスに対してコードを書けばよいというのも精神衛生上よいです。\n\n職業を状態と捉えるかどうかは議論がありそうですが、デザインパターンの本質としてはパターンを適用することでコードが分かりやすくなるかどうかというところだと思います。\n\n### 21. Strategy(戦略か戦術か、それが問題だ)\n\n戦略を定義したクラスを用意してそれを入れ替えれば、コードの修正範囲は小さいという考え方のパターンですが、ストラテジーパターンで作られているJavaのソートは、皆さんご存知の通り大変冗長なコードになっています。\n戦術レベルの内容を戦略で解決するというデザインが適切ではないというポピュラーな例と言えるでしょう。\n\nStrategy は適用すべきところに適用することにして、ソートは Lambda や Comparator を利用して書くのがよいでしょう。\n\n``` SortSnippet.java\n// 【冗長】昇順ソート戦略\nComparator<String> ascSortStoratagy = new Comparator<String>() {\n    @Override\n    public int compare(String s1, String s2) {\n        return s1.compareTo(s2);\n    }\n};\n\n// 【冗長】降順ソート戦略\nComparator<String> descSortStoratagy = new Comparator<String>() {\n    @Override\n    public int compare(String s1, String s2) {\n        return s2.compareTo(s1);\n    }\n};\n\n// 【冗長】昇順ソート戦略でソート\nList<String> sortedItems = items.stream()\n    .sorted(ascSortStoratagy)   // 別途定義した昇順ストラテジーを指定。インラインでも書けるが冗長\n    .collect(Collectors.toList());\n\n// Lambda でソート\nList<String> sortedItems = items.stream()\n    .sorted((s1, s2) -> s1.compareTo(s2))   // Lambda 式で直接定義\n    .collect(Collectors.toList());\n\n// Comparator でソート\n// クラスのフィールドを比較する場合は、Comparator.comparing を利用する\nList<String> sortedItems = items.stream()\n    .sorted(Comparator.naturalOrder())  // 昇順\n    .collect(Collectors.toList())\n```\n\n(参考)\n[Comparatorを使ってListをソートする方法](https://qiita.com/KevinFQ/items/09c73cc76cb646ae63f4)\n\n### 22. Template Method(学習指導要綱)\n\n日本には様々な学校がありますが、そこで提供される教育はおよそ同じような内容でしょう。\n年間にどれぐらい授業があって、どんなふうに教育しなさい、というのが学習指導要綱として定められているからです。\nその学習指導要綱に沿って各教員が教育を行う、というのが Template Method の考え方に近いでしょう。\n\nところで、複雑すぎる Template Method はシステムの品質を上げません。実装が困難で、実装者による個人差が大きく出てしまうからです。\nTemplate Method を実装することが教員に要求されていますが、実装次第で東大合格者が出たり学級崩壊が起きたり、過労で離任が発生したりもしていることからも分かるでしょう。\n\n本稿を書くにあたって[【総則編】小学校学習指導要領（平成29年告示）解説](https://www.mext.go.jp/component/a_menu/education/micro_detail/__icsFiles/afieldfile/2019/03/18/1387017_001.pdf)を一読しましたが、これは大変だなと思いました。\n\n```java\n// 学習指導要綱\npublic abstract class CurriculumGuideline {\n    // 授業の準備をする\n    public abstract void prepareClassroom();\n    // 授業をする\n    public abstract void doClassroom();\n    // 宿題をつくる\n    public abstract void makeHomework();\n    // 宿題を採点する\n    public abstract void checkHomework();\n\n    // and so on...\n}\n\n// 怠け者先生\npublic class LazyTeacher extends CurriculumGuideline {\n    public abstract void prepareClassroom() {\n        // TODO Auto-generated method stub\n    }\n    public abstract void doClassroom() {\n        // TODO Auto-generated method stub\n    }\n    public abstract void makeHomework() {\n        // TODO Auto-generated method stub\n    }\n    public abstract void checkHomework() {\n        // TODO Auto-generated method stub\n    }\n}\n```\n\n一方で、コンビニやファミレスのアルバイト作業は作業のテンプレート化がうまくできていて結果に差異が少ない様に思えます。たまに例外が発生して twitter などで炎上していますが、作業要項の問題とは考えにくいです。\n\nTemplate Method はシステムを捉えるのに必須な考え方ですが、適用が難しいという印象です。\n\n\n### 23. Visitor(ウーバーとマックデリバリーとヤマトと佐川と…)\n\n家に来そうなVisitor(訪問者)を列挙してみました。\nウーバーが顧客の家を訪問したら『お金をもらって商品を渡す』という行為をします。\n訪問者側に、訪問時の処理を実装するのが Visitor パターンです。\nこの様な実装にしておくと、顧客に断りなく値上げをしたりサービスの質を落とすこともやり放題…ではなく、アルゴリズムをオブジェクトの構造から分離ができますが、少々大掛かりなパターンであまり利用することはない印象です。\n\n![Visitor.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0c515f36-701e-b175-6739-209c48c1af72.png)\n\n\n## おわりに\n\nちょいちょい時間を見つけて更新していたら１年ぐらいかかりましたが、全部書けてよかったです。\nなんとなく意識高く難しく感じる『デザインパターン』を少しでも身近に感じて頂けたら幸いです。\n\nデザインパターンは偉大な先人達が開発する時の **『ベストプラクティス』** をパターンとして抽出してくれたものなので学びは多いです。\n近代開発からすると、冗長なパターンが多い様な気もしなくはないですが、設計の考え方をうまく学んで、よりよいコードを書くのに役立てて頂けたらいいのかなと思いました。\n\n\n(参考サイト)\n[TECHSCORE デザインパターン](https://www.techscore.com/tech/DesignPattern/index.html/)\n[DESIGN PATTERNS](https://refactoring.guru/design-patterns/)\n\n\n[^1]: 実際は大量のドキュメントを書いたり試験したりもする仕事。\n\n",
+    "rendered_body": "<h2 data-sourcepos=\"1:1-1:31\">\n<span id=\"why-デザインパターン\" class=\"fragment\"></span><a href=\"#why-%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3\"><i class=\"fa fa-link\"></i></a>Why デザインパターン</h2>\n<p data-sourcepos=\"3:1-3:60\">職業プログラマのみなさんおはこんばんわ。</p>\n<p data-sourcepos=\"5:1-5:198\">大量にプログラムを書く仕事を想像してプログラマになられたかもしれませんが、<strong>大量にプログラムを読む仕事</strong> をなさっているでしょうか？<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>\n<p data-sourcepos=\"7:1-7:361\">規模の大きな開発や、短期間での開発に対応するためには、既存プロジェクトのソース、オープンソースやフレームワークのソースなど、<strong>他人の書いたソースを読んで理解して利用する</strong>必要があるため、プログラムを書く機会より読む機会が増えていると思います。</p>\n<p data-sourcepos=\"9:1-11:24\">ここで困ったことが一つあります。<br>\n<strong>『プログラムはコンピューターが理解できさえすればどのように書いてあっても動く』</strong><br>\nということです。</p>\n<p data-sourcepos=\"13:1-13:191\">例えば、変数名を <code>hoge</code> と定義したプログラムは動作しますが、書いた本人以外の他人がそのプログラムの意図を理解するのは困難でしょう。</p>\n<p data-sourcepos=\"15:1-15:234\">あるいは、一つの関数が1000行のプログラムも動作しますが、他人が読むことは大変困難でしょう。悪いことに<strong>書いた本人ですら3ヶ月後には読めない</strong>こともあるでしょう。</p>\n<p data-sourcepos=\"17:1-18:120\">これらは極端な事例ですが、**「誰が設計しても、このケースではこう設計するのが妥当」**というベストプラクティスに沿って職業プログラマ全員が読んだり書いたりすれば毎回コーディングや設計で悩んだり悩まされたりしなくてよくなるはずです。<br>\nこれがデザインパターンが生まれた理由であり、わたし達が学習する理由かと思います。</p>\n<p data-sourcepos=\"20:1-20:318\">残念なことに実装ありきの解説で敷居が高かったり、利用頻度がそこまで高くなかったりして微妙かなと思うところもありますが、知識として知っておいて損はないかと思いますので身近なユースケースを上げて説明したいと思います。</p>\n<h2 data-sourcepos=\"23:1-23:40\">\n<span id=\"生成に関するパターン1---5\" class=\"fragment\"></span><a href=\"#%E7%94%9F%E6%88%90%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B31---5\"><i class=\"fa fa-link\"></i></a>生成に関するパターン(1 - 5)</h2>\n<table data-sourcepos=\"25:1-31:80\">\n<thead>\n<tr data-sourcepos=\"25:1-25:51\">\n<th data-sourcepos=\"25:2-25:28\">デザインパターン</th>\n<th data-sourcepos=\"25:30-25:50\">ユースケース</th>\n</tr>\n</thead>\n<tbody>\n<tr data-sourcepos=\"27:1-27:146\">\n<td data-sourcepos=\"27:2-27:82\"><a href=\"#1-abstract-factory%E6%8A%BD%E8%B1%A1%E7%9A%84%E3%81%AA%E5%B7%A5%E5%A0%B4\">1. Abstract Factory(抽象的な工場) </a></td>\n<td data-sourcepos=\"27:84-27:146\">ココイチはカレー工場で、二郎はラーメン工場</td>\n</tr>\n<tr data-sourcepos=\"28:1-28:122\">\n<td data-sourcepos=\"28:2-28:46\"><a href=\"#2-builder%E5%BB%BA%E7%AF%89%E8%80%85\">2. Builder(建築者)</a></td>\n<td data-sourcepos=\"28:48-28:122\">ベースの武器と素材や不要な武器と金を渡して武器強化</td>\n</tr>\n<tr data-sourcepos=\"29:1-29:179\">\n<td data-sourcepos=\"29:2-29:133\"><a href=\"#3-factory-methodfactory%E3%81%AB%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E7%94%9F%E6%88%90%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89\">3. Factory Method(Factoryにオブジェクト生成メソッド)</a></td>\n<td data-sourcepos=\"29:135-29:179\">餅は餅屋に、カレーはカレー屋に</td>\n</tr>\n<tr data-sourcepos=\"30:1-30:89\">\n<td data-sourcepos=\"30:2-30:43\"><a href=\"#4-prototype%E9%9B%9B%E5%BD%A2\">4. Prototype(雛形)</a></td>\n<td data-sourcepos=\"30:45-30:89\">セントラルキッチンでスープ製造</td>\n</tr>\n<tr data-sourcepos=\"31:1-31:80\">\n<td data-sourcepos=\"31:2-31:43\"><a href=\"#5-singleton%E5%8D%98%E4%B8%80\">5. Singleton(単一)</a></td>\n<td data-sourcepos=\"31:45-31:80\">セントラルキッチンは一つ</td>\n</tr>\n</tbody>\n</table>\n<h2 data-sourcepos=\"34:1-34:41\">\n<span id=\"構造に関するパターン6---12\" class=\"fragment\"></span><a href=\"#%E6%A7%8B%E9%80%A0%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B36---12\"><i class=\"fa fa-link\"></i></a>構造に関するパターン(6 - 12)</h2>\n<table data-sourcepos=\"36:1-44:159\">\n<thead>\n<tr data-sourcepos=\"36:1-36:48\">\n<th data-sourcepos=\"36:2-36:28\">デザインパターン</th>\n<th data-sourcepos=\"36:30-36:47\">超入門概要</th>\n</tr>\n</thead>\n<tbody>\n<tr data-sourcepos=\"38:1-38:56\">\n<td data-sourcepos=\"38:2-38:40\"><a href=\"#6-adapter%E9%81%A9%E5%90%88\">6. Adapter(適合)</a></td>\n<td data-sourcepos=\"38:42-38:56\">居抜き店舗</td>\n</tr>\n<tr data-sourcepos=\"39:1-39:57\">\n<td data-sourcepos=\"39:2-39:32\"><a href=\"#7-bridge%E6%A9%8B\">7. Bridge(橋)</a></td>\n<td data-sourcepos=\"39:34-39:57\">展示場とイベント</td>\n</tr>\n<tr data-sourcepos=\"40:1-40:78\">\n<td data-sourcepos=\"40:2-40:50\"><a href=\"#8-composite%E8%A4%87%E5%90%88%E7%89%A9\">8. Composite(複合物)</a></td>\n<td data-sourcepos=\"40:52-40:78\">ゲームオブジェクト</td>\n</tr>\n<tr data-sourcepos=\"41:1-41:94\">\n<td data-sourcepos=\"41:2-41:50\"><a href=\"#9-decorator%E8%A3%85%E9%A3%BE%E8%80%85\">9. Decorator(装飾者)</a></td>\n<td data-sourcepos=\"41:52-41:94\">PSストアセールと消費税(悪い例)</td>\n</tr>\n<tr data-sourcepos=\"42:1-42:74\">\n<td data-sourcepos=\"42:2-42:40\"><a href=\"#10-facade%E7%AA%93%E5%8F%A3\">10. Facade(窓口)</a></td>\n<td data-sourcepos=\"42:42-42:74\">区役所とウーバーイーツ</td>\n</tr>\n<tr data-sourcepos=\"43:1-43:71\">\n<td data-sourcepos=\"43:2-43:46\"><a href=\"#11-flyweight%E8%BB%BD%E9%87%8F\">11. Flyweight(軽量)</a></td>\n<td data-sourcepos=\"43:48-43:71\">ネットフリックス</td>\n</tr>\n<tr data-sourcepos=\"44:1-44:159\">\n<td data-sourcepos=\"44:2-44:44\"><a href=\"#12-proxy%E4%BB%A3%E7%90%86%E4%BA%BA\">12. Proxy(代理人)</a></td>\n<td data-sourcepos=\"44:46-44:159\">カリスマ経営者率いるプログラミングスクール、オフショア窓口、美容院、メルカリ</td>\n</tr>\n</tbody>\n</table>\n<h2 data-sourcepos=\"46:1-46:48\">\n<span id=\"振る舞いに関するパターン13---23\" class=\"fragment\"></span><a href=\"#%E6%8C%AF%E3%82%8B%E8%88%9E%E3%81%84%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B313---23\"><i class=\"fa fa-link\"></i></a>振る舞いに関するパターン(13 - 23)</h2>\n<table data-sourcepos=\"48:1-60:295\">\n<thead>\n<tr data-sourcepos=\"48:1-48:51\">\n<th data-sourcepos=\"48:2-48:28\">デザインパターン</th>\n<th data-sourcepos=\"48:30-48:50\">ユースケース</th>\n</tr>\n</thead>\n<tbody>\n<tr data-sourcepos=\"50:1-50:138\">\n<td data-sourcepos=\"50:2-50:86\"><a href=\"#13-chain-of-responsibility%E8%B2%AC%E4%BB%BB%E3%81%AE%E9%8E%96\">13. Chain of Responsibility(責任の鎖)</a></td>\n<td data-sourcepos=\"50:88-50:138\">お前じゃ話にならん店長を呼んでこい</td>\n</tr>\n<tr data-sourcepos=\"51:1-51:91\">\n<td data-sourcepos=\"51:2-51:66\"><a href=\"#14-command%E6%89%8B%E9%A0%86%E6%9B%B8%E9%80%9A%E3%82%8A%E3%82%84%E3%81%A3%E3%81%A6\">14. Command(コマンド)</a></td>\n<td data-sourcepos=\"51:68-51:91\">手順書通りやって</td>\n</tr>\n<tr data-sourcepos=\"52:1-52:129\">\n<td data-sourcepos=\"52:2-52:92\"><a href=\"#15-interpreterrpg%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9E\">15. Interpreter(インタプリタ)</a></td>\n<td data-sourcepos=\"52:94-52:129\">RPGゲームのスクリプト言語</td>\n</tr>\n<tr data-sourcepos=\"53:1-53:144\">\n<td data-sourcepos=\"53:2-53:92\"><a href=\"#16-iterator%E5%8F%A4%E3%81%84%E8%A8%AD%E8%A8%88%E9%96%A2%E6%95%B0%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%82%92%E3%81%97%E3%82%88%E3%81%86\">16. Iterator(繰り返し)</a></td>\n<td data-sourcepos=\"53:94-53:144\">古い設計。関数型プログラムをしよう</td>\n</tr>\n<tr data-sourcepos=\"54:1-54:81\">\n<td data-sourcepos=\"54:2-54:62\"><a href=\"#17-mediatorses%E3%81%A8%E6%8C%87%E6%8F%AE%E5%91%BD%E4%BB%A4\">17. Mediator(指揮命令)</a></td>\n<td data-sourcepos=\"54:64-54:81\">SESと指揮命令</td>\n</tr>\n<tr data-sourcepos=\"55:1-55:106\">\n<td data-sourcepos=\"55:2-55:72\"><a href=\"#18-memento%E8%A8%98%E5%BF%B5%E5%93%81%E3%82%88%E3%82%8A%E3%82%BB%E3%83%BC%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF\">18. Memento(記念品)</a></td>\n<td data-sourcepos=\"55:74-55:106\">記念品よりセーブデータ</td>\n</tr>\n<tr data-sourcepos=\"56:1-56:90\">\n<td data-sourcepos=\"56:2-56:65\"><a href=\"#19-observer%E6%96%B0%E5%88%8A%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E6%A9%9F%E8%83%BD\">19. Observer(観測者)</a></td>\n<td data-sourcepos=\"56:67-56:90\">新刊お知らせ機能</td>\n</tr>\n<tr data-sourcepos=\"57:1-57:75\">\n<td data-sourcepos=\"57:2-57:53\"><a href=\"#20-state%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E9%81%B8%E6%8A%9E\">20. State(状態)</a></td>\n<td data-sourcepos=\"57:55-57:75\">キャラクタ選択</td>\n</tr>\n<tr data-sourcepos=\"58:1-58:114\">\n<td data-sourcepos=\"58:2-58:74\"><a href=\"#21-strategy%E6%88%A6%E7%95%A5%E3%81%8B%E6%88%A6%E8%A1%93%E3%81%8B%E3%81%9D%E3%82%8C%E3%81%8C%E5%95%8F%E9%A1%8C%E3%81%A0\">21. Strategy(戦略)</a></td>\n<td data-sourcepos=\"58:76-58:114\">戦略か戦術か、それが問題だ</td>\n</tr>\n<tr data-sourcepos=\"59:1-59:149\">\n<td data-sourcepos=\"59:2-59:130\"><a href=\"#22-template-method%E5%AD%A6%E7%BF%92%E6%8C%87%E5%B0%8E%E8%A6%81%E7%B6%B1\">22. Template Method(テンプレートメソッド)</a></td>\n<td data-sourcepos=\"59:132-59:149\">学習指導要綱</td>\n</tr>\n<tr data-sourcepos=\"60:1-60:295\">\n<td data-sourcepos=\"60:2-60:228\"><a href=\"#23-visitor%E3%82%A6%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%83%9E%E3%83%83%E3%82%AF%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%E3%81%A8%E3%83%A4%E3%83%9E%E3%83%88%E3%81%A8%E4%BD%90%E5%B7%9D%E3%81%A8\">23. Visitor(訪問者)</a></td>\n<td data-sourcepos=\"60:230-60:295\">ウーバーとマックデリバリーとヤマトと佐川と…</td>\n</tr>\n</tbody>\n</table>\n<h3 data-sourcepos=\"63:1-63:43\">\n<span id=\"1-abstract-factory抽象的な工場\" class=\"fragment\"></span><a href=\"#1-abstract-factory%E6%8A%BD%E8%B1%A1%E7%9A%84%E3%81%AA%E5%B7%A5%E5%A0%B4\"><i class=\"fa fa-link\"></i></a>1. Abstract Factory(抽象的な工場)</h3>\n<p data-sourcepos=\"65:1-65:72\">１つ目からちょっと何言ってるか分からないですね。</p>\n<p data-sourcepos=\"67:1-68:147\">晩ごはんを食べるプログラムを書くとしましょうか。<br>\nココイチならカレー、二郎ならラーメンが食べられますが、まだ今日はどちらを食べたいか決まってません。</p>\n<p data-sourcepos=\"70:1-71:272\">この様な時に、晩ごはん工場をAbstract Factory と見立てて、ココイチや二郎をFactoryと見立てて、プログラムを書くとはっきり食べたいモノが決まってなくてもプログラムが書けます。<br>\nまた、急に気が変わってサイゼの辛味チキンが食べたくなったとしても、サイゼリヤを Factory として実装して、サイゼリヤを create するだけでその後晩ごはんを食べる処理などは修正が不要となります。</p>\n<p data-sourcepos=\"73:1-73:131\"><a href=\"https://camo.qiitausercontent.com/702cde0d44ceb0f1dfc2ff771afbb4738b524818/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30323039313761632d323538642d613166632d353237302d3762336633306162626339342e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F020917ac-258d-a1fc-5270-7b3f30abbc94.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=82ca0e2d96b30f820cd4d0f445092543\" alt=\"AbstractFactory.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/020917ac-258d-a1fc-5270-7b3f30abbc94.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F020917ac-258d-a1fc-5270-7b3f30abbc94.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=04ef4329105cea9bc3b9a0d635e9b3e9 1x\" loading=\"lazy\"></a></p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"75:1-81:3\">\n<div class=\"code-lang\"><span class=\"bold\">AbstractFactorySnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"nc\">SupperFactory</span> <span class=\"n\">factory</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">CocoichiFactory</span><span class=\"o\">();</span>\n\n<span class=\"c1\">// 以下のコードは店(Factory)によらず共通</span>\n<span class=\"n\">factory</span><span class=\"o\">.</span><span class=\"na\">createFood</span><span class=\"o\">(</span><span class=\"mi\">800</span><span class=\"o\">);</span>\n<span class=\"o\">...</span>\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"83:1-83:25\">\n<span id=\"2-builder建築者\" class=\"fragment\"></span><a href=\"#2-builder%E5%BB%BA%E7%AF%89%E8%80%85\"><i class=\"fa fa-link\"></i></a>2. Builder(建築者)</h3>\n<p data-sourcepos=\"85:1-85:67\">2つ目もちょっと何言ってるか分からないですね。</p>\n<p data-sourcepos=\"87:1-87:126\">『建築者に渡すべきものを渡して結果を取得する方法』だけ取り決めとくという考え方です。</p>\n<p data-sourcepos=\"89:1-90:171\">身近な例だと、ソシャゲの武器強化などでしょうか。<br>\n<code>Equipment</code> は <code>Material</code> から派生しておくと、強化用素材だけではなく、不要な武器防具も強化用素材として利用できそうですね。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"92:1-99:3\">\n<div class=\"code-lang\"><span class=\"bold\">LeveledEquipmentBuilder.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">interface</span> <span class=\"nc\">LeveledEquipmentBuilder</span> <span class=\"o\">{</span>\n  <span class=\"kt\">void</span> <span class=\"nf\">setTarget</span><span class=\"o\">(</span><span class=\"nc\">Equipment</span> <span class=\"n\">equipment</span><span class=\"o\">);</span>  <span class=\"c1\">// 強化対象</span>\n  <span class=\"kt\">void</span> <span class=\"nf\">addMaterial</span><span class=\"o\">(</span><span class=\"nc\">Material</span> <span class=\"n\">material</span><span class=\"o\">);</span> <span class=\"c1\">// 強化用素材</span>\n  <span class=\"kt\">void</span> <span class=\"nf\">setMoney</span><span class=\"o\">(</span><span class=\"kt\">int</span> <span class=\"n\">money</span><span class=\"o\">);</span> <span class=\"c1\">// 強化費用</span>\n  <span class=\"nc\">Equipment</span> <span class=\"nf\">build</span><span class=\"o\">();</span>    <span class=\"c1\">// 結果取得</span>\n<span class=\"o\">}</span>\n</code></pre></div>\n</div>\n<p data-sourcepos=\"101:1-102:168\">課金アイテムなどで成功率を上げられるなら、<code>addSuccessRate</code> といったインターフェイスも追加する必要があるでしょう。<br>\n武器強化機能は様々なソシャゲで見かけ今や実装必須の機能と言えるので再利用可能なコードにしておくと便利そうですね。</p>\n<p data-sourcepos=\"104:1-104:123\"><a href=\"https://camo.qiitausercontent.com/d0515989165803032e08e5f41ce96e5618102cae/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f63346330623566342d313265362d333363612d646163392d6238633734386139346236312e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c4c0b5f4-12e6-33ca-dac9-b8c748a94b61.png\" alt=\"Builder.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c4c0b5f4-12e6-33ca-dac9-b8c748a94b61.png\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"107:1-107:69\">\n<span id=\"3-factory-methodfactoryにオブジェクト生成メソッド\" class=\"fragment\"></span><a href=\"#3-factory-methodfactory%E3%81%AB%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E7%94%9F%E6%88%90%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89\"><i class=\"fa fa-link\"></i></a>3. Factory Method(Factoryにオブジェクト生成メソッド)</h3>\n<p data-sourcepos=\"109:1-109:166\"><code>Abstract Factory</code> の章で、カレーやラーメンを<code>Food</code>として定義していましたが、カレーはカレーだしラーメンはラーメンです。</p>\n<p data-sourcepos=\"111:1-111:135\"><a href=\"https://camo.qiitausercontent.com/df249c5a3d19a7153ed77a662aa10cb2b2dc641a/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36323435653466362d386230652d623438662d336534302d3762623862393565386233322e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ceadf4466b39ec2971cbcbe8276e230b\" alt=\"FactoryMethod(Food).png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=87923a7841124a0759039b455571bbb2 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"113:1-113:440\">カレーにはごはんやナンがつきますが、ラーメンに小ライスがつくことはありますが、ナンがくっつくことはわたしが知る限りではないです。これらを <code>Food</code> で管理するように設計した場合、ラーメンにナンをくっつけることもできてしまいます。なかなか興味深い<code>Food</code>の完成となるわけですが、プログラムとしては危険です。</p>\n<p data-sourcepos=\"115:1-115:157\">ココイチや二郎に Factory Method を持たせることで、うっかりカレー屋でラーメンを提供するのを防ぐことができます。</p>\n<p data-sourcepos=\"117:1-117:136\"><a href=\"https://camo.qiitausercontent.com/da93a10475dd0ebc40951489de4362b5bf2318b9/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38396632316232302d613935662d316466392d656432622d3166656237643135346330312e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/89f21b20-a95f-1df9-ed2b-1feb7d154c01.png\" alt=\"FactoryMethod(class).png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/89f21b20-a95f-1df9-ed2b-1feb7d154c01.png\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"120:1-120:24\">\n<span id=\"4-prototype雛形\" class=\"fragment\"></span><a href=\"#4-prototype%E9%9B%9B%E5%BD%A2\"><i class=\"fa fa-link\"></i></a>4. Prototype(雛形)</h3>\n<p data-sourcepos=\"122:1-124:114\">これは、町田商店のセントラルキッチンですね。<br>\n各店舗で同じ様にスープを１から炊かないで、セントラルキッチンでスープを作って各店舗に配送。<br>\nひと味足りないと感じる方もいるかもしれませんが、大変合理的な考え方ですよね。</p>\n<p data-sourcepos=\"126:1-126:162\">プログラムは手間暇かけても丹精込めても書いた通りにしか動かないので、プロトタイプ作ってコピーすればよいです。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"128:1-151:3\">\n<div class=\"code-lang\"><span class=\"bold\">PrototypeSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">class</span> <span class=\"nc\">CentralKitchen</span> <span class=\"o\">{</span>\n    <span class=\"nc\">Soup</span> <span class=\"nf\">createSoup</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// すごく大変な工程でスープを作る</span>\n        <span class=\"k\">return</span> <span class=\"n\">soup</span><span class=\"o\">;</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n\n<span class=\"kd\">class</span> <span class=\"nc\">ShopKitchen</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// セントラルキッチンで作ったスープを足していく。</span>\n    <span class=\"c1\">// スープを作るメソッドは存在しない。</span>\n    <span class=\"kt\">void</span> <span class=\"nf\">addSoup</span><span class=\"o\">(</span><span class=\"nc\">Soup</span> <span class=\"n\">soup</span><span class=\"o\">);</span>\n<span class=\"o\">}</span>\n\n<span class=\"o\">...</span>\n\n<span class=\"c1\">// セントラルキッチンでスープを作って、各店舗に配送</span>\n<span class=\"nc\">ShopKitchen</span> <span class=\"n\">shopKitchens</span><span class=\"o\">[]</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">ShopKitchen</span><span class=\"o\">[{</span><span class=\"n\">店舗数</span><span class=\"o\">}];</span>\n<span class=\"nc\">Soup</span> <span class=\"n\">amazingSoup</span> <span class=\"o\">=</span> <span class=\"o\">(</span><span class=\"k\">new</span> <span class=\"nc\">CentralKitchen</span><span class=\"o\">()).</span><span class=\"na\">createSoup</span><span class=\"o\">()</span>\n<span class=\"k\">for</span><span class=\"o\">(</span><span class=\"nc\">ShopKitchen</span> <span class=\"n\">k</span> <span class=\"o\">:</span> <span class=\"n\">shopKitchens</span><span class=\"o\">)</span> <span class=\"o\">{</span>\n    <span class=\"n\">k</span><span class=\"o\">.</span><span class=\"na\">addSoup</span><span class=\"o\">(</span><span class=\"n\">amazingSoup</span><span class=\"o\">);</span>\n<span class=\"o\">}</span>\n\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"154:1-154:24\">\n<span id=\"5-singleton単一\" class=\"fragment\"></span><a href=\"#5-singleton%E5%8D%98%E4%B8%80\"><i class=\"fa fa-link\"></i></a>5. Singleton(単一)</h3>\n<p data-sourcepos=\"156:1-156:245\"><code>Prototype</code> の章のサンプルコードで勘のよい方は気づいたかもしれませんが、プログラム上では、セントラルキッチンが作り放題ですね。これを出来なくするパターンが<code>Singleton</code>です。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"158:1-172:3\">\n<div class=\"code-lang\"><span class=\"bold\">SingletonSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">class</span> <span class=\"nc\">CentralKitchen</span> <span class=\"o\">{</span>\n    <span class=\"kd\">private</span> <span class=\"kd\">static</span> <span class=\"nc\">CentralKitchen</span> <span class=\"n\">instance</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">CentralKitchen</span><span class=\"o\">();</span>\n    <span class=\"kd\">private</span> <span class=\"nf\">CentralKitchen</span><span class=\"o\">(){}</span> <span class=\"c1\">// private にして外部から呼べなくする。</span>\n\n    <span class=\"kd\">public</span> <span class=\"kd\">static</span> <span class=\"nc\">CentralKitchen</span> <span class=\"nf\">getInstance</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"k\">return</span> <span class=\"n\">instance</span><span class=\"o\">;</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n\n<span class=\"o\">...</span>\n\n<span class=\"nc\">Soup</span> <span class=\"n\">soup</span> <span class=\"o\">=</span> <span class=\"nc\">CentralKitchen</span><span class=\"o\">.</span><span class=\"na\">getInstance</span><span class=\"o\">().</span><span class=\"na\">createSoup</span><span class=\"o\">()</span>\n\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"175:1-175:22\">\n<span id=\"6-adapter適合\" class=\"fragment\"></span><a href=\"#6-adapter%E9%81%A9%E5%90%88\"><i class=\"fa fa-link\"></i></a>6. Adapter(適合)</h3>\n<p data-sourcepos=\"177:1-177:414\">美味しいラーメンを作る自信があるのでラーメン店を作りたいが、お金もないし、店舗のデザインなどについては全くの素人だとします。店舗のキッチン設備や什器がある程度整った『居抜き店舗』を見つけて改装すれば、１からラーメン屋を作るよりは手間がかからないことでしょう。これが<code>Adapter</code>です。</p>\n<p data-sourcepos=\"179:1-179:123\"><a href=\"https://camo.qiitausercontent.com/4ddef271ea4406bc8e05dd743365a66433eea801/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36663832386663362d386532352d343333612d623964302d3933656239373735623666332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6f828fc6-8e25-433a-b9d0-93eb9775b6f3.png\" alt=\"Adapter.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6f828fc6-8e25-433a-b9d0-93eb9775b6f3.png\" loading=\"lazy\"></a></p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"181:1-203:3\">\n<div class=\"code-lang\"><span class=\"bold\">AdapterSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"kd\">class</span> <span class=\"nc\">UnpopularDiner</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// 目も当てられないぐらい汚いキッチン</span>\n    <span class=\"c1\">// ぐちゃぐちゃな店内</span>\n    <span class=\"c1\">// なるべくそのまま利用したい</span>\n<span class=\"o\">}</span>\n\n<span class=\"kd\">interface</span> <span class=\"nc\">CommonNoodleShop</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// ラーメン屋として一般的に必要なメニューを定義</span>\n<span class=\"o\">}</span>\n\n<span class=\"c1\">// 不人気店をベースにして作った、一般的なラーメンメニューを取り揃えた、わたしの素敵なラーメン店</span>\n<span class=\"kd\">class</span> <span class=\"nc\">MyAwesomeNoodleShop</span> <span class=\"kd\">extends</span> <span class=\"nc\">UnpopularDiner</span> <span class=\"kd\">implements</span> <span class=\"nc\">CommonNoodleShop</span> <span class=\"o\">{</span>\n    <span class=\"nc\">Ramen</span> <span class=\"nf\">getShoyuRamen</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// ラーメンを実装。</span>\n        <span class=\"c1\">// UnpopularDiner の設備(プロパティ・メソッド)はすべて使える。</span>\n        <span class=\"c1\">// 汚いキッチンを使って美味しいラーメンを作る。</span>\n        <span class=\"c1\">// ...</span>\n        <span class=\"k\">return</span> <span class=\"n\">ramen</span><span class=\"o\">;</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n\n</code></pre></div>\n</div>\n<p data-sourcepos=\"205:1-205:406\">実際のプロジェクトでは、極めて重要だが解析困難なビジネスロジックが記述された class に遭遇することがある。そのような class は 1[byte] でも修正したら動かなくなる絶妙な実装であるため、Adapter を用いて本体にはなるべく触らない様にすることで安全に再利用することを検討するかもしれません。</p>\n<h3 data-sourcepos=\"208:1-208:18\">\n<span id=\"7-bridge橋\" class=\"fragment\"></span><a href=\"#7-bridge%E6%A9%8B\"><i class=\"fa fa-link\"></i></a>7. Bridge(橋)</h3>\n<p data-sourcepos=\"210:1-210:409\">様々な展示場がありイベントがあります。イベントの主催者や出展者は、展示場とは別の所で準備をして展示場に入り展示を行います。コミケ、ゲームショー、あるいはモーターショーといった展示の実装には、ビックサイト側は関与していません。この関係性を <code>Bridge</code> で表すと下図のようになります。</p>\n<p data-sourcepos=\"212:1-212:122\"><a href=\"https://camo.qiitausercontent.com/539824974175f89606fbeb4e3e5271bd0741f24f/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38633034616439642d613963342d316630322d306562322d3464646537373561663663372e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7f7bea8d449286252de26ad2c056866f\" alt=\"Bridge.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=b8c276c0e352128b9d6dc377384b7df5 1x\" loading=\"lazy\"></a></p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"214:1-219:3\">\n<div class=\"code-lang\"><span class=\"bold\">BridgeSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"c1\">// ビックサイトでコミケ開催</span>\n<span class=\"nc\">ComicmarketEvent</span> <span class=\"n\">comicmarketEvent</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">ComicmarketEvent</span><span class=\"o\">();</span>\n<span class=\"nc\">Exhibition</span> <span class=\"n\">e</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">BigsightExhibition</span><span class=\"o\">(</span><span class=\"n\">comicmarketEvent</span><span class=\"o\">);</span>\n<span class=\"n\">e</span><span class=\"o\">.</span><span class=\"na\">doExhibition</span><span class=\"o\">();</span>\n</code></pre></div>\n</div>\n<h3 data-sourcepos=\"221:1-221:27\">\n<span id=\"8-composite複合物\" class=\"fragment\"></span><a href=\"#8-composite%E8%A4%87%E5%90%88%E7%89%A9\"><i class=\"fa fa-link\"></i></a>8. Composite(複合物)</h3>\n<p data-sourcepos=\"223:1-224:159\">枝と葉を同じ様に処理するとか、容器と中身を同じ様に処理すると再帰的処理が簡単になるパターン。<br>\nフォルダとファイルが一般的で分かりやすい例かと思いますが、ここではやはりゲームを例に説明したいと思います。</p>\n<p data-sourcepos=\"226:1-228:129\">3Dのゲームを想像してください。世界(<code>Scene</code>)の中には背景(<code>Background</code>)、プレイヤー(<code>Player</code>)、武器(<code>Weapon</code>)、弾(<code>Bullet</code>)、アイテムボックス(<code>ItemBox</code>)やアイテム(<code>Item</code>)などのオブジェクト等があると思います。<code>item</code>はアイテムボックスの中にあったり地面(<code>Ground</code>)に転がっていたりプレイヤーに拾われたりします。<br>\nプレイヤーはオブジェクトですが、武器を所持するオブジェクトであったりもします。<br>\nまた、オブジェクトとして意識されることはあまりないと思いますが光源やカメラもあります。</p>\n<p data-sourcepos=\"230:1-230:298\">これらのゲームオブジェクト(<code>GameObject</code>)の配置や状態はゲームの進行状況によって頻繁に変更する必要がありますし、それらの操作を個別に考えるのは大変なので、<code>Composite</code>パターンで表現されることが多い様に思います。</p>\n<p data-sourcepos=\"232:1-233:96\">管理イメージを図にすると下図の様になります。<br>\n(instance と class 表現が混じっていますが…よろしく解釈してください。)</p>\n<p data-sourcepos=\"235:1-235:125\"><a href=\"https://camo.qiitausercontent.com/df3e5e5373f311217e7b027e5db4208c28259875/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f34383262383339622d626334362d353539632d356138332d6536333533633661333330352e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F482b839b-bc46-559c-5a83-e6353c6a3305.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=748a44491b562ea25a8848481137a42a\" alt=\"Composite.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/482b839b-bc46-559c-5a83-e6353c6a3305.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F482b839b-bc46-559c-5a83-e6353c6a3305.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=861a0cc6bb3e84057f9b8e77d4135891 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"238:1-238:27\">\n<span id=\"9-decorator装飾者\" class=\"fragment\"></span><a href=\"#9-decorator%E8%A3%85%E9%A3%BE%E8%80%85\"><i class=\"fa fa-link\"></i></a>9. Decorator(装飾者)</h3>\n<p data-sourcepos=\"240:1-243:122\">PSストアセール、利用してますか？<br>\nちょいちょい色々なセールをやってて、その都度いくつかのゲームがお得なプライスで購入できますね。<br>\n消費税の処理は通常価格と割引後の価格に対して適用されます。<br>\nこれを<code>decorator</code>で実装すればセールの影響を受けない処理を書けそうで書けなさそうです。</p>\n<p data-sourcepos=\"245:1-245:125\"><a href=\"https://camo.qiitausercontent.com/cf9729bd9baff96abba2c7e449421b341307d7fb/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f64316461393233312d373735652d366233332d313333322d3439366238313637633639352e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/d1da9231-775e-6b33-1332-496b8167c695.png\" alt=\"Decorator.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/d1da9231-775e-6b33-1332-496b8167c695.png\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"247:1-247:189\">確かに、消費税コード部分やセール部分は変更が不要だしシンプルですが、この実装ではセール毎にコード修正が必要となってしまいます。</p>\n<div class=\"code-frame\" data-lang=\"text\" data-sourcepos=\"249:1-267:3\"><div class=\"highlight\"><pre><code>//----------------------------------------\n// 通常時コード\nProduct p = new Product();\nProduct taxedProduct = new TaxedProduct(p);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n//----------------------------------------\n// セール時コード\nProduct p = new Product();\nProduct saledProduct = new SaledProduct(p);\nProduct taxedProduct = new TaxedProduct(saledProduct);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n</code></pre></div></div>\n<p data-sourcepos=\"269:1-271:90\">ビジネス要件である、PSStore のセールがどの様な周期でどの様な製品に対して行われているかを理解しないで実装したのでしょうか。<br>\nセールや消費税適用前後で値段しか変わらないのにPSStoreに並べる商品自体を<code>interface</code>として定義している点も意味不明ですね。<br>\nでは、<code>PSStorePrice</code> にすればいいかというとそうでもなさそうです。</p>\n<p data-sourcepos=\"273:1-273:210\">近視眼的にデザインパターンを適用しても、再利用性が上がらない上にメンテナンスを行う人などに不快感を与える可能性もあるので注意が必要そうです。</p>\n<h3 data-sourcepos=\"276:1-276:22\">\n<span id=\"10-facade窓口\" class=\"fragment\"></span><a href=\"#10-facade%E7%AA%93%E5%8F%A3\"><i class=\"fa fa-link\"></i></a>10. Facade(窓口)</h3>\n<p data-sourcepos=\"277:1-278:185\">区役所で住民票を取るとします。区役所は巨大な建物で大変多くの業務を行っているが、住民票発行の窓口に行けばとりあえず住民票を取る事がでます。<br>\n適切な窓口が設定されることで区役所の業務すべてを把握することなく円滑に目的を達成できるようにするためのパターンが<code>Facade</code>です。</p>\n<p data-sourcepos=\"280:1-281:204\">配達に関する機能を持っているため、単純な窓口ではないですがウーバーイーツを想像してみましょう。<br>\n利用者はウーバーイーツの裏にある複雑な仕組みを意識することなく簡単なインターフェースで様々な食料を手に入れる事ができるようになりました。</p>\n<p data-sourcepos=\"283:1-283:61\">これが<code>Facade(窓口)</code>を利用するメリットです。</p>\n<p data-sourcepos=\"285:1-285:246\">コードを<code>Facade</code>パターンで書けば分りやすくなるのではなく、 <strong>『<code>Facade</code>パターンを利用した方が自然に記述できる外部設計に対して<code>Facade</code>を適用する』</strong> と考えると良いと思います。</p>\n<p data-sourcepos=\"287:1-287:122\"><a href=\"https://camo.qiitausercontent.com/cfc45eec868f07dbb47e319aada4aba14f54d2e9/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30343336613439352d353531642d336666652d336539312d3262366366623732613262332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=6589a46a1d5d81168099873b90eb3e35\" alt=\"Facade.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=fa4e9e884f96c39aa88a687afa73d79f 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"289:1-290:155\">人間向けの言語で書かれた外部設計を、コンピューターに分かる様に翻訳するのが職業プログラミングです。<br>\nクラス名に<code>Facade</code>とつける時点で、外部設計からは読み取れない複雑な翻訳（実装）になっているかもしれません。</p>\n<h3 data-sourcepos=\"293:1-293:25\">\n<span id=\"11-flyweight軽量\" class=\"fragment\"></span><a href=\"#11-flyweight%E8%BB%BD%E9%87%8F\"><i class=\"fa fa-link\"></i></a>11. Flyweight(軽量)</h3>\n<p data-sourcepos=\"294:1-295:243\">ネットフリックスは、知らない人はあまりいないと思いますが動画見放題のサブスクサービスです。<br>\nそんなネットフリックスも、創業当時は実店舗を持ってDVDレンタルのビジネスを行っていたのですが、業態を大幅に転換し紆余曲折を経て現在のサービスを提供するに至りました。</p>\n<p data-sourcepos=\"297:1-297:236\">現CEOのリード・ヘイスティングスや初代CEOのマーク・ランドルフが <code>Flyweightパターン</code> を適用しようと思ったかどうかは知りませんが、 <code>Flyweightパターン</code> で表現できそうです。</p>\n<p data-sourcepos=\"299:1-299:125\"><a href=\"https://camo.qiitausercontent.com/404814aa5b536fbf5f296aeed0b4da9d32e88868/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f38626234613264662d333731652d633133632d363831392d3538356433343737376332652e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8bb4a2df-371e-c13c-6819-585d34777c2e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=a726b978e5b28fe05c36d986a3b41553\" alt=\"Flyweight.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8bb4a2df-371e-c13c-6819-585d34777c2e.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F8bb4a2df-371e-c13c-6819-585d34777c2e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=43055cc82fa885fd70aa07adf93053f1 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"301:1-302:118\">(参考)<br>\n<a href=\"https://www.dhbr.net/articles/-/7044\" rel=\"nofollow noopener\" target=\"_blank\">ネットフリックスという世界的企業はいかに誕生したのか</a></p>\n<h3 data-sourcepos=\"305:1-305:24\">\n<span id=\"12-proxy代理人\" class=\"fragment\"></span><a href=\"#12-proxy%E4%BB%A3%E7%90%86%E4%BA%BA\"><i class=\"fa fa-link\"></i></a>12. Proxy(代理人)</h3>\n<p data-sourcepos=\"306:1-308:138\">コードレベルで考えると Adapter パターンとの違いが分かりづらいため、ここでも人間世界で起きている事例で考えます。<br>\n例えば、何かやらかした際に、法廷で争わなければいけなくなりますが、おそらく多くの人は法律の知識がないため弁護士を代理人として立てると思います。<br>\nこのような、『何らかの意味ある代理行為』がデザインパターンで定義されていることかと思います。</p>\n<p data-sourcepos=\"310:1-310:102\">代理行為には様々な種類がありますが、本章では以下に４種類列挙します。</p>\n<h4 data-sourcepos=\"312:1-312:85\">\n<span id=\"カリスマ経営者率いるプログラミングスクールa-virtual-proxy\" class=\"fragment\"></span><a href=\"#%E3%82%AB%E3%83%AA%E3%82%B9%E3%83%9E%E7%B5%8C%E5%96%B6%E8%80%85%E7%8E%87%E3%81%84%E3%82%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%82%B9%E3%82%AF%E3%83%BC%E3%83%ABa-virtual-proxy\"><i class=\"fa fa-link\"></i></a>カリスマ経営者率いるプログラミングスクール(A virtual proxy)</h4>\n<p data-sourcepos=\"313:1-314:204\">カリスマ経営者の有名なITスクールに入ると、カリスマ経営者に教えてもらえてプログラムが書けるような気分になります。<br>\n実際にはカリスマ経営者は、社員やバイトの先生に何らかの方針を伝えるのみで、教育行為の大半は社員やバイトの先生が行うことになると思います。</p>\n<p data-sourcepos=\"316:1-316:222\">カリスマ経営者は、カリスマとして活動したり経営者として活動したりするのが忙しいので全ての生徒の相手ができないため、代理で教える先生が必要となります。</p>\n<p data-sourcepos=\"318:1-318:131\"><a href=\"https://camo.qiitausercontent.com/0f97e54088cdb40c1f66142d89c2b4fa1881d3f6/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f34633634666437642d633933342d393535362d323666302d6633383764356561633836352e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F4c64fd7d-c934-9556-26f0-f387d5eac865.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=798476363f23454ef44985c655b7350c\" alt=\"A virtual proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/4c64fd7d-c934-9556-26f0-f387d5eac865.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F4c64fd7d-c934-9556-26f0-f387d5eac865.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=15220359b4f523ea35c6437de6a1f7f6 1x\" loading=\"lazy\"></a></p>\n<h4 data-sourcepos=\"321:1-321:42\">\n<span id=\"オフショア窓口a-remote-proxy\" class=\"fragment\"></span><a href=\"#%E3%82%AA%E3%83%95%E3%82%B7%E3%83%A7%E3%82%A2%E7%AA%93%E5%8F%A3a-remote-proxy\"><i class=\"fa fa-link\"></i></a>オフショア窓口(A remote proxy)</h4>\n<p data-sourcepos=\"322:1-323:234\">単価の安い海外にIT業務の委託を行いたいですが、英語が分かりませんし、海外に行って仕事を発注するのも大変です。<br>\n一方、単価の安い国側でも単価の高い日本の仕事がほしいですが、日本に移住するのも大変ですし生活コストが上がってしまうため安い単価で仕事が受けられなくなります。</p>\n<p data-sourcepos=\"325:1-325:146\">日本語と現地語が話せるPMを日本事務所に配置することで現地からの業務提供を円滑に行うことができます。</p>\n<p data-sourcepos=\"327:1-327:130\"><a href=\"https://camo.qiitausercontent.com/039e7b0044d2a18aa5968d58f94eefd2107b419c/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f66336662343535382d323962322d363964362d363161312d3939323938356366306436342e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Ff3fb4558-29b2-69d6-61a1-992985cf0d64.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ff227552e145b136073ee89512b35ceb\" alt=\"A remote proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/f3fb4558-29b2-69d6-61a1-992985cf0d64.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2Ff3fb4558-29b2-69d6-61a1-992985cf0d64.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=d98f8c2da0965ca7b8b66b62de6f1590 1x\" loading=\"lazy\"></a></p>\n<h4 data-sourcepos=\"330:1-330:34\">\n<span id=\"美容院a-protective-proxy\" class=\"fragment\"></span><a href=\"#%E7%BE%8E%E5%AE%B9%E9%99%A2a-protective-proxy\"><i class=\"fa fa-link\"></i></a>美容院(A protective proxy)</h4>\n<p data-sourcepos=\"331:1-332:84\">多くの人は、髪の毛を自分で切ることができますが、それをしようとは思いません。イケてない髪型になったら取り返しがつかないからです。<br>\nかっこよく（かわいく）切ってくれる人に頼むのが安全です。</p>\n<p data-sourcepos=\"334:1-334:134\"><a href=\"https://camo.qiitausercontent.com/d364f761e8e0262f6fc79b4d9b6f8c582bd2b276/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30623633616630632d393164302d333765612d396263662d3762653535613439313833362e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0b63af0c-91d0-37ea-9bcf-7be55a491836.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=04a0f9ab3ada927ccd8410e882b6043f\" alt=\"A protective proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0b63af0c-91d0-37ea-9bcf-7be55a491836.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0b63af0c-91d0-37ea-9bcf-7be55a491836.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=0f788b18aeff262197cea1de884383b3 1x\" loading=\"lazy\"></a></p>\n<h4 data-sourcepos=\"337:1-337:32\">\n<span id=\"メルカリa-smart-proxy\" class=\"fragment\"></span><a href=\"#%E3%83%A1%E3%83%AB%E3%82%AB%E3%83%AAa-smart-proxy\"><i class=\"fa fa-link\"></i></a>メルカリ(A smart proxy)</h4>\n<p data-sourcepos=\"338:1-339:216\">いらなくなった古着を売るとして、友達に声をかけるなど色々な手段があると思いますが、メルカリに出品される方も多いのではないでしょうか。<br>\n家の前に置いておいても誰かの目に止まり購入されることはほぼないと思いますが、メルカリに出品しておくとあなたに代わって古着を売り飛ばしてくれます。</p>\n<p data-sourcepos=\"341:1-341:129\"><a href=\"https://camo.qiitausercontent.com/cba2cdbcc4ecdeedf1d9c433c5aeadff2e8a5265/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f39663765623930652d646236372d623563372d386630632d6266376530626436343833652e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=791614dffd0f80a5e7fb640a0d450eb5\" alt=\"A smart proxy.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=db4b5d4b9d4d1629ff02020c3542e241 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"344:1-345:176\">(参考)<br>\n<a href=\"https://stackoverflow.com/questions/37692814/what-is-the-exact-difference-between-adapter-and-proxy-patterns\" rel=\"nofollow noopener\" target=\"_blank\">What is the exact difference between Adapter and Proxy patterns?</a></p>\n<h3 data-sourcepos=\"348:1-348:45\">\n<span id=\"13-chain-of-responsibility責任の鎖\" class=\"fragment\"></span><a href=\"#13-chain-of-responsibility%E8%B2%AC%E4%BB%BB%E3%81%AE%E9%8E%96\"><i class=\"fa fa-link\"></i></a>13. Chain of Responsibility(責任の鎖)</h3>\n<p data-sourcepos=\"349:1-349:368\">大勢のお客で賑わっている居酒屋での出来事です。炭酸麦茶を頼んで30分以上経ちますがまだ届きません。いい加減遅いなと思いテーブルの呼び出しベルを押し店員を呼び出し「オーダー入ってます？」とすまなそうに確認して炭酸麦茶を提供してもらうことができました。</p>\n<p data-sourcepos=\"351:1-351:357\">一方隣の席からは「お前じゃ話にならん、店長を呼んでこい」という怒鳴り声が聞こえてきました。興味津々でそちらの席を横目で観察したところ、バイトリーダーらしき人物が出てきて謝罪をするも結局店長は出てこないという様子を目撃することになりました。</p>\n<p data-sourcepos=\"353:1-354:264\">これが、責任の鎖です。<br>\nこの居酒屋のスタッフは、バイト→バイトリーダー→雇われ店長→本部マネージャー→本部社長と言った責任の鎖でつながれており、顧客の怒り度に対して誰がどう対処するかを規定しています。</p>\n<div class=\"code-frame\" data-lang=\"text\" data-sourcepos=\"356:1-431:3\"><div class=\"highlight\"><pre><code>public abstract class Responsible {\n    private Responsible next = null;\n    private String name = null;\n\n    public Responsible(String name){\n        this.name = name;\n    }\n    public Responsible setNext(Responsible next){\n        this.next = next;\n        return next;\n    }\n    public final void handle(Claim claim){\n        if(canHandle(claim)) {\n            doHandle(claim);\n        } else if(next != null) {\n            next.handle(claim);\n        }else{\n            //FIXME: Something to do.\n        }\n    }\n    protected abstract boolean canHandle(Claim claim);\n    protected abstract void doHandle(Claim claim);\n}\n\n// バイト\npublic class PartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // オーダーされた商品を持ってくる\n    }\n}\n\n// バイトリーダー\npublic class HeadOfPartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // 次回使える5%引きチケットを渡す\n    }\n}\n\n// 雇われ店長\npublic class StoreManager extends Responsible {\n    public StoreManager(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        throw new UnsupportedOperationException(); \n    }\n}\n\n</code></pre></div></div>\n<h3 data-sourcepos=\"433:1-433:41\">\n<span id=\"14-command手順書通りやって\" class=\"fragment\"></span><a href=\"#14-command%E6%89%8B%E9%A0%86%E6%9B%B8%E9%80%9A%E3%82%8A%E3%82%84%E3%81%A3%E3%81%A6\"><i class=\"fa fa-link\"></i></a>14. Command(手順書通りやって)</h3>\n<p data-sourcepos=\"435:1-436:152\">作業の手順を書いた手順書があります。コピーすれば複数の手順書にできますし、いろいろな人に渡して作業をお願いすることができます。<br>\nCommand パターンは、「手順書」と「依頼」を表すパターンです。手順の内容は実際の手順書によって異なります。</p>\n<p data-sourcepos=\"438:1-439:341\">「銀座のコーラを買ってくる」依頼であれば「銀座への行き方」などが手順書に定義されます。「銀座に行く」手順書と「コーラを買う」手順書を分ければ、買い物コマンドを作るだけで銀座での買い物はし放題かもしれません。<br>\nコマンドを実行した結果としてコーラを受け取りたいですし、コーラ以外にも焼きそばやパンも食べたいとなると、戻り値が <code>void</code> では受け取れず、また、コーラ買ってくるまでの間他の事をしていたいとなると、非同期での実行が必要になってきます。</p>\n<p data-sourcepos=\"441:1-441:159\">適用自体は簡単ですが、要件をよく確認して設計しないといたずらに複雑なコードになるだけなので注意が必要です。</p>\n<p data-sourcepos=\"443:1-443:123\"><a href=\"https://camo.qiitausercontent.com/fdb3fe04ef153503e8b21007b7b1ef37b06472d1/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f36616137353537302d373966632d343734312d646533612d6461643464383264653266662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6aa75570-79fc-4741-de3a-dad4d82de2ff.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=7133d0c3b07cbef125170916a8e85c47\" alt=\"Command.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6aa75570-79fc-4741-de3a-dad4d82de2ff.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F6aa75570-79fc-4741-de3a-dad4d82de2ff.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=f98d4758366925138264f281be9b226e 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"445:1-445:57\">\n<span id=\"15-interpreterrpgゲームのスクリプト言語\" class=\"fragment\"></span><a href=\"#15-interpreterrpg%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E8%A8%80%E8%AA%9E\"><i class=\"fa fa-link\"></i></a>15. Interpreter(RPGゲームのスクリプト言語)</h3>\n<p data-sourcepos=\"447:1-448:207\">スクリプト言語がインタプリタによって実行されているかは一旦横においておくことにします。<br>\nデザインパターンとして学ぶべきことは「業務上の課題を解決するためになんらかの文法の言語を作りそれを解析して動かす」パターンということです。</p>\n<p data-sourcepos=\"450:1-453:280\">RPGゲームを作る場合を例に考察してみましょう。<br>\nRPGゲームは、街の入り口に立っている町人Aに「ようこそラダトームのまちへ」と喋らせたり、主人公やライバルキャラクターに小芝居させながら大量の会話をさせるなどのイベントシーンが必要です。これらのイベントシーンをプログラマがアセンブラやC言語などのプログラム言語で書くのは非常に大変です。<br>\nゲームの企画やプランナーの人が「talk(charaA, ようこそラダトームのまちへ)」と書いたら町人Aがセリフをしゃべってくれる仕組みがあったらどうでしょうか。いちいちプログラマにお願いして嫌な顔をされながらイベントを作るよりは遥かに簡単そうです。一方のプログラマはバトルプログラムやエフェクトプログラムに集中できそうで win win です。<br>\nこの時に作る <code>talk()</code> 等を解析して動かすプログラムを巨大な if 文で作ると大変なので、インタプリタを作って Composite パターンなどに当てはまるように解析して実行していくのがインタプリタパターンです。</p>\n<p data-sourcepos=\"455:1-455:163\">昔は毎回スクリプトエンジンを手作りしていましたが最近は<a href=\"https://ja.wikipedia.org/wiki/Lua\" rel=\"nofollow noopener\" target=\"_blank\">Lua言語</a>が人気があるようですね。</p>\n<h3 data-sourcepos=\"457:1-457:69\">\n<span id=\"16-iterator古い設計関数型プログラムをしよう\" class=\"fragment\"></span><a href=\"#16-iterator%E5%8F%A4%E3%81%84%E8%A8%AD%E8%A8%88%E9%96%A2%E6%95%B0%E5%9E%8B%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%82%92%E3%81%97%E3%82%88%E3%81%86\"><i class=\"fa fa-link\"></i></a>16. Iterator(古い設計。関数型プログラムをしよう)</h3>\n<p data-sourcepos=\"459:1-460:314\">iterator パターンは、配列やリストに含まれる要素に対して何らかの処理を行うパターンです。<br>\n<code>hasNext()</code>, <code>getNext()</code> などのメソッドを見かけたら iterator パターンでなんらかの集合の要素を取得しているんだなと見てもらえば良いと思いますが、近代言語ではよりよい方法が提供されているので敢えて実装しない方がよいでしょう。</p>\n<p data-sourcepos=\"462:1-462:123\">配列操作用のメソッドに関数を渡す事で配列の全ての要素に対して任意の処理を行えます。</p>\n<div class=\"code-frame\" data-lang=\"text\" data-sourcepos=\"464:1-474:3\"><div class=\"highlight\"><pre><code>例)\nfind(f) : f関数の戻り値が true の要素を返す（１つ）\nfilter(f) : f関数の戻り値が true の要素を返す（複数）\nmap(f) : f関数の戻り値の配列に map する\nreduce(f) : 配列の要素に対してfで与えられる関数を順次実行した結果を返す（１つ）\nsome(f) : f関数の戻り値が true の要素があるか？\nevery(f) : f関数の戻り値がすべて true か？\nflatMap(f) : f関数の戻り値（配列）を全て連結した配列を返す\n...\n</code></pre></div></div>\n<p data-sourcepos=\"476:1-476:137\">余計なことは覚えずに、js では Array クラスのメソッド、Java では StreamApi を利用するとよいでしょう。</p>\n<p data-sourcepos=\"478:1-478:103\">参考)<a href=\"https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array\" rel=\"nofollow noopener\" target=\"_blank\">MDN Array</a></p>\n<h3 data-sourcepos=\"481:1-481:36\">\n<span id=\"17-mediatorsesと指揮命令\" class=\"fragment\"></span><a href=\"#17-mediatorses%E3%81%A8%E6%8C%87%E6%8F%AE%E5%91%BD%E4%BB%A4\"><i class=\"fa fa-link\"></i></a>17. Mediator(SESと指揮命令)</h3>\n<p data-sourcepos=\"483:1-483:172\">Mediator(仲介役)というとあまり見かけない表現かと思いますが、われわれの仕事現場に目を向けると分かりやすい例があります。</p>\n<p data-sourcepos=\"485:1-485:295\">ITプロジェクトで協力会社さんに参画頂いた際、参画者の性質を見てAさんは開発、Bさんは試験などおおよその方針を指揮命令者が出していると思います。Mediator パターンで実現したいのはこの指揮命令による秩序です。</p>\n<p data-sourcepos=\"487:1-487:297\">ただ、SESで参画している協力会社さん同士が直接業務に関する指示を行ってはいけないにも関わらず、指揮命令者の指示を待っていると仕事が進まないので、直接会話して仕事を進めているケースもあるかもしれません。</p>\n<p data-sourcepos=\"489:1-489:298\">現実の世界でも必ずしもうまく機能しないケース（指揮命令系統が複雑になるだけで仕事が進まない）もある通り、Mediatorパターンを適用する際には、本当にMediatorが必要なのかをよく考えて適用する必要があるでしょう。</p>\n<p data-sourcepos=\"491:1-491:124\"><a href=\"https://camo.qiitausercontent.com/852d9b7aad3ebdc1a0bd2ce60461f8e6f2f84aba/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f33376334613632642d393831392d366239382d356339372d6138343030366465643764662e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F37c4a62d-9819-6b98-5c97-a84006ded7df.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=e7d8b7fc50f2512690fb23478f8e7a6a\" alt=\"Mediator.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/37c4a62d-9819-6b98-5c97-a84006ded7df.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F37c4a62d-9819-6b98-5c97-a84006ded7df.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=15d79191506ad08c83d70d87feab6879 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"494:1-494:50\">\n<span id=\"18-memento記念品よりセーブデータ\" class=\"fragment\"></span><a href=\"#18-memento%E8%A8%98%E5%BF%B5%E5%93%81%E3%82%88%E3%82%8A%E3%82%BB%E3%83%BC%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF\"><i class=\"fa fa-link\"></i></a>18. Memento(記念品よりセーブデータ)</h3>\n<p data-sourcepos=\"496:1-497:228\">令和の世の中で、Memento(記念品、形見)と言われて日常で馴染み深い人は少数派の様に思います。<br>\nコンピューターゲームを遊んで、次の日その続きから遊ぶために、その時の状態を保存したセーブデータを作ったことがある人はそれなりにいるのではないでしょうか。</p>\n<p data-sourcepos=\"499:1-499:145\">Mementoパターンは、ある時点での処理の続きを再開できるように必要なデータを保存しておくパターンです。</p>\n<p data-sourcepos=\"501:1-502:121\">セーブデータは、次回からゲームを再開するために、その時点での所持金や経験値やレベルなどのプレイヤーの状態を表す変数が保存されますが、その時点での画面の映像などは保存されません。<br>\nMementoパターンでも同様に、プログラムの動作に必要な最小限のデータのみを保存します。</p>\n<p data-sourcepos=\"504:1-504:123\"><a href=\"https://camo.qiitausercontent.com/1e9cfce0e2cc2fedc82bdb3cc46de089a2e7d117/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f39656166303233352d303163642d343563612d353362372d3231333231343832366433632e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9eaf0235-01cd-45ca-53b7-213214826d3c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=44a66138726e298cd92a6a4ca2011356\" alt=\"Memento.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9eaf0235-01cd-45ca-53b7-213214826d3c.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F9eaf0235-01cd-45ca-53b7-213214826d3c.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=b0343e057b9df365d6ba2a4a8d3a0249 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"507:1-507:42\">\n<span id=\"19-observer新刊お知らせ機能\" class=\"fragment\"></span><a href=\"#19-observer%E6%96%B0%E5%88%8A%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E6%A9%9F%E8%83%BD\"><i class=\"fa fa-link\"></i></a>19. Observer(新刊お知らせ機能)</h3>\n<p data-sourcepos=\"509:1-509:372\">Observer(観測者)パターンは、言葉の響きからすると観測者が Polling などして何かを観測するように思えますが、実際は、「新刊お知らせ機能」の様に、「読んでる漫画の新刊がでたら通知してくれ」と登録しておくと、新刊が出た際に Observer(観測者)に通知が来るパターンです。</p>\n<p data-sourcepos=\"511:1-511:255\">タイマーなどで定期監視をしなくてよいためコンピュータに対する負荷も少なく、「新刊が出た」などのイベントに対して処理を実行できるイベントドリブンの考え方も人間に優しいです。</p>\n<p data-sourcepos=\"513:1-513:246\">Angular や Vue や React などに実装されているデータバインディングがあるとほとんど無用になるのですがちょっとうまく動かない時に利用する watch がObserver の考え方と近いと思います。</p>\n<p data-sourcepos=\"515:1-515:124\"><a href=\"https://camo.qiitausercontent.com/8e6e25b05825b93790398ee4c1d6393f74eb1c6f/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f35353535643732372d313133352d326436332d663132302d6562623463656365353539362e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5555d727-1135-2d63-f120-ebb4cece5596.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=5771850e0fd954780a9411560059e21b\" alt=\"Observer.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5555d727-1135-2d63-f120-ebb4cece5596.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F5555d727-1135-2d63-f120-ebb4cece5596.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=16a9805b3eb653c3d975b696c86d8395 1x\" loading=\"lazy\"></a></p>\n<h3 data-sourcepos=\"518:1-518:36\">\n<span id=\"20-stateキャラクタ選択\" class=\"fragment\"></span><a href=\"#20-state%E3%82%AD%E3%83%A3%E3%83%A9%E3%82%AF%E3%82%BF%E9%81%B8%E6%8A%9E\"><i class=\"fa fa-link\"></i></a>20. State(キャラクタ選択)</h3>\n<p data-sourcepos=\"520:1-520:254\">執筆時点の流行に乗ると、ELDEN RING での放浪剣士や素寒貧といった素性選択かと思いますが、戦士や魔法使いなどの職業の例えの方が普遍的で分かりやすそうなのでそちらで話を進めます。</p>\n<p data-sourcepos=\"522:1-522:342\">プレイヤーの選択により、プレイヤーの操作するキャラクターが「戦士」や「魔法使い」になるゲームがあったとします。「戦士」は剣や盾などを装備しての近接攻撃が得意で、魔法使いは杖やローブなどが装備可能で魔法による遠距離攻撃が得意です。</p>\n<p data-sourcepos=\"524:1-525:147\">AボタンやBボタンを押下時のイベント関数に「もし戦士だったら」とか、「もし魔法使いだったら」といったコードを書くのは一見直感的です。<br>\n最初に戦士しかいないところに魔法使いを追加したらその様なコードを書くことも往々にしてあるでしょう。</p>\n<p data-sourcepos=\"527:1-527:393\">ただこれが、複雑なコマンド入力でキャラクタ固有スキル発動もしたい、職業によって固有のスキルツリーも持ちたいとなってくると「もし戦士だったら」という分岐をどこに書いたらいいかがよく分からなくなってきます。拡張が辛くなってきた時がリファクタリング適正期かと思います。</p>\n<p data-sourcepos=\"529:1-529:369\">仕様書も書かずにノリで拡張したコードであれば、新たにプロジェクトに追加されたメンバーに新ジョブ「僧侶」の実装を依頼することも難しいでしょうし、ゲームをやらないメンバーはスキルツリーのコードが職業によって分岐があることに気がつかないかもしれません。</p>\n<p data-sourcepos=\"531:1-531:240\">そこで、状態(職業)毎にクラスを定義して各クラスに対して定められたアクションの実装を行えば、自然かつ拡張性の高いクラス定義を行えるという考え方が State パターンです。</p>\n<p data-sourcepos=\"533:1-533:4\">例)</p>\n<ul data-sourcepos=\"534:1-541:0\">\n<li data-sourcepos=\"534:1-536:93\">攻撃行動\n<ul data-sourcepos=\"535:5-536:93\">\n<li data-sourcepos=\"535:5-535:84\">「戦士という状態」のプレイヤーが攻撃をすれば剣を振る</li>\n<li data-sourcepos=\"536:5-536:93\">「魔法使いという状態」のプレイヤーが攻撃をすれば魔法を詠唱</li>\n</ul>\n</li>\n<li data-sourcepos=\"537:1-539:96\">防御行動\n<ul data-sourcepos=\"538:5-539:96\">\n<li data-sourcepos=\"538:5-538:87\">「戦士という状態」のプレイヤーが防御をすれば盾を構える</li>\n<li data-sourcepos=\"539:5-539:96\">「魔法使いという状態」のプレイヤーが防御をしても何もできない</li>\n</ul>\n</li>\n<li data-sourcepos=\"540:1-541:0\">etc...</li>\n</ul>\n<p data-sourcepos=\"542:1-542:121\"><a href=\"https://camo.qiitausercontent.com/6a912caf2789e073a6935b9c9181aa6bab5fd5ab/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f37326461623938622d306566342d386632332d666162302d3035393236366264666261332e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F72dab98b-0ef4-8f23-fab0-059266bdfba3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=ead338dbb853bc3070d091ec821262fc\" alt=\"State.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/72dab98b-0ef4-8f23-fab0-059266bdfba3.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F72dab98b-0ef4-8f23-fab0-059266bdfba3.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=1a3fc783d6ec40b65c97fb2c3eb9c8e3 1x\" loading=\"lazy\"></a></p>\n<p data-sourcepos=\"544:1-544:385\"><code>jobState.attacAction()</code> でそれぞれの職業に応じた攻撃を行えるといった実装になるため、ここに「騎士」や「僧侶」を追加しても <code>Player</code> クラスやその他のコードの変更は不要で、<code>KnightState</code> や <code>ClericState</code> といった新規追加クラスに対してコードを書けばよいというのも精神衛生上よいです。</p>\n<p data-sourcepos=\"546:1-546:243\">職業を状態と捉えるかどうかは議論がありそうですが、デザインパターンの本質としてはパターンを適用することでコードが分かりやすくなるかどうかというところだと思います。</p>\n<h3 data-sourcepos=\"548:1-548:57\">\n<span id=\"21-strategy戦略か戦術かそれが問題だ\" class=\"fragment\"></span><a href=\"#21-strategy%E6%88%A6%E7%95%A5%E3%81%8B%E6%88%A6%E8%A1%93%E3%81%8B%E3%81%9D%E3%82%8C%E3%81%8C%E5%95%8F%E9%A1%8C%E3%81%A0\"><i class=\"fa fa-link\"></i></a>21. Strategy(戦略か戦術か、それが問題だ)</h3>\n<p data-sourcepos=\"550:1-551:147\">戦略を定義したクラスを用意してそれを入れ替えれば、コードの修正範囲は小さいという考え方のパターンですが、ストラテジーパターンで作られているJavaのソートは、皆さんご存知の通り大変冗長なコードになっています。<br>\n戦術レベルの内容を戦略で解決するというデザインが適切ではないというポピュラーな例と言えるでしょう。</p>\n<p data-sourcepos=\"553:1-553:152\">Strategy は適用すべきところに適用することにして、ソートは Lambda や Comparator を利用して書くのがよいでしょう。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"555:1-587:3\">\n<div class=\"code-lang\"><span class=\"bold\">SortSnippet.java</span></div>\n<div class=\"highlight\"><pre><code><span class=\"c1\">// 【冗長】昇順ソート戦略</span>\n<span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">ascSortStoratagy</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;()</span> <span class=\"o\">{</span>\n    <span class=\"nd\">@Override</span>\n    <span class=\"kd\">public</span> <span class=\"kt\">int</span> <span class=\"nf\">compare</span><span class=\"o\">(</span><span class=\"nc\">String</span> <span class=\"n\">s1</span><span class=\"o\">,</span> <span class=\"nc\">String</span> <span class=\"n\">s2</span><span class=\"o\">)</span> <span class=\"o\">{</span>\n        <span class=\"k\">return</span> <span class=\"n\">s1</span><span class=\"o\">.</span><span class=\"na\">compareTo</span><span class=\"o\">(</span><span class=\"n\">s2</span><span class=\"o\">);</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">};</span>\n\n<span class=\"c1\">// 【冗長】降順ソート戦略</span>\n<span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">descSortStoratagy</span> <span class=\"o\">=</span> <span class=\"k\">new</span> <span class=\"nc\">Comparator</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;()</span> <span class=\"o\">{</span>\n    <span class=\"nd\">@Override</span>\n    <span class=\"kd\">public</span> <span class=\"kt\">int</span> <span class=\"nf\">compare</span><span class=\"o\">(</span><span class=\"nc\">String</span> <span class=\"n\">s1</span><span class=\"o\">,</span> <span class=\"nc\">String</span> <span class=\"n\">s2</span><span class=\"o\">)</span> <span class=\"o\">{</span>\n        <span class=\"k\">return</span> <span class=\"n\">s2</span><span class=\"o\">.</span><span class=\"na\">compareTo</span><span class=\"o\">(</span><span class=\"n\">s1</span><span class=\"o\">);</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">};</span>\n\n<span class=\"c1\">// 【冗長】昇順ソート戦略でソート</span>\n<span class=\"nc\">List</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">sortedItems</span> <span class=\"o\">=</span> <span class=\"n\">items</span><span class=\"o\">.</span><span class=\"na\">stream</span><span class=\"o\">()</span>\n    <span class=\"o\">.</span><span class=\"na\">sorted</span><span class=\"o\">(</span><span class=\"n\">ascSortStoratagy</span><span class=\"o\">)</span>   <span class=\"c1\">// 別途定義した昇順ストラテジーを指定。インラインでも書けるが冗長</span>\n    <span class=\"o\">.</span><span class=\"na\">collect</span><span class=\"o\">(</span><span class=\"nc\">Collectors</span><span class=\"o\">.</span><span class=\"na\">toList</span><span class=\"o\">());</span>\n\n<span class=\"c1\">// Lambda でソート</span>\n<span class=\"nc\">List</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">sortedItems</span> <span class=\"o\">=</span> <span class=\"n\">items</span><span class=\"o\">.</span><span class=\"na\">stream</span><span class=\"o\">()</span>\n    <span class=\"o\">.</span><span class=\"na\">sorted</span><span class=\"o\">((</span><span class=\"n\">s1</span><span class=\"o\">,</span> <span class=\"n\">s2</span><span class=\"o\">)</span> <span class=\"o\">-&gt;</span> <span class=\"n\">s1</span><span class=\"o\">.</span><span class=\"na\">compareTo</span><span class=\"o\">(</span><span class=\"n\">s2</span><span class=\"o\">))</span>   <span class=\"c1\">// Lambda 式で直接定義</span>\n    <span class=\"o\">.</span><span class=\"na\">collect</span><span class=\"o\">(</span><span class=\"nc\">Collectors</span><span class=\"o\">.</span><span class=\"na\">toList</span><span class=\"o\">());</span>\n\n<span class=\"c1\">// Comparator でソート</span>\n<span class=\"c1\">// クラスのフィールドを比較する場合は、Comparator.comparing を利用する</span>\n<span class=\"nc\">List</span><span class=\"o\">&lt;</span><span class=\"nc\">String</span><span class=\"o\">&gt;</span> <span class=\"n\">sortedItems</span> <span class=\"o\">=</span> <span class=\"n\">items</span><span class=\"o\">.</span><span class=\"na\">stream</span><span class=\"o\">()</span>\n    <span class=\"o\">.</span><span class=\"na\">sorted</span><span class=\"o\">(</span><span class=\"nc\">Comparator</span><span class=\"o\">.</span><span class=\"na\">naturalOrder</span><span class=\"o\">())</span>  <span class=\"c1\">// 昇順</span>\n    <span class=\"o\">.</span><span class=\"na\">collect</span><span class=\"o\">(</span><span class=\"nc\">Collectors</span><span class=\"o\">.</span><span class=\"na\">toList</span><span class=\"o\">())</span>\n</code></pre></div>\n</div>\n<p data-sourcepos=\"589:1-590:106\">(参考)<br>\n<a href=\"https://qiita.com/KevinFQ/items/09c73cc76cb646ae63f4\" id=\"reference-c6ea2aae38f24e924d8d\">Comparatorを使ってListをソートする方法</a></p>\n<h3 data-sourcepos=\"592:1-592:43\">\n<span id=\"22-template-method学習指導要綱\" class=\"fragment\"></span><a href=\"#22-template-method%E5%AD%A6%E7%BF%92%E6%8C%87%E5%B0%8E%E8%A6%81%E7%B6%B1\"><i class=\"fa fa-link\"></i></a>22. Template Method(学習指導要綱)</h3>\n<p data-sourcepos=\"594:1-596:134\">日本には様々な学校がありますが、そこで提供される教育はおよそ同じような内容でしょう。<br>\n年間にどれぐらい授業があって、どんなふうに教育しなさい、というのが学習指導要綱として定められているからです。<br>\nその学習指導要綱に沿って各教員が教育を行う、というのが Template Method の考え方に近いでしょう。</p>\n<p data-sourcepos=\"598:1-599:238\">ところで、複雑すぎる Template Method はシステムの品質を上げません。実装が困難で、実装者による個人差が大きく出てしまうからです。<br>\nTemplate Method を実装することが教員に要求されていますが、実装次第で東大合格者が出たり学級崩壊が起きたり、過労で離任が発生したりもしていることからも分かるでしょう。</p>\n<p data-sourcepos=\"601:1-601:285\">本稿を書くにあたって<a href=\"https://www.mext.go.jp/component/a_menu/education/micro_detail/__icsFiles/afieldfile/2019/03/18/1387017_001.pdf\" rel=\"nofollow noopener\" target=\"_blank\">【総則編】小学校学習指導要領（平成29年告示）解説</a>を一読しましたが、これは大変だなと思いました。</p>\n<div class=\"code-frame\" data-lang=\"java\" data-sourcepos=\"603:1-633:3\"><div class=\"highlight\"><pre><code><span class=\"c1\">// 学習指導要綱</span>\n<span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kd\">class</span> <span class=\"nc\">CurriculumGuideline</span> <span class=\"o\">{</span>\n    <span class=\"c1\">// 授業の準備をする</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">prepareClassroom</span><span class=\"o\">();</span>\n    <span class=\"c1\">// 授業をする</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">doClassroom</span><span class=\"o\">();</span>\n    <span class=\"c1\">// 宿題をつくる</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">makeHomework</span><span class=\"o\">();</span>\n    <span class=\"c1\">// 宿題を採点する</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">checkHomework</span><span class=\"o\">();</span>\n\n    <span class=\"c1\">// and so on...</span>\n<span class=\"o\">}</span>\n\n<span class=\"c1\">// 怠け者先生</span>\n<span class=\"kd\">public</span> <span class=\"kd\">class</span> <span class=\"nc\">LazyTeacher</span> <span class=\"kd\">extends</span> <span class=\"nc\">CurriculumGuideline</span> <span class=\"o\">{</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">prepareClassroom</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">doClassroom</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">makeHomework</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n    <span class=\"kd\">public</span> <span class=\"kd\">abstract</span> <span class=\"kt\">void</span> <span class=\"nf\">checkHomework</span><span class=\"o\">()</span> <span class=\"o\">{</span>\n        <span class=\"c1\">// TODO Auto-generated method stub</span>\n    <span class=\"o\">}</span>\n<span class=\"o\">}</span>\n</code></pre></div></div>\n<p data-sourcepos=\"635:1-635:300\">一方で、コンビニやファミレスのアルバイト作業は作業のテンプレート化がうまくできていて結果に差異が少ない様に思えます。たまに例外が発生して twitter などで炎上していますが、作業要項の問題とは考えにくいです。</p>\n<p data-sourcepos=\"637:1-637:121\">Template Method はシステムを捉えるのに必須な考え方ですが、適用が難しいという印象です。</p>\n<h3 data-sourcepos=\"640:1-640:83\">\n<span id=\"23-visitorウーバーとマックデリバリーとヤマトと佐川と\" class=\"fragment\"></span><a href=\"#23-visitor%E3%82%A6%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%83%9E%E3%83%83%E3%82%AF%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%E3%81%A8%E3%83%A4%E3%83%9E%E3%83%88%E3%81%A8%E4%BD%90%E5%B7%9D%E3%81%A8\"><i class=\"fa fa-link\"></i></a>23. Visitor(ウーバーとマックデリバリーとヤマトと佐川と…)</h3>\n<p data-sourcepos=\"642:1-645:318\">家に来そうなVisitor(訪問者)を列挙してみました。<br>\nウーバーが顧客の家を訪問したら『お金をもらって商品を渡す』という行為をします。<br>\n訪問者側に、訪問時の処理を実装するのが Visitor パターンです。<br>\nこの様な実装にしておくと、顧客に断りなく値上げをしたりサービスの質を落とすこともやり放題…ではなく、アルゴリズムをオブジェクトの構造から分離ができますが、少々大掛かりなパターンであまり利用することはない印象です。</p>\n<p data-sourcepos=\"647:1-647:123\"><a href=\"https://camo.qiitausercontent.com/ac43225d638207361d557bba8ca52c0ec40a2a89/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e61702d6e6f727468656173742d312e616d617a6f6e6177732e636f6d2f302f3133363136352f30633531356633362d373031652d623137352d363733392d3230396334386331616637322e706e67\" target=\"_blank\" rel=\"nofollow noopener\"><img src=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0c515f36-701e-b175-6739-209c48c1af72.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;s=9b529318c7d507cb0bc7e6dfcad21bbd\" alt=\"Visitor.png\" data-canonical-src=\"https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0c515f36-701e-b175-6739-209c48c1af72.png\" srcset=\"https://qiita-user-contents.imgix.net/https%3A%2F%2Fqiita-image-store.s3.ap-northeast-1.amazonaws.com%2F0%2F136165%2F0c515f36-701e-b175-6739-209c48c1af72.png?ixlib=rb-4.0.0&amp;auto=format&amp;gif-q=60&amp;q=75&amp;w=1400&amp;fit=max&amp;s=5f194e2cc9188c65cecbdd534d1f1eff 1x\" loading=\"lazy\"></a></p>\n<h2 data-sourcepos=\"650:1-650:15\">\n<span id=\"おわりに\" class=\"fragment\"></span><a href=\"#%E3%81%8A%E3%82%8F%E3%82%8A%E3%81%AB\"><i class=\"fa fa-link\"></i></a>おわりに</h2>\n<p data-sourcepos=\"652:1-653:135\">ちょいちょい時間を見つけて更新していたら１年ぐらいかかりましたが、全部書けてよかったです。<br>\nなんとなく意識高く難しく感じる『デザインパターン』を少しでも身近に感じて頂けたら幸いです。</p>\n<p data-sourcepos=\"655:1-656:240\">デザインパターンは偉大な先人達が開発する時の <strong>『ベストプラクティス』</strong> をパターンとして抽出してくれたものなので学びは多いです。<br>\n近代開発からすると、冗長なパターンが多い様な気もしなくはないですが、設計の考え方をうまく学んで、よりよいコードを書くのに役立てて頂けたらいいのかなと思いました。</p>\n<p data-sourcepos=\"659:1-661:60\">(参考サイト)<br>\n<a href=\"https://www.techscore.com/tech/DesignPattern/index.html/\" rel=\"nofollow noopener\" target=\"_blank\">TECHSCORE デザインパターン</a><br>\n<a href=\"https://refactoring.guru/design-patterns/\" rel=\"nofollow noopener\" target=\"_blank\">DESIGN PATTERNS</a></p>\n<section class=\"footnotes\">\n<ol>\n<li id=\"fn-1\">\n<p data-sourcepos=\"664:7-664:90\">実際は大量のドキュメントを書いたり試験したりもする仕事。 <a href=\"#fnref-1\" class=\"\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+    "body": "## Why デザインパターン\n\n職業プログラマのみなさんおはこんばんわ。\n\n大量にプログラムを書く仕事を想像してプログラマになられたかもしれませんが、**大量にプログラムを読む仕事** をなさっているでしょうか？[^1]\n\n規模の大きな開発や、短期間での開発に対応するためには、既存プロジェクトのソース、オープンソースやフレームワークのソースなど、**他人の書いたソースを読んで理解して利用する**必要があるため、プログラムを書く機会より読む機会が増えていると思います。\n\nここで困ったことが一つあります。\n**『プログラムはコンピューターが理解できさえすればどのように書いてあっても動く』**\nということです。\n\n例えば、変数名を `hoge` と定義したプログラムは動作しますが、書いた本人以外の他人がそのプログラムの意図を理解するのは困難でしょう。\n\nあるいは、一つの関数が1000行のプログラムも動作しますが、他人が読むことは大変困難でしょう。悪いことに**書いた本人ですら3ヶ月後には読めない**こともあるでしょう。\n\nこれらは極端な事例ですが、**「誰が設計しても、このケースではこう設計するのが妥当」**というベストプラクティスに沿って職業プログラマ全員が読んだり書いたりすれば毎回コーディングや設計で悩んだり悩まされたりしなくてよくなるはずです。\nこれがデザインパターンが生まれた理由であり、わたし達が学習する理由かと思います。\n\n残念なことに実装ありきの解説で敷居が高かったり、利用頻度がそこまで高くなかったりして微妙かなと思うところもありますが、知識として知っておいて損はないかと思いますので身近なユースケースを上げて説明したいと思います。\n\n\n## 生成に関するパターン(1 - 5)\n\n|デザインパターン   |ユースケース   |\n|---|---|\n|[1. Abstract Factory(抽象的な工場) ](#1-abstract-factory抽象的な工場)|ココイチはカレー工場で、二郎はラーメン工場\n|[2. Builder(建築者)](#2-builder建築者) |ベースの武器と素材や不要な武器と金を渡して武器強化\n|[3. Factory Method(Factoryにオブジェクト生成メソッド)](#3-factory-methodfactoryにオブジェクト生成メソッド)|餅は餅屋に、カレーはカレー屋に\n|[4. Prototype(雛形)](#4-prototype雛形)|セントラルキッチンでスープ製造\n|[5. Singleton(単一)](#5-singleton単一)|セントラルキッチンは一つ\n\n\n## 構造に関するパターン(6 - 12)\n\n|デザインパターン   |超入門概要   |\n|---|---|\n|[6. Adapter(適合)](#6-adapter適合) |居抜き店舗\n|[7. Bridge(橋)](#7-bridge橋) |展示場とイベント\n|[8. Composite(複合物)](#8-composite複合物) |ゲームオブジェクト\n|[9. Decorator(装飾者)](#9-decorator装飾者) |PSストアセールと消費税(悪い例)\n|[10. Facade(窓口)](#10-facade窓口) |区役所とウーバーイーツ\n|[11. Flyweight(軽量)](#11-flyweight軽量) |ネットフリックス\n|[12. Proxy(代理人)](#12-proxy代理人) |カリスマ経営者率いるプログラミングスクール、オフショア窓口、美容院、メルカリ\n\n## 振る舞いに関するパターン(13 - 23)\n\n|デザインパターン   |ユースケース   |\n|---|---|\n|[13. Chain of Responsibility(責任の鎖)](#13-chain-of-responsibility責任の鎖) |お前じゃ話にならん店長を呼んでこい\n|[14. Command(コマンド)](#14-command手順書通りやって) |手順書通りやって\n|[15. Interpreter(インタプリタ)](#15-interpreterrpgゲームのスクリプト言語) |RPGゲームのスクリプト言語\n|[16. Iterator(繰り返し)](#16-iterator古い設計関数型プログラムをしよう) |古い設計。関数型プログラムをしよう\n|[17. Mediator(指揮命令)](#17-mediatorsesと指揮命令) |SESと指揮命令\n|[18. Memento(記念品)](#18-memento記念品よりセーブデータ) |記念品よりセーブデータ\n|[19. Observer(観測者)](#19-observer新刊お知らせ機能) |新刊お知らせ機能\n|[20. State(状態)](#20-stateキャラクタ選択) |キャラクタ選択\n|[21. Strategy(戦略)](#21-strategy戦略か戦術かそれが問題だ) |戦略か戦術か、それが問題だ\n|[22. Template Method(テンプレートメソッド)](#22-template-method%E5%AD%A6%E7%BF%92%E6%8C%87%E5%B0%8E%E8%A6%81%E7%B6%B1) |学習指導要綱\n|[23. Visitor(訪問者)](#23-visitor%E3%82%A6%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%83%9E%E3%83%83%E3%82%AF%E3%83%87%E3%83%AA%E3%83%90%E3%83%AA%E3%83%BC%E3%81%A8%E3%83%A4%E3%83%9E%E3%83%88%E3%81%A8%E4%BD%90%E5%B7%9D%E3%81%A8) |ウーバーとマックデリバリーとヤマトと佐川と…\n\n\n### 1. Abstract Factory(抽象的な工場)\n\n１つ目からちょっと何言ってるか分からないですね。\n\n晩ごはんを食べるプログラムを書くとしましょうか。\nココイチならカレー、二郎ならラーメンが食べられますが、まだ今日はどちらを食べたいか決まってません。\n\nこの様な時に、晩ごはん工場をAbstract Factory と見立てて、ココイチや二郎をFactoryと見立てて、プログラムを書くとはっきり食べたいモノが決まってなくてもプログラムが書けます。\nまた、急に気が変わってサイゼの辛味チキンが食べたくなったとしても、サイゼリヤを Factory として実装して、サイゼリヤを create するだけでその後晩ごはんを食べる処理などは修正が不要となります。\n\n![AbstractFactory.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/020917ac-258d-a1fc-5270-7b3f30abbc94.png)\n\n``` AbstractFactorySnippet.java\nSupperFactory factory = new CocoichiFactory();\n\n// 以下のコードは店(Factory)によらず共通\nfactory.createFood(800);\n...\n```\n\n### 2. Builder(建築者)\n\n2つ目もちょっと何言ってるか分からないですね。\n\n『建築者に渡すべきものを渡して結果を取得する方法』だけ取り決めとくという考え方です。\n\n身近な例だと、ソシャゲの武器強化などでしょうか。\n`Equipment` は `Material` から派生しておくと、強化用素材だけではなく、不要な武器防具も強化用素材として利用できそうですね。\n\n``` LeveledEquipmentBuilder.java\ninterface LeveledEquipmentBuilder {\n  void setTarget(Equipment equipment);  // 強化対象\n  void addMaterial(Material material); // 強化用素材\n  void setMoney(int money); // 強化費用\n  Equipment build();    // 結果取得\n}\n```\n\n課金アイテムなどで成功率を上げられるなら、`addSuccessRate` といったインターフェイスも追加する必要があるでしょう。\n武器強化機能は様々なソシャゲで見かけ今や実装必須の機能と言えるので再利用可能なコードにしておくと便利そうですね。\n\n![Builder.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/c4c0b5f4-12e6-33ca-dac9-b8c748a94b61.png)\n\n\n### 3. Factory Method(Factoryにオブジェクト生成メソッド)\n\n`Abstract Factory` の章で、カレーやラーメンを`Food`として定義していましたが、カレーはカレーだしラーメンはラーメンです。\n\n![FactoryMethod(Food).png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6245e4f6-8b0e-b48f-3e40-7bb8b95e8b32.png)\n\nカレーにはごはんやナンがつきますが、ラーメンに小ライスがつくことはありますが、ナンがくっつくことはわたしが知る限りではないです。これらを `Food` で管理するように設計した場合、ラーメンにナンをくっつけることもできてしまいます。なかなか興味深い`Food`の完成となるわけですが、プログラムとしては危険です。\n\nココイチや二郎に Factory Method を持たせることで、うっかりカレー屋でラーメンを提供するのを防ぐことができます。\n\n![FactoryMethod(class).png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/89f21b20-a95f-1df9-ed2b-1feb7d154c01.png)\n\n\n### 4. Prototype(雛形)\n\nこれは、町田商店のセントラルキッチンですね。\n各店舗で同じ様にスープを１から炊かないで、セントラルキッチンでスープを作って各店舗に配送。\nひと味足りないと感じる方もいるかもしれませんが、大変合理的な考え方ですよね。\n\nプログラムは手間暇かけても丹精込めても書いた通りにしか動かないので、プロトタイプ作ってコピーすればよいです。\n\n``` PrototypeSnippet.java\nclass CentralKitchen {\n    Soup createSoup() {\n        // すごく大変な工程でスープを作る\n        return soup;\n    }\n}\n\nclass ShopKitchen {\n    // セントラルキッチンで作ったスープを足していく。\n    // スープを作るメソッドは存在しない。\n    void addSoup(Soup soup);\n}\n\n...\n\n// セントラルキッチンでスープを作って、各店舗に配送\nShopKitchen shopKitchens[] = new ShopKitchen[{店舗数}];\nSoup amazingSoup = (new CentralKitchen()).createSoup()\nfor(ShopKitchen k : shopKitchens) {\n    k.addSoup(amazingSoup);\n}\n\n```\n\n\n### 5. Singleton(単一)\n\n`Prototype` の章のサンプルコードで勘のよい方は気づいたかもしれませんが、プログラム上では、セントラルキッチンが作り放題ですね。これを出来なくするパターンが`Singleton`です。\n\n``` SingletonSnippet.java\nclass CentralKitchen {\n    private static CentralKitchen instance = new CentralKitchen();\n    private CentralKitchen(){} // private にして外部から呼べなくする。\n\n    public static CentralKitchen getInstance() {\n        return instance;\n    }\n}\n\n...\n\nSoup soup = CentralKitchen.getInstance().createSoup()\n\n```\n\n\n### 6. Adapter(適合)\n\n美味しいラーメンを作る自信があるのでラーメン店を作りたいが、お金もないし、店舗のデザインなどについては全くの素人だとします。店舗のキッチン設備や什器がある程度整った『居抜き店舗』を見つけて改装すれば、１からラーメン屋を作るよりは手間がかからないことでしょう。これが`Adapter`です。\n\n![Adapter.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6f828fc6-8e25-433a-b9d0-93eb9775b6f3.png)\n\n``` AdapterSnippet.java\nclass UnpopularDiner {\n    // 目も当てられないぐらい汚いキッチン\n    // ぐちゃぐちゃな店内\n    // なるべくそのまま利用したい\n}\n\ninterface CommonNoodleShop {\n    // ラーメン屋として一般的に必要なメニューを定義\n}\n\n// 不人気店をベースにして作った、一般的なラーメンメニューを取り揃えた、わたしの素敵なラーメン店\nclass MyAwesomeNoodleShop extends UnpopularDiner implements CommonNoodleShop {\n    Ramen getShoyuRamen() {\n        // ラーメンを実装。\n        // UnpopularDiner の設備(プロパティ・メソッド)はすべて使える。\n        // 汚いキッチンを使って美味しいラーメンを作る。\n        // ...\n        return ramen;\n    }\n}\n\n```\n\n実際のプロジェクトでは、極めて重要だが解析困難なビジネスロジックが記述された class に遭遇することがある。そのような class は 1[byte] でも修正したら動かなくなる絶妙な実装であるため、Adapter を用いて本体にはなるべく触らない様にすることで安全に再利用することを検討するかもしれません。\n\n\n### 7. Bridge(橋)\n\n様々な展示場がありイベントがあります。イベントの主催者や出展者は、展示場とは別の所で準備をして展示場に入り展示を行います。コミケ、ゲームショー、あるいはモーターショーといった展示の実装には、ビックサイト側は関与していません。この関係性を `Bridge` で表すと下図のようになります。\n\n![Bridge.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8c04ad9d-a9c4-1f02-0eb2-4dde775af6c7.png)\n\n``` BridgeSnippet.java\n// ビックサイトでコミケ開催\nComicmarketEvent comicmarketEvent = new ComicmarketEvent();\nExhibition e = new BigsightExhibition(comicmarketEvent);\ne.doExhibition();\n```\n\n### 8. Composite(複合物)\n\n枝と葉を同じ様に処理するとか、容器と中身を同じ様に処理すると再帰的処理が簡単になるパターン。\nフォルダとファイルが一般的で分かりやすい例かと思いますが、ここではやはりゲームを例に説明したいと思います。\n\n3Dのゲームを想像してください。世界(`Scene`)の中には背景(`Background`)、プレイヤー(`Player`)、武器(`Weapon`)、弾(`Bullet`)、アイテムボックス(`ItemBox`)やアイテム(`Item`)などのオブジェクト等があると思います。`item`はアイテムボックスの中にあったり地面(`Ground`)に転がっていたりプレイヤーに拾われたりします。\nプレイヤーはオブジェクトですが、武器を所持するオブジェクトであったりもします。\nまた、オブジェクトとして意識されることはあまりないと思いますが光源やカメラもあります。\n\nこれらのゲームオブジェクト(`GameObject`)の配置や状態はゲームの進行状況によって頻繁に変更する必要がありますし、それらの操作を個別に考えるのは大変なので、`Composite`パターンで表現されることが多い様に思います。\n\n管理イメージを図にすると下図の様になります。\n(instance と class 表現が混じっていますが…よろしく解釈してください。)\n\n![Composite.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/482b839b-bc46-559c-5a83-e6353c6a3305.png)\n\n\n### 9. Decorator(装飾者) \n\nPSストアセール、利用してますか？\nちょいちょい色々なセールをやってて、その都度いくつかのゲームがお得なプライスで購入できますね。\n消費税の処理は通常価格と割引後の価格に対して適用されます。\nこれを`decorator`で実装すればセールの影響を受けない処理を書けそうで書けなさそうです。\n\n![Decorator.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/d1da9231-775e-6b33-1332-496b8167c695.png)\n\n確かに、消費税コード部分やセール部分は変更が不要だしシンプルですが、この実装ではセール毎にコード修正が必要となってしまいます。\n\n```\n//----------------------------------------\n// 通常時コード\nProduct p = new Product();\nProduct taxedProduct = new TaxedProduct(p);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n//----------------------------------------\n// セール時コード\nProduct p = new Product();\nProduct saledProduct = new SaledProduct(p);\nProduct taxedProduct = new TaxedProduct(saledProduct);\n\n// 消費税を考慮した価格を取得\ntaxedProduct.getPrice();\n\n```\n\nビジネス要件である、PSStore のセールがどの様な周期でどの様な製品に対して行われているかを理解しないで実装したのでしょうか。\nセールや消費税適用前後で値段しか変わらないのにPSStoreに並べる商品自体を`interface`として定義している点も意味不明ですね。\nでは、`PSStorePrice` にすればいいかというとそうでもなさそうです。\n\n近視眼的にデザインパターンを適用しても、再利用性が上がらない上にメンテナンスを行う人などに不快感を与える可能性もあるので注意が必要そうです。\n\n\n### 10. Facade(窓口) \n区役所で住民票を取るとします。区役所は巨大な建物で大変多くの業務を行っているが、住民票発行の窓口に行けばとりあえず住民票を取る事がでます。\n適切な窓口が設定されることで区役所の業務すべてを把握することなく円滑に目的を達成できるようにするためのパターンが`Facade`です。\n\n配達に関する機能を持っているため、単純な窓口ではないですがウーバーイーツを想像してみましょう。\n利用者はウーバーイーツの裏にある複雑な仕組みを意識することなく簡単なインターフェースで様々な食料を手に入れる事ができるようになりました。\n\nこれが`Facade(窓口)`を利用するメリットです。\n\nコードを`Facade`パターンで書けば分りやすくなるのではなく、 **『`Facade`パターンを利用した方が自然に記述できる外部設計に対して`Facade`を適用する』** と考えると良いと思います。\n\n![Facade.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0436a495-551d-3ffe-3e91-2b6cfb72a2b3.png)\n\n人間向けの言語で書かれた外部設計を、コンピューターに分かる様に翻訳するのが職業プログラミングです。\nクラス名に`Facade`とつける時点で、外部設計からは読み取れない複雑な翻訳（実装）になっているかもしれません。\n\n\n### 11. Flyweight(軽量)\nネットフリックスは、知らない人はあまりいないと思いますが動画見放題のサブスクサービスです。\nそんなネットフリックスも、創業当時は実店舗を持ってDVDレンタルのビジネスを行っていたのですが、業態を大幅に転換し紆余曲折を経て現在のサービスを提供するに至りました。\n\n現CEOのリード・ヘイスティングスや初代CEOのマーク・ランドルフが `Flyweightパターン` を適用しようと思ったかどうかは知りませんが、 `Flyweightパターン` で表現できそうです。\n\n![Flyweight.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/8bb4a2df-371e-c13c-6819-585d34777c2e.png)\n\n(参考)\n[ネットフリックスという世界的企業はいかに誕生したのか](https://www.dhbr.net/articles/-/7044)\n\n\n### 12. Proxy(代理人)\nコードレベルで考えると Adapter パターンとの違いが分かりづらいため、ここでも人間世界で起きている事例で考えます。\n例えば、何かやらかした際に、法廷で争わなければいけなくなりますが、おそらく多くの人は法律の知識がないため弁護士を代理人として立てると思います。\nこのような、『何らかの意味ある代理行為』がデザインパターンで定義されていることかと思います。\n\n代理行為には様々な種類がありますが、本章では以下に４種類列挙します。\n\n#### カリスマ経営者率いるプログラミングスクール(A virtual proxy)\nカリスマ経営者の有名なITスクールに入ると、カリスマ経営者に教えてもらえてプログラムが書けるような気分になります。\n実際にはカリスマ経営者は、社員やバイトの先生に何らかの方針を伝えるのみで、教育行為の大半は社員やバイトの先生が行うことになると思います。\n\nカリスマ経営者は、カリスマとして活動したり経営者として活動したりするのが忙しいので全ての生徒の相手ができないため、代理で教える先生が必要となります。\n\n![A virtual proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/4c64fd7d-c934-9556-26f0-f387d5eac865.png)\n\n\n#### オフショア窓口(A remote proxy)\n単価の安い海外にIT業務の委託を行いたいですが、英語が分かりませんし、海外に行って仕事を発注するのも大変です。\n一方、単価の安い国側でも単価の高い日本の仕事がほしいですが、日本に移住するのも大変ですし生活コストが上がってしまうため安い単価で仕事が受けられなくなります。\n\n日本語と現地語が話せるPMを日本事務所に配置することで現地からの業務提供を円滑に行うことができます。\n\n![A remote proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/f3fb4558-29b2-69d6-61a1-992985cf0d64.png)\n\n\n#### 美容院(A protective proxy)\n多くの人は、髪の毛を自分で切ることができますが、それをしようとは思いません。イケてない髪型になったら取り返しがつかないからです。\nかっこよく（かわいく）切ってくれる人に頼むのが安全です。\n\n![A protective proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0b63af0c-91d0-37ea-9bcf-7be55a491836.png)\n\n\n#### メルカリ(A smart proxy)\nいらなくなった古着を売るとして、友達に声をかけるなど色々な手段があると思いますが、メルカリに出品される方も多いのではないでしょうか。\n家の前に置いておいても誰かの目に止まり購入されることはほぼないと思いますが、メルカリに出品しておくとあなたに代わって古着を売り飛ばしてくれます。\n\n![A smart proxy.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9f7eb90e-db67-b5c7-8f0c-bf7e0bd6483e.png)\n\n\n(参考)\n[What is the exact difference between Adapter and Proxy patterns?](https://stackoverflow.com/questions/37692814/what-is-the-exact-difference-between-adapter-and-proxy-patterns)\n\n\n### 13. Chain of Responsibility(責任の鎖)\n大勢のお客で賑わっている居酒屋での出来事です。炭酸麦茶を頼んで30分以上経ちますがまだ届きません。いい加減遅いなと思いテーブルの呼び出しベルを押し店員を呼び出し「オーダー入ってます？」とすまなそうに確認して炭酸麦茶を提供してもらうことができました。\n\n一方隣の席からは「お前じゃ話にならん、店長を呼んでこい」という怒鳴り声が聞こえてきました。興味津々でそちらの席を横目で観察したところ、バイトリーダーらしき人物が出てきて謝罪をするも結局店長は出てこないという様子を目撃することになりました。\n\nこれが、責任の鎖です。\nこの居酒屋のスタッフは、バイト→バイトリーダー→雇われ店長→本部マネージャー→本部社長と言った責任の鎖でつながれており、顧客の怒り度に対して誰がどう対処するかを規定しています。\n\n```\npublic abstract class Responsible {\n    private Responsible next = null;\n    private String name = null;\n\n    public Responsible(String name){\n        this.name = name;\n    }\n    public Responsible setNext(Responsible next){\n        this.next = next;\n        return next;\n    }\n    public final void handle(Claim claim){\n        if(canHandle(claim)) {\n            doHandle(claim);\n        } else if(next != null) {\n            next.handle(claim);\n        }else{\n            //FIXME: Something to do.\n        }\n    }\n    protected abstract boolean canHandle(Claim claim);\n    protected abstract void doHandle(Claim claim);\n}\n\n// バイト\npublic class PartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // オーダーされた商品を持ってくる\n    }\n}\n\n// バイトリーダー\npublic class HeadOfPartTimer extends Responsible {\n    public HeadOfPartTimer(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        // 平謝り\n        // 次回使える5%引きチケットを渡す\n    }\n}\n\n// 雇われ店長\npublic class StoreManager extends Responsible {\n    public StoreManager(String name){\n        super(name);\n    }   \n    protected boolean canHandle(Claim claim){\n        if(claim.level.lessThan(Claim.SUPER_SUPER_ANGRY)){\n            return true;\n        }\n        return false;\n    }\n    protected void doHandle(Claim claim){\n        throw new UnsupportedOperationException(); \n    }\n}\n\n```\n\n### 14. Command(手順書通りやって)\n\n作業の手順を書いた手順書があります。コピーすれば複数の手順書にできますし、いろいろな人に渡して作業をお願いすることができます。\nCommand パターンは、「手順書」と「依頼」を表すパターンです。手順の内容は実際の手順書によって異なります。\n\n「銀座のコーラを買ってくる」依頼であれば「銀座への行き方」などが手順書に定義されます。「銀座に行く」手順書と「コーラを買う」手順書を分ければ、買い物コマンドを作るだけで銀座での買い物はし放題かもしれません。\nコマンドを実行した結果としてコーラを受け取りたいですし、コーラ以外にも焼きそばやパンも食べたいとなると、戻り値が `void` では受け取れず、また、コーラ買ってくるまでの間他の事をしていたいとなると、非同期での実行が必要になってきます。\n\n適用自体は簡単ですが、要件をよく確認して設計しないといたずらに複雑なコードになるだけなので注意が必要です。\n\n![Command.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/6aa75570-79fc-4741-de3a-dad4d82de2ff.png)\n\n### 15. Interpreter(RPGゲームのスクリプト言語)\n\nスクリプト言語がインタプリタによって実行されているかは一旦横においておくことにします。\nデザインパターンとして学ぶべきことは「業務上の課題を解決するためになんらかの文法の言語を作りそれを解析して動かす」パターンということです。\n\nRPGゲームを作る場合を例に考察してみましょう。\nRPGゲームは、街の入り口に立っている町人Aに「ようこそラダトームのまちへ」と喋らせたり、主人公やライバルキャラクターに小芝居させながら大量の会話をさせるなどのイベントシーンが必要です。これらのイベントシーンをプログラマがアセンブラやC言語などのプログラム言語で書くのは非常に大変です。\nゲームの企画やプランナーの人が「talk(charaA, ようこそラダトームのまちへ)」と書いたら町人Aがセリフをしゃべってくれる仕組みがあったらどうでしょうか。いちいちプログラマにお願いして嫌な顔をされながらイベントを作るよりは遥かに簡単そうです。一方のプログラマはバトルプログラムやエフェクトプログラムに集中できそうで win win です。\nこの時に作る `talk()` 等を解析して動かすプログラムを巨大な if 文で作ると大変なので、インタプリタを作って Composite パターンなどに当てはまるように解析して実行していくのがインタプリタパターンです。\n\n昔は毎回スクリプトエンジンを手作りしていましたが最近は[Lua言語](https://ja.wikipedia.org/wiki/Lua)が人気があるようですね。\n\n### 16. Iterator(古い設計。関数型プログラムをしよう)\n\niterator パターンは、配列やリストに含まれる要素に対して何らかの処理を行うパターンです。\n`hasNext()`, `getNext()` などのメソッドを見かけたら iterator パターンでなんらかの集合の要素を取得しているんだなと見てもらえば良いと思いますが、近代言語ではよりよい方法が提供されているので敢えて実装しない方がよいでしょう。\n\n配列操作用のメソッドに関数を渡す事で配列の全ての要素に対して任意の処理を行えます。\n\n```\n例)\nfind(f) : f関数の戻り値が true の要素を返す（１つ）\nfilter(f) : f関数の戻り値が true の要素を返す（複数）\nmap(f) : f関数の戻り値の配列に map する\nreduce(f) : 配列の要素に対してfで与えられる関数を順次実行した結果を返す（１つ）\nsome(f) : f関数の戻り値が true の要素があるか？\nevery(f) : f関数の戻り値がすべて true か？\nflatMap(f) : f関数の戻り値（配列）を全て連結した配列を返す\n...\n```\n\n余計なことは覚えずに、js では Array クラスのメソッド、Java では StreamApi を利用するとよいでしょう。\n\n参考)[MDN Array](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array)\n\n\n### 17. Mediator(SESと指揮命令)\n\nMediator(仲介役)というとあまり見かけない表現かと思いますが、われわれの仕事現場に目を向けると分かりやすい例があります。\n\nITプロジェクトで協力会社さんに参画頂いた際、参画者の性質を見てAさんは開発、Bさんは試験などおおよその方針を指揮命令者が出していると思います。Mediator パターンで実現したいのはこの指揮命令による秩序です。\n\nただ、SESで参画している協力会社さん同士が直接業務に関する指示を行ってはいけないにも関わらず、指揮命令者の指示を待っていると仕事が進まないので、直接会話して仕事を進めているケースもあるかもしれません。\n\n現実の世界でも必ずしもうまく機能しないケース（指揮命令系統が複雑になるだけで仕事が進まない）もある通り、Mediatorパターンを適用する際には、本当にMediatorが必要なのかをよく考えて適用する必要があるでしょう。\n\n![Mediator.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/37c4a62d-9819-6b98-5c97-a84006ded7df.png)\n\n\n### 18. Memento(記念品よりセーブデータ)\n\n令和の世の中で、Memento(記念品、形見)と言われて日常で馴染み深い人は少数派の様に思います。\nコンピューターゲームを遊んで、次の日その続きから遊ぶために、その時の状態を保存したセーブデータを作ったことがある人はそれなりにいるのではないでしょうか。\n\nMementoパターンは、ある時点での処理の続きを再開できるように必要なデータを保存しておくパターンです。\n\nセーブデータは、次回からゲームを再開するために、その時点での所持金や経験値やレベルなどのプレイヤーの状態を表す変数が保存されますが、その時点での画面の映像などは保存されません。\nMementoパターンでも同様に、プログラムの動作に必要な最小限のデータのみを保存します。\n\n![Memento.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/9eaf0235-01cd-45ca-53b7-213214826d3c.png)\n\n\n### 19. Observer(新刊お知らせ機能)\n\nObserver(観測者)パターンは、言葉の響きからすると観測者が Polling などして何かを観測するように思えますが、実際は、「新刊お知らせ機能」の様に、「読んでる漫画の新刊がでたら通知してくれ」と登録しておくと、新刊が出た際に Observer(観測者)に通知が来るパターンです。\n\nタイマーなどで定期監視をしなくてよいためコンピュータに対する負荷も少なく、「新刊が出た」などのイベントに対して処理を実行できるイベントドリブンの考え方も人間に優しいです。\n\nAngular や Vue や React などに実装されているデータバインディングがあるとほとんど無用になるのですがちょっとうまく動かない時に利用する watch がObserver の考え方と近いと思います。\n\n![Observer.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/5555d727-1135-2d63-f120-ebb4cece5596.png)\n\n\n### 20. State(キャラクタ選択)\n\n執筆時点の流行に乗ると、ELDEN RING での放浪剣士や素寒貧といった素性選択かと思いますが、戦士や魔法使いなどの職業の例えの方が普遍的で分かりやすそうなのでそちらで話を進めます。\n\nプレイヤーの選択により、プレイヤーの操作するキャラクターが「戦士」や「魔法使い」になるゲームがあったとします。「戦士」は剣や盾などを装備しての近接攻撃が得意で、魔法使いは杖やローブなどが装備可能で魔法による遠距離攻撃が得意です。\n\nAボタンやBボタンを押下時のイベント関数に「もし戦士だったら」とか、「もし魔法使いだったら」といったコードを書くのは一見直感的です。\n最初に戦士しかいないところに魔法使いを追加したらその様なコードを書くことも往々にしてあるでしょう。\n\nただこれが、複雑なコマンド入力でキャラクタ固有スキル発動もしたい、職業によって固有のスキルツリーも持ちたいとなってくると「もし戦士だったら」という分岐をどこに書いたらいいかがよく分からなくなってきます。拡張が辛くなってきた時がリファクタリング適正期かと思います。\n\n仕様書も書かずにノリで拡張したコードであれば、新たにプロジェクトに追加されたメンバーに新ジョブ「僧侶」の実装を依頼することも難しいでしょうし、ゲームをやらないメンバーはスキルツリーのコードが職業によって分岐があることに気がつかないかもしれません。\n\nそこで、状態(職業)毎にクラスを定義して各クラスに対して定められたアクションの実装を行えば、自然かつ拡張性の高いクラス定義を行えるという考え方が State パターンです。\n\n例)\n- 攻撃行動\n    - 「戦士という状態」のプレイヤーが攻撃をすれば剣を振る\n    - 「魔法使いという状態」のプレイヤーが攻撃をすれば魔法を詠唱\n- 防御行動\n    - 「戦士という状態」のプレイヤーが防御をすれば盾を構える\n    - 「魔法使いという状態」のプレイヤーが防御をしても何もできない\n- etc...\n\n![State.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/72dab98b-0ef4-8f23-fab0-059266bdfba3.png)\n\n`jobState.attacAction()` でそれぞれの職業に応じた攻撃を行えるといった実装になるため、ここに「騎士」や「僧侶」を追加しても `Player` クラスやその他のコードの変更は不要で、`KnightState` や `ClericState` といった新規追加クラスに対してコードを書けばよいというのも精神衛生上よいです。\n\n職業を状態と捉えるかどうかは議論がありそうですが、デザインパターンの本質としてはパターンを適用することでコードが分かりやすくなるかどうかというところだと思います。\n\n### 21. Strategy(戦略か戦術か、それが問題だ)\n\n戦略を定義したクラスを用意してそれを入れ替えれば、コードの修正範囲は小さいという考え方のパターンですが、ストラテジーパターンで作られているJavaのソートは、皆さんご存知の通り大変冗長なコードになっています。\n戦術レベルの内容を戦略で解決するというデザインが適切ではないというポピュラーな例と言えるでしょう。\n\nStrategy は適用すべきところに適用することにして、ソートは Lambda や Comparator を利用して書くのがよいでしょう。\n\n``` SortSnippet.java\n// 【冗長】昇順ソート戦略\nComparator<String> ascSortStoratagy = new Comparator<String>() {\n    @Override\n    public int compare(String s1, String s2) {\n        return s1.compareTo(s2);\n    }\n};\n\n// 【冗長】降順ソート戦略\nComparator<String> descSortStoratagy = new Comparator<String>() {\n    @Override\n    public int compare(String s1, String s2) {\n        return s2.compareTo(s1);\n    }\n};\n\n// 【冗長】昇順ソート戦略でソート\nList<String> sortedItems = items.stream()\n    .sorted(ascSortStoratagy)   // 別途定義した昇順ストラテジーを指定。インラインでも書けるが冗長\n    .collect(Collectors.toList());\n\n// Lambda でソート\nList<String> sortedItems = items.stream()\n    .sorted((s1, s2) -> s1.compareTo(s2))   // Lambda 式で直接定義\n    .collect(Collectors.toList());\n\n// Comparator でソート\n// クラスのフィールドを比較する場合は、Comparator.comparing を利用する\nList<String> sortedItems = items.stream()\n    .sorted(Comparator.naturalOrder())  // 昇順\n    .collect(Collectors.toList())\n```\n\n(参考)\n[Comparatorを使ってListをソートする方法](https://qiita.com/KevinFQ/items/09c73cc76cb646ae63f4)\n\n### 22. Template Method(学習指導要綱)\n\n日本には様々な学校がありますが、そこで提供される教育はおよそ同じような内容でしょう。\n年間にどれぐらい授業があって、どんなふうに教育しなさい、というのが学習指導要綱として定められているからです。\nその学習指導要綱に沿って各教員が教育を行う、というのが Template Method の考え方に近いでしょう。\n\nところで、複雑すぎる Template Method はシステムの品質を上げません。実装が困難で、実装者による個人差が大きく出てしまうからです。\nTemplate Method を実装することが教員に要求されていますが、実装次第で東大合格者が出たり学級崩壊が起きたり、過労で離任が発生したりもしていることからも分かるでしょう。\n\n本稿を書くにあたって[【総則編】小学校学習指導要領（平成29年告示）解説](https://www.mext.go.jp/component/a_menu/education/micro_detail/__icsFiles/afieldfile/2019/03/18/1387017_001.pdf)を一読しましたが、これは大変だなと思いました。\n\n```java\n// 学習指導要綱\npublic abstract class CurriculumGuideline {\n    // 授業の準備をする\n    public abstract void prepareClassroom();\n    // 授業をする\n    public abstract void doClassroom();\n    // 宿題をつくる\n    public abstract void makeHomework();\n    // 宿題を採点する\n    public abstract void checkHomework();\n\n    // and so on...\n}\n\n// 怠け者先生\npublic class LazyTeacher extends CurriculumGuideline {\n    public abstract void prepareClassroom() {\n        // TODO Auto-generated method stub\n    }\n    public abstract void doClassroom() {\n        // TODO Auto-generated method stub\n    }\n    public abstract void makeHomework() {\n        // TODO Auto-generated method stub\n    }\n    public abstract void checkHomework() {\n        // TODO Auto-generated method stub\n    }\n}\n```\n\n一方で、コンビニやファミレスのアルバイト作業は作業のテンプレート化がうまくできていて結果に差異が少ない様に思えます。たまに例外が発生して twitter などで炎上していますが、作業要項の問題とは考えにくいです。\n\nTemplate Method はシステムを捉えるのに必須な考え方ですが、適用が難しいという印象です。\n\n\n### 23. Visitor(ウーバーとマックデリバリーとヤマトと佐川と…)\n\n家に来そうなVisitor(訪問者)を列挙してみました。\nウーバーが顧客の家を訪問したら『お金をもらって商品を渡す』という行為をします。\n訪問者側に、訪問時の処理を実装するのが Visitor パターンです。\nこの様な実装にしておくと、顧客に断りなく値上げをしたりサービスの質を落とすこともやり放題…ではなく、アルゴリズムをオブジェクトの構造から分離ができますが、少々大掛かりなパターンであまり利用することはない印象です。\n\n![Visitor.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/136165/0c515f36-701e-b175-6739-209c48c1af72.png)\n\n\n## おわりに\n\nちょいちょい時間を見つけて更新していたら１年ぐらいかかりましたが、全部書けてよかったです。\nなんとなく意識高く難しく感じる『デザインパターン』を少しでも身近に感じて頂けたら幸いです。\n\nデザインパターンは偉大な先人達が開発する時の **『ベストプラクティス』** をパターンとして抽出してくれたものなので学びは多いです。\n近代開発からすると、冗長なパターンが多い様な気もしなくはないですが、設計の考え方をうまく学んで、よりよいコードを書くのに役立てて頂けたらいいのかなと思いました。\n\n\n(参考サイト)\n[TECHSCORE デザインパターン](https://www.techscore.com/tech/DesignPattern/index.html/)\n[DESIGN PATTERNS](https://refactoring.guru/design-patterns/)\n\n\n[^1]: 実際は大量のドキュメントを書いたり試験したりもする仕事。\n\n",
     "coediting": false,
     "comments_count": 0,
     "created_at": "2021-11-06T17:14:38+09:00",
@@ -2722,7 +2778,7 @@ const ARTICLES = [
       }
     ],
     "title": "日々の暮らしから学ぶデザインパターン超入門",
-    "updated_at": "2022-11-26T17:50:14+09:00",
+    "updated_at": "2024-06-29T14:12:01+09:00",
     "url": "https://qiita.com/kaku3/items/485830bcec1f7ce771fd",
     "user": {
       "description": "ゲーム・マンガ・アニメとラーメンが大好きなITエンジニア",
@@ -2731,7 +2787,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2742,7 +2798,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2825,
+    "page_views_count": 2881,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2783,7 +2839,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2794,7 +2850,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 8628,
+    "page_views_count": 8659,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2839,7 +2895,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2850,7 +2906,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1466,
+    "page_views_count": 1503,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2887,7 +2943,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2898,7 +2954,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3917,
+    "page_views_count": 3952,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2935,7 +2991,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2946,7 +3002,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2006,
+    "page_views_count": 2024,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -2983,7 +3039,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -2994,7 +3050,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2944,
+    "page_views_count": 2963,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3039,7 +3095,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3050,7 +3106,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3184,
+    "page_views_count": 3225,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3095,7 +3151,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3106,7 +3162,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1770,
+    "page_views_count": 1786,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3143,7 +3199,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3154,7 +3210,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2526,
+    "page_views_count": 2545,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3195,7 +3251,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3206,7 +3262,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2507,
+    "page_views_count": 2534,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3251,7 +3307,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3262,7 +3318,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1922,
+    "page_views_count": 1947,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3299,7 +3355,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3310,7 +3366,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1717,
+    "page_views_count": 1755,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3355,7 +3411,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3366,7 +3422,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1632,
+    "page_views_count": 1657,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3403,7 +3459,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3414,7 +3470,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1043,
+    "page_views_count": 1057,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3463,7 +3519,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3474,7 +3530,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3944,
+    "page_views_count": 4094,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3515,7 +3571,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3526,7 +3582,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1397,
+    "page_views_count": 1429,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3539,7 +3595,7 @@ const ARTICLES = [
     "created_at": "2021-02-13T15:26:47+09:00",
     "group": null,
     "id": "dce7c3e0f9e123f22c4b",
-    "likes_count": 3,
+    "likes_count": 4,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 2,
@@ -3575,7 +3631,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3586,7 +3642,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 11972,
+    "page_views_count": 12528,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3627,7 +3683,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3638,7 +3694,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2071,
+    "page_views_count": 2085,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3683,7 +3739,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3694,7 +3750,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 915,
+    "page_views_count": 924,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3739,7 +3795,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3750,7 +3806,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6035,
+    "page_views_count": 6242,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3799,7 +3855,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3810,7 +3866,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 4272,
+    "page_views_count": 4370,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3851,7 +3907,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3862,7 +3918,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1100,
+    "page_views_count": 1120,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3907,7 +3963,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3918,7 +3974,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1881,
+    "page_views_count": 1900,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -3967,7 +4023,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -3978,7 +4034,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3548,
+    "page_views_count": 3627,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4023,7 +4079,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4034,7 +4090,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2328,
+    "page_views_count": 2338,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4079,7 +4135,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4090,7 +4146,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2173,
+    "page_views_count": 2199,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4135,7 +4191,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4146,7 +4202,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3394,
+    "page_views_count": 3503,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4187,7 +4243,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4198,7 +4254,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 5848,
+    "page_views_count": 5936,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4243,7 +4299,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4254,7 +4310,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1290,
+    "page_views_count": 1316,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4295,7 +4351,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4306,7 +4362,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1942,
+    "page_views_count": 1982,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4347,7 +4403,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4358,7 +4414,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 835,
+    "page_views_count": 856,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4399,7 +4455,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4410,7 +4466,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1078,
+    "page_views_count": 1090,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4455,7 +4511,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4466,7 +4522,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2199,
+    "page_views_count": 2273,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4503,7 +4559,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4514,7 +4570,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1119,
+    "page_views_count": 1156,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4563,7 +4619,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4574,7 +4630,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1597,
+    "page_views_count": 1627,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4619,7 +4675,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4630,7 +4686,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1866,
+    "page_views_count": 1901,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4679,7 +4735,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4690,7 +4746,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1917,
+    "page_views_count": 1948,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4735,7 +4791,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4746,7 +4802,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2258,
+    "page_views_count": 2288,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4795,7 +4851,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4806,7 +4862,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3528,
+    "page_views_count": 3578,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4851,7 +4907,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4862,7 +4918,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 12249,
+    "page_views_count": 12462,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4903,7 +4959,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4914,7 +4970,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1781,
+    "page_views_count": 1829,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -4927,7 +4983,7 @@ const ARTICLES = [
     "created_at": "2020-09-05T18:15:37+09:00",
     "group": null,
     "id": "abe98001f74025cec422",
-    "likes_count": 93,
+    "likes_count": 95,
     "private": false,
     "reactions_count": 0,
     "stocks_count": 122,
@@ -4963,7 +5019,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -4974,7 +5030,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 14686,
+    "page_views_count": 14988,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5015,7 +5071,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5026,7 +5082,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2717,
+    "page_views_count": 2836,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5063,7 +5119,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5074,7 +5130,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1419,
+    "page_views_count": 1450,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5119,7 +5175,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5130,7 +5186,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 3701,
+    "page_views_count": 3723,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5175,7 +5231,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5186,7 +5242,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 6168,
+    "page_views_count": 6206,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5227,7 +5283,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5238,7 +5294,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 2767,
+    "page_views_count": 2770,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5279,7 +5335,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5290,7 +5346,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1963,
+    "page_views_count": 1973,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5331,7 +5387,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5342,7 +5398,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1746,
+    "page_views_count": 1762,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5387,7 +5443,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5398,7 +5454,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1126,
+    "page_views_count": 1135,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5435,7 +5491,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5446,7 +5502,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 1563,
+    "page_views_count": 1573,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -5479,7 +5535,7 @@ const ARTICLES = [
       "followers_count": 611,
       "github_login_name": "kaku3",
       "id": "kaku3",
-      "items_count": 103,
+      "items_count": 104,
       "linkedin_id": "",
       "location": "",
       "name": "",
@@ -5490,7 +5546,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 939,
+    "page_views_count": 947,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
