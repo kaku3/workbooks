@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Screen Map</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="main.css"/>
+</head>
+
+<body>
+  <!-- メニュートグルボタン -->
+  <button class="menu-toggle">≡</button>
+
+  <!-- サイドメニュー -->
+  <div class="side-menu">
+      <button class="menu-close">×</button>
+      <div class="screen-list"></div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="main-content">
+    <div id="sitemap"></div>
+  </div>
+
+  <script src="data/screens.js"></script>
+  <script>
+    $(function() {
+      initMenu();
+      initScreenList(SCREENS);
+      initSitemap(SCREENS);
+
+      function initMenu() {
+        // メニュー操作
+        $('.menu-toggle').click(function() {
+          $('.side-menu').addClass('open');
+          $('.main-content').addClass('shifted');
+        });
+
+        $('.menu-close').click(function() {
+            $('.side-menu').removeClass('open');
+            $('.main-content').removeClass('shifted');
+        });
+      }
+
+      // スクリーン一覧の表示
+      function initScreenList(screens) {
+        const $screenList = $('.screen-list');
+        $screenList.empty();
+
+        for (const screen of screens) {
+          const $item = $('<div>')
+            .addClass('screen-list-item')
+            .html(`
+              <div class="screen-id">${screen.id}</div>
+              <div class="screen-title">${screen.title}</div>
+            `)
+            .click(() => {
+              // クリックしたスクリーンまでスクロール
+              const targetElement = $(`#screen-${screen.id}`);
+              if (targetElement.length) {
+                $('html, body').animate(
+                  {
+                    scrollTop: targetElement.offset().top - 20
+                  }, 500
+                );
+              }
+            });
+
+          $screenList.append($item);
+        }
+      }
+
+      function initSitemap(screens) {
+        const $container = $('#sitemap');
+        $container.empty();
+  
+      }
+    });
+  
+  </script>
+</body>
+
+</html>
+

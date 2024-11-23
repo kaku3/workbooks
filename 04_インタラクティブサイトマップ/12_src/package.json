@@ -1,0 +1,17 @@
+{
+  "name": "sitemap-from-plantuml",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "create-sitemap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "remark": "^15.0.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5"
+  }
+}

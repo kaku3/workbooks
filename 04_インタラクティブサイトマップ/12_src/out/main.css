@@ -1,0 +1,166 @@
+:root {
+  --side-menu-transition-time: 0.3s;
+
+  --side-menu-width: 200px;
+  --side-menu-main-bg-color: #333;
+  --side-menu-text-color: #fff;
+
+  --page-detail-width: 480px;
+  --page-detail-main-bg-color: #f0f0f0;
+  --page-detail-text-color: #222;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* サイドメニュー */
+.side-menu {
+  position: fixed;
+  left: calc(-1 * var(--side-menu-width));  /* 負の値で非表示 */
+  top: 0;
+  width: var(--side-menu-width);
+  height: 100%;
+  background: var(--side-menu-main-bg-color);
+  color: var(--side-menu-text-color);
+  transition: left var(--side-menu-transition-time) ease;
+  z-index: 1000;
+  overflow-y: auto;
+
+  &.open {
+    left: 0;
+  }
+}
+
+.menu-toggle {
+  position: fixed;
+  left: .25rem;
+  top: .25rem;
+  z-index: 1001;
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: .25rem .5rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.menu-close {
+  position: absolute;
+  right: .25rem;
+  top: .25rem;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.screen-list {
+  margin-top: 36px;
+}
+
+.screen-list-item {
+  padding: .2rem .5rem;
+  cursor: pointer;
+
+  font-size: .8rem;
+
+  border-bottom: 1px solid #888;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .screen-id {
+    color: #ccc;  /* ID の色 */
+    font-family: monospace;  /* 等幅フォント */
+    font-size: .7rem;
+  }
+  
+  .screen-title {
+    padding-top: .2rem;
+    padding-left: .25rem;
+    line-height: 1;
+  }
+  
+}
+
+.page-detail {
+  position: fixed;
+  right: calc(-1 * var(--page-detail-width));  /* 負の値で非表示 */
+  top: 0;
+  width: var(--page-detail-width);
+  height: 100%;
+  background: var(--page-detail-main-bg-color);
+  color: var(--page-detail-text-color);
+  transition: left var(--side-menu-transition-time) ease;
+  z-index: 1000;
+  overflow-y: auto;
+
+  &.open {
+    right: 0;
+  }
+}
+
+
+
+
+/* メインコンテンツ */
+.main-content {
+  margin-left: 20px;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.shifted {
+  margin-left: 270px;
+}
+
+#sitemap {
+  .screen {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .screen-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .screen-info {
+    color: #666;
+    font-size: 0.9em;
+  }
+  
+  .screen-description {
+    margin: 10px 0;
+  }
+  
+  .screen-links {
+    margin-left: 20px;
+  }
+  
+  .depth-0 {
+    background-color: #f8f8f8;
+  }
+  
+  .depth-1 {
+    background-color: #f0f0f0;
+    margin-left: 20px;
+  }
+  
+  .depth-2 {
+    background-color: #e8e8e8;
+    margin-left: 40px;
+  }
+  
+  .depth-3 {
+    background-color: #e0e0e0;
+    margin-left: 60px;
+  }
+}

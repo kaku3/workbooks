@@ -1,0 +1,4778 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "heading",
+      "depth": 1,
+      "children": [
+        {
+          "type": "text",
+          "value": "サイトマップ",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 3,
+              "offset": 2
+            },
+            "end": {
+              "line": 1,
+              "column": 9,
+              "offset": 8
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 9,
+          "offset": 8
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC001, トップページ, /",
+          "position": {
+            "start": {
+              "line": 3,
+              "column": 4,
+              "offset": 15
+            },
+            "end": {
+              "line": 3,
+              "column": 20,
+              "offset": 31
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 3,
+          "column": 1,
+          "offset": 12
+        },
+        "end": {
+          "line": 3,
+          "column": 20,
+          "offset": 31
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "サイトのメインページ。新着商品、おすすめ商品、キャンペーン情報などを表示。\r\nヘッダー、左メニュー、フッターを含む基本レイアウトを提供。",
+          "position": {
+            "start": {
+              "line": 5,
+              "column": 1,
+              "offset": 35
+            },
+            "end": {
+              "line": 6,
+              "column": 30,
+              "offset": 103
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 5,
+          "column": 1,
+          "offset": 35
+        },
+        "end": {
+          "line": 6,
+          "column": 30,
+          "offset": 103
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link, ヘッダー",
+          "position": {
+            "start": {
+              "line": 8,
+              "column": 5,
+              "offset": 111
+            },
+            "end": {
+              "line": 8,
+              "column": 15,
+              "offset": 121
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 8,
+          "column": 1,
+          "offset": 107
+        },
+        "end": {
+          "line": 8,
+          "column": 15,
+          "offset": 121
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "検索,SC002",
+                  "position": {
+                    "start": {
+                      "line": 10,
+                      "column": 3,
+                      "offset": 127
+                    },
+                    "end": {
+                      "line": 10,
+                      "column": 11,
+                      "offset": 135
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 10,
+                  "column": 3,
+                  "offset": 127
+                },
+                "end": {
+                  "line": 10,
+                  "column": 11,
+                  "offset": 135
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 10,
+              "column": 1,
+              "offset": 125
+            },
+            "end": {
+              "line": 10,
+              "column": 11,
+              "offset": 135
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "カート,SC300",
+                  "position": {
+                    "start": {
+                      "line": 11,
+                      "column": 3,
+                      "offset": 139
+                    },
+                    "end": {
+                      "line": 11,
+                      "column": 12,
+                      "offset": 148
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 11,
+                  "column": 3,
+                  "offset": 139
+                },
+                "end": {
+                  "line": 11,
+                  "column": 12,
+                  "offset": 148
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 11,
+              "column": 1,
+              "offset": 137
+            },
+            "end": {
+              "line": 11,
+              "column": 12,
+              "offset": 148
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "新規会員登録,SC111",
+                  "position": {
+                    "start": {
+                      "line": 12,
+                      "column": 3,
+                      "offset": 152
+                    },
+                    "end": {
+                      "line": 12,
+                      "column": 15,
+                      "offset": 164
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 12,
+                  "column": 3,
+                  "offset": 152
+                },
+                "end": {
+                  "line": 12,
+                  "column": 15,
+                  "offset": 164
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 12,
+              "column": 1,
+              "offset": 150
+            },
+            "end": {
+              "line": 12,
+              "column": 15,
+              "offset": 164
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "ログイン,SC101",
+                  "position": {
+                    "start": {
+                      "line": 13,
+                      "column": 3,
+                      "offset": 168
+                    },
+                    "end": {
+                      "line": 13,
+                      "column": 13,
+                      "offset": 178
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 13,
+                  "column": 3,
+                  "offset": 168
+                },
+                "end": {
+                  "line": 13,
+                  "column": 13,
+                  "offset": 178
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 13,
+              "column": 1,
+              "offset": 166
+            },
+            "end": {
+              "line": 13,
+              "column": 13,
+              "offset": 178
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "マイページ,SC201",
+                  "position": {
+                    "start": {
+                      "line": 14,
+                      "column": 3,
+                      "offset": 182
+                    },
+                    "end": {
+                      "line": 14,
+                      "column": 14,
+                      "offset": 193
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 14,
+                  "column": 3,
+                  "offset": 182
+                },
+                "end": {
+                  "line": 14,
+                  "column": 14,
+                  "offset": 193
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 14,
+              "column": 1,
+              "offset": 180
+            },
+            "end": {
+              "line": 14,
+              "column": 14,
+              "offset": 193
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 10,
+          "column": 1,
+          "offset": 125
+        },
+        "end": {
+          "line": 14,
+          "column": 14,
+          "offset": 193
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link, 左メニュー",
+          "position": {
+            "start": {
+              "line": 16,
+              "column": 5,
+              "offset": 201
+            },
+            "end": {
+              "line": 16,
+              "column": 16,
+              "offset": 212
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 16,
+          "column": 1,
+          "offset": 197
+        },
+        "end": {
+          "line": 16,
+          "column": 16,
+          "offset": 212
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "カテゴリー一覧,SC010",
+                  "position": {
+                    "start": {
+                      "line": 18,
+                      "column": 3,
+                      "offset": 218
+                    },
+                    "end": {
+                      "line": 18,
+                      "column": 16,
+                      "offset": 231
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 18,
+                  "column": 3,
+                  "offset": 218
+                },
+                "end": {
+                  "line": 18,
+                  "column": 16,
+                  "offset": 231
+                }
+              }
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "カテゴリー1,SC011",
+                          "position": {
+                            "start": {
+                              "line": 19,
+                              "column": 5,
+                              "offset": 237
+                            },
+                            "end": {
+                              "line": 19,
+                              "column": 17,
+                              "offset": 249
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 19,
+                          "column": 5,
+                          "offset": 237
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 17,
+                          "offset": 249
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 19,
+                      "column": 3,
+                      "offset": 235
+                    },
+                    "end": {
+                      "line": 19,
+                      "column": 17,
+                      "offset": 249
+                    }
+                  }
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "カテゴリー2,SC011",
+                          "position": {
+                            "start": {
+                              "line": 20,
+                              "column": 5,
+                              "offset": 255
+                            },
+                            "end": {
+                              "line": 20,
+                              "column": 17,
+                              "offset": 267
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 20,
+                          "column": 5,
+                          "offset": 255
+                        },
+                        "end": {
+                          "line": 20,
+                          "column": 17,
+                          "offset": 267
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 20,
+                      "column": 3,
+                      "offset": 253
+                    },
+                    "end": {
+                      "line": 20,
+                      "column": 17,
+                      "offset": 267
+                    }
+                  }
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "カテゴリー3,SC011",
+                          "position": {
+                            "start": {
+                              "line": 21,
+                              "column": 5,
+                              "offset": 273
+                            },
+                            "end": {
+                              "line": 21,
+                              "column": 17,
+                              "offset": 285
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 21,
+                          "column": 5,
+                          "offset": 273
+                        },
+                        "end": {
+                          "line": 21,
+                          "column": 17,
+                          "offset": 285
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 21,
+                      "column": 3,
+                      "offset": 271
+                    },
+                    "end": {
+                      "line": 21,
+                      "column": 17,
+                      "offset": 285
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 19,
+                  "column": 3,
+                  "offset": 235
+                },
+                "end": {
+                  "line": 21,
+                  "column": 17,
+                  "offset": 285
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 18,
+              "column": 1,
+              "offset": 216
+            },
+            "end": {
+              "line": 21,
+              "column": 17,
+              "offset": 285
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "アカウント,SC101",
+                  "position": {
+                    "start": {
+                      "line": 22,
+                      "column": 3,
+                      "offset": 289
+                    },
+                    "end": {
+                      "line": 22,
+                      "column": 14,
+                      "offset": 300
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 22,
+                  "column": 3,
+                  "offset": 289
+                },
+                "end": {
+                  "line": 22,
+                  "column": 14,
+                  "offset": 300
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 22,
+              "column": 1,
+              "offset": 287
+            },
+            "end": {
+              "line": 22,
+              "column": 14,
+              "offset": 300
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 18,
+          "column": 1,
+          "offset": 216
+        },
+        "end": {
+          "line": 22,
+          "column": 14,
+          "offset": 300
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link, フッター",
+          "position": {
+            "start": {
+              "line": 24,
+              "column": 5,
+              "offset": 308
+            },
+            "end": {
+              "line": 24,
+              "column": 15,
+              "offset": 318
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 24,
+          "column": 1,
+          "offset": 304
+        },
+        "end": {
+          "line": 24,
+          "column": 15,
+          "offset": 318
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "企業情報",
+                  "position": {
+                    "start": {
+                      "line": 26,
+                      "column": 3,
+                      "offset": 324
+                    },
+                    "end": {
+                      "line": 26,
+                      "column": 7,
+                      "offset": 328
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 26,
+                  "column": 3,
+                  "offset": 324
+                },
+                "end": {
+                  "line": 26,
+                  "column": 7,
+                  "offset": 328
+                }
+              }
+            },
+            {
+              "type": "list",
+              "ordered": false,
+              "start": null,
+              "spread": false,
+              "children": [
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "会社概要,SC401",
+                          "position": {
+                            "start": {
+                              "line": 27,
+                              "column": 5,
+                              "offset": 334
+                            },
+                            "end": {
+                              "line": 27,
+                              "column": 15,
+                              "offset": 344
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 27,
+                          "column": 5,
+                          "offset": 334
+                        },
+                        "end": {
+                          "line": 27,
+                          "column": 15,
+                          "offset": 344
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 27,
+                      "column": 3,
+                      "offset": 332
+                    },
+                    "end": {
+                      "line": 27,
+                      "column": 15,
+                      "offset": 344
+                    }
+                  }
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "ご利用ガイド,SC402",
+                          "position": {
+                            "start": {
+                              "line": 28,
+                              "column": 5,
+                              "offset": 350
+                            },
+                            "end": {
+                              "line": 28,
+                              "column": 17,
+                              "offset": 362
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 28,
+                          "column": 5,
+                          "offset": 350
+                        },
+                        "end": {
+                          "line": 28,
+                          "column": 17,
+                          "offset": 362
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 28,
+                      "column": 3,
+                      "offset": 348
+                    },
+                    "end": {
+                      "line": 28,
+                      "column": 17,
+                      "offset": 362
+                    }
+                  }
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "利用規約,SC403",
+                          "position": {
+                            "start": {
+                              "line": 29,
+                              "column": 5,
+                              "offset": 368
+                            },
+                            "end": {
+                              "line": 29,
+                              "column": 15,
+                              "offset": 378
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 29,
+                          "column": 5,
+                          "offset": 368
+                        },
+                        "end": {
+                          "line": 29,
+                          "column": 15,
+                          "offset": 378
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 29,
+                      "column": 3,
+                      "offset": 366
+                    },
+                    "end": {
+                      "line": 29,
+                      "column": 15,
+                      "offset": 378
+                    }
+                  }
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "プライバシーポリシー,SC404",
+                          "position": {
+                            "start": {
+                              "line": 30,
+                              "column": 5,
+                              "offset": 384
+                            },
+                            "end": {
+                              "line": 30,
+                              "column": 21,
+                              "offset": 400
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 30,
+                          "column": 5,
+                          "offset": 384
+                        },
+                        "end": {
+                          "line": 30,
+                          "column": 21,
+                          "offset": 400
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 30,
+                      "column": 3,
+                      "offset": 382
+                    },
+                    "end": {
+                      "line": 30,
+                      "column": 21,
+                      "offset": 400
+                    }
+                  }
+                },
+                {
+                  "type": "listItem",
+                  "spread": false,
+                  "checked": null,
+                  "children": [
+                    {
+                      "type": "paragraph",
+                      "children": [
+                        {
+                          "type": "text",
+                          "value": "お問い合わせ,SC405",
+                          "position": {
+                            "start": {
+                              "line": 31,
+                              "column": 5,
+                              "offset": 406
+                            },
+                            "end": {
+                              "line": 31,
+                              "column": 17,
+                              "offset": 418
+                            }
+                          }
+                        }
+                      ],
+                      "position": {
+                        "start": {
+                          "line": 31,
+                          "column": 5,
+                          "offset": 406
+                        },
+                        "end": {
+                          "line": 31,
+                          "column": 17,
+                          "offset": 418
+                        }
+                      }
+                    }
+                  ],
+                  "position": {
+                    "start": {
+                      "line": 31,
+                      "column": 3,
+                      "offset": 404
+                    },
+                    "end": {
+                      "line": 31,
+                      "column": 17,
+                      "offset": 418
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 27,
+                  "column": 3,
+                  "offset": 332
+                },
+                "end": {
+                  "line": 31,
+                  "column": 17,
+                  "offset": 418
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 26,
+              "column": 1,
+              "offset": 322
+            },
+            "end": {
+              "line": 31,
+              "column": 17,
+              "offset": 418
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 26,
+          "column": 1,
+          "offset": 322
+        },
+        "end": {
+          "line": 31,
+          "column": 17,
+          "offset": 418
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC002, 検索結果, /search",
+          "position": {
+            "start": {
+              "line": 33,
+              "column": 4,
+              "offset": 425
+            },
+            "end": {
+              "line": 33,
+              "column": 24,
+              "offset": 445
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 33,
+          "column": 1,
+          "offset": 422
+        },
+        "end": {
+          "line": 33,
+          "column": 24,
+          "offset": 445
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "キーワードによる商品検索結果を表示。\r\nフィルタリング機能（価格帯、カテゴリー、商品状態等）を提供。",
+          "position": {
+            "start": {
+              "line": 35,
+              "column": 1,
+              "offset": 449
+            },
+            "end": {
+              "line": 36,
+              "column": 31,
+              "offset": 499
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 35,
+          "column": 1,
+          "offset": 449
+        },
+        "end": {
+          "line": 36,
+          "column": 31,
+          "offset": 499
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 38,
+              "column": 5,
+              "offset": 507
+            },
+            "end": {
+              "line": 38,
+              "column": 9,
+              "offset": 511
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 38,
+          "column": 1,
+          "offset": 503
+        },
+        "end": {
+          "line": 38,
+          "column": 9,
+          "offset": 511
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "商品詳細,SC021",
+                  "position": {
+                    "start": {
+                      "line": 40,
+                      "column": 3,
+                      "offset": 517
+                    },
+                    "end": {
+                      "line": 40,
+                      "column": 13,
+                      "offset": 527
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 40,
+                  "column": 3,
+                  "offset": 517
+                },
+                "end": {
+                  "line": 40,
+                  "column": 13,
+                  "offset": 527
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 40,
+              "column": 1,
+              "offset": 515
+            },
+            "end": {
+              "line": 40,
+              "column": 13,
+              "offset": 527
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 40,
+          "column": 1,
+          "offset": 515
+        },
+        "end": {
+          "line": 40,
+          "column": 13,
+          "offset": 527
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC010, カテゴリー一覧, /categories",
+          "position": {
+            "start": {
+              "line": 42,
+              "column": 4,
+              "offset": 534
+            },
+            "end": {
+              "line": 42,
+              "column": 31,
+              "offset": 561
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 42,
+          "column": 1,
+          "offset": 531
+        },
+        "end": {
+          "line": 42,
+          "column": 31,
+          "offset": 561
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "全商品カテゴリーの一覧を表示。\r\nメインカテゴリーとサブカテゴリーの階層構造を表示。",
+          "position": {
+            "start": {
+              "line": 44,
+              "column": 1,
+              "offset": 565
+            },
+            "end": {
+              "line": 45,
+              "column": 26,
+              "offset": 607
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 44,
+          "column": 1,
+          "offset": 565
+        },
+        "end": {
+          "line": 45,
+          "column": 26,
+          "offset": 607
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 47,
+              "column": 5,
+              "offset": 615
+            },
+            "end": {
+              "line": 47,
+              "column": 9,
+              "offset": 619
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 47,
+          "column": 1,
+          "offset": 611
+        },
+        "end": {
+          "line": 47,
+          "column": 9,
+          "offset": 619
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "カテゴリー,SC011",
+                  "position": {
+                    "start": {
+                      "line": 49,
+                      "column": 3,
+                      "offset": 625
+                    },
+                    "end": {
+                      "line": 49,
+                      "column": 14,
+                      "offset": 636
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 49,
+                  "column": 3,
+                  "offset": 625
+                },
+                "end": {
+                  "line": 49,
+                  "column": 14,
+                  "offset": 636
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 49,
+              "column": 1,
+              "offset": 623
+            },
+            "end": {
+              "line": 49,
+              "column": 14,
+              "offset": 636
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "商品詳細,SC021",
+                  "position": {
+                    "start": {
+                      "line": 50,
+                      "column": 3,
+                      "offset": 640
+                    },
+                    "end": {
+                      "line": 50,
+                      "column": 13,
+                      "offset": 650
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 50,
+                  "column": 3,
+                  "offset": 640
+                },
+                "end": {
+                  "line": 50,
+                  "column": 13,
+                  "offset": 650
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 50,
+              "column": 1,
+              "offset": 638
+            },
+            "end": {
+              "line": 50,
+              "column": 13,
+              "offset": 650
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 49,
+          "column": 1,
+          "offset": 623
+        },
+        "end": {
+          "line": 50,
+          "column": 13,
+          "offset": 650
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC011, カテゴリー, /categories/{category_id}",
+          "position": {
+            "start": {
+              "line": 52,
+              "column": 4,
+              "offset": 657
+            },
+            "end": {
+              "line": 52,
+              "column": 43,
+              "offset": 696
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 52,
+          "column": 1,
+          "offset": 654
+        },
+        "end": {
+          "line": 52,
+          "column": 43,
+          "offset": 696
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "選択されたカテゴリーに属する商品一覧を表示。\r\nソート機能とフィルタリング機能を提供。",
+          "position": {
+            "start": {
+              "line": 54,
+              "column": 1,
+              "offset": 700
+            },
+            "end": {
+              "line": 55,
+              "column": 20,
+              "offset": 743
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 54,
+          "column": 1,
+          "offset": 700
+        },
+        "end": {
+          "line": 55,
+          "column": 20,
+          "offset": 743
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 57,
+              "column": 5,
+              "offset": 751
+            },
+            "end": {
+              "line": 57,
+              "column": 9,
+              "offset": 755
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 57,
+          "column": 1,
+          "offset": 747
+        },
+        "end": {
+          "line": 57,
+          "column": 9,
+          "offset": 755
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "商品詳細,SC021",
+                  "position": {
+                    "start": {
+                      "line": 59,
+                      "column": 3,
+                      "offset": 761
+                    },
+                    "end": {
+                      "line": 59,
+                      "column": 13,
+                      "offset": 771
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 59,
+                  "column": 3,
+                  "offset": 761
+                },
+                "end": {
+                  "line": 59,
+                  "column": 13,
+                  "offset": 771
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 59,
+              "column": 1,
+              "offset": 759
+            },
+            "end": {
+              "line": 59,
+              "column": 13,
+              "offset": 771
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 59,
+          "column": 1,
+          "offset": 759
+        },
+        "end": {
+          "line": 59,
+          "column": 13,
+          "offset": 771
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC021, 商品詳細, /products/{product_id}",
+          "position": {
+            "start": {
+              "line": 61,
+              "column": 4,
+              "offset": 778
+            },
+            "end": {
+              "line": 61,
+              "column": 39,
+              "offset": 813
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 61,
+          "column": 1,
+          "offset": 775
+        },
+        "end": {
+          "line": 61,
+          "column": 39,
+          "offset": 813
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "商品の詳細情報（価格、説明、画像、在庫状況等）を表示。\r\nカートへの追加、お気に入り登録機能を提供。",
+          "position": {
+            "start": {
+              "line": 63,
+              "column": 1,
+              "offset": 817
+            },
+            "end": {
+              "line": 64,
+              "column": 22,
+              "offset": 867
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 63,
+          "column": 1,
+          "offset": 817
+        },
+        "end": {
+          "line": 64,
+          "column": 22,
+          "offset": 867
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 66,
+              "column": 5,
+              "offset": 875
+            },
+            "end": {
+              "line": 66,
+              "column": 9,
+              "offset": 879
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 66,
+          "column": 1,
+          "offset": 871
+        },
+        "end": {
+          "line": 66,
+          "column": 9,
+          "offset": 879
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "カートに追加,SC300",
+                  "position": {
+                    "start": {
+                      "line": 68,
+                      "column": 3,
+                      "offset": 885
+                    },
+                    "end": {
+                      "line": 68,
+                      "column": 15,
+                      "offset": 897
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 68,
+                  "column": 3,
+                  "offset": 885
+                },
+                "end": {
+                  "line": 68,
+                  "column": 15,
+                  "offset": 897
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 68,
+              "column": 1,
+              "offset": 883
+            },
+            "end": {
+              "line": 68,
+              "column": 15,
+              "offset": 897
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "お気に入りに追加,SC201",
+                  "position": {
+                    "start": {
+                      "line": 69,
+                      "column": 3,
+                      "offset": 901
+                    },
+                    "end": {
+                      "line": 69,
+                      "column": 17,
+                      "offset": 915
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 69,
+                  "column": 3,
+                  "offset": 901
+                },
+                "end": {
+                  "line": 69,
+                  "column": 17,
+                  "offset": 915
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 69,
+              "column": 1,
+              "offset": 899
+            },
+            "end": {
+              "line": 69,
+              "column": 17,
+              "offset": 915
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 68,
+          "column": 1,
+          "offset": 883
+        },
+        "end": {
+          "line": 69,
+          "column": 17,
+          "offset": 915
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC101, ログイン, /login",
+          "position": {
+            "start": {
+              "line": 71,
+              "column": 4,
+              "offset": 922
+            },
+            "end": {
+              "line": 71,
+              "column": 23,
+              "offset": 941
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 71,
+          "column": 1,
+          "offset": 919
+        },
+        "end": {
+          "line": 71,
+          "column": 23,
+          "offset": 941
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "メールアドレスとパスワードによるログインフォームを提供。\r\nソーシャルログインオプションも表示。",
+          "position": {
+            "start": {
+              "line": 73,
+              "column": 1,
+              "offset": 945
+            },
+            "end": {
+              "line": 74,
+              "column": 19,
+              "offset": 993
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 73,
+          "column": 1,
+          "offset": 945
+        },
+        "end": {
+          "line": 74,
+          "column": 19,
+          "offset": 993
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 76,
+              "column": 5,
+              "offset": 1001
+            },
+            "end": {
+              "line": 76,
+              "column": 9,
+              "offset": 1005
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 76,
+          "column": 1,
+          "offset": 997
+        },
+        "end": {
+          "line": 76,
+          "column": 9,
+          "offset": 1005
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "マイページ,SC201",
+                  "position": {
+                    "start": {
+                      "line": 78,
+                      "column": 3,
+                      "offset": 1011
+                    },
+                    "end": {
+                      "line": 78,
+                      "column": 14,
+                      "offset": 1022
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 78,
+                  "column": 3,
+                  "offset": 1011
+                },
+                "end": {
+                  "line": 78,
+                  "column": 14,
+                  "offset": 1022
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 78,
+              "column": 1,
+              "offset": 1009
+            },
+            "end": {
+              "line": 78,
+              "column": 14,
+              "offset": 1022
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "新規会員登録,SC111",
+                  "position": {
+                    "start": {
+                      "line": 79,
+                      "column": 3,
+                      "offset": 1026
+                    },
+                    "end": {
+                      "line": 79,
+                      "column": 15,
+                      "offset": 1038
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 79,
+                  "column": 3,
+                  "offset": 1026
+                },
+                "end": {
+                  "line": 79,
+                  "column": 15,
+                  "offset": 1038
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 79,
+              "column": 1,
+              "offset": 1024
+            },
+            "end": {
+              "line": 79,
+              "column": 15,
+              "offset": 1038
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "パスワード忘れ,SC102",
+                  "position": {
+                    "start": {
+                      "line": 80,
+                      "column": 3,
+                      "offset": 1042
+                    },
+                    "end": {
+                      "line": 80,
+                      "column": 16,
+                      "offset": 1055
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 80,
+                  "column": 3,
+                  "offset": 1042
+                },
+                "end": {
+                  "line": 80,
+                  "column": 16,
+                  "offset": 1055
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 80,
+              "column": 1,
+              "offset": 1040
+            },
+            "end": {
+              "line": 80,
+              "column": 16,
+              "offset": 1055
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 78,
+          "column": 1,
+          "offset": 1009
+        },
+        "end": {
+          "line": 80,
+          "column": 16,
+          "offset": 1055
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC102, パスワード再設定, /password/reset",
+          "position": {
+            "start": {
+              "line": 82,
+              "column": 4,
+              "offset": 1062
+            },
+            "end": {
+              "line": 82,
+              "column": 36,
+              "offset": 1094
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 82,
+          "column": 1,
+          "offset": 1059
+        },
+        "end": {
+          "line": 82,
+          "column": 36,
+          "offset": 1094
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "メールアドレスを入力し、パスワード再設定用リンクを送信。\r\nセキュリティ確認機能を含む。",
+          "position": {
+            "start": {
+              "line": 84,
+              "column": 1,
+              "offset": 1098
+            },
+            "end": {
+              "line": 85,
+              "column": 15,
+              "offset": 1142
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 84,
+          "column": 1,
+          "offset": 1098
+        },
+        "end": {
+          "line": 85,
+          "column": 15,
+          "offset": 1142
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC111, 新規会員登録, /register",
+          "position": {
+            "start": {
+              "line": 87,
+              "column": 4,
+              "offset": 1149
+            },
+            "end": {
+              "line": 87,
+              "column": 28,
+              "offset": 1173
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 87,
+          "column": 1,
+          "offset": 1146
+        },
+        "end": {
+          "line": 87,
+          "column": 28,
+          "offset": 1173
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "新規ユーザー登録フォーム。必要な個人情報の入力と\r\n利用規約への同意プロセスを提供。",
+          "position": {
+            "start": {
+              "line": 89,
+              "column": 1,
+              "offset": 1177
+            },
+            "end": {
+              "line": 90,
+              "column": 17,
+              "offset": 1219
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 89,
+          "column": 1,
+          "offset": 1177
+        },
+        "end": {
+          "line": 90,
+          "column": 17,
+          "offset": 1219
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 92,
+              "column": 5,
+              "offset": 1227
+            },
+            "end": {
+              "line": 92,
+              "column": 9,
+              "offset": 1231
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 92,
+          "column": 1,
+          "offset": 1223
+        },
+        "end": {
+          "line": 92,
+          "column": 9,
+          "offset": 1231
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "登録完了,SC112",
+                  "position": {
+                    "start": {
+                      "line": 94,
+                      "column": 3,
+                      "offset": 1237
+                    },
+                    "end": {
+                      "line": 94,
+                      "column": 13,
+                      "offset": 1247
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 94,
+                  "column": 3,
+                  "offset": 1237
+                },
+                "end": {
+                  "line": 94,
+                  "column": 13,
+                  "offset": 1247
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 94,
+              "column": 1,
+              "offset": 1235
+            },
+            "end": {
+              "line": 94,
+              "column": 13,
+              "offset": 1247
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 94,
+          "column": 1,
+          "offset": 1235
+        },
+        "end": {
+          "line": 94,
+          "column": 13,
+          "offset": 1247
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC112, 会員登録完了, /register/complete",
+          "position": {
+            "start": {
+              "line": 96,
+              "column": 4,
+              "offset": 1254
+            },
+            "end": {
+              "line": 96,
+              "column": 37,
+              "offset": 1287
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 96,
+          "column": 1,
+          "offset": 1251
+        },
+        "end": {
+          "line": 96,
+          "column": 37,
+          "offset": 1287
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "登録完了の確認画面。登録情報の確認メール送信通知を表示。",
+          "position": {
+            "start": {
+              "line": 98,
+              "column": 1,
+              "offset": 1291
+            },
+            "end": {
+              "line": 98,
+              "column": 29,
+              "offset": 1319
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 98,
+          "column": 1,
+          "offset": 1291
+        },
+        "end": {
+          "line": 98,
+          "column": 29,
+          "offset": 1319
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC201, マイページ, /mypage",
+          "position": {
+            "start": {
+              "line": 100,
+              "column": 4,
+              "offset": 1326
+            },
+            "end": {
+              "line": 100,
+              "column": 25,
+              "offset": 1347
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 100,
+          "column": 1,
+          "offset": 1323
+        },
+        "end": {
+          "line": 100,
+          "column": 25,
+          "offset": 1347
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "ユーザーの個人ダッシュボード。注文履歴、お気に入り、\r\n個人情報管理へのリンクを提供。",
+          "position": {
+            "start": {
+              "line": 102,
+              "column": 1,
+              "offset": 1351
+            },
+            "end": {
+              "line": 103,
+              "column": 16,
+              "offset": 1394
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 102,
+          "column": 1,
+          "offset": 1351
+        },
+        "end": {
+          "line": 103,
+          "column": 16,
+          "offset": 1394
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 105,
+              "column": 5,
+              "offset": 1402
+            },
+            "end": {
+              "line": 105,
+              "column": 9,
+              "offset": 1406
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 105,
+          "column": 1,
+          "offset": 1398
+        },
+        "end": {
+          "line": 105,
+          "column": 9,
+          "offset": 1406
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "注文履歴,SC211",
+                  "position": {
+                    "start": {
+                      "line": 107,
+                      "column": 3,
+                      "offset": 1412
+                    },
+                    "end": {
+                      "line": 107,
+                      "column": 13,
+                      "offset": 1422
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 107,
+                  "column": 3,
+                  "offset": 1412
+                },
+                "end": {
+                  "line": 107,
+                  "column": 13,
+                  "offset": 1422
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 107,
+              "column": 1,
+              "offset": 1410
+            },
+            "end": {
+              "line": 107,
+              "column": 13,
+              "offset": 1422
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "お気に入り,SC212",
+                  "position": {
+                    "start": {
+                      "line": 108,
+                      "column": 3,
+                      "offset": 1426
+                    },
+                    "end": {
+                      "line": 108,
+                      "column": 14,
+                      "offset": 1437
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 108,
+                  "column": 3,
+                  "offset": 1426
+                },
+                "end": {
+                  "line": 108,
+                  "column": 14,
+                  "offset": 1437
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 108,
+              "column": 1,
+              "offset": 1424
+            },
+            "end": {
+              "line": 108,
+              "column": 14,
+              "offset": 1437
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "会員情報編集,SC213",
+                  "position": {
+                    "start": {
+                      "line": 109,
+                      "column": 3,
+                      "offset": 1441
+                    },
+                    "end": {
+                      "line": 109,
+                      "column": 15,
+                      "offset": 1453
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 109,
+                  "column": 3,
+                  "offset": 1441
+                },
+                "end": {
+                  "line": 109,
+                  "column": 15,
+                  "offset": 1453
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 109,
+              "column": 1,
+              "offset": 1439
+            },
+            "end": {
+              "line": 109,
+              "column": 15,
+              "offset": 1453
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "配送先管理,SC214",
+                  "position": {
+                    "start": {
+                      "line": 110,
+                      "column": 3,
+                      "offset": 1457
+                    },
+                    "end": {
+                      "line": 110,
+                      "column": 14,
+                      "offset": 1468
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 110,
+                  "column": 3,
+                  "offset": 1457
+                },
+                "end": {
+                  "line": 110,
+                  "column": 14,
+                  "offset": 1468
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 110,
+              "column": 1,
+              "offset": 1455
+            },
+            "end": {
+              "line": 110,
+              "column": 14,
+              "offset": 1468
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 107,
+          "column": 1,
+          "offset": 1410
+        },
+        "end": {
+          "line": 110,
+          "column": 14,
+          "offset": 1468
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC211, 注文履歴, /mypage/orders",
+          "position": {
+            "start": {
+              "line": 112,
+              "column": 4,
+              "offset": 1475
+            },
+            "end": {
+              "line": 112,
+              "column": 31,
+              "offset": 1502
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 112,
+          "column": 1,
+          "offset": 1472
+        },
+        "end": {
+          "line": 112,
+          "column": 31,
+          "offset": 1502
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "過去の注文一覧を表示。注文状況の確認と\r\n詳細情報へのアクセスを提供。",
+          "position": {
+            "start": {
+              "line": 114,
+              "column": 1,
+              "offset": 1506
+            },
+            "end": {
+              "line": 115,
+              "column": 15,
+              "offset": 1541
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 114,
+          "column": 1,
+          "offset": 1506
+        },
+        "end": {
+          "line": 115,
+          "column": 15,
+          "offset": 1541
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 117,
+              "column": 5,
+              "offset": 1549
+            },
+            "end": {
+              "line": 117,
+              "column": 9,
+              "offset": 1553
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 117,
+          "column": 1,
+          "offset": 1545
+        },
+        "end": {
+          "line": 117,
+          "column": 9,
+          "offset": 1553
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "注文詳細,SC215",
+                  "position": {
+                    "start": {
+                      "line": 119,
+                      "column": 3,
+                      "offset": 1559
+                    },
+                    "end": {
+                      "line": 119,
+                      "column": 13,
+                      "offset": 1569
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 119,
+                  "column": 3,
+                  "offset": 1559
+                },
+                "end": {
+                  "line": 119,
+                  "column": 13,
+                  "offset": 1569
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 119,
+              "column": 1,
+              "offset": 1557
+            },
+            "end": {
+              "line": 119,
+              "column": 13,
+              "offset": 1569
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 119,
+          "column": 1,
+          "offset": 1557
+        },
+        "end": {
+          "line": 119,
+          "column": 13,
+          "offset": 1569
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC212, お気に入り, /mypage/favorites",
+          "position": {
+            "start": {
+              "line": 121,
+              "column": 4,
+              "offset": 1576
+            },
+            "end": {
+              "line": 121,
+              "column": 35,
+              "offset": 1607
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 121,
+          "column": 1,
+          "offset": 1573
+        },
+        "end": {
+          "line": 121,
+          "column": 35,
+          "offset": 1607
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "お気に入りに登録した商品の一覧を表示。\r\n簡易的な商品情報と在庫状況を確認可能。",
+          "position": {
+            "start": {
+              "line": 123,
+              "column": 1,
+              "offset": 1611
+            },
+            "end": {
+              "line": 124,
+              "column": 20,
+              "offset": 1651
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 123,
+          "column": 1,
+          "offset": 1611
+        },
+        "end": {
+          "line": 124,
+          "column": 20,
+          "offset": 1651
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 126,
+              "column": 5,
+              "offset": 1659
+            },
+            "end": {
+              "line": 126,
+              "column": 9,
+              "offset": 1663
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 126,
+          "column": 1,
+          "offset": 1655
+        },
+        "end": {
+          "line": 126,
+          "column": 9,
+          "offset": 1663
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "商品詳細,SC021",
+                  "position": {
+                    "start": {
+                      "line": 128,
+                      "column": 3,
+                      "offset": 1669
+                    },
+                    "end": {
+                      "line": 128,
+                      "column": 13,
+                      "offset": 1679
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 128,
+                  "column": 3,
+                  "offset": 1669
+                },
+                "end": {
+                  "line": 128,
+                  "column": 13,
+                  "offset": 1679
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 128,
+              "column": 1,
+              "offset": 1667
+            },
+            "end": {
+              "line": 128,
+              "column": 13,
+              "offset": 1679
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 128,
+          "column": 1,
+          "offset": 1667
+        },
+        "end": {
+          "line": 128,
+          "column": 13,
+          "offset": 1679
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC213, 会員情報編集, /mypage/profile",
+          "position": {
+            "start": {
+              "line": 130,
+              "column": 4,
+              "offset": 1686
+            },
+            "end": {
+              "line": 130,
+              "column": 34,
+              "offset": 1716
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 130,
+          "column": 1,
+          "offset": 1683
+        },
+        "end": {
+          "line": 130,
+          "column": 34,
+          "offset": 1716
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "会員情報（個人情報、パスワード等）の確認・編集機能を提供。",
+          "position": {
+            "start": {
+              "line": 132,
+              "column": 1,
+              "offset": 1720
+            },
+            "end": {
+              "line": 132,
+              "column": 30,
+              "offset": 1749
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 132,
+          "column": 1,
+          "offset": 1720
+        },
+        "end": {
+          "line": 132,
+          "column": 30,
+          "offset": 1749
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC214, 配送先管理, /mypage/addresses",
+          "position": {
+            "start": {
+              "line": 134,
+              "column": 4,
+              "offset": 1756
+            },
+            "end": {
+              "line": 134,
+              "column": 35,
+              "offset": 1787
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 134,
+          "column": 1,
+          "offset": 1753
+        },
+        "end": {
+          "line": 134,
+          "column": 35,
+          "offset": 1787
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "配送先住所の追加、編集、削除機能を提供。\r\n複数配送先の管理が可能。",
+          "position": {
+            "start": {
+              "line": 136,
+              "column": 1,
+              "offset": 1791
+            },
+            "end": {
+              "line": 137,
+              "column": 13,
+              "offset": 1825
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 136,
+          "column": 1,
+          "offset": 1791
+        },
+        "end": {
+          "line": 137,
+          "column": 13,
+          "offset": 1825
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC215, 注文詳細, /mypage/orders/{order_id}",
+          "position": {
+            "start": {
+              "line": 139,
+              "column": 4,
+              "offset": 1832
+            },
+            "end": {
+              "line": 139,
+              "column": 42,
+              "offset": 1870
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 139,
+          "column": 1,
+          "offset": 1829
+        },
+        "end": {
+          "line": 139,
+          "column": 42,
+          "offset": 1870
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "個別の注文詳細情報を表示。配送状況、\r\n注文商品、支払い情報等を確認可能。",
+          "position": {
+            "start": {
+              "line": 141,
+              "column": 1,
+              "offset": 1874
+            },
+            "end": {
+              "line": 142,
+              "column": 18,
+              "offset": 1911
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 141,
+          "column": 1,
+          "offset": 1874
+        },
+        "end": {
+          "line": 142,
+          "column": 18,
+          "offset": 1911
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC300, カート, /cart",
+          "position": {
+            "start": {
+              "line": 144,
+              "column": 4,
+              "offset": 1918
+            },
+            "end": {
+              "line": 144,
+              "column": 21,
+              "offset": 1935
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 144,
+          "column": 1,
+          "offset": 1915
+        },
+        "end": {
+          "line": 144,
+          "column": 21,
+          "offset": 1935
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "カートに追加した商品の一覧、数量変更、\r\n削除機能を提供。合計金額の表示。",
+          "position": {
+            "start": {
+              "line": 146,
+              "column": 1,
+              "offset": 1939
+            },
+            "end": {
+              "line": 147,
+              "column": 17,
+              "offset": 1976
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 146,
+          "column": 1,
+          "offset": 1939
+        },
+        "end": {
+          "line": 147,
+          "column": 17,
+          "offset": 1976
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 149,
+              "column": 5,
+              "offset": 1984
+            },
+            "end": {
+              "line": 149,
+              "column": 9,
+              "offset": 1988
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 149,
+          "column": 1,
+          "offset": 1980
+        },
+        "end": {
+          "line": 149,
+          "column": 9,
+          "offset": 1988
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "レジへ進む,SC301",
+                  "position": {
+                    "start": {
+                      "line": 151,
+                      "column": 3,
+                      "offset": 1994
+                    },
+                    "end": {
+                      "line": 151,
+                      "column": 14,
+                      "offset": 2005
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 151,
+                  "column": 3,
+                  "offset": 1994
+                },
+                "end": {
+                  "line": 151,
+                  "column": 14,
+                  "offset": 2005
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 151,
+              "column": 1,
+              "offset": 1992
+            },
+            "end": {
+              "line": 151,
+              "column": 14,
+              "offset": 2005
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "買い物を続ける,SC001",
+                  "position": {
+                    "start": {
+                      "line": 152,
+                      "column": 3,
+                      "offset": 2009
+                    },
+                    "end": {
+                      "line": 152,
+                      "column": 16,
+                      "offset": 2022
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 152,
+                  "column": 3,
+                  "offset": 2009
+                },
+                "end": {
+                  "line": 152,
+                  "column": 16,
+                  "offset": 2022
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 152,
+              "column": 1,
+              "offset": 2007
+            },
+            "end": {
+              "line": 152,
+              "column": 16,
+              "offset": 2022
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 151,
+          "column": 1,
+          "offset": 1992
+        },
+        "end": {
+          "line": 152,
+          "column": 16,
+          "offset": 2022
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC301, レジ, /checkout",
+          "position": {
+            "start": {
+              "line": 154,
+              "column": 4,
+              "offset": 2029
+            },
+            "end": {
+              "line": 154,
+              "column": 24,
+              "offset": 2049
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 154,
+          "column": 1,
+          "offset": 2026
+        },
+        "end": {
+          "line": 154,
+          "column": 24,
+          "offset": 2049
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "配送先情報、支払い方法の選択、\r\n注文内容の最終確認画面を提供。",
+          "position": {
+            "start": {
+              "line": 156,
+              "column": 1,
+              "offset": 2053
+            },
+            "end": {
+              "line": 157,
+              "column": 16,
+              "offset": 2085
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 156,
+          "column": 1,
+          "offset": 2053
+        },
+        "end": {
+          "line": 157,
+          "column": 16,
+          "offset": 2085
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 159,
+              "column": 5,
+              "offset": 2093
+            },
+            "end": {
+              "line": 159,
+              "column": 9,
+              "offset": 2097
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 159,
+          "column": 1,
+          "offset": 2089
+        },
+        "end": {
+          "line": 159,
+          "column": 9,
+          "offset": 2097
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "注文確認,SC302",
+                  "position": {
+                    "start": {
+                      "line": 161,
+                      "column": 3,
+                      "offset": 2103
+                    },
+                    "end": {
+                      "line": 161,
+                      "column": 13,
+                      "offset": 2113
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 161,
+                  "column": 3,
+                  "offset": 2103
+                },
+                "end": {
+                  "line": 161,
+                  "column": 13,
+                  "offset": 2113
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 161,
+              "column": 1,
+              "offset": 2101
+            },
+            "end": {
+              "line": 161,
+              "column": 13,
+              "offset": 2113
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 161,
+          "column": 1,
+          "offset": 2101
+        },
+        "end": {
+          "line": 161,
+          "column": 13,
+          "offset": 2113
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC302, 注文確認, /checkout/confirm",
+          "position": {
+            "start": {
+              "line": 163,
+              "column": 4,
+              "offset": 2120
+            },
+            "end": {
+              "line": 163,
+              "column": 34,
+              "offset": 2150
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 163,
+          "column": 1,
+          "offset": 2117
+        },
+        "end": {
+          "line": 163,
+          "column": 34,
+          "offset": 2150
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "注文内容、配送先、支払い方法の\r\n最終確認画面。注文の確定機能を提供。",
+          "position": {
+            "start": {
+              "line": 165,
+              "column": 1,
+              "offset": 2154
+            },
+            "end": {
+              "line": 166,
+              "column": 19,
+              "offset": 2189
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 165,
+          "column": 1,
+          "offset": 2154
+        },
+        "end": {
+          "line": 166,
+          "column": 19,
+          "offset": 2189
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 168,
+              "column": 5,
+              "offset": 2197
+            },
+            "end": {
+              "line": 168,
+              "column": 9,
+              "offset": 2201
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 168,
+          "column": 1,
+          "offset": 2193
+        },
+        "end": {
+          "line": 168,
+          "column": 9,
+          "offset": 2201
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "注文完了,SC303",
+                  "position": {
+                    "start": {
+                      "line": 170,
+                      "column": 3,
+                      "offset": 2207
+                    },
+                    "end": {
+                      "line": 170,
+                      "column": 13,
+                      "offset": 2217
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 170,
+                  "column": 3,
+                  "offset": 2207
+                },
+                "end": {
+                  "line": 170,
+                  "column": 13,
+                  "offset": 2217
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 170,
+              "column": 1,
+              "offset": 2205
+            },
+            "end": {
+              "line": 170,
+              "column": 13,
+              "offset": 2217
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 170,
+          "column": 1,
+          "offset": 2205
+        },
+        "end": {
+          "line": 170,
+          "column": 13,
+          "offset": 2217
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC303, 注文完了, /checkout/complete",
+          "position": {
+            "start": {
+              "line": 172,
+              "column": 4,
+              "offset": 2224
+            },
+            "end": {
+              "line": 172,
+              "column": 35,
+              "offset": 2255
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 172,
+          "column": 1,
+          "offset": 2221
+        },
+        "end": {
+          "line": 172,
+          "column": 35,
+          "offset": 2255
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "注文完了の確認画面。注文番号、\r\nお届け予定日等の情報を表示。",
+          "position": {
+            "start": {
+              "line": 174,
+              "column": 1,
+              "offset": 2259
+            },
+            "end": {
+              "line": 175,
+              "column": 15,
+              "offset": 2290
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 174,
+          "column": 1,
+          "offset": 2259
+        },
+        "end": {
+          "line": 175,
+          "column": 15,
+          "offset": 2290
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 177,
+              "column": 5,
+              "offset": 2298
+            },
+            "end": {
+              "line": 177,
+              "column": 9,
+              "offset": 2302
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 177,
+          "column": 1,
+          "offset": 2294
+        },
+        "end": {
+          "line": 177,
+          "column": 9,
+          "offset": 2302
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "トップページへ,SC001",
+                  "position": {
+                    "start": {
+                      "line": 179,
+                      "column": 3,
+                      "offset": 2308
+                    },
+                    "end": {
+                      "line": 179,
+                      "column": 16,
+                      "offset": 2321
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 179,
+                  "column": 3,
+                  "offset": 2308
+                },
+                "end": {
+                  "line": 179,
+                  "column": 16,
+                  "offset": 2321
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 179,
+              "column": 1,
+              "offset": 2306
+            },
+            "end": {
+              "line": 179,
+              "column": 16,
+              "offset": 2321
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "マイページへ,SC201",
+                  "position": {
+                    "start": {
+                      "line": 180,
+                      "column": 3,
+                      "offset": 2325
+                    },
+                    "end": {
+                      "line": 180,
+                      "column": 15,
+                      "offset": 2337
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 180,
+                  "column": 3,
+                  "offset": 2325
+                },
+                "end": {
+                  "line": 180,
+                  "column": 15,
+                  "offset": 2337
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 180,
+              "column": 1,
+              "offset": 2323
+            },
+            "end": {
+              "line": 180,
+              "column": 15,
+              "offset": 2337
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 179,
+          "column": 1,
+          "offset": 2306
+        },
+        "end": {
+          "line": 180,
+          "column": 15,
+          "offset": 2337
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC401, 会社概要, /company",
+          "position": {
+            "start": {
+              "line": 182,
+              "column": 4,
+              "offset": 2344
+            },
+            "end": {
+              "line": 182,
+              "column": 25,
+              "offset": 2365
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 182,
+          "column": 1,
+          "offset": 2341
+        },
+        "end": {
+          "line": 182,
+          "column": 25,
+          "offset": 2365
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "会社の基本情報、ビジョン、\r\nミッション等を掲載。",
+          "position": {
+            "start": {
+              "line": 184,
+              "column": 1,
+              "offset": 2369
+            },
+            "end": {
+              "line": 185,
+              "column": 11,
+              "offset": 2394
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 184,
+          "column": 1,
+          "offset": 2369
+        },
+        "end": {
+          "line": 185,
+          "column": 11,
+          "offset": 2394
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC402, ご利用ガイド, /guide",
+          "position": {
+            "start": {
+              "line": 187,
+              "column": 4,
+              "offset": 2401
+            },
+            "end": {
+              "line": 187,
+              "column": 25,
+              "offset": 2422
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 187,
+          "column": 1,
+          "offset": 2398
+        },
+        "end": {
+          "line": 187,
+          "column": 25,
+          "offset": 2422
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "サイトの使い方、会員登録方法、\r\n注文方法等の説明を提供。",
+          "position": {
+            "start": {
+              "line": 189,
+              "column": 1,
+              "offset": 2426
+            },
+            "end": {
+              "line": 190,
+              "column": 13,
+              "offset": 2455
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 189,
+          "column": 1,
+          "offset": 2426
+        },
+        "end": {
+          "line": 190,
+          "column": 13,
+          "offset": 2455
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC403, 利用規約, /terms",
+          "position": {
+            "start": {
+              "line": 192,
+              "column": 4,
+              "offset": 2462
+            },
+            "end": {
+              "line": 192,
+              "column": 23,
+              "offset": 2481
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 192,
+          "column": 1,
+          "offset": 2459
+        },
+        "end": {
+          "line": 192,
+          "column": 23,
+          "offset": 2481
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "サービス利用に関する規約を掲載。\r\n最終更新日を明記。",
+          "position": {
+            "start": {
+              "line": 194,
+              "column": 1,
+              "offset": 2485
+            },
+            "end": {
+              "line": 195,
+              "column": 10,
+              "offset": 2512
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 194,
+          "column": 1,
+          "offset": 2485
+        },
+        "end": {
+          "line": 195,
+          "column": 10,
+          "offset": 2512
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC404, プライバシーポリシー, /privacy",
+          "position": {
+            "start": {
+              "line": 197,
+              "column": 4,
+              "offset": 2519
+            },
+            "end": {
+              "line": 197,
+              "column": 31,
+              "offset": 2546
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 197,
+          "column": 1,
+          "offset": 2516
+        },
+        "end": {
+          "line": 197,
+          "column": 31,
+          "offset": 2546
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "個人情報の取り扱いに関する\r\n方針を掲載。",
+          "position": {
+            "start": {
+              "line": 199,
+              "column": 1,
+              "offset": 2550
+            },
+            "end": {
+              "line": 200,
+              "column": 7,
+              "offset": 2571
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 199,
+          "column": 1,
+          "offset": 2550
+        },
+        "end": {
+          "line": 200,
+          "column": 7,
+          "offset": 2571
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC405, お問い合わせ, /contact",
+          "position": {
+            "start": {
+              "line": 202,
+              "column": 4,
+              "offset": 2578
+            },
+            "end": {
+              "line": 202,
+              "column": 27,
+              "offset": 2601
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 202,
+          "column": 1,
+          "offset": 2575
+        },
+        "end": {
+          "line": 202,
+          "column": 27,
+          "offset": 2601
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "問い合わせフォームを提供。\r\nカテゴリー選択と内容入力機能。",
+          "position": {
+            "start": {
+              "line": 204,
+              "column": 1,
+              "offset": 2605
+            },
+            "end": {
+              "line": 205,
+              "column": 16,
+              "offset": 2635
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 204,
+          "column": 1,
+          "offset": 2605
+        },
+        "end": {
+          "line": 205,
+          "column": 16,
+          "offset": 2635
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 207,
+              "column": 5,
+              "offset": 2643
+            },
+            "end": {
+              "line": 207,
+              "column": 9,
+              "offset": 2647
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 207,
+          "column": 1,
+          "offset": 2639
+        },
+        "end": {
+          "line": 207,
+          "column": 9,
+          "offset": 2647
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "お問い合わせ完了,SC406",
+                  "position": {
+                    "start": {
+                      "line": 209,
+                      "column": 3,
+                      "offset": 2653
+                    },
+                    "end": {
+                      "line": 209,
+                      "column": 17,
+                      "offset": 2667
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 209,
+                  "column": 3,
+                  "offset": 2653
+                },
+                "end": {
+                  "line": 209,
+                  "column": 17,
+                  "offset": 2667
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 209,
+              "column": 1,
+              "offset": 2651
+            },
+            "end": {
+              "line": 209,
+              "column": 17,
+              "offset": 2667
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 209,
+          "column": 1,
+          "offset": 2651
+        },
+        "end": {
+          "line": 209,
+          "column": 17,
+          "offset": 2667
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC406, お問い合わせ完了, /contact/complete",
+          "position": {
+            "start": {
+              "line": 211,
+              "column": 4,
+              "offset": 2674
+            },
+            "end": {
+              "line": 211,
+              "column": 38,
+              "offset": 2708
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 211,
+          "column": 1,
+          "offset": 2671
+        },
+        "end": {
+          "line": 211,
+          "column": 38,
+          "offset": 2708
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "お問い合わせ送信完了の確認画面。",
+          "position": {
+            "start": {
+              "line": 213,
+              "column": 1,
+              "offset": 2712
+            },
+            "end": {
+              "line": 213,
+              "column": 17,
+              "offset": 2728
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 213,
+          "column": 1,
+          "offset": 2712
+        },
+        "end": {
+          "line": 213,
+          "column": 17,
+          "offset": 2728
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "受付番号と回答予定時期を表示。",
+          "position": {
+            "start": {
+              "line": 215,
+              "column": 1,
+              "offset": 2732
+            },
+            "end": {
+              "line": 215,
+              "column": 16,
+              "offset": 2747
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 215,
+          "column": 1,
+          "offset": 2732
+        },
+        "end": {
+          "line": 215,
+          "column": 16,
+          "offset": 2747
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "a\r\nb\r\nc\r\nd",
+          "position": {
+            "start": {
+              "line": 217,
+              "column": 1,
+              "offset": 2751
+            },
+            "end": {
+              "line": 220,
+              "column": 2,
+              "offset": 2761
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 217,
+          "column": 1,
+          "offset": 2751
+        },
+        "end": {
+          "line": 220,
+          "column": 2,
+          "offset": 2761
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 220,
+      "column": 2,
+      "offset": 2761
+    }
+  }
+}
