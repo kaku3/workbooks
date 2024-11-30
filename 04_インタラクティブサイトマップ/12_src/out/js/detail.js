@@ -72,13 +72,23 @@ class Detail {
       })
       $container.append($linksContainer);
 
-      $linksContainer.find('.link').on('click', function(e) {
-        const id = $(this).data('id');
+      $linksContainer.find('.link')
+        .click(function() {
+          const id = $(this).data('id');
 
-        if(self.onClickLink) {
-          self.onClickLink(id);
-        }
-      });
+          if(self.onClickLink) {
+            self.onClickLink(id);
+          }
+        })
+        .hover(
+          function() {
+            const id = $(this).data('id');
+            Sitemap.setHover(id);
+          },
+          function() {
+            Sitemap.setHover(null);
+          }
+        );
     }
   }
 }

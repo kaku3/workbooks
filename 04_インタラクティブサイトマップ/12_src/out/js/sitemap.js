@@ -1,5 +1,7 @@
 class Sitemap {
   static initSitemap(pages, onClickPage = null) {
+    Sitemap.pages = pages;
+
     Sitemap.#prepare(pages);
     Sitemap.#drawSitemap(pages, onClickPage);
     Sitemap.#drawSitemapSvg(pages);
@@ -40,13 +42,31 @@ class Sitemap {
   static setActive(pageId, scrollIntoView = false) {
     const $container = $('#sitemap-container');
     const $pages = $container.find(".page");
-    $pages.removeClass('active');
+    $pages.removeClass('active link-to');
 
     const $page = $container.find(`.page[data-id="${pageId}"]`)
     $page.addClass('active');
 
+    const page = Sitemap.pages.find(p => p.id === pageId);
+    if(page) {
+      for(const link of page.links) {
+        const $link = $container.find(`.page[data-id="${link.linkToId}"]`)
+        $link.addClass('link-to');
+      }
+    }
+
     if(scrollIntoView) {
       $page.get(0).scrollIntoView();
+    }
+  }
+
+  static setHover(pageId) {
+    const $container = $('#sitemap-container');
+    const $pages = $container.find(".page");
+    $pages.removeClass('hover');
+    if(pageId) {
+      const $page = $container.find(`.page[data-id="${pageId}"]`)
+      $page.addClass('hover');
     }
   }
 
@@ -68,6 +88,7 @@ class Sitemap {
         $levelContainer.append(`
           <div class="page" data-name="${page.name}" data-id="${page.id}">
             <div class="name">
+              <span>${page.id}</span>
               ${page.name}
             </div>
             <div class="url">

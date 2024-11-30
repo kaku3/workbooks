@@ -1467,58 +1467,6 @@
               "offset": 635
             }
           }
-        },
-        {
-          "type": "listItem",
-          "spread": false,
-          "checked": null,
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "商品詳細,SC021",
-                  "position": {
-                    "start": {
-                      "line": 50,
-                      "column": 3,
-                      "offset": 639
-                    },
-                    "end": {
-                      "line": 50,
-                      "column": 13,
-                      "offset": 649
-                    }
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 50,
-                  "column": 3,
-                  "offset": 639
-                },
-                "end": {
-                  "line": 50,
-                  "column": 13,
-                  "offset": 649
-                }
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 50,
-              "column": 1,
-              "offset": 637
-            },
-            "end": {
-              "line": 50,
-              "column": 13,
-              "offset": 649
-            }
-          }
         }
       ],
       "position": {
@@ -1528,9 +1476,9 @@
           "offset": 622
         },
         "end": {
-          "line": 50,
-          "column": 13,
-          "offset": 649
+          "line": 49,
+          "column": 14,
+          "offset": 635
         }
       }
     },
@@ -1543,28 +1491,28 @@
           "value": "SC011, カテゴリー, /categories/{category_id}",
           "position": {
             "start": {
-              "line": 52,
+              "line": 51,
               "column": 4,
-              "offset": 656
+              "offset": 642
             },
             "end": {
-              "line": 52,
+              "line": 51,
               "column": 43,
-              "offset": 695
+              "offset": 681
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 52,
+          "line": 51,
           "column": 1,
-          "offset": 653
+          "offset": 639
         },
         "end": {
-          "line": 52,
+          "line": 51,
           "column": 43,
-          "offset": 695
+          "offset": 681
         }
       }
     },
@@ -1576,28 +1524,28 @@
           "value": "選択されたカテゴリーに属する商品一覧を表示。\r\nソート機能とフィルタリング機能を提供。",
           "position": {
             "start": {
-              "line": 54,
+              "line": 53,
               "column": 1,
-              "offset": 699
+              "offset": 685
             },
             "end": {
-              "line": 55,
+              "line": 54,
               "column": 20,
-              "offset": 742
+              "offset": 728
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 54,
+          "line": 53,
           "column": 1,
-          "offset": 699
+          "offset": 685
         },
         "end": {
-          "line": 55,
+          "line": 54,
           "column": 20,
-          "offset": 742
+          "offset": 728
         }
       }
     },
@@ -1610,28 +1558,28 @@
           "value": "link",
           "position": {
             "start": {
-              "line": 57,
+              "line": 56,
               "column": 5,
-              "offset": 750
+              "offset": 736
             },
             "end": {
-              "line": 57,
+              "line": 56,
               "column": 9,
-              "offset": 754
+              "offset": 740
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 57,
+          "line": 56,
           "column": 1,
-          "offset": 746
+          "offset": 732
         },
         "end": {
-          "line": 57,
+          "line": 56,
           "column": 9,
-          "offset": 754
+          "offset": 740
         }
       }
     },
@@ -1654,56 +1602,56 @@
                   "value": "商品詳細,SC021",
                   "position": {
                     "start": {
-                      "line": 59,
+                      "line": 58,
                       "column": 3,
-                      "offset": 760
+                      "offset": 746
                     },
                     "end": {
-                      "line": 59,
+                      "line": 58,
                       "column": 13,
-                      "offset": 770
+                      "offset": 756
                     }
                   }
                 }
               ],
               "position": {
                 "start": {
-                  "line": 59,
+                  "line": 58,
                   "column": 3,
-                  "offset": 760
+                  "offset": 746
                 },
                 "end": {
-                  "line": 59,
+                  "line": 58,
                   "column": 13,
-                  "offset": 770
+                  "offset": 756
                 }
               }
             }
           ],
           "position": {
             "start": {
-              "line": 59,
+              "line": 58,
               "column": 1,
-              "offset": 758
+              "offset": 744
             },
             "end": {
-              "line": 59,
+              "line": 58,
               "column": 13,
-              "offset": 770
+              "offset": 756
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 59,
+          "line": 58,
           "column": 1,
-          "offset": 758
+          "offset": 744
         },
         "end": {
-          "line": 59,
+          "line": 58,
           "column": 13,
-          "offset": 770
+          "offset": 756
         }
       }
     },
@@ -1713,31 +1661,31 @@
       "children": [
         {
           "type": "text",
-          "value": "SC021, 商品詳細, /products/{product_id}",
+          "value": "SC021, 商品詳細, /products/{product_id},3,2",
           "position": {
             "start": {
-              "line": 61,
+              "line": 60,
               "column": 4,
-              "offset": 777
+              "offset": 763
             },
             "end": {
-              "line": 61,
-              "column": 39,
-              "offset": 812
+              "line": 60,
+              "column": 43,
+              "offset": 802
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 61,
+          "line": 60,
           "column": 1,
-          "offset": 774
+          "offset": 760
         },
         "end": {
-          "line": 61,
-          "column": 39,
-          "offset": 812
+          "line": 60,
+          "column": 43,
+          "offset": 802
         }
       }
     },
@@ -1749,28 +1697,28 @@
           "value": "商品の詳細情報（価格、説明、画像、在庫状況等）を表示。\r\nカートへの追加、お気に入り登録機能を提供。",
           "position": {
             "start": {
-              "line": 63,
+              "line": 62,
               "column": 1,
-              "offset": 816
+              "offset": 806
             },
             "end": {
-              "line": 64,
+              "line": 63,
               "column": 22,
-              "offset": 866
+              "offset": 856
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 63,
+          "line": 62,
           "column": 1,
-          "offset": 816
+          "offset": 806
         },
         "end": {
-          "line": 64,
+          "line": 63,
           "column": 22,
-          "offset": 866
+          "offset": 856
         }
       }
     },
@@ -1783,28 +1731,28 @@
           "value": "link",
           "position": {
             "start": {
-              "line": 66,
+              "line": 65,
               "column": 5,
-              "offset": 874
+              "offset": 864
             },
             "end": {
-              "line": 66,
+              "line": 65,
               "column": 9,
-              "offset": 878
+              "offset": 868
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 66,
+          "line": 65,
           "column": 1,
-          "offset": 870
+          "offset": 860
         },
         "end": {
-          "line": 66,
+          "line": 65,
           "column": 9,
-          "offset": 878
+          "offset": 868
         }
       }
     },
@@ -1827,42 +1775,42 @@
                   "value": "カートに追加,SC300",
                   "position": {
                     "start": {
-                      "line": 68,
+                      "line": 67,
                       "column": 3,
-                      "offset": 884
+                      "offset": 874
                     },
                     "end": {
-                      "line": 68,
+                      "line": 67,
                       "column": 15,
-                      "offset": 896
+                      "offset": 886
                     }
                   }
                 }
               ],
               "position": {
                 "start": {
-                  "line": 68,
+                  "line": 67,
                   "column": 3,
-                  "offset": 884
+                  "offset": 874
                 },
                 "end": {
-                  "line": 68,
+                  "line": 67,
                   "column": 15,
-                  "offset": 896
+                  "offset": 886
                 }
               }
             }
           ],
           "position": {
             "start": {
-              "line": 68,
+              "line": 67,
               "column": 1,
-              "offset": 882
+              "offset": 872
             },
             "end": {
-              "line": 68,
+              "line": 67,
               "column": 15,
-              "offset": 896
+              "offset": 886
             }
           }
         },
@@ -1879,56 +1827,56 @@
                   "value": "お気に入りに追加,SC201",
                   "position": {
                     "start": {
-                      "line": 69,
+                      "line": 68,
                       "column": 3,
-                      "offset": 900
+                      "offset": 890
                     },
                     "end": {
-                      "line": 69,
+                      "line": 68,
                       "column": 17,
-                      "offset": 914
+                      "offset": 904
                     }
                   }
                 }
               ],
               "position": {
                 "start": {
-                  "line": 69,
+                  "line": 68,
                   "column": 3,
-                  "offset": 900
+                  "offset": 890
                 },
                 "end": {
-                  "line": 69,
+                  "line": 68,
                   "column": 17,
-                  "offset": 914
+                  "offset": 904
                 }
               }
             }
           ],
           "position": {
             "start": {
-              "line": 69,
+              "line": 68,
               "column": 1,
-              "offset": 898
+              "offset": 888
             },
             "end": {
-              "line": 69,
+              "line": 68,
               "column": 17,
-              "offset": 914
+              "offset": 904
             }
           }
         }
       ],
       "position": {
         "start": {
+          "line": 67,
+          "column": 1,
+          "offset": 872
+        },
+        "end": {
           "line": 68,
-          "column": 1,
-          "offset": 882
-        },
-        "end": {
-          "line": 69,
           "column": 17,
-          "offset": 914
+          "offset": 904
         }
       }
     },
@@ -1938,375 +1886,31 @@
       "children": [
         {
           "type": "text",
-          "value": "SC101, ログイン, /login,1,4",
+          "value": "SC111, 新規会員登録, /register,1,4",
           "position": {
             "start": {
-              "line": 71,
+              "line": 70,
               "column": 4,
-              "offset": 921
+              "offset": 911
             },
             "end": {
-              "line": 71,
-              "column": 27,
-              "offset": 944
+              "line": 70,
+              "column": 32,
+              "offset": 939
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 71,
+          "line": 70,
           "column": 1,
-          "offset": 918
+          "offset": 908
         },
         "end": {
-          "line": 71,
-          "column": 27,
-          "offset": 944
-        }
-      }
-    },
-    {
-      "type": "paragraph",
-      "children": [
-        {
-          "type": "text",
-          "value": "メールアドレスとパスワードによるログインフォームを提供。\r\nソーシャルログインオプションも表示。",
-          "position": {
-            "start": {
-              "line": 73,
-              "column": 1,
-              "offset": 948
-            },
-            "end": {
-              "line": 74,
-              "column": 19,
-              "offset": 996
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 73,
-          "column": 1,
-          "offset": 948
-        },
-        "end": {
-          "line": 74,
-          "column": 19,
-          "offset": 996
-        }
-      }
-    },
-    {
-      "type": "heading",
-      "depth": 3,
-      "children": [
-        {
-          "type": "text",
-          "value": "link",
-          "position": {
-            "start": {
-              "line": 76,
-              "column": 5,
-              "offset": 1004
-            },
-            "end": {
-              "line": 76,
-              "column": 9,
-              "offset": 1008
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 76,
-          "column": 1,
-          "offset": 1000
-        },
-        "end": {
-          "line": 76,
-          "column": 9,
-          "offset": 1008
-        }
-      }
-    },
-    {
-      "type": "list",
-      "ordered": false,
-      "start": null,
-      "spread": false,
-      "children": [
-        {
-          "type": "listItem",
-          "spread": false,
-          "checked": null,
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "マイページ,SC201",
-                  "position": {
-                    "start": {
-                      "line": 78,
-                      "column": 3,
-                      "offset": 1014
-                    },
-                    "end": {
-                      "line": 78,
-                      "column": 14,
-                      "offset": 1025
-                    }
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 78,
-                  "column": 3,
-                  "offset": 1014
-                },
-                "end": {
-                  "line": 78,
-                  "column": 14,
-                  "offset": 1025
-                }
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 78,
-              "column": 1,
-              "offset": 1012
-            },
-            "end": {
-              "line": 78,
-              "column": 14,
-              "offset": 1025
-            }
-          }
-        },
-        {
-          "type": "listItem",
-          "spread": false,
-          "checked": null,
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "新規会員登録,SC111",
-                  "position": {
-                    "start": {
-                      "line": 79,
-                      "column": 3,
-                      "offset": 1029
-                    },
-                    "end": {
-                      "line": 79,
-                      "column": 15,
-                      "offset": 1041
-                    }
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 79,
-                  "column": 3,
-                  "offset": 1029
-                },
-                "end": {
-                  "line": 79,
-                  "column": 15,
-                  "offset": 1041
-                }
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 79,
-              "column": 1,
-              "offset": 1027
-            },
-            "end": {
-              "line": 79,
-              "column": 15,
-              "offset": 1041
-            }
-          }
-        },
-        {
-          "type": "listItem",
-          "spread": false,
-          "checked": null,
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "パスワード忘れ,SC102",
-                  "position": {
-                    "start": {
-                      "line": 80,
-                      "column": 3,
-                      "offset": 1045
-                    },
-                    "end": {
-                      "line": 80,
-                      "column": 16,
-                      "offset": 1058
-                    }
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 80,
-                  "column": 3,
-                  "offset": 1045
-                },
-                "end": {
-                  "line": 80,
-                  "column": 16,
-                  "offset": 1058
-                }
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 80,
-              "column": 1,
-              "offset": 1043
-            },
-            "end": {
-              "line": 80,
-              "column": 16,
-              "offset": 1058
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 78,
-          "column": 1,
-          "offset": 1012
-        },
-        "end": {
-          "line": 80,
-          "column": 16,
-          "offset": 1058
-        }
-      }
-    },
-    {
-      "type": "heading",
-      "depth": 2,
-      "children": [
-        {
-          "type": "text",
-          "value": "SC102, パスワード再設定, /password/reset",
-          "position": {
-            "start": {
-              "line": 82,
-              "column": 4,
-              "offset": 1065
-            },
-            "end": {
-              "line": 82,
-              "column": 36,
-              "offset": 1097
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 82,
-          "column": 1,
-          "offset": 1062
-        },
-        "end": {
-          "line": 82,
-          "column": 36,
-          "offset": 1097
-        }
-      }
-    },
-    {
-      "type": "paragraph",
-      "children": [
-        {
-          "type": "text",
-          "value": "メールアドレスを入力し、パスワード再設定用リンクを送信。\r\nセキュリティ確認機能を含む。",
-          "position": {
-            "start": {
-              "line": 84,
-              "column": 1,
-              "offset": 1101
-            },
-            "end": {
-              "line": 85,
-              "column": 15,
-              "offset": 1145
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 84,
-          "column": 1,
-          "offset": 1101
-        },
-        "end": {
-          "line": 85,
-          "column": 15,
-          "offset": 1145
-        }
-      }
-    },
-    {
-      "type": "heading",
-      "depth": 2,
-      "children": [
-        {
-          "type": "text",
-          "value": "SC111, 新規会員登録, /register",
-          "position": {
-            "start": {
-              "line": 87,
-              "column": 4,
-              "offset": 1152
-            },
-            "end": {
-              "line": 87,
-              "column": 28,
-              "offset": 1176
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 87,
-          "column": 1,
-          "offset": 1149
-        },
-        "end": {
-          "line": 87,
-          "column": 28,
-          "offset": 1176
+          "line": 70,
+          "column": 32,
+          "offset": 939
         }
       }
     },
@@ -2318,28 +1922,28 @@
           "value": "新規ユーザー登録フォーム。必要な個人情報の入力と\r\n利用規約への同意プロセスを提供。",
           "position": {
             "start": {
-              "line": 89,
+              "line": 72,
               "column": 1,
-              "offset": 1180
+              "offset": 943
             },
             "end": {
-              "line": 90,
+              "line": 73,
               "column": 17,
-              "offset": 1222
+              "offset": 985
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 89,
+          "line": 72,
           "column": 1,
-          "offset": 1180
+          "offset": 943
         },
         "end": {
-          "line": 90,
+          "line": 73,
           "column": 17,
-          "offset": 1222
+          "offset": 985
         }
       }
     },
@@ -2352,28 +1956,28 @@
           "value": "link",
           "position": {
             "start": {
-              "line": 92,
+              "line": 75,
               "column": 5,
-              "offset": 1230
+              "offset": 993
             },
             "end": {
-              "line": 92,
+              "line": 75,
               "column": 9,
-              "offset": 1234
+              "offset": 997
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 92,
+          "line": 75,
           "column": 1,
-          "offset": 1226
+          "offset": 989
         },
         "end": {
-          "line": 92,
+          "line": 75,
           "column": 9,
-          "offset": 1234
+          "offset": 997
         }
       }
     },
@@ -2396,56 +2000,56 @@
                   "value": "登録完了,SC112",
                   "position": {
                     "start": {
-                      "line": 94,
+                      "line": 77,
                       "column": 3,
-                      "offset": 1240
+                      "offset": 1003
                     },
                     "end": {
-                      "line": 94,
+                      "line": 77,
                       "column": 13,
-                      "offset": 1250
+                      "offset": 1013
                     }
                   }
                 }
               ],
               "position": {
                 "start": {
-                  "line": 94,
+                  "line": 77,
                   "column": 3,
-                  "offset": 1240
+                  "offset": 1003
                 },
                 "end": {
-                  "line": 94,
+                  "line": 77,
                   "column": 13,
-                  "offset": 1250
+                  "offset": 1013
                 }
               }
             }
           ],
           "position": {
             "start": {
-              "line": 94,
+              "line": 77,
               "column": 1,
-              "offset": 1238
+              "offset": 1001
             },
             "end": {
-              "line": 94,
+              "line": 77,
               "column": 13,
-              "offset": 1250
+              "offset": 1013
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 94,
+          "line": 77,
           "column": 1,
-          "offset": 1238
+          "offset": 1001
         },
         "end": {
-          "line": 94,
+          "line": 77,
           "column": 13,
-          "offset": 1250
+          "offset": 1013
         }
       }
     },
@@ -2458,28 +2062,28 @@
           "value": "SC112, 会員登録完了, /register/complete",
           "position": {
             "start": {
-              "line": 96,
+              "line": 79,
               "column": 4,
-              "offset": 1257
+              "offset": 1020
             },
             "end": {
-              "line": 96,
+              "line": 79,
               "column": 37,
-              "offset": 1290
+              "offset": 1053
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 96,
+          "line": 79,
           "column": 1,
-          "offset": 1254
+          "offset": 1017
         },
         "end": {
-          "line": 96,
+          "line": 79,
           "column": 37,
-          "offset": 1290
+          "offset": 1053
         }
       }
     },
@@ -2491,28 +2095,28 @@
           "value": "登録完了の確認画面。登録情報の確認メール送信通知を表示。",
           "position": {
             "start": {
-              "line": 98,
+              "line": 81,
               "column": 1,
-              "offset": 1294
+              "offset": 1057
             },
             "end": {
-              "line": 98,
+              "line": 81,
               "column": 29,
-              "offset": 1322
+              "offset": 1085
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 98,
+          "line": 81,
           "column": 1,
-          "offset": 1294
+          "offset": 1057
         },
         "end": {
-          "line": 98,
+          "line": 81,
           "column": 29,
-          "offset": 1322
+          "offset": 1085
         }
       }
     },
@@ -2522,31 +2126,31 @@
       "children": [
         {
           "type": "text",
-          "value": "SC201, マイページ, /mypage",
+          "value": "SC101, ログイン, /login,1,6",
           "position": {
             "start": {
-              "line": 100,
+              "line": 84,
               "column": 4,
-              "offset": 1329
+              "offset": 1094
             },
             "end": {
-              "line": 100,
-              "column": 25,
-              "offset": 1350
+              "line": 84,
+              "column": 27,
+              "offset": 1117
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 100,
+          "line": 84,
           "column": 1,
-          "offset": 1326
+          "offset": 1091
         },
         "end": {
-          "line": 100,
-          "column": 25,
-          "offset": 1350
+          "line": 84,
+          "column": 27,
+          "offset": 1117
         }
       }
     },
@@ -2555,31 +2159,31 @@
       "children": [
         {
           "type": "text",
-          "value": "ユーザーの個人ダッシュボード。注文履歴、お気に入り、\r\n個人情報管理へのリンクを提供。",
+          "value": "メールアドレスとパスワードによるログインフォームを提供。\r\nソーシャルログインオプションも表示。",
           "position": {
             "start": {
-              "line": 102,
+              "line": 86,
               "column": 1,
-              "offset": 1354
+              "offset": 1121
             },
             "end": {
-              "line": 103,
-              "column": 16,
-              "offset": 1397
+              "line": 87,
+              "column": 19,
+              "offset": 1169
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 102,
+          "line": 86,
           "column": 1,
-          "offset": 1354
+          "offset": 1121
         },
         "end": {
-          "line": 103,
-          "column": 16,
-          "offset": 1397
+          "line": 87,
+          "column": 19,
+          "offset": 1169
         }
       }
     },
@@ -2592,28 +2196,28 @@
           "value": "link",
           "position": {
             "start": {
-              "line": 105,
+              "line": 89,
               "column": 5,
-              "offset": 1405
+              "offset": 1177
             },
             "end": {
-              "line": 105,
+              "line": 89,
               "column": 9,
-              "offset": 1409
+              "offset": 1181
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 105,
+          "line": 89,
           "column": 1,
-          "offset": 1401
+          "offset": 1173
         },
         "end": {
-          "line": 105,
+          "line": 89,
           "column": 9,
-          "offset": 1409
+          "offset": 1181
         }
       }
     },
@@ -2633,45 +2237,45 @@
               "children": [
                 {
                   "type": "text",
-                  "value": "注文履歴,SC211",
+                  "value": "マイページ,SC201",
                   "position": {
                     "start": {
-                      "line": 107,
+                      "line": 91,
                       "column": 3,
-                      "offset": 1415
+                      "offset": 1187
                     },
                     "end": {
-                      "line": 107,
-                      "column": 13,
-                      "offset": 1425
+                      "line": 91,
+                      "column": 14,
+                      "offset": 1198
                     }
                   }
                 }
               ],
               "position": {
                 "start": {
-                  "line": 107,
+                  "line": 91,
                   "column": 3,
-                  "offset": 1415
+                  "offset": 1187
                 },
                 "end": {
-                  "line": 107,
-                  "column": 13,
-                  "offset": 1425
+                  "line": 91,
+                  "column": 14,
+                  "offset": 1198
                 }
               }
             }
           ],
           "position": {
             "start": {
-              "line": 107,
+              "line": 91,
               "column": 1,
-              "offset": 1413
+              "offset": 1185
             },
             "end": {
-              "line": 107,
-              "column": 13,
-              "offset": 1425
+              "line": 91,
+              "column": 14,
+              "offset": 1198
             }
           }
         },
@@ -2685,17 +2289,361 @@
               "children": [
                 {
                   "type": "text",
+                  "value": "新規会員登録,SC111",
+                  "position": {
+                    "start": {
+                      "line": 92,
+                      "column": 3,
+                      "offset": 1202
+                    },
+                    "end": {
+                      "line": 92,
+                      "column": 15,
+                      "offset": 1214
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 92,
+                  "column": 3,
+                  "offset": 1202
+                },
+                "end": {
+                  "line": 92,
+                  "column": 15,
+                  "offset": 1214
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 92,
+              "column": 1,
+              "offset": 1200
+            },
+            "end": {
+              "line": 92,
+              "column": 15,
+              "offset": 1214
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "パスワード忘れ,SC102",
+                  "position": {
+                    "start": {
+                      "line": 93,
+                      "column": 3,
+                      "offset": 1218
+                    },
+                    "end": {
+                      "line": 93,
+                      "column": 16,
+                      "offset": 1231
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 93,
+                  "column": 3,
+                  "offset": 1218
+                },
+                "end": {
+                  "line": 93,
+                  "column": 16,
+                  "offset": 1231
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 93,
+              "column": 1,
+              "offset": 1216
+            },
+            "end": {
+              "line": 93,
+              "column": 16,
+              "offset": 1231
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 91,
+          "column": 1,
+          "offset": 1185
+        },
+        "end": {
+          "line": 93,
+          "column": 16,
+          "offset": 1231
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC102, パスワード再設定, /password/reset",
+          "position": {
+            "start": {
+              "line": 95,
+              "column": 4,
+              "offset": 1238
+            },
+            "end": {
+              "line": 95,
+              "column": 36,
+              "offset": 1270
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 95,
+          "column": 1,
+          "offset": 1235
+        },
+        "end": {
+          "line": 95,
+          "column": 36,
+          "offset": 1270
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "メールアドレスを入力し、パスワード再設定用リンクを送信。\r\nセキュリティ確認機能を含む。",
+          "position": {
+            "start": {
+              "line": 97,
+              "column": 1,
+              "offset": 1274
+            },
+            "end": {
+              "line": 98,
+              "column": 15,
+              "offset": 1318
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 97,
+          "column": 1,
+          "offset": 1274
+        },
+        "end": {
+          "line": 98,
+          "column": 15,
+          "offset": 1318
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC201, マイページ, /mypage",
+          "position": {
+            "start": {
+              "line": 100,
+              "column": 4,
+              "offset": 1325
+            },
+            "end": {
+              "line": 100,
+              "column": 25,
+              "offset": 1346
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 100,
+          "column": 1,
+          "offset": 1322
+        },
+        "end": {
+          "line": 100,
+          "column": 25,
+          "offset": 1346
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "ユーザーの個人ダッシュボード。注文履歴、お気に入り、\r\n個人情報管理へのリンクを提供。",
+          "position": {
+            "start": {
+              "line": 102,
+              "column": 1,
+              "offset": 1350
+            },
+            "end": {
+              "line": 103,
+              "column": 16,
+              "offset": 1393
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 102,
+          "column": 1,
+          "offset": 1350
+        },
+        "end": {
+          "line": 103,
+          "column": 16,
+          "offset": 1393
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 105,
+              "column": 5,
+              "offset": 1401
+            },
+            "end": {
+              "line": 105,
+              "column": 9,
+              "offset": 1405
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 105,
+          "column": 1,
+          "offset": 1397
+        },
+        "end": {
+          "line": 105,
+          "column": 9,
+          "offset": 1405
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
                   "value": "お気に入り,SC212",
+                  "position": {
+                    "start": {
+                      "line": 107,
+                      "column": 3,
+                      "offset": 1411
+                    },
+                    "end": {
+                      "line": 107,
+                      "column": 14,
+                      "offset": 1422
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 107,
+                  "column": 3,
+                  "offset": 1411
+                },
+                "end": {
+                  "line": 107,
+                  "column": 14,
+                  "offset": 1422
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 107,
+              "column": 1,
+              "offset": 1409
+            },
+            "end": {
+              "line": 107,
+              "column": 14,
+              "offset": 1422
+            }
+          }
+        },
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "注文履歴,SC211",
                   "position": {
                     "start": {
                       "line": 108,
                       "column": 3,
-                      "offset": 1429
+                      "offset": 1426
                     },
                     "end": {
                       "line": 108,
-                      "column": 14,
-                      "offset": 1440
+                      "column": 13,
+                      "offset": 1436
                     }
                   }
                 }
@@ -2704,12 +2652,12 @@
                 "start": {
                   "line": 108,
                   "column": 3,
-                  "offset": 1429
+                  "offset": 1426
                 },
                 "end": {
                   "line": 108,
-                  "column": 14,
-                  "offset": 1440
+                  "column": 13,
+                  "offset": 1436
                 }
               }
             }
@@ -2718,12 +2666,12 @@
             "start": {
               "line": 108,
               "column": 1,
-              "offset": 1427
+              "offset": 1424
             },
             "end": {
               "line": 108,
-              "column": 14,
-              "offset": 1440
+              "column": 13,
+              "offset": 1436
             }
           }
         },
@@ -2742,12 +2690,12 @@
                     "start": {
                       "line": 109,
                       "column": 3,
-                      "offset": 1444
+                      "offset": 1440
                     },
                     "end": {
                       "line": 109,
                       "column": 15,
-                      "offset": 1456
+                      "offset": 1452
                     }
                   }
                 }
@@ -2756,12 +2704,12 @@
                 "start": {
                   "line": 109,
                   "column": 3,
-                  "offset": 1444
+                  "offset": 1440
                 },
                 "end": {
                   "line": 109,
                   "column": 15,
-                  "offset": 1456
+                  "offset": 1452
                 }
               }
             }
@@ -2770,12 +2718,12 @@
             "start": {
               "line": 109,
               "column": 1,
-              "offset": 1442
+              "offset": 1438
             },
             "end": {
               "line": 109,
               "column": 15,
-              "offset": 1456
+              "offset": 1452
             }
           }
         },
@@ -2794,12 +2742,12 @@
                     "start": {
                       "line": 110,
                       "column": 3,
-                      "offset": 1460
+                      "offset": 1456
                     },
                     "end": {
                       "line": 110,
                       "column": 14,
-                      "offset": 1471
+                      "offset": 1467
                     }
                   }
                 }
@@ -2808,12 +2756,12 @@
                 "start": {
                   "line": 110,
                   "column": 3,
-                  "offset": 1460
+                  "offset": 1456
                 },
                 "end": {
                   "line": 110,
                   "column": 14,
-                  "offset": 1471
+                  "offset": 1467
                 }
               }
             }
@@ -2822,12 +2770,12 @@
             "start": {
               "line": 110,
               "column": 1,
-              "offset": 1458
+              "offset": 1454
             },
             "end": {
               "line": 110,
               "column": 14,
-              "offset": 1471
+              "offset": 1467
             }
           }
         }
@@ -2836,185 +2784,12 @@
         "start": {
           "line": 107,
           "column": 1,
-          "offset": 1413
+          "offset": 1409
         },
         "end": {
           "line": 110,
           "column": 14,
-          "offset": 1471
-        }
-      }
-    },
-    {
-      "type": "heading",
-      "depth": 2,
-      "children": [
-        {
-          "type": "text",
-          "value": "SC211, 注文履歴, /mypage/orders",
-          "position": {
-            "start": {
-              "line": 112,
-              "column": 4,
-              "offset": 1478
-            },
-            "end": {
-              "line": 112,
-              "column": 31,
-              "offset": 1505
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 112,
-          "column": 1,
-          "offset": 1475
-        },
-        "end": {
-          "line": 112,
-          "column": 31,
-          "offset": 1505
-        }
-      }
-    },
-    {
-      "type": "paragraph",
-      "children": [
-        {
-          "type": "text",
-          "value": "過去の注文一覧を表示。注文状況の確認と\r\n詳細情報へのアクセスを提供。",
-          "position": {
-            "start": {
-              "line": 114,
-              "column": 1,
-              "offset": 1509
-            },
-            "end": {
-              "line": 115,
-              "column": 15,
-              "offset": 1544
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 114,
-          "column": 1,
-          "offset": 1509
-        },
-        "end": {
-          "line": 115,
-          "column": 15,
-          "offset": 1544
-        }
-      }
-    },
-    {
-      "type": "heading",
-      "depth": 3,
-      "children": [
-        {
-          "type": "text",
-          "value": "link",
-          "position": {
-            "start": {
-              "line": 117,
-              "column": 5,
-              "offset": 1552
-            },
-            "end": {
-              "line": 117,
-              "column": 9,
-              "offset": 1556
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 117,
-          "column": 1,
-          "offset": 1548
-        },
-        "end": {
-          "line": 117,
-          "column": 9,
-          "offset": 1556
-        }
-      }
-    },
-    {
-      "type": "list",
-      "ordered": false,
-      "start": null,
-      "spread": false,
-      "children": [
-        {
-          "type": "listItem",
-          "spread": false,
-          "checked": null,
-          "children": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "type": "text",
-                  "value": "注文詳細,SC215",
-                  "position": {
-                    "start": {
-                      "line": 119,
-                      "column": 3,
-                      "offset": 1562
-                    },
-                    "end": {
-                      "line": 119,
-                      "column": 13,
-                      "offset": 1572
-                    }
-                  }
-                }
-              ],
-              "position": {
-                "start": {
-                  "line": 119,
-                  "column": 3,
-                  "offset": 1562
-                },
-                "end": {
-                  "line": 119,
-                  "column": 13,
-                  "offset": 1572
-                }
-              }
-            }
-          ],
-          "position": {
-            "start": {
-              "line": 119,
-              "column": 1,
-              "offset": 1560
-            },
-            "end": {
-              "line": 119,
-              "column": 13,
-              "offset": 1572
-            }
-          }
-        }
-      ],
-      "position": {
-        "start": {
-          "line": 119,
-          "column": 1,
-          "offset": 1560
-        },
-        "end": {
-          "line": 119,
-          "column": 13,
-          "offset": 1572
+          "offset": 1467
         }
       }
     },
@@ -3027,28 +2802,28 @@
           "value": "SC212, お気に入り, /mypage/favorites",
           "position": {
             "start": {
-              "line": 121,
+              "line": 112,
               "column": 4,
-              "offset": 1579
+              "offset": 1474
             },
             "end": {
-              "line": 121,
+              "line": 112,
               "column": 35,
-              "offset": 1610
+              "offset": 1505
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 121,
+          "line": 112,
           "column": 1,
-          "offset": 1576
+          "offset": 1471
         },
         "end": {
-          "line": 121,
+          "line": 112,
           "column": 35,
-          "offset": 1610
+          "offset": 1505
         }
       }
     },
@@ -3060,28 +2835,28 @@
           "value": "お気に入りに登録した商品の一覧を表示。\r\n簡易的な商品情報と在庫状況を確認可能。",
           "position": {
             "start": {
-              "line": 123,
+              "line": 114,
               "column": 1,
-              "offset": 1614
+              "offset": 1509
             },
             "end": {
-              "line": 124,
+              "line": 115,
               "column": 20,
-              "offset": 1654
+              "offset": 1549
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 123,
+          "line": 114,
           "column": 1,
-          "offset": 1614
+          "offset": 1509
         },
         "end": {
-          "line": 124,
+          "line": 115,
           "column": 20,
-          "offset": 1654
+          "offset": 1549
         }
       }
     },
@@ -3094,28 +2869,28 @@
           "value": "link",
           "position": {
             "start": {
-              "line": 126,
+              "line": 117,
               "column": 5,
-              "offset": 1662
+              "offset": 1557
             },
             "end": {
-              "line": 126,
+              "line": 117,
               "column": 9,
-              "offset": 1666
+              "offset": 1561
             }
           }
         }
       ],
       "position": {
         "start": {
-          "line": 126,
+          "line": 117,
           "column": 1,
-          "offset": 1658
+          "offset": 1553
         },
         "end": {
-          "line": 126,
+          "line": 117,
           "column": 9,
-          "offset": 1666
+          "offset": 1561
         }
       }
     },
@@ -3138,14 +2913,187 @@
                   "value": "商品詳細,SC021",
                   "position": {
                     "start": {
+                      "line": 119,
+                      "column": 3,
+                      "offset": 1567
+                    },
+                    "end": {
+                      "line": 119,
+                      "column": 13,
+                      "offset": 1577
+                    }
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 119,
+                  "column": 3,
+                  "offset": 1567
+                },
+                "end": {
+                  "line": 119,
+                  "column": 13,
+                  "offset": 1577
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 119,
+              "column": 1,
+              "offset": 1565
+            },
+            "end": {
+              "line": 119,
+              "column": 13,
+              "offset": 1577
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 119,
+          "column": 1,
+          "offset": 1565
+        },
+        "end": {
+          "line": 119,
+          "column": 13,
+          "offset": 1577
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 2,
+      "children": [
+        {
+          "type": "text",
+          "value": "SC211, 注文履歴, /mypage/orders",
+          "position": {
+            "start": {
+              "line": 121,
+              "column": 4,
+              "offset": 1584
+            },
+            "end": {
+              "line": 121,
+              "column": 31,
+              "offset": 1611
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 121,
+          "column": 1,
+          "offset": 1581
+        },
+        "end": {
+          "line": 121,
+          "column": 31,
+          "offset": 1611
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "過去の注文一覧を表示。注文状況の確認と\r\n詳細情報へのアクセスを提供。",
+          "position": {
+            "start": {
+              "line": 123,
+              "column": 1,
+              "offset": 1615
+            },
+            "end": {
+              "line": 124,
+              "column": 15,
+              "offset": 1650
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 123,
+          "column": 1,
+          "offset": 1615
+        },
+        "end": {
+          "line": 124,
+          "column": 15,
+          "offset": 1650
+        }
+      }
+    },
+    {
+      "type": "heading",
+      "depth": 3,
+      "children": [
+        {
+          "type": "text",
+          "value": "link",
+          "position": {
+            "start": {
+              "line": 126,
+              "column": 5,
+              "offset": 1658
+            },
+            "end": {
+              "line": 126,
+              "column": 9,
+              "offset": 1662
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 126,
+          "column": 1,
+          "offset": 1654
+        },
+        "end": {
+          "line": 126,
+          "column": 9,
+          "offset": 1662
+        }
+      }
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "start": null,
+      "spread": false,
+      "children": [
+        {
+          "type": "listItem",
+          "spread": false,
+          "checked": null,
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "注文詳細,SC215",
+                  "position": {
+                    "start": {
                       "line": 128,
                       "column": 3,
-                      "offset": 1672
+                      "offset": 1668
                     },
                     "end": {
                       "line": 128,
                       "column": 13,
-                      "offset": 1682
+                      "offset": 1678
                     }
                   }
                 }
@@ -3154,12 +3102,12 @@
                 "start": {
                   "line": 128,
                   "column": 3,
-                  "offset": 1672
+                  "offset": 1668
                 },
                 "end": {
                   "line": 128,
                   "column": 13,
-                  "offset": 1682
+                  "offset": 1678
                 }
               }
             }
@@ -3168,12 +3116,12 @@
             "start": {
               "line": 128,
               "column": 1,
-              "offset": 1670
+              "offset": 1666
             },
             "end": {
               "line": 128,
               "column": 13,
-              "offset": 1682
+              "offset": 1678
             }
           }
         }
@@ -3182,12 +3130,12 @@
         "start": {
           "line": 128,
           "column": 1,
-          "offset": 1670
+          "offset": 1666
         },
         "end": {
           "line": 128,
           "column": 13,
-          "offset": 1682
+          "offset": 1678
         }
       }
     },
@@ -3202,12 +3150,12 @@
             "start": {
               "line": 130,
               "column": 4,
-              "offset": 1689
+              "offset": 1685
             },
             "end": {
               "line": 130,
               "column": 34,
-              "offset": 1719
+              "offset": 1715
             }
           }
         }
@@ -3216,12 +3164,12 @@
         "start": {
           "line": 130,
           "column": 1,
-          "offset": 1686
+          "offset": 1682
         },
         "end": {
           "line": 130,
           "column": 34,
-          "offset": 1719
+          "offset": 1715
         }
       }
     },
@@ -3235,12 +3183,12 @@
             "start": {
               "line": 132,
               "column": 1,
-              "offset": 1723
+              "offset": 1719
             },
             "end": {
               "line": 132,
               "column": 30,
-              "offset": 1752
+              "offset": 1748
             }
           }
         }
@@ -3249,12 +3197,12 @@
         "start": {
           "line": 132,
           "column": 1,
-          "offset": 1723
+          "offset": 1719
         },
         "end": {
           "line": 132,
           "column": 30,
-          "offset": 1752
+          "offset": 1748
         }
       }
     },
@@ -3269,12 +3217,12 @@
             "start": {
               "line": 134,
               "column": 4,
-              "offset": 1759
+              "offset": 1755
             },
             "end": {
               "line": 134,
               "column": 35,
-              "offset": 1790
+              "offset": 1786
             }
           }
         }
@@ -3283,12 +3231,12 @@
         "start": {
           "line": 134,
           "column": 1,
-          "offset": 1756
+          "offset": 1752
         },
         "end": {
           "line": 134,
           "column": 35,
-          "offset": 1790
+          "offset": 1786
         }
       }
     },
@@ -3302,12 +3250,12 @@
             "start": {
               "line": 136,
               "column": 1,
-              "offset": 1794
+              "offset": 1790
             },
             "end": {
               "line": 137,
               "column": 13,
-              "offset": 1828
+              "offset": 1824
             }
           }
         }
@@ -3316,12 +3264,12 @@
         "start": {
           "line": 136,
           "column": 1,
-          "offset": 1794
+          "offset": 1790
         },
         "end": {
           "line": 137,
           "column": 13,
-          "offset": 1828
+          "offset": 1824
         }
       }
     },
@@ -3336,12 +3284,12 @@
             "start": {
               "line": 139,
               "column": 4,
-              "offset": 1835
+              "offset": 1831
             },
             "end": {
               "line": 139,
               "column": 42,
-              "offset": 1873
+              "offset": 1869
             }
           }
         }
@@ -3350,12 +3298,12 @@
         "start": {
           "line": 139,
           "column": 1,
-          "offset": 1832
+          "offset": 1828
         },
         "end": {
           "line": 139,
           "column": 42,
-          "offset": 1873
+          "offset": 1869
         }
       }
     },
@@ -3369,12 +3317,12 @@
             "start": {
               "line": 141,
               "column": 1,
-              "offset": 1877
+              "offset": 1873
             },
             "end": {
               "line": 142,
               "column": 18,
-              "offset": 1914
+              "offset": 1910
             }
           }
         }
@@ -3383,12 +3331,12 @@
         "start": {
           "line": 141,
           "column": 1,
-          "offset": 1877
+          "offset": 1873
         },
         "end": {
           "line": 142,
           "column": 18,
-          "offset": 1914
+          "offset": 1910
         }
       }
     },
@@ -3398,17 +3346,17 @@
       "children": [
         {
           "type": "text",
-          "value": "SC300, カート, /cart",
+          "value": "SC300, カート, /cart,1,11",
           "position": {
             "start": {
               "line": 144,
               "column": 4,
-              "offset": 1921
+              "offset": 1917
             },
             "end": {
               "line": 144,
-              "column": 21,
-              "offset": 1938
+              "column": 26,
+              "offset": 1939
             }
           }
         }
@@ -3417,12 +3365,12 @@
         "start": {
           "line": 144,
           "column": 1,
-          "offset": 1918
+          "offset": 1914
         },
         "end": {
           "line": 144,
-          "column": 21,
-          "offset": 1938
+          "column": 26,
+          "offset": 1939
         }
       }
     },
@@ -3436,12 +3384,12 @@
             "start": {
               "line": 146,
               "column": 1,
-              "offset": 1942
+              "offset": 1943
             },
             "end": {
               "line": 147,
               "column": 17,
-              "offset": 1979
+              "offset": 1980
             }
           }
         }
@@ -3450,12 +3398,12 @@
         "start": {
           "line": 146,
           "column": 1,
-          "offset": 1942
+          "offset": 1943
         },
         "end": {
           "line": 147,
           "column": 17,
-          "offset": 1979
+          "offset": 1980
         }
       }
     },
@@ -3470,12 +3418,12 @@
             "start": {
               "line": 149,
               "column": 5,
-              "offset": 1987
+              "offset": 1988
             },
             "end": {
               "line": 149,
               "column": 9,
-              "offset": 1991
+              "offset": 1992
             }
           }
         }
@@ -3484,12 +3432,12 @@
         "start": {
           "line": 149,
           "column": 1,
-          "offset": 1983
+          "offset": 1984
         },
         "end": {
           "line": 149,
           "column": 9,
-          "offset": 1991
+          "offset": 1992
         }
       }
     },
@@ -3514,12 +3462,12 @@
                     "start": {
                       "line": 151,
                       "column": 3,
-                      "offset": 1997
+                      "offset": 1998
                     },
                     "end": {
                       "line": 151,
                       "column": 14,
-                      "offset": 2008
+                      "offset": 2009
                     }
                   }
                 }
@@ -3528,12 +3476,12 @@
                 "start": {
                   "line": 151,
                   "column": 3,
-                  "offset": 1997
+                  "offset": 1998
                 },
                 "end": {
                   "line": 151,
                   "column": 14,
-                  "offset": 2008
+                  "offset": 2009
                 }
               }
             }
@@ -3542,12 +3490,12 @@
             "start": {
               "line": 151,
               "column": 1,
-              "offset": 1995
+              "offset": 1996
             },
             "end": {
               "line": 151,
               "column": 14,
-              "offset": 2008
+              "offset": 2009
             }
           }
         },
@@ -3561,17 +3509,17 @@
               "children": [
                 {
                   "type": "text",
-                  "value": "買い物を続ける,SC001",
+                  "value": "買い物を続ける",
                   "position": {
                     "start": {
                       "line": 152,
                       "column": 3,
-                      "offset": 2012
+                      "offset": 2013
                     },
                     "end": {
                       "line": 152,
-                      "column": 16,
-                      "offset": 2025
+                      "column": 10,
+                      "offset": 2020
                     }
                   }
                 }
@@ -3580,12 +3528,12 @@
                 "start": {
                   "line": 152,
                   "column": 3,
-                  "offset": 2012
+                  "offset": 2013
                 },
                 "end": {
                   "line": 152,
-                  "column": 16,
-                  "offset": 2025
+                  "column": 10,
+                  "offset": 2020
                 }
               }
             }
@@ -3594,12 +3542,12 @@
             "start": {
               "line": 152,
               "column": 1,
-              "offset": 2010
+              "offset": 2011
             },
             "end": {
               "line": 152,
-              "column": 16,
-              "offset": 2025
+              "column": 10,
+              "offset": 2020
             }
           }
         }
@@ -3608,12 +3556,12 @@
         "start": {
           "line": 151,
           "column": 1,
-          "offset": 1995
+          "offset": 1996
         },
         "end": {
           "line": 152,
-          "column": 16,
-          "offset": 2025
+          "column": 10,
+          "offset": 2020
         }
       }
     },
@@ -3628,12 +3576,12 @@
             "start": {
               "line": 154,
               "column": 4,
-              "offset": 2032
+              "offset": 2027
             },
             "end": {
               "line": 154,
               "column": 24,
-              "offset": 2052
+              "offset": 2047
             }
           }
         }
@@ -3642,12 +3590,12 @@
         "start": {
           "line": 154,
           "column": 1,
-          "offset": 2029
+          "offset": 2024
         },
         "end": {
           "line": 154,
           "column": 24,
-          "offset": 2052
+          "offset": 2047
         }
       }
     },
@@ -3661,12 +3609,12 @@
             "start": {
               "line": 156,
               "column": 1,
-              "offset": 2056
+              "offset": 2051
             },
             "end": {
               "line": 157,
               "column": 16,
-              "offset": 2088
+              "offset": 2083
             }
           }
         }
@@ -3675,12 +3623,12 @@
         "start": {
           "line": 156,
           "column": 1,
-          "offset": 2056
+          "offset": 2051
         },
         "end": {
           "line": 157,
           "column": 16,
-          "offset": 2088
+          "offset": 2083
         }
       }
     },
@@ -3695,12 +3643,12 @@
             "start": {
               "line": 159,
               "column": 5,
-              "offset": 2096
+              "offset": 2091
             },
             "end": {
               "line": 159,
               "column": 9,
-              "offset": 2100
+              "offset": 2095
             }
           }
         }
@@ -3709,12 +3657,12 @@
         "start": {
           "line": 159,
           "column": 1,
-          "offset": 2092
+          "offset": 2087
         },
         "end": {
           "line": 159,
           "column": 9,
-          "offset": 2100
+          "offset": 2095
         }
       }
     },
@@ -3739,12 +3687,12 @@
                     "start": {
                       "line": 161,
                       "column": 3,
-                      "offset": 2106
+                      "offset": 2101
                     },
                     "end": {
                       "line": 161,
                       "column": 13,
-                      "offset": 2116
+                      "offset": 2111
                     }
                   }
                 }
@@ -3753,12 +3701,12 @@
                 "start": {
                   "line": 161,
                   "column": 3,
-                  "offset": 2106
+                  "offset": 2101
                 },
                 "end": {
                   "line": 161,
                   "column": 13,
-                  "offset": 2116
+                  "offset": 2111
                 }
               }
             }
@@ -3767,12 +3715,12 @@
             "start": {
               "line": 161,
               "column": 1,
-              "offset": 2104
+              "offset": 2099
             },
             "end": {
               "line": 161,
               "column": 13,
-              "offset": 2116
+              "offset": 2111
             }
           }
         }
@@ -3781,12 +3729,12 @@
         "start": {
           "line": 161,
           "column": 1,
-          "offset": 2104
+          "offset": 2099
         },
         "end": {
           "line": 161,
           "column": 13,
-          "offset": 2116
+          "offset": 2111
         }
       }
     },
@@ -3801,12 +3749,12 @@
             "start": {
               "line": 163,
               "column": 4,
-              "offset": 2123
+              "offset": 2118
             },
             "end": {
               "line": 163,
               "column": 34,
-              "offset": 2153
+              "offset": 2148
             }
           }
         }
@@ -3815,12 +3763,12 @@
         "start": {
           "line": 163,
           "column": 1,
-          "offset": 2120
+          "offset": 2115
         },
         "end": {
           "line": 163,
           "column": 34,
-          "offset": 2153
+          "offset": 2148
         }
       }
     },
@@ -3834,12 +3782,12 @@
             "start": {
               "line": 165,
               "column": 1,
-              "offset": 2157
+              "offset": 2152
             },
             "end": {
               "line": 166,
               "column": 19,
-              "offset": 2192
+              "offset": 2187
             }
           }
         }
@@ -3848,12 +3796,12 @@
         "start": {
           "line": 165,
           "column": 1,
-          "offset": 2157
+          "offset": 2152
         },
         "end": {
           "line": 166,
           "column": 19,
-          "offset": 2192
+          "offset": 2187
         }
       }
     },
@@ -3868,12 +3816,12 @@
             "start": {
               "line": 168,
               "column": 5,
-              "offset": 2200
+              "offset": 2195
             },
             "end": {
               "line": 168,
               "column": 9,
-              "offset": 2204
+              "offset": 2199
             }
           }
         }
@@ -3882,12 +3830,12 @@
         "start": {
           "line": 168,
           "column": 1,
-          "offset": 2196
+          "offset": 2191
         },
         "end": {
           "line": 168,
           "column": 9,
-          "offset": 2204
+          "offset": 2199
         }
       }
     },
@@ -3912,12 +3860,12 @@
                     "start": {
                       "line": 170,
                       "column": 3,
-                      "offset": 2210
+                      "offset": 2205
                     },
                     "end": {
                       "line": 170,
                       "column": 13,
-                      "offset": 2220
+                      "offset": 2215
                     }
                   }
                 }
@@ -3926,12 +3874,12 @@
                 "start": {
                   "line": 170,
                   "column": 3,
-                  "offset": 2210
+                  "offset": 2205
                 },
                 "end": {
                   "line": 170,
                   "column": 13,
-                  "offset": 2220
+                  "offset": 2215
                 }
               }
             }
@@ -3940,12 +3888,12 @@
             "start": {
               "line": 170,
               "column": 1,
-              "offset": 2208
+              "offset": 2203
             },
             "end": {
               "line": 170,
               "column": 13,
-              "offset": 2220
+              "offset": 2215
             }
           }
         }
@@ -3954,12 +3902,12 @@
         "start": {
           "line": 170,
           "column": 1,
-          "offset": 2208
+          "offset": 2203
         },
         "end": {
           "line": 170,
           "column": 13,
-          "offset": 2220
+          "offset": 2215
         }
       }
     },
@@ -3974,12 +3922,12 @@
             "start": {
               "line": 172,
               "column": 4,
-              "offset": 2227
+              "offset": 2222
             },
             "end": {
               "line": 172,
               "column": 35,
-              "offset": 2258
+              "offset": 2253
             }
           }
         }
@@ -3988,12 +3936,12 @@
         "start": {
           "line": 172,
           "column": 1,
-          "offset": 2224
+          "offset": 2219
         },
         "end": {
           "line": 172,
           "column": 35,
-          "offset": 2258
+          "offset": 2253
         }
       }
     },
@@ -4007,12 +3955,12 @@
             "start": {
               "line": 174,
               "column": 1,
-              "offset": 2262
+              "offset": 2257
             },
             "end": {
               "line": 175,
               "column": 15,
-              "offset": 2293
+              "offset": 2288
             }
           }
         }
@@ -4021,12 +3969,12 @@
         "start": {
           "line": 174,
           "column": 1,
-          "offset": 2262
+          "offset": 2257
         },
         "end": {
           "line": 175,
           "column": 15,
-          "offset": 2293
+          "offset": 2288
         }
       }
     },
@@ -4041,12 +3989,12 @@
             "start": {
               "line": 177,
               "column": 5,
-              "offset": 2301
+              "offset": 2296
             },
             "end": {
               "line": 177,
               "column": 9,
-              "offset": 2305
+              "offset": 2300
             }
           }
         }
@@ -4055,12 +4003,12 @@
         "start": {
           "line": 177,
           "column": 1,
-          "offset": 2297
+          "offset": 2292
         },
         "end": {
           "line": 177,
           "column": 9,
-          "offset": 2305
+          "offset": 2300
         }
       }
     },
@@ -4080,17 +4028,17 @@
               "children": [
                 {
                   "type": "text",
-                  "value": "トップページへ,SC001",
+                  "value": "トップページへ",
                   "position": {
                     "start": {
                       "line": 179,
                       "column": 3,
-                      "offset": 2311
+                      "offset": 2306
                     },
                     "end": {
                       "line": 179,
-                      "column": 16,
-                      "offset": 2324
+                      "column": 10,
+                      "offset": 2313
                     }
                   }
                 }
@@ -4099,12 +4047,12 @@
                 "start": {
                   "line": 179,
                   "column": 3,
-                  "offset": 2311
+                  "offset": 2306
                 },
                 "end": {
                   "line": 179,
-                  "column": 16,
-                  "offset": 2324
+                  "column": 10,
+                  "offset": 2313
                 }
               }
             }
@@ -4113,12 +4061,12 @@
             "start": {
               "line": 179,
               "column": 1,
-              "offset": 2309
+              "offset": 2304
             },
             "end": {
               "line": 179,
-              "column": 16,
-              "offset": 2324
+              "column": 10,
+              "offset": 2313
             }
           }
         },
@@ -4132,17 +4080,17 @@
               "children": [
                 {
                   "type": "text",
-                  "value": "マイページへ,SC201",
+                  "value": "マイページへ",
                   "position": {
                     "start": {
                       "line": 180,
                       "column": 3,
-                      "offset": 2328
+                      "offset": 2317
                     },
                     "end": {
                       "line": 180,
-                      "column": 15,
-                      "offset": 2340
+                      "column": 9,
+                      "offset": 2323
                     }
                   }
                 }
@@ -4151,12 +4099,12 @@
                 "start": {
                   "line": 180,
                   "column": 3,
-                  "offset": 2328
+                  "offset": 2317
                 },
                 "end": {
                   "line": 180,
-                  "column": 15,
-                  "offset": 2340
+                  "column": 9,
+                  "offset": 2323
                 }
               }
             }
@@ -4165,12 +4113,12 @@
             "start": {
               "line": 180,
               "column": 1,
-              "offset": 2326
+              "offset": 2315
             },
             "end": {
               "line": 180,
-              "column": 15,
-              "offset": 2340
+              "column": 9,
+              "offset": 2323
             }
           }
         }
@@ -4179,12 +4127,12 @@
         "start": {
           "line": 179,
           "column": 1,
-          "offset": 2309
+          "offset": 2304
         },
         "end": {
           "line": 180,
-          "column": 15,
-          "offset": 2340
+          "column": 9,
+          "offset": 2323
         }
       }
     },
@@ -4194,17 +4142,17 @@
       "children": [
         {
           "type": "text",
-          "value": "SC401, 会社概要, /company,1,12",
+          "value": "SC401, 会社概要, /company,1,13",
           "position": {
             "start": {
               "line": 182,
               "column": 4,
-              "offset": 2347
+              "offset": 2330
             },
             "end": {
               "line": 182,
               "column": 30,
-              "offset": 2373
+              "offset": 2356
             }
           }
         }
@@ -4213,12 +4161,12 @@
         "start": {
           "line": 182,
           "column": 1,
-          "offset": 2344
+          "offset": 2327
         },
         "end": {
           "line": 182,
           "column": 30,
-          "offset": 2373
+          "offset": 2356
         }
       }
     },
@@ -4232,12 +4180,12 @@
             "start": {
               "line": 184,
               "column": 1,
-              "offset": 2377
+              "offset": 2360
             },
             "end": {
               "line": 185,
               "column": 11,
-              "offset": 2402
+              "offset": 2385
             }
           }
         }
@@ -4246,12 +4194,12 @@
         "start": {
           "line": 184,
           "column": 1,
-          "offset": 2377
+          "offset": 2360
         },
         "end": {
           "line": 185,
           "column": 11,
-          "offset": 2402
+          "offset": 2385
         }
       }
     },
@@ -4266,12 +4214,12 @@
             "start": {
               "line": 187,
               "column": 4,
-              "offset": 2409
+              "offset": 2392
             },
             "end": {
               "line": 187,
               "column": 25,
-              "offset": 2430
+              "offset": 2413
             }
           }
         }
@@ -4280,12 +4228,12 @@
         "start": {
           "line": 187,
           "column": 1,
-          "offset": 2406
+          "offset": 2389
         },
         "end": {
           "line": 187,
           "column": 25,
-          "offset": 2430
+          "offset": 2413
         }
       }
     },
@@ -4299,12 +4247,12 @@
             "start": {
               "line": 189,
               "column": 1,
-              "offset": 2434
+              "offset": 2417
             },
             "end": {
               "line": 190,
               "column": 13,
-              "offset": 2463
+              "offset": 2446
             }
           }
         }
@@ -4313,12 +4261,12 @@
         "start": {
           "line": 189,
           "column": 1,
-          "offset": 2434
+          "offset": 2417
         },
         "end": {
           "line": 190,
           "column": 13,
-          "offset": 2463
+          "offset": 2446
         }
       }
     },
@@ -4333,12 +4281,12 @@
             "start": {
               "line": 192,
               "column": 4,
-              "offset": 2470
+              "offset": 2453
             },
             "end": {
               "line": 192,
               "column": 23,
-              "offset": 2489
+              "offset": 2472
             }
           }
         }
@@ -4347,12 +4295,12 @@
         "start": {
           "line": 192,
           "column": 1,
-          "offset": 2467
+          "offset": 2450
         },
         "end": {
           "line": 192,
           "column": 23,
-          "offset": 2489
+          "offset": 2472
         }
       }
     },
@@ -4366,12 +4314,12 @@
             "start": {
               "line": 194,
               "column": 1,
-              "offset": 2493
+              "offset": 2476
             },
             "end": {
               "line": 195,
               "column": 10,
-              "offset": 2520
+              "offset": 2503
             }
           }
         }
@@ -4380,12 +4328,12 @@
         "start": {
           "line": 194,
           "column": 1,
-          "offset": 2493
+          "offset": 2476
         },
         "end": {
           "line": 195,
           "column": 10,
-          "offset": 2520
+          "offset": 2503
         }
       }
     },
@@ -4400,12 +4348,12 @@
             "start": {
               "line": 197,
               "column": 4,
-              "offset": 2527
+              "offset": 2510
             },
             "end": {
               "line": 197,
               "column": 31,
-              "offset": 2554
+              "offset": 2537
             }
           }
         }
@@ -4414,12 +4362,12 @@
         "start": {
           "line": 197,
           "column": 1,
-          "offset": 2524
+          "offset": 2507
         },
         "end": {
           "line": 197,
           "column": 31,
-          "offset": 2554
+          "offset": 2537
         }
       }
     },
@@ -4433,12 +4381,12 @@
             "start": {
               "line": 199,
               "column": 1,
-              "offset": 2558
+              "offset": 2541
             },
             "end": {
               "line": 200,
               "column": 7,
-              "offset": 2579
+              "offset": 2562
             }
           }
         }
@@ -4447,12 +4395,12 @@
         "start": {
           "line": 199,
           "column": 1,
-          "offset": 2558
+          "offset": 2541
         },
         "end": {
           "line": 200,
           "column": 7,
-          "offset": 2579
+          "offset": 2562
         }
       }
     },
@@ -4467,12 +4415,12 @@
             "start": {
               "line": 202,
               "column": 4,
-              "offset": 2586
+              "offset": 2569
             },
             "end": {
               "line": 202,
               "column": 27,
-              "offset": 2609
+              "offset": 2592
             }
           }
         }
@@ -4481,12 +4429,12 @@
         "start": {
           "line": 202,
           "column": 1,
-          "offset": 2583
+          "offset": 2566
         },
         "end": {
           "line": 202,
           "column": 27,
-          "offset": 2609
+          "offset": 2592
         }
       }
     },
@@ -4500,12 +4448,12 @@
             "start": {
               "line": 204,
               "column": 1,
-              "offset": 2613
+              "offset": 2596
             },
             "end": {
               "line": 205,
               "column": 16,
-              "offset": 2643
+              "offset": 2626
             }
           }
         }
@@ -4514,12 +4462,12 @@
         "start": {
           "line": 204,
           "column": 1,
-          "offset": 2613
+          "offset": 2596
         },
         "end": {
           "line": 205,
           "column": 16,
-          "offset": 2643
+          "offset": 2626
         }
       }
     },
@@ -4534,12 +4482,12 @@
             "start": {
               "line": 207,
               "column": 5,
-              "offset": 2651
+              "offset": 2634
             },
             "end": {
               "line": 207,
               "column": 9,
-              "offset": 2655
+              "offset": 2638
             }
           }
         }
@@ -4548,12 +4496,12 @@
         "start": {
           "line": 207,
           "column": 1,
-          "offset": 2647
+          "offset": 2630
         },
         "end": {
           "line": 207,
           "column": 9,
-          "offset": 2655
+          "offset": 2638
         }
       }
     },
@@ -4578,12 +4526,12 @@
                     "start": {
                       "line": 209,
                       "column": 3,
-                      "offset": 2661
+                      "offset": 2644
                     },
                     "end": {
                       "line": 209,
                       "column": 17,
-                      "offset": 2675
+                      "offset": 2658
                     }
                   }
                 }
@@ -4592,12 +4540,12 @@
                 "start": {
                   "line": 209,
                   "column": 3,
-                  "offset": 2661
+                  "offset": 2644
                 },
                 "end": {
                   "line": 209,
                   "column": 17,
-                  "offset": 2675
+                  "offset": 2658
                 }
               }
             }
@@ -4606,12 +4554,12 @@
             "start": {
               "line": 209,
               "column": 1,
-              "offset": 2659
+              "offset": 2642
             },
             "end": {
               "line": 209,
               "column": 17,
-              "offset": 2675
+              "offset": 2658
             }
           }
         }
@@ -4620,12 +4568,12 @@
         "start": {
           "line": 209,
           "column": 1,
-          "offset": 2659
+          "offset": 2642
         },
         "end": {
           "line": 209,
           "column": 17,
-          "offset": 2675
+          "offset": 2658
         }
       }
     },
@@ -4640,12 +4588,12 @@
             "start": {
               "line": 211,
               "column": 4,
-              "offset": 2682
+              "offset": 2665
             },
             "end": {
               "line": 211,
               "column": 38,
-              "offset": 2716
+              "offset": 2699
             }
           }
         }
@@ -4654,12 +4602,12 @@
         "start": {
           "line": 211,
           "column": 1,
-          "offset": 2679
+          "offset": 2662
         },
         "end": {
           "line": 211,
           "column": 38,
-          "offset": 2716
+          "offset": 2699
         }
       }
     },
@@ -4673,12 +4621,12 @@
             "start": {
               "line": 213,
               "column": 1,
-              "offset": 2720
+              "offset": 2703
             },
             "end": {
               "line": 213,
               "column": 17,
-              "offset": 2736
+              "offset": 2719
             }
           }
         }
@@ -4687,12 +4635,12 @@
         "start": {
           "line": 213,
           "column": 1,
-          "offset": 2720
+          "offset": 2703
         },
         "end": {
           "line": 213,
           "column": 17,
-          "offset": 2736
+          "offset": 2719
         }
       }
     },
@@ -4706,12 +4654,12 @@
             "start": {
               "line": 215,
               "column": 1,
-              "offset": 2740
+              "offset": 2723
             },
             "end": {
               "line": 215,
               "column": 16,
-              "offset": 2755
+              "offset": 2738
             }
           }
         }
@@ -4720,12 +4668,12 @@
         "start": {
           "line": 215,
           "column": 1,
-          "offset": 2740
+          "offset": 2723
         },
         "end": {
           "line": 215,
           "column": 16,
-          "offset": 2755
+          "offset": 2738
         }
       }
     },
@@ -4739,12 +4687,12 @@
             "start": {
               "line": 217,
               "column": 1,
-              "offset": 2759
+              "offset": 2742
             },
             "end": {
               "line": 220,
               "column": 2,
-              "offset": 2769
+              "offset": 2752
             }
           }
         }
@@ -4753,12 +4701,12 @@
         "start": {
           "line": 217,
           "column": 1,
-          "offset": 2759
+          "offset": 2742
         },
         "end": {
           "line": 220,
           "column": 2,
-          "offset": 2769
+          "offset": 2752
         }
       }
     }
@@ -4772,7 +4720,7 @@
     "end": {
       "line": 220,
       "column": 2,
-      "offset": 2769
+      "offset": 2752
     }
   }
 }

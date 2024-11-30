@@ -120,11 +120,6 @@ const SCREENS=[
         "sectionName": "",
         "text": "カテゴリー",
         "linkToId": "SC011"
-      },
-      {
-        "sectionName": "",
-        "text": "商品詳細",
-        "linkToId": "SC021"
       }
     ],
     "description": "全商品カテゴリーの一覧を表示。\r\nメインカテゴリーとサブカテゴリーの階層構造を表示。",
@@ -153,8 +148,8 @@ const SCREENS=[
     "id": "SC021",
     "name": "商品詳細",
     "url": "/products/{product_id}",
-    "depth": 2,
-    "pos": 3,
+    "depth": 3,
+    "pos": 2,
     "descriptions": [
       "商品の詳細情報（価格、説明、画像、在庫状況等）を表示。\r\nカートへの追加、お気に入り登録機能を提供。"
     ],
@@ -170,15 +165,45 @@ const SCREENS=[
         "linkToId": "SC201"
       }
     ],
-    "description": "商品の詳細情報（価格、説明、画像、在庫状況等）を表示。\r\nカートへの追加、お気に入り登録機能を提供。",
-    "parentId": "SC002"
+    "description": "商品の詳細情報（価格、説明、画像、在庫状況等）を表示。\r\nカートへの追加、お気に入り登録機能を提供。"
+  },
+  {
+    "id": "SC111",
+    "name": "新規会員登録",
+    "url": "/register",
+    "depth": 1,
+    "pos": 4,
+    "descriptions": [
+      "新規ユーザー登録フォーム。必要な個人情報の入力と\r\n利用規約への同意プロセスを提供。"
+    ],
+    "links": [
+      {
+        "sectionName": "",
+        "text": "登録完了",
+        "linkToId": "SC112"
+      }
+    ],
+    "description": "新規ユーザー登録フォーム。必要な個人情報の入力と\r\n利用規約への同意プロセスを提供。"
+  },
+  {
+    "id": "SC112",
+    "name": "会員登録完了",
+    "url": "/register/complete",
+    "depth": 2,
+    "pos": 4,
+    "descriptions": [
+      "登録完了の確認画面。登録情報の確認メール送信通知を表示。"
+    ],
+    "links": [],
+    "description": "登録完了の確認画面。登録情報の確認メール送信通知を表示。",
+    "parentId": "SC111"
   },
   {
     "id": "SC101",
     "name": "ログイン",
     "url": "/login",
     "depth": 1,
-    "pos": 4,
+    "pos": 6,
     "descriptions": [
       "メールアドレスとパスワードによるログインフォームを提供。\r\nソーシャルログインオプションも表示。"
     ],
@@ -206,7 +231,7 @@ const SCREENS=[
     "name": "パスワード再設定",
     "url": "/password/reset",
     "depth": 2,
-    "pos": 4,
+    "pos": 6,
     "descriptions": [
       "メールアドレスを入力し、パスワード再設定用リンクを送信。\r\nセキュリティ確認機能を含む。"
     ],
@@ -215,56 +240,24 @@ const SCREENS=[
     "parentId": "SC101"
   },
   {
-    "id": "SC111",
-    "name": "新規会員登録",
-    "url": "/register",
-    "depth": 1,
-    "pos": 5,
-    "descriptions": [
-      "新規ユーザー登録フォーム。必要な個人情報の入力と\r\n利用規約への同意プロセスを提供。"
-    ],
-    "links": [
-      {
-        "sectionName": "",
-        "text": "登録完了",
-        "linkToId": "SC112"
-      }
-    ],
-    "description": "新規ユーザー登録フォーム。必要な個人情報の入力と\r\n利用規約への同意プロセスを提供。",
-    "parentId": "SC001"
-  },
-  {
-    "id": "SC112",
-    "name": "会員登録完了",
-    "url": "/register/complete",
-    "depth": 2,
-    "pos": 5,
-    "descriptions": [
-      "登録完了の確認画面。登録情報の確認メール送信通知を表示。"
-    ],
-    "links": [],
-    "description": "登録完了の確認画面。登録情報の確認メール送信通知を表示。",
-    "parentId": "SC111"
-  },
-  {
     "id": "SC201",
     "name": "マイページ",
     "url": "/mypage",
     "depth": 1,
-    "pos": 6,
+    "pos": 7,
     "descriptions": [
       "ユーザーの個人ダッシュボード。注文履歴、お気に入り、\r\n個人情報管理へのリンクを提供。"
     ],
     "links": [
       {
         "sectionName": "",
-        "text": "注文履歴",
-        "linkToId": "SC211"
+        "text": "お気に入り",
+        "linkToId": "SC212"
       },
       {
         "sectionName": "",
-        "text": "お気に入り",
-        "linkToId": "SC212"
+        "text": "注文履歴",
+        "linkToId": "SC211"
       },
       {
         "sectionName": "",
@@ -279,25 +272,6 @@ const SCREENS=[
     ],
     "description": "ユーザーの個人ダッシュボード。注文履歴、お気に入り、\r\n個人情報管理へのリンクを提供。",
     "parentId": "SC001"
-  },
-  {
-    "id": "SC211",
-    "name": "注文履歴",
-    "url": "/mypage/orders",
-    "depth": 2,
-    "pos": 6,
-    "descriptions": [
-      "過去の注文一覧を表示。注文状況の確認と\r\n詳細情報へのアクセスを提供。"
-    ],
-    "links": [
-      {
-        "sectionName": "",
-        "text": "注文詳細",
-        "linkToId": "SC215"
-      }
-    ],
-    "description": "過去の注文一覧を表示。注文状況の確認と\r\n詳細情報へのアクセスを提供。",
-    "parentId": "SC201"
   },
   {
     "id": "SC212",
@@ -319,11 +293,30 @@ const SCREENS=[
     "parentId": "SC201"
   },
   {
+    "id": "SC211",
+    "name": "注文履歴",
+    "url": "/mypage/orders",
+    "depth": 2,
+    "pos": 8,
+    "descriptions": [
+      "過去の注文一覧を表示。注文状況の確認と\r\n詳細情報へのアクセスを提供。"
+    ],
+    "links": [
+      {
+        "sectionName": "",
+        "text": "注文詳細",
+        "linkToId": "SC215"
+      }
+    ],
+    "description": "過去の注文一覧を表示。注文状況の確認と\r\n詳細情報へのアクセスを提供。",
+    "parentId": "SC201"
+  },
+  {
     "id": "SC213",
     "name": "会員情報編集",
     "url": "/mypage/profile",
     "depth": 2,
-    "pos": 8,
+    "pos": 9,
     "descriptions": [
       "会員情報（個人情報、パスワード等）の確認・編集機能を提供。"
     ],
@@ -336,7 +329,7 @@ const SCREENS=[
     "name": "配送先管理",
     "url": "/mypage/addresses",
     "depth": 2,
-    "pos": 9,
+    "pos": 10,
     "descriptions": [
       "配送先住所の追加、編集、削除機能を提供。\r\n複数配送先の管理が可能。"
     ],
@@ -349,7 +342,7 @@ const SCREENS=[
     "name": "注文詳細",
     "url": "/mypage/orders/{order_id}",
     "depth": 3,
-    "pos": 6,
+    "pos": 8,
     "descriptions": [
       "個別の注文詳細情報を表示。配送状況、\r\n注文商品、支払い情報等を確認可能。"
     ],
@@ -362,7 +355,7 @@ const SCREENS=[
     "name": "カート",
     "url": "/cart",
     "depth": 1,
-    "pos": 7,
+    "pos": 11,
     "descriptions": [
       "カートに追加した商品の一覧、数量変更、\r\n削除機能を提供。合計金額の表示。"
     ],
@@ -374,19 +367,17 @@ const SCREENS=[
       },
       {
         "sectionName": "",
-        "text": "買い物を続ける",
-        "linkToId": "SC001"
+        "text": "買い物を続ける"
       }
     ],
-    "description": "カートに追加した商品の一覧、数量変更、\r\n削除機能を提供。合計金額の表示。",
-    "parentId": "SC001"
+    "description": "カートに追加した商品の一覧、数量変更、\r\n削除機能を提供。合計金額の表示。"
   },
   {
     "id": "SC301",
     "name": "レジ",
     "url": "/checkout",
     "depth": 2,
-    "pos": 10,
+    "pos": 11,
     "descriptions": [
       "配送先情報、支払い方法の選択、\r\n注文内容の最終確認画面を提供。"
     ],
@@ -405,7 +396,7 @@ const SCREENS=[
     "name": "注文確認",
     "url": "/checkout/confirm",
     "depth": 3,
-    "pos": 10,
+    "pos": 11,
     "descriptions": [
       "注文内容、配送先、支払い方法の\r\n最終確認画面。注文の確定機能を提供。"
     ],
@@ -424,20 +415,18 @@ const SCREENS=[
     "name": "注文完了",
     "url": "/checkout/complete",
     "depth": 4,
-    "pos": 10,
+    "pos": 11,
     "descriptions": [
       "注文完了の確認画面。注文番号、\r\nお届け予定日等の情報を表示。"
     ],
     "links": [
       {
         "sectionName": "",
-        "text": "トップページへ",
-        "linkToId": "SC001"
+        "text": "トップページへ"
       },
       {
         "sectionName": "",
-        "text": "マイページへ",
-        "linkToId": "SC201"
+        "text": "マイページへ"
       }
     ],
     "description": "注文完了の確認画面。注文番号、\r\nお届け予定日等の情報を表示。",
@@ -448,7 +437,7 @@ const SCREENS=[
     "name": "会社概要",
     "url": "/company",
     "depth": 1,
-    "pos": 12,
+    "pos": 13,
     "descriptions": [
       "会社の基本情報、ビジョン、\r\nミッション等を掲載。"
     ],
@@ -460,7 +449,7 @@ const SCREENS=[
     "name": "ご利用ガイド",
     "url": "/guide",
     "depth": 1,
-    "pos": 13,
+    "pos": 14,
     "descriptions": [
       "サイトの使い方、会員登録方法、\r\n注文方法等の説明を提供。"
     ],
@@ -472,7 +461,7 @@ const SCREENS=[
     "name": "利用規約",
     "url": "/terms",
     "depth": 1,
-    "pos": 14,
+    "pos": 15,
     "descriptions": [
       "サービス利用に関する規約を掲載。\r\n最終更新日を明記。"
     ],
@@ -484,7 +473,7 @@ const SCREENS=[
     "name": "プライバシーポリシー",
     "url": "/privacy",
     "depth": 1,
-    "pos": 15,
+    "pos": 16,
     "descriptions": [
       "個人情報の取り扱いに関する\r\n方針を掲載。"
     ],
@@ -496,7 +485,7 @@ const SCREENS=[
     "name": "お問い合わせ",
     "url": "/contact",
     "depth": 1,
-    "pos": 16,
+    "pos": 17,
     "descriptions": [
       "問い合わせフォームを提供。\r\nカテゴリー選択と内容入力機能。"
     ],
@@ -514,7 +503,7 @@ const SCREENS=[
     "name": "お問い合わせ完了",
     "url": "/contact/complete",
     "depth": 2,
-    "pos": 16,
+    "pos": 17,
     "descriptions": [
       "お問い合わせ送信完了の確認画面。",
       "受付番号と回答予定時期を表示。",

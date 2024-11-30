@@ -35,7 +35,16 @@ $(function() {
         .click(function() {
           const id = $(this).data('id');
           onClickLink(id);
-        });
+        })
+        .hover(
+          function() {
+            const id = $(this).data('id');
+            Sitemap.setHover(id);
+          },
+          function() {
+            Sitemap.setHover(null);
+          }
+        );
 
       $pageList.append($item);
     }

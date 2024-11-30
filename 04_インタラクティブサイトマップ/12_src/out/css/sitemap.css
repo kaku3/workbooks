@@ -38,7 +38,7 @@
       z-index: 1;
       cursor: pointer;
       margin-bottom: 20px;
-      min-width: 240px;
+      min-width: var(--sitemap-page-width);
       height: 40px;
 
       background: #eee;
@@ -51,12 +51,12 @@
         opacity: 0;
       }
 
-      &.active {
-        background-color: orange;
+      &.link-to {
+        background-color: var(--color-select-link);
       }
 
-      &.link {
-        background-color: orange;
+      &.active, &.hover {
+        background-color: var(--color-select-page);
       }
 
       > * {
@@ -64,16 +64,24 @@
       }
 
       .name {
-        padding: .1rem .25rem 0;
+        padding: .1rem .2rem 0;
         font-size: .8rem;
         border-bottom: 1px solid #222;
+
+        > span {
+          color: seagreen;
+          font-size: .7rem;
+          font-weight: bold;
+          font-family: monospace;
+        }
       }
 
       .url {
-        padding: .1rem .5rem;
-        color: #444;
-        background-color: #ddd;
+        padding: .2rem .25rem;
+        color: #222;
+        background-color: #bbb;
         font-size: .7rem;
+        font-family: monospace;
       }
     }
   }
