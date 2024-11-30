@@ -11,6 +11,7 @@
 }
 
 #sitemap-container {
+  cursor: grab;
   position: relative;
   padding: 20px;
   min-height: calc(100vh - 40px);
@@ -46,6 +47,7 @@
       overflow: hidden;
 
       &.empty {
+        cursor: inherit;
         opacity: 0;
       }
 
