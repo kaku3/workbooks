@@ -127,7 +127,7 @@ class Sitemap {
 
       page.links?.forEach((link, i) => {
         let ox = i * 4 - ((page.links.length - 1) * 2);
-        let oy = i * 4 - ((page.links.length - 1) * 2);
+        let oy = i * 4 - 16;
         const $to = $(`.page[data-id="${link.linkToId}"]`, $container);
         if($to.length > 0) {
           const p1 = Sitemap.#getCenterPosition($to);
@@ -151,7 +151,7 @@ class Sitemap {
             path.setAttribute('d', `M ${p0.x},${p0.y + oy} L ${cx + ox},${p0.y + oy} L ${cx + ox},${p1.y + oy} L ${p1.x},${p1.y + oy}`);
           } else {
             // 縦線
-            path.setAttribute('d', `M ${p0.x + ox},${p0.y + oy} L ${p1.x + ox},${p1.y + oy}`);
+            path.setAttribute('d', `M ${p0.x + ox},${p0.y} L ${p1.x + ox},${p1.y}`);
           }
           path.setAttribute('stroke', color);
           path.setAttribute('stroke-width', strokeWidth);
