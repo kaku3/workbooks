@@ -19,10 +19,8 @@ export default class MarkdownUtil {
     let screens = [];
     let currentScreen = null;
     let collectingDescription = false;
-    let screenMap = new Map();  // 画面IDをキーにしたマップ
-    let depthPositionMap = new Map();  // depth毎の位置カウンター
   
-    function processLinkList(listNode, parentScreenId = null, currentDepth = 1) {
+    function processLinkList(listNode) {
       if (!listNode || !listNode.children) return [];
   
       return listNode.children.map(item => {
@@ -31,38 +29,15 @@ export default class MarkdownUtil {
         }
   
         const linkText = item.children[0].children[0].value;
-        const [text, screenId] = linkText.split(',').map(s => s.trim());
-  
-        if (screenId) {
-          // depth の計算
-          const depth = parentScreenId === 'SC001' ? 1 : currentDepth;
-          
-          // pos の計算
-          if (!depthPositionMap.has(depth)) {
-            depthPositionMap.set(depth, 0);
-          }
-          depthPositionMap.set(depth, depthPositionMap.get(depth) + 1);
-          const pos = depthPositionMap.get(depth);
-  
-          // 画面情報を保存
-          screenMap.set(screenId, {
-            parentScreenId,
-            depth,
-            pos
-          });
-        }
+        const [text, linkToId] = linkText.split(',').map(s => s.trim());
   
         const result = {
           text,
-          screenId
+          linkToId,
         };
   
         if (item.children[1]) {
-          result.children = processLinkList(
-            item.children[1], 
-            screenId, 
-            currentDepth + 1
-          );
+          result.children = processLinkList(item.children[1]);
         }
   
         return result;
@@ -76,22 +51,15 @@ export default class MarkdownUtil {
         }
         
         const headingText = node.children[0].value;
-        const [id, title, path] = headingText.split(',').map(s => s.trim());
-        
-        // トップページの場合
-        if (id === 'SC001') {
-          screenMap.set(id, {
-            parentScreenId: null,
-            depth: 0,
-            pos: 1
-          });
-        }
-  
+        const [id, name, url, depth = -1, pos = -1] = headingText.split(',').map(s => s.trim());
+
         currentScreen = {
           id,
-          title,
-          path,
-          description: [],
+          name,
+          url,
+          depth: Number(depth),
+          pos: Number(pos),
+          descriptions: [],
           links: []
         };
         collectingDescription = true;
@@ -101,22 +69,20 @@ export default class MarkdownUtil {
           .map(child => child.value)
           .join('\n');
         
-        currentScreen.description.push(paragraphText);
+        currentScreen.descriptions.push(paragraphText);
       }
       else if (node.type === 'heading' && node.depth === 3) {
         collectingDescription = false;
         
         if (node.children[0].value.startsWith('link')) {
           try {
-            const linkSection = {};
-            const sectionName = node.children[0].value.split(',')[1]?.trim() || 'default';
+            const sectionName = node.children[0].value.split(',')[1]?.trim() || '';
             
             const nextNode = nodes[nodes.indexOf(node) + 1];
             if (nextNode && nextNode.type === 'list') {
-              const processedLinks = processLinkList(nextNode, currentScreen.id);
+              const processedLinks = processLinkList(nextNode);
               if (processedLinks.length > 0) {
-                linkSection[sectionName] = processedLinks;
-                currentScreen.links.push(linkSection);
+                currentScreen.links.push(...processedLinks.map(o => ({ sectionName, ...o })));
               }
             }
           } catch (error) {
@@ -129,20 +95,84 @@ export default class MarkdownUtil {
     nodes.forEach(processNode);
     
     if (currentScreen) {
-      currentScreen.description = currentScreen.description.join('\n\n');
       screens.push(currentScreen);
     }
+
+
+    MarkdownUtil.#setDescription(screens);
+
+    // 全画面、link から depth を計算する
+    MarkdownUtil.#setScreensDepth(screens);
+
+    // depth が求まったら、各 depth について pos を計算する
+    MarkdownUtil.#setScreensPos(screens);
   
-    // 画面情報にdepthとposを追加
-    return screens.map(screen => {
-      const screenInfo = screenMap.get(screen.id) || { depth: 0, pos: 1 };
-      return {
-        ...screen,
-        parentScreenId: screenInfo.parentScreenId || null,
-        depth: screenInfo.depth,
-        pos: screenInfo.pos
-      };
-    });
+    console.log(screens);
+
+    return screens;
+  }
+
+  static #findScreenBylinkToId(screens, id) {
+    return screens.find(s => s.links.find(l => l.linkToId === id))
+  }
+
+
+  static #setScreensDepth(screens) {
+    for(const screen of screens) {
+      if(screen.depth !== -1) {
+        continue;
+      }
+
+      // 親screenを親がなくなるまで検索
+      // 深さが決まっている親が見つかったらそれに +1 して検索を終了
+      let depth = 1;
+      let _screen = MarkdownUtil.#findScreenBylinkToId(screens, screen.id);
+      if(_screen) {
+        screen.parentId = _screen.id;
+      }
+      while(_screen) {
+        if(_screen.depth === -1) {
+          depth++;
+        } else {
+          depth = _screen.depth + 1;
+          break;
+        }
+        _screen = MarkdownUtil.#findScreenBylinkToId(screens, _screen.id);
+      }
+      screen.depth = depth;
+    }
+  }  
+
+  static #setScreensPos(screens) {
+    const depthMin = screens.reduce((a, c) => Math.min(a, c.depth), Number.MAX_SAFE_INTEGER);
+    const depthMax = screens.reduce((a, c) => Math.max(a, c.depth), 0);
+
+    // 各 depth について、指定がなければ連番を振る
+    // ただし、親がある場合は親をの pos を優先
+    // 指定があれば、そちらを優先
+
+    for(let d = depthMin; d <= depthMax; d++) {
+      const _screens = screens.filter(s => s.depth === d);
+      let pos = 1;
+      for(const s of _screens) {
+        if(s.pos === -1) {
+          const parentPos = screens.find(ss => ss.id === s.parentId)?.pos || -1;
+          if(parentPos > pos) {
+            pos = parentPos;
+          }
+          s.pos = pos;
+        } else {
+          pos = s.pos;
+        }
+        pos++;
+      }
+    }
+  }
+
+  static #setDescription(screens) {
+    screens.forEach(screen => {
+      screen.description = screen.descriptions.join("\r\n");
+    })
   }
 }
 

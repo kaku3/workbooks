@@ -1,0 +1,13 @@
+:root {
+  --side-menu-transition-time: 0.3s;
+
+  --side-menu-width: 200px;
+  --side-menu-main-bg-color: #333;
+  --side-menu-text-color: #fff;
+
+  --page-detail-width: 480px;
+  --page-detail-main-bg-color: #f0f0f0;
+  --page-detail-text-color: #222;
+
+  --detail-panel-width: 600px;
+}

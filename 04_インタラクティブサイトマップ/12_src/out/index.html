@@ -6,7 +6,12 @@
   <title>Screen Map</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="main.css"/>
+
+  <link rel="stylesheet" type="text/css" href="css/_const.css"/>
+  <link rel="stylesheet" type="text/css" href="css/_layout.css"/>
+  <link rel="stylesheet" type="text/css" href="css/sitemap.css"/>
+  <link rel="stylesheet" type="text/css" href="css/detail.css"/>
+  <link rel="stylesheet" type="text/css" href="css/main.css"/>
 </head>
 
 <body>
@@ -16,70 +21,29 @@
   <!-- サイドメニュー -->
   <div class="side-menu">
       <button class="menu-close">×</button>
-      <div class="screen-list"></div>
+      <div class="page-list"></div>
   </div>
 
   <!-- メインコンテンツ -->
   <div class="main-content">
-    <div id="sitemap"></div>
+    <div id="sitemap-container-wrapper">
+      <div id="sitemap-container"><svg></svg></div>
+    </div>
+    <!-- 詳細パネルを追加 -->
+    <div class="detail-panel">
+      <button class="detail-close">×</button>
+      <div class="detail-content"></div>
+    </div>
   </div>
 
+
+  <script src="js/drag-scroll.js"></script>
+
   <script src="data/screens.js"></script>
-  <script>
-    $(function() {
-      initMenu();
-      initScreenList(SCREENS);
-      initSitemap(SCREENS);
+  <script src="js/sitemap.js"></script>
+  <script src="js/detail.js"></script>
+  <script src="js/main.js"></script>
 
-      function initMenu() {
-        // メニュー操作
-        $('.menu-toggle').click(function() {
-          $('.side-menu').addClass('open');
-          $('.main-content').addClass('shifted');
-        });
-
-        $('.menu-close').click(function() {
-            $('.side-menu').removeClass('open');
-            $('.main-content').removeClass('shifted');
-        });
-      }
-
-      // スクリーン一覧の表示
-      function initScreenList(screens) {
-        const $screenList = $('.screen-list');
-        $screenList.empty();
-
-        for (const screen of screens) {
-          const $item = $('<div>')
-            .addClass('screen-list-item')
-            .html(`
-              <div class="screen-id">${screen.id}</div>
-              <div class="screen-title">${screen.title}</div>
-            `)
-            .click(() => {
-              // クリックしたスクリーンまでスクロール
-              const targetElement = $(`#screen-${screen.id}`);
-              if (targetElement.length) {
-                $('html, body').animate(
-                  {
-                    scrollTop: targetElement.offset().top - 20
-                  }, 500
-                );
-              }
-            });
-
-          $screenList.append($item);
-        }
-      }
-
-      function initSitemap(screens) {
-        const $container = $('#sitemap');
-        $container.empty();
-  
-      }
-    });
-  
-  </script>
 </body>
 
 </html>

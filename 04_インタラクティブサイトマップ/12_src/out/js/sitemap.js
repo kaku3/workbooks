@@ -1,0 +1,137 @@
+class Sitemap {
+  static initSitemap(pages, onClickPage = null) {
+    Sitemap.#prepare(pages);
+    Sitemap.#drawSitemap(pages, onClickPage);
+    Sitemap.#drawSitemapSvg(pages);
+  }
+  static #prepare(pages) {
+    const depthFrom = pages.map(p => p.depth).reduce((a, c) => Math.min(a, c));
+    const depthTo = pages.map(p => p.depth).reduce((a, c) => Math.max(a, c));
+
+    for(let depth = depthFrom; depth <= depthTo; depth++) {
+      let pos = 0;
+      pages.filter(p => p.depth === depth).forEach((page) => {
+        if(page.pos) {
+          pos = page.pos;
+        } else {
+          page.pos = pos;
+        }
+        page.links?.forEach((link) => {
+          if(link.url?.startsWith('#')) {
+            link.url = page.url + link.url;
+          }
+        })
+        pos++;
+      });
+    }
+    // 親の pos の方が大きかったらそちらに合わせる
+    for(let depth = depthFrom + 1; depth <= depthTo; depth++) {
+      const _pages = pages.filter(p => p.depth === depth);
+      for(let page of _pages) {
+        const parents = pages.filter(p => p.depth === depth - 1);
+        const parent = parents?.find(p => p.links?.find(l => l.url === page.url));
+        if(parent && parent.pos > page.pos) {
+          page.pos = parent.pos;
+        }
+      }
+    }
+  }
+  
+  static setActive(pageId, scrollIntoView = false) {
+    const $container = $('#sitemap-container');
+    const $pages = $container.find(".page");
+    $pages.removeClass('active');
+
+    const $page = $container.find(`.page[data-id="${pageId}"]`)
+    $page.addClass('active');
+
+    if(scrollIntoView) {
+      $page.get(0).scrollIntoView();
+    }
+  }
+
+  static #drawSitemap(pages, onClickPage) {
+    const $container = $('#sitemap-container');
+    const depthFrom = pages.map(p => p.depth).reduce((a, c) => Math.min(a, c));
+    const depthTo = pages.map(p => p.depth).reduce((a, c) => Math.max(a, c));
+    for(let depth = depthFrom; depth <= depthTo; depth++) {
+      const $levelContainer = $(`<div class="level-container level-${depth}"></div>`);
+      const _pages = pages.filter(p => p.depth === depth);
+      let pos = 1;
+      for(let p in _pages) {
+        const page = _pages[p];
+
+        for(; pos < page.pos; pos++) {
+          $levelContainer.append('<div class="page empty"></div>');
+        }
+  
+        $levelContainer.append(`
+          <div class="page" data-name="${page.name}" data-id="${page.id}">
+            <div class="name">
+              ${page.name}
+            </div>
+            <div class="url">
+              ${page.url}
+            </div>
+          </div>
+        `);
+        pos++;
+      }
+      $container.append($levelContainer);
+  
+      const $pages = $container.find(".page");
+
+      $pages.on('click', function(e) {
+        const id = $(this).data('id');
+  
+        if(!$(this).hasClass('active')) {
+          onClickPage(id);
+        }
+      })
+      pos++;
+    }
+  }
+  static #drawSitemapSvg(pages) {
+    const colors = [
+      '#617c98',  // くすんだ青
+      '#629b7c',  // くすんだ緑
+      '#8b7a9c',  // くすんだ紫
+      '#be8168'   // くすんだオレンジ
+    ];
+
+    const $container = $('#sitemap-container');
+    const $svg = $('svg', $container).empty();
+    pages.forEach(page => {
+      const $from = $(`.page[data-id="${page.id}"]`, $container);
+      const p0 = Sitemap.#getCenterPosition($from);
+
+      page.links?.forEach((link, i) => {
+        let ox = i * 4 - ((page.links.length - 1) * 2);
+        let oy = i * 4 - ((page.links.length - 1) * 2);
+        const $to = $(`.page[data-id="${link.linkToId}"]`, $container);
+        if($to.length > 0) {
+          const p1 = Sitemap.#getCenterPosition($to);
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          if(p0.x !== p1.x) {
+            // 横線
+            const cx = Math.floor((p0.x + p1.x) / 2);
+            path.setAttribute('d', `M ${p0.x},${p0.y + oy} L ${cx + ox},${p0.y + oy} L ${cx + ox},${p1.y + oy} L ${p1.x},${p1.y + oy}`);
+          } else {
+            // 縦線
+            path.setAttribute('d', `M ${p0.x + ox},${p0.y + oy} L ${p1.x + ox},${p1.y + oy}`);
+          }
+          path.setAttribute('stroke', colors[i % colors.length]);
+          path.setAttribute('stroke-width', 2);
+          path.setAttribute('stroke-opacity', 0.5);
+          $svg.append(path);
+        }
+      });            
+    });
+  }
+  static #getCenterPosition(e) {
+    return {
+      x: Math.floor(e.position().left + e.width() / 2),
+      y: Math.floor(e.position().top + e.height() / 2)
+    }
+  }
+}
