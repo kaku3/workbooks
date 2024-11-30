@@ -422,11 +422,13 @@ const SCREENS=[
     "links": [
       {
         "sectionName": "",
-        "text": "トップページへ"
+        "text": "トップページへ",
+        "linkToId": "SC001"
       },
       {
         "sectionName": "",
-        "text": "マイページへ"
+        "text": "マイページへ",
+        "linkToId": "SC201"
       }
     ],
     "description": "注文完了の確認画面。注文番号、\r\nお届け予定日等の情報を表示。",

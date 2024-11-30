@@ -117,12 +117,11 @@ class Sitemap {
       '#617c98',  // くすんだ青
       '#629b7c',  // くすんだ緑
       '#8b7a9c',  // くすんだ紫
-      '#be8168'   // くすんだオレンジ
     ];
 
     const $container = $('#sitemap-container');
     const $svg = $('svg', $container).empty();
-    pages.forEach(page => {
+    pages.forEach((page, p) => {
       const $from = $(`.page[data-id="${page.id}"]`, $container);
       const p0 = Sitemap.#getCenterPosition($from);
 
@@ -133,6 +132,19 @@ class Sitemap {
         if($to.length > 0) {
           const p1 = Sitemap.#getCenterPosition($to);
           const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+          let color = colors[p % colors.length];
+          let strokeWidth = 2;
+          let strokeOpacity = 0.75;
+          // 戻り線
+          if(p0.x > p1.x) {
+            ox += 20;
+            oy = i * 2 + 8;
+            color = 'red';
+            strokeWidth = 1;
+            strokeOpacity = 1;
+          }
+
           if(p0.x !== p1.x) {
             // 横線
             const cx = Math.floor((p0.x + p1.x) / 2);
@@ -141,9 +153,11 @@ class Sitemap {
             // 縦線
             path.setAttribute('d', `M ${p0.x + ox},${p0.y + oy} L ${p1.x + ox},${p1.y + oy}`);
           }
-          path.setAttribute('stroke', colors[i % colors.length]);
-          path.setAttribute('stroke-width', 2);
-          path.setAttribute('stroke-opacity', 0.5);
+          path.setAttribute('stroke', color);
+          path.setAttribute('stroke-width', strokeWidth);
+          path.setAttribute('stroke-opacity', strokeOpacity);
+          path.setAttribute('data-from-id', page.id);
+          path.setAttribute('data-to-id', link.linkToId);
           $svg.append(path);
         }
       });            
