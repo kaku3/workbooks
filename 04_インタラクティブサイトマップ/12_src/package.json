@@ -5,7 +5,7 @@
   "type": "module",
   "main": "create-sitemap.js",
   "scripts": {
-    "sample": "node create-sitemap.js --m in/sample.md --o out"
+    "sample": "node create-sitemap.js --m in/ECサイト.md --o out/ECサイト"
   },
   "author": "",
   "license": "ISC",
