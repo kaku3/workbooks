@@ -1,10 +1,29 @@
+import yargs from 'yargs/yargs';
 import fs from 'fs';
+import fse from 'fs-extra';
+import Path from 'path';
 import MarkdownUtil from "./utils/markdown-util.js";
 
-const ast = MarkdownUtil.loadAst('in/sitemap.md');
+const argv = yargs(process.argv.slice(2))
+  .alias('m', 'mdFile')
+  .alias('o', 'outFolder')
+  .argv;
+
+const { mdFile, outFolder } = argv;
+console.info('+ create-sitemap');
+console.info({ mdFile, outFolder });
+
+const outDataFolder = Path.join(outFolder, 'data');
+
+const ast = MarkdownUtil.loadAst(mdFile);
 const screens = MarkdownUtil.parseMarkdownToScreens(ast.children);
 
-// ローカル html から読み込めるように json を js の変数として保存
-fs.writeFileSync('out/data/screens.js', `const SCREENS=${JSON.stringify(screens, null, 2)};`, 'utf-8');
-// debug用に出力
-fs.writeFileSync('out/data/sitemap.ast', JSON.stringify(ast, null, 2), 'utf-8');
+if(!fs.existsSync(outDataFolder)) {
+  fs.mkdirSync(outDataFolder, { recursive: true });
+}
+fse.copySync('template', outFolder);
+
+fs.writeFileSync(Path.join(outDataFolder, 'screens.js'), `const SCREENS=${JSON.stringify(screens, null, 2)};`, 'utf-8');
+fs.writeFileSync(Path.join(outDataFolder, 'sitemap.ast'), JSON.stringify(ast, null, 2), 'utf-8');
+
+console.info('- create-sitemap');

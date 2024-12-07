@@ -5,13 +5,15 @@
   "type": "module",
   "main": "create-sitemap.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sample": "node create-sitemap.js --m in/sample.md --o out"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fs-extra": "^11.2.0",
     "remark": "^15.0.1",
     "remark-parse": "^11.0.0",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "yargs": "^17.7.2"
   }
 }

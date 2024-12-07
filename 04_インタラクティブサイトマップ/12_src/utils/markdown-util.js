@@ -98,7 +98,6 @@ export default class MarkdownUtil {
       screens.push(currentScreen);
     }
 
-
     MarkdownUtil.#setDescription(screens);
 
     // 全画面、link から depth を計算する
@@ -107,8 +106,6 @@ export default class MarkdownUtil {
     // depth が求まったら、各 depth について pos を計算する
     MarkdownUtil.#setScreensPos(screens);
   
-    console.log(screens);
-
     return screens;
   }
 

@@ -1,0 +1,62 @@
+/* サイドメニュー */
+.side-menu {
+  position: fixed;
+  left: calc(-1 * var(--side-menu-width));  /* 負の値で非表示 */
+  top: 0;
+  width: var(--side-menu-width);
+  height: 100%;
+  background: var(--side-menu-main-bg-color);
+  color: var(--side-menu-text-color);
+  transition: left var(--side-menu-transition-time) ease;
+  z-index: 1000;
+  overflow-y: auto;
+
+  &.open {
+    left: 0;
+  }
+}
+
+.detail-panel {
+  padding: 0;
+  width: 0;
+  height: 100vh;
+
+  background: white;
+  overflow: hidden;
+
+  transition: width 0.2s ease;
+
+  &.active {
+    width: var(--detail-panel-width);
+  }
+
+  &:not(.active) {
+    .detail-close {
+      display: none;
+    }
+  }
+
+  .detail-close {
+    cursor: pointer;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    border: none;
+    background: none;
+    font-size: 20px;
+  }
+  
+}
+
+/* メインコンテンツ */
+.main-content {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-left: 20px;
+  padding: 0;
+  transition: margin-left 0.3s ease;
+
+  &.shifted {
+    margin-left: var(--side-menu-width);
+  }
+}

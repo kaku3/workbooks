@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Screen Map</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/_const.css"/>
+  <link rel="stylesheet" type="text/css" href="css/_layout.css"/>
+  <link rel="stylesheet" type="text/css" href="css/sitemap.css"/>
+  <link rel="stylesheet" type="text/css" href="css/detail.css"/>
+  <link rel="stylesheet" type="text/css" href="css/main.css"/>
+</head>
+
+<body>
+  <!-- メニュートグルボタン -->
+  <button class="menu-toggle">≡</button>
+
+  <!-- サイドメニュー -->
+  <div class="side-menu open">
+      <button class="menu-close">×</button>
+      <div class="page-list"></div>
+  </div>
+
+  <!-- メインコンテンツ -->
+  <div class="main-content shifted">
+    <div id="sitemap-container-wrapper">
+      <div id="sitemap-container"><svg></svg></div>
+    </div>
+    <!-- 詳細パネルを追加 -->
+    <div class="detail-panel">
+      <button class="detail-close">×</button>
+      <div class="detail-content"></div>
+    </div>
+  </div>
+
+
+  <script src="js/drag-scroll.js"></script>
+
+  <script src="data/screens.js"></script>
+  <script src="js/sitemap.js"></script>
+  <script src="js/detail.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,55 @@
+.detail-content {
+  > .name {
+    padding: .25rem;
+    font-size: .9rem;
+    background: #ddd;
+    border-bottom: 1px solid #ccc;
+  }
+  > .header {
+    padding: .25rem;
+    font-weight: bold;
+    font-size: .8rem;
+    color: white;
+    background: #444;
+  }
+  > .page-image {
+    width: 100%;
+  }
+  > .description {
+    padding: .25rem;
+    font-size: .8rem;
+  }
+
+  .links-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    > .section {
+      padding: .1rem .25rem 0;
+      font-size: .6rem;
+      color: #444;
+      background: #ddd;
+      border-bottom: 1px solid #ccc;
+      width: 100%;
+    }
+
+    >.link {
+      cursor: pointer;
+      width: calc(50% - 2px);
+      font-size: .8rem;
+      color: #222;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 2px;
+      text-decoration: none;
+
+      &:hover {
+        background: var(--color-select-link);
+      }
+
+      .text {
+        padding: .25rem;
+      }
+    }
+  }
+}
