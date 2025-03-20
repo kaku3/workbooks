@@ -15,6 +15,36 @@ flowchart TD
     TD --> TP[templates/]
 ```
 
+## メインページ（SC201）コンポーネント構造
+
+```mermaid
+flowchart TD
+    subgraph MainPage[メインページ]
+        MC[MainContainer] --> TT[ツールバー]
+        MC --> CV[コンテンツビュー]
+        
+        TT --> Tabs[ビュー切替]
+        TT --> Search[検索バー]
+        TT --> Filter[フィルター]
+        TT --> New[新規チケット]
+        
+        CV --> TV[TableView]
+        CV --> GV[GanttView]
+        
+        subgraph TableView[テーブルビュー]
+            TC[テーブルコンテナ]
+            CS[カラム設定]
+            TH[ソートヘッダー]
+        end
+        
+        subgraph GanttView[ガントチャートビュー]
+            GC[ガントチャートコンテナ]
+            Scale[スケール切替]
+            TL[タイムライン]
+        end
+    end
+```
+
 ## 認証アーキテクチャ
 
 ```mermaid
@@ -55,7 +85,7 @@ flowchart TD
      - 担当者（複数可）
      - 起票日
      - 締め切り
-     - 見積もり
+     - 見積
      - ステータス
 
 3. 設定管理（trak-data/configs/）
@@ -73,59 +103,54 @@ flowchart TD
 
 ## 主要なデザインパターン
 
-1. 一元管理パターン
+1. コンポーネントパターン
+   - メインページコンポーネント（MainPage）
+     - 状態管理（viewMode, filters）
+     - ビュー切替制御
+   - ビューコンポーネント
+     - TableView: ソート可能なテーブル表示
+     - GanttView: タイムライン表示
+   - 共通UIコンポーネント
+     - 検索バー
+     - フィルター
+     - ボタン類
+
+2. 一元管理パターン
    - trak-data/フォルダによるデータの集中管理
    - 明確なデータ分類と構造化
 
-2. ファイルベースのデータストア
+3. ファイルベースのデータストア
    - Git統合による変更追跡
    - AIエージェントとの連携容易性
 
-3. マークダウン/JSONの分離
+4. マークダウン/JSONの分離
    - 人間可読性（マークダウン）
    - システム処理（JSON）の両立
-
-4. テンプレートベースの標準化
-   - マークダウンファイルによるテンプレート管理
-   - チケット作成の一貫性確保
-   - 必要情報の漏れ防止
-
-## コンポーネント関係
-
-1. フロントエンド（Next.js）
-   - NextAuth.jsによる認証
-     - JWT セッション管理
-     - ロールベースのアクセス制御
-     - クライアント/サーバーコンポーネントの分離
-   - チケット管理UI
-   - 複数ビュー実装
-     - ガントチャート
-     - テーブル
-     - 検索/ソート
-   - テンプレート選択UI
-
-2. ファイルシステム連携
-   - チケットCRUD操作
-   - トラッキング情報同期
-   - 設定情報管理
-   - テンプレート管理
 
 ## データフロー
 
 ```mermaid
 sequenceDiagram
-    participant UI as Next.js UI
+    participant UI as MainPage
+    participant Table as TableView
+    participant Gantt as GanttView
     participant API as API Routes
-    participant FS as File System
     participant Data as trak-data/
 
-    UI->>API: チケット操作要求
-    API->>FS: ファイル操作
-    FS->>Data: データ読み書き
-    Note over Data: tickets/<br/>trackings/<br/>configs/<br/>templates/
-    Data-->>FS: 操作結果
-    FS-->>API: 処理結果
-    API-->>UI: レスポンス
+    UI->>API: チケット一覧要求
+    API->>Data: データ読み込み
+    Data-->>API: チケットデータ
+    API-->>UI: チケット一覧
+    
+    Note over UI,Data: ビュー切替時
+    UI->>Table: テーブル表示
+    UI->>Gantt: ガントチャート表示
+    
+    Note over Table: ソート・フィルター
+    Table->>Table: データ処理
+    
+    Note over Gantt: タイムライン表示
+    Gantt->>Gantt: 期間計算
 ```
 
 ## セキュリティ考慮事項
@@ -140,10 +165,10 @@ sequenceDiagram
    - trak-data/フォルダへのアクセス制限
    - ユーザー権限に基づくファイル操作制御
 
-2. データ整合性
+3. データ整合性
    - Git管理による変更履歴追跡
    - 同時編集の競合管理
 
-3. テンプレート管理
+4. テンプレート管理
    - 承認されたテンプレートのみ使用可能
    - テンプレート更新時の変更管理

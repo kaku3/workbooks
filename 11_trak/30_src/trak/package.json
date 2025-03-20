@@ -15,6 +15,7 @@
     "@mui/material": "^6.4.8",
     "@mui/material-nextjs": "^6.4.3",
     "@types/next-auth": "^3.15.0",
+    "@uiw/react-md-editor": "^4.0.5",
     "date-fns": "^3.0.0",
     "next": "^14.1.0",
     "next-auth": "^4.24.11",

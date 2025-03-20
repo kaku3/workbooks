@@ -1,0 +1,136 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 1rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.scaleButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.scaleButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.scaleButton.active {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+.dateNavigation {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dateNavigation button {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.dateNavigation button:hover {
+  background: #e9ecef;
+}
+
+.ganttContainer {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.timeline {
+  min-width: 100%;
+  background: white;
+}
+
+.timelineHeader {
+  display: flex;
+  position: sticky;
+  top: 0;
+  background: #f8f9fa;
+  border-bottom: 2px solid #ddd;
+  z-index: 1;
+}
+
+.timelineCell {
+  padding: 0.75rem;
+  text-align: center;
+  border-right: 1px solid #ddd;
+  font-weight: 600;
+}
+
+.timelineContent {
+  position: relative;
+  min-height: 200px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1023px) {
+  .controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .scaleButtons {
+    width: 100%;
+  }
+
+  .scaleButton {
+    flex: 1;
+    text-align: center;
+  }
+
+  .dateNavigation {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    gap: 0.5rem;
+  }
+
+  .controls {
+    padding: 0.5rem;
+  }
+
+  .timelineCell {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  /* モバイル時のガントチャート最適化 */
+  .ganttContainer {
+    max-height: calc(100vh - 200px);
+  }
+
+  .timeline {
+    font-size: 0.875rem;
+  }
+
+  .timelineHeader {
+    position: sticky;
+    left: 0;
+  }
+}

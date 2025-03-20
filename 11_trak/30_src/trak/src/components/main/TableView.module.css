@@ -1,0 +1,91 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.columnSettings {
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.columnSettings select {
+  width: 200px;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.columnSettings option {
+  padding: 0.25rem;
+}
+
+.tableContainer {
+  flex: 1;
+  overflow: auto;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px; /* モバイル時の横スクロール用 */
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortableHeader:hover {
+  background-color: #e9ecef;
+}
+
+.sortIcon {
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.sortableHeader:hover .sortIcon {
+  opacity: 1;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1023px) {
+  .columnSettings {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    gap: 0.5rem;
+  }
+
+  .columnSettings select {
+    width: 100%;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.5rem;
+  }
+}

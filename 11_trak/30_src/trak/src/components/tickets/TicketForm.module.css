@@ -1,0 +1,130 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.field input,
+.field select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.rowFields {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rowField {
+  flex: 1;
+  min-width: 200px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cancelButton,
+.submitButton {
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelButton {
+  background: white;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.cancelButton:hover {
+  background: #f8f9fa;
+}
+
+.submitButton {
+  background: #007bff;
+  border: none;
+  color: white;
+}
+
+.submitButton:hover {
+  background: #0056b3;
+}
+
+/* テンプレート選択エリア */
+.templateField {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1023px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .rowField {
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .rowField {
+    width: 100%;
+  }
+
+  .buttons {
+    flex-direction: column-reverse;
+    margin-top: 1.5rem;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+    padding: 0.75rem;
+  }
+}

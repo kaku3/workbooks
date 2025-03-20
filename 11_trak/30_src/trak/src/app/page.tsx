@@ -1,19 +1,14 @@
 import { auth } from '@/auth/auth';
-import { Box, Typography, Container } from '@mui/material';
+import MainPage from '@/components/main/MainPage';
+import { redirect } from 'next/navigation';
 
 export default async function HomePage() {
   const session = await auth();
+  
+  // 未認証の場合はログインページへリダイレクト
+  if (!session) {
+    redirect('/auth/signin');
+  }
 
-  return (
-    <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          ようこそ {session?.user?.name || session?.user?.email}
-        </Typography>
-        <Typography variant="body1">
-          チケット管理システムにログインしました。
-        </Typography>
-      </Box>
-    </Container>
-  );
+  return <MainPage />;
 }
