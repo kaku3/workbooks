@@ -33,6 +33,7 @@ interface User {
 }
 
 export default function TicketForm({ mode, ticketId }: TicketFormProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState<TicketData>({
     templateId: '',
     title: '',
@@ -63,7 +64,6 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
   }, [mode, ticketId]);
 
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
   // テンプレートデータの取得
   useEffect(() => {
@@ -71,43 +71,11 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
       try {
         const response = await fetch('/api/templates');
         const data = await response.json();
-        setTemplates(data.templates);
+        if (data.templates) {
+          setTemplates(data.templates);
+        }
       } catch (error) {
-        // APIが実装されるまでの仮データ
-        setTemplates([
-          { 
-            id: '000',
-            name: 'タスク',
-            content: `# [チケットタイトル]
-
-## 概要
-[概要を記載してください]
-
-## 詳細
-[詳細な内容を記載してください]
-
-## 参考情報
-- [参考リンクや関連情報があれば記載してください]`
-          },
-          {
-            id: '001',
-            name: '障害票',
-            content: `# [チケットタイトル]
-
-## 事象
-[起票者記載]
-
-## 再現手順
-[起票者記載]
-
-## 原因
-[対応者記載]
-
-## 対応内容
-[対応者記載]`
-          }
-        ]);
-        console.warn('テンプレートデータの取得に失敗:', error);
+        console.error('テンプレートの取得に失敗:', error);
       }
     };
 
@@ -145,6 +113,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
   }, []);
 
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
   // ユーザーデータの取得
   useEffect(() => {
@@ -209,12 +178,11 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
         //   body: JSON.stringify(formData),
         // });
       }
+      router.push('/');
     } catch (error) {
       console.error('保存に失敗:', error);
     }
   };
-
-  const router = useRouter();
 
   const handleCancel = () => {
     router.push('/');
@@ -321,7 +289,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
               <MenuItem value="">選択してください</MenuItem>
               {templates.map(template => (
                 <MenuItem key={template.id} value={template.id}>
-                  {template.name.split('_').pop()?.split('.')[0] || template.name}
+                  {template.name}
                 </MenuItem>
               ))}
             </Select>
