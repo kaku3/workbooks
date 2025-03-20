@@ -3,37 +3,37 @@
     {
       "id": "open",
       "name": "Open",
-      "description": "新規作成された状態"
+      "color": "#d7e8ff"
     },
     {
       "id": "in-progress",
       "name": "In Progress",
-      "description": "作業中の状態"
+      "color": "#e0e7ff"
     },
     {
       "id": "in-review",
       "name": "In Review",
-      "description": "レビュー中の状態"
+      "color": "#dcfce7"
     },
     {
       "id": "completed",
       "name": "Completed",
-      "description": "作業が完了した状態"
+      "color": "#d1fae5"
     },
     {
       "id": "close",
       "name": "Close",
-      "description": "完全に終了した状態"
+      "color": "#e5e7eb"
     },
     {
       "id": "blocked",
       "name": "Blocked",
-      "description": "進行が妨げられている状態"
+      "color": "#fee2e2"
     },
     {
       "id": "waiting",
       "name": "Waiting",
-      "description": "他の作業を待っている状態"
+      "color": "#ffedd5"
     }
   ]
 }

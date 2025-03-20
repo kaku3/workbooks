@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trak
 
-## Getting Started
+チケット管理システム
 
-First, run the development server:
+## 機能
+
+- チケットの作成・編集・削除
+- テンプレートベースのチケット作成
+- Markdownによるチケット内容の記述
+- ユーザー割り当て
+- ステータス管理
+
+## 開発環境のセットアップ
 
 ```bash
+# 依存パッケージのインストール
+npm install
+
+# 開発サーバーの起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ディレクトリ構成
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+trak/
+├── src/
+│   ├── app/          # Next.js アプリケーション
+│   │   └── api/      # APIエンドポイント
+│   ├── components/   # Reactコンポーネント
+│   ├── lib/          # ユーティリティ関数
+│   └── styles/       # スタイルシート
+├── trak-data/        # アプリケーションデータ
+│   ├── configs/      # 設定ファイル
+│   │   ├── templates.json  # テンプレート設定
+│   │   ├── users.json      # ユーザー設定
+│   │   └── statuses.json   # ステータス設定
+│   └── templates/    # テンプレートファイル
+│       ├── bug.md         # バグ報告
+│       ├── feature.md     # 機能要望
+│       └── task.md        # タスク
+└── public/           # 静的ファイル
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 設定ファイル
 
-## Learn More
+### users.json
+ユーザー情報を管理するファイル。
+各ユーザーのID、名前、メールアドレス、ロールを定義。
 
-To learn more about Next.js, take a look at the following resources:
+### statuses.json
+チケットのステータスを定義するファイル。
+ステータスごとの名前、色を設定可能。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### templates.json
+チケットテンプレートの設定ファイル。
+テンプレートの種類と対応するMarkdownファイルを定義。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## テンプレート
 
-## Deploy on Vercel
+テンプレートはMarkdown形式で管理され、`trak-data/templates/`ディレクトリに配置。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `bug.md`: バグ報告用テンプレート
+- `feature.md`: 機能要望用テンプレート
+- `task.md`: タスク用テンプレート
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## スタイリング
+
+- CSSモジュールを使用
+- カラーシステムはカスタムプロパティで管理
+- レスポンシブデザイン対応
+- アクセシビリティに配慮したUI
+
+## 使用技術
+
+- Next.js (App Router)
+- TypeScript
+- SCSS Modules
+- Markdown

@@ -1,130 +1,334 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--space-6);
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
+  color: var(--color-text);
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-8);
 }
 
 .form {
+  background-color: var(--color-background);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-4);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
-.field label {
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: #666;
+.field label, .rowFields label, .assigneeContainer > label, .templateField label {
+  font-size: var(--text-xs);
+  font-weight: 1000;
+  color: var(--color-text-secondary);
 }
 
-.field input,
-.field select {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.field input:focus,
-.field select:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
+/* フィールド横並び */
 .rowFields {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.spacer {
+  flex-grow: 1;
 }
 
 .rowField {
-  flex: 1;
-  min-width: 200px;
+  min-width: 0;
 }
 
-.buttons {
+.rowFieldEstimate {
+  width: 5rem;
+}
+
+/* 担当者選択 - 横並び */
+.assigneeContainer {
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: var(--space-4);
+  align-items: flex-start;
 }
 
-.cancelButton,
-.submitButton {
-  padding: 0.5rem 1.5rem;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.assigneeLabel {
+  flex: 0 0 auto;
+  padding-top: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
 }
 
-.cancelButton {
-  background: white;
-  border: 1px solid #ddd;
-  color: #666;
+.assigneeField {
+  position: relative;
+  flex: 1;
 }
 
-.cancelButton:hover {
-  background: #f8f9fa;
+.assigneeWrapper {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  background: var(--color-background);
+  min-height: calc(var(--space-8) * 1.2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
 }
 
-.submitButton {
-  background: #007bff;
+.assigneeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.assigneeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  animation: slideIn var(--transition-normal);
+  max-width: 100%;
+}
+
+.assigneeName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.removeButton {
+  background: none;
   border: none;
-  color: white;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+  color: inherit;
 }
 
-.submitButton:hover {
-  background: #0056b3;
+.removeButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.searchInput {
+  border: none;
+  padding: var(--space-1) 0;
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  min-width: 150px;
+  flex: 1;
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.assigneeWrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--space-1);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  animation: fadeIn var(--transition-fast);
+}
+
+.searchItem {
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.searchItem:hover {
+  background-color: var(--color-surface);
+}
+
+.searchItemName {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.searchItemEmail {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
 }
 
 /* テンプレート選択エリア */
 .templateField {
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 1rem;
+  margin-top: var(--space-4);
+}
+
+/* フォーム要素共通 */
+.select {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-size: var(--text-base);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-size: var(--text-base);
+  transition: all var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+/* ステータス選択 */
+.statusOption {
+  padding: var(--space-1) var(--space-2);
+  margin-right: var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+}
+
+/* ボタンエリア */
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.cancelButton {
+  padding: var(--space-2) var(--space-6);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--text-base);
+}
+
+.cancelButton:hover {
+  background-color: var(--color-border);
+}
+
+.submitButton {
+  padding: var(--space-2) var(--space-6);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--text-base);
+}
+
+.submitButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* アニメーション */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* レスポンシブ対応 */
-@media (max-width: 1023px) {
-  .container {
-    padding: 1.5rem;
-  }
-
-  .rowField {
-    min-width: 150px;
+@media (max-width: 1024px) {
+  .rowFields {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
+  .rowFields {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .assigneeContainer {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}
+
+@media (max-width: 640px) {
   .container {
-    padding: 1rem;
+    padding: var(--space-4);
   }
 
-  .rowField {
-    width: 100%;
+  .form {
+    padding: var(--space-4);
+  }
+
+  .rowFields {
+    grid-template-columns: 1fr;
   }
 
   .buttons {
     flex-direction: column-reverse;
-    margin-top: 1.5rem;
   }
 
   .cancelButton,
   .submitButton {
     width: 100%;
-    padding: 0.75rem;
+    padding: var(--space-3);
   }
 }
+

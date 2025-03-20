@@ -1,14 +1,8 @@
-'use client';
-
 import { Inter } from 'next/font/google';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import AuthProvider from '@/components/auth/AuthProvider';
-import { theme } from '@/styles/theme';
-import './globals.css';
+import '@/styles/site.scss';
 
 const inter = Inter({ subsets: ['latin'] });
+
 export default function RootLayout({
   children,
 }: {
@@ -17,15 +11,15 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <div className="animate-fade-in">
+          {children}
+        </div>
       </body>
     </html>
   );
 }
+
+export const metadata = {
+  title: 'Trak - タスク管理システム',
+  description: 'シンプルで使いやすいタスク管理システム',
+};

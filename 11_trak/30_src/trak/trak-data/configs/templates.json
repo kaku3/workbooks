@@ -1,0 +1,16 @@
+{
+  "templates": [
+    {
+      "id": "bug",
+      "name": "バグ報告"
+    },
+    {
+      "id": "feature",
+      "name": "機能要望"
+    },
+    {
+      "id": "task",
+      "name": "タスク"
+    }
+  ]
+}
