@@ -15,33 +15,34 @@ flowchart TD
     TD --> TP[templates/]
 ```
 
-## メインページ（SC201）コンポーネント構造
+## コンポーネント構造
 
 ```mermaid
 flowchart TD
-    subgraph MainPage[メインページ]
-        MC[MainContainer] --> TT[ツールバー]
-        MC --> CV[コンテンツビュー]
+    subgraph Pages
+        Main[MainPage] --> Table[TableView]
+        Main --> Gantt[GanttView]
+        Main --> New[新規チケット]
+    end
+
+    subgraph Forms
+        TicketForm --> MetaInfo[メタ情報]
+        TicketForm --> Editor[マークダウンエディタ]
         
-        TT --> Tabs[ビュー切替]
-        TT --> Search[検索バー]
-        TT --> Filter[フィルター]
-        TT --> New[新規チケット]
-        
-        CV --> TV[TableView]
-        CV --> GV[GanttView]
-        
-        subgraph TableView[テーブルビュー]
-            TC[テーブルコンテナ]
-            CS[カラム設定]
-            TH[ソートヘッダー]
+        subgraph MetaInfo[メタ情報セクション]
+            Title[タイトル]
+            Row[横一列]
+            Row --> Assignee[担当者]
+            Row --> Status[ステータス]
+            Row --> DueDate[期限]
+            Row --> Estimate[見積]
         end
-        
-        subgraph GanttView[ガントチャートビュー]
-            GC[ガントチャートコンテナ]
-            Scale[スケール切替]
-            TL[タイムライン]
-        end
+    end
+
+    subgraph UI Components
+        MUI[Material-UI]
+        MDEditor[react-md-editor]
+        Custom[カスタムコンポーネント]
     end
 ```
 
@@ -94,81 +95,70 @@ flowchart TD
      - 名前
      - メールアドレス
      - ロール（admin/user）
-   - チケットステータス定義（status.json）
-
-4. テンプレート管理（trak-data/templates/）
-   - 形式: マークダウン
-   - 用途別テンプレート（例：タスク.md, 障害票.md）
-   - チケット作成時に選択可能
+   - ステータス定義（statuses.json）
+     - ID
+     - 名前
+     - 説明
+   - テンプレート管理（templates/）
+     - タスクテンプレート
+     - 障害票テンプレート
 
 ## 主要なデザインパターン
 
 1. コンポーネントパターン
-   - メインページコンポーネント（MainPage）
-     - 状態管理（viewMode, filters）
-     - ビュー切替制御
-   - ビューコンポーネント
-     - TableView: ソート可能なテーブル表示
-     - GanttView: タイムライン表示
-   - 共通UIコンポーネント
-     - 検索バー
-     - フィルター
-     - ボタン類
+   - Atomic Design
+     - Atoms: 基本入力要素
+     - Molecules: フォームグループ
+     - Organisms: フォーム全体
+   - Container/Presentational
+     - ロジック分離
+     - UI再利用性向上
 
-2. 一元管理パターン
-   - trak-data/フォルダによるデータの集中管理
-   - 明確なデータ分類と構造化
+2. フォーム管理パターン
+   - Controlled Components
+   - バリデーション分離
+   - エラーハンドリング集約
 
-3. ファイルベースのデータストア
-   - Git統合による変更追跡
-   - AIエージェントとの連携容易性
+3. データフローパターン
+   - 単方向データフロー
+   - イミュータブルな状態管理
+   - APIデータの適切なキャッシュ
 
-4. マークダウン/JSONの分離
-   - 人間可読性（マークダウン）
-   - システム処理（JSON）の両立
+4. レスポンシブパターン
+   - モバイルファースト
+   - フレックスボックスレイアウト
+   - ブレークポイント管理
 
-## データフロー
+## UI/UXパターン
 
-```mermaid
-sequenceDiagram
-    participant UI as MainPage
-    participant Table as TableView
-    participant Gantt as GanttView
-    participant API as API Routes
-    participant Data as trak-data/
+1. フォームデザイン
+   - インライン検証
+   - リアルタイムフィードバック
+   - プログレッシブ拡張
 
-    UI->>API: チケット一覧要求
-    API->>Data: データ読み込み
-    Data-->>API: チケットデータ
-    API-->>UI: チケット一覧
-    
-    Note over UI,Data: ビュー切替時
-    UI->>Table: テーブル表示
-    UI->>Gantt: ガントチャート表示
-    
-    Note over Table: ソート・フィルター
-    Table->>Table: データ処理
-    
-    Note over Gantt: タイムライン表示
-    Gantt->>Gantt: 期間計算
-```
+2. インタラクション
+   - インクリメンタルサーチ
+   - ドラッグ＆ドロップ
+   - ショートカットキー
 
-## セキュリティ考慮事項
+3. エラー処理
+   - エラーバウンダリ
+   - フォールバックUI
+   - グレースフルデグラデーション
 
-1. 認証とアクセス制御
-   - JWT ベースのセッション管理
-   - ロールベースのアクセス制御（admin/user）
-   - Protected Routes によるセキュリティ
-   - Server/Client Component の適切な分離
+## データ永続化パターン
 
-2. ファイルアクセス制御
-   - trak-data/フォルダへのアクセス制限
-   - ユーザー権限に基づくファイル操作制御
+1. ファイルベース
+   - マークダウン（チケット本文）
+   - JSON（メタデータ）
+   - 設定ファイル
 
-3. データ整合性
-   - Git管理による変更履歴追跡
-   - 同時編集の競合管理
+2. キャッシュ戦略
+   - ブラウザキャッシュ
+   - APIレスポンスキャッシュ
+   - オートセーブ
 
-4. テンプレート管理
-   - 承認されたテンプレートのみ使用可能
-   - テンプレート更新時の変更管理
+3. 同期管理
+   - 楽観的ロック
+   - 競合解決
+   - 差分マージ
