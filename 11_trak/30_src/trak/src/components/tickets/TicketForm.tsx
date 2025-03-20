@@ -121,8 +121,14 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
     const fetchTicket = async () => {
       if (mode === 'edit' && ticketId) {
         try {
-          // TODO: APIからチケットデータを取得
-          console.log('チケットID:', ticketId);
+          const response = await fetch(`/api/tickets/${ticketId}`);
+          const data = await response.json();
+          if (data.success && data.ticket) {
+            setFormData(data.ticket);
+            setSelectedUsers(users.filter(user => 
+              data.ticket.assignees.includes(user.email)
+            ));
+          }
         } catch (error) {
           console.error('チケットの取得に失敗:', error);
         }
@@ -181,7 +187,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
   }, []);
 
   // テンプレート選択時の処理
-  const handleTemplateChange = (templateId: string) => {
+  const onTemplateChange = (templateId: string) => {
     const selectedTemplate = templates.find(t => t.id === templateId);
     if (selectedTemplate) {
       setFormData(prev => ({
@@ -193,7 +199,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
   };
 
   // 担当者の追加
-  const handleUserSelect = (user: User) => {
+  const onUserSelect = (user: User) => {
     if (!selectedUsers.some(selected => selected.email === user.email)) {
       setSelectedUsers([...selectedUsers, user]);
       setFormData({
@@ -206,7 +212,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
   };
 
   // 担当者の削除
-  const handleUserRemove = (email: string) => {
+  const onUserRemove = (email: string) => {
     setSelectedUsers(selectedUsers.filter(user => user.email !== email));
     setFormData({
       ...formData,
@@ -214,14 +220,39 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      // TODO: APIを呼び出してチケットを保存
       if (mode === 'edit' && ticketId) {
-        console.log('チケット更新:', ticketId, formData);
+        // チケットの更新
+        const response = await fetch(`/api/tickets/${ticketId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            ticketId,
+          }),
+        });
+        const result = await response.json();
+        if (!result.success) {
+          throw new Error(result.error || 'チケットの更新に失敗しました');
+        }
       } else {
-        console.log('チケット作成:', formData);
+        // 新規チケットの作成
+        const response = await fetch('/api/tickets', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        const result = await response.json();
+        if (!result.success) {
+          throw new Error(result.error || 'チケットの作成に失敗しました');
+        }
       }
       router.push('/');
     } catch (error) {
@@ -229,7 +260,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
     }
   };
 
-  const handleCancel = () => {
+  const onCancel = () => {
     router.push('/');
   };
 
@@ -244,7 +275,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
         {mode === 'new' ? 'チケット作成' : 'チケット編集'}
       </h1>
 
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={onSubmit}>
         {/* タイトル */}
         <div className={styles.field}>
           <label htmlFor="title">タイトル</label>
@@ -365,7 +396,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
                       <button
                         type="button"
                         className={styles.removeButton}
-                        onClick={() => handleUserRemove(user.email)}
+                        onClick={() => onUserRemove(user.email)}
                       >
                         ×
                       </button>
@@ -391,7 +422,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
                   <div
                     key={user.email}
                     className={styles.searchItem}
-                    onClick={() => handleUserSelect(user)}
+                    onClick={() => onUserSelect(user)}
                   >
                     <span className={styles.searchItemName}>{user.name}</span>
                     <span className={styles.searchItemEmail}>{user.email}</span>
@@ -409,7 +440,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
             id="template"
             className={styles.select}
             value={formData.templateId}
-            onChange={(e) => handleTemplateChange(e.target.value)}
+            onChange={(e) => onTemplateChange(e.target.value)}
             required
           >
             <option value="">選択してください</option>
@@ -436,7 +467,7 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
 
         {/* ボタン */}
         <div className={styles.buttons}>
-          <button type="button" onClick={handleCancel} className={styles.cancelButton}>
+          <button type="button" onClick={onCancel} className={styles.cancelButton}>
             キャンセル
           </button>
           <button type="submit" className={styles.submitButton}>

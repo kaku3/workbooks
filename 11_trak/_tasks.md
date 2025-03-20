@@ -207,3 +207,8 @@ statuses.json では色も指定できるようにしてください。
 保存ボタン押下で、
 trak-data/tickets/ に内容本文、
 trak-data/trackings/ にその他情報を保存してください。
+
+16.
+以下実装をお願いします。
+- チケットCRUD操作 (/api/tickets)
+- チケット作成/編集画面（SC301）からの保存
