@@ -67,6 +67,153 @@
   opacity: 1;
 }
 
+.center {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.editableCell {
+  cursor: text;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+.editableCell:hover {
+  background-color: #f8f9fa;
+}
+
+.editingCell {
+  padding: 0;
+}
+
+.editInput {
+  width: 100%;
+  padding: 0.25rem;
+  border: 1px solid #0070f3;
+  border-radius: 4px;
+  background: white;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.editInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+.idLink {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.idLink:hover {
+  text-decoration: underline;
+}
+
+.statusCell {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.assigneeTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.assigneeCell {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem;
+  border-radius: 4px;
+  font-weight: 500;
+  gap: 0.25rem;
+}
+
+.assigneeName {
+  margin-right: 0.25rem;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  padding: 0 0.25rem;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.removeButton:hover {
+  opacity: 1;
+}
+
+.assigneeSearch {
+  position: relative;
+  width: 100%;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.25rem;
+  border: 1px solid #0070f3;
+  border-radius: 4px;
+  background: white;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.searchInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.searchItem {
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchItem:hover {
+  background-color: #f8f9fa;
+}
+
+.searchItemName {
+  font-weight: 500;
+}
+
+.searchItemEmail {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
 /* レスポンシブ対応 */
 @media (max-width: 1023px) {
   .columnSettings {
