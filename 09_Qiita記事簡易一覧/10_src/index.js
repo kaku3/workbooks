@@ -21,7 +21,11 @@ async function fetch(token, user) {
     })
     const items = res.data;
 
-    console.info(url, items.length);
+    for(const item of items) {
+      console.log(`[${item.title}](${item.url})`);
+    }
+
+    // console.info(url, items.length);
 
     if(items.length > 0) {
       articles.push(...items);

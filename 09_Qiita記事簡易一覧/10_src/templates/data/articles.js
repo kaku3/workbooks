@@ -50,7 +50,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 642,
+    "page_views_count": 643,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -98,7 +98,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 4800,
+    "page_views_count": 4801,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
@@ -1126,7 +1126,7 @@ const ARTICLES = [
       "twitter_screen_name": "kaku3",
       "website_url": ""
     },
-    "page_views_count": 36026,
+    "page_views_count": 36027,
     "team_membership": null,
     "organization_url_name": null,
     "slide": false
