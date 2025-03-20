@@ -4,13 +4,38 @@
 
 ```mermaid
 flowchart TD
-    UI[Next.js UI] --> API[API Routes]
+    UI[Next.js UI] --> Auth[NextAuth.js]
+    UI --> API[API Routes]
+    Auth --> API
     API --> FS[File System]
     FS --> TD[trak-data/]
     TD --> T[tickets/]
     TD --> TR[trackings/]
     TD --> C[configs/]
     TD --> TP[templates/]
+```
+
+## 認証アーキテクチャ
+
+```mermaid
+flowchart TD
+    subgraph Client
+        Pages[Pages] --> AuthProvider
+        AuthProvider --> Session[SessionProvider]
+    end
+    
+    subgraph Server
+        Route[API Route] --> NextAuth
+        NextAuth --> Users[users.json]
+        NextAuth --> JWT[JWT Session]
+    end
+    
+    subgraph Middleware
+        Guard[Auth Middleware] --> Protected[Protected Routes]
+    end
+    
+    Client --> Server
+    Guard --> Client
 ```
 
 ## ファイルシステム設計
@@ -35,6 +60,10 @@ flowchart TD
 
 3. 設定管理（trak-data/configs/）
    - ユーザー管理（users.json）
+     - ユーザーID
+     - 名前
+     - メールアドレス
+     - ロール（admin/user）
    - チケットステータス定義（status.json）
 
 4. テンプレート管理（trak-data/templates/）
@@ -64,7 +93,10 @@ flowchart TD
 ## コンポーネント関係
 
 1. フロントエンド（Next.js）
-   - ユーザー認証
+   - NextAuth.jsによる認証
+     - JWT セッション管理
+     - ロールベースのアクセス制御
+     - クライアント/サーバーコンポーネントの分離
    - チケット管理UI
    - 複数ビュー実装
      - ガントチャート
@@ -98,7 +130,13 @@ sequenceDiagram
 
 ## セキュリティ考慮事項
 
-1. ファイルアクセス制御
+1. 認証とアクセス制御
+   - JWT ベースのセッション管理
+   - ロールベースのアクセス制御（admin/user）
+   - Protected Routes によるセキュリティ
+   - Server/Client Component の適切な分離
+
+2. ファイルアクセス制御
    - trak-data/フォルダへのアクセス制限
    - ユーザー権限に基づくファイル操作制御
 

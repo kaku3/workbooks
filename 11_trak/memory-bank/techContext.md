@@ -6,6 +6,8 @@
 - Next.js
   - React
   - TypeScript
+  - Material-UI (@mui/material)
+  - NextAuth.js (認証)
   - ガントチャート用ライブラリ（検討中）
   - テーブル用ライブラリ（検討中）
 
@@ -25,10 +27,12 @@
 - Git
 
 ### 依存関係
-- Next.js
-- React
-- TypeScript
-- その他必要なUIライブラリ（実装フェーズで決定）
+- Next.js ^14.1.0
+- React ^18.2.0
+- TypeScript ^5
+- @mui/material ^6.4.8
+- next-auth ^4.24.11
+- zod ^3.24.2 (バリデーション)
 
 ## 技術的制約
 
@@ -49,6 +53,8 @@
 4. 設定ファイル（trak-data/configs/）
    - 形式: JSON
    - スキーマによる型定義
+   - users.json: ユーザー認証情報の管理
+     - id, name, email, role (admin/user)
 
 5. テンプレートファイル（trak-data/templates/）
    - 形式: Markdown
@@ -78,6 +84,29 @@
 
 3. デプロイメント
    - 検討中
+
+## 認証システム
+
+### 実装詳細
+1. NextAuth.js による認証
+   - JWT ベースのセッション管理
+   - カスタムCredentialsプロバイダー
+   - ロールベースのアクセス制御 (admin/user)
+
+2. ファイル構成
+   - src/auth/auth.ts: メイン認証設定
+   - src/auth/serverAuth.ts: サーバーサイド認証
+   - src/components/auth/: 認証関連コンポーネント
+
+3. セッション管理
+   - JWT strategy
+   - セッション有効期限: 30日
+   - カスタムセッション型定義
+
+4. Next.js App Router対応
+   - Server Components対応
+   - Middleware による保護
+   - クライアント/サーバーコンポーネントの適切な分離
 
 ## 実装時の注意点
 
