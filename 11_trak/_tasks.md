@@ -20,3 +20,24 @@ templates/
 
 4.
 各データや設定ファイルフォルダは、trak-data/ フォルダの配下としてください。
+
+5.
+update memory bank
+
+6. (手動)
+next プロジェクト作成
+```
+cd 30_src
+npx create-next-app@latest --ts
+
+√ What is your project named? ... trak
+√ Would you like to use ESLint? ... No / Yes
+√ Would you like to use Tailwind CSS? ... No / Yes
+√ Would you like your code inside a `src/` directory? ... No / Yes
+√ Would you like to use App Router? (recommended) ... No / Yes
+√ Would you like to use Turbopack for `next dev`? ... No / Yes
+√ Would you like to customize the import alias (`@/*` by default)? ... No / Yes
+```
+
+7.
+10_外部設計/ に従って、30_src/trak/ フォルダに nextjs アプリを作成してください。
