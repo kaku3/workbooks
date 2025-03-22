@@ -15,13 +15,21 @@ export default function AssigneeCell({
   onUpdate
 }: AssigneeCellProps): JSX.Element {
   const [searchText, setSearchText] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // ユーザー検索
+  // 編集モードに入ったらドロップダウンを表示
   useEffect(() => {
     if (onUpdate) {
+      setShowDropdown(true);
+      setFilteredUsers(users);
+    }
+  }, [onUpdate, users]);
+
+  // ユーザー検索
+  useEffect(() => {
+    if (onUpdate && searchText !== '') {
       const searchLower = searchText.toLowerCase();
       const filtered = users.filter(user => {
         const nameMatch = user.name.toLowerCase().includes(searchLower);
@@ -29,16 +37,20 @@ export default function AssigneeCell({
         return nameMatch || emailMatch;
       });
       setFilteredUsers(filtered);
-      setShowSearch(searchText !== '');
+    } else if (onUpdate) {
+      setFilteredUsers(users);
     }
   }, [searchText, users, onUpdate]);
 
-  // 検索結果の外側クリックで閉じる
+  // 編集モード終了のためのクリックイベント
   useEffect(() => {
     if (onUpdate) {
       const handleClickOutside = (event: MouseEvent) => {
         if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-          setShowSearch(false);
+          setShowDropdown(false);
+          setSearchText('');
+          // Trigger update to exit edit mode
+          onUpdate(value);
         }
       };
 
@@ -94,29 +106,6 @@ export default function AssigneeCell({
   return (
     <div className={`${styles.editableCell} ${styles.editingCell}`}>
       <div className={styles.assigneeSearch} ref={searchRef}>
-        <input
-          type="text"
-          value={searchText}
-          className={styles.searchInput}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder="担当者を検索..."
-          autoFocus
-        />
-        {showSearch && filteredUsers.length > 0 && (
-          <div className={styles.searchResults}>
-            {filteredUsers.map(user => (
-              <div
-                key={user.email}
-                className={styles.searchItem}
-                onClick={() => handleAdd(user.email)}
-              >
-                <span className={styles.searchItemName}>{user.name}</span>
-                <span className={styles.searchItemEmail}>{user.email}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
         <div className={styles.assigneeTags}>
           {value.map(email => {
             const user = users.find(u => u.email === email);
@@ -143,6 +132,29 @@ export default function AssigneeCell({
             );
           })}
         </div>
+        <input
+          type="text"
+          value={searchText}
+          className={styles.searchInput}
+          onChange={(e) => setSearchText(e.target.value)}
+          placeholder="担当者を検索..."
+          autoFocus
+        />
+        {showDropdown && filteredUsers.length > 0 && (
+          <div className={styles.searchResults}>
+            {filteredUsers.map(user => (
+              <div
+                key={user.email}
+                className={styles.searchItem}
+                onClick={() => handleAdd(user.email)}
+              >
+                <span className={styles.searchItemName}>{user.name}</span>
+                <span className={styles.searchItemEmail}>{user.email}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
       </div>
     </div>
   );

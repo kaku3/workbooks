@@ -1,3 +1,9 @@
+export interface Tag {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -32,4 +38,5 @@ export interface TicketData {
   startDate: string;
   dueDate: string;
   estimate: number;
+  tags?: string[]; // Array of tag IDs
 }
