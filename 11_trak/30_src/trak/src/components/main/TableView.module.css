@@ -11,6 +11,36 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.statusFilter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.statusCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.statusCheckbox input[type="checkbox"] {
+  margin: 0;
+}
+
+.statusLabel {
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .createButton {
@@ -80,7 +110,7 @@
 }
 
 .table_id {
-  width: 10rem;
+  width: 10.5rem;
 }
 
 .table_title {
@@ -108,8 +138,7 @@
 }
 
 .table_assignee {
-  flex-grow: 1;
-  max-width: 24rem;
+  width: 24rem;
 }
 
 .sortableHeader {

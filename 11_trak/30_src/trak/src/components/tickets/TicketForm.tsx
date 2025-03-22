@@ -5,6 +5,8 @@ import MDEditor from '@uiw/react-md-editor';
 import { getUserColor, getTextColor } from '@/lib/utils/colors';
 import styles from './TicketForm.module.css';
 import EstimateInput from './EstimateInput';
+import TagInput from './TagInput';
+import { TagsProvider } from '../main/TagsContext';
 
 interface TicketFormProps {
   mode: 'new' | 'edit';
@@ -26,6 +28,7 @@ interface TicketData {
   dueDate: string;
   estimate: number;
   content: string;
+  tags: string[];
 }
 
 interface Template {
@@ -67,7 +70,8 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
     startDate: '',
     dueDate: '',
     estimate: 0,
-    content: ''
+    content: '',
+    tags: []
   });
 
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -135,7 +139,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
       }
     };
     fetchTicket();
-  }, [mode, ticketId]);
+  }, [mode, ticketId, users]);
 
   // ステータスデータの取得
   useEffect(() => {
@@ -146,7 +150,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
         if (data.statuses) {
           setStatuses(data.statuses);
         }
-      } catch (error) {
+      } catch {
         setStatuses([
           { id: 'open', name: 'Open', color: '#3b82f6' },
           { id: 'in-progress', name: 'In Progress', color: '#8b5cf6' },
@@ -156,7 +160,6 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
           { id: 'blocked', name: 'Blocked', color: '#ef4444' },
           { id: 'waiting', name: 'Waiting', color: '#f59e0b' }
         ]);
-        console.warn('ステータスデータの取得に失敗:', error);
       }
     };
     fetchStatuses();
@@ -255,7 +258,6 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
         }
       }
       onClose();
-      // Optionally refresh the table data
     } catch (error) {
       console.error('保存に失敗:', error);
     }
@@ -271,205 +273,215 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
   const statusTextColor = getTextColor(statusColor);
 
   return (
-    <div className={styles.container}>
-      <form className={styles.form} onSubmit={onSubmit}>
-        {/* タイトル */}
-        <div className={styles.fieldHorizontal}>
-          <label htmlFor="title">タイトル</label>
-          <input
-            id="title"
-            type="text"
-            className={styles.input}
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            required
-          />
-        </div>
-
-        {/* テンプレート選択（内容の直前に配置） */}
-        <div className={styles.fieldHorizontal}>
-          <label htmlFor="template">チケット種類</label>
-          <select
-            id="template"
-            className={styles.select}
-            value={formData.templateId}
-            onChange={(e) => onTemplateChange(e.target.value)}
-            required
-          >
-            <option value="">選択してください</option>
-            {templates.map(template => (
-              <option key={template.id} value={template.id}>
-                {template.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 内容 */}
-        <div className={styles.field}>
-          <label htmlFor="content">内容</label>
-          <div data-color-mode="light">
-            <MDEditor
-              value={formData.content}
-              onChange={(value) => setFormData({ ...formData, content: value || '' })}
-              height={400}
-              preview="edit"
+    <TagsProvider>
+      <div className={styles.container}>
+        <form className={styles.form} onSubmit={onSubmit}>
+          {/* タグ入力 */}
+          <div className={styles.fieldHorizontal}>
+            <label htmlFor="tags">タグ</label>
+            <TagInput
+              tags={formData.tags}
+              onChange={(tags) => setFormData({ ...formData, tags })}
             />
           </div>
-        </div>
 
-        {/* メタ情報（5列） */}
-        <div className={styles.rowFields}>
-
-          {/* ステータス */}
-          <div className={styles.rowField}>
-            <label htmlFor="status">ステータス</label>
-            <select
-              id="status"
-              className={styles.select}
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+          {/* タイトル */}
+          <div className={styles.fieldHorizontal}>
+            <label htmlFor="title">タイトル</label>
+            <input
+              id="title"
+              type="text"
+              className={styles.input}
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               required
-              style={{ 
-                backgroundColor: statusColor,
-                color: statusTextColor,
-                borderColor: statusColor
-              }}
+            />
+          </div>
+
+          {/* テンプレート選択 */}
+          <div className={styles.fieldHorizontal}>
+            <label htmlFor="template">チケット種類</label>
+            <select
+              id="template"
+              className={styles.select}
+              value={formData.templateId}
+              onChange={(e) => onTemplateChange(e.target.value)}
+              required
             >
-              {statuses.map(status => (
-                <option 
-                  key={status.id} 
-                  value={status.id}
-                  style={{
-                    backgroundColor: status.color,
-                    color: getTextColor(status.color)
-                  }}
-                >
-                  {status.name}
+              <option value="">選択してください</option>
+              {templates.map(template => (
+                <option key={template.id} value={template.id}>
+                  {template.name}
                 </option>
               ))}
             </select>
           </div>
 
-          <div className={styles.space}></div>
-
-          {/* 開始日 */}
-          <div className={`${styles.rowField} ${styles.dateField}`}>
-            <label htmlFor="startDate">開始日</label>
-            <input
-              id="startDate"
-              type="date"
-              className={styles.input}
-              value={formData.startDate}
-              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-            />
-          </div>
-
-          {/* 期限 */}
-          <div className={`${styles.rowField} ${styles.dateField}`}>
-            <label htmlFor="dueDate">期限</label>
-            <input
-              id="dueDate"
-              type="date"
-              className={styles.input}
-              value={formData.dueDate}
-              onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-            />
-          </div>
-
-          {/* 見積 */}
-          <div className={`${styles.rowField} ${styles.estimateField}`}>
-            <label htmlFor="estimate">見積</label>
-            <EstimateInput
-              value={formData.estimate}
-              onChange={(value) => setFormData({ ...formData, estimate: value })}
-            />
-          </div>
-        </div>
-
-        <div className={styles.rowUserFields}>
-          {/* 起票者（読み取り専用） */}
-          <div className={`${styles.rowField} ${styles.creatorField}`}>
-            <label htmlFor="creator">起票者</label>
-            <input
-              id="creator"
-              type="text"
-              className={styles.input}
-              value={formData.creator.name}
-              readOnly
-              disabled
-            />
-          </div>
-
-          {/* 担当者（横並び） */}
-          <div className={styles.assigneeContainer}>
-            <label className={styles.assigneeLabel} htmlFor="assignees">担当者</label>
-            <div className={styles.assigneeField} ref={searchRef}>
-              <div className={styles.assigneeWrapper}>
-                <div className={styles.assigneeList}>
-                  {selectedUsers.map(user => {
-                    const backgroundColor = getUserColor(user.id);
-                    const color = getTextColor(backgroundColor);
-                    return (
-                      <span 
-                        key={user.email} 
-                        className={styles.assigneeTag}
-                        style={{ backgroundColor, color }}
-                      >
-                        <span className={styles.assigneeName} title={user.email}>
-                          {user.name}
-                        </span>
-                        <button
-                          type="button"
-                          className={styles.removeButton}
-                          onClick={() => onUserRemove(user.email)}
-                        >
-                          ×
-                        </button>
-                      </span>
-                    );
-                  })}
-                </div>
-                <input
-                  type="text"
-                  className={styles.searchInput}
-                  value={searchText}
-                  onChange={(e) => {
-                    setSearchText(e.target.value);
-                    setShowSearch(true);
-                  }}
-                  onFocus={() => setShowSearch(true)}
-                  placeholder="担当者を検索..."
-                />
-              </div>
-              {showSearch && filteredUsers.length > 0 && (
-                <div className={styles.searchResults}>
-                  {filteredUsers.map(user => (
-                    <div
-                      key={user.email}
-                      className={styles.searchItem}
-                      onClick={() => onUserSelect(user)}
-                    >
-                      <span className={styles.searchItemName}>{user.name}</span>
-                      <span className={styles.searchItemEmail}>{user.email}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+          {/* 内容 */}
+          <div className={styles.field}>
+            <label htmlFor="content">内容</label>
+            <div data-color-mode="light">
+              <MDEditor
+                value={formData.content}
+                onChange={(value) => setFormData({ ...formData, content: value || '' })}
+                height={400}
+                preview="edit"
+              />
             </div>
           </div>
-        </div>
 
-        {/* ボタン */}
-        <div className={styles.buttons}>
-          <button type="button" onClick={onCancel} className={styles.cancelButton}>
-            キャンセル
-          </button>
-          <button type="submit" className={styles.submitButton}>
-            保存
-          </button>
-        </div>
-      </form>
-    </div>
+          {/* メタ情報（4列） */}
+          <div className={styles.rowFields}>
+            {/* ステータス */}
+            <div className={styles.rowField}>
+              <label htmlFor="status">ステータス</label>
+              <select
+                id="status"
+                className={styles.select}
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                required
+                style={{ 
+                  backgroundColor: statusColor,
+                  color: statusTextColor,
+                  borderColor: statusColor
+                }}
+              >
+                {statuses.map(status => (
+                  <option 
+                    key={status.id} 
+                    value={status.id}
+                    style={{
+                      backgroundColor: status.color,
+                      color: getTextColor(status.color)
+                    }}
+                  >
+                    {status.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.spacer} />
+
+            {/* 開始日 */}
+            <div className={`${styles.rowField} ${styles.dateField}`}>
+              <label htmlFor="startDate">開始日</label>
+              <input
+                id="startDate"
+                type="date"
+                className={styles.input}
+                value={formData.startDate}
+                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+              />
+            </div>
+
+            {/* 期限 */}
+            <div className={`${styles.rowField} ${styles.dateField}`}>
+              <label htmlFor="dueDate">期限</label>
+              <input
+                id="dueDate"
+                type="date"
+                className={styles.input}
+                value={formData.dueDate}
+                onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+              />
+            </div>
+
+            {/* 見積 */}
+            <div className={`${styles.rowField} ${styles.estimateField}`}>
+              <label htmlFor="estimate">見積</label>
+              <EstimateInput
+                value={formData.estimate}
+                onChange={(value) => setFormData({ ...formData, estimate: value })}
+              />
+            </div>
+          </div>
+
+          <div className={styles.rowUserFields}>
+            {/* 起票者（読み取り専用） */}
+            <div className={`${styles.rowField} ${styles.creatorField}`}>
+              <label htmlFor="creator">起票者</label>
+              <input
+                id="creator"
+                type="text"
+                className={styles.input}
+                value={formData.creator.name}
+                readOnly
+                disabled
+              />
+            </div>
+
+            {/* 担当者（横並び） */}
+            <div className={styles.assigneeContainer}>
+              <label className={styles.assigneeLabel} htmlFor="assignees">担当者</label>
+              <div className={styles.assigneeField} ref={searchRef}>
+                <div className={styles.assigneeWrapper}>
+                  <div className={styles.assigneeList}>
+                    {selectedUsers.map(user => {
+                      const backgroundColor = getUserColor(user.id);
+                      const color = getTextColor(backgroundColor);
+                      return (
+                        <span 
+                          key={user.email} 
+                          className={styles.assigneeTag}
+                          style={{ backgroundColor, color }}
+                        >
+                          <span className={styles.assigneeName} title={user.email}>
+                            {user.name}
+                          </span>
+                          <button
+                            type="button"
+                            className={styles.removeButton}
+                            onClick={() => onUserRemove(user.email)}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <input
+                    type="text"
+                    className={styles.searchInput}
+                    value={searchText}
+                    onChange={(e) => {
+                      setSearchText(e.target.value);
+                      setShowSearch(true);
+                    }}
+                    onFocus={() => setShowSearch(true)}
+                    placeholder="担当者を検索..."
+                  />
+                </div>
+                {showSearch && filteredUsers.length > 0 && (
+                  <div className={styles.searchResults}>
+                    {filteredUsers.map(user => (
+                      <div
+                        key={user.email}
+                        className={styles.searchItem}
+                        onClick={() => onUserSelect(user)}
+                      >
+                        <span className={styles.searchItemName}>{user.name}</span>
+                        <span className={styles.searchItemEmail}>{user.email}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ボタン */}
+          <div className={styles.buttons}>
+            <button type="button" onClick={onCancel} className={styles.cancelButton}>
+              キャンセル
+            </button>
+            <button type="submit" className={styles.submitButton}>
+              保存
+            </button>
+          </div>
+        </form>
+      </div>
+    </TagsProvider>
   );
 }

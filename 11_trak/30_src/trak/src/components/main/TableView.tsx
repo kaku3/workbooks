@@ -13,6 +13,7 @@ import AssigneeCell from './cell/AssigneeCell';
 import TitleCell from './cell/TitleCell';
 import SortHeader from './SortHeader';
 import TableStateRow from './TableStateRow';
+import StatusFilter from './StatusFilter';
 import type {
   User,
   Status,
@@ -28,6 +29,7 @@ export default function TableView() {
   const [uiError, setUiError] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [sortColumn, setSortColumn] = useState<ColumnKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [editingCell, setEditingCell] = useState<{ id: string; key: ColumnKey } | null>(null);
@@ -135,9 +137,18 @@ export default function TableView() {
     fetchTickets();
   }, []);
 
-  // ソートされたチケットリストを取得
+  // フィルタリングとソートされたチケットリストを取得
   const getSortedTickets = () => {
-    if (!sortColumn || !sortDirection) return tickets;
+    let filteredTickets = tickets;
+    
+    // ステータスフィルタリング
+    if (selectedStatuses.length > 0) {
+      filteredTickets = tickets.filter(ticket => 
+        selectedStatuses.includes(ticket.status)
+      );
+    }
+
+    if (!sortColumn || !sortDirection) return filteredTickets;
 
     return [...tickets].sort((a, b) => {
       let aValue, bValue;
@@ -233,6 +244,11 @@ export default function TableView() {
           <button className={styles.createButton} onClick={handleCreateTicket}>
             新規チケット
           </button>
+          <StatusFilter
+            statuses={statuses}
+            selectedStatuses={selectedStatuses}
+            onStatusChange={setSelectedStatuses}
+          />
         </div>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
