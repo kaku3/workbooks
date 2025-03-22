@@ -2,7 +2,7 @@ import { auth } from '@/auth/auth';
 import MainPage from '@/components/main/MainPage';
 import { redirect } from 'next/navigation';
 
-export default async function HomePage() {
+export default async function TicketPage({ params }: { params: { id: string } }) {
   const session = await auth();
   
   // 未認証の場合はログインページへリダイレクト
@@ -10,5 +10,5 @@ export default async function HomePage() {
     redirect('/auth/signin');
   }
 
-  return <MainPage initialTicketId={undefined} />;
+  return <MainPage initialTicketId={params.id} />;
 }

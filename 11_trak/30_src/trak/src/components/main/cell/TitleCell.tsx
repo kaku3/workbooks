@@ -162,7 +162,7 @@ export default function TitleCell({
 
   // 編集可能な場合は入力フィールドを表示
   return (
-    <div className={styles.titleEditor} onClick={(e) => e.stopPropagation()}>
+    <div className={`${styles.editableCell} ${styles.editingCell}`} onClick={(e) => e.stopPropagation()}>
       <div className={styles.tagList}>
         {tags.map(tagId => {
           const tag = availableTags.find(t => t.id === tagId);

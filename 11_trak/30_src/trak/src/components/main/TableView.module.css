@@ -29,6 +29,11 @@
   cursor: pointer;
 }
 
+.statusCheckbox .statusLabel:not([style]) {
+  color: white;
+  background-color: #6b7280;
+}
+
 .statusCheckbox input[type="checkbox"] {
   margin: 0;
 }
@@ -38,9 +43,15 @@
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: white;
+  color: #444;
   display: inline-block;
   white-space: nowrap;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.statusCheckbox input:checked + .statusLabel {
+  opacity: 1;
 }
 
 .createButton {
@@ -60,9 +71,10 @@
 
 .tableContainer {
   flex: 1;
-  overflow: auto;
+  overflow: visible;
   border-radius: 4px;
   border: 1px solid #ddd;
+  position: relative;
 }
 
 .table {
@@ -75,6 +87,8 @@
 .table td {
   padding: .25rem .5rem;
   text-align: left;
+  position: relative;
+  overflow: visible;
 }
 
 .table th {
@@ -110,7 +124,7 @@
 }
 
 .table_id {
-  width: 10.5rem;
+  width: 11rem;
 }
 
 .table_title {
@@ -203,6 +217,7 @@
   border-radius: 4px;
   position: relative;
   min-height: 1.5rem;
+  width: 100%;
 }
 
 .editableCell:hover {
@@ -210,7 +225,16 @@
 }
 
 .editingCell {
-  padding: 0;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  padding: 0.5rem;
+  background: white;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
 }
 
 .editInput {
@@ -252,18 +276,179 @@
   margin-bottom: 0.5rem;
 }
 
+/* 担当者セル関連のスタイル */
+.assigneeSearch {
+  position: relative;
+  width: 100%;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.375rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 101;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.searchItem {
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchItem:hover {
+  background-color: #f3f4f6;
+}
+
+.searchItemName {
+  font-weight: 500;
+}
+
+.searchItemEmail {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
 .assigneeCell {
   display: inline-flex;
   align-items: center;
   margin-right: 0.25rem;
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   font-weight: 500;
-  border-radius: 8px;
+  border-radius: 4px;
   gap: 0.25rem;
+  position: relative;
 }
 
 .assigneeName {
-  font-size: .8rem;
+  font-size: 0.875rem;
+}
+
+/* タイトル編集パネル */
+.editPanel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 101;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+}
+
+.editButtons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.editButtons button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.editButtons button[type="submit"] {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.editButtons button[type="button"] {
+  background-color: #e5e7eb;
+}
+
+/* タグ関連のスタイル */
+.titleEditor {
+  position: relative;
+}
+
+.editActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  justify-content: flex-end;
+}
+
+.editAction {
+  padding: 0.25rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.saveButton {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.saveButton:hover {
+  background-color: #2563eb;
+}
+
+.cancelButton {
+  background-color: #e5e7eb;
+}
+
+.cancelButton:hover {
+  background-color: #d1d5db;
+}
+
+.tagSuggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 101;
+}
+
+.tagSuggestion {
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tagSuggestion:hover {
+  background-color: #f3f4f6;
+}
+
+.tagSampleColor {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.tagInput {
+  min-width: 100px;
+  max-width: 200px;
 }
 
 .removeButton, .closeButton {

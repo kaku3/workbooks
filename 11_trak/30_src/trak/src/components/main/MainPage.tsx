@@ -7,11 +7,13 @@ import GanttView from './GanttView';
 
 type ViewMode = 'gantt' | 'table';
 
-export default function MainPage() {
+interface MainPageProps {
+  initialTicketId?: string;
+}
+
+export default function MainPage({ initialTicketId }: MainPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterAssignee, setFilterAssignee] = useState('all');
 
   return (
     <div className={styles.container}>
@@ -42,32 +44,12 @@ export default function MainPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-
-        {/* フィルター */}
-        <div className={styles.filters}>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="all">すべてのステータス</option>
-            <option value="todo">未着手</option>
-            <option value="in-progress">進行中</option>
-            <option value="done">完了</option>
-          </select>
-          <select
-            value={filterAssignee}
-            onChange={(e) => setFilterAssignee(e.target.value)}
-          >
-            <option value="all">すべての担当者</option>
-            {/* TODO: 担当者リストを動的に生成 */}
-          </select>
-        </div>
       </div>
 
       {/* メインコンテンツエリア */}
       <div className={styles.content}>
         {viewMode === 'table' ? (
-          <TableView />
+          <TableView initialTicketId={initialTicketId} />
         ) : (
           <GanttView />
         )}

@@ -23,7 +23,11 @@ import type {
   ExtendedColumn
 } from '@/types';
 
-export default function TableView() {
+interface TableViewProps {
+  initialTicketId?: string;
+}
+
+export default function TableView({ initialTicketId }: TableViewProps) {
   const [tickets, setTickets] = useState<TicketData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [uiError, setUiError] = useState<string | null>(null);
@@ -36,6 +40,23 @@ export default function TableView() {
   const [slidePanelOpen, setSlidePanelOpen] = useState(false);
   const [ticketFormMode, setTicketFormMode] = useState<'new' | 'edit'>('new');
   const [selectedTicketId, setSelectedTicketId] = useState<string | undefined>();
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      setSlidePanelOpen(false);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Open ticket in edit mode if initialTicketId is provided
+  useEffect(() => {
+    if (initialTicketId && tickets.some(ticket => ticket.id === initialTicketId)) {
+      handleEditTicket(initialTicketId);
+    }
+  }, [initialTicketId, tickets]);
 
   const columns: ExtendedColumn[] = [
     { key: 'id', label: 'ID', visible: true },
@@ -215,10 +236,22 @@ export default function TableView() {
     setTicketFormMode('edit');
     setSelectedTicketId(ticketId);
     setSlidePanelOpen(true);
+    // Update URL without page reload
+    window.history.pushState({}, '', `/tickets/${ticketId}`);
   };
 
   const handleClosePanel = () => {
     setSlidePanelOpen(false);
+
+    // If this was opened via direct URL, redirect to home
+    if (window.location.pathname.startsWith('/tickets/')) {
+      window.location.href = '/';
+      return;
+    }
+
+    // Otherwise, go back to previous URL
+    window.history.back();
+    
     // チケットリストを更新
     const fetchTickets = async () => {
       try {
@@ -237,9 +270,17 @@ export default function TableView() {
     fetchTickets();
   };
 
+  const handleContainerClick = (e: React.MouseEvent) => {
+    // If clicking inside a cell, don't clear editing state
+    if ((e.target as HTMLElement).closest('td')) {
+      return;
+    }
+    setEditingCell(null);
+  };
+
   return (
     <TagsProvider>
-      <div className={styles.container}>
+      <div className={styles.container} onClick={handleContainerClick}>
         <div className={styles.toolbar}>
           <button className={styles.createButton} onClick={handleCreateTicket}>
             新規チケット

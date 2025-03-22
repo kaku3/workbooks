@@ -17,8 +17,31 @@ export default function StatusFilter({ statuses, selectedStatuses, onStatusChang
     onStatusChange(newSelectedStatuses);
   };
 
+  const handleToggleAll = () => {
+    const isAllSelected = statuses.length === selectedStatuses.length;
+    if (isAllSelected) {
+      onStatusChange([]);
+    } else {
+      const allStatusIds = statuses.map(status => status.id);
+      onStatusChange(allStatusIds);
+    }
+  };
+
+  const isAllSelected = statuses.length === selectedStatuses.length;
+
   return (
     <div className={styles.statusFilter}>
+      <label className={styles.statusCheckbox}>
+        <input
+          type="checkbox"
+          checked={isAllSelected}
+          onChange={handleToggleAll}
+          aria-label="全て選択/選択解除"
+        />
+        <span className={styles.statusLabel} role="presentation">
+          {isAllSelected ? "選択解除" : "全て選択"}
+        </span>
+      </label>
       {statuses.map(status => (
         <label key={status.id} className={styles.statusCheckbox}>
           <input
