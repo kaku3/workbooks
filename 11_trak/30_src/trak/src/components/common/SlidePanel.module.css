@@ -23,8 +23,8 @@
 
 .panel {
   position: relative;
-  width: 50%;
-  max-width: 800px;
+  width: 60%;
+  max-width: 960px;
   height: 100%;
   background-color: white;
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
