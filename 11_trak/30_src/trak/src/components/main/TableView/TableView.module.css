@@ -119,7 +119,7 @@
 }
 
 .table tr {
-  display: flex;
+  table-layout: fixed;
   align-items: center;
   border-bottom: 1px solid #ddd;
 }
@@ -127,10 +127,52 @@
 .tableRow {
   cursor: pointer;
   transition: background-color 0.2s;
+  position: relative;
 }
 
 .tableRow:hover {
   background-color: #f3f4f6;
+}
+
+.dragging {
+  opacity: 0.5;
+  background-color: #f3f4f6;
+  cursor: grabbing;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.dragging .handleCell {
+  cursor: grabbing;
+}
+
+.tableRow[data-dragging="true"] {
+  position: relative;
+}
+
+.tableRow[data-dragging="true"]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  border-bottom: 2px solid #3b82f6;
+  pointer-events: none;
+}
+
+.handleCell {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.handleCell svg {
+  transition: transform 0.2s;
+}
+
+.handleCell:hover svg {
+  transform: scale(1.2);
+  opacity: 1;
 }
 
 .table td + td {
@@ -142,7 +184,7 @@
 }
 
 .table_title {
-  flex-grow: 1;
+  width: auto;
 }
 
 .table_status {
@@ -506,6 +548,32 @@
   opacity: 1;
   color: #ef4444;
   background-color: #fee2e2;
+}
+
+.table_handle {
+  width: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+
+.table_handle:active {
+  cursor: grabbing;
+}
+
+.handleCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  color: #6b7280;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.handleCell:hover {
+  opacity: 1;
 }
 
 .table_delete {

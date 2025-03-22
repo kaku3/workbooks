@@ -8,6 +8,7 @@ import DateCell from './cell/DateCell';
 import AssigneeCell from './cell/AssigneeCell';
 import TitleCell from './cell/TitleCell';
 import DeleteCell from './cell/DeleteCell';
+import HandleCell from './cell/HandleCell';
 import type { TicketData, ColumnKey, Status, User } from '@/types';
 
 interface TableCellProps {
@@ -20,6 +21,7 @@ interface TableCellProps {
   onEdit: (key: ColumnKey) => void;
   onEditTicket: (id: string) => void;
   onDelete?: (id: string) => void;
+  onEnableDrag?: (enable: boolean) => void;
 }
 
 export const TableCell = ({
@@ -32,6 +34,7 @@ export const TableCell = ({
   onEdit,
   onEditTicket,
   onDelete,
+  onEnableDrag,
 }: TableCellProps) => {
   const cellType = CELL_TYPES[columnKey as keyof typeof CELL_TYPES];
 
@@ -55,6 +58,10 @@ export const TableCell = ({
 
   const renderCell = (type: CellType) => {
     switch (type) {
+      case 'handle':
+        return onEnableDrag ? (
+          <HandleCell onEnableDrag={onEnableDrag} />
+        ) : null;
       case 'id':
         return (
           <IdCell 

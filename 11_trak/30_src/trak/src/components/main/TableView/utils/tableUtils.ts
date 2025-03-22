@@ -1,49 +1,55 @@
 import type { TicketData, ColumnKey, SortDirection } from '@/types';
 
+const getColumnValue = (ticket: TicketData, column: ColumnKey): string | number => {
+  switch (column) {
+    case 'id':
+      return ticket.id || '';
+    case 'title':
+      return ticket.title;
+    case 'status':
+      return ticket.status;
+    case 'assignee':
+      return ticket.assignees[0] || '';
+    case 'dueDate':
+      return ticket.dueDate;
+    case 'startDate':
+      return ticket.startDate;
+    case 'estimate':
+      return ticket.estimate;
+    default:
+      return '';
+  }
+};
+
 export const sortTickets = (
   tickets: TicketData[],
   sortColumn: ColumnKey | null,
   sortDirection: SortDirection
 ): TicketData[] => {
-  if (!sortColumn || !sortDirection) return tickets;
-
   return [...tickets].sort((a, b) => {
-    let aValue: string | number | undefined, bValue: string | number | undefined;
-
-    switch (sortColumn) {
-      case 'id':
-        aValue = a.id || '';
-        bValue = b.id || '';
-        break;
-      case 'title':
-        aValue = a.title;
-        bValue = b.title;
-        break;
-      case 'status':
-        aValue = a.status;
-        bValue = b.status;
-        break;
-      case 'assignee':
-        aValue = a.assignees[0] || '';
-        bValue = b.assignees[0] || '';
-        break;
-      case 'dueDate':
-        aValue = a.dueDate;
-        bValue = b.dueDate;
-        break;
-      case 'estimate':
-        aValue = a.estimate;
-        bValue = b.estimate;
-        break;
-      default:
-        return 0;
+    // First priority: Column sort if specified
+    if (sortColumn && sortDirection) {
+      const aValue = getColumnValue(a, sortColumn);
+      const bValue = getColumnValue(b, sortColumn);
+      
+      if (aValue !== bValue) {
+        return sortDirection === 'asc'
+          ? aValue > bValue ? 1 : -1
+          : aValue < bValue ? 1 : -1;
+      }
     }
 
-    if (sortDirection === 'asc') {
-      return aValue > bValue ? 1 : -1;
-    } else {
-      return aValue < bValue ? 1 : -1;
+    // Second priority: User order
+    const orderA = a.userOrder ?? Number.MAX_SAFE_INTEGER;
+    const orderB = b.userOrder ?? Number.MAX_SAFE_INTEGER;
+    if (orderA !== orderB) {
+      return orderA - orderB;
     }
+
+    // Third priority: Created date (newest first)
+    const dateA = new Date(b.createdAt || '').getTime();
+    const dateB = new Date(a.createdAt || '').getTime();
+    return dateA - dateB;
   });
 };
 

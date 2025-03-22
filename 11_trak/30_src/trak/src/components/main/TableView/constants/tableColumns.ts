@@ -1,22 +1,24 @@
 import type { ExtendedColumn } from '@/types';
 
 export const TABLE_COLUMNS: ExtendedColumn[] = [
-  { key: 'id', label: 'ID', visible: true },
-  { key: 'title', label: 'タイトル', visible: true },
-  { key: 'status', label: 'ステータス', visible: true },
-  { key: 'startDate', label: '開始日', visible: true },
-  { key: 'dueDate', label: '期限', visible: true },
-  { key: 'estimate', label: '見積', visible: true },
-  { key: 'assignee', label: '担当者', visible: true },
-  { key: 'delete', label: '', visible: true },
+  { key: 'handle', label: '', sortable: false },
+  { key: 'id', label: 'ID', sortable: true },
+  { key: 'title', label: 'タイトル', sortable: true },
+  { key: 'status', label: 'ステータス', sortable: true },
+  { key: 'startDate', label: '開始日', sortable: true },
+  { key: 'dueDate', label: '期限', sortable: true },
+  { key: 'estimate', label: '見積', sortable: true },
+  { key: 'assignee', label: '担当者', sortable: true },
+  { key: 'delete', label: '', sortable: false },
 ];
 
 // Cell rendering options
 export const EDITABLE_COLUMNS = ['title', 'status', 'startDate', 'dueDate', 'estimate', 'assignee'];
-export const NON_EDITABLE_COLUMNS = ['id', 'delete'];
+export const NON_EDITABLE_COLUMNS = ['handle', 'id', 'delete'];
 
 // Cell type mappings
 export const CELL_TYPES = {
+  handle: 'handle',
   id: 'id',
   title: 'title',
   status: 'status',

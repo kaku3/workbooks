@@ -3,7 +3,7 @@
 import styles from './TableView.module.css';
 import SlidePanel from '../../common/SlidePanel';
 import TicketForm from '../../Tickets/TicketForm';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
@@ -13,6 +13,7 @@ import { useTickets } from '@/hooks/useTickets';
 import { useTableData } from './hooks/useTableData';
 import { useTableState } from './hooks/useTableState';
 import { useSlidePanel } from '@/hooks/useSlidePanel';
+import { useDragAndDrop } from './hooks/useDragAndDrop';
 import { sortTickets, filterTicketsByStatus } from './utils/tableUtils';
 import { TABLE_COLUMNS } from './constants/tableColumns';
 import type { ColumnKey } from '@/types';
@@ -22,6 +23,10 @@ interface TableViewProps {
 }
 
 export default function TableView({ initialTicketId }: TableViewProps) {
+  // State for drag target
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [draggableId, setDraggableId] = useState<string | null>(null);
+
   const {
     tickets,
     isLoading,
@@ -30,6 +35,13 @@ export default function TableView({ initialTicketId }: TableViewProps) {
     updateTicket,
     deleteTicket,
   } = useTickets();
+
+  // Drag and drop handlers
+  const {
+    activeId,
+    handleDragStart,
+    handleDragEnd,
+  } = useDragAndDrop(tickets, updateTicket);
 
   // Fetch tickets on mount
   useEffect(() => {
@@ -94,7 +106,6 @@ export default function TableView({ initialTicketId }: TableViewProps) {
             <thead>
               <tr>
                 {TABLE_COLUMNS
-                  .filter(col => col.visible)
                   .map(col => (
                     <SortHeader
                       key={col.key}
@@ -102,7 +113,7 @@ export default function TableView({ initialTicketId }: TableViewProps) {
                       label={col.label}
                       sortColumn={sortColumn}
                       sortDirection={sortDirection}
-                      onSort={handleSort}
+                      onSort={col.sortable ? handleSort : undefined}
                     />
                   ))}
               </tr>
@@ -110,28 +121,47 @@ export default function TableView({ initialTicketId }: TableViewProps) {
             <tbody>
               {isLoading ? (
                 <TableStateRow
-                  colSpan={TABLE_COLUMNS.filter(col => col.visible).length}
+                  colSpan={TABLE_COLUMNS.length}
                   type="loading"
                 />
               ) : uiError ? (
                 <TableStateRow
-                  colSpan={TABLE_COLUMNS.filter(col => col.visible).length}
+                  colSpan={TABLE_COLUMNS.length}
                   type="error"
                   message={uiError}
                 />
               ) : processedTickets.length === 0 ? (
                 <TableStateRow
-                  colSpan={TABLE_COLUMNS.filter(col => col.visible).length}
+                  colSpan={TABLE_COLUMNS.length}
                   type="empty"
                 />
               ) : (
                 processedTickets.map(ticket => (
                   <tr 
                     key={ticket.id}
-                    className={styles.tableRow}
+                    className={`${styles.tableRow} ${activeId === ticket.id ? styles.dragging : ''}`}
+                    data-dragging={dragOverId === ticket.id}
+                    draggable={draggableId === ticket.id}
+                    onDragStart={() => handleDragStart(ticket.id!)}
+                    onDragEnd={() => {
+                      if (dragOverId) {
+                        handleDragEnd(ticket.id!, dragOverId);
+                      }
+                      setDragOverId(null);
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      if (activeId && activeId !== ticket.id) {
+                        setDragOverId(ticket.id!);
+                      }
+                    }}
+                    onDragLeave={() => {
+                      if (dragOverId === ticket.id) {
+                        setDragOverId(null);
+                      }
+                    }}
                   >
                     {TABLE_COLUMNS
-                      .filter(col => col.visible)
                       .map(col => (
                         <TableCell
                           key={`${ticket.id}-${col.key}`}
@@ -152,6 +182,11 @@ export default function TableView({ initialTicketId }: TableViewProps) {
                           onEdit={key => setEditingCell({ id: ticket.id!, key })}
                           onEditTicket={openEditTicket}
                           onDelete={deleteTicket}
+                          onEnableDrag={(enable) => {
+                            if (ticket.id) {
+                              setDraggableId(enable ? ticket.id : null);
+                            }
+                          }}
                         />
                       ))}
                   </tr>

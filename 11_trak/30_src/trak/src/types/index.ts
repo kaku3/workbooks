@@ -19,7 +19,8 @@ export interface Status {
 
 export interface Column {
   label: string;
-  visible: boolean;
+  visible?: boolean;
+  sortable?: boolean;
 }
 
 export interface ExtendedColumn extends Column {
@@ -28,7 +29,7 @@ export interface ExtendedColumn extends Column {
 
 export type SortDirection = 'asc' | 'desc' | null;
 
-export type ColumnKey = 'id' | 'title' | 'status' | 'assignee' | 'startDate' | 'dueDate' | 'estimate' | 'delete';
+export type ColumnKey = 'handle' | 'id' | 'title' | 'status' | 'assignee' | 'startDate' | 'dueDate' | 'estimate' | 'delete';
 
 export interface TicketData {
   id?: string;
@@ -39,4 +40,7 @@ export interface TicketData {
   dueDate: string;
   estimate: number;
   tags?: string[]; // Array of tag IDs
+  userOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }

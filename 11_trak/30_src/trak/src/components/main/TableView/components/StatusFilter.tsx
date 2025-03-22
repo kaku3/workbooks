@@ -39,7 +39,7 @@ export default function StatusFilter({
 
   return (
     <div className={styles.statusFilter}>
-      <span className={styles.totalCount}>全 {totalCount} 件</span>
+      <span className={styles.totalCount}>Total {totalCount}</span>
       <div className={styles.filterHeader}>
         <label className={styles.statusCheckbox}>
           <input

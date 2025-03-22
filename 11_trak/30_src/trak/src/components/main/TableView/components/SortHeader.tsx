@@ -1,12 +1,14 @@
+'use client';
+
 import styles from '../TableView.module.css';
-import type { ColumnKey } from '@/types';
+import type { ColumnKey, SortDirection } from '@/types';
 
 interface SortHeaderProps {
   columnKey: ColumnKey;
   label: string;
   sortColumn: ColumnKey | null;
-  sortDirection: 'asc' | 'desc' | null;
-  onSort: (key: ColumnKey) => void;
+  sortDirection: SortDirection;
+  onSort?: (columnKey: ColumnKey) => void;
 }
 
 export default function SortHeader({
@@ -14,22 +16,28 @@ export default function SortHeader({
   label,
   sortColumn,
   sortDirection,
-  onSort
+  onSort,
 }: SortHeaderProps): JSX.Element {
-  const getSortIcon = () => {
-    if (sortColumn !== columnKey) return '↕️';
-    return sortDirection === 'asc' ? '↑' : '↓';
+  const active = sortColumn === columnKey;
+  const icon = active ? (sortDirection === 'asc' ? '↑' : '↓') : '↕';
+
+  const handleClick = () => {
+    if (onSort) {
+      onSort(columnKey);
+    }
   };
 
   return (
-    <th
-      onClick={() => onSort(columnKey)}
-      className={`${styles.sortableHeader} ${styles[`table_${columnKey}`]}`}
+    <th 
+      className={onSort ? styles.sortableHeader : ''} 
+      onClick={handleClick}
     >
       {label}
-      <span className={styles.sortIcon}>
-        {getSortIcon()}
-      </span>
+      {onSort && (
+        <span className={styles.sortIcon}>
+          {icon}
+        </span>
+      )}
     </th>
   );
 }
