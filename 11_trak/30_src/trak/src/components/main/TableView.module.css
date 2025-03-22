@@ -46,11 +46,17 @@
   font-weight: 500;
   white-space: nowrap;
 }
+.table th + th {
+  border-left: 1px solid #ddd;
+}
 
 .table tr {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #ddd;
+}
+.table td + td {
+  border-left: 1px solid #eee;
 }
 
 .table_id {
