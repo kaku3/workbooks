@@ -22,13 +22,14 @@ export interface ExtendedColumn extends Column {
 
 export type SortDirection = 'asc' | 'desc' | null;
 
-export type ColumnKey = 'id' | 'title' | 'status' | 'assignee' | 'dueDate' | 'estimate';
+export type ColumnKey = 'id' | 'title' | 'status' | 'assignee' | 'startDate' | 'dueDate' | 'estimate';
 
 export interface TicketData {
   id?: string;
   title: string;
   status: string;
   assignees: string[];
+  startDate: string;
   dueDate: string;
   estimate: number;
 }

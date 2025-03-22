@@ -61,11 +61,15 @@
 }
 .table_status {
   text-align: center;
-  width: 8rem;
+  width: 9rem;
+}
+.table_startDate {
+  text-align: right;
+  width: 7rem;
 }
 .table_dueDate {
   text-align: right;
-  width: 6rem;
+  width: 7rem;
 }
 .table_estimate {
   text-align: center;

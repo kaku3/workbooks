@@ -37,6 +37,7 @@ export default function TableView() {
     { key: 'id', label: 'ID', visible: true },
     { key: 'title', label: 'タイトル', visible: true },
     { key: 'status', label: 'ステータス', visible: true },
+    { key: 'startDate', label: '開始日', visible: true },
     { key: 'dueDate', label: '期限', visible: true },
     { key: 'estimate', label: '見積', visible: true },
     { key: 'assignee', label: '担当者', visible: true },
