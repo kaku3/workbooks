@@ -1,0 +1,23 @@
+{
+  "templateId": "task",
+  "title": "TableView とGanttView のリファクタリングをする",
+  "creator": {
+    "id": "admin",
+    "name": "管理者",
+    "email": "admin@example.com",
+    "role": "admin"
+  },
+  "assignees": [],
+  "status": "open",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 0,
+  "content": "## 目的\nTableViewの機能が増えてきたのでGanttView の作成前にリファクタリングする。\n\n## 作業内容\n\n## 完了条件\n\n## 注意事項\n\n## 参考情報\n",
+  "tags": [
+    "improvement",
+    "SC201"
+  ],
+  "id": "T20250322-235514",
+  "createdAt": "2025-03-22T14:55:14.481Z",
+  "updatedAt": "2025-03-22T15:01:53.313Z"
+}
