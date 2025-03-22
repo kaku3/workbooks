@@ -40,8 +40,7 @@ export async function POST(request: NextRequest) {
   try {
     console.info('POST /api/tickets/ request:', request.body);
     const data = await request.json() as TicketData;
-    const timestamp = Date.now();
-    const ticketId = `T${timestamp}`;
+    const ticketId = generateTicketId();
 
     // チケットの内容をMarkdownファイルとして保存
     const ticketsDir = path.join(process.cwd(), 'trak-data', 'tickets');
@@ -173,4 +172,28 @@ export async function PUT(request: NextRequest) {
     };
     return NextResponse.json(response, { status: 500 });
   }
+}
+
+
+function generateTicketId() {
+  const now = new Date();
+  
+  // 年月日の取得
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので+1
+  const day = String(now.getDate()).padStart(2, '0');
+  
+  // 時分秒の取得
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+  // ミリ秒の取得
+  const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+  
+  // フォーマット作成
+  // const ticketId = `T${year}${month}${day}-${hours}${minutes}${seconds}${milliseconds}`;
+  const ticketId = `T${year}${month}${day}-${hours}${minutes}${seconds}`;
+  
+  return ticketId;
 }
