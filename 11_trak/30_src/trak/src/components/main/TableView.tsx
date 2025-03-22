@@ -3,21 +3,16 @@
 import styles from './TableView.module.css';
 import { useState, useEffect, useCallback } from 'react';
 import IdCell from './cell/IdCell';
-import StatusSelect from './StatusSelect';
-import EstimateInput from './edit/EstimateInput';
-import DateInput from './edit/DateInput';
-import AssigneeInput from './edit/AssigneeInput';
-import TitleInput from './edit/TitleInput';
 import StatusCell from './cell/StatusCell';
 import EstimateCell from './cell/EstimateCell';
-import AssigneeList from './edit/AssigneeList';
-import SortHeader from './SortHeader';
 import DateCell from './cell/DateCell';
+import AssigneeCell from './cell/AssigneeCell';
+import TitleCell from './cell/TitleCell';
+import SortHeader from './SortHeader';
 import TableStateRow from './TableStateRow';
 import type {
   User,
   Status,
-  Column,
   TicketData,
   ColumnKey,
   SortDirection,
@@ -33,7 +28,8 @@ export default function TableView() {
   const [sortColumn, setSortColumn] = useState<ColumnKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [editingCell, setEditingCell] = useState<{ id: string; key: ColumnKey } | null>(null);
-  const [columns, setColumns] = useState<ExtendedColumn[]>([
+
+  const columns: ExtendedColumn[] = [
     { key: 'id', label: 'ID', visible: true },
     { key: 'title', label: 'タイトル', visible: true },
     { key: 'status', label: 'ステータス', visible: true },
@@ -41,7 +37,7 @@ export default function TableView() {
     { key: 'dueDate', label: '期限', visible: true },
     { key: 'estimate', label: '見積', visible: true },
     { key: 'assignee', label: '担当者', visible: true },
-  ]);
+  ];
 
   const updateTicket = useCallback(async (updatedTicket: TicketData) => {
     try {
@@ -232,96 +228,98 @@ export default function TableView() {
               getSortedTickets().map(ticket => (
                 <tr key={ticket.id}>
                   {columns.filter(col => col.visible).map(col => (
-                    <td key={`${ticket.id}-${col.key}`} className={styles[`table_${col.key}`]}>
+                    <td 
+                      key={`${ticket.id}-${col.key}`} 
+                      className={styles[`table_${col.key}`]}
+                      onClick={() => {
+                        if (!['id'].includes(col.key)) {
+                          setEditingCell({ id: ticket.id!, key: col.key });
+                        }
+                      }}
+                    >
                       {col.key === 'id' ? (
                         <IdCell id={ticket.id!} />
-                      ) : (
-                        <div
-                          className={
+                      ) : col.key === 'title' ? (
+                        <TitleCell 
+                          value={ticket.title}
+                          onUpdate={
                             editingCell?.id === ticket.id && editingCell?.key === col.key
-                              ? styles.editingCell
-                              : styles.editableCell
-                          }
-                          onClick={() => {
-                            if (!['id', 'startDate'].includes(col.key)) {
-                              setEditingCell({ id: ticket.id!, key: col.key });
-                            }
-                          }}
-                        >
-                          {editingCell?.id === ticket.id && editingCell?.key === col.key ? (
-                            col.key === 'estimate' ? (
-                              <EstimateInput
-                                value={ticket.estimate}
-                                onUpdate={(hours) => {
-                                  const updatedTicket = { ...ticket, estimate: hours };
-                                  updateTicket(updatedTicket);
-                                }}
-                                onClose={() => setEditingCell(null)}
-                              />
-                            ) : col.key === 'status' ? (
-                              <StatusSelect
-                                value={ticket.status}
-                                statuses={statuses}
-                                onUpdate={(value) => {
-                                  const updatedTicket = { ...ticket, status: value };
-                                  updateTicket(updatedTicket);
-                                }}
-                                onClose={() => setEditingCell(null)}
-                              />
-                            ) : col.key === 'dueDate' ? (
-                              <DateInput
-                                value={ticket.dueDate}
-                                onUpdate={(value) => {
-                                  const updatedTicket = { ...ticket, dueDate: value };
-                                  updateTicket(updatedTicket);
-                                }}
-                                onClose={() => setEditingCell(null)}
-                              />
-                            ) : col.key === 'assignee' ? (
-                              <AssigneeInput
-                                value={ticket.assignees}
-                                users={users}
-                                onUpdate={(value) => {
-                                  const updatedTicket = { ...ticket, assignees: value };
-                                  updateTicket(updatedTicket);
-                                }}
-                                onClose={() => setEditingCell(null)}
-                              />
-                            ) : (
-                              <TitleInput
-                                value={ticket.title}
-                                onUpdate={(value) => {
+                              ? (value) => {
                                   const updatedTicket = { ...ticket, title: value };
                                   updateTicket(updatedTicket);
-                                }}
-                                onClose={() => setEditingCell(null)}
-                              />
-                            )
-                          ) : (
-                            <>
-                              {col.key === 'title' && ticket.title}
-                              {col.key === 'status' && (
-                                <StatusCell
-                                  status={ticket.status}
-                                  statuses={statuses}
-                                />
-                              )}
-                              {col.key === 'assignee' && (
-                                <AssigneeList
-                                  assignees={ticket.assignees}
-                                  users={users}
-                                />
-                              )}
-                              {col.key === 'dueDate' && (
-                                <DateCell value={ticket.dueDate} />
-                              )}
-                              {col.key === 'estimate' && (
-                                <EstimateCell value={ticket.estimate} />
-                              )}
-                            </>
-                          )}
-                        </div>
-                      )}
+                                  setEditingCell(null);
+                                }
+                              : undefined
+                          }
+                        />
+                      ) : col.key === 'status' ? (
+                        <StatusCell
+                          status={ticket.status}
+                          statuses={statuses}
+                          onUpdate={
+                            editingCell?.id === ticket.id && editingCell?.key === col.key
+                              ? (value) => {
+                                  const updatedTicket = { ...ticket, status: value };
+                                  updateTicket(updatedTicket);
+                                  setEditingCell(null);
+                                }
+                              : undefined
+                          }
+                        />
+                      ) : col.key === 'assignee' ? (
+                        <AssigneeCell
+                          value={ticket.assignees}
+                          users={users}
+                          onUpdate={
+                            editingCell?.id === ticket.id && editingCell?.key === col.key
+                              ? (value) => {
+                                  const updatedTicket = { ...ticket, assignees: value };
+                                  updateTicket(updatedTicket);
+                                  setEditingCell(null);
+                                }
+                              : undefined
+                          }
+                        />
+                      ) : col.key === 'startDate' ? (
+                        <DateCell
+                          value={ticket.startDate}
+                          onUpdate={
+                            editingCell?.id === ticket.id && editingCell?.key === col.key
+                              ? (value) => {
+                                  const updatedTicket = { ...ticket, startDate: value };
+                                  updateTicket(updatedTicket);
+                                  setEditingCell(null);
+                                }
+                              : undefined
+                          }
+                        />
+                      ) : col.key === 'dueDate' ? (
+                        <DateCell
+                          value={ticket.dueDate}
+                          onUpdate={
+                            editingCell?.id === ticket.id && editingCell?.key === col.key
+                              ? (value) => {
+                                  const updatedTicket = { ...ticket, dueDate: value };
+                                  updateTicket(updatedTicket);
+                                  setEditingCell(null);
+                                }
+                              : undefined
+                          }
+                        />
+                      ) : col.key === 'estimate' ? (
+                        <EstimateCell
+                          value={ticket.estimate}
+                          onUpdate={
+                            editingCell?.id === ticket.id && editingCell?.key === col.key
+                              ? (value) => {
+                                  const updatedTicket = { ...ticket, estimate: value };
+                                  updateTicket(updatedTicket);
+                                  setEditingCell(null);
+                                }
+                              : undefined
+                          }
+                        />
+                      ) : null}
                     </td>
                   ))}
                 </tr>

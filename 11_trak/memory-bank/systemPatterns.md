@@ -23,6 +23,27 @@ flowchart TD
         Main[MainPage] --> Table[TableView]
         Main --> Gantt[GanttView]
         Main --> New[新規チケット]
+
+        subgraph TableComponents
+            Table --> Sort[SortHeader]
+            Table --> Cells[Cell Components]
+            Table --> Edit[Edit Components]
+            
+            subgraph Cells[Cell Components]
+                Status[StatusCell]
+                Id[IdCell]
+                Date[DateCell]
+                Estimate[EstimateCell]
+            end
+
+            subgraph Edit[Edit Components]
+                Title[TitleInput]
+                Assignee[AssigneeInput]
+                AssigneeL[AssigneeList]
+                DateE[DateInput]
+                EstimateE[EstimateInput]
+            end
+        end
     end
 
     subgraph Forms

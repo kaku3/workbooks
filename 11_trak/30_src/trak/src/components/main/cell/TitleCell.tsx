@@ -1,25 +1,20 @@
 import { useState } from 'react';
 import styles from '../TableView.module.css';
 
-interface DateCellProps {
+interface TitleCellProps {
   value: string;
   onUpdate?: (value: string) => void;
 }
 
-export default function DateCell({
+export default function TitleCell({
   value,
   onUpdate
-}: DateCellProps): JSX.Element {
+}: TitleCellProps): JSX.Element {
   const [editValue, setEditValue] = useState(value);
-  const displayValue = value ? new Date(value).toLocaleDateString() : "";
 
   // 編集不可の場合は表示のみ
   if (!onUpdate) {
-    return (
-      <div className="text-center">
-        {displayValue}
-      </div>
-    );
+    return <span>{value}</span>;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +31,7 @@ export default function DateCell({
   return (
     <div className={`${styles.editableCell} ${styles.editingCell}`}>
       <input
-        type="date"
+        type="text"
         value={editValue}
         className={styles.editInput}
         onChange={handleChange}

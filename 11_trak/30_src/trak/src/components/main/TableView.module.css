@@ -71,11 +71,11 @@
 }
 .table_startDate {
   text-align: right;
-  width: 7rem;
+  width: 9rem;
 }
 .table_dueDate {
   text-align: right;
-  width: 7rem;
+  width: 9rem;
 }
 .table_estimate {
   text-align: center;
@@ -123,6 +123,7 @@
   padding: 0.25rem;
   border-radius: 4px;
   position: relative;
+  min-height: 1.5rem;
 }
 
 .editableCell:hover {

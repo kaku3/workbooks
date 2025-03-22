@@ -44,7 +44,19 @@
 
 - ✅ メインページ（SC201）の実装
   - ✅ MainPage コンポーネント
-  - ✅ TableView コンポーネント
+  - 🔄 TableView コンポーネント
+    - ✅ 基本テーブル構造
+    - ✅ セルコンポーネント分割
+      - ✅ StatusCell
+      - ✅ IdCell
+      - ✅ DateCell
+      - ✅ EstimateCell
+    - ✅ 編集コンポーネント
+      - ✅ TitleInput
+      - ✅ AssigneeInput/List
+      - ✅ DateInput
+      - ✅ EstimateInput
+    - 🔄 ソート機能実装
   - ✅ GanttView コンポーネント
   - ✅ 検索・フィルター機能
   - ✅ ビュー切替機能
@@ -100,7 +112,12 @@
 
 ## 既知の問題
 
-1. APIエンドポイント関連
+1. TableView関連
+   - ソート機能の実装が必要
+   - 一部コンポーネントの未使用変数警告
+   - パフォーマンス最適化が必要
+
+2. APIエンドポイント関連
    - チケットCRUD操作の完全実装が必要
    - エラーレスポンスの標準化
    - APIレスポンスのキャッシュ戦略
