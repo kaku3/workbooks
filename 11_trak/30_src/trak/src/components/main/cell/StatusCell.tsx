@@ -1,5 +1,5 @@
+import styles from '../TableView.module.css';
 import { getTextColor } from '@/lib/utils/colors';
-import styles from './TableView.module.css';
 import type { Status } from '@/types';
 
 interface StatusCellProps {

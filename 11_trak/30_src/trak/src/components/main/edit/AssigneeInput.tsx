@@ -1,5 +1,5 @@
+import styles from '../TableView.module.css';
 import { useEffect, useRef, useState } from 'react';
-import styles from './TableView.module.css';
 import { User } from '@/types';
 import { getUserColor, getTextColor } from '@/lib/utils/colors';
 

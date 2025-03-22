@@ -1,20 +1,19 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import styles from './TableView.module.css';
-import IdCell from './IdCell';
+import { useState, useEffect, useCallback } from 'react';
+import IdCell from './cell/IdCell';
 import StatusSelect from './StatusSelect';
-import EstimateInput from './EstimateInput';
-import DateInput from './DateInput';
-import AssigneeInput from './AssigneeInput';
-import TitleInput from './TitleInput';
-import StatusCell from './StatusCell';
-import EstimateCell from './EstimateCell';
-import AssigneeList from './AssigneeList';
+import EstimateInput from './edit/EstimateInput';
+import DateInput from './edit/DateInput';
+import AssigneeInput from './edit/AssigneeInput';
+import TitleInput from './edit/TitleInput';
+import StatusCell from './cell/StatusCell';
+import EstimateCell from './cell/EstimateCell';
+import AssigneeList from './edit/AssigneeList';
 import SortHeader from './SortHeader';
-import DateCell from './DateCell';
+import DateCell from './cell/DateCell';
 import TableStateRow from './TableStateRow';
-import ColumnSettings from './ColumnSettings';
 import type {
   User,
   Status,
@@ -38,9 +37,9 @@ export default function TableView() {
     { key: 'id', label: 'ID', visible: true },
     { key: 'title', label: 'タイトル', visible: true },
     { key: 'status', label: 'ステータス', visible: true },
-    { key: 'assignee', label: '担当者', visible: true },
     { key: 'dueDate', label: '期限', visible: true },
     { key: 'estimate', label: '見積', visible: true },
+    { key: 'assignee', label: '担当者', visible: true },
   ]);
 
   const updateTicket = useCallback(async (updatedTicket: TicketData) => {
@@ -193,11 +192,6 @@ export default function TableView() {
 
   return (
     <div className={styles.container}>
-      <ColumnSettings
-        columns={columns}
-        onChange={setColumns}
-      />
-
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -237,7 +231,7 @@ export default function TableView() {
               getSortedTickets().map(ticket => (
                 <tr key={ticket.id}>
                   {columns.filter(col => col.visible).map(col => (
-                    <td key={`${ticket.id}-${col.key}`}>
+                    <td key={`${ticket.id}-${col.key}`} className={styles[`table_${col.key}`]}>
                       {col.key === 'id' ? (
                         <IdCell id={ticket.id!} />
                       ) : (

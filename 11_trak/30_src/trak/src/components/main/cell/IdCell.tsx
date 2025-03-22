@@ -1,5 +1,5 @@
+import styles from '../TableView.module.css';
 import { useRouter } from 'next/navigation';
-import styles from './TableView.module.css';
 
 interface IdCellProps {
   id: string;

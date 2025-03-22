@@ -37,15 +37,43 @@
 
 .table th,
 .table td {
-  padding: 0.75rem;
+  padding: .25rem .5rem;
   text-align: left;
-  border-bottom: 1px solid #ddd;
 }
 
 .table th {
   background-color: #f8f9fa;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
+}
+
+.table tr {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.table_id {
+  width: 12rem;
+}
+.table_title {
+  flex-grow: 1;
+}
+.table_status {
+  text-align: center;
+  width: 8rem;
+}
+.table_dueDate {
+  text-align: right;
+  width: 6rem;
+}
+.table_estimate {
+  text-align: center;
+  width: 5rem;
+}
+.table_assignee {
+  flex-grow: 1;
+  max-width: 24rem;
 }
 
 .sortableHeader {

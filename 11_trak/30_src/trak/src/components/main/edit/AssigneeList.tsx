@@ -1,5 +1,5 @@
+import styles from '../TableView.module.css';
 import { getUserColor, getTextColor } from '@/lib/utils/colors';
-import styles from './TableView.module.css';
 import type { User } from '@/types';
 
 interface AssigneeListProps {

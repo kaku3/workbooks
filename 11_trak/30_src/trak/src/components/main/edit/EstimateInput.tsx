@@ -1,5 +1,5 @@
+import styles from '../TableView.module.css';
 import { ChangeEvent } from 'react';
-import styles from './TableView.module.css';
 
 interface EstimateInputProps {
   value: number;

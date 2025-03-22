@@ -24,7 +24,7 @@ export default function SortHeader({
   return (
     <th
       onClick={() => onSort(columnKey)}
-      className={styles.sortableHeader}
+      className={`${styles.sortableHeader} ${styles[`table_${columnKey}`]}`}
     >
       {label}
       <span className={styles.sortIcon}>
