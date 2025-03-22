@@ -13,7 +13,6 @@ interface MainPageProps {
 
 export default function MainPage({ initialTicketId }: MainPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
-  const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div className={styles.container}>
@@ -33,16 +32,6 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
           >
             ガントチャート
           </button>
-        </div>
-
-        {/* 検索バー */}
-        <div className={styles.searchBar}>
-          <input
-            type="text"
-            placeholder="検索..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
         </div>
       </div>
 
