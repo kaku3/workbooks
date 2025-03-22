@@ -1,0 +1,25 @@
+{
+  "templateId": "task",
+  "title": "ステータスフィルタに全選択、全選択解除ボタンを追加",
+  "creator": {
+    "id": "admin",
+    "name": "管理者",
+    "email": "admin@example.com",
+    "role": "admin"
+  },
+  "assignees": [
+    "yamada.taro@example.com"
+  ],
+  "status": "close",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 100,
+  "content": "## 目的\nclose 以外のタスクのみ表示を行いたい事が多い。\n\n## 作業内容\nステータスフィルタのチェックボックスの先頭に、全選択、全選択解除のチェックボックスを追加する。\n\n## 完了条件\n\n## 注意事項\n\n## 参考情報\n",
+  "tags": [
+    "feature",
+    "SC201"
+  ],
+  "id": "T20250322-184659",
+  "createdAt": "2025-03-22T09:46:59.467Z",
+  "updatedAt": "2025-03-22T10:36:17.195Z"
+}

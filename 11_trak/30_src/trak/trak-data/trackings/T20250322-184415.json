@@ -1,0 +1,23 @@
+{
+  "templateId": "task",
+  "title": "タスク編集ページURL対応",
+  "creator": {
+    "id": "admin",
+    "name": "管理者",
+    "email": "admin@example.com",
+    "role": "admin"
+  },
+  "assignees": [],
+  "status": "close",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 0,
+  "content": "## 目的\n編集ページURLをメンバーと共有したい。\n\n## 作業内容\nパネル表示する仕様としたため、編集ページを表示してもURLが変更されないが編集ページを開いた時はURLが変更されるようにしたい。\ntickets/[id]/edit\n\n合わせて、現在未使用のページを未使用であることを確認の上削除する。\n- tickets/new/page.tsx\n- tickets/[id]/edit\n\n## 完了条件\n\n## 注意事項\n\n## 参考情報\n",
+  "tags": [
+    "feature",
+    "SC201"
+  ],
+  "id": "T20250322-184415",
+  "createdAt": "2025-03-22T09:44:15.276Z",
+  "updatedAt": "2025-03-22T10:34:04.358Z"
+}
