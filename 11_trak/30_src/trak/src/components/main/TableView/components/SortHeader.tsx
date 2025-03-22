@@ -1,4 +1,4 @@
-import styles from './TableView.module.css';
+import styles from '../TableView.module.css';
 import type { ColumnKey } from '@/types';
 
 interface SortHeaderProps {

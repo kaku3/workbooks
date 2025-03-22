@@ -1,6 +1,6 @@
+import styles from '../../TableView.module.css';
 import { useEffect, useState } from 'react';
-import styles from '../TableView.module.css';
-import { useTags } from '../TagsContext';
+import { useTags } from '../../../TagsContext';
 import { Tag } from '@/types';
 
 interface TitleCellProps {

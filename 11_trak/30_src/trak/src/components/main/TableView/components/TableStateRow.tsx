@@ -1,4 +1,4 @@
-import styles from './TableView.module.css';
+import styles from '../TableView.module.css';
 
 interface TableStateRowProps {
   colSpan: number;

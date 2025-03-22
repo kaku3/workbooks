@@ -1,20 +1,20 @@
 'use client';
 
 import styles from './TableView.module.css';
-import SlidePanel from '../common/SlidePanel';
-import TicketForm from '../tickets/TicketForm';
+import SlidePanel from '../../common/SlidePanel';
+import TicketForm from '../../Tickets/TicketForm';
 import { useEffect } from 'react';
-import { TagsProvider } from './TagsContext';
-import SortHeader from './SortHeader';
-import TableStateRow from './TableStateRow';
-import StatusFilter from './StatusFilter';
-import { TableCell } from './TableCell';
+import { TagsProvider } from '../TagsContext';
+import SortHeader from './components/SortHeader';
+import TableStateRow from './components/TableStateRow';
+import StatusFilter from './components/StatusFilter';
+import { TableCell } from './components/TableCell';
 import { useTickets } from '@/hooks/useTickets';
-import { useTableData } from '@/hooks/useTableData';
-import { useTableState } from '@/hooks/useTableState';
+import { useTableData } from './hooks/useTableData';
+import { useTableState } from './hooks/useTableState';
 import { useSlidePanel } from '@/hooks/useSlidePanel';
-import { sortTickets, filterTicketsByStatus } from '@/lib/utils/tableUtils';
-import { TABLE_COLUMNS } from '@/constants/tableColumns';
+import { sortTickets, filterTicketsByStatus } from './utils/tableUtils';
+import { TABLE_COLUMNS } from './constants/tableColumns';
 import type { ColumnKey } from '@/types';
 
 interface TableViewProps {

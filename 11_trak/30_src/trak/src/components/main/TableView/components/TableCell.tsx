@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import styles from './TableView.module.css';
-import { CELL_TYPES, type CellType } from '@/constants/tableColumns';
+import styles from '../TableView.module.css';
+import { CELL_TYPES, type CellType } from '../constants/tableColumns';
 import IdCell from './cell/IdCell';
 import StatusCell from './cell/StatusCell';
 import EstimateCell from './cell/EstimateCell';

@@ -1,5 +1,5 @@
+import styles from '../../TableView.module.css';
 import { useState } from 'react';
-import styles from '../TableView.module.css';
 
 interface DateCellProps {
   value: string;
