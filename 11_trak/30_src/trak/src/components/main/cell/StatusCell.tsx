@@ -1,6 +1,14 @@
 import styles from '../TableView.module.css';
 import { getTextColor } from '@/lib/utils/colors';
 import type { Status } from '@/types';
+import { useEffect, useRef } from 'react';
+
+// HTMLSelectElement に showPicker メソッドを追加
+declare global {
+  interface HTMLSelectElement {
+    showPicker(): void;
+  }
+}
 
 interface StatusCellProps {
   status: string;
@@ -16,6 +24,29 @@ export default function StatusCell({
   const statusInfo = statuses.find(s => s.id === status);
   const backgroundColor = statusInfo?.color || '#3b82f6';
   const color = getTextColor(backgroundColor);
+  const selectRef = useRef<HTMLSelectElement>(null);
+
+  useEffect(() => {
+    // 編集モードで、マウント時に自動で開く
+    if (onUpdate && selectRef.current) {
+      setTimeout(() => {
+        const select = selectRef.current;
+        if (select) {
+          select.focus();
+          if ('showPicker' in select) {
+            select.showPicker();
+          }
+        }
+      }, 50);
+    }
+  }, [onUpdate]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = e.target.value;
+    if (newValue !== status) {
+      onUpdate?.(newValue);
+    }
+  };
 
   // 編集不可の場合は表示のみ
   if (!onUpdate) {
@@ -32,17 +63,10 @@ export default function StatusCell({
     );
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newValue = e.target.value;
-    if (newValue !== status) {
-      onUpdate(newValue);
-    }
-  };
-
-  // 編集可能な場合は選択肢を表示
   return (
     <div className={`${styles.editableCell} ${styles.editingCell}`}>
       <select
+        ref={selectRef}
         className={styles.editInput}
         value={status}
         onChange={handleChange}
