@@ -7,6 +7,7 @@ import EstimateCell from './cell/EstimateCell';
 import DateCell from './cell/DateCell';
 import AssigneeCell from './cell/AssigneeCell';
 import TitleCell from './cell/TitleCell';
+import DeleteCell from './cell/DeleteCell';
 import type { TicketData, ColumnKey, Status, User } from '@/types';
 
 interface TableCellProps {
@@ -18,6 +19,7 @@ interface TableCellProps {
   onUpdate: (updatedTicket: TicketData) => Promise<boolean | void>;
   onEdit: (key: ColumnKey) => void;
   onEditTicket: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 export const TableCell = ({
@@ -29,6 +31,7 @@ export const TableCell = ({
   onUpdate,
   onEdit,
   onEditTicket,
+  onDelete,
 }: TableCellProps) => {
   const cellType = CELL_TYPES[columnKey as keyof typeof CELL_TYPES];
 
@@ -99,6 +102,10 @@ export const TableCell = ({
             onUpdate={handleUpdate}
           />
         );
+      case 'delete':
+        return onDelete ? (
+          <DeleteCell onDelete={() => onDelete(ticket.id!)} />
+        ) : null;
       default:
         return null;
     }
@@ -108,7 +115,7 @@ export const TableCell = ({
     <td 
       className={styles[`table_${columnKey}`]}
       onClick={() => {
-        if (cellType !== 'id') {
+        if (cellType !== 'id' && cellType !== 'delete') {
           onEdit(columnKey);
         }
       }}

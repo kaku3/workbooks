@@ -82,27 +82,38 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
 
-  // ユーザーデータの取得
+  // データの取得（チケット、ユーザー）
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/users');
-        const data = await response.json();
-        if (data.users) {
-          setUsers(data.users);
-          // 選択済みユーザーの更新
-          const selected = data.users.filter((user: User) => 
-            formData.assignees.includes(user.email)
-          );
-          setSelectedUsers(selected);
+        // Always fetch users for both new and edit modes
+        const usersResponse = await fetch('/api/users');
+        const usersData = await usersResponse.json();
+        
+        if (usersData.users) {
+          setUsers(usersData.users);
+          
+          // For edit mode, fetch ticket data
+          if (mode === 'edit' && ticketId) {
+            const ticketResponse = await fetch(`/api/tickets/${ticketId}`);
+            const ticketData = await ticketResponse.json();
+            
+            if (ticketData.success && ticketData.ticket) {
+              setFormData(ticketData.ticket);
+              const selectedUsers = usersData.users.filter((user: User) => 
+                ticketData.ticket.assignees.includes(user.email)
+              );
+              setSelectedUsers(selectedUsers);
+            }
+          }
         }
       } catch (error) {
-        console.error('ユーザーデータの取得に失敗:', error);
+        console.error('データの取得に失敗:', error);
       }
     };
 
-    fetchUsers();
-  }, [formData.assignees]);
+    fetchData();
+  }, [mode, ticketId]); // Remove users dependency
 
   // テンプレートデータの取得
   useEffect(() => {
@@ -119,27 +130,6 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
     };
     fetchTemplates();
   }, []);
-
-  // チケットデータの取得
-  useEffect(() => {
-    const fetchTicket = async () => {
-      if (mode === 'edit' && ticketId) {
-        try {
-          const response = await fetch(`/api/tickets/${ticketId}`);
-          const data = await response.json();
-          if (data.success && data.ticket) {
-            setFormData(data.ticket);
-            setSelectedUsers(users.filter(user => 
-              data.ticket.assignees.includes(user.email)
-            ));
-          }
-        } catch (error) {
-          console.error('チケットの取得に失敗:', error);
-        }
-      }
-    };
-    fetchTicket();
-  }, [mode, ticketId, users]);
 
   // ステータスデータの取得
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface SlidePanelState {
   isOpen: boolean;
@@ -13,6 +13,7 @@ interface SlidePanelHook extends SlidePanelState {
 }
 
 export const useSlidePanel = (initialTicketId?: string): SlidePanelHook => {
+  const initialTicketHandled = useRef(false);
   const [state, setState] = useState<SlidePanelState>({
     isOpen: false,
     mode: 'new',
@@ -30,8 +31,15 @@ export const useSlidePanel = (initialTicketId?: string): SlidePanelHook => {
 
   // Open ticket in edit mode if initialTicketId is provided
   useEffect(() => {
-    if (initialTicketId) {
-      openEditTicket(initialTicketId);
+    if (initialTicketId && !initialTicketHandled.current) {
+      initialTicketHandled.current = true;
+      setState({
+        isOpen: true,
+        mode: 'edit',
+        ticketId: initialTicketId,
+      });
+      // Update URL without page reload
+      window.history.pushState({}, '', `/tickets/${initialTicketId}`);
     }
   }, [initialTicketId]);
 
@@ -44,26 +52,28 @@ export const useSlidePanel = (initialTicketId?: string): SlidePanelHook => {
   }, []);
 
   const openEditTicket = useCallback((ticketId: string) => {
-    setState({
-      isOpen: true,
-      mode: 'edit',
-      ticketId,
-    });
-    // Update URL without page reload
-    window.history.pushState({}, '', `/tickets/${ticketId}`);
-  }, []);
+    if (state.ticketId !== ticketId || !state.isOpen) {
+      setState({
+        isOpen: true,
+        mode: 'edit',
+        ticketId,
+      });
+      // Update URL without page reload
+      window.history.pushState({}, '', `/tickets/${ticketId}`);
+    }
+  }, [state.ticketId, state.isOpen]);
 
   const handleClose = useCallback(() => {
     setState(prev => ({ ...prev, isOpen: false }));
 
-    // If this was opened via direct URL, redirect to home
-    if (window.location.pathname.startsWith('/tickets/')) {
-      window.location.href = '/';
-      return;
-    }
+    // Reset the initialTicketHandled when closing
+    initialTicketHandled.current = false;
 
-    // Otherwise, go back to previous URL
-    window.history.back();
+    // Always restore URL to home when closing panel
+    if (window.location.pathname.startsWith('/tickets/')) {
+      // Push new state to avoid triggering back button
+      window.history.pushState({}, '', '/');
+    }
   }, []);
 
   return {

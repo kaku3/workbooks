@@ -28,6 +28,7 @@ export default function TableView({ initialTicketId }: TableViewProps) {
     error: ticketsError,
     fetchTickets,
     updateTicket,
+    deleteTicket,
   } = useTickets();
 
   // Fetch tickets on mount
@@ -81,6 +82,11 @@ export default function TableView({ initialTicketId }: TableViewProps) {
             statuses={statuses}
             selectedStatuses={selectedStatuses}
             onStatusChange={setSelectedStatuses}
+            statusCounts={tickets.reduce((counts, ticket) => {
+              counts[ticket.status] = (counts[ticket.status] || 0) + 1;
+              return counts;
+            }, {} as Record<string, number>)}
+            totalCount={tickets.length}
           />
         </div>
         <div className={styles.tableContainer}>
@@ -137,9 +143,15 @@ export default function TableView({ initialTicketId }: TableViewProps) {
                             editingCell?.id === ticket.id &&
                             editingCell?.key === col.key
                           }
-                          onUpdate={updateTicket}
+                          onUpdate={async (updatedTicket) => {
+                            const success = await updateTicket(updatedTicket);
+                            if (success) {
+                              setEditingCell(null);
+                            }
+                          }}
                           onEdit={key => setEditingCell({ id: ticket.id!, key })}
                           onEditTicket={openEditTicket}
+                          onDelete={deleteTicket}
                         />
                       ))}
                   </tr>

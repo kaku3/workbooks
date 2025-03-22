@@ -28,7 +28,7 @@ export interface ExtendedColumn extends Column {
 
 export type SortDirection = 'asc' | 'desc' | null;
 
-export type ColumnKey = 'id' | 'title' | 'status' | 'assignee' | 'startDate' | 'dueDate' | 'estimate';
+export type ColumnKey = 'id' | 'title' | 'status' | 'assignee' | 'startDate' | 'dueDate' | 'estimate' | 'delete';
 
 export interface TicketData {
   id?: string;

@@ -66,6 +66,41 @@ export async function PUT(
   }
 }
 
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const ticketId = params.id;
+
+    // トラッキングファイルの削除
+    const trackingPath = path.join(
+      process.cwd(),
+      'trak-data',
+      'trackings',
+      `${ticketId}.json`
+    );
+    await fs.unlink(trackingPath);
+
+    // チケットファイルの削除
+    const ticketPath = path.join(
+      process.cwd(),
+      'trak-data',
+      'tickets',
+      `${ticketId}.md`
+    );
+    await fs.unlink(ticketPath);
+
+    return NextResponse.json({ success: true, ticketId });
+  } catch (error) {
+    console.error('チケットの削除に失敗:', error);
+    return NextResponse.json(
+      { success: false, ticketId: params.id, error: 'チケットの削除に失敗しました' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

@@ -7,9 +7,17 @@ interface StatusFilterProps {
   statuses: Status[];
   selectedStatuses: string[];
   onStatusChange: (selectedStatuses: string[]) => void;
+  statusCounts: Record<string, number>;
+  totalCount: number;
 }
 
-export default function StatusFilter({ statuses, selectedStatuses, onStatusChange }: StatusFilterProps) {
+export default function StatusFilter({ 
+  statuses, 
+  selectedStatuses, 
+  onStatusChange, 
+  statusCounts, 
+  totalCount 
+}: StatusFilterProps) {
   const handleStatusToggle = (statusId: string) => {
     const newSelectedStatuses = selectedStatuses.includes(statusId)
       ? selectedStatuses.filter(id => id !== statusId)
@@ -31,17 +39,20 @@ export default function StatusFilter({ statuses, selectedStatuses, onStatusChang
 
   return (
     <div className={styles.statusFilter}>
-      <label className={styles.statusCheckbox}>
-        <input
-          type="checkbox"
-          checked={isAllSelected}
-          onChange={handleToggleAll}
-          aria-label="全て選択/選択解除"
-        />
-        <span className={styles.statusLabel} role="presentation">
-          {isAllSelected ? "選択解除" : "全て選択"}
-        </span>
-      </label>
+      <span className={styles.totalCount}>全 {totalCount} 件</span>
+      <div className={styles.filterHeader}>
+        <label className={styles.statusCheckbox}>
+          <input
+            type="checkbox"
+            checked={isAllSelected}
+            onChange={handleToggleAll}
+            aria-label="全て選択/選択解除"
+          />
+          <span className={styles.statusLabel} role="presentation">
+            {isAllSelected ? "選択解除" : "全て選択"}
+          </span>
+        </label>
+      </div>
       {statuses.map(status => (
         <label key={status.id} className={styles.statusCheckbox}>
           <input
@@ -51,6 +62,7 @@ export default function StatusFilter({ statuses, selectedStatuses, onStatusChang
           />
           <span className={styles.statusLabel} style={{ backgroundColor: status.color }}>
             {status.name}
+            {statusCounts[status.id] > 0 && (<span className={styles.statusCount}>({statusCounts[status.id]})</span>)}
           </span>
         </label>
       ))}

@@ -51,11 +51,33 @@ export const useTickets = () => {
     }
   }, []);
 
+  const deleteTicket = useCallback(async (ticketId: string) => {
+    try {
+      const response = await fetch(`/api/tickets/${ticketId}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || '削除に失敗しました');
+      }
+
+      setTickets(prev => prev.filter(t => t.id !== ticketId));
+      setError(null);
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
+      return false;
+    }
+  }, []);
+
   return {
     tickets,
     isLoading,
     error,
     fetchTickets,
     updateTicket,
+    deleteTicket,
   };
 };

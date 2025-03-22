@@ -8,11 +8,12 @@ export const TABLE_COLUMNS: ExtendedColumn[] = [
   { key: 'dueDate', label: '期限', visible: true },
   { key: 'estimate', label: '見積', visible: true },
   { key: 'assignee', label: '担当者', visible: true },
+  { key: 'delete', label: '', visible: true },
 ];
 
 // Cell rendering options
 export const EDITABLE_COLUMNS = ['title', 'status', 'startDate', 'dueDate', 'estimate', 'assignee'];
-export const NON_EDITABLE_COLUMNS = ['id'];
+export const NON_EDITABLE_COLUMNS = ['id', 'delete'];
 
 // Cell type mappings
 export const CELL_TYPES = {
@@ -23,6 +24,7 @@ export const CELL_TYPES = {
   dueDate: 'date',
   estimate: 'estimate',
   assignee: 'assignee',
+  delete: 'delete',
 } as const;
 
 export type CellType = typeof CELL_TYPES[keyof typeof CELL_TYPES];
