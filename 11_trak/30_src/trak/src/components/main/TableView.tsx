@@ -2,6 +2,8 @@
 
 import styles from './TableView.module.css';
 import { useState, useEffect, useCallback } from 'react';
+import SlidePanel from '../common/SlidePanel';
+import TicketForm from '../tickets/TicketForm';
 import { TagsProvider } from './TagsContext';
 import IdCell from './cell/IdCell';
 import StatusCell from './cell/StatusCell';
@@ -29,6 +31,9 @@ export default function TableView() {
   const [sortColumn, setSortColumn] = useState<ColumnKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [editingCell, setEditingCell] = useState<{ id: string; key: ColumnKey } | null>(null);
+  const [slidePanelOpen, setSlidePanelOpen] = useState(false);
+  const [ticketFormMode, setTicketFormMode] = useState<'new' | 'edit'>('new');
+  const [selectedTicketId, setSelectedTicketId] = useState<string | undefined>();
 
   const columns: ExtendedColumn[] = [
     { key: 'id', label: 'ID', visible: true },
@@ -188,9 +193,47 @@ export default function TableView() {
     }
   };
 
+  // TicketForm用の関数
+  const handleCreateTicket = () => {
+    setTicketFormMode('new');
+    setSelectedTicketId(undefined);
+    setSlidePanelOpen(true);
+  };
+
+  const handleEditTicket = (ticketId: string) => {
+    setTicketFormMode('edit');
+    setSelectedTicketId(ticketId);
+    setSlidePanelOpen(true);
+  };
+
+  const handleClosePanel = () => {
+    setSlidePanelOpen(false);
+    // チケットリストを更新
+    const fetchTickets = async () => {
+      try {
+        const response = await fetch('/api/tickets');
+        const data = await response.json();
+        
+        if (!data.success) {
+          throw new Error(data.error || 'チケットの取得に失敗しました');
+        }
+        
+        setTickets(data.tickets);
+      } catch (err) {
+        setUiError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
+      }
+    };
+    fetchTickets();
+  };
+
   return (
     <TagsProvider>
       <div className={styles.container}>
+        <div className={styles.toolbar}>
+          <button className={styles.createButton} onClick={handleCreateTicket}>
+            新規チケット
+          </button>
+        </div>
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
@@ -228,7 +271,10 @@ export default function TableView() {
                 />
               ) : (
                 getSortedTickets().map(ticket => (
-                  <tr key={ticket.id}>
+                  <tr 
+                    key={ticket.id}
+                    className={styles.tableRow}
+                  >
                     {columns.filter(col => col.visible).map(col => (
                       <td 
                         key={`${ticket.id}-${col.key}`} 
@@ -240,7 +286,10 @@ export default function TableView() {
                         }}
                       >
                         {col.key === 'id' ? (
-                          <IdCell id={ticket.id!} />
+                          <IdCell 
+                            id={ticket.id!} 
+                            onClick={() => handleEditTicket(ticket.id!)}
+                          />
                         ) : col.key === 'title' ? (
                           <TitleCell 
                             value={ticket.title}
@@ -340,6 +389,17 @@ export default function TableView() {
           </table>
         </div>
       </div>
+      <SlidePanel 
+        isOpen={slidePanelOpen} 
+        onClose={handleClosePanel}
+        title={ticketFormMode === 'new' ? 'チケット作成' : 'チケット編集'}
+      >
+        <TicketForm
+          mode={ticketFormMode}
+          ticketId={selectedTicketId}
+          onClose={handleClosePanel}
+        />
+      </SlidePanel>
     </TagsProvider>
   );
 }

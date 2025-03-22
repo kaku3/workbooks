@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './MainPage.module.css';
 import TableView from './TableView';
 import GanttView from './GanttView';
@@ -9,7 +8,6 @@ import GanttView from './GanttView';
 type ViewMode = 'gantt' | 'table';
 
 export default function MainPage() {
-  const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -64,14 +62,6 @@ export default function MainPage() {
             {/* TODO: 担当者リストを動的に生成 */}
           </select>
         </div>
-
-        {/* 新規チケットボタン */}
-        <button 
-          className={styles.newTicketButton}
-          onClick={() => router.push('/tickets/new')}
-        >
-          新規チケット
-        </button>
       </div>
 
       {/* メインコンテンツエリア */}

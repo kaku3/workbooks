@@ -1,106 +1,103 @@
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--space-6);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
-  color: var(--color-text);
-  font-size: var(--text-2xl);
-  margin-bottom: var(--space-8);
+  display: none; /* Hidden because we use SlidePanel title */
 }
 
 .form {
-  background-color: var(--color-background);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 1.5rem;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 0.5rem;
 }
 
-.field label, .rowFields label, .assigneeContainer > label, .templateField label {
-  font-size: var(--text-xs);
-  font-weight: 1000;
-  color: var(--color-text-secondary);
+.input {
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
 }
 
-/* フィールド横並び */
+.input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  ring: 2px #3b82f6;
+}
+
 .rowFields {
-  display: flex;
-  gap: var(--space-4);
-}
-
-.spacer {
-  flex-grow: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
 }
 
 .rowField {
-  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.rowFieldEstimate {
-  width: 5rem;
+.select {
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
 }
 
-/* 担当者選択 - 横並び */
 .assigneeContainer {
   display: flex;
-  gap: var(--space-4);
-  align-items: flex-start;
-}
-
-.assigneeLabel {
-  flex: 0 0 auto;
-  padding-top: var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .assigneeField {
   position: relative;
-  flex: 1;
+  width: 100%;
 }
 
 .assigneeWrapper {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-2);
-  background: var(--color-background);
-  min-height: calc(var(--space-8) * 1.2);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  min-height: 42px;
 }
 
 .assigneeList {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 0.5rem;
 }
 
 .assigneeTag {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-  animation: slideIn var(--transition-normal);
-  max-width: 100%;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
 }
 
 .assigneeName {
+  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -110,39 +107,24 @@
   background: none;
   border: none;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
-  flex-shrink: 0;
-  color: inherit;
+  opacity: 0.7;
 }
 
 .removeButton:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  opacity: 1;
 }
 
 .searchInput {
-  border: none;
-  padding: var(--space-1) 0;
-  background: transparent;
-  color: var(--color-text);
-  font-size: var(--text-sm);
-  min-width: 150px;
   flex: 1;
-}
-
-.searchInput:focus {
+  border: none;
   outline: none;
-}
-
-.assigneeWrapper:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-light);
+  font-size: 0.875rem;
+  min-width: 120px;
+  padding: 0.25rem;
 }
 
 .searchResults {
@@ -150,185 +132,79 @@
   top: 100%;
   left: 0;
   right: 0;
-  margin-top: var(--space-1);
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
   max-height: 200px;
   overflow-y: auto;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  margin-top: 0.25rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  animation: fadeIn var(--transition-fast);
 }
 
 .searchItem {
-  padding: var(--space-2) var(--space-3);
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 0.25rem;
 }
 
 .searchItem:hover {
-  background-color: var(--color-surface);
+  background-color: #f3f4f6;
 }
 
 .searchItemName {
-  color: var(--color-text);
   font-weight: 500;
 }
 
 .searchItemEmail {
-  color: var(--color-text-tertiary);
-  font-size: var(--text-sm);
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
-/* テンプレート選択エリア */
-.templateField {
-  margin-top: var(--space-4);
-}
-
-/* フォーム要素共通 */
-.select {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-background);
-  color: var(--color-text);
-  font-size: var(--text-base);
-  transition: all var(--transition-fast);
-  cursor: pointer;
-}
-
-.select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-light);
-}
-
-.input {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background-color: var(--color-background);
-  color: var(--color-text);
-  font-size: var(--text-base);
-  transition: all var(--transition-fast);
-}
-
-.input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-light);
-}
-
-/* ステータス選択 */
-.statusOption {
-  padding: var(--space-1) var(--space-2);
-  margin-right: var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-sm);
-}
-
-/* ボタンエリア */
 .buttons {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  margin-top: auto;
 }
 
 .cancelButton {
-  padding: var(--space-2) var(--space-6);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  background: white;
+  color: #374151;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all var(--transition-fast);
-  font-size: var(--text-base);
+  transition: background-color 0.2s;
 }
 
 .cancelButton:hover {
-  background-color: var(--color-border);
+  background-color: #f3f4f6;
 }
 
 .submitButton {
-  padding: var(--space-2) var(--space-6);
-  background-color: var(--color-primary);
-  color: white;
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 0.375rem;
+  background: #3b82f6;
+  color: white;
+  font-size: 0.875rem;
   cursor: pointer;
-  transition: all var(--transition-fast);
-  font-size: var(--text-base);
+  transition: background-color 0.2s;
 }
 
 .submitButton:hover {
-  background-color: var(--color-primary-dark);
+  background-color: #2563eb;
 }
 
-/* アニメーション */
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.templateField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 1024px) {
-  .rowFields {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .rowFields {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .assigneeContainer {
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-}
-
-@media (max-width: 640px) {
-  .container {
-    padding: var(--space-4);
-  }
-
-  .form {
-    padding: var(--space-4);
-  }
-
-  .rowFields {
-    grid-template-columns: 1fr;
-  }
-
-  .buttons {
-    flex-direction: column-reverse;
-  }
-
-  .cancelButton,
-  .submitButton {
-    width: 100%;
-    padding: var(--space-3);
-  }
-}
-

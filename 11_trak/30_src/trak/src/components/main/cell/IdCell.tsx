@@ -1,18 +1,17 @@
 import styles from '../TableView.module.css';
-import { useRouter } from 'next/navigation';
 
 interface IdCellProps {
   id: string;
+  onClick: () => void;
 }
 
 export default function IdCell({
-  id
+  id,
+  onClick
 }: IdCellProps): JSX.Element {
-  const router = useRouter();
-
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push(`/tickets/${id}/edit`);
+    onClick();
   };
 
   return (

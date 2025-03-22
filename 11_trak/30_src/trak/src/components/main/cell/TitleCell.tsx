@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from '../TableView.module.css';
 import { useTags } from '../TagsContext';
 import { Tag } from '@/types';
@@ -24,18 +24,37 @@ export default function TitleCell({
   const [tagInput, setTagInput] = useState('');
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
 
+  // リスト外クリックでタグ候補を閉じる
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(`.${styles.tagSuggestions}`) && 
+          !target.closest(`.${styles.tagInput}`) &&
+          !target.closest(`.${styles.tagList}`)) {
+        setIsTagEditing(false);
+        setFilteredTags([]);
+      }
+    };
+
+    if (isTagEditing) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isTagEditing]);
+
+  const showTagSuggestions = () => {
+    setFilteredTags(availableTags);
+  };
+
   const handleTagClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onUpdateTags) {
       setIsTagEditing(true);
+      showTagSuggestions();
     }
-  };
-
-  const handleClickOutside = () => {
-    setEditingCell?.(null);
-    setIsTagEditing(false);
-    setTagInput('');
-    setFilteredTags([]);
   };
 
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,53 +67,47 @@ export default function TitleCell({
       );
       setFilteredTags(filtered);
     } else {
-      setFilteredTags([]);
+      setFilteredTags(availableTags);
     }
   };
 
-  const handleTagSelect = async (selectedTag?: typeof availableTags[0]) => {
+  const handleTagSelect = async (selectedTag: typeof availableTags[0]) => {
     if (!onUpdateTags) return;
+    if (!tags.includes(selectedTag.id)) {
+      onUpdateTags([...tags, selectedTag.id]);
+    }
+    setTagInput('');
+    setFilteredTags([]);
+    setIsTagEditing(false);
+  };
 
-    const inputValue = selectedTag?.name || tagInput.trim();
-    if (!inputValue) {
-      setIsTagEditing(false);
+  const handleRemoveTag = (tagId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onUpdateTags) return;
+    onUpdateTags(tags.filter(id => id !== tagId));
+  };
+
+  const handleNewTag = async () => {
+    if (!onUpdateTags || !tagInput.trim()) return;
+
+    const inputValue = tagInput.trim();
+    const existingTag = availableTags.find(
+      tag => tag.name.toLowerCase() === inputValue.toLowerCase()
+    );
+
+    if (existingTag) {
+      handleTagSelect(existingTag);
       return;
     }
 
-    if (selectedTag) {
-      if (!tags.includes(selectedTag.id)) {
-        onUpdateTags([...tags, selectedTag.id]);
-      }
-    } else if (inputValue) {
-      const existingTag = availableTags.find(
-        tag => tag.name.toLowerCase() === inputValue.toLowerCase()
-      );
+    const newTag = await addTag({
+      name: inputValue,
+      color: '#6366f1' // デフォルトカラー
+    });
 
-      let tagToAdd;
-      if (existingTag) {
-        tagToAdd = existingTag;
-      } else {
-        // 新しいタグを作成
-        const newTag = await addTag({
-          name: inputValue,
-          color: '#6366f1' // デフォルトカラー
-        });
-        if (!newTag) {
-          setIsTagEditing(false);
-          return;
-        }
-        tagToAdd = newTag;
-      }
-
-      // タグが既に追加されていない場合のみ追加
-      if (!tags.includes(tagToAdd.id)) {
-        onUpdateTags([...tags, tagToAdd.id]);
-      }
+    if (newTag) {
+      handleTagSelect(newTag);
     }
-    
-    setIsTagEditing(false);
-    setTagInput('');
-    setFilteredTags([]);
   };
 
   // 編集不可の場合は表示のみ
@@ -127,15 +140,29 @@ export default function TitleCell({
     setEditValue(e.target.value);
   };
 
-  const handleBlur = () => {
+  const handleSave = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (editValue !== value) {
       onUpdate(editValue);
     }
+    setIsTagEditing(false);
+    setTagInput('');
+    setFilteredTags([]);
+    setEditingCell?.(null);
+  };
+
+  const handleCancel = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditValue(value);
+    setIsTagEditing(false);
+    setTagInput('');
+    setFilteredTags([]);
+    setEditingCell?.(null);
   };
 
   // 編集可能な場合は入力フィールドを表示
   return (
-    <div className={styles.titleContainer}>
+    <div className={styles.titleEditor} onClick={(e) => e.stopPropagation()}>
       <div className={styles.tagList}>
         {tags.map(tagId => {
           const tag = availableTags.find(t => t.id === tagId);
@@ -148,73 +175,95 @@ export default function TitleCell({
               onClick={handleTagClick}
             >
               {tag.name}
+              <span 
+                className={styles.removeButton}
+                onClick={(e) => handleRemoveTag(tag.id, e)}
+              >
+                ×
+              </span>
             </span>
           );
         })}
-          {isTagEditing && (
-            <div style={{ position: 'relative' }}>
-              <input
-                type="text"
-                className={styles.editInput}
-                style={{ width: 'auto', minWidth: '100px' }}
-                placeholder="タグを入力..."
-                value={tagInput}
-                onChange={handleTagInputChange}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleTagSelect();
-                  }
-                }}
-                autoFocus
-                onBlur={(e) => {
-                  // サジェストをクリックした場合はフォーカスを失わない
-                  if (e.relatedTarget && e.relatedTarget.closest(`.${styles.tagSuggestions}`)) {
-                    return;
-                  }
-                  handleClickOutside();
-                }}
-              />
-              {filteredTags.length > 0 && (
-                <div className={styles.tagSuggestions}>
-                  {filteredTags.map(tag => (
-                    <div
-                      key={tag.id}
-                      className={styles.tagSuggestion}
-                      onClick={() => handleTagSelect(tag)}
-                    >
-                      <span 
-                        className={styles.tagSampleColor}
-                        style={{ backgroundColor: tag.color }}
-                      />
-                      {tag.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+        {isTagEditing && (
+          <div style={{ position: 'relative' }}>
+            <input
+              type="text"
+              className={`${styles.editInput} ${styles.tagInput}`}
+              style={{ width: 'auto', minWidth: '100px' }}
+              placeholder="タグを入力..."
+              value={tagInput}
+              onChange={handleTagInputChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleNewTag();
+                }
+              }}
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+            />
+            {filteredTags.length > 0 && (
+              <div className={styles.tagSuggestions}>
+                {filteredTags.map((tag: Tag) => (
+                  <div
+                    key={tag.id}
+                    className={styles.tagSuggestion}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTagSelect(tag);
+                    }}
+                    tabIndex={0}
+                  >
+                    <span 
+                      className={styles.tagSampleColor}
+                      style={{ backgroundColor: tag.color }}
+                    />
+                    {tag.name} ({tag.id})
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
         {!isTagEditing && onUpdateTags && (
           <button
             className={styles.tag}
             style={{ backgroundColor: '#e5e7eb', color: '#374151' }}
-            onClick={() => setIsTagEditing(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsTagEditing(true);
+              showTagSuggestions();
+            }}
           >
             +
           </button>
         )}
       </div>
-      <div className={`${styles.editableCell} ${styles.editingCell}`}>
-        <input
-          type="text"
-          value={editValue}
-          className={styles.editInput}
-          onChange={handleChange}
-          onBlur={() => {
-            handleBlur();
-            handleClickOutside();
-          }}
-          autoFocus
-        />
+      <input
+        type="text"
+        value={editValue}
+        className={styles.editInput}
+        onChange={handleChange}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !isTagEditing) {
+            handleSave(e as unknown as React.MouseEvent);
+          }
+        }}
+        onClick={(e) => e.stopPropagation()}
+        autoFocus
+      />
+      <div className={styles.editActions}>
+        <button
+          className={`${styles.editAction} ${styles.cancelButton}`}
+          onClick={handleCancel}
+        >
+          Cancel
+        </button>
+        <button
+          className={`${styles.editAction} ${styles.saveButton}`}
+          onClick={handleSave}
+        >
+          OK
+        </button>
       </div>
     </div>
   );

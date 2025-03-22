@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import MDEditor from '@uiw/react-md-editor';
 import { getUserColor, getTextColor } from '@/lib/utils/colors';
 import styles from './TicketForm.module.css';
@@ -9,6 +8,7 @@ import styles from './TicketForm.module.css';
 interface TicketFormProps {
   mode: 'new' | 'edit';
   ticketId?: string;
+  onClose: () => void;
 }
 
 interface TicketData {
@@ -54,8 +54,7 @@ const defaultCreator: User = {
   role: 'admin'
 };
 
-export default function TicketForm({ mode, ticketId }: TicketFormProps) {
-  const router = useRouter();
+export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps) {
   const searchRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState<TicketData>({
@@ -254,14 +253,15 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
           throw new Error(result.error || 'チケットの作成に失敗しました');
         }
       }
-      router.push('/');
+      onClose();
+      // Optionally refresh the table data
     } catch (error) {
       console.error('保存に失敗:', error);
     }
   };
 
   const onCancel = () => {
-    router.push('/');
+    onClose();
   };
 
   // 現在選択中のステータスの色を取得
@@ -271,10 +271,6 @@ export default function TicketForm({ mode, ticketId }: TicketFormProps) {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>
-        {mode === 'new' ? 'チケット作成' : 'チケット編集'}
-      </h1>
-
       <form className={styles.form} onSubmit={onSubmit}>
         {/* タイトル */}
         <div className={styles.field}>
