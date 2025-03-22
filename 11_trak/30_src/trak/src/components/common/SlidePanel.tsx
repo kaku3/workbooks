@@ -41,14 +41,9 @@ export default function SlidePanel({ isOpen, onClose, children, title }: SlidePa
     <div className={styles.overlay}>
       <div className={styles.backdrop} onClick={onClose} />
       <div className={styles.panel} ref={panelRef}>
-        {title && (
-          <div className={styles.header}>
-            <h2 className={styles.title}>{title}</h2>
-            <button className={styles.closeButton} onClick={onClose}>
-              ×
-            </button>
-          </div>
-        )}
+        <button className={styles.closeButton} onClick={onClose}>
+            ×
+        </button>
         <div className={styles.content}>
           {children}
         </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import { getUserColor, getTextColor } from '@/lib/utils/colors';
 import styles from './TicketForm.module.css';
+import EstimateInput from './EstimateInput';
 
 interface TicketFormProps {
   mode: 'new' | 'edit';
@@ -273,7 +274,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
     <div className={styles.container}>
       <form className={styles.form} onSubmit={onSubmit}>
         {/* タイトル */}
-        <div className={styles.field}>
+        <div className={styles.fieldHorizontal}>
           <label htmlFor="title">タイトル</label>
           <input
             id="title"
@@ -286,7 +287,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
         </div>
 
         {/* テンプレート選択（内容の直前に配置） */}
-        <div className={styles.templateField}>
+        <div className={styles.fieldHorizontal}>
           <label htmlFor="template">チケット種類</label>
           <select
             id="template"
@@ -350,8 +351,10 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
             </select>
           </div>
 
+          <div className={styles.space}></div>
+
           {/* 開始日 */}
-          <div className={styles.rowField}>
+          <div className={`${styles.rowField} ${styles.dateField}`}>
             <label htmlFor="startDate">開始日</label>
             <input
               id="startDate"
@@ -363,7 +366,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
           </div>
 
           {/* 期限 */}
-          <div className={styles.rowField}>
+          <div className={`${styles.rowField} ${styles.dateField}`}>
             <label htmlFor="dueDate">期限</label>
             <input
               id="dueDate"
@@ -375,16 +378,11 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
           </div>
 
           {/* 見積 */}
-          <div className={styles.rowFieldEstimate}>
+          <div className={`${styles.rowField} ${styles.estimateField}`}>
             <label htmlFor="estimate">見積</label>
-            <input
-              id="estimate"
-              type="number"
-              className={styles.input}
-              min="0"
-              step="0.5"
+            <EstimateInput
               value={formData.estimate}
-              onChange={(e) => setFormData({ ...formData, estimate: Number(e.target.value) })}
+              onChange={(value) => setFormData({ ...formData, estimate: value })}
             />
           </div>
         </div>
