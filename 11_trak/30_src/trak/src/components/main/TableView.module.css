@@ -84,6 +84,7 @@
   cursor: text;
   padding: 0.25rem;
   border-radius: 4px;
+  position: relative;
 }
 
 .editableCell:hover {
@@ -145,7 +146,7 @@
   margin-right: 0.25rem;
 }
 
-.removeButton {
+.removeButton, .closeButton {
   background: none;
   border: none;
   padding: 0 0.25rem;
@@ -156,8 +157,16 @@
   line-height: 1;
 }
 
-.removeButton:hover {
+.removeButton:hover, .closeButton:hover {
   opacity: 1;
+}
+
+.closeButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
 }
 
 .assigneeSearch {
@@ -167,7 +176,7 @@
 
 .searchInput {
   width: 100%;
-  padding: 0.25rem;
+  padding: 0.25rem 2rem 0.25rem 0.5rem;
   border: 1px solid #0070f3;
   border-radius: 4px;
   background: white;

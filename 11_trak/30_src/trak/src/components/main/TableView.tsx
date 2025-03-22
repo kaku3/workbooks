@@ -1,72 +1,47 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import type { TicketData } from '@/app/api/tickets/types';
-import { getUserColor, getTextColor } from '@/lib/utils/colors';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './TableView.module.css';
-
-type SortDirection = 'asc' | 'desc' | null;
-type ColumnKey = 'id' | 'title' | 'status' | 'assignee' | 'dueDate' | 'estimate';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-interface Status {
-  id: string;
-  name: string;
-  color: string;
-}
-
-interface Column {
-  key: ColumnKey;
-  label: string;
-  visible: boolean;
-}
+import IdCell from './IdCell';
+import StatusSelect from './StatusSelect';
+import EstimateInput from './EstimateInput';
+import DateInput from './DateInput';
+import AssigneeInput from './AssigneeInput';
+import TitleInput from './TitleInput';
+import StatusCell from './StatusCell';
+import EstimateCell from './EstimateCell';
+import AssigneeList from './AssigneeList';
+import SortHeader from './SortHeader';
+import DateCell from './DateCell';
+import TableStateRow from './TableStateRow';
+import ColumnSettings from './ColumnSettings';
+import type {
+  User,
+  Status,
+  Column,
+  TicketData,
+  ColumnKey,
+  SortDirection,
+  ExtendedColumn
+} from '@/types';
 
 export default function TableView() {
   const [tickets, setTickets] = useState<TicketData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [uiError, setUiError] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
-  const [searchText, setSearchText] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const searchRef = useRef<HTMLDivElement>(null);
   const [sortColumn, setSortColumn] = useState<ColumnKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [editingCell, setEditingCell] = useState<{ id: string; key: ColumnKey } | null>(null);
-  const router = useRouter();
-
-  // ユーザー検索
-  useEffect(() => {
-    if (!editingCell || editingCell.key !== 'assignee') return;
-    
-    const searchLower = searchText.toLowerCase();
-    const filtered = users.filter(user => {
-      const nameMatch = user.name.toLowerCase().includes(searchLower);
-      const emailMatch = user.email.toLowerCase().includes(searchLower);
-      return nameMatch || emailMatch;
-    });
-    setFilteredUsers(filtered);
-    setShowSearch(searchText !== '');
-  }, [searchText, users, editingCell]);
-
-  // 検索結果の外側クリックで閉じる
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setShowSearch(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const [columns, setColumns] = useState<ExtendedColumn[]>([
+    { key: 'id', label: 'ID', visible: true },
+    { key: 'title', label: 'タイトル', visible: true },
+    { key: 'status', label: 'ステータス', visible: true },
+    { key: 'assignee', label: '担当者', visible: true },
+    { key: 'dueDate', label: '期限', visible: true },
+    { key: 'estimate', label: '見積', visible: true },
+  ]);
 
   const updateTicket = useCallback(async (updatedTicket: TicketData) => {
     try {
@@ -84,13 +59,11 @@ export default function TableView() {
         throw new Error(data.error || '更新に失敗しました');
       }
 
-      // 更新が成功したら、チケットリストを更新
       setTickets(prev =>
         prev.map(t => (t.id === updatedTicket.id ? updatedTicket : t))
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
-      // エラー時は編集状態を解除
+      setUiError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
       setEditingCell(null);
     }
   }, []);
@@ -104,8 +77,9 @@ export default function TableView() {
         if (data.users) {
           setUsers(data.users);
         }
-      } catch (error) {
-        console.error('ユーザーデータの取得に失敗:', error);
+      } catch (err) {
+        setUiError('ユーザーデータの取得に失敗しました');
+        console.error('ユーザーデータの取得に失敗:', err);
       }
     };
 
@@ -121,7 +95,7 @@ export default function TableView() {
         if (data.statuses) {
           setStatuses(data.statuses);
         }
-      } catch (error) {
+      } catch {
         setStatuses([
           { id: 'open', name: 'Open', color: '#3b82f6' },
           { id: 'in-progress', name: 'In Progress', color: '#8b5cf6' },
@@ -150,7 +124,7 @@ export default function TableView() {
         
         setTickets(data.tickets);
       } catch (err) {
-        setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
+        setUiError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
       } finally {
         setIsLoading(false);
       }
@@ -203,15 +177,6 @@ export default function TableView() {
     });
   };
 
-  const [columns, setColumns] = useState<Column[]>([
-    { key: 'id', label: 'ID', visible: true },
-    { key: 'title', label: 'タイトル', visible: true },
-    { key: 'status', label: 'ステータス', visible: true },
-    { key: 'assignee', label: '担当者', visible: true },
-    { key: 'dueDate', label: '期限', visible: true },
-    { key: 'estimate', label: '見積', visible: true },
-  ]);
-
   // ソート処理
   const handleSort = (key: ColumnKey) => {
     if (sortColumn === key) {
@@ -226,36 +191,13 @@ export default function TableView() {
     }
   };
 
-  // ソートアイコンの表示
-  const getSortIcon = (key: ColumnKey) => {
-    if (sortColumn !== key) return '↕️';
-    return sortDirection === 'asc' ? '↑' : '↓';
-  };
-
   return (
     <div className={styles.container}>
-      {/* 表示カラム設定 */}
-      <div className={styles.columnSettings}>
-        <select
-          multiple
-          value={columns.filter(col => col.visible).map(col => col.key)}
-          onChange={(e) => {
-            const selectedValues = Array.from(e.target.selectedOptions, option => option.value as ColumnKey);
-            setColumns(columns.map(col => ({
-              ...col,
-              visible: selectedValues.includes(col.key)
-            })));
-          }}
-        >
-          {columns.map(col => (
-            <option key={col.key} value={col.key}>
-              {col.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <ColumnSettings
+        columns={columns}
+        onChange={setColumns}
+      />
 
-      {/* テーブル */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -263,54 +205,41 @@ export default function TableView() {
               {columns
                 .filter(col => col.visible)
                 .map(col => (
-                  <th
+                  <SortHeader
                     key={col.key}
-                    onClick={() => handleSort(col.key)}
-                    className={styles.sortableHeader}
-                  >
-                    {col.label}
-                    <span className={styles.sortIcon}>
-                      {getSortIcon(col.key)}
-                    </span>
-                  </th>
+                    columnKey={col.key}
+                    label={col.label}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
                 ))}
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
-              <tr>
-                <td colSpan={columns.filter(col => col.visible).length} className={styles.center}>
-                  読み込み中...
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan={columns.filter(col => col.visible).length} className={styles.error}>
-                  {error}
-                </td>
-              </tr>
+              <TableStateRow
+                colSpan={columns.filter(col => col.visible).length}
+                type="loading"
+              />
+            ) : uiError ? (
+              <TableStateRow
+                colSpan={columns.filter(col => col.visible).length}
+                type="error"
+                message={uiError}
+              />
             ) : getSortedTickets().length === 0 ? (
-              <tr>
-                <td colSpan={columns.filter(col => col.visible).length} className={styles.center}>
-                  チケットがありません
-                </td>
-              </tr>
+              <TableStateRow
+                colSpan={columns.filter(col => col.visible).length}
+                type="empty"
+              />
             ) : (
               getSortedTickets().map(ticket => (
                 <tr key={ticket.id}>
                   {columns.filter(col => col.visible).map(col => (
                     <td key={`${ticket.id}-${col.key}`}>
                       {col.key === 'id' ? (
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            router.push(`/tickets/${ticket.id}/edit`);
-                          }}
-                          className={styles.idLink}
-                        >
-                          {ticket.id}
-                        </a>
+                        <IdCell id={ticket.id!} />
                       ) : (
                         <div
                           className={
@@ -326,211 +255,73 @@ export default function TableView() {
                         >
                           {editingCell?.id === ticket.id && editingCell?.key === col.key ? (
                             col.key === 'estimate' ? (
-                              <input
-                                type="text"
-                                defaultValue={ticket.estimate >= 8 ? `${(ticket.estimate / 8).toFixed(1)}d` : `${ticket.estimate}h`}
-                                className={styles.editInput}
-                                onBlur={(e) => {
-                                  const value = e.target.value.toLowerCase();
-                                  let hours = ticket.estimate; // デフォルト値を維持
-
-                                  if (value.endsWith('h')) {
-                                    const num = parseFloat(value.slice(0, -1));
-                                    if (!isNaN(num)) hours = num;
-                                  } else if (value.endsWith('d')) {
-                                    const num = parseFloat(value.slice(0, -1));
-                                    if (!isNaN(num)) hours = num * 8; // 1日 = 8時間
-                                  } else {
-                                    const num = parseFloat(value);
-                                    if (!isNaN(num)) hours = num;
-                                  }
-
+                              <EstimateInput
+                                value={ticket.estimate}
+                                onUpdate={(hours) => {
                                   const updatedTicket = { ...ticket, estimate: hours };
                                   updateTicket(updatedTicket);
-                                  setEditingCell(null);
                                 }}
-                                autoFocus
+                                onClose={() => setEditingCell(null)}
                               />
                             ) : col.key === 'status' ? (
-                              <select
-                                className={styles.editInput}
+                              <StatusSelect
                                 value={ticket.status}
-                                onChange={(e) => {
-                                  const value = e.target.value;
+                                statuses={statuses}
+                                onUpdate={(value) => {
                                   const updatedTicket = { ...ticket, status: value };
                                   updateTicket(updatedTicket);
-                                  setTimeout(() => setEditingCell(null), 200);
                                 }}
-                                style={{
-                                  backgroundColor: statuses.find(s => s.id === ticket.status)?.color || '#3b82f6',
-                                  color: getTextColor(statuses.find(s => s.id === ticket.status)?.color || '#3b82f6'),
-                                  borderColor: statuses.find(s => s.id === ticket.status)?.color || '#3b82f6'
-                                }}
-                                autoFocus
-                              >
-                                {statuses.map(status => (
-                                  <option
-                                    key={status.id}
-                                    value={status.id}
-                                    style={{
-                                      backgroundColor: status.color,
-                                      color: getTextColor(status.color)
-                                    }}
-                                  >
-                                    {status.name}
-                                  </option>
-                                ))}
-                              </select>
+                                onClose={() => setEditingCell(null)}
+                              />
                             ) : col.key === 'dueDate' ? (
-                              <input
-                                type="date"
+                              <DateInput
                                 value={ticket.dueDate}
-                                className={styles.editInput}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  setTickets(prev =>
-                                    prev.map(t =>
-                                      t.id === ticket.id ? { ...t, dueDate: value } : t
-                                    )
-                                  );
-                                }}
-                                onBlur={(e) => {
-                                  const updatedTicket = { ...ticket, dueDate: e.target.value };
+                                onUpdate={(value) => {
+                                  const updatedTicket = { ...ticket, dueDate: value };
                                   updateTicket(updatedTicket);
-                                  setEditingCell(null);
                                 }}
-                                autoFocus
+                                onClose={() => setEditingCell(null)}
                               />
                             ) : col.key === 'assignee' ? (
-                              <div className={styles.assigneeSearch} ref={searchRef}>
-                                <input
-                                  type="text"
-                                  value={searchText}
-                                  className={styles.searchInput}
-                                  onChange={(e) => {
-                                    setSearchText(e.target.value);
-                                    setShowSearch(true);
-                                  }}
-                                  onFocus={() => setShowSearch(true)}
-                                  placeholder="担当者を検索... (ESCで閉じる)"
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Escape') {
-                                      setEditingCell(null);
-                                      setSearchText('');
-                                    }
-                                  }}
-                                  autoFocus
-                                />
-                                <button
-                                  type="button"
-                                  className={styles.closeButton}
-                                  onClick={() => {
-                                    setEditingCell(null);
-                                    setSearchText('');
-                                  }}
-                                >
-                                  ×
-                                </button>
-                                {showSearch && filteredUsers.length > 0 && (
-                                  <div className={styles.searchResults}>
-                                    {filteredUsers.map(user => (
-                                      <div
-                                        key={user.email}
-                                        className={styles.searchItem}
-                                        onMouseDown={() => {
-                                          if (!ticket.assignees.includes(user.email)) {
-                                            const updatedTicket = {
-                                              ...ticket,
-                                              assignees: [...ticket.assignees, user.email]
-                                            };
-                                            updateTicket(updatedTicket);
-                                          }
-                                          setSearchText('');
-                                        }}
-                                      >
-                                        <span className={styles.searchItemName}>{user.name}</span>
-                                        <span className={styles.searchItemEmail}>{user.email}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              <input
-                                type="text"
-                                value={ticket.title}
-                                className={styles.editInput}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  setTickets(prev =>
-                                    prev.map(t =>
-                                      t.id === ticket.id ? { ...t, title: value } : t
-                                    )
-                                  );
-                                }}
-                                onBlur={(e) => {
-                                  const updatedTicket = { ...ticket, title: e.target.value };
+                              <AssigneeInput
+                                value={ticket.assignees}
+                                users={users}
+                                onUpdate={(value) => {
+                                  const updatedTicket = { ...ticket, assignees: value };
                                   updateTicket(updatedTicket);
-                                  setEditingCell(null);
                                 }}
-                                autoFocus
+                                onClose={() => setEditingCell(null)}
+                              />
+                            ) : (
+                              <TitleInput
+                                value={ticket.title}
+                                onUpdate={(value) => {
+                                  const updatedTicket = { ...ticket, title: value };
+                                  updateTicket(updatedTicket);
+                                }}
+                                onClose={() => setEditingCell(null)}
                               />
                             )
                           ) : (
                             <>
                               {col.key === 'title' && ticket.title}
                               {col.key === 'status' && (
-                                <div
-                                  className={styles.statusCell}
-                                  style={{
-                                    backgroundColor: statuses.find(s => s.id === ticket.status)?.color || '#3b82f6',
-                                    color: getTextColor(statuses.find(s => s.id === ticket.status)?.color || '#3b82f6')
-                                  }}
-                                >
-                                  {statuses.find(s => s.id === ticket.status)?.name || ticket.status}
-                                </div>
+                                <StatusCell
+                                  status={ticket.status}
+                                  statuses={statuses}
+                                />
                               )}
-                              {col.key === 'assignee' && ticket.assignees.length > 0 && (
-                                <div className={styles.assigneeTags}>
-                                  {ticket.assignees.map(email => {
-                                    const user = users.find(u => u.email === email);
-                                    return (
-                                      <div
-                                        key={email}
-                                        className={styles.assigneeCell}
-                                        style={{
-                                          backgroundColor: getUserColor(user?.id || ''),
-                                          color: getTextColor(getUserColor(user?.id || ''))
-                                        }}
-                                      >
-                                        <span className={styles.assigneeName}>
-                                          {user?.name || email}
-                                        </span>
-                                        <button
-                                          type="button"
-                                          className={styles.removeButton}
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            const updatedTicket = {
-                                              ...ticket,
-                                              assignees: ticket.assignees.filter(a => a !== email)
-                                            };
-                                            updateTicket(updatedTicket);
-                                          }}
-                                        >
-                                          ×
-                                        </button>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
+                              {col.key === 'assignee' && (
+                                <AssigneeList
+                                  assignees={ticket.assignees}
+                                  users={users}
+                                />
                               )}
-                              {col.key === 'assignee' && !ticket.assignees.length && '-'}
-                              {col.key === 'dueDate' && ticket.dueDate && new Date(ticket.dueDate).toLocaleDateString()}
+                              {col.key === 'dueDate' && (
+                                <DateCell value={ticket.dueDate} />
+                              )}
                               {col.key === 'estimate' && (
-                                ticket.estimate >= 8 
-                                  ? `${(ticket.estimate / 8).toFixed(1)}d` 
-                                  : `${ticket.estimate}h`
+                                <EstimateCell value={ticket.estimate} />
                               )}
                             </>
                           )}
