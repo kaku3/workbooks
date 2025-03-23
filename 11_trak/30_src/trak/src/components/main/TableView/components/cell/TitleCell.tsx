@@ -23,6 +23,18 @@ export default function TitleCell({
   const { tags: availableTags, addTag } = useTags();
   const [tagInput, setTagInput] = useState('');
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+  // 編集中のタグを管理
+  const [editingTags, setEditingTags] = useState<string[]>(tags);
+
+  // 親コンポーネントからの新しい値を反映
+  useEffect(() => {
+    setEditValue(value);
+  }, [value]);
+
+  // タグの更新を反映
+  useEffect(() => {
+    setEditingTags(tags);
+  }, [tags]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -43,6 +55,47 @@ export default function TitleCell({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isTagEditing]);
+
+  // タイトル編集時のクリックアウトハンドラー
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const isTagRelated = target.closest(`.${styles.tagSuggestions}`) || 
+                          target.closest(`.${styles.tagInput}`) || 
+                          target.closest(`.${styles.tagList}`) ||
+                          target.closest(`.${styles.tagAction}`);
+      const isEditing = target.closest(`.${styles.editableCell}`);
+
+      // タグ関連の要素またはセル編集中のクリックは無視
+      if (isTagRelated || isEditing) {
+        return;
+      }
+
+      // タグや編集セル以外のクリックで更新して閉じる
+      onUpdate?.(editValue);
+      // タグの変更も確定
+      if (onUpdateTags && !arraysEqual(editingTags, tags)) {
+        onUpdateTags(editingTags);
+      }
+      setTimeout(() => {
+        setIsTagEditing(false);
+        setTagInput('');
+        setFilteredTags([]);
+        setEditingCell?.(null);
+      }, 0);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [editValue, value, onUpdate, setEditingCell, editingTags, tags]);
+
+  // 配列の比較ヘルパー関数
+  const arraysEqual = (a: string[], b: string[]) => {
+    if (a.length !== b.length) return false;
+    return a.every((val, index) => val === b[index]);
+  };
 
   const showTagSuggestions = () => {
     setFilteredTags(availableTags);
@@ -72,18 +125,24 @@ export default function TitleCell({
 
   const handleTagSelect = async (selectedTag: typeof availableTags[0]) => {
     if (!onUpdateTags) return;
-    if (!tags.includes(selectedTag.id)) {
-      onUpdateTags([...tags, selectedTag.id]);
+    if (!editingTags.includes(selectedTag.id)) {
+      setEditingTags([...editingTags, selectedTag.id]);
     }
     setTagInput('');
     setFilteredTags([]);
-    setIsTagEditing(false);
+    // Keep tag editing mode open
+    showTagSuggestions();
   };
 
   const handleRemoveTag = (tagId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
+    e.nativeEvent.stopImmediatePropagation();
     if (!onUpdateTags) return;
-    onUpdateTags(tags.filter(id => id !== tagId));
+    setEditingTags(editingTags.filter(id => id !== tagId));
+    // Keep tag editing mode open after removing a tag
+    setIsTagEditing(true);
+    showTagSuggestions();
   };
 
   const handleNewTag = async () => {
@@ -95,7 +154,12 @@ export default function TitleCell({
     );
 
     if (existingTag) {
-      handleTagSelect(existingTag);
+      if (!editingTags.includes(existingTag.id)) {
+        setEditingTags([...editingTags, existingTag.id]);
+      }
+      setTagInput('');
+      setFilteredTags([]);
+      showTagSuggestions();
       return;
     }
 
@@ -105,7 +169,10 @@ export default function TitleCell({
     });
 
     if (newTag) {
-      handleTagSelect(newTag);
+      setEditingTags([...editingTags, newTag.id]);
+      setTagInput('');
+      setFilteredTags([]);
+      showTagSuggestions();
     }
   };
 
@@ -141,8 +208,9 @@ export default function TitleCell({
 
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (editValue !== value) {
-      onUpdate(editValue);
+    onUpdate(editValue);
+    if (onUpdateTags && !arraysEqual(editingTags, tags)) {
+      onUpdateTags(editingTags);
     }
     setIsTagEditing(false);
     setTagInput('');
@@ -154,7 +222,7 @@ export default function TitleCell({
   return (
     <div className={`${styles.editableCell} ${styles.editingCell}`} onClick={(e) => e.stopPropagation()}>
       <div className={styles.tagList}>
-        {tags.map(tagId => {
+        {editingTags.map(tagId => {
           const tag = availableTags.find(t => t.id === tagId);
           if (!tag) return null;
           return (
@@ -166,8 +234,12 @@ export default function TitleCell({
             >
               {tag.name}
               <span 
-                className={styles.removeButton}
-                onClick={(e) => handleRemoveTag(tag.id, e)}
+                className={`${styles.removeButton} ${styles.tagAction}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleRemoveTag(tag.id, e);
+                }}
               >
                 ×
               </span>
@@ -178,7 +250,7 @@ export default function TitleCell({
           <div style={{ position: 'relative' }}>
             <input
               type="text"
-        className={styles.tagInput}
+              className={styles.tagInput}
               style={{ width: 'auto', minWidth: '100px' }}
               placeholder="タグを入力..."
               value={tagInput}
