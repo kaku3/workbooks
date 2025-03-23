@@ -141,8 +141,6 @@ export default function TitleCell({
     if (!onUpdateTags) return;
     setEditingTags(editingTags.filter(id => id !== tagId));
     // Keep tag editing mode open after removing a tag
-    setIsTagEditing(true);
-    showTagSuggestions();
   };
 
   const handleNewTag = async () => {
