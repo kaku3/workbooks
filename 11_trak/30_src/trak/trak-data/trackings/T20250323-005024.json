@@ -1,6 +1,6 @@
 {
   "templateId": "bug",
-  "title": "起票時、保存押下後パネルを閉じた後リロードが余計に動くaaaaaa",
+  "title": "起票時、保存押下後パネルを閉じた後リロードが余計に動く",
   "creator": {
     "id": "admin",
     "name": "管理者",
@@ -8,7 +8,7 @@
     "role": "admin"
   },
   "assignees": [],
-  "status": "blocked",
+  "status": "close",
   "startDate": "2025-03-23",
   "dueDate": "2025-03-23",
   "estimate": 0,
@@ -19,6 +19,6 @@
   ],
   "id": "T20250323-005024",
   "createdAt": "2025-03-22T15:50:24.309Z",
-  "updatedAt": "2025-03-23T12:19:36.784Z",
+  "updatedAt": "2025-03-23T12:28:38.246Z",
   "ticketId": "T20250323-005024"
 }
