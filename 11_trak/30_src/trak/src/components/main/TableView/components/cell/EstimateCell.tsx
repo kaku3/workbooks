@@ -1,5 +1,5 @@
 import styles from '../../styles/TableView.module.css';
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, KeyboardEvent } from 'react';
 
 interface EstimateCellProps {
   value: number;
@@ -45,6 +45,14 @@ export default function EstimateCell({
     setEditValue(e.target.value);
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const target = e.target as HTMLInputElement;
+      handleBlur({ target } as ChangeEvent<HTMLInputElement>);
+      target.blur();
+    }
+  };
+
   // 編集可能な場合は入力フィールドを表示
   return (
     <div className={`${styles.editableCell} ${styles.editingCell}`}>
@@ -55,6 +63,7 @@ export default function EstimateCell({
         onChange={handleChange}
         onBlur={handleBlur}
         autoFocus
+        onKeyDown={handleKeyDown}
       />
     </div>
   );
