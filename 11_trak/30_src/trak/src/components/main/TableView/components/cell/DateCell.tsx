@@ -1,4 +1,4 @@
-import styles from '../../styles/TableView.module.css';
+import styles from './styles/DeleteCell.module.css';
 import { useState } from 'react';
 
 interface DateCellProps {

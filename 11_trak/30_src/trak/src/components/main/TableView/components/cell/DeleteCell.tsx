@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '../../styles/TableView.module.css';
+import styles from './styles/DeleteCell.module.css';
 
 interface DeleteCellProps {
   onDelete: () => void;
