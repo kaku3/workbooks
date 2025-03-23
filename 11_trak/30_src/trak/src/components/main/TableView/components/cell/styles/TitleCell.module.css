@@ -172,3 +172,18 @@
   box-sizing: border-box;
   text-overflow: ellipsis;
 }
+
+.removeButton {
+  background: none;
+  border: none;
+  padding-left: .25rem;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.removeButton:hover {
+  opacity: 1;
+}

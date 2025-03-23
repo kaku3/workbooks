@@ -138,6 +138,11 @@
   border-left: 1px solid #eee;
 }
 
+.table_handle {
+  padding: 0!important;
+  width: 1rem;
+}
+
 .table_id {
   width: 11rem;
 }
