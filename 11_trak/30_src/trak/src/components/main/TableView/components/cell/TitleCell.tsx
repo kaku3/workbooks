@@ -1,4 +1,4 @@
-import styles from '../../styles/TableView.module.css';
+import styles from './styles/TitleCell.module.css';
 import { useEffect, useState } from 'react';
 import { useTags } from '../../../TagsContext';
 import { Tag } from '@/types';
@@ -24,7 +24,6 @@ export default function TitleCell({
   const [tagInput, setTagInput] = useState('');
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
 
-  // リスト外クリックでタグ候補を閉じる
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -188,7 +187,7 @@ export default function TitleCell({
           <div style={{ position: 'relative' }}>
             <input
               type="text"
-              className={`${styles.editInput} ${styles.tagInput}`}
+        className={styles.tagInput}
               style={{ width: 'auto', minWidth: '100px' }}
               placeholder="タグを入力..."
               value={tagInput}
@@ -253,13 +252,13 @@ export default function TitleCell({
       />
       <div className={styles.editActions}>
         <button
-          className={`${styles.editAction} ${styles.cancelButton}`}
+          className={`${styles.editButton} ${styles.cancelButton}`}
           onClick={handleCancel}
         >
           Cancel
         </button>
         <button
-          className={`${styles.editAction} ${styles.saveButton}`}
+          className={`${styles.editButton} ${styles.saveButton}`}
           onClick={handleSave}
         >
           OK

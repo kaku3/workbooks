@@ -8,7 +8,7 @@
     "role": "admin"
   },
   "assignees": [],
-  "status": "open",
+  "status": "in-progress",
   "startDate": "",
   "dueDate": "",
   "estimate": 0,
@@ -19,7 +19,7 @@
   ],
   "id": "T20250323-014117",
   "createdAt": "2025-03-22T16:41:17.941Z",
-  "updatedAt": "2025-03-22T22:15:55.057Z",
+  "updatedAt": "2025-03-23T12:02:10.818Z",
   "ticketId": "T20250323-014117",
   "userOrder": -2500
 }

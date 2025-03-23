@@ -1,12 +1,14 @@
 .assigneeCell {
   display: inline-flex;
   align-items: center;
-  margin-right: 0.25rem;
   padding: 0.25rem 0.5rem;
-  font-weight: 500;
   border-radius: 4px;
-  gap: 0.25rem;
+  font-weight: 500;
   position: relative;
+  gap: 0.25rem;
+  background-color: #f3f4f6;
+  margin-bottom: 0.25rem;
+  max-width: fit-content;
 }
 
 .assigneeName {

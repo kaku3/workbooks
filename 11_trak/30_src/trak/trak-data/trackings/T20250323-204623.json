@@ -1,0 +1,23 @@
+{
+  "templateId": "task",
+  "title": "TableViewの css を分割",
+  "creator": {
+    "id": "admin",
+    "name": "管理者",
+    "email": "admin@example.com",
+    "role": "admin"
+  },
+  "assignees": [],
+  "status": "open",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 0,
+  "content": "## 目的\nTableViewの css が肥大化して、メンテナンス性が下がっている。\n各 cell ごとに分割したい。\n\n## 作業内容\n以下 css ・ソースを読む。\n30_src\\trak\\src\\components\\main\\TableView\\styles\\TableView.module.css\n\nテーブルビューの各コンポーネント事の定義はそれぞれの css に移動。\n30_src/trak/src/components/main/TableView/index.tsx\n30_src/trak/src/components/main/TableView/components/SortHeader.tsx\n30_src/trak/src/components/main/TableView/components/StatusFilter.tsx\n30_src/trak/src/components/main/TableView/components/StatusSelect.tsx\n30_src/trak/src/components/main/TableView/components/TableCell.tsx\n30_src/trak/src/components/main/TableView/components/TableStateRow.tsx\n30_src/trak/src/components/main/TableView/components/cell/AssigneeCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/DateCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/DeleteCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/EstimateCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/HandleCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/IdCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/StatusCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/styles\n30_src/trak/src/components/main/TableView/components/cell/TitleCell.tsx\n30_src/trak/src/components/main/TableView/components/cell/styles/AssigneeCell.module.css\n30_src/trak/src/components/main/TableView/components/cell/styles/DeleteCell.module.css\n30_src/trak/src/components/main/TableView/components/cell/styles/IdCell.module.css   \n30_src/trak/src/components/main/TableView/components/cell/styles/StatusCell.module.css\n30_src/trak/src/components/main/TableView/components/cell/styles/TitleCell.module.css\n30_src/trak/src/components/main/TableView/styles/DragDrop.module.css\n30_src/trak/src/components/main/TableView/styles/TableView.module.css\n\nソースの構造は変更せずに、css のみリファクタリングする。\n\n\n## 完了条件\n\n## 注意事項\n\n## 参考情報\n",
+  "tags": [
+    "improvement",
+    "SC201"
+  ],
+  "id": "T20250323-204623",
+  "createdAt": "2025-03-23T11:46:23.028Z",
+  "updatedAt": "2025-03-23T11:46:23.028Z"
+}

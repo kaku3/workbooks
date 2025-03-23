@@ -1,20 +1,21 @@
 .statusCell {
   display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-weight: 500;
+  padding: 0.25rem;
   text-align: center;
+  min-width: 6rem;
+  position: relative;
 }
 
 .statusLabel {
-  padding: 0.125rem 0.375rem;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 500;
   color: #444;
-  display: inline-block;
   white-space: nowrap;
   transition: opacity 0.2s;
+  width: calc(100% - 0.5rem);
 }
 
 .closeButton {
