@@ -150,15 +150,6 @@ export default function TitleCell({
     setEditingCell?.(null);
   };
 
-  const handleCancel = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEditValue(value);
-    setIsTagEditing(false);
-    setTagInput('');
-    setFilteredTags([]);
-    setEditingCell?.(null);
-  };
-
   // 編集可能な場合は入力フィールドを表示
   return (
     <div className={`${styles.editableCell} ${styles.editingCell}`} onClick={(e) => e.stopPropagation()}>
@@ -250,20 +241,6 @@ export default function TitleCell({
         onClick={(e) => e.stopPropagation()}
         autoFocus
       />
-      <div className={styles.editActions}>
-        <button
-          className={`${styles.editButton} ${styles.cancelButton}`}
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-        <button
-          className={`${styles.editButton} ${styles.saveButton}`}
-          onClick={handleSave}
-        >
-          OK
-        </button>
-      </div>
     </div>
   );
 }

@@ -87,7 +87,7 @@ export const TableCell = ({
             onUpdate={handleUpdate}
           />
         );
-      case 'assignee':
+      case 'assignees':
         return (
           <AssigneeCell
             value={ticket.assignees}

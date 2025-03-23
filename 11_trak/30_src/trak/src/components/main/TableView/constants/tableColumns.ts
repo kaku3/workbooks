@@ -8,12 +8,12 @@ export const TABLE_COLUMNS: ExtendedColumn[] = [
   { key: 'startDate', label: '開始日', sortable: true },
   { key: 'dueDate', label: '期限', sortable: true },
   { key: 'estimate', label: '見積', sortable: true },
-  { key: 'assignee', label: '担当者', sortable: true },
+  { key: 'assignees', label: '担当者', sortable: true },
   { key: 'delete', label: '', sortable: false },
 ];
 
 // Cell rendering options
-export const EDITABLE_COLUMNS = ['title', 'status', 'startDate', 'dueDate', 'estimate', 'assignee'];
+export const EDITABLE_COLUMNS = ['title', 'status', 'startDate', 'dueDate', 'estimate', 'assignees'];
 export const NON_EDITABLE_COLUMNS = ['handle', 'id', 'delete'];
 
 // Cell type mappings
@@ -25,7 +25,7 @@ export const CELL_TYPES = {
   startDate: 'date',
   dueDate: 'date',
   estimate: 'estimate',
-  assignee: 'assignee',
+  assignees: 'assignees',
   delete: 'delete',
 } as const;
 
