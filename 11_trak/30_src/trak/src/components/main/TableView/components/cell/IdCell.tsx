@@ -1,4 +1,4 @@
-import styles from '../../TableView.module.css';
+import styles from '../../styles/TableView.module.css';
 
 interface IdCellProps {
   id: string;

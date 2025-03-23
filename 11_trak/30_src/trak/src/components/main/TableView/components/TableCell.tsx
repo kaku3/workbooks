@@ -1,5 +1,5 @@
+import tableStyles from '../styles/TableView.module.css';
 import { useMemo } from 'react';
-import styles from '../TableView.module.css';
 import { CELL_TYPES, type CellType } from '../constants/tableColumns';
 import IdCell from './cell/IdCell';
 import StatusCell from './cell/StatusCell';
@@ -120,7 +120,7 @@ export const TableCell = ({
 
   return (
     <td 
-      className={styles[`table_${columnKey}`]}
+      className={tableStyles[`table_${columnKey}`]}
       onClick={() => {
         if (cellType !== 'id' && cellType !== 'delete') {
           onEdit(columnKey);

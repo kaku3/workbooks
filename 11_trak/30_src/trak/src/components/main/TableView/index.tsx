@@ -1,6 +1,7 @@
 'use client';
 
-import styles from './TableView.module.css';
+import tableStyles from './styles/TableView.module.css';
+import dragStyles from './styles/DragDrop.module.css';
 import SlidePanel from '../../common/SlidePanel';
 import TicketForm from '../../Tickets/TicketForm';
 import { useEffect, useState } from 'react';
@@ -10,9 +11,10 @@ import TableStateRow from './components/TableStateRow';
 import StatusFilter from './components/StatusFilter';
 import { TableCell } from './components/TableCell';
 import { useTickets } from '@/hooks/useTickets';
+import { useSlidePanel } from '@/hooks/useSlidePanel';
+import { useTicketSort } from '@/hooks/useTicketSort';
 import { useTableData } from './hooks/useTableData';
 import { useTableState } from './hooks/useTableState';
-import { useSlidePanel } from '@/hooks/useSlidePanel';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
 import { sortTickets, filterTicketsByStatus } from './utils/tableUtils';
 import { TABLE_COLUMNS } from './constants/tableColumns';
@@ -22,9 +24,14 @@ interface TableViewProps {
   initialTicketId?: string;
 }
 
+interface DragOverState {
+  id: string | null;
+  direction: 'top' | 'bottom' | null;
+}
+
 export default function TableView({ initialTicketId }: TableViewProps) {
   // State for drag target
-  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [dragOverState, setDragOverState] = useState<DragOverState>({ id: null, direction: null });
   const [draggableId, setDraggableId] = useState<string | null>(null);
 
   const {
@@ -36,17 +43,31 @@ export default function TableView({ initialTicketId }: TableViewProps) {
     deleteTicket,
   } = useTickets();
 
-  // Drag and drop handlers
+  const {
+    sortOrders,
+    isLoading: isLoadingSortOrders,
+    fetchSortOrders,
+    updateSortOrder,
+    updateBatchOrders,
+  } = useTicketSort();
+
+  // ドラッグ&ドロップハンドラー
   const {
     activeId,
     handleDragStart,
     handleDragEnd,
-  } = useDragAndDrop(tickets, updateTicket);
+  } = useDragAndDrop({
+    tickets,
+    onUpdateOrder: updateSortOrder,
+    onUpdateBatchOrders: updateBatchOrders,
+    sortOrders,
+  });
 
   // Fetch tickets on mount
   useEffect(() => {
     fetchTickets();
-  }, [fetchTickets]);
+    fetchSortOrders();
+  }, [fetchTickets, fetchSortOrders]);
 
   const {
     users,
@@ -78,16 +99,18 @@ export default function TableView({ initialTicketId }: TableViewProps) {
   const processedTickets = sortTickets(
     filterTicketsByStatus(tickets, selectedStatuses),
     sortColumn,
-    sortDirection
+    sortDirection,
+    sortOrders
   );
 
   const uiError = ticketsError || dataError;
+  const isLoadingData = isLoading || isLoadingSortOrders;
 
   return (
     <TagsProvider>
-      <div className={styles.container} onClick={handleContainerClick}>
-        <div className={styles.toolbar}>
-          <button className={styles.createButton} onClick={openNewTicket}>
+      <div className={tableStyles.container} onClick={handleContainerClick}>
+        <div className={tableStyles.toolbar}>
+          <button className={tableStyles.createButton} onClick={openNewTicket}>
             新規チケット
           </button>
           <StatusFilter
@@ -101,25 +124,24 @@ export default function TableView({ initialTicketId }: TableViewProps) {
             totalCount={tickets.length}
           />
         </div>
-        <div className={styles.tableContainer}>
-          <table className={styles.table}>
+        <div className={tableStyles.tableContainer}>
+          <table className={tableStyles.table}>
             <thead>
               <tr>
-                {TABLE_COLUMNS
-                  .map(col => (
-                    <SortHeader
-                      key={col.key}
-                      columnKey={col.key}
-                      label={col.label}
-                      sortColumn={sortColumn}
-                      sortDirection={sortDirection}
-                      onSort={col.sortable ? handleSort : undefined}
-                    />
-                  ))}
+                {TABLE_COLUMNS.map(col => (
+                  <SortHeader
+                    key={col.key}
+                    columnKey={col.key}
+                    label={col.label}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={col.sortable ? handleSort : undefined}
+                  />
+                ))}
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {isLoadingData ? (
                 <TableStateRow
                   colSpan={TABLE_COLUMNS.length}
                   type="loading"
@@ -139,56 +161,62 @@ export default function TableView({ initialTicketId }: TableViewProps) {
                 processedTickets.map(ticket => (
                   <tr 
                     key={ticket.id}
-                    className={`${styles.tableRow} ${activeId === ticket.id ? styles.dragging : ''}`}
-                    data-dragging={dragOverId === ticket.id}
+                    className={`${tableStyles.tableRow} ${activeId === ticket.id ? dragStyles.dragging : ''}`}
+                    data-dragging={dragOverState.id === ticket.id ? dragOverState.direction : null}
                     draggable={draggableId === ticket.id}
                     onDragStart={() => handleDragStart(ticket.id!)}
                     onDragEnd={() => {
-                      if (dragOverId) {
-                        handleDragEnd(ticket.id!, dragOverId);
+                      if (dragOverState.id && dragOverState.direction) {
+                        handleDragEnd(ticket.id!, dragOverState.id, dragOverState.direction);
                       }
-                      setDragOverId(null);
+                      setDragOverState({ id: null, direction: null });
                     }}
                     onDragOver={(e) => {
                       e.preventDefault();
                       if (activeId && activeId !== ticket.id) {
-                        setDragOverId(ticket.id!);
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const mouseY = e.clientY;
+                        const middleY = rect.top + rect.height / 2;
+
+                        setDragOverState({
+                          id: ticket.id!,
+                          direction: mouseY < middleY ? 'top' : 'bottom'
+                        });
                       }
                     }}
                     onDragLeave={() => {
-                      if (dragOverId === ticket.id) {
-                        setDragOverId(null);
+                      if (dragOverState.id === ticket.id) {
+                        setDragOverState({ id: null, direction: null });
                       }
                     }}
                   >
-                    {TABLE_COLUMNS
-                      .map(col => (
-                        <TableCell
-                          key={`${ticket.id}-${col.key}`}
-                          columnKey={col.key as ColumnKey}
-                          ticket={ticket}
-                          users={users}
-                          statuses={statuses}
-                          isEditing={
-                            editingCell?.id === ticket.id &&
-                            editingCell?.key === col.key
+                    {TABLE_COLUMNS.map(col => (
+                      <TableCell
+                        key={`${ticket.id}-${col.key}`}
+                        columnKey={col.key as ColumnKey}
+                        ticket={ticket}
+                        users={users}
+                        statuses={statuses}
+                        isEditing={
+                          editingCell?.id === ticket.id &&
+                          editingCell?.key === col.key
+                        }
+                        onUpdate={async (updatedTicket) => {
+                          const success = await updateTicket(updatedTicket);
+                          if (success) {
+                            setEditingCell(null);
                           }
-                          onUpdate={async (updatedTicket) => {
-                            const success = await updateTicket(updatedTicket);
-                            if (success) {
-                              setEditingCell(null);
-                            }
-                          }}
-                          onEdit={key => setEditingCell({ id: ticket.id!, key })}
-                          onEditTicket={openEditTicket}
-                          onDelete={deleteTicket}
-                          onEnableDrag={(enable) => {
-                            if (ticket.id) {
-                              setDraggableId(enable ? ticket.id : null);
-                            }
-                          }}
-                        />
-                      ))}
+                        }}
+                        onEdit={key => setEditingCell({ id: ticket.id!, key })}
+                        onEditTicket={openEditTicket}
+                        onDelete={deleteTicket}
+                        onEnableDrag={(enable) => {
+                          if (ticket.id) {
+                            setDraggableId(enable ? ticket.id : null);
+                          }
+                        }}
+                      />
+                    ))}
                   </tr>
                 ))
               )}

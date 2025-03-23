@@ -8,7 +8,7 @@
     "role": "admin"
   },
   "assignees": [],
-  "status": "close",
+  "status": "blocked",
   "startDate": "",
   "dueDate": "",
   "estimate": 0,
@@ -19,6 +19,5 @@
   ],
   "id": "T20250322-182742",
   "createdAt": "2025-03-22T09:27:42.454Z",
-  "updatedAt": "2025-03-22T22:15:44.361Z",
-  "userOrder": 3000
+  "updatedAt": "2025-03-22T22:38:26.999Z"
 }

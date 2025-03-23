@@ -1,7 +1,7 @@
 'use client';
 
 import { Status } from '@/types';
-import styles from '../TableView.module.css';
+import styles from '../styles/TableView.module.css';
 
 interface StatusFilterProps {
   statuses: Status[];

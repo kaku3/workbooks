@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '../TableView.module.css';
+import styles from '../styles/TableView.module.css';
 import type { ColumnKey, SortDirection } from '@/types';
 
 interface SortHeaderProps {

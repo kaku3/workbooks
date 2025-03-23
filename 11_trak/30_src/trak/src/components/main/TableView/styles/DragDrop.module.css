@@ -1,0 +1,70 @@
+.dragging {
+  opacity: 0.7;
+  background-color: #f8fafc;
+  cursor: grabbing;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  z-index: 10;
+}
+
+.dragging .handleCell {
+  cursor: grabbing;
+}
+
+.tableRow[data-dragging="top"]::before,
+.tableRow[data-dragging="bottom"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #3b82f6;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: 0 0 4px rgba(59, 130, 246, 0.3);
+}
+
+.tableRow[data-dragging="top"]::before {
+  top: 0;
+}
+
+.tableRow[data-dragging="bottom"]::after {
+  bottom: 0;
+}
+
+.handleCell {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  color: #6b7280;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.handleCell:hover {
+  opacity: 1;
+}
+
+.handleCell svg {
+  transition: transform 0.2s;
+}
+
+.handleCell:hover svg {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+.table_handle {
+  width: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+
+.table_handle:active {
+  cursor: grabbing;
+}

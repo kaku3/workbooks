@@ -1,4 +1,4 @@
-import styles from '../../TableView.module.css';
+import styles from '../../styles/TableView.module.css';
 import { useState, ChangeEvent } from 'react';
 
 interface EstimateCellProps {

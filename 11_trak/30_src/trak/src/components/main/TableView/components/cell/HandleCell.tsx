@@ -1,6 +1,6 @@
 'use client';
 
-import styles from '../../TableView.module.css';
+import styles from '../../styles/DragDrop.module.css';
 
 interface HandleCellProps {
   onEnableDrag: (enable: boolean) => void;

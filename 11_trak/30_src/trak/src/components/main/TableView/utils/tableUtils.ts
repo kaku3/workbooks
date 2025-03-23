@@ -24,7 +24,8 @@ const getColumnValue = (ticket: TicketData, column: ColumnKey): string | number 
 export const sortTickets = (
   tickets: TicketData[],
   sortColumn: ColumnKey | null,
-  sortDirection: SortDirection
+  sortDirection: SortDirection,
+  sortOrders: { [key: string]: number }
 ): TicketData[] => {
   return [...tickets].sort((a, b) => {
     // First priority: Column sort if specified
@@ -39,9 +40,9 @@ export const sortTickets = (
       }
     }
 
-    // Second priority: User order
-    const orderA = a.userOrder ?? Number.MAX_SAFE_INTEGER;
-    const orderB = b.userOrder ?? Number.MAX_SAFE_INTEGER;
+    // Second priority: Sort order from meta file
+    const orderA = sortOrders[a.id!] ?? Number.MAX_SAFE_INTEGER;
+    const orderB = sortOrders[b.id!] ?? Number.MAX_SAFE_INTEGER;
     if (orderA !== orderB) {
       return orderA - orderB;
     }

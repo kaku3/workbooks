@@ -1,4 +1,4 @@
-import styles from '../../TableView.module.css';
+import styles from '../../styles/TableView.module.css';
 import { useEffect, useState } from 'react';
 import { useTags } from '../../../TagsContext';
 import { Tag } from '@/types';
