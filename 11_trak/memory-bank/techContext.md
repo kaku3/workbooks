@@ -142,3 +142,94 @@
 2. 非同期処理
    - 効率的なファイル操作
    - UI応答性の確保
+
+## TableViewの実装詳細
+
+### コンポーネント構成
+1. メインコンポーネント
+   - TableView: テーブル全体のコンテナ
+   - StatusFilter: ステータスによるフィルタリング
+   - SortHeader: カラムヘッダーとソート制御
+   - TableCell: セルのレンダリングと編集
+
+2. 特殊セルコンポーネント
+   - HandleCell: ドラッグ&ドロップハンドル
+   - IdCell: チケットID表示
+   - TitleCell: タイトル表示と編集
+   - StatusCell: ステータス表示と選択
+   - DateCell: 日付表示と編集
+   - EstimateCell: 見積もり表示と編集
+   - AssigneeCell: 担当者表示と選択
+   - DeleteCell: 削除操作
+
+### 状態管理
+1. useTableState
+   ```typescript
+   interface TableState {
+     sortColumn: ColumnKey | null;
+     sortDirection: SortDirection;
+     selectedStatuses: string[];
+     editingCell: { id: string; key: ColumnKey } | null;
+   }
+   ```
+
+2. useDragAndDrop
+   ```typescript
+   interface DragAndDropState {
+     activeId: string | null;
+     handleDragStart: (id: string) => void;
+     handleDragEnd: (sourceId: string, destinationId: string, direction: 'top' | 'bottom') => Promise<void>;
+   }
+   ```
+
+### データモデル
+1. カラム定義
+   ```typescript
+   interface Column {
+     key: ColumnKey;
+     label: string;
+     sortable: boolean;
+   }
+   ```
+
+2. チケットデータ
+   ```typescript
+   interface TicketData {
+     id?: string;
+     title: string;
+     status: string;
+     assignees: string[];
+     startDate: string;
+     dueDate: string;
+     estimate: number;
+     tags?: string[];
+     userOrder?: number;
+   }
+   ```
+
+### インタラクション制御
+1. ドラッグ&ドロップ
+   - HTML5 Drag and Drop API使用
+   - ドラッグ中の視覚的フィードバック
+   - 順序の自動更新と永続化
+
+2. セル編集
+   - クリックによる編集モード開始
+   - クリックアウトによる保存
+   - バリデーションと即時フィードバック
+
+3. ソートとフィルタリング
+   - カラムヘッダーによるソート切り替え
+   - マルチステータスフィルタリング
+   - カスタムソート順の保持
+
+### スタイリング
+1. モジュラーCSS
+   - TableView.module.css: メインレイアウト
+   - DragDrop.module.css: ドラッグ&ドロップ関連
+   - 各セル専用のスタイルモジュール
+
+2. レスポンシブ対応
+   - フレックスボックスベースのレイアウト
+   - ビューポートに応じた表示調整
+   - タッチデバイス対応

@@ -15,6 +15,77 @@ flowchart TD
     TD --> TP[templates/]
 ```
 
+## テーブルビュー構造
+
+```mermaid
+flowchart TD
+    subgraph TableView[TableView Component]
+        Table[Table Container] --> Toolbar[Toolbar]
+        Table --> Grid[Grid Container]
+        
+        subgraph Toolbar[Toolbar Section]
+            New[新規チケット]
+            Filter[StatusFilter]
+        end
+
+        subgraph Grid[Grid Section]
+            Header[Table Header] --> Sort[SortHeader]
+            Rows[Table Rows] --> Cells[Table Cells]
+            
+            subgraph Cells[Cell Types]
+                Handle[HandleCell]
+                Id[IdCell]
+                Title[TitleCell]
+                Status[StatusCell]
+                Date[DateCell]
+                Estimate[EstimateCell]
+                Assignee[AssigneeCell]
+                Delete[DeleteCell]
+            end
+        end
+
+        subgraph State[State Management]
+            TableState[useTableState] --> Sort
+            TableState --> Filter
+            DragDrop[useDragAndDrop] --> Rows
+            Data[useTableData] --> Cells
+        end
+    end
+```
+
+## カラム定義
+
+- 固定カラム:
+  - handle: ドラッグハンドル
+  - id: チケットID
+  - title: タイトル
+  - status: ステータス
+  - startDate: 開始日
+  - dueDate: 期限
+  - estimate: 見積
+  - assignee: 担当者
+  - delete: 削除アクション
+
+## 状態管理
+
+1. テーブル状態（useTableState）
+   - ソートカラム
+   - ソート方向
+   - フィルタ状態（選択されたステータス）
+   - 編集中のセル
+
+2. ドラッグ&ドロップ（useDragAndDrop）
+   - アクティブなドラッグアイテム
+   - ドラッグ開始処理
+   - ドラッグ終了処理
+   - 順序の正規化
+
+3. データ管理
+   - チケットデータ
+   - ユーザー情報
+   - ステータス定義
+   - ソート順序
+
 ## コンポーネント構造
 
 ```mermaid

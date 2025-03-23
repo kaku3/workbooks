@@ -1,0 +1,38 @@
+.statusCell {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.statusLabel {
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #444;
+  display: inline-block;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.closeButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  background: none;
+  border: none;
+  padding: 0 0.25rem;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  opacity: 1;
+}

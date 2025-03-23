@@ -1,0 +1,8 @@
+.idLink {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.idLink:hover {
+  text-decoration: underline;
+}
