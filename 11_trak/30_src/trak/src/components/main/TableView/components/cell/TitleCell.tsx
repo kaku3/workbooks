@@ -58,34 +58,37 @@ export default function TitleCell({
 
   // タイトル編集時のクリックアウトハンドラー
   useEffect(() => {
+    if (!editing) return; // 編集モードでない場合は何もしない
+
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
+      const isTargetCell = target.closest(`.${styles.editableCell}`);
       const isTagRelated = target.closest(`.${styles.tagSuggestions}`) || 
                           target.closest(`.${styles.tagInput}`) || 
                           target.closest(`.${styles.tagList}`) ||
                           target.closest(`.${styles.tagAction}`);
-      const isEditing = target.closest(`.${styles.editableCell}`);
 
-      if (isTagRelated || isEditing) {
+      // 編集中のセル内または関連要素のクリックは無視
+      if (isTargetCell || isTagRelated) {
         return;
       }
 
       // タイトルとタグを同時に更新
-      onUpdate?.(editValue, editingTags);
+      if (onUpdate && (editValue !== value || !arraysEqual(editingTags, tags))) {
+        onUpdate(editValue, editingTags);
+      }
 
-      setTimeout(() => {
-        setIsTagEditing(false);
-        setTagInput('');
-        setFilteredTags([]);
-        setEditingCell?.(null);
-      }, 0);
+      setIsTagEditing(false);
+      setTagInput('');
+      setFilteredTags([]);
+      setEditingCell?.(null);
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [editValue, editingTags, onUpdate, setEditingCell]);
+  }, [editing, editValue, value, editingTags, tags, onUpdate, setEditingCell]);
 
   // 配列の比較ヘルパー関数
   const arraysEqual = (a: string[], b: string[]) => {

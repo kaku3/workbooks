@@ -83,8 +83,15 @@ export default function TableView({ initialTicketId }: TableViewProps) {
     handleSort,
     setSelectedStatuses,
     setEditingCell,
-    handleContainerClick,
   } = useTableState();
+
+  const handleTableClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'TABLE' || target.tagName === 'TBODY') {
+      e.stopPropagation();  // イベントの伝搬を停止
+      setEditingCell(null);
+    }
+  };
 
   const {
     isOpen: slidePanelOpen,
@@ -108,7 +115,15 @@ export default function TableView({ initialTicketId }: TableViewProps) {
 
   return (
     <TagsProvider>
-      <div className={tableStyles.container} onClick={handleContainerClick}>
+      <div 
+        className={tableStyles.container}
+        onClick={(e) => {
+          const target = e.target as HTMLElement;
+          if (!target.closest('table') && !target.closest('button')) {
+            setEditingCell(null);
+          }
+        }}
+      >
         <div className={tableStyles.toolbar}>
           <button className={tableStyles.createButton} onClick={openNewTicket}>
             新規チケット
@@ -125,7 +140,13 @@ export default function TableView({ initialTicketId }: TableViewProps) {
           />
         </div>
         <div className={tableStyles.tableContainer}>
-          <table className={tableStyles.table}>
+          <table 
+            className={tableStyles.table} 
+            onMouseDown={(e) => {  // clickからonMouseDownに変更
+              e.stopPropagation();
+              handleTableClick(e);
+            }}
+          >
             <thead>
               <tr>
                 {TABLE_COLUMNS.map(col => (

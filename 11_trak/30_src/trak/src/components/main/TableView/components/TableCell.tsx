@@ -41,7 +41,7 @@ export const TableCell = ({
   const handleUpdate = useMemo(() => {
     if (!isEditing) return undefined;
 
-    return (value: string | number | string[] | undefined, extraUpdate?: { [key: string]: any }) => {
+    return (value: string | number | string[] | undefined, extraUpdate?: Partial<TicketData>) => {
       const updatedTicket = { ...ticket, [columnKey]: value, ...extraUpdate };
       onUpdate(updatedTicket);
     };
