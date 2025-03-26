@@ -41,7 +41,6 @@ export async function PUT(
 
   try {
     const data = await request.json() as TicketData;
-    console.log(params, JSON.stringify(data));
 
     // ロックの取得
     const lockAcquired = await acquireLock(lockPath);
@@ -72,8 +71,6 @@ export async function PUT(
       updatedAt: new Date().toISOString(),
       createdAt: existingTracking.createdAt // 作成日は既存のものを維持
     };
-
-    console.log('updatedTracking:', updatedTracking);
 
     await fs.writeFile(
       trackingPath,
