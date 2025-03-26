@@ -10,15 +10,48 @@ interface GetTicketResponse {
   error?: string;
 }
 
+// ファイルロック用のユーティリティ関数
+async function acquireLock(lockPath: string, maxAttempts = 10): Promise<boolean> {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      await fs.writeFile(lockPath, '', { flag: 'wx' });
+      return true;
+    } catch (error) {
+      if (i === maxAttempts - 1) return false;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+  return false;
+}
+
+async function releaseLock(lockPath: string) {
+  try {
+    await fs.unlink(lockPath);
+  } catch (error) {
+    console.error('ロックファイルの削除に失敗:', error);
+  }
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  try {
-    const ticketId = params.id;
-    const data = await request.json() as TicketData;
+  const ticketId = params.id;
+  const lockPath = path.join(process.cwd(), 'trak-data', 'trackings', `${ticketId}.lock`);
 
-    // トラッキング情報の保存
+  try {
+    const data = await request.json() as TicketData;
+    console.log(params, JSON.stringify(data));
+
+    // ロックの取得
+    const lockAcquired = await acquireLock(lockPath);
+    if (!lockAcquired) {
+      return NextResponse.json(
+        { success: false, ticketId, error: 'ファイルがロックされています' },
+        { status: 409 }
+      );
+    }
+
     const trackingPath = path.join(
       process.cwd(),
       'trak-data',
@@ -40,6 +73,8 @@ export async function PUT(
       createdAt: existingTracking.createdAt // 作成日は既存のものを維持
     };
 
+    console.log('updatedTracking:', updatedTracking);
+
     await fs.writeFile(
       trackingPath,
       JSON.stringify(updatedTracking, null, 2)
@@ -56,8 +91,10 @@ export async function PUT(
       await fs.writeFile(ticketPath, data.content);
     }
 
+    await releaseLock(lockPath);
     return NextResponse.json({ success: true, ticketId });
   } catch (error) {
+    await releaseLock(lockPath);
     console.error('チケットの更新に失敗:', error);
     return NextResponse.json(
       { success: false, ticketId: params.id, error: 'チケットの更新に失敗しました' },

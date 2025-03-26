@@ -7,15 +7,15 @@ interface TitleCellProps {
   setEditingCell?: (value: null) => void;
   value: string;
   tags?: string[];
-  onUpdate?: (value: string) => void;
-  onUpdateTags?: (tags: string[]) => void;
+  editing?: boolean;
+  onUpdate?: (title: string, tags?: string[]) => void;
 }
 
 export default function TitleCell({
   value,
   tags = [],
+  editing = false,
   onUpdate,
-  onUpdateTags,
   setEditingCell
 }: TitleCellProps): JSX.Element {
   const [editValue, setEditValue] = useState(value);
@@ -66,17 +66,13 @@ export default function TitleCell({
                           target.closest(`.${styles.tagAction}`);
       const isEditing = target.closest(`.${styles.editableCell}`);
 
-      // タグ関連の要素またはセル編集中のクリックは無視
       if (isTagRelated || isEditing) {
         return;
       }
 
-      // タグや編集セル以外のクリックで更新して閉じる
-      onUpdate?.(editValue);
-      // タグの変更も確定
-      if (onUpdateTags && !arraysEqual(editingTags, tags)) {
-        onUpdateTags(editingTags);
-      }
+      // タイトルとタグを同時に更新
+      onUpdate?.(editValue, editingTags);
+
       setTimeout(() => {
         setIsTagEditing(false);
         setTagInput('');
@@ -89,12 +85,14 @@ export default function TitleCell({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [editValue, value, onUpdate, setEditingCell, editingTags, tags]);
+  }, [editValue, editingTags, onUpdate, setEditingCell]);
 
   // 配列の比較ヘルパー関数
   const arraysEqual = (a: string[], b: string[]) => {
     if (a.length !== b.length) return false;
-    return a.every((val, index) => val === b[index]);
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((val, index) => val === sortedB[index]);
   };
 
   const showTagSuggestions = () => {
@@ -103,10 +101,9 @@ export default function TitleCell({
 
   const handleTagClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onUpdateTags) {
-      setIsTagEditing(true);
-      showTagSuggestions();
-    }
+    e.preventDefault();
+    setIsTagEditing(true);
+    showTagSuggestions();
   };
 
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,13 +121,11 @@ export default function TitleCell({
   };
 
   const handleTagSelect = async (selectedTag: typeof availableTags[0]) => {
-    if (!onUpdateTags) return;
     if (!editingTags.includes(selectedTag.id)) {
       setEditingTags([...editingTags, selectedTag.id]);
     }
     setTagInput('');
     setFilteredTags([]);
-    // Keep tag editing mode open
     showTagSuggestions();
   };
 
@@ -138,13 +133,11 @@ export default function TitleCell({
     e.stopPropagation();
     e.preventDefault();
     e.nativeEvent.stopImmediatePropagation();
-    if (!onUpdateTags) return;
     setEditingTags(editingTags.filter(id => id !== tagId));
-    // Keep tag editing mode open after removing a tag
   };
 
   const handleNewTag = async () => {
-    if (!onUpdateTags || !tagInput.trim()) return;
+    if (!tagInput.trim()) return;
 
     const inputValue = tagInput.trim();
     const existingTag = availableTags.find(
@@ -174,8 +167,8 @@ export default function TitleCell({
     }
   };
 
-  // 編集不可の場合は表示のみ
-  if (!onUpdate) {
+  // 編集不可または編集状態でない場合は表示のみ
+  if (!onUpdate || !editing) {
     return (
       <div className={styles.titleContainer}>
         {tags.length > 0 && (
@@ -206,10 +199,9 @@ export default function TitleCell({
 
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onUpdate(editValue);
-    if (onUpdateTags && !arraysEqual(editingTags, tags)) {
-      onUpdateTags(editingTags);
-    }
+    // タイトルとタグを同時に更新
+    onUpdate?.(editValue, editingTags);
+    
     setIsTagEditing(false);
     setTagInput('');
     setFilteredTags([]);
@@ -219,7 +211,7 @@ export default function TitleCell({
   // 編集可能な場合は入力フィールドを表示
   return (
     <div className={`${styles.editableCell} ${styles.editingCell}`} onClick={(e) => e.stopPropagation()}>
-      <div className={styles.tagList}>
+      <div className={styles.tagList} onClick={(e) => e.stopPropagation()}>
         {editingTags.map(tagId => {
           const tag = availableTags.find(t => t.id === tagId);
           if (!tag) return null;
@@ -245,7 +237,7 @@ export default function TitleCell({
           );
         })}
         {isTagEditing && (
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
             <input
               type="text"
               className={styles.tagInput}
@@ -284,12 +276,13 @@ export default function TitleCell({
             )}
           </div>
         )}
-        {!isTagEditing && onUpdateTags && (
+        {!isTagEditing && (
           <button
             className={styles.tag}
             style={{ backgroundColor: '#e5e7eb', color: '#374151' }}
             onClick={(e) => {
               e.stopPropagation();
+              e.preventDefault(); // 追加: デフォルト動作を防止
               setIsTagEditing(true);
               showTagSuggestions();
             }}
@@ -304,7 +297,8 @@ export default function TitleCell({
         className={styles.editInput}
         onChange={handleChange}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && !isTagEditing) {
+          if (e.key === 'Enter') {
+            // タグ編集中かどうかに関わらずEnterで確定
             handleSave(e as unknown as React.MouseEvent);
           }
         }}

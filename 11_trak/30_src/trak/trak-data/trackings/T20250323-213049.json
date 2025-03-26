@@ -1,6 +1,6 @@
 {
   "templateId": "bug",
-  "title": "担当者の追加、削除ができないあああ",
+  "title": "担当者の追加、削除ができないxyy",
   "creator": {
     "id": "admin",
     "name": "管理者",
@@ -19,9 +19,10 @@
   "tags": [
     "bug",
     "SC201",
-    "improvement"
+    "improvement",
+    "documentation"
   ],
   "id": "T20250323-213049",
   "createdAt": "2025-03-23T12:30:49.450Z",
-  "updatedAt": "2025-03-23T16:35:31.011Z"
+  "updatedAt": "2025-03-26T14:16:11.408Z"
 }

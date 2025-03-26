@@ -41,20 +41,11 @@ export const TableCell = ({
   const handleUpdate = useMemo(() => {
     if (!isEditing) return undefined;
 
-    return (value: string | number | string[] | undefined) => {
-      const updatedTicket = { ...ticket, [columnKey]: value };
+    return (value: string | number | string[] | undefined, extraUpdate?: { [key: string]: any }) => {
+      const updatedTicket = { ...ticket, [columnKey]: value, ...extraUpdate };
       onUpdate(updatedTicket);
     };
   }, [isEditing, ticket, columnKey, onUpdate]);
-
-  const handleTagsUpdate = useMemo(() => {
-    if (!isEditing || columnKey !== 'title') return undefined;
-
-    return (tags: string[]) => {
-      const updatedTicket = { ...ticket, tags };
-      onUpdate(updatedTicket);
-    };
-  }, [isEditing, columnKey, ticket, onUpdate]);
 
   const renderCell = (type: CellType) => {
     switch (type) {
@@ -74,9 +65,14 @@ export const TableCell = ({
           <TitleCell 
             value={ticket.title}
             tags={ticket.tags}
+            editing={isEditing}
             setEditingCell={() => onEdit('title')}
-            onUpdate={handleUpdate}
-            onUpdateTags={handleTagsUpdate}
+            onUpdate={(title?: string, tags?: string[]) => {
+              const updates: Partial<TicketData> = {};
+              if (title !== undefined) updates.title = title;
+              if (tags !== undefined) updates.tags = tags;
+              handleUpdate?.(title, updates);
+            }}
           />
         );
       case 'status':
