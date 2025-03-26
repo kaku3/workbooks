@@ -8,7 +8,7 @@ const getColumnValue = (ticket: TicketData, column: ColumnKey): string | number 
       return ticket.title;
     case 'status':
       return ticket.status;
-    case 'assignee':
+    case 'assignees':
       return ticket.assignees[0] || '';
     case 'dueDate':
       return ticket.dueDate;

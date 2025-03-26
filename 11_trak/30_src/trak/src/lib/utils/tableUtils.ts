@@ -23,7 +23,7 @@ export const sortTickets = (
         aValue = a.status;
         bValue = b.status;
         break;
-      case 'assignee':
+      case 'assignees':
         aValue = a.assignees[0] || '';
         bValue = b.assignees[0] || '';
         break;

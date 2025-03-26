@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { usePreferences } from '@/hooks/usePreferences';
 import type { ColumnKey, SortDirection } from '@/types';
 
 interface TableState {
@@ -16,23 +17,45 @@ interface TableStateHook extends TableState {
 }
 
 export const useTableState = (): TableStateHook => {
-  const [sortColumn, setSortColumn] = useState<ColumnKey | null>(null);
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const { preferences, updateTableViewPreferences } = usePreferences();
+  const [sortColumn, setSortColumn] = useState<ColumnKey | null>(preferences.tableView?.sortColumn as ColumnKey || null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(preferences.tableView?.sortDirection || null);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>(preferences.tableView?.selectedStatuses || []);
   const [editingCell, setEditingCell] = useState<{ id: string; key: ColumnKey } | null>(null);
 
-  const handleSort = useCallback((key: ColumnKey) => {
+  // 初期設定の適用
+  useEffect(() => {
+    if (preferences.tableView) {
+      setSortColumn(preferences.tableView.sortColumn as ColumnKey);
+      setSortDirection(preferences.tableView.sortDirection);
+      setSelectedStatuses(preferences.tableView.selectedStatuses);
+    }
+  }, [preferences.tableView]);
+
+  const handleSort = useCallback(async (key: ColumnKey) => {
+    let newSortColumn = sortColumn;
+    let newSortDirection = sortDirection;
+
     if (sortColumn === key) {
       if (sortDirection === 'asc') {
-        setSortDirection('desc');
+        newSortDirection = 'desc';
       } else if (sortDirection === 'desc') {
-        setSortColumn(null);
-        setSortDirection(null);
+        newSortColumn = null;
+        newSortDirection = null;
       }
     } else {
-      setSortColumn(key);
-      setSortDirection('asc');
+      newSortColumn = key;
+      newSortDirection = 'asc';
     }
+
+    setSortColumn(newSortColumn);
+    setSortDirection(newSortDirection);
+
+    await updateTableViewPreferences({
+      sortColumn: newSortColumn,
+      sortDirection: newSortDirection,
+      selectedStatuses,
+    });
   }, [sortColumn, sortDirection]);
 
   const handleContainerClick = useCallback((e: React.MouseEvent) => {
@@ -43,13 +66,22 @@ export const useTableState = (): TableStateHook => {
     setEditingCell(null);
   }, []);
 
+  const handleStatusChange = useCallback(async (newStatuses: string[]) => {
+    setSelectedStatuses(newStatuses);
+    await updateTableViewPreferences({
+      sortColumn,
+      sortDirection,
+      selectedStatuses: newStatuses,
+    });
+  }, [sortColumn, sortDirection, updateTableViewPreferences]);
+
   return {
     sortColumn,
     sortDirection,
     selectedStatuses,
     editingCell,
     handleSort,
-    setSelectedStatuses,
+    setSelectedStatuses: handleStatusChange,
     setEditingCell,
     handleContainerClick,
   };

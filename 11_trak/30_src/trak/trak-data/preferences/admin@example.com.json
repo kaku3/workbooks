@@ -1,0 +1,14 @@
+{
+  "tableView": {
+    "sortColumn": null,
+    "sortDirection": null,
+    "selectedStatuses": [
+      "open",
+      "in-progress",
+      "in-review",
+      "completed",
+      "blocked",
+      "waiting"
+    ]
+  }
+}
