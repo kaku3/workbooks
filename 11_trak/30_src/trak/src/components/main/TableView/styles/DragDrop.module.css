@@ -3,11 +3,15 @@
   background-color: #f8fafc;
   cursor: grabbing;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  z-index: 10;
+  z-index: 1;
 }
 
 .dragging .handleCell {
   cursor: grabbing;
+}
+
+.tableRow {
+  position: relative;
 }
 
 .tableRow[data-dragging="top"]::before,
@@ -16,19 +20,40 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
-  background-color: #3b82f6;
+  height: 6px;
+  background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
   pointer-events: none;
-  z-index: 5;
-  box-shadow: 0 0 4px rgba(59, 130, 246, 0.3);
+  z-index: 2;
+  transform-origin: center;
+  box-shadow: 
+    0 0 10px rgba(59, 130, 246, 0.6),
+    0 0 20px rgba(59, 130, 246, 0.3);
+  animation: borderPulse 0.8s ease-in-out infinite;
 }
 
 .tableRow[data-dragging="top"]::before {
-  top: 0;
+  top: -3px;
+  transform: translateY(-50%);
 }
 
 .tableRow[data-dragging="bottom"]::after {
-  bottom: 0;
+  bottom: -3px;
+  transform: translateY(50%);
+}
+
+@keyframes borderPulse {
+  0% {
+    transform: scaleX(0.97);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0.97);
+    opacity: 0.8;
+  }
 }
 
 .handleCell {

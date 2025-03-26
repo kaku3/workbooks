@@ -8,7 +8,7 @@
     "role": "admin"
   },
   "assignees": [],
-  "status": "in-progress",
+  "status": "close",
   "startDate": "",
   "dueDate": "",
   "estimate": 0,
@@ -19,5 +19,5 @@
   ],
   "id": "T20250323-014117",
   "createdAt": "2025-03-22T16:41:17.941Z",
-  "updatedAt": "2025-03-23T16:35:31.012Z"
+  "updatedAt": "2025-03-26T15:09:50.659Z"
 }

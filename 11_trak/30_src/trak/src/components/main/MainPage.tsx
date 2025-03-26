@@ -24,7 +24,7 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
             className={`${styles.viewTab} ${viewMode === 'table' ? styles.active : ''}`}
             onClick={() => setViewMode('table')}
           >
-            テーブルビュー
+            チケット一覧
           </button>
           <button
             className={`${styles.viewTab} ${viewMode === 'gantt' ? styles.active : ''}`}
