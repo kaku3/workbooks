@@ -1,0 +1,24 @@
+{
+  "templateId": "task",
+  "title": "TableViewの操作メニューを別コンポーネントに",
+  "creator": {
+    "id": "admin",
+    "name": "管理者",
+    "email": "admin@example.com",
+    "role": "admin"
+  },
+  "assignees": [],
+  "status": "close",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 0,
+  "content": "## 目的\nTableView の操作メニューをGanttViewでも使えるようにしたい。\n\n## 作業内容\n現状 TableView に実装している、新規チケット作成・チケット数表示・ステータスフィルタを TicketToolbarコンポーネントを作成し移植する。\n\n## 完了条件\n- TicketMenu 作成\n- 新規チケットボタン・チケット数表示・ステータスフィルタ移植\n\n## 注意事項\n\n## 参考情報\n",
+  "tags": [
+    "improvement",
+    "SC201"
+  ],
+  "id": "T20250328-012550",
+  "createdAt": "2025-03-27T16:25:50.515Z",
+  "updatedAt": "2025-03-27T16:37:02.983Z",
+  "ticketId": "T20250328-012550"
+}

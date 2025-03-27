@@ -5,7 +5,11 @@ import styles from './GanttView.module.css';
 
 type TimeScale = 'day' | 'week' | 'month';
 
-export default function GanttView() {
+interface GanttViewProps {
+  selectedStatuses: string[];
+}
+
+export default function GanttView({ selectedStatuses }: GanttViewProps) {
   const [scale, setScale] = useState<TimeScale>('week');
   const [startDate, setStartDate] = useState(new Date());
 

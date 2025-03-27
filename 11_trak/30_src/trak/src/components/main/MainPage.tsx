@@ -5,6 +5,8 @@ import { signOut, useSession } from 'next-auth/react';
 import styles from './MainPage.module.css';
 import TableView from './TableView/index';
 import GanttView from './GanttView/index';
+import TicketToolbar from './TicketToolbar';
+import { useTableData } from './TableView/hooks/useTableData';
 
 type ViewMode = 'gantt' | 'table';
 
@@ -14,6 +16,8 @@ interface MainPageProps {
 
 export default function MainPage({ initialTicketId }: MainPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const { statuses } = useTableData();
 
   return (
     <div className={styles.container}>
@@ -49,12 +53,24 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
         </div>
       </div>
 
+      {/* チケットツールバー */}
+      <TicketToolbar
+        statuses={statuses}
+        selectedStatuses={selectedStatuses}
+        onStatusChange={setSelectedStatuses}
+      />
+
       {/* メインコンテンツエリア */}
       <div className={styles.content}>
         {viewMode === 'table' ? (
-          <TableView initialTicketId={initialTicketId} />
+          <TableView 
+            initialTicketId={initialTicketId}
+            selectedStatuses={selectedStatuses}
+          />
         ) : (
-          <GanttView />
+          <GanttView
+            selectedStatuses={selectedStatuses}
+          />
         )}
       </div>
     </div>

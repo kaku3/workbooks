@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
-import StatusFilter from './components/StatusFilter';
 import { TableCell } from './components/TableCell';
 import { useTickets } from '@/hooks/useTickets';
 import { useSlidePanel } from '@/hooks/useSlidePanel';
@@ -22,6 +21,7 @@ import type { ColumnKey } from '@/types';
 
 interface TableViewProps {
   initialTicketId?: string;
+  selectedStatuses: string[];
 }
 
 interface DragOverState {
@@ -29,7 +29,7 @@ interface DragOverState {
   direction: 'top' | 'bottom' | null;
 }
 
-export default function TableView({ initialTicketId }: TableViewProps) {
+export default function TableView({ initialTicketId, selectedStatuses }: TableViewProps) {
   // State for drag target
   const [dragOverState, setDragOverState] = useState<DragOverState>({ id: null, direction: null });
   const [draggableId, setDraggableId] = useState<string | null>(null);
@@ -78,10 +78,8 @@ export default function TableView({ initialTicketId }: TableViewProps) {
   const {
     sortColumn,
     sortDirection,
-    selectedStatuses,
     editingCell,
     handleSort,
-    setSelectedStatuses,
     setEditingCell,
   } = useTableState();
 
@@ -97,7 +95,6 @@ export default function TableView({ initialTicketId }: TableViewProps) {
     isOpen: slidePanelOpen,
     mode: ticketFormMode,
     ticketId: selectedTicketId,
-    openNewTicket,
     openEditTicket,
     handleClose: handleClosePanel,
   } = useSlidePanel(initialTicketId);
@@ -124,21 +121,6 @@ export default function TableView({ initialTicketId }: TableViewProps) {
           }
         }}
       >
-        <div className={tableStyles.toolbar}>
-          <button className={tableStyles.createButton} onClick={openNewTicket}>
-            新規チケット
-          </button>
-          <StatusFilter
-            statuses={statuses}
-            selectedStatuses={selectedStatuses}
-            onStatusChange={setSelectedStatuses}
-            statusCounts={tickets.reduce((counts, ticket) => {
-              counts[ticket.status] = (counts[ticket.status] || 0) + 1;
-              return counts;
-            }, {} as Record<string, number>)}
-            totalCount={tickets.length}
-          />
-        </div>
         <div className={tableStyles.tableContainer}>
           <table 
             className={tableStyles.table} 
