@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { signOut, useSession } from 'next-auth/react';
 import styles from './MainPage.module.css';
-import TableView from './TableView';
-import GanttView from './GanttView';
+import TableView from './TableView/index';
+import GanttView from './GanttView/index';
 
 type ViewMode = 'gantt' | 'table';
 
@@ -16,10 +17,10 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
 
   return (
     <div className={styles.container}>
-      {/* ヘッダーツールバー */}
-      <div className={styles.toolbar}>
-        {/* ビュー切替タブ */}
-        <div className={styles.viewTabs}>
+      {/* コンパクトヘッダー */}
+      <div className={styles.header}>
+        <div className={styles.leftSection}>
+          {/* ビュー切替タブ */}
           <button
             className={`${styles.viewTab} ${viewMode === 'table' ? styles.active : ''}`}
             onClick={() => setViewMode('table')}
@@ -31,6 +32,19 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
             onClick={() => setViewMode('gantt')}
           >
             ガントチャート
+          </button>
+        </div>
+
+        <div className={styles.rightSection}>
+          {/* ユーザー情報とログアウト */}
+          <div className={styles.userInfo}>
+            {useSession()?.data?.user?.email}
+          </div>
+          <button 
+            className={styles.logoutButton}
+            onClick={() => signOut()}
+          >
+            ログアウト
           </button>
         </div>
       </div>
