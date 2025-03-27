@@ -29,15 +29,10 @@ export default function StatusCell({
   useEffect(() => {
     // 編集モードで、マウント時に自動で開く
     if (onUpdate && selectRef.current) {
-      setTimeout(() => {
-        const select = selectRef.current;
-        if (select) {
-          select.focus();
-          if ('showPicker' in select) {
-            select.showPicker();
-          }
-        }
-      }, 50);
+      selectRef.current.focus();
+      if ('showPicker' in selectRef.current) {
+        selectRef.current.showPicker();
+      }
     }
   }, [onUpdate]);
 
