@@ -4,12 +4,10 @@
     "sortDirection": "desc",
     "selectedStatuses": [
       "open",
-      "in-progress",
-      "in-review",
       "completed",
       "blocked",
       "waiting",
-      "close"
+      "in-progress"
     ]
   }
 }

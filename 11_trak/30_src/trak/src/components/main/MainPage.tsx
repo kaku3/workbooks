@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
+import { useApplication } from '@/contexts/ApplicationContext';
 import styles from './MainPage.module.css';
 import TableView from './TableView/index';
 import GanttView from './GanttView/index';
@@ -18,6 +19,28 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const { statuses } = useTableData();
+  const { preferences, updateTableViewPreferences, isLoadingPreferences } = useApplication();
+
+  // Restore selectedStatuses from preferences when loaded
+  useEffect(() => {
+    if (!isLoadingPreferences && preferences.tableView?.selectedStatuses) {
+      setSelectedStatuses(preferences.tableView.selectedStatuses);
+    }
+  }, [preferences.tableView?.selectedStatuses, isLoadingPreferences]);
+
+  // Handle status changes and save to preferences
+  const handleStatusChange = (newStatuses: string[]) => {
+    setSelectedStatuses(newStatuses);
+    const currentPreferences = preferences.tableView || {
+      sortColumn: null,
+      sortDirection: null,
+      selectedStatuses: []
+    };
+    updateTableViewPreferences({
+      ...currentPreferences,
+      selectedStatuses: newStatuses
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -57,7 +80,7 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
       <TicketToolbar
         statuses={statuses}
         selectedStatuses={selectedStatuses}
-        onStatusChange={setSelectedStatuses}
+        onStatusChange={handleStatusChange}
       />
 
       {/* メインコンテンツエリア */}
