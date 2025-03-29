@@ -102,8 +102,11 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
       {/* チケットツールバー */}
       <TicketToolbar
         statuses={statuses}
+        users={useTableData().users}
         selectedStatuses={selectedStatuses}
+        selectedAssignees={selectedAssignees}
         onStatusChange={handleStatusChange}
+        onAssigneeChange={handleAssigneeChange}
       />
 
       {/* メインコンテンツエリア */}
@@ -112,8 +115,6 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
           <TableView 
             selectedStatuses={selectedStatuses}
             selectedAssignees={selectedAssignees}
-            onStatusChange={handleStatusChange}
-            onAssigneeChange={handleAssigneeChange}
           />
         ) : (
           <GanttView

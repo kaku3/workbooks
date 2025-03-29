@@ -9,7 +9,6 @@ import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
 import { TableCell } from './components/TableCell';
-import FilterToolbar from './components/FilterToolbar';
 import { useApplication } from '@/contexts/ApplicationContext';
 import { useTableData } from './hooks/useTableData';
 import { useTableState } from './hooks/useTableState';
@@ -21,8 +20,6 @@ import { TicketData, type ColumnKey } from '@/types';
 interface TableViewProps {
   selectedStatuses: string[];
   selectedAssignees: string[];
-  onStatusChange: (statuses: string[]) => void;
-  onAssigneeChange: (assignees: string[]) => void;
 }
 
 interface DragOverState {
@@ -32,9 +29,7 @@ interface DragOverState {
 
 export default function TableView({ 
   selectedStatuses, 
-  selectedAssignees,
-  onStatusChange,
-  onAssigneeChange,
+  selectedAssignees
 }: TableViewProps) {
   // State for drag target
   const [dragOverState, setDragOverState] = useState<DragOverState>({ id: null, direction: null });
@@ -127,15 +122,6 @@ export default function TableView({
           }
         }}
       >
-        <FilterToolbar
-          tickets={tickets}
-          users={users}
-          statuses={statuses}
-          selectedStatuses={selectedStatuses}
-          selectedAssignees={selectedAssignees}
-          onStatusChange={onStatusChange}
-          onAssigneeChange={onAssigneeChange}
-        />
         <div className={tableStyles.tableContainer}>
           <table 
             className={tableStyles.table} 

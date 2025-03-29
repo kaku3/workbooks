@@ -3,21 +3,55 @@
 import styles from './TicketToolbar.module.css';
 import SlidePanel from '../../common/SlidePanel';
 import TicketForm from '../../TicketForm';
-import { Status } from '@/types';
-import { useApplication } from '@/contexts/ApplicationContext'; // useTicketsをuseApplicationに変更
+import { Status, User } from '@/types';
+import { useApplication } from '@/contexts/ApplicationContext';
+import StatusFilter from '../TableView/components/StatusFilter';
+import AssigneeFilter from '../TableView/components/AssigneeFilter';
+import { useMemo } from 'react';
 
-interface TicketMenuProps {
+interface TicketToolbarProps {
   statuses: Status[];
+  users: User[];
   selectedStatuses: string[];
+  selectedAssignees: string[];
   onStatusChange: (selectedStatuses: string[]) => void;
+  onAssigneeChange: (selectedAssignees: string[]) => void;
 }
 
 export default function TicketToolbar({
   statuses,
+  users,
   selectedStatuses,
+  selectedAssignees,
   onStatusChange,
-}: TicketMenuProps) {
+  onAssigneeChange,
+}: TicketToolbarProps) {
   const { tickets } = useApplication().ticketStore;
+
+  // Calculate status counts
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    tickets.forEach(ticket => {
+      counts[ticket.status] = (counts[ticket.status] || 0) + 1;
+    });
+    return counts;
+  }, [tickets]);
+
+  // Calculate assignee counts
+  const assigneeCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    tickets.forEach(ticket => {
+      if (!ticket.assignees || ticket.assignees.length === 0) {
+        // Count unassigned tickets
+        counts[''] = (counts[''] || 0) + 1;
+      } else {
+        ticket.assignees.forEach(assignee => {
+          counts[assignee] = (counts[assignee] || 0) + 1;
+        });
+      }
+    });
+    return counts;
+  }, [tickets]);
 
   // SlidePanel管理
   const {
@@ -28,67 +62,27 @@ export default function TicketToolbar({
     handleClose: handleClosePanel,
   } = useApplication().slidePanelStore;
 
-  // チケット一覧のステータスごとの集計
-  const statusCounts = tickets.reduce((counts, ticket) => {
-    counts[ticket.status] = (counts[ticket.status] || 0) + 1;
-    return counts;
-  }, {} as Record<string, number>);
-
-  const handleStatusToggle = (statusId: string) => {
-    const newSelectedStatuses = selectedStatuses.includes(statusId)
-      ? selectedStatuses.filter(id => id !== statusId)
-      : [...selectedStatuses, statusId];
-    onStatusChange(newSelectedStatuses);
-  };
-
-  const handleToggleAll = () => {
-    const isAllSelected = statuses.length === selectedStatuses.length;
-    if (isAllSelected) {
-      onStatusChange([]);
-    } else {
-      const allStatusIds = statuses.map(status => status.id);
-      onStatusChange(allStatusIds);
-    }
-  };
-
-  const isAllSelected = statuses.length === selectedStatuses.length;
-
   return (
     <>
       <div className={styles.container}>
         <button className={styles.createButton} onClick={openNewTicket}>
           新規チケット
         </button>
-        <div className={styles.statusFilter}>
-          <span className={styles.totalCount}>Total {tickets.length}</span>
-          <div className={styles.filterHeader}>
-            <label className={styles.statusCheckbox}>
-              <input
-                type="checkbox"
-                checked={isAllSelected}
-                onChange={handleToggleAll}
-                aria-label="全て選択/選択解除"
-              />
-              <span className={styles.statusLabel} role="presentation">
-                {isAllSelected ? "選択解除" : "全て選択"}
-              </span>
-            </label>
-          </div>
-          {statuses.map(status => (
-            <label key={status.id} className={styles.statusCheckbox}>
-              <input
-                type="checkbox"
-                checked={selectedStatuses.includes(status.id)}
-                onChange={() => handleStatusToggle(status.id)}
-              />
-              <span className={styles.statusLabel} style={{ backgroundColor: status.color }}>
-                {status.name}
-                {statusCounts[status.id] > 0 && (
-                  <span className={styles.statusCount}>({statusCounts[status.id]})</span>
-                )}
-              </span>
-            </label>
-          ))}
+        <div className={styles.filters}>
+          <StatusFilter
+            statuses={statuses}
+            selectedStatuses={selectedStatuses}
+            onStatusChange={onStatusChange}
+            statusCounts={statusCounts}
+            totalCount={tickets.length}
+          />
+          <AssigneeFilter
+            users={users}
+            selectedAssignees={selectedAssignees}
+            onAssigneeChange={onAssigneeChange}
+            assigneeCounts={assigneeCounts}
+            totalCount={tickets.length}
+          />
         </div>
       </div>
       <SlidePanel 

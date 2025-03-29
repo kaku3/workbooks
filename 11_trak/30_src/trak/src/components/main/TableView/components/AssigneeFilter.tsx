@@ -39,7 +39,7 @@ export default function AssigneeFilter({
 
   return (
     <div className={styles.assigneeFilter}>
-      <span className={styles.totalCount}>Total {totalCount}</span>
+      <span className={styles.totalCount}>担当者</span>
       <div className={styles.filterHeader}>
         <label className={styles.assigneeCheckbox}>
           <input

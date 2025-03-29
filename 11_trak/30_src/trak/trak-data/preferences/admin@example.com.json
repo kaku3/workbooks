@@ -12,6 +12,11 @@
       "waiting"
     ],
     "selectedAssignees": [
+      "admin@example.com",
+      "yamada.taro@example.com",
+      "suzuki.ichiro@example.com",
+      "sato.hanako@example.com",
+      "tanaka.kenichi@example.com",
       ""
     ]
   }

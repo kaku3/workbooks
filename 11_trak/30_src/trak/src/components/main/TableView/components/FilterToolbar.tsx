@@ -1,9 +1,9 @@
 'use client';
+import styles from '../styles/TableView.module.css';
 
 import { useMemo } from 'react';
 import StatusFilter from './StatusFilter';
 import AssigneeFilter from './AssigneeFilter';
-import styles from '../styles/TableView.module.css';
 import { Status, User } from '@/types';
 import { TicketData } from '@/types';
 
