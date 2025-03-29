@@ -26,16 +26,16 @@ export default function AssigneeFilter({
   };
 
   const handleToggleAll = () => {
-    const isAllSelected = users.length === selectedAssignees.length;
+    const isAllSelected = users.length + 1 === selectedAssignees.length; // +1 for unassigned
     if (isAllSelected) {
       onAssigneeChange([]);
     } else {
-      const allUserEmails = users.map(user => user.email);
+      const allUserEmails = [...users.map(user => user.email), ''];
       onAssigneeChange(allUserEmails);
     }
   };
 
-  const isAllSelected = users.length === selectedAssignees.length;
+  const isAllSelected = users.length + 1 === selectedAssignees.length;
 
   return (
     <div className={styles.assigneeFilter}>
@@ -53,6 +53,18 @@ export default function AssigneeFilter({
           </span>
         </label>
       </div>
+      {/* 未アサイン */}
+      <label key="" className={styles.assigneeCheckbox}>
+        <input
+          type="checkbox"
+          checked={selectedAssignees.includes('')}
+          onChange={() => handleAssigneeToggle('')}
+        />
+        <span className={styles.assigneeLabel}>
+          未アサイン
+          {assigneeCounts[''] > 0 && (<span className={styles.assigneeCount}>({assigneeCounts['']})</span>)}
+        </span>
+      </label>
       {users.map(user => (
         <label key={user.email} className={styles.assigneeCheckbox}>
           <input

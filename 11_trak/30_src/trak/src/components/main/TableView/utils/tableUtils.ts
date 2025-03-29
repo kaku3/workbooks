@@ -67,7 +67,14 @@ export const filterTicketsByAssignee = (
   selectedAssignees: string[]
 ): TicketData[] => {
   if (selectedAssignees.length === 0) return tickets;
-  return tickets.filter(ticket => 
-    ticket.assignees.some(assignee => selectedAssignees.includes(assignee))
-  );
+  return tickets.filter(ticket => {
+    // Handle unassigned tickets (empty array or no assignees)
+    if (selectedAssignees.includes('')) {
+      if (!ticket.assignees || ticket.assignees.length === 0) {
+        return true;
+      }
+    }
+    // Handle assigned tickets
+    return ticket.assignees.some(assignee => selectedAssignees.includes(assignee));
+  });
 };

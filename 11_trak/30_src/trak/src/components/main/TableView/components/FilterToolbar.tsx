@@ -39,9 +39,14 @@ export default function FilterToolbar({
   const assigneeCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     tickets.forEach(ticket => {
-      ticket.assignees.forEach(assignee => {
-        counts[assignee] = (counts[assignee] || 0) + 1;
-      });
+      if (!ticket.assignees || ticket.assignees.length === 0) {
+        // Count unassigned tickets
+        counts[''] = (counts[''] || 0) + 1;
+      } else {
+        ticket.assignees.forEach(assignee => {
+          counts[assignee] = (counts[assignee] || 0) + 1;
+        });
+      }
     });
     return counts;
   }, [tickets]);
