@@ -4,7 +4,7 @@ import tableStyles from './styles/TableView.module.css';
 import dragStyles from './styles/DragDrop.module.css';
 import SlidePanel from '../../common/SlidePanel';
 import TicketForm from '../../Tickets/TicketForm';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
@@ -18,7 +18,6 @@ import { TABLE_COLUMNS } from './constants/tableColumns';
 import { TicketData, type ColumnKey } from '@/types';
 
 interface TableViewProps {
-  initialTicketId?: string;
   selectedStatuses: string[];
 }
 
@@ -27,9 +26,9 @@ interface DragOverState {
   direction: 'top' | 'bottom' | null;
 }
 
-export default function TableView({ initialTicketId, selectedStatuses }: TableViewProps) {
+export default function TableView({ selectedStatuses }: TableViewProps) {
   const [statusFilteredTickets, setStatusFilteredTickets] = useState<TicketData[]>([]);
-  const [displayTickets, setDisplayTickets] = useState<TicketData[]>([]);
+  // const [displayTickets, setDisplayTickets] = useState<TicketData[]>([]);
   
   // State for drag target
   const [dragOverState, setDragOverState] = useState<DragOverState>({ id: null, direction: null });
@@ -99,25 +98,15 @@ export default function TableView({ initialTicketId, selectedStatuses }: TableVi
     handleClose: handleClosePanel,
   } = useApplication().slidePanel
 
-  useEffect(() => {
-    const filtered = filterTicketsByStatus(tickets, selectedStatuses);
-    setStatusFilteredTickets(filtered);
-  }, [tickets, selectedStatuses]);
-
-  useEffect(() => {
-    const sorted = sortTickets(
+  const displayTickets:TicketData[] = useMemo(() => {
+    const statusFilteredTickets = filterTicketsByStatus(tickets, selectedStatuses)
+    return sortTickets(
       statusFilteredTickets,
       sortColumn,
       sortDirection,
       sortOrders
     );
-    setDisplayTickets(sorted);
-  }, [
-    statusFilteredTickets,
-    sortColumn,
-    sortDirection,
-    sortOrders
-  ]);
+  }, [tickets, selectedStatuses, sortColumn, sortDirection, sortOrders]);
 
   const uiError = ticketsError || dataError;
   const isLoadingData = isLoadingTickets || isLoadingSortOrders;
