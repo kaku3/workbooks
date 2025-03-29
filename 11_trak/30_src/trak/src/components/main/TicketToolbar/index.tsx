@@ -5,7 +5,6 @@ import SlidePanel from '../../common/SlidePanel';
 import TicketForm from '../../Tickets/TicketForm';
 import { Status } from '@/types';
 import { useApplication } from '@/contexts/ApplicationContext'; // useTicketsをuseApplicationに変更
-import { useSlidePanel } from '@/hooks/useSlidePanel';
 
 interface TicketMenuProps {
   statuses: Status[];
@@ -28,7 +27,7 @@ export default function TicketToolbar({
     ticketId: selectedTicketId,
     openNewTicket,
     handleClose: handleClosePanel,
-  } = useSlidePanel();
+  } = useApplication().slidePanel;
 
   // チケット一覧のステータスごとの集計
   const statusCounts = tickets.reduce((counts, ticket) => {

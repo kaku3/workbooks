@@ -22,6 +22,11 @@ interface SlidePanelState {
   mode: 'new' | 'edit';
   ticketId?: string;
 }
+interface SlidePanelHook extends SlidePanelState {
+  openNewTicket: () => void;
+  openEditTicket: (ticketId: string) => void;
+  handleClose: () => void;
+}
 
 // コンテキストの型定義
 interface ApplicationContextType {
@@ -42,10 +47,7 @@ interface ApplicationContextType {
   updateBatchOrders: (orders: { ticketId: string, order: number }[]) => Promise<boolean>;
   
   // スライドパネル関連
-  slidePanel: SlidePanelState;
-  openNewTicket: () => void;
-  openEditTicket: (ticketId: string) => void;
-  closeSlidePanelTicket: () => void;
+  slidePanel: SlidePanelHook;
   
   // ユーザー設定関連
   preferences: Preferences;
@@ -74,10 +76,13 @@ const ApplicationContext = createContext<ApplicationContextType>({
   updateBatchOrders: async () => false,
   
   // スライドパネル関連のデフォルト
-  slidePanel: { isOpen: false, mode: 'new' },
-  openNewTicket: () => {},
-  openEditTicket: () => {},
-  closeSlidePanelTicket: () => {},
+  slidePanel: {
+    isOpen: false,
+    mode: 'new',
+    openNewTicket: () => {},
+    openEditTicket: () => {},
+    handleClose: () => {},
+  },
   
   // ユーザー設定関連のデフォルト
   preferences: {},
@@ -107,9 +112,9 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
   
   // スライドパネル関連の状態
   const initialTicketHandled = useRef(false);
-  const [slidePanel, setSlidePanel] = useState<SlidePanelState>({
+  const [slidePanelState, setSlidePanelState] = useState<SlidePanelState>({
     isOpen: false,
-    mode: 'new',
+    mode: 'new'
   });
   
   // ユーザー設定関連の状態
@@ -280,29 +285,32 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
   
   // 新規チケットパネルを開く
   const openNewTicket = useCallback(() => {
-    setSlidePanel({
+    console.log('[ApplicationContext] openNewTicket');
+    setSlidePanelState({
       isOpen: true,
-      mode: 'new',
-      ticketId: undefined,
+      mode: 'new'
     });
   }, []);
 
   // チケット編集パネルを開く
   const openEditTicket = useCallback((ticketId: string) => {
-    if (slidePanel.ticketId !== ticketId || !slidePanel.isOpen) {
-      setSlidePanel({
+    console.log('[ApplicationContext] openEditTicket', ticketId);
+    if (slidePanelState.ticketId !== ticketId || !slidePanelState.isOpen) {
+      setSlidePanelState({
         isOpen: true,
         mode: 'edit',
-        ticketId,
+        ticketId
       });
+
       // Update URL without page reload
       window.history.pushState({}, '', `/tickets/${ticketId}`);
     }
-  }, [slidePanel.ticketId, slidePanel.isOpen]);
+  }, [slidePanelState.ticketId, slidePanelState.isOpen]);
 
   // パネルを閉じる
   const closeSlidePanelTicket = useCallback(() => {
-    setSlidePanel(prev => ({ ...prev, isOpen: false }));
+    console.log('[ApplicationContext] closeSlidePanelTicket');
+    setSlidePanelState(prev => ({ ...prev, isOpen: false }));
 
     // Reset the initialTicketHandled when closing
     initialTicketHandled.current = false;
@@ -313,6 +321,14 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
       window.history.pushState({}, '', '/');
     }
   }, []);
+
+  // slidePanel オブジェクトを作成
+  const slidePanel: SlidePanelHook = {
+    ...slidePanelState,
+    openNewTicket,
+    openEditTicket,
+    handleClose: closeSlidePanelTicket
+  };
   
   // 設定を読み込む
   const fetchPreferences = useCallback(async () => {
@@ -372,7 +388,7 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
   // ブラウザのバック/フォワードナビゲーション処理
   useEffect(() => {
     const handlePopState = () => {
-      setSlidePanel(prev => ({ ...prev, isOpen: false }));
+      setSlidePanelState(prev => ({ ...prev, isOpen: false }));
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -382,8 +398,9 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
   // 初期チケットIDがある場合、編集モードでパネルを開く
   useEffect(() => {
     if (initialTicketId && !initialTicketHandled.current) {
+      console.log('[ApplicationContext] Opening initial ticket:', initialTicketId);
       initialTicketHandled.current = true;
-      setSlidePanel({
+      setSlidePanelState({
         isOpen: true,
         mode: 'edit',
         ticketId: initialTicketId,
@@ -424,9 +441,6 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
     
     // スライドパネル関連
     slidePanel,
-    openNewTicket,
-    openEditTicket,
-    closeSlidePanelTicket,
     
     // ユーザー設定関連
     preferences,

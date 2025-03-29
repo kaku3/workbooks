@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { usePreferences } from '@/hooks/usePreferences';
+import { useApplication } from '@/contexts/ApplicationContext'; 
 import type { ColumnKey, SortDirection } from '@/types';
 
 interface TableState {
@@ -17,7 +17,7 @@ interface TableStateHook extends TableState {
 }
 
 export const useTableState = (): TableStateHook => {
-  const { preferences, updateTableViewPreferences } = usePreferences();
+  const { preferences, updateTableViewPreferences } = useApplication();
   const [sortColumn, setSortColumn] = useState<ColumnKey | null>(preferences.tableView?.sortColumn as ColumnKey || null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(preferences.tableView?.sortDirection || null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(preferences.tableView?.selectedStatuses || []);

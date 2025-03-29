@@ -9,9 +9,7 @@ import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
 import { TableCell } from './components/TableCell';
-import { useApplication } from '@/contexts/ApplicationContext'; // 新しいコンテキストを使用
-import { useSlidePanel } from '@/hooks/useSlidePanel';
-import { useTicketSort } from '@/hooks/useTicketSort';
+import { useApplication } from '@/contexts/ApplicationContext';
 import { useTableData } from './hooks/useTableData';
 import { useTableState } from './hooks/useTableState';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
@@ -48,11 +46,11 @@ export default function TableView({ initialTicketId, selectedStatuses }: TableVi
 
   const {
     sortOrders,
-    isLoading: isLoadingSortOrders,
+    isLoadingSortOrders,
     fetchSortOrders,
     updateSortOrder,
     updateBatchOrders,
-  } = useTicketSort();
+  } = useApplication();
 
   // ドラッグ&ドロップハンドラー
   const {
@@ -99,7 +97,7 @@ export default function TableView({ initialTicketId, selectedStatuses }: TableVi
     ticketId: selectedTicketId,
     openEditTicket,
     handleClose: handleClosePanel,
-  } = useSlidePanel(initialTicketId);
+  } = useApplication().slidePanel
 
   useEffect(() => {
     const filtered = filterTicketsByStatus(tickets, selectedStatuses);

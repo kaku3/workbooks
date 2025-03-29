@@ -8,9 +8,9 @@
     "role": "admin"
   },
   "assignees": [
-    "admin@example.com"
+    "yamada.taro@example.com"
   ],
-  "status": "open",
+  "status": "close",
   "startDate": "",
   "dueDate": "",
   "estimate": 0,
@@ -21,5 +21,5 @@
   ],
   "id": "T20250329-102013",
   "createdAt": "2025-03-29T01:20:13.106Z",
-  "updatedAt": "2025-03-29T02:47:07.695Z"
+  "updatedAt": "2025-03-29T09:29:34.241Z"
 }
