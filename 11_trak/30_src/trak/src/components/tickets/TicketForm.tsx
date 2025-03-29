@@ -7,6 +7,7 @@ import styles from './TicketForm.module.css';
 import EstimateInput from './EstimateInput';
 import TagInput from './TagInput';
 import { TagsProvider } from '../main/TagsContext';
+import { useApplication } from '@/contexts/ApplicationContext';
 
 interface TicketFormProps {
   mode: 'new' | 'edit';
@@ -59,6 +60,7 @@ const defaultCreator: User = {
 };
 
 export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps) {
+  const { updateTicket, fetchTickets } = useApplication();
   const searchRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState<TicketData>({
@@ -213,25 +215,18 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
     });
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       if (mode === 'edit' && ticketId) {
-        // チケットの更新
-        const response = await fetch(`/api/tickets/${ticketId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...formData,
-            ticketId,
-          }),
+        const success = await updateTicket({
+          ...formData,
+          id: ticketId
         });
-        const result = await response.json();
-        if (!result.success) {
-          throw new Error(result.error || 'チケットの更新に失敗しました');
+        
+        if (success) {
+          onClose();
         }
       } else {
         // 新規チケットの作成
@@ -246,8 +241,10 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
         if (!result.success) {
           throw new Error(result.error || 'チケットの作成に失敗しました');
         }
+        // 作成後にチケット一覧を更新
+        fetchTickets();
+        onClose();
       }
-      onClose();
     } catch (error) {
       console.error('保存に失敗:', error);
     }
@@ -265,7 +262,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
   return (
     <TagsProvider>
       <div className={styles.container}>
-        <form className={styles.form} onSubmit={onSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           {/* タグ入力 */}
           <div className={styles.fieldHorizontal}>
             <label htmlFor="tags">タグ</label>

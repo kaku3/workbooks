@@ -9,7 +9,7 @@ import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
 import { TableCell } from './components/TableCell';
-import { useTickets } from '@/hooks/useTickets';
+import { useApplication } from '@/contexts/ApplicationContext'; // 新しいコンテキストを使用
 import { useSlidePanel } from '@/hooks/useSlidePanel';
 import { useTicketSort } from '@/hooks/useTicketSort';
 import { useTableData } from './hooks/useTableData';
@@ -17,7 +17,7 @@ import { useTableState } from './hooks/useTableState';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
 import { sortTickets, filterTicketsByStatus } from './utils/tableUtils';
 import { TABLE_COLUMNS } from './constants/tableColumns';
-import type { ColumnKey } from '@/types';
+import { TicketData, type ColumnKey } from '@/types';
 
 interface TableViewProps {
   initialTicketId?: string;
@@ -30,18 +30,21 @@ interface DragOverState {
 }
 
 export default function TableView({ initialTicketId, selectedStatuses }: TableViewProps) {
+  const [statusFilteredTickets, setStatusFilteredTickets] = useState<TicketData[]>([]);
+  const [displayTickets, setDisplayTickets] = useState<TicketData[]>([]);
+  
   // State for drag target
   const [dragOverState, setDragOverState] = useState<DragOverState>({ id: null, direction: null });
   const [draggableId, setDraggableId] = useState<string | null>(null);
 
+  // ApplicationContextから状態を取得
   const {
     tickets,
-    isLoading,
-    error: ticketsError,
-    fetchTickets,
+    isLoadingTickets,
+    ticketsError,
     updateTicket,
     deleteTicket,
-  } = useTickets();
+  } = useApplication();
 
   const {
     sortOrders,
@@ -63,11 +66,10 @@ export default function TableView({ initialTicketId, selectedStatuses }: TableVi
     sortOrders,
   });
 
-  // Fetch tickets on mount
+  // Fetch sort orders on mount (tickets are already fetched by ApplicationContext)
   useEffect(() => {
-    fetchTickets();
     fetchSortOrders();
-  }, [fetchTickets, fetchSortOrders]);
+  }, [fetchSortOrders]);
 
   const {
     users,
@@ -99,16 +101,28 @@ export default function TableView({ initialTicketId, selectedStatuses }: TableVi
     handleClose: handleClosePanel,
   } = useSlidePanel(initialTicketId);
 
-  // Process tickets through sorting and filtering
-  const processedTickets = sortTickets(
-    filterTicketsByStatus(tickets, selectedStatuses),
+  useEffect(() => {
+    const filtered = filterTicketsByStatus(tickets, selectedStatuses);
+    setStatusFilteredTickets(filtered);
+  }, [tickets, selectedStatuses]);
+
+  useEffect(() => {
+    const sorted = sortTickets(
+      statusFilteredTickets,
+      sortColumn,
+      sortDirection,
+      sortOrders
+    );
+    setDisplayTickets(sorted);
+  }, [
+    statusFilteredTickets,
     sortColumn,
     sortDirection,
     sortOrders
-  );
+  ]);
 
   const uiError = ticketsError || dataError;
-  const isLoadingData = isLoading || isLoadingSortOrders;
+  const isLoadingData = isLoadingTickets || isLoadingSortOrders;
 
   return (
     <TagsProvider>
@@ -155,13 +169,13 @@ export default function TableView({ initialTicketId, selectedStatuses }: TableVi
                   type="error"
                   message={uiError}
                 />
-              ) : processedTickets.length === 0 ? (
+              ) : displayTickets.length === 0 ? (
                 <TableStateRow
                   colSpan={TABLE_COLUMNS.length}
                   type="empty"
                 />
               ) : (
-                processedTickets.map(ticket => (
+                displayTickets.map(ticket => (
                   <tr 
                     key={ticket.id}
                     className={`${tableStyles.tableRow} ${activeId === ticket.id ? dragStyles.dragging : ''}`}
@@ -235,10 +249,7 @@ export default function TableView({ initialTicketId, selectedStatuses }: TableVi
         <TicketForm
           mode={ticketFormMode}
           ticketId={selectedTicketId}
-          onClose={() => {
-            handleClosePanel();
-            fetchTickets(); // Refresh tickets after form close
-          }}
+          onClose={handleClosePanel}
         />
       </SlidePanel>
     </TagsProvider>

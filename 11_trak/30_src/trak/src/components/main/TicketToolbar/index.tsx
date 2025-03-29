@@ -4,7 +4,7 @@ import styles from './TicketToolbar.module.css';
 import SlidePanel from '../../common/SlidePanel';
 import TicketForm from '../../Tickets/TicketForm';
 import { Status } from '@/types';
-import { useTickets } from '@/hooks/useTickets';
+import { useApplication } from '@/contexts/ApplicationContext'; // useTicketsをuseApplicationに変更
 import { useSlidePanel } from '@/hooks/useSlidePanel';
 
 interface TicketMenuProps {
@@ -18,7 +18,8 @@ export default function TicketToolbar({
   selectedStatuses,
   onStatusChange,
 }: TicketMenuProps) {
-  const { tickets, fetchTickets } = useTickets();
+  // useTicketsからuseApplicationに変更
+  const { tickets } = useApplication();
 
   // SlidePanel管理
   const {
@@ -100,10 +101,7 @@ export default function TicketToolbar({
         <TicketForm
           mode={ticketFormMode}
           ticketId={selectedTicketId}
-          onClose={() => {
-            handleClosePanel();
-            fetchTickets(); // Refresh tickets after form close
-          }}
+          onClose={handleClosePanel}
         />
       </SlidePanel>
     </>

@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import { TagsProvider } from '@/components/main/TagsContext';
 import AuthProvider from '@/components/auth/AuthProvider';
+import { ApplicationProvider } from '@/contexts/ApplicationContext';
 import '@/styles/site.scss';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -18,13 +19,15 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className}>
-        <AuthProvider>
-          <TagsProvider>
-            <div className="animate-fade-in">
-              {children}
-            </div>
-          </TagsProvider>
-        </AuthProvider>
+        <ApplicationProvider>
+          <AuthProvider>
+            <TagsProvider>
+              <div className="animate-fade-in">
+                {children}
+              </div>
+            </TagsProvider>
+          </AuthProvider>
+        </ApplicationProvider>
       </body>
     </html>
   );
