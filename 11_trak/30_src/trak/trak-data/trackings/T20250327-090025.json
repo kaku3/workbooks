@@ -7,7 +7,10 @@
     "email": "admin@example.com",
     "role": "admin"
   },
-  "assignees": [],
+  "assignees": [
+    "suzuki.ichiro@example.com",
+    "sato.hanako@example.com"
+  ],
   "status": "close",
   "startDate": "",
   "dueDate": "",
@@ -19,5 +22,5 @@
   ],
   "id": "T20250327-090025",
   "createdAt": "2025-03-27T00:00:25.945Z",
-  "updatedAt": "2025-03-27T00:07:56.498Z"
+  "updatedAt": "2025-03-29T01:58:58.541Z"
 }

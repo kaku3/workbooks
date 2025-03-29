@@ -1,0 +1,26 @@
+{
+  "templateId": "feature",
+  "title": "担当者フィルタ",
+  "creator": {
+    "id": "admin",
+    "name": "管理者",
+    "email": "admin@example.com",
+    "role": "admin"
+  },
+  "assignees": [
+    "yamada.taro@example.com"
+  ],
+  "status": "open",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 0,
+  "content": "## 概要\n一覧表示するチケットを、担当者でフィルタする機能を追加\n\n## 目的\n自分のタスクを把握しやすいようにする。\n\n## 提案内容\n- TicketTool右に、担当者フィルタを追加。\n- フィルタUIは、担当者入力と同UI\n\n## 期待される効果\n\n## 技術的な考慮事項\n\n## その他\n\n## 対応内容\n",
+  "tags": [
+    "feature",
+    "SC201"
+  ],
+  "id": "T20250329-102924",
+  "createdAt": "2025-03-29T01:29:24.986Z",
+  "updatedAt": "2025-03-29T02:00:26.044Z",
+  "ticketId": "T20250329-102924"
+}

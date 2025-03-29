@@ -7,7 +7,9 @@
     "email": "admin@example.com",
     "role": "admin"
   },
-  "assignees": [],
+  "assignees": [
+    "admin@example.com"
+  ],
   "status": "open",
   "startDate": "",
   "dueDate": "",
@@ -19,6 +21,6 @@
   ],
   "id": "T20250329-095746",
   "createdAt": "2025-03-29T00:57:46.619Z",
-  "updatedAt": "2025-03-29T01:01:14.917Z",
+  "updatedAt": "2025-03-29T01:58:44.693Z",
   "ticketId": "T20250329-095746"
 }
