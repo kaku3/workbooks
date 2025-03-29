@@ -6,13 +6,13 @@ interface SlidePanelState {
   ticketId?: string;
 }
 
-export interface SlidePanelHook extends SlidePanelState {
+export interface SlidePanelStore extends SlidePanelState {
   openNewTicket: () => void;
   openEditTicket: (ticketId: string) => void;
   handleClose: () => void;
 }
 
-export function useSlidePanel(initialTicketId?: string) {
+export function useSlidePanel(initialTicketId?: string): SlidePanelStore {
   const initialTicketHandled = useRef(false);
   const [slidePanelState, setSlidePanelState] = useState<SlidePanelState>({
     isOpen: false,

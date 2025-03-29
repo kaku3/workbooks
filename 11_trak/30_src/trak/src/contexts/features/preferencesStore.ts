@@ -10,7 +10,16 @@ export interface Preferences {
   tableView?: TableViewPreferences;
 }
 
-export function usePreferences() {
+export interface PreferencesStore {
+  preferences: Preferences;
+  isLoadingPreferences: boolean;
+  preferencesError: string | null;
+  fetchPreferences: () => Promise<void>;
+  savePreferences: (newPreferences: Preferences) => Promise<boolean>;
+  updateTableViewPreferences: (tableViewPreferences: TableViewPreferences) => Promise<boolean>;
+}
+  
+export function usePreferencesStore(): PreferencesStore {
   // ユーザー設定関連の状態
   const [preferences, setPreferences] = useState<Preferences>({});
   const [isLoadingPreferences, setIsLoadingPreferences] = useState(true);

@@ -19,7 +19,7 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const { statuses } = useTableData();
-  const { preferences, updateTableViewPreferences, isLoadingPreferences } = useApplication();
+  const { preferences, updateTableViewPreferences, isLoadingPreferences } = useApplication().preferencesStore;
 
   // Restore selectedStatuses from preferences when loaded
   useEffect(() => {
@@ -87,7 +87,6 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
       <div className={styles.content}>
         {viewMode === 'table' ? (
           <TableView 
-            initialTicketId={initialTicketId}
             selectedStatuses={selectedStatuses}
           />
         ) : (

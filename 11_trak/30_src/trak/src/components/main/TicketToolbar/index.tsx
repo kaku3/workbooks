@@ -17,8 +17,7 @@ export default function TicketToolbar({
   selectedStatuses,
   onStatusChange,
 }: TicketMenuProps) {
-  // useTicketsからuseApplicationに変更
-  const { tickets } = useApplication();
+  const { tickets } = useApplication().ticketStore;
 
   // SlidePanel管理
   const {
@@ -27,7 +26,7 @@ export default function TicketToolbar({
     ticketId: selectedTicketId,
     openNewTicket,
     handleClose: handleClosePanel,
-  } = useApplication().slidePanel;
+  } = useApplication().slidePanelStore;
 
   // チケット一覧のステータスごとの集計
   const statusCounts = tickets.reduce((counts, ticket) => {

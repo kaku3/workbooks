@@ -17,7 +17,7 @@ interface TableStateHook extends TableState {
 }
 
 export const useTableState = (): TableStateHook => {
-  const { preferences, updateTableViewPreferences } = useApplication();
+  const { preferences, updateTableViewPreferences } = useApplication().preferencesStore;
   const [sortColumn, setSortColumn] = useState<ColumnKey | null>(preferences.tableView?.sortColumn as ColumnKey || null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(preferences.tableView?.sortDirection || null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(preferences.tableView?.selectedStatuses || []);

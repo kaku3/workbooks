@@ -44,3 +44,7 @@ export interface TicketData {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface TicketSortData {
+  [key: string]: number;
+}

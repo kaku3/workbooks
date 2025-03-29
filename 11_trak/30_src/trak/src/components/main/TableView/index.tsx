@@ -27,9 +27,6 @@ interface DragOverState {
 }
 
 export default function TableView({ selectedStatuses }: TableViewProps) {
-  const [statusFilteredTickets, setStatusFilteredTickets] = useState<TicketData[]>([]);
-  // const [displayTickets, setDisplayTickets] = useState<TicketData[]>([]);
-  
   // State for drag target
   const [dragOverState, setDragOverState] = useState<DragOverState>({ id: null, direction: null });
   const [draggableId, setDraggableId] = useState<string | null>(null);
@@ -41,7 +38,7 @@ export default function TableView({ selectedStatuses }: TableViewProps) {
     ticketsError,
     updateTicket,
     deleteTicket,
-  } = useApplication();
+  } = useApplication().ticketStore;
 
   const {
     sortOrders,
@@ -49,7 +46,7 @@ export default function TableView({ selectedStatuses }: TableViewProps) {
     fetchSortOrders,
     updateSortOrder,
     updateBatchOrders,
-  } = useApplication();
+  } = useApplication().ticketSortStore;
 
   // ドラッグ&ドロップハンドラー
   const {
@@ -96,7 +93,7 @@ export default function TableView({ selectedStatuses }: TableViewProps) {
     ticketId: selectedTicketId,
     openEditTicket,
     handleClose: handleClosePanel,
-  } = useApplication().slidePanel
+  } = useApplication().slidePanelStore
 
   const displayTickets:TicketData[] = useMemo(() => {
     const statusFilteredTickets = filterTicketsByStatus(tickets, selectedStatuses)

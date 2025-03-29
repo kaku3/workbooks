@@ -60,7 +60,7 @@ const defaultCreator: User = {
 };
 
 export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps) {
-  const { updateTicket, fetchTickets } = useApplication();
+  const { updateTicket, fetchTickets } = useApplication().ticketStore;
   const searchRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState<TicketData>({
