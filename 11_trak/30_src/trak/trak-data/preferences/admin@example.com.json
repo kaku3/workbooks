@@ -1,7 +1,7 @@
 {
   "tableView": {
-    "sortColumn": null,
-    "sortDirection": null,
+    "sortColumn": "status",
+    "sortDirection": "desc",
     "selectedStatuses": [
       "open",
       "in-progress",
