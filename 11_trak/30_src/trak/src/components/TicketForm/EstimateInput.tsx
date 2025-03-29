@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './TicketForm.module.css';
 
 interface EstimateInputProps {
@@ -14,6 +14,10 @@ const formatValue = (value: number) => {
 
 export default function EstimateInput({ value, onChange }: EstimateInputProps) {
   const [editValue, setEditValue] = useState(formatValue(value));
+
+  useEffect(() => {
+    setEditValue(formatValue(value));
+  }, [value]);
 
   const handleBlur = () => {
     const inputValue = editValue.toLowerCase();
