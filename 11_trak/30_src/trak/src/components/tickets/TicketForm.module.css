@@ -272,31 +272,59 @@
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
-  right: 0;
-  max-height: 200px;
-  overflow-y: auto;
+  min-width: 400px;
+  max-width: 600px;
   background: white;
   border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   margin-top: 0.25rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   z-index: 3;
+  padding: 0.5rem;
+}
+
+.tagSuggestionsContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0.25rem;
 }
 
 .tagSuggestion {
-  padding: 0.5rem;
-  cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  background-color: #f3f4f6;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  white-space: nowrap;
 }
 
 .tagSuggestion:hover {
-  background-color: #f3f4f6;
+  background-color: #e5e7eb;
+}
+
+.tagSuggestion.selected {
+  background-color: #e5e7eb;
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
 }
 
 .tagSampleColor {
-  width: 1rem;
-  height: 1rem;
+  width: 0.75rem;
+  height: 0.75rem;
   border-radius: 0.25rem;
+  flex-shrink: 0;
+}
+
+.noTags {
+  padding: 0.75rem;
+  color: #6b7280;
+  text-align: center;
+  font-size: 0.875rem;
 }
