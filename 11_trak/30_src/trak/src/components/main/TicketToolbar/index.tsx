@@ -5,8 +5,8 @@ import SlidePanel from '../../common/SlidePanel';
 import TicketForm from '../../TicketForm';
 import { Status, User } from '@/types';
 import { useApplication } from '@/contexts/ApplicationContext';
-import StatusFilter from '../TableView/components/StatusFilter';
-import AssigneeFilter from '../TableView/components/AssigneeFilter';
+import StatusFilter from './components/StatusFilter';
+import AssigneeFilter from './components/AssigneeFilter';
 import { useMemo } from 'react';
 
 interface TicketToolbarProps {
@@ -81,7 +81,6 @@ export default function TicketToolbar({
             selectedAssignees={selectedAssignees}
             onAssigneeChange={onAssigneeChange}
             assigneeCounts={assigneeCounts}
-            totalCount={tickets.length}
           />
         </div>
       </div>
