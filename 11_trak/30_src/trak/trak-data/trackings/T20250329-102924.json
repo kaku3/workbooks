@@ -10,7 +10,7 @@
   "assignees": [
     "admin@example.com"
   ],
-  "status": "in-progress",
+  "status": "close",
   "startDate": "2025-03-24",
   "dueDate": "2025-03-28",
   "estimate": 20,
@@ -21,6 +21,6 @@
   ],
   "id": "T20250329-102924",
   "createdAt": "2025-03-29T01:29:24.986Z",
-  "updatedAt": "2025-03-29T15:24:44.536Z",
+  "updatedAt": "2025-03-29T16:06:48.278Z",
   "ticketId": "T20250329-102924"
 }
