@@ -1,5 +1,5 @@
 import styles from './styles/TitleCell.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, KeyboardEvent } from 'react';
 import { useTags } from '../../../TagsContext';
 import { Tag } from '@/types';
 
@@ -23,7 +23,7 @@ export default function TitleCell({
   const { tags: availableTags, addTag } = useTags();
   const [tagInput, setTagInput] = useState('');
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
-  // 編集中のタグを管理
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [editingTags, setEditingTags] = useState<string[]>(tags);
 
   // 親コンポーネントからの新しい値を反映
@@ -44,6 +44,7 @@ export default function TitleCell({
           !target.closest(`.${styles.tagList}`)) {
         setIsTagEditing(false);
         setFilteredTags([]);
+        setSelectedIndex(-1);
       }
     };
 
@@ -81,6 +82,7 @@ export default function TitleCell({
       setIsTagEditing(false);
       setTagInput('');
       setFilteredTags([]);
+      setSelectedIndex(-1);
       setEditingCell?.(null);
     };
 
@@ -99,7 +101,8 @@ export default function TitleCell({
   };
 
   const showTagSuggestions = () => {
-    setFilteredTags(availableTags);
+    setFilteredTags(availableTags.filter(tag => !editingTags.includes(tag.id))
+      .sort((a, b) => a.name.localeCompare(b.name)));
   };
 
   const handleTagClick = (e: React.MouseEvent) => {
@@ -109,18 +112,52 @@ export default function TitleCell({
     showTagSuggestions();
   };
 
+  const generateTagColor = () => {
+    const colors = [
+      '#6366f1', // インディゴ
+      '#8b5cf6', // バイオレット
+      '#ec4899', // ピンク
+      '#f43f5e', // ローズ
+      '#ef4444', // レッド
+      '#f97316', // オレンジ
+      '#eab308', // イエロー
+      '#22c55e', // グリーン
+      '#14b8a6', // ティール
+      '#3b82f6', // ブルー
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setTagInput(value);
-    if (value.trim()) {
-      const filtered = availableTags.filter(tag =>
-        tag.name.toLowerCase().includes(value.toLowerCase()) ||
-        tag.id.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredTags(filtered);
-    } else {
-      setFilteredTags(availableTags);
+    setSelectedIndex(-1);
+
+    // 選択済みのタグを除外
+    const unselectedTags = availableTags.filter(tag => !editingTags.includes(tag.id));
+    
+    if (!value.trim()) {
+      // 未選択のタグを名前順でソート
+      setFilteredTags(unselectedTags.sort((a, b) => a.name.localeCompare(b.name)));
+      return;
     }
+
+    const searchValue = value.toLowerCase();
+    const filtered = unselectedTags
+      .map(tag => {
+        const nameLower = tag.name.toLowerCase();
+        // 完全一致、前方一致、部分一致の優先度を付ける
+        let priority = 0;
+        if (nameLower === searchValue) priority = 3;
+        else if (nameLower.startsWith(searchValue)) priority = 2;
+        else if (nameLower.includes(searchValue)) priority = 1;
+        return { tag, priority };
+      })
+      .filter(item => item.priority > 0)
+      .sort((a, b) => b.priority - a.priority || a.tag.name.localeCompare(b.tag.name))
+      .map(item => item.tag);
+
+    setFilteredTags(filtered);
   };
 
   const handleTagSelect = async (selectedTag: typeof availableTags[0]) => {
@@ -128,8 +165,8 @@ export default function TitleCell({
       setEditingTags([...editingTags, selectedTag.id]);
     }
     setTagInput('');
-    setFilteredTags([]);
-    showTagSuggestions();
+    setFilteredTags(availableTags.filter(tag => !editingTags.includes(tag.id)));
+    setSelectedIndex(-1);
   };
 
   const handleRemoveTag = (tagId: string, e: React.MouseEvent) => {
@@ -157,9 +194,12 @@ export default function TitleCell({
       return;
     }
 
+    const confirmed = window.confirm(`新しいタグ「${inputValue}」を作成しますか？`);
+    if (!confirmed) return;
+
     const newTag = await addTag({
       name: inputValue,
-      color: '#6366f1' // デフォルトカラー
+      color: generateTagColor()
     });
 
     if (newTag) {
@@ -208,6 +248,7 @@ export default function TitleCell({
     setIsTagEditing(false);
     setTagInput('');
     setFilteredTags([]);
+    setSelectedIndex(-1);
     setEditingCell?.(null);
   };
 
@@ -248,9 +289,38 @@ export default function TitleCell({
               placeholder="タグを入力..."
               value={tagInput}
               onChange={handleTagInputChange}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleNewTag();
+              onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                if (!filteredTags.length) {
+                  if (e.key === 'Enter') {
+                    handleNewTag();
+                  }
+                  return;
+                }
+
+                switch (e.key) {
+                  case 'ArrowDown':
+                    e.preventDefault();
+                    setSelectedIndex(prev => 
+                      prev < filteredTags.length - 1 ? prev + 1 : prev
+                    );
+                    break;
+                  case 'ArrowUp':
+                    e.preventDefault();
+                    setSelectedIndex(prev => prev > 0 ? prev - 1 : -1);
+                    break;
+                  case 'Enter':
+                    e.preventDefault();
+                    if (selectedIndex >= 0 && selectedIndex < filteredTags.length) {
+                      handleTagSelect(filteredTags[selectedIndex]);
+                    } else {
+                      handleNewTag();
+                    }
+                    break;
+                  case 'Escape':
+                    e.preventDefault();
+                    setIsTagEditing(false);
+                    setSelectedIndex(-1);
+                    break;
                 }
               }}
               autoFocus
@@ -258,23 +328,25 @@ export default function TitleCell({
             />
             {filteredTags.length > 0 && (
               <div className={styles.tagSuggestions}>
-                {filteredTags.map((tag: Tag) => (
-                  <div
-                    key={tag.id}
-                    className={styles.tagSuggestion}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleTagSelect(tag);
-                    }}
-                    tabIndex={0}
-                  >
-                    <span 
-                      className={styles.tagSampleColor}
-                      style={{ backgroundColor: tag.color }}
-                    />
-                    {tag.name} ({tag.id})
-                  </div>
-                ))}
+                <div className={styles.tagSuggestionsContent}>
+                  {filteredTags.map((tag: Tag, index) => (
+                    <div
+                      key={tag.id}
+                      className={`${styles.tagSuggestion} ${index === selectedIndex ? styles.selected : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTagSelect(tag);
+                      }}
+                      tabIndex={0}
+                    >
+                      <span 
+                        className={styles.tagSampleColor}
+                        style={{ backgroundColor: tag.color }}
+                      />
+                      {tag.name}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -285,7 +357,7 @@ export default function TitleCell({
             style={{ backgroundColor: '#e5e7eb', color: '#374151' }}
             onClick={(e) => {
               e.stopPropagation();
-              e.preventDefault(); // 追加: デフォルト動作を防止
+              e.preventDefault();
               setIsTagEditing(true);
               showTagSuggestions();
             }}

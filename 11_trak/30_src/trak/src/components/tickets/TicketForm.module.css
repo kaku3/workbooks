@@ -272,8 +272,7 @@
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
-  min-width: 400px;
-  max-width: 600px;
+  width: 400px;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
