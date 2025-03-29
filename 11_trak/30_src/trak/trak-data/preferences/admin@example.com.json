@@ -4,10 +4,13 @@
     "sortDirection": "desc",
     "selectedStatuses": [
       "open",
+      "in-progress",
+      "in-review",
       "completed",
+      "close",
       "blocked",
-      "waiting",
-      "in-progress"
-    ]
+      "waiting"
+    ],
+    "selectedAssignees": []
   }
 }

@@ -3,22 +3,26 @@
 import tableStyles from './styles/TableView.module.css';
 import dragStyles from './styles/DragDrop.module.css';
 import SlidePanel from '../../common/SlidePanel';
-import TicketForm from '../../Tickets/TicketForm';
+import TicketForm from '../../TicketForm';
 import { useEffect, useMemo, useState } from 'react';
 import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
 import { TableCell } from './components/TableCell';
+import FilterToolbar from './components/FilterToolbar';
 import { useApplication } from '@/contexts/ApplicationContext';
 import { useTableData } from './hooks/useTableData';
 import { useTableState } from './hooks/useTableState';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
-import { sortTickets, filterTicketsByStatus } from './utils/tableUtils';
+import { sortTickets, filterTicketsByStatus, filterTicketsByAssignee } from './utils/tableUtils';
 import { TABLE_COLUMNS } from './constants/tableColumns';
 import { TicketData, type ColumnKey } from '@/types';
 
 interface TableViewProps {
   selectedStatuses: string[];
+  selectedAssignees: string[];
+  onStatusChange: (statuses: string[]) => void;
+  onAssigneeChange: (assignees: string[]) => void;
 }
 
 interface DragOverState {
@@ -26,7 +30,12 @@ interface DragOverState {
   direction: 'top' | 'bottom' | null;
 }
 
-export default function TableView({ selectedStatuses }: TableViewProps) {
+export default function TableView({ 
+  selectedStatuses, 
+  selectedAssignees,
+  onStatusChange,
+  onAssigneeChange,
+}: TableViewProps) {
   // State for drag target
   const [dragOverState, setDragOverState] = useState<DragOverState>({ id: null, direction: null });
   const [draggableId, setDraggableId] = useState<string | null>(null);
@@ -96,29 +105,37 @@ export default function TableView({ selectedStatuses }: TableViewProps) {
   } = useApplication().slidePanelStore
 
   const displayTickets:TicketData[] = useMemo(() => {
-    const statusFilteredTickets = filterTicketsByStatus(tickets, selectedStatuses)
+    const statusFilteredTickets = filterTicketsByStatus(tickets, selectedStatuses);
+    const assigneeFilteredTickets = filterTicketsByAssignee(statusFilteredTickets, selectedAssignees);
     return sortTickets(
-      statusFilteredTickets,
+      assigneeFilteredTickets,
       sortColumn,
       sortDirection,
       sortOrders
     );
-  }, [tickets, selectedStatuses, sortColumn, sortDirection, sortOrders]);
+  }, [tickets, selectedStatuses, selectedAssignees, sortColumn, sortDirection, sortOrders]);
 
   const uiError = ticketsError || dataError;
   const isLoadingData = isLoadingTickets || isLoadingSortOrders;
 
   return (
     <TagsProvider>
-      <div 
-        className={tableStyles.container}
-        onClick={(e) => {
+      <div className={tableStyles.container} onClick={(e) => {
           const target = e.target as HTMLElement;
           if (!target.closest('table') && !target.closest('button')) {
             setEditingCell(null);
           }
         }}
       >
+        <FilterToolbar
+          tickets={tickets}
+          users={users}
+          statuses={statuses}
+          selectedStatuses={selectedStatuses}
+          selectedAssignees={selectedAssignees}
+          onStatusChange={onStatusChange}
+          onAssigneeChange={onAssigneeChange}
+        />
         <div className={tableStyles.tableContainer}>
           <table 
             className={tableStyles.table} 

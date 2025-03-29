@@ -2,7 +2,7 @@
 
 import styles from './TicketToolbar.module.css';
 import SlidePanel from '../../common/SlidePanel';
-import TicketForm from '../../Tickets/TicketForm';
+import TicketForm from '../../TicketForm';
 import { Status } from '@/types';
 import { useApplication } from '@/contexts/ApplicationContext'; // useTicketsをuseApplicationに変更
 

@@ -4,6 +4,7 @@ export interface TableViewPreferences {
   sortColumn: string | null;
   sortDirection: 'asc' | 'desc' | null;
   selectedStatuses: string[];
+  selectedAssignees: string[];
 }
 
 export interface Preferences {

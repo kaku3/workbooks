@@ -61,3 +61,13 @@ export const filterTicketsByStatus = (
   if (selectedStatuses.length === 0) return tickets;
   return tickets.filter(ticket => selectedStatuses.includes(ticket.status));
 };
+
+export const filterTicketsByAssignee = (
+  tickets: TicketData[],
+  selectedAssignees: string[]
+): TicketData[] => {
+  if (selectedAssignees.length === 0) return tickets;
+  return tickets.filter(ticket => 
+    ticket.assignees.some(assignee => selectedAssignees.includes(assignee))
+  );
+};

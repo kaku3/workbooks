@@ -6,12 +6,14 @@ interface TableState {
   sortColumn: ColumnKey | null;
   sortDirection: SortDirection;
   selectedStatuses: string[];
+  selectedAssignees: string[];
   editingCell: { id: string; key: ColumnKey } | null;
 }
 
 interface TableStateHook extends TableState {
   handleSort: (key: ColumnKey) => void;
   setSelectedStatuses: (statuses: string[]) => void;
+  setSelectedAssignees: (assignees: string[]) => void;
   setEditingCell: (cell: { id: string; key: ColumnKey } | null) => void;
   handleContainerClick: (e: React.MouseEvent) => void;
 }
@@ -21,6 +23,7 @@ export const useTableState = (): TableStateHook => {
   const [sortColumn, setSortColumn] = useState<ColumnKey | null>(preferences.tableView?.sortColumn as ColumnKey || null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(preferences.tableView?.sortDirection || null);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(preferences.tableView?.selectedStatuses || []);
+  const [selectedAssignees, setSelectedAssignees] = useState<string[]>(preferences.tableView?.selectedAssignees || []);
   const [editingCell, setEditingCell] = useState<{ id: string; key: ColumnKey } | null>(null);
 
   // 初期設定の適用
@@ -29,6 +32,7 @@ export const useTableState = (): TableStateHook => {
       setSortColumn(preferences.tableView.sortColumn as ColumnKey);
       setSortDirection(preferences.tableView.sortDirection);
       setSelectedStatuses(preferences.tableView.selectedStatuses);
+      setSelectedAssignees(preferences.tableView.selectedAssignees || []);
     }
   }, [preferences.tableView]);
 
@@ -55,6 +59,7 @@ export const useTableState = (): TableStateHook => {
       sortColumn: newSortColumn,
       sortDirection: newSortDirection,
       selectedStatuses,
+      selectedAssignees,
     });
   }, [sortColumn, sortDirection]);
 
@@ -72,8 +77,19 @@ export const useTableState = (): TableStateHook => {
       sortColumn,
       sortDirection,
       selectedStatuses: newStatuses,
+      selectedAssignees,
     });
-  }, [sortColumn, sortDirection, updateTableViewPreferences]);
+  }, [sortColumn, sortDirection, selectedAssignees, updateTableViewPreferences]);
+
+  const handleAssigneeChange = useCallback(async (newAssignees: string[]) => {
+    setSelectedAssignees(newAssignees);
+    await updateTableViewPreferences({
+      sortColumn,
+      sortDirection,
+      selectedStatuses,
+      selectedAssignees: newAssignees,
+    });
+  }, [sortColumn, sortDirection, selectedStatuses, updateTableViewPreferences]);
 
   return {
     sortColumn,
@@ -81,7 +97,9 @@ export const useTableState = (): TableStateHook => {
     selectedStatuses,
     editingCell,
     handleSort,
+    selectedAssignees,
     setSelectedStatuses: handleStatusChange,
+    setSelectedAssignees: handleAssigneeChange,
     setEditingCell,
     handleContainerClick,
   };

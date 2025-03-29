@@ -18,27 +18,50 @@ interface MainPageProps {
 export default function MainPage({ initialTicketId }: MainPageProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
   const { statuses } = useTableData();
   const { preferences, updateTableViewPreferences, isLoadingPreferences } = useApplication().preferencesStore;
 
-  // Restore selectedStatuses from preferences when loaded
+  // Restore selected filters from preferences when loaded
   useEffect(() => {
-    if (!isLoadingPreferences && preferences.tableView?.selectedStatuses) {
-      setSelectedStatuses(preferences.tableView.selectedStatuses);
+    if (!isLoadingPreferences && preferences.tableView) {
+      if (preferences.tableView.selectedStatuses) {
+        setSelectedStatuses(preferences.tableView.selectedStatuses);
+      }
+      if (preferences.tableView.selectedAssignees) {
+        setSelectedAssignees(preferences.tableView.selectedAssignees);
+      }
     }
-  }, [preferences.tableView?.selectedStatuses, isLoadingPreferences]);
+  }, [preferences.tableView, isLoadingPreferences]);
 
-  // Handle status changes and save to preferences
+  // Handle filter changes and save to preferences
   const handleStatusChange = (newStatuses: string[]) => {
     setSelectedStatuses(newStatuses);
     const currentPreferences = preferences.tableView || {
       sortColumn: null,
       sortDirection: null,
-      selectedStatuses: []
+      selectedStatuses: [],
+      selectedAssignees: []
     };
     updateTableViewPreferences({
       ...currentPreferences,
-      selectedStatuses: newStatuses
+      selectedStatuses: newStatuses,
+      selectedAssignees: currentPreferences.selectedAssignees
+    });
+  };
+
+  const handleAssigneeChange = (newAssignees: string[]) => {
+    setSelectedAssignees(newAssignees);
+    const currentPreferences = preferences.tableView || {
+      sortColumn: null,
+      sortDirection: null,
+      selectedStatuses: [],
+      selectedAssignees: []
+    };
+    updateTableViewPreferences({
+      ...currentPreferences,
+      selectedStatuses: currentPreferences.selectedStatuses,
+      selectedAssignees: newAssignees
     });
   };
 
@@ -88,6 +111,9 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
         {viewMode === 'table' ? (
           <TableView 
             selectedStatuses={selectedStatuses}
+            selectedAssignees={selectedAssignees}
+            onStatusChange={handleStatusChange}
+            onAssigneeChange={handleAssigneeChange}
           />
         ) : (
           <GanttView
