@@ -4,6 +4,12 @@ export interface Tag {
   color: string;
 }
 
+export interface CategoryTag {
+  categoryId: string;
+  name: string;
+  tags: Tag[];
+}
+
 export interface User {
   id: string;
   name: string;

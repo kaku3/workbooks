@@ -1,39 +1,51 @@
 {
   "tags": [
     {
-      "id": "feature",
-      "name": "機能追加",
-      "color": "#2563eb"
+      "categoryId": "taskType",
+      "name": "タスク種別",
+      "tags": [
+        {
+          "id": "feature",
+          "name": "機能追加",
+          "color": "#2563eb"
+        },
+        {
+          "id": "bug",
+          "name": "バグ",
+          "color": "#dc2626"
+        },
+        {
+          "id": "improvement",
+          "name": "改善",
+          "color": "#16a34a"
+        },
+        {
+          "id": "documentation",
+          "name": "ドキュメント",
+          "color": "#7c3aed"
+        }
+      ]
     },
     {
-      "id": "bug",
-      "name": "バグ",
-      "color": "#dc2626"
-    },
-    {
-      "id": "improvement",
-      "name": "改善",
-      "color": "#16a34a"
-    },
-    {
-      "id": "documentation",
-      "name": "ドキュメント",
-      "color": "#7c3aed"
-    },
-    {
-      "id": "common",
-      "name": "共通",
-      "color": "#6b7280"
-    },
-    {
-      "id": "SC201",
-      "name": "SC201 - メイン画面",
-      "color": "#0ea5e9"
-    },
-    {
-      "id": "SC301",
-      "name": "SC301 - チケット新規作成/編集",
-      "color": "#8b5cf6"
+      "categoryId": "screen",
+      "name": "画面",
+      "tags": [
+        {
+          "id": "SC000",
+          "name": "共通",
+          "color": "#6b7280"
+        },
+        {
+          "id": "SC201",
+          "name": "SC201 - メイン画面",
+          "color": "#0ea5e9"
+        },
+        {
+          "id": "SC301",
+          "name": "SC301 - チケット新規作成/編集",
+          "color": "#8b5cf6"
+        }
+      ]
     }
   ]
 }

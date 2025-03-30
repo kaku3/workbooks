@@ -2,7 +2,7 @@
 
 import { useEffect, useState, KeyboardEvent } from 'react';
 import { useTags } from '../main/TagsContext';
-import { Tag } from '@/types';
+import { Tag, CategoryTag } from '@/types';
 import styles from './TicketForm.module.css';
 
 interface TagInputProps {
@@ -11,9 +11,9 @@ interface TagInputProps {
 }
 
 export default function TagInput({ tags, onChange }: TagInputProps) {
-  const { tags: availableTags, addTag } = useTags();
+  const { tags: availableTags, categories, addTag } = useTags();
   const [tagInput, setTagInput] = useState('');
-  const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<CategoryTag[]>([]);
   const [isTagEditing, setIsTagEditing] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -44,31 +44,29 @@ export default function TagInput({ tags, onChange }: TagInputProps) {
     setTagInput(value);
     setSelectedIndex(-1);
 
-    // 選択済みのタグを除外
-    const unselectedTags = availableTags.filter(tag => !tags.includes(tag.id));
-    
-    if (!value.trim()) {
-      // 未選択のタグを名前順でソート
-      setFilteredTags(unselectedTags.sort((a, b) => a.name.localeCompare(b.name)));
-      return;
-    }
-
     const searchValue = value.toLowerCase();
-    const filtered = unselectedTags
-      .map(tag => {
-        const nameLower = tag.name.toLowerCase();
-        // 完全一致、前方一致、部分一致の優先度を付ける
-        let priority = 0;
-        if (nameLower === searchValue) priority = 3;
-        else if (nameLower.startsWith(searchValue)) priority = 2;
-        else if (nameLower.includes(searchValue)) priority = 1;
-        return { tag, priority };
-      })
-      .filter(item => item.priority > 0)
-      .sort((a, b) => b.priority - a.priority || a.tag.name.localeCompare(b.tag.name))
-      .map(item => item.tag);
 
-    setFilteredTags(filtered);
+    // カテゴリ内のタグをフィルタリング
+    const filtered = categories.map(category => ({
+      ...category,
+      tags: category.tags
+        .filter(tag => !tags.includes(tag.id)) // 選択済みのタグを除外
+        .map(tag => {
+          const nameLower = tag.name.toLowerCase();
+          // 完全一致、前方一致、部分一致の優先度を付ける
+          let priority = 0;
+          if (!value.trim()) priority = 1; // 空入力時は全て表示
+          else if (nameLower === searchValue) priority = 3;
+          else if (nameLower.startsWith(searchValue)) priority = 2;
+          else if (nameLower.includes(searchValue)) priority = 1;
+          return { tag, priority };
+        })
+        .filter(item => item.priority > 0)
+        .sort((a, b) => b.priority - a.priority || a.tag.name.localeCompare(b.tag.name))
+        .map(item => item.tag)
+    })).filter(category => category.tags.length > 0); // 空のカテゴリを除外
+
+    setFilteredCategories(filtered);
   };
 
   const handleTagSelect = async (selectedTag: Tag) => {
@@ -160,7 +158,11 @@ export default function TagInput({ tags, onChange }: TagInputProps) {
           onChange={handleTagInputChange}
           onFocus={() => {
             setIsTagEditing(true);
-            setFilteredTags(availableTags.filter(tag => !tags.includes(tag.id)));
+            const filtered = categories.map(category => ({
+              ...category,
+              tags: category.tags.filter(tag => !tags.includes(tag.id))
+            })).filter(category => category.tags.length > 0);
+            setFilteredCategories(filtered);
             setShowSuggestions(true);
           }}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
@@ -175,8 +177,11 @@ export default function TagInput({ tags, onChange }: TagInputProps) {
             switch (e.key) {
               case 'ArrowDown':
                 e.preventDefault();
+                e.preventDefault();
+                // すべてのタグを一次元配列にして選択インデックスを管理
+                const allTags = filteredCategories.flatMap(c => c.tags);
                 setSelectedIndex(prev => 
-                  prev < filteredTags.length - 1 ? prev + 1 : prev
+                  prev < allTags.length - 1 ? prev + 1 : prev
                 );
                 break;
               case 'ArrowUp':
@@ -185,8 +190,11 @@ export default function TagInput({ tags, onChange }: TagInputProps) {
                 break;
               case 'Enter':
                 e.preventDefault();
-                if (selectedIndex >= 0 && selectedIndex < filteredTags.length) {
-                  handleTagSelect(filteredTags[selectedIndex]);
+                if (selectedIndex >= 0) {
+                  const allTags = filteredCategories.flatMap(c => c.tags);
+                  if (selectedIndex < allTags.length) {
+                    handleTagSelect(allTags[selectedIndex]);
+                  }
                 } else {
                   handleNewTag();
                 }
@@ -202,18 +210,32 @@ export default function TagInput({ tags, onChange }: TagInputProps) {
         {showSuggestions && (
           <div className={styles.tagSuggestions}>
             <div className={styles.tagSuggestionsContent}>
-              {filteredTags.length > 0 ? (
-                filteredTags.map((tag, index) => (
-                  <div
-                    key={tag.id}
-                    className={`${styles.tagSuggestion} ${index === selectedIndex ? styles.selected : ''}`}
-                    onClick={() => handleTagSelect(tag)}
-                  >
-                    <span 
-                      className={styles.tagSampleColor}
-                      style={{ backgroundColor: tag.color }}
-                    />
-                    {tag.name}
+              {filteredCategories.length > 0 ? (
+                filteredCategories.map(category => (
+                  <div key={category.categoryId}>
+                    <div className={styles.categoryHeader}>
+                      {category.name}
+                    </div>
+                    {category.tags.map((tag: Tag, index: number) => {
+                      // カテゴリごとの開始インデックスを計算
+                      const globalIndex = filteredCategories
+                        .slice(0, filteredCategories.findIndex(c => c.categoryId === category.categoryId))
+                        .reduce((acc, c) => acc + c.tags.length, 0) + index;
+
+                      return (
+                        <div
+                          key={tag.id}
+                          className={`${styles.tagSuggestion} ${globalIndex === selectedIndex ? styles.selected : ''}`}
+                          onClick={() => handleTagSelect(tag)}
+                        >
+                          <span 
+                            className={styles.tagSampleColor}
+                            style={{ backgroundColor: tag.color }}
+                          />
+                          {tag.name}
+                        </div>
+                      );
+                    })}
                   </div>
                 ))
               ) : (

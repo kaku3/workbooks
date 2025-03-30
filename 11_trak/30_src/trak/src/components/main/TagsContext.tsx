@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { Tag } from '@/types';
+import { Tag, CategoryTag } from '@/types';
 
 interface TagsContextType {
   tags: Tag[];
+  categories: CategoryTag[];
   isLoading: boolean;
   error: string | null;
   addTag: (tag: Omit<Tag, 'id'>) => Promise<Tag | null>;
@@ -15,6 +16,7 @@ const TagsContext = createContext<TagsContextType | undefined>(undefined);
 
 export function TagsProvider({ children }: { children: React.ReactNode }) {
   const [tags, setTags] = useState<Tag[]>([]);
+  const [categories, setCategories] = useState<CategoryTag[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,6 +30,7 @@ export function TagsProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
       if (response.ok) {
         setTags(data.tags);
+        setCategories(data.categories.tags);
       } else {
         setError(data.error || 'Failed to load tags');
       }
@@ -67,7 +70,7 @@ export function TagsProvider({ children }: { children: React.ReactNode }) {
   const getTag = (id: string) => tags.find(tag => tag.id === id);
 
   return (
-    <TagsContext.Provider value={{ tags, isLoading, error, addTag, getTag }}>
+    <TagsContext.Provider value={{ tags, categories, isLoading, error, addTag, getTag }}>
       {children}
     </TagsContext.Provider>
   );

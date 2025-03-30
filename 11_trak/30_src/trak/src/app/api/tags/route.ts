@@ -2,13 +2,36 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 
+interface Tag {
+  id: string;
+  name: string;
+  color: string;
+}
+
+interface CategoryTag {
+  categoryId: string;
+  name: string;
+  tags: Tag[];
+}
+
 const configPath = path.join(process.cwd(), 'trak-data', 'configs', 'tags.json');
+
+// Helper function to flatten categorized tags
+function flattenTags(categorizedTags: CategoryTag[]): Tag[] {
+  return categorizedTags.reduce<Tag[]>((acc, category) => {
+    return [...acc, ...category.tags];
+  }, []);
+}
 
 // GET /api/tags
 export async function GET() {
   try {
     const data = await fs.readFile(configPath, 'utf8');
-    return NextResponse.json(JSON.parse(data));
+    const parsedData = JSON.parse(data);
+    return NextResponse.json({
+      categories: parsedData,
+      tags: flattenTags(parsedData.tags)
+    });
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       // ファイルが存在しない場合は空の配列を返す
