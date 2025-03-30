@@ -1,10 +1,14 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { useApplication } from '@/contexts/ApplicationContext';
 import styles from './GanttView.module.css';
 import { TicketData } from '@/types';
 import { filterTicketsByStatus, filterTicketsByAssignee } from '../TableView/utils/tableUtils';
+import TaskList from './components/TaskList';
+import Timeline from './components/Timeline';
+
+type Scale = 'day' | 'week' | 'month';
 
 interface GanttViewProps {
   selectedStatuses: string[];
@@ -15,6 +19,13 @@ export default function GanttView({
   selectedStatuses,
   selectedAssignees,
 }: GanttViewProps) {
+  // スケール切替のState
+  const [scale, setScale] = useState<Scale>('day');
+
+  // スクロール同期用のRef
+  const taskListRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+
   const {
     tickets,
     isLoadingTickets,
@@ -27,6 +38,36 @@ export default function GanttView({
     return filterTicketsByAssignee(statusFilteredTickets, selectedAssignees);
   }, [tickets, selectedStatuses, selectedAssignees]);
 
+  // タイムラインの日付範囲の計算
+  const timelineRange = useMemo(() => {
+    const now = new Date();
+    const start = new Date(now);
+    start.setDate(now.getDate() - 7); // 1週間前から
+    const end = new Date(now);
+    end.setDate(now.getDate() + 30); // 30日後まで
+
+    return { start, end };
+  }, []);
+
+  // スクロールハンドラー
+  const handleTaskListScroll = (scrollTop: number) => {
+    if (timelineRef.current) {
+      const timelineContent = timelineRef.current;
+      if (timelineContent.scrollTop !== scrollTop) {
+        timelineContent.scrollTop = scrollTop;
+      }
+    }
+  };
+
+  const handleTimelineScroll = (scrollTop: number) => {
+    if (taskListRef.current) {
+      const taskListContent = taskListRef.current;
+      if (taskListContent.scrollTop !== scrollTop) {
+        taskListContent.scrollTop = scrollTop;
+      }
+    }
+  };
+
   if (isLoadingTickets) {
     return <div className={styles.container}>Loading...</div>;
   }
@@ -37,33 +78,44 @@ export default function GanttView({
 
   return (
     <div className={styles.container}>
+      {/* スケール切替ボタン */}
+      <div className={styles.scaleSelector}>
+        <button
+          className={`${styles.scaleButton} ${scale === 'day' ? styles.active : ''}`}
+          onClick={() => setScale('day')}
+        >
+          日
+        </button>
+        <button
+          className={`${styles.scaleButton} ${scale === 'week' ? styles.active : ''}`}
+          onClick={() => setScale('week')}
+        >
+          週
+        </button>
+        <button
+          className={`${styles.scaleButton} ${scale === 'month' ? styles.active : ''}`}
+          onClick={() => setScale('month')}
+        >
+          月
+        </button>
+      </div>
+
       <div className={styles.ganttChart}>
         {/* タスク一覧部分（左側） */}
-        <div className={styles.taskList}>
-          <div className={styles.taskHeader}>
-            <div className={styles.headerCell}>タイトル</div>
-            <div className={styles.headerCell}>ステータス</div>
-            <div className={styles.headerCell}>担当者</div>
-            <div className={styles.headerCell}>見積</div>
-          </div>
-          <div className={styles.taskRows}>
-            {displayTickets.map(ticket => (
-              <div key={ticket.id} className={styles.taskRow}>
-                <div className={styles.cell}>{ticket.title}</div>
-                <div className={styles.cell}>{ticket.status}</div>
-                <div className={styles.cell}>
-                  {ticket.assignees?.join(', ')}
-                </div>
-                <div className={styles.cell}>{ticket.estimate}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <TaskList
+          ref={taskListRef}
+          tickets={displayTickets}
+          onScroll={handleTaskListScroll}
+        />
 
         {/* タイムライン部分（右側） */}
-        <div className={styles.timeline}>
-          {/* TODO: タイムライン実装 */}
-        </div>
+        <Timeline
+          ref={timelineRef}
+          tickets={displayTickets}
+          scale={scale}
+          timelineRange={timelineRange}
+          onScroll={handleTimelineScroll}
+        />
       </div>
     </div>
   );
