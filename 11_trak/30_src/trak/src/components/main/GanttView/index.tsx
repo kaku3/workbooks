@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useApplication } from '@/contexts/ApplicationContext';
 import styles from './GanttView.module.css';
 import { TicketData } from '@/types';
@@ -22,18 +22,10 @@ export default function GanttView({
   // スケール切替のState
   const [scale, setScale] = useState<Scale>('day');
 
-  // スクロール位置の状態
-  const [scrollTop, setScrollTop] = useState(0);
-
-  // スクロール同期用のRef
-  const taskListRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
-
   const {
-    tickets,
-    isLoadingTickets,
-    ticketsError,
-  } = useApplication().ticketStore;
+    ticketStore: { tickets, isLoadingTickets, ticketsError },
+    projectStore: { project, isLoadingProject, projectError, fetchProject },
+  } = useApplication();
 
   // フィルター適用済みのチケット一覧
   const displayTickets: TicketData[] = useMemo(() => {
@@ -41,28 +33,34 @@ export default function GanttView({
     return filterTicketsByAssignee(statusFilteredTickets, selectedAssignees);
   }, [tickets, selectedStatuses, selectedAssignees]);
 
+  // プロジェクト情報の取得
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
+
   // タイムラインの日付範囲の計算
   const timelineRange = useMemo(() => {
+    if (project) {
+      return {
+        start: new Date(project.beginDate),
+        end: new Date(project.endDate)
+      };
+    }
+    // プロジェクト情報がない場合はデフォルト値
     const now = new Date();
-    const start = new Date(now);
-    start.setDate(now.getDate() - 7); // 1週間前から
-    const end = new Date(now);
-    end.setDate(now.getDate() + 30); // 30日後まで
+    return {
+      start: new Date(now.setDate(now.getDate() - 7)),
+      end: new Date(now.setDate(now.getDate() + 37))
+    };
+  }, [project]);
 
-    return { start, end };
-  }, []);
 
-  // タイムラインのスクロールハンドラー
-  const handleTimelineScroll = (scrollTop: number) => {
-    setScrollTop(scrollTop);
-  };
-
-  if (isLoadingTickets) {
+  if (isLoadingTickets || isLoadingProject) {
     return <div className={styles.container}>Loading...</div>;
   }
 
-  if (ticketsError) {
-    return <div className={styles.container}>Error: {ticketsError}</div>;
+  if (ticketsError || projectError) {
+    return <div className={styles.container}>Error: {ticketsError || projectError}</div>;
   }
 
   return (
@@ -92,18 +90,14 @@ export default function GanttView({
       <div className={styles.ganttChart}>
         {/* タスク一覧部分（左側） */}
         <TaskList
-          ref={taskListRef}
           tickets={displayTickets}
-          scrollTop={scrollTop}
         />
 
         {/* タイムライン部分（右側） */}
         <Timeline
-          ref={timelineRef}
           tickets={displayTickets}
           scale={scale}
           timelineRange={timelineRange}
-          onScroll={handleTimelineScroll}
         />
       </div>
     </div>

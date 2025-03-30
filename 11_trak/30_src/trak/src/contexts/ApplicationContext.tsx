@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, ReactNode } from 'react';
 import { TicketStore, useTicketStore } from './features/ticketStore';
 import { TicketSortStore, useTicketSortStore } from './features/ticketSortStore';
+import { ProjectStore, useProjectStore } from './features/projectStore';
 
 import { SlidePanelStore, useSlidePanel } from './ui/slidePanel';
 import { PreferencesStore, usePreferencesStore } from './features/preferencesStore';
@@ -13,6 +14,7 @@ interface ApplicationContextType {
   ticketSortStore: TicketSortStore;
   slidePanelStore: SlidePanelStore;
   preferencesStore: PreferencesStore;
+  projectStore: ProjectStore;
 }
 const ApplicationContext = createContext<ApplicationContextType | null>(null);
 
@@ -28,12 +30,14 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
   const ticketSortStore = useTicketSortStore();
   const slidePanelStore = useSlidePanel(initialTicketId);
   const preferencesStore = usePreferencesStore();
+  const projectStore = useProjectStore();
 
   // アプリ起動時にチケットを取得
   useEffect(() => {
     preferencesStore.fetchPreferences();
     ticketStore.fetchTickets();
     ticketSortStore.fetchSortOrders();
+    projectStore.fetchProject();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -42,6 +46,7 @@ export const ApplicationProvider = ({ children, initialTicketId }: ApplicationPr
     ticketSortStore,    // チケットソート関連
     slidePanelStore,    // スライドパネル関連
     preferencesStore, // ユーザー設定関連
+    projectStore,     // プロジェクト設定関連
   };
 
   return (

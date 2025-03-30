@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import { TicketData } from '@/types';
 import styles from '../GanttView.module.css';
 
@@ -9,15 +8,13 @@ interface TimelineProps {
     start: Date;
     end: Date;
   };
-  onScroll: (scrollTop: number) => void;
 }
 
-const Timeline = forwardRef<HTMLDivElement, TimelineProps>(({ 
+export default function Timeline({ 
   tickets, 
   scale, 
   timelineRange,
-  onScroll 
-}, ref) => {
+}: TimelineProps) {
   // スケールに応じた日付の配列を生成
   const generateTimelineDates = () => {
     const dates: Date[] = [];
@@ -42,38 +39,44 @@ const Timeline = forwardRef<HTMLDivElement, TimelineProps>(({
   };
 
   // 日付のフォーマット
-  const formatDate = (date: Date): string => {
+  const formatDate = (date: Date, prevDate: Date | null): string => {
+    const isMonthChange = !prevDate || prevDate.getMonth() !== date.getMonth();
+
     switch (scale) {
       case 'day':
-        return `${date.getMonth() + 1}/${date.getDate()}`;
       case 'week':
-        return `${date.getMonth() + 1}/${date.getDate()}`;
+        return isMonthChange ? `${date.getMonth() + 1}/${date.getDate()}` : `${date.getDate()}`;
       case 'month':
         return `${date.getMonth() + 1}月`;
     }
   };
 
   const timelineDates = generateTimelineDates();
+  let prevDate: Date | null = null;
   const cellWidth = scale === 'day' ? 24 : scale === 'week' ? 48 : 96;
+
+  // タイムラインの総幅を計算
+  const totalWidth = timelineDates.length * cellWidth;
+  const containerStyle = { width: `${totalWidth}px` };
 
   return (
     <div className={styles.timeline}>
-      <div className={styles.timelineHeader}>
-        {timelineDates.map((date, index) => (
-          <div
-            key={index}
-            className={styles.timelineHeaderCell}
-            style={{ width: `${cellWidth}px` }}
-          >
-            {formatDate(date)}
-          </div>
-        ))}
+      <div className={styles.timelineHeader} style={containerStyle}>
+        {timelineDates.map((date, index) => {
+          const formattedDate = formatDate(date, prevDate);
+          prevDate = date;
+          return (
+            <div
+              key={index}
+              className={styles.timelineHeaderCell}
+              style={{ width: `${cellWidth}px` }}
+            >
+              {formattedDate}
+            </div>
+          );
+        })}
       </div>
-      <div 
-        ref={ref}
-        className={styles.timelineContent}
-        onScroll={(e) => onScroll(e.currentTarget.scrollTop)}
-      >
+      <div className={styles.timelineContent} style={containerStyle}>
         {tickets.map(ticket => {
           // チケットの開始日と終了日を取得
           const startDate = ticket.startDate ? new Date(ticket.startDate) : null;
@@ -82,7 +85,10 @@ const Timeline = forwardRef<HTMLDivElement, TimelineProps>(({
           // 日付が設定されていない場合はバーを表示しない
           if (!startDate || !endDate) {
             return (
-              <div key={ticket.id} className={styles.timelineRow} />
+              <div 
+                key={ticket.id} 
+                className={styles.timelineRow}
+              />
             );
           }
 
@@ -102,7 +108,10 @@ const Timeline = forwardRef<HTMLDivElement, TimelineProps>(({
           const width = duration * cellWidth;
 
           return (
-            <div key={ticket.id} className={styles.timelineRow}>
+            <div 
+              key={ticket.id} 
+              className={styles.timelineRow}
+            >
               <div 
                 className={styles.timelineBar}
                 style={{
@@ -118,8 +127,4 @@ const Timeline = forwardRef<HTMLDivElement, TimelineProps>(({
       </div>
     </div>
   );
-});
-
-Timeline.displayName = 'Timeline';
-
-export default Timeline;
+}
