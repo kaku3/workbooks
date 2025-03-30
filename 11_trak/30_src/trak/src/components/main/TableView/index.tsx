@@ -212,7 +212,10 @@ export default function TableView({
                           }
                         }}
                         onEdit={key => setEditingCell({ id: ticket.id!, key })}
-                        onEditTicket={openEditTicket}
+                        onEditTicket={(id) => {
+                          setEditingCell(null);
+                          openEditTicket(id);
+                        }}
                         onDelete={deleteTicket}
                         onEnableDrag={(enable) => {
                           if (ticket.id) {
