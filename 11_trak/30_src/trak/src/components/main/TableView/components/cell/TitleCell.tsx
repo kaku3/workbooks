@@ -1,7 +1,7 @@
 import styles from './styles/TitleCell.module.css';
 import { useEffect, useState, KeyboardEvent } from 'react';
 import { useTags } from '../../../TagsContext';
-import { Tag } from '@/types';
+import { Tag, CategoryTag } from '@/types';
 
 interface TitleCellProps {
   setEditingCell?: (value: null) => void;
@@ -20,9 +20,9 @@ export default function TitleCell({
 }: TitleCellProps): JSX.Element {
   const [editValue, setEditValue] = useState(value);
   const [isTagEditing, setIsTagEditing] = useState(false);
-  const { tags: availableTags, addTag } = useTags();
+  const { tags: availableTags, categories, addTag } = useTags();
   const [tagInput, setTagInput] = useState('');
-  const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<CategoryTag[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [editingTags, setEditingTags] = useState<string[]>(tags);
 
@@ -43,7 +43,7 @@ export default function TitleCell({
           !target.closest(`.${styles.tagInput}`) &&
           !target.closest(`.${styles.tagList}`)) {
         setIsTagEditing(false);
-        setFilteredTags([]);
+        setFilteredCategories([]);
         setSelectedIndex(-1);
       }
     };
@@ -81,7 +81,7 @@ export default function TitleCell({
 
       setIsTagEditing(false);
       setTagInput('');
-      setFilteredTags([]);
+      setFilteredCategories([]);
       setSelectedIndex(-1);
       setEditingCell?.(null);
     };
@@ -101,8 +101,11 @@ export default function TitleCell({
   };
 
   const showTagSuggestions = () => {
-    setFilteredTags(availableTags.filter(tag => !editingTags.includes(tag.id))
-      .sort((a, b) => a.name.localeCompare(b.name)));
+    const filtered = categories.map(category => ({
+      ...category,
+      tags: category.tags.filter(tag => !editingTags.includes(tag.id))
+    })).filter(category => category.tags.length > 0);
+    setFilteredCategories(filtered);
   };
 
   const handleTagClick = (e: React.MouseEvent) => {
@@ -133,39 +136,37 @@ export default function TitleCell({
     setTagInput(value);
     setSelectedIndex(-1);
 
-    // 選択済みのタグを除外
-    const unselectedTags = availableTags.filter(tag => !editingTags.includes(tag.id));
-    
-    if (!value.trim()) {
-      // 未選択のタグを名前順でソート
-      setFilteredTags(unselectedTags.sort((a, b) => a.name.localeCompare(b.name)));
-      return;
-    }
-
     const searchValue = value.toLowerCase();
-    const filtered = unselectedTags
-      .map(tag => {
-        const nameLower = tag.name.toLowerCase();
-        // 完全一致、前方一致、部分一致の優先度を付ける
-        let priority = 0;
-        if (nameLower === searchValue) priority = 3;
-        else if (nameLower.startsWith(searchValue)) priority = 2;
-        else if (nameLower.includes(searchValue)) priority = 1;
-        return { tag, priority };
-      })
-      .filter(item => item.priority > 0)
-      .sort((a, b) => b.priority - a.priority || a.tag.name.localeCompare(b.tag.name))
-      .map(item => item.tag);
 
-    setFilteredTags(filtered);
+    // カテゴリ内のタグをフィルタリング
+    const filtered = categories.map(category => ({
+      ...category,
+      tags: category.tags
+        .filter(tag => !editingTags.includes(tag.id))
+        .map(tag => {
+          const nameLower = tag.name.toLowerCase();
+          // 完全一致、前方一致、部分一致の優先度を付ける
+          let priority = 0;
+          if (!value.trim()) priority = 1; // 空入力時は全て表示
+          else if (nameLower === searchValue) priority = 3;
+          else if (nameLower.startsWith(searchValue)) priority = 2;
+          else if (nameLower.includes(searchValue)) priority = 1;
+          return { tag, priority };
+        })
+        .filter(item => item.priority > 0)
+        .sort((a, b) => b.priority - a.priority || a.tag.name.localeCompare(b.tag.name))
+        .map(item => item.tag)
+    })).filter(category => category.tags.length > 0);
+
+    setFilteredCategories(filtered);
   };
 
-  const handleTagSelect = async (selectedTag: typeof availableTags[0]) => {
+  const handleTagSelect = async (selectedTag: Tag) => {
     if (!editingTags.includes(selectedTag.id)) {
       setEditingTags([...editingTags, selectedTag.id]);
     }
     setTagInput('');
-    setFilteredTags(availableTags.filter(tag => !editingTags.includes(tag.id)));
+    showTagSuggestions();
     setSelectedIndex(-1);
   };
 
@@ -189,7 +190,7 @@ export default function TitleCell({
         setEditingTags([...editingTags, existingTag.id]);
       }
       setTagInput('');
-      setFilteredTags([]);
+      setFilteredCategories([]);
       showTagSuggestions();
       return;
     }
@@ -205,7 +206,7 @@ export default function TitleCell({
     if (newTag) {
       setEditingTags([...editingTags, newTag.id]);
       setTagInput('');
-      setFilteredTags([]);
+      setFilteredCategories([]);
       showTagSuggestions();
     }
   };
@@ -247,7 +248,7 @@ export default function TitleCell({
     
     setIsTagEditing(false);
     setTagInput('');
-    setFilteredTags([]);
+    setFilteredCategories([]);
     setSelectedIndex(-1);
     setEditingCell?.(null);
   };
@@ -290,7 +291,7 @@ export default function TitleCell({
               value={tagInput}
               onChange={handleTagInputChange}
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                if (!filteredTags.length) {
+                if (!filteredCategories.length) {
                   if (e.key === 'Enter') {
                     handleNewTag();
                   }
@@ -300,8 +301,10 @@ export default function TitleCell({
                 switch (e.key) {
                   case 'ArrowDown':
                     e.preventDefault();
+                    // すべてのタグを一次元配列にして選択インデックスを管理
+                    const allTags = filteredCategories.flatMap(c => c.tags);
                     setSelectedIndex(prev => 
-                      prev < filteredTags.length - 1 ? prev + 1 : prev
+                      prev < allTags.length - 1 ? prev + 1 : prev
                     );
                     break;
                   case 'ArrowUp':
@@ -310,8 +313,11 @@ export default function TitleCell({
                     break;
                   case 'Enter':
                     e.preventDefault();
-                    if (selectedIndex >= 0 && selectedIndex < filteredTags.length) {
-                      handleTagSelect(filteredTags[selectedIndex]);
+                    if (selectedIndex >= 0) {
+                      const allTags = filteredCategories.flatMap(c => c.tags);
+                      if (selectedIndex < allTags.length) {
+                        handleTagSelect(allTags[selectedIndex]);
+                      }
                     } else {
                       handleNewTag();
                     }
@@ -326,24 +332,38 @@ export default function TitleCell({
               autoFocus
               onClick={(e) => e.stopPropagation()}
             />
-            {filteredTags.length > 0 && (
+            {filteredCategories.length > 0 && (
               <div className={styles.tagSuggestions}>
                 <div className={styles.tagSuggestionsContent}>
-                  {filteredTags.map((tag: Tag, index) => (
-                    <div
-                      key={tag.id}
-                      className={`${styles.tagSuggestion} ${index === selectedIndex ? styles.selected : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleTagSelect(tag);
-                      }}
-                      tabIndex={0}
-                    >
-                      <span 
-                        className={styles.tagSampleColor}
-                        style={{ backgroundColor: tag.color }}
-                      />
-                      {tag.name}
+                  {filteredCategories.map(category => (
+                    <div key={category.categoryId}>
+                      <div className={styles.categoryHeader}>
+                        {category.name}
+                      </div>
+                      {category.tags.map((tag: Tag, index: number) => {
+                        // カテゴリごとの開始インデックスを計算
+                        const globalIndex = filteredCategories
+                          .slice(0, filteredCategories.findIndex(c => c.categoryId === category.categoryId))
+                          .reduce((acc, c) => acc + c.tags.length, 0) + index;
+
+                        return (
+                          <div
+                            key={tag.id}
+                            className={`${styles.tagSuggestion} ${globalIndex === selectedIndex ? styles.selected : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleTagSelect(tag);
+                            }}
+                            tabIndex={0}
+                          >
+                            <span 
+                              className={styles.tagSampleColor}
+                              style={{ backgroundColor: tag.color }}
+                            />
+                            {tag.name}
+                          </div>
+                        );
+                      })}
                     </div>
                   ))}
                 </div>
