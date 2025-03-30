@@ -28,6 +28,7 @@
 
 .headerCell {
   padding: .1rem .25rem;
+  font-size: .75rem;
   font-weight: bold;
   border-right: 1px solid #e0e0e0;
   white-space: nowrap;
