@@ -1,0 +1,15 @@
+{
+  "tableView": {
+    "sortColumn": "status",
+    "sortDirection": "desc",
+    "selectedStatuses": [
+      "open",
+      "in-progress",
+      "in-review",
+      "completed",
+      "blocked",
+      "waiting"
+    ],
+    "selectedAssignees": []
+  }
+}
