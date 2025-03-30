@@ -1,13 +1,24 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { TicketData } from '@/types';
 import styles from '../GanttView.module.css';
 
 interface TaskListProps {
   tickets: TicketData[];
-  onScroll: (scrollTop: number) => void;
+  onScroll?: (scrollTop: number) => void;
+  scrollTop: number;
 }
 
-const TaskList = forwardRef<HTMLDivElement, TaskListProps>(({ tickets, onScroll }, ref) => {
+const TaskList = forwardRef<HTMLDivElement, TaskListProps>(({ 
+  tickets,
+  scrollTop
+}, ref) => {
+  // タイムラインのスクロール位置に合わせて表示位置を更新
+  useEffect(() => {
+    if (ref && typeof ref !== 'function' && ref.current) {
+      ref.current.style.transform = `translateY(-${scrollTop}px)`;
+    }
+  }, [scrollTop]);
+
   return (
     <div className={styles.taskList}>
       <div className={styles.taskHeader}>
@@ -19,7 +30,6 @@ const TaskList = forwardRef<HTMLDivElement, TaskListProps>(({ tickets, onScroll 
       <div 
         ref={ref}
         className={styles.taskRows}
-        onScroll={(e) => onScroll(e.currentTarget.scrollTop)}
       >
         {tickets.map(ticket => (
           <div key={ticket.id} className={styles.taskRow}>

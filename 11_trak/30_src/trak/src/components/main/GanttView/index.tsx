@@ -22,6 +22,9 @@ export default function GanttView({
   // スケール切替のState
   const [scale, setScale] = useState<Scale>('day');
 
+  // スクロール位置の状態
+  const [scrollTop, setScrollTop] = useState(0);
+
   // スクロール同期用のRef
   const taskListRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -49,23 +52,9 @@ export default function GanttView({
     return { start, end };
   }, []);
 
-  // スクロールハンドラー
-  const handleTaskListScroll = (scrollTop: number) => {
-    if (timelineRef.current) {
-      const timelineContent = timelineRef.current;
-      if (timelineContent.scrollTop !== scrollTop) {
-        timelineContent.scrollTop = scrollTop;
-      }
-    }
-  };
-
+  // タイムラインのスクロールハンドラー
   const handleTimelineScroll = (scrollTop: number) => {
-    if (taskListRef.current) {
-      const taskListContent = taskListRef.current;
-      if (taskListContent.scrollTop !== scrollTop) {
-        taskListContent.scrollTop = scrollTop;
-      }
-    }
+    setScrollTop(scrollTop);
   };
 
   if (isLoadingTickets) {
@@ -105,7 +94,7 @@ export default function GanttView({
         <TaskList
           ref={taskListRef}
           tickets={displayTickets}
-          onScroll={handleTaskListScroll}
+          scrollTop={scrollTop}
         />
 
         {/* タイムライン部分（右側） */}
