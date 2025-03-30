@@ -8,25 +8,25 @@
     },
     {
       "id": "user1",
-      "name": "山田 太郎",
+      "name": "山田",
       "email": "yamada.taro@example.com",
       "role": "user"
     },
     {
       "id": "user2",
-      "name": "鈴木 一郎",
+      "name": "鈴木",
       "email": "suzuki.ichiro@example.com",
       "role": "user"
     },
     {
       "id": "user3",
-      "name": "佐藤 花子",
+      "name": "佐藤",
       "email": "sato.hanako@example.com",
       "role": "user"
     },
     {
       "id": "user4",
-      "name": "田中 健一",
+      "name": "田中",
       "email": "tanaka.kenichi@example.com",
       "role": "user"
     }
