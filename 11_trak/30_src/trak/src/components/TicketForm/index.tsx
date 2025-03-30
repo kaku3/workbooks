@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSession } from 'next-auth/react';
 import MDEditor from '@uiw/react-md-editor';
 import { getUserColor, getTextColor } from '@/lib/utils/colors';
 import styles from './TicketForm.module.css';
@@ -18,11 +19,7 @@ interface TicketFormProps {
 interface TicketData {
   templateId: string;
   title: string;
-  creator: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  creator: string; // メールアドレスを保存
   assignees: string[]; // メールアドレスを保存
   status: string;
   startDate: string;
@@ -51,22 +48,15 @@ interface Status {
   color: string;
 }
 
-// TODO: 実際のログインユーザー情報を使用
-const defaultCreator: User = {
-  id: 'admin',
-  name: '管理者',
-  email: 'admin@example.com',
-  role: 'admin'
-};
-
 export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps) {
+  const { data: session } = useSession();
   const { updateTicket, fetchTickets } = useApplication().ticketStore;
   const searchRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState<TicketData>({
     templateId: '',
     title: '',
-    creator: defaultCreator,
+    creator: session?.user?.email || '',
     assignees: [],
     status: 'open',
     startDate: '',
@@ -393,7 +383,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
                 id="creator"
                 type="text"
                 className={styles.input}
-                value={formData.creator.name}
+                value={users.find(u => u.email === formData.creator)?.name || ''}
                 readOnly
                 disabled
               />
