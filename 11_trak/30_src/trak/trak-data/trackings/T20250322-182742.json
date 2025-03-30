@@ -1,12 +1,7 @@
 {
   "templateId": "feature",
   "title": "複数ステータスを指定してのステータスフィルタをTableViewに追加",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
   "startDate": "",

@@ -1,12 +1,7 @@
 {
   "templateId": "feature",
   "title": "担当者フィルタ",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [
     "admin@example.com"
   ],

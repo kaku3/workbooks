@@ -1,12 +1,7 @@
 {
   "templateId": "feature",
   "title": "タグのカテゴリ対応",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
   "startDate": "",

@@ -1,12 +1,7 @@
 {
   "templateId": "bug",
   "title": "ステータス変更時、ステータスを選択しても編集モードが終了しない",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
   "startDate": "",

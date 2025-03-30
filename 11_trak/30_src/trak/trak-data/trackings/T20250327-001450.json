@@ -1,12 +1,7 @@
 {
   "templateId": "bug",
   "title": "一覧画面でステータス変更時、プルダウンリストがちらつく",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [
     "yamada.taro@example.com"
   ],

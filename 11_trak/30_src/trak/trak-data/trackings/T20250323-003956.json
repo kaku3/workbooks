@@ -1,12 +1,7 @@
 {
   "templateId": "feature",
   "title": "TableViewのステータスフィルタに、各ステータスの件数を表示する",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
   "startDate": "",

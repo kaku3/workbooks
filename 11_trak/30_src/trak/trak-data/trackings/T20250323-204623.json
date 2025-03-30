@@ -1,12 +1,7 @@
 {
   "templateId": "task",
   "title": "TableViewの css を分割",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [
     "tanaka.kenichi@example.com"
   ],

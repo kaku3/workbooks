@@ -1,12 +1,7 @@
 {
   "templateId": "feature",
   "title": "表示順を変更できるようにしたい",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
   "startDate": "",

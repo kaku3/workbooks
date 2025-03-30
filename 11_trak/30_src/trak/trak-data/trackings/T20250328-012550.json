@@ -1,12 +1,7 @@
 {
   "templateId": "task",
   "title": "TableViewの操作メニューを別コンポーネントに",
-  "creator": {
-    "id": "admin",
-    "name": "管理者",
-    "email": "admin@example.com",
-    "role": "admin"
-  },
+  "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
   "startDate": "",
