@@ -41,6 +41,16 @@
           "color": "#0ea5e9"
         },
         {
+          "id": "SC201-01",
+          "name": "SC201-01 - TableView",
+          "color": "#0ea5e9"
+        },
+        {
+          "id": "SC201-02",
+          "name": "SC201-02 - GanttView",
+          "color": "#0ea5e9"
+        },
+        {
           "id": "SC301",
           "name": "SC301 - チケット新規作成/編集",
           "color": "#8b5cf6"
