@@ -1,136 +1,81 @@
 .container {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
   height: 100%;
-  gap: 1rem;
+  overflow: hidden;
 }
 
-.controls {
+.ganttChart {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
-  background-color: #f8f9fa;
-  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-.scaleButtons {
-  display: flex;
-  gap: 0.5rem;
+.taskList {
+  flex: 0 0 640px;
+  border-right: 1px solid #e0e0e0;
+  overflow-y: auto;
 }
 
-.scaleButton {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-}
-
-.scaleButton.active {
-  background: #007bff;
-  color: white;
-  border-color: #0056b3;
-}
-
-.dateNavigation {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.dateNavigation button {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-}
-
-.dateNavigation button:hover {
-  background: #e9ecef;
-}
-
-.ganttContainer {
-  flex: 1;
-  overflow: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.timeline {
-  min-width: 100%;
-  background: white;
-}
-
-.timelineHeader {
+.taskHeader {
   display: flex;
   position: sticky;
   top: 0;
-  background: #f8f9fa;
-  border-bottom: 2px solid #ddd;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
   z-index: 1;
 }
 
-.timelineCell {
-  padding: 0.75rem;
-  text-align: center;
-  border-right: 1px solid #ddd;
-  font-weight: 600;
+.headerCell {
+  padding: .1rem .25rem;
+  font-weight: bold;
+  border-right: 1px solid #e0e0e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.timelineContent {
+.headerCell:first-child {
+  flex: 2;  /* タイトル欄を広く */
+}
+
+.headerCell:not(:first-child) {
+  flex: 0 0 100px;  /* 他のセルは固定幅 */
+}
+
+.taskRows {
+  overflow-y: auto;
+}
+
+.taskRow {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.taskRow:hover {
+  background-color: #f8f8f8;
+}
+
+.cell {
+  padding: .1rem .25rem;
+  border-right: 1px solid #e0e0e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cell:first-child {
+  flex: 2;  /* タイトル欄を広く */
+}
+
+.cell:not(:first-child) {
+  flex: 0 0 100px;  /* 他のセルは固定幅 */
+}
+
+.timeline {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
   position: relative;
-  min-height: 200px;
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 1023px) {
-  .controls {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .scaleButtons {
-    width: 100%;
-  }
-
-  .scaleButton {
-    flex: 1;
-    text-align: center;
-  }
-
-  .dateNavigation {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
-@media (max-width: 767px) {
-  .container {
-    gap: 0.5rem;
-  }
-
-  .controls {
-    padding: 0.5rem;
-  }
-
-  .timelineCell {
-    padding: 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  /* モバイル時のガントチャート最適化 */
-  .ganttContainer {
-    max-height: calc(100vh - 200px);
-  }
-
-  .timeline {
-    font-size: 0.875rem;
-  }
-
-  .timelineHeader {
-    position: sticky;
-    left: 0;
-  }
+  background: #fff;
 }

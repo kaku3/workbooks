@@ -1,126 +1,68 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo } from 'react';
+import { useApplication } from '@/contexts/ApplicationContext';
 import styles from './GanttView.module.css';
-
-type TimeScale = 'day' | 'week' | 'month';
+import { TicketData } from '@/types';
+import { filterTicketsByStatus, filterTicketsByAssignee } from '../TableView/utils/tableUtils';
 
 interface GanttViewProps {
   selectedStatuses: string[];
+  selectedAssignees: string[];
 }
 
-export default function GanttView({ selectedStatuses }: GanttViewProps) {
-  const [scale, setScale] = useState<TimeScale>('week');
-  const [startDate, setStartDate] = useState(new Date());
+export default function GanttView({
+  selectedStatuses,
+  selectedAssignees,
+}: GanttViewProps) {
+  const {
+    tickets,
+    isLoadingTickets,
+    ticketsError,
+  } = useApplication().ticketStore;
 
-  // スケールに応じた日数を取得
-  const getScaleDays = () => {
-    switch (scale) {
-      case 'day':
-        return 14; // 2週間分
-      case 'week':
-        return 42; // 6週間分
-      case 'month':
-        return 90; // 3ヶ月分
-    }
-  };
+  // フィルター適用済みのチケット一覧
+  const displayTickets: TicketData[] = useMemo(() => {
+    const statusFilteredTickets = filterTicketsByStatus(tickets, selectedStatuses);
+    return filterTicketsByAssignee(statusFilteredTickets, selectedAssignees);
+  }, [tickets, selectedStatuses, selectedAssignees]);
 
-  // タイムラインの日付を生成
-  const generateTimelineDates = () => {
-    const dates: Date[] = [];
-    const days = getScaleDays();
-    
-    for (let i = 0; i < days; i++) {
-      const date = new Date(startDate);
-      date.setDate(date.getDate() + i);
-      dates.push(date);
-    }
+  if (isLoadingTickets) {
+    return <div className={styles.container}>Loading...</div>;
+  }
 
-    return dates;
-  };
-
-  // 日付のフォーマット
-  const formatDate = (date: Date) => {
-    switch (scale) {
-      case 'day':
-        return date.toLocaleDateString('ja', { month: 'numeric', day: 'numeric' });
-      case 'week':
-        return date.toLocaleDateString('ja', { month: 'numeric', day: 'numeric' });
-      case 'month':
-        return date.toLocaleDateString('ja', { month: 'numeric' });
-    }
-  };
+  if (ticketsError) {
+    return <div className={styles.container}>Error: {ticketsError}</div>;
+  }
 
   return (
     <div className={styles.container}>
-      {/* スケール切替 */}
-      <div className={styles.controls}>
-        <div className={styles.scaleButtons}>
-          <button
-            className={`${styles.scaleButton} ${scale === 'day' ? styles.active : ''}`}
-            onClick={() => setScale('day')}
-          >
-            日
-          </button>
-          <button
-            className={`${styles.scaleButton} ${scale === 'week' ? styles.active : ''}`}
-            onClick={() => setScale('week')}
-          >
-            週
-          </button>
-          <button
-            className={`${styles.scaleButton} ${scale === 'month' ? styles.active : ''}`}
-            onClick={() => setScale('month')}
-          >
-            月
-          </button>
-        </div>
-
-        <div className={styles.dateNavigation}>
-          <button
-            onClick={() => {
-              const newDate = new Date(startDate);
-              newDate.setDate(newDate.getDate() - getScaleDays());
-              setStartDate(newDate);
-            }}
-          >
-            ◀
-          </button>
-          <span>{startDate.toLocaleDateString('ja')}</span>
-          <button
-            onClick={() => {
-              const newDate = new Date(startDate);
-              newDate.setDate(newDate.getDate() + getScaleDays());
-              setStartDate(newDate);
-            }}
-          >
-            ▶
-          </button>
-        </div>
-      </div>
-
-      {/* ガントチャート */}
-      <div className={styles.ganttContainer}>
-        <div className={styles.timeline}>
-          {/* タイムラインヘッダー */}
-          <div className={styles.timelineHeader}>
-            {generateTimelineDates().map((date, index) => (
-              <div
-                key={index}
-                className={styles.timelineCell}
-                style={{
-                  minWidth: scale === 'day' ? '60px' : scale === 'week' ? '100px' : '150px'
-                }}
-              >
-                {formatDate(date)}
+      <div className={styles.ganttChart}>
+        {/* タスク一覧部分（左側） */}
+        <div className={styles.taskList}>
+          <div className={styles.taskHeader}>
+            <div className={styles.headerCell}>タイトル</div>
+            <div className={styles.headerCell}>ステータス</div>
+            <div className={styles.headerCell}>担当者</div>
+            <div className={styles.headerCell}>見積</div>
+          </div>
+          <div className={styles.taskRows}>
+            {displayTickets.map(ticket => (
+              <div key={ticket.id} className={styles.taskRow}>
+                <div className={styles.cell}>{ticket.title}</div>
+                <div className={styles.cell}>{ticket.status}</div>
+                <div className={styles.cell}>
+                  {ticket.assignees?.join(', ')}
+                </div>
+                <div className={styles.cell}>{ticket.estimate}</div>
               </div>
             ))}
           </div>
+        </div>
 
-          {/* タイムラインコンテンツ */}
-          <div className={styles.timelineContent}>
-            {/* TODO: チケットバーの表示 */}
-          </div>
+        {/* タイムライン部分（右側） */}
+        <div className={styles.timeline}>
+          {/* TODO: タイムライン実装 */}
         </div>
       </div>
     </div>

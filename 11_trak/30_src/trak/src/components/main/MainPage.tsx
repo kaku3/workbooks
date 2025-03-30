@@ -11,11 +11,7 @@ import { useTableData } from './TableView/hooks/useTableData';
 
 type ViewMode = 'gantt' | 'table';
 
-interface MainPageProps {
-  initialTicketId?: string;
-}
-
-export default function MainPage({ initialTicketId }: MainPageProps) {
+export default function MainPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
@@ -119,6 +115,7 @@ export default function MainPage({ initialTicketId }: MainPageProps) {
         ) : (
           <GanttView
             selectedStatuses={selectedStatuses}
+            selectedAssignees={selectedAssignees}
           />
         )}
       </div>
