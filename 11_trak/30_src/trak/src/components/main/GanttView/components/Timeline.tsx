@@ -44,7 +44,6 @@ export default function Timeline({
   // スケールに応じたセル幅を設定
   const baseWidth = 24;
   const cellWidth = scale === 'day' ? baseWidth : scale === 'week' ? baseWidth * 2 : baseWidth * 4;
-  // タイムラインの幅を計算（スケールに応じて調整）
   const totalWidth = timelineDates.length * cellWidth;
 
   // 日付フォーマッター
@@ -53,6 +52,50 @@ export default function Timeline({
     const day = date.getDate();
     if (scale === 'month') return `${month}月`;
     return showMonth ? `${month}/${day}` : `${day}`;
+  };
+
+  // グリッドと土日の背景パターンを生成
+  const generateBackground = () => {
+    const startDayOfWeek = timelineRange.start.getDay();
+    const majorGrid = `linear-gradient(90deg, 
+      var(--gantt-grid-color) 1px, 
+      transparent 1px
+    )`;
+
+    const minorGrid = scale === 'day' ? `linear-gradient(90deg, 
+      var(--gantt-grid-color-light) 1px, 
+      transparent 1px
+    )` : null;
+
+    const weekendBackground = scale === 'day' 
+      ? Array.from({ length: 7 }, (_, i) => {
+          const dayOfWeek = (startDayOfWeek + i) % 7;
+          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+          return `${isWeekend ? 'var(--gantt-weekend-color)' : 'transparent'} ${i * cellWidth}px ${(i + 1) * cellWidth}px${i < 6 ? ',' : ''}`;
+        }).join('')
+      : null;
+
+    const weekendPattern = weekendBackground 
+      ? `repeating-linear-gradient(90deg, ${weekendBackground})`
+      : null;
+
+    return [majorGrid, minorGrid, weekendPattern]
+      .filter(Boolean)
+      .join(', ');
+  };
+
+  const backgroundStyle = {
+    backgroundColor: '#fff',
+    backgroundImage: generateBackground(),
+    backgroundSize: scale === 'day'
+      ? [
+          `${cellWidth * 7}px 100%`,
+          `${cellWidth}px 100%`,
+          `${cellWidth * 7}px 100%`,
+        ].join(', ')
+      : `${cellWidth}px 100%`,
+    backgroundRepeat: 'repeat',
+    backgroundPositionY: 0
   };
 
   return (
@@ -66,7 +109,9 @@ export default function Timeline({
             return (
               <div
                 key={date.getTime()}
-                className={styles.timelineHeaderCell}
+                className={`${styles.timelineHeaderCell} ${
+                  [0, 6].includes(date.getDay()) ? styles.weekend : ''
+                }`}
                 style={{ width: cellWidth + 'px' }}
               >
                 {formattedDate}
@@ -86,6 +131,7 @@ export default function Timeline({
                 <div 
                   key={ticket.id} 
                   className={styles.timelineRow}
+                  style={backgroundStyle}
                 />
               );
             }
@@ -104,7 +150,6 @@ export default function Timeline({
             const normalizedEndDate = normalizeDate(endDate);
             const normalizedTimelineStart = normalizeDate(timelineRange.start);
 
-            // 開始位置の計算
             // スケールに応じた位置とサイズの計算
             const calculatePosition = () => {
               const days = (normalizedEndDate.getTime() - normalizedStartDate.getTime()) / msPerDay;
@@ -146,6 +191,7 @@ export default function Timeline({
               <div 
                 key={ticket.id} 
                 className={styles.timelineRow}
+                style={backgroundStyle}
               >
                 <div 
                   className={styles.timelineBar}
