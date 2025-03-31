@@ -44,9 +44,7 @@ export default function Timeline({
   // スケールに応じたセル幅を設定
   const baseWidth = 24;
   const cellWidth = scale === 'day' ? baseWidth : scale === 'week' ? baseWidth * 2 : baseWidth * 4;
-  const daysPerUnit = scale === 'day' ? 1 : scale === 'week' ? 7 : 30;
-
-  // タイムラインの幅を計算
+  // タイムラインの幅を計算（スケールに応じて調整）
   const totalWidth = timelineDates.length * cellWidth;
 
   // 日付フォーマッター
@@ -93,14 +91,56 @@ export default function Timeline({
             }
 
             const msPerDay = 24 * 60 * 60 * 1000;
-            const daysBetween = (date1: Date, date2: Date) => 
-              Math.round(Math.abs((date1.getTime() - date2.getTime()) / msPerDay));
 
-            const startOffset = Math.max(0, daysBetween(startDate, timelineRange.start));
-            const duration = daysBetween(endDate, startDate);
+            // 日付を正規化（時刻を00:00:00に）
+            const normalizeDate = (date: Date): Date => {
+              const d = new Date(date);
+              d.setHours(0, 0, 0, 0);
+              return d;
+            };
 
-            const left = Math.round(startOffset * (cellWidth / daysPerUnit));
-            const width = Math.max(Math.round(duration * (cellWidth / daysPerUnit)), cellWidth / 2);
+            // 期間計算用のstartDateとendDateを正規化
+            const normalizedStartDate = normalizeDate(startDate);
+            const normalizedEndDate = normalizeDate(endDate);
+            const normalizedTimelineStart = normalizeDate(timelineRange.start);
+
+            // 開始位置の計算
+            // スケールに応じた位置とサイズの計算
+            const calculatePosition = () => {
+              const days = (normalizedEndDate.getTime() - normalizedStartDate.getTime()) / msPerDay;
+              const startDays = (normalizedStartDate.getTime() - normalizedTimelineStart.getTime()) / msPerDay;
+
+              switch (scale) {
+                case 'day': {
+                  const offset = Math.max(0, startDays);
+                  return {
+                    left: offset * cellWidth,
+                    width: Math.max(cellWidth, (days + 1) * cellWidth)
+                  };
+                }
+                case 'week': {
+                  const startWeek = Math.floor(startDays / 7);
+                  const durationWeeks = Math.ceil((days + 1) / 7);
+                  return {
+                    left: startWeek * cellWidth,
+                    width: Math.max(cellWidth, durationWeeks * cellWidth)
+                  };
+                }
+                case 'month': {
+                  const startMonth = normalizedStartDate.getMonth() + normalizedStartDate.getFullYear() * 12;
+                  const endMonth = normalizedEndDate.getMonth() + normalizedEndDate.getFullYear() * 12;
+                  const timelineStartMonth = normalizedTimelineStart.getMonth() + normalizedTimelineStart.getFullYear() * 12;
+                  const monthOffset = startMonth - timelineStartMonth;
+                  const monthDuration = endMonth - startMonth + 1;
+                  return {
+                    left: monthOffset * cellWidth,
+                    width: Math.max(cellWidth, monthDuration * cellWidth)
+                  };
+                }
+              }
+            };
+
+            const { left, width } = calculatePosition();
 
             return (
               <div 
