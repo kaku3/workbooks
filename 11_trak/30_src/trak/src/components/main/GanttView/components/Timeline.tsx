@@ -38,92 +38,88 @@ export default function Timeline({
     return dates;
   };
 
-  // 日付のフォーマット
-  const formatDate = (date: Date, prevDate: Date | null): string => {
-    const isMonthChange = !prevDate || prevDate.getMonth() !== date.getMonth();
-
-    switch (scale) {
-      case 'day':
-      case 'week':
-        return isMonthChange ? `${date.getMonth() + 1}/${date.getDate()}` : `${date.getDate()}`;
-      case 'month':
-        return `${date.getMonth() + 1}月`;
-    }
-  };
-
   const timelineDates = generateTimelineDates();
   let prevDate: Date | null = null;
-  const cellWidth = scale === 'day' ? 24 : scale === 'week' ? 48 : 96;
+  
+  // スケールに応じたセル幅を設定
+  const baseWidth = 24;
+  const cellWidth = scale === 'day' ? baseWidth : scale === 'week' ? baseWidth * 2 : baseWidth * 4;
+  const daysPerUnit = scale === 'day' ? 1 : scale === 'week' ? 7 : 30;
 
-  // タイムラインの総幅を計算
+  // タイムラインの幅を計算
   const totalWidth = timelineDates.length * cellWidth;
-  const containerStyle = { width: `${totalWidth}px` };
+
+  // 日付フォーマッター
+  const formatDate = (date: Date, showMonth: boolean) => {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    if (scale === 'month') return `${month}月`;
+    return showMonth ? `${month}/${day}` : `${day}`;
+  };
 
   return (
     <div className={styles.timeline}>
-      <div className={styles.timelineHeader} style={containerStyle}>
-        {timelineDates.map((date, index) => {
-          const formattedDate = formatDate(date, prevDate);
-          prevDate = date;
-          return (
-            <div
-              key={index}
-              className={styles.timelineHeaderCell}
-              style={{ width: `${cellWidth}px` }}
-            >
-              {formattedDate}
-            </div>
-          );
-        })}
+      <div className={styles.timelineHeader}>
+        <div style={{ width: totalWidth + 'px', display: 'flex' }}>
+          {timelineDates.map(date => {
+            const showMonth = !prevDate || prevDate.getMonth() !== date.getMonth();
+            const formattedDate = formatDate(date, showMonth);
+            prevDate = new Date(date);
+            return (
+              <div
+                key={date.getTime()}
+                className={styles.timelineHeaderCell}
+                style={{ width: cellWidth + 'px' }}
+              >
+                {formattedDate}
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <div className={styles.timelineContent} style={containerStyle}>
-        {tickets.map(ticket => {
-          // チケットの開始日と終了日を取得
-          const startDate = ticket.startDate ? new Date(ticket.startDate) : null;
-          const endDate = ticket.dueDate ? new Date(ticket.dueDate) : null;
+      <div className={styles.timelineContent}>
+        <div style={{ width: totalWidth + 'px' }}>
+          {tickets.map(ticket => {
+            const startDate = ticket.startDate ? new Date(ticket.startDate) : null;
+            const endDate = ticket.dueDate ? new Date(ticket.dueDate) : null;
 
-          // 日付が設定されていない場合はバーを表示しない
-          if (!startDate || !endDate) {
+            if (!startDate || !endDate) {
+              return (
+                <div 
+                  key={ticket.id} 
+                  className={styles.timelineRow}
+                />
+              );
+            }
+
+            const msPerDay = 24 * 60 * 60 * 1000;
+            const daysBetween = (date1: Date, date2: Date) => 
+              Math.round(Math.abs((date1.getTime() - date2.getTime()) / msPerDay));
+
+            const startOffset = Math.max(0, daysBetween(startDate, timelineRange.start));
+            const duration = daysBetween(endDate, startDate);
+
+            const left = Math.round(startOffset * (cellWidth / daysPerUnit));
+            const width = Math.max(Math.round(duration * (cellWidth / daysPerUnit)), cellWidth / 2);
+
             return (
               <div 
                 key={ticket.id} 
                 className={styles.timelineRow}
-              />
-            );
-          }
-
-          // タイムラインバーの位置とサイズを計算
-          const msPerDay = 24 * 60 * 60 * 1000;
-          const daysBetween = (date1: Date, date2: Date) => 
-            Math.round(Math.abs((date1.getTime() - date2.getTime()) / msPerDay));
-
-          // 開始位置の計算
-          let left = 0;
-          if (startDate >= timelineRange.start) {
-            left = daysBetween(startDate, timelineRange.start) * cellWidth;
-          }
-
-          // 幅の計算
-          const duration = daysBetween(endDate, startDate);
-          const width = duration * cellWidth;
-
-          return (
-            <div 
-              key={ticket.id} 
-              className={styles.timelineRow}
-            >
-              <div 
-                className={styles.timelineBar}
-                style={{
-                  left: `${left}px`,
-                  width: `${width}px`
-                }}
               >
-                {ticket.title}
+                <div 
+                  className={styles.timelineBar}
+                  style={{
+                    left: `${left}px`,
+                    width: `${width}px`
+                  }}
+                >
+                  {ticket.title}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
