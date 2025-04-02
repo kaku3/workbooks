@@ -35,7 +35,7 @@ export interface ExtendedColumn extends Column {
 
 export type SortDirection = 'asc' | 'desc' | null;
 
-export type ColumnKey = 'handle' | 'id' | 'title' | 'status' | 'assignees' | 'startDate' | 'dueDate' | 'estimate' | 'delete';
+export type ColumnKey = 'handle' | 'id' | 'title' | 'status' | 'assignees' | 'startDate' | 'dueDate' | 'estimate' | 'progress' | 'delete';
 
 export interface TicketData {
   id?: string;
@@ -45,6 +45,7 @@ export interface TicketData {
   startDate: string;
   dueDate: string;
   estimate: number;
+  progress?: number;
   tags?: string[]; // Array of tag IDs
   userOrder?: number;
   createdAt?: string;

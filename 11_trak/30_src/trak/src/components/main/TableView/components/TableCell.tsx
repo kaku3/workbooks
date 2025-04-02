@@ -2,6 +2,7 @@ import tableStyles from '../styles/TableView.module.css';
 import { useMemo } from 'react';
 import { CELL_TYPES, type CellType } from '../constants/tableColumns';
 import IdCell from './cell/IdCell';
+import ProgressCell from './cell/ProgressCell';
 import StatusCell from './cell/StatusCell';
 import EstimateCell from './cell/EstimateCell';
 import DateCell from './cell/DateCell';
@@ -102,6 +103,13 @@ export const TableCell = ({
         return (
           <EstimateCell
             value={ticket.estimate}
+            onUpdate={handleUpdate}
+          />
+        );
+      case 'progress':
+        return (
+          <ProgressCell
+            value={ticket.progress ?? 0}
             onUpdate={handleUpdate}
           />
         );

@@ -92,7 +92,13 @@
 }
 
 .table_estimate {
-  text-align: center;
+  text-align: right!important;
+  font-size: .8rem;
+  width: 4rem;
+}
+
+.table_progress {
+  text-align: right!important;
   font-size: .8rem;
   width: 4rem;
 }

@@ -1,0 +1,52 @@
+.cell {
+  cursor: text;
+  padding: 0.25rem;
+  border-radius: 4px;
+  position: relative;
+  min-height: 1.5rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progressBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(59, 130, 246, 0.1);
+  z-index: 0;
+}
+
+.value {
+  position: relative;
+  z-index: 1;
+  margin-left: auto;
+  font-size: 0.8rem;
+}
+
+.cell:hover {
+  background-color: #f8f9fa;
+}
+
+.editing {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  padding: 0.5rem;
+  background: white;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.8rem;
+  text-align: right;
+}
