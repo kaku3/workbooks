@@ -1,6 +1,7 @@
-import { TicketData, Status } from '@/types';
-import StatusSelect from '../../../TableView/components/StatusSelect';
 import styles from './style.module.css';
+import StatusSelect from '../../../TableView/components/StatusSelect';
+import { TicketData, Status } from '@/types';
+import { getTextColor } from '@/lib/utils/colors';
 
 interface TaskListProps {
   tickets: TicketData[];
@@ -66,7 +67,7 @@ export default function TaskList({
                 <div
                   style={{
                     backgroundColor: statuses.find(s => s.id === ticket.status)?.color || '#3b82f6',
-                    color: 'white',
+                    color: getTextColor(statuses.find(s => s.id === ticket.status)?.color || '#3b82f6'),
                     padding: '2px 8px',
                     borderRadius: '4px',
                     width: 'fit-content'
