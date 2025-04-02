@@ -4,11 +4,11 @@ export const TABLE_COLUMNS: ExtendedColumn[] = [
   { key: 'handle', label: '', sortable: false },
   { key: 'id', label: 'ID', sortable: true },
   { key: 'title', label: 'タイトル', sortable: true },
+  { key: 'assignees', label: '担当者', sortable: true },
+  { key: 'estimate', label: '見積', sortable: true },
   { key: 'status', label: 'ステータス', sortable: true },
   { key: 'startDate', label: '開始日', sortable: true },
   { key: 'dueDate', label: '期限', sortable: true },
-  { key: 'estimate', label: '見積', sortable: true },
-  { key: 'assignees', label: '担当者', sortable: true },
   { key: 'delete', label: '', sortable: false },
 ];
 
