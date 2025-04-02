@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useApplication } from '@/contexts/ApplicationContext';
+import { useTableData } from '../TableView/hooks/useTableData';
 import styles from './GanttView.module.css';
 import { TicketData } from '@/types';
 import { filterTicketsByStatus, filterTicketsByAssignee } from '../TableView/utils/tableUtils';
@@ -21,11 +22,14 @@ export default function GanttView({
 }: GanttViewProps) {
   // スケール切替のState
   const [scale, setScale] = useState<Scale>('day');
+  const [editingCell, setEditingCell] = useState<{type: string; id: string} | null>(null);
 
   const {
-    ticketStore: { tickets, isLoadingTickets, ticketsError },
-    projectStore: { project, isLoadingProject, projectError, fetchProject },
+    ticketStore: { tickets, isLoadingTickets, ticketsError, updateTicket },
+    projectStore: { project, isLoadingProject, projectError, fetchProject }
   } = useApplication();
+
+  const { statuses } = useTableData();
 
   // フィルター適用済みのチケット一覧
   const displayTickets: TicketData[] = useMemo(() => {
@@ -63,8 +67,19 @@ export default function GanttView({
     return <div className={styles.container}>Error: {ticketsError || projectError}</div>;
   }
 
+  // 外側クリック時に編集モードを解除
+  const handleContainerClick = (e: React.MouseEvent) => {
+    if (editingCell) {
+      const target = e.target as HTMLElement;
+      // ステータスセレクトまたはその子要素以外をクリックした場合
+      if (!target.closest('select')) {
+        setEditingCell(null);
+      }
+    }
+  };
+
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={handleContainerClick}>
       {/* スケール切替ボタン */}
       <div className={styles.scaleSelector}>
         <button
@@ -91,6 +106,15 @@ export default function GanttView({
         {/* タスク一覧部分（左側） */}
         <TaskList
           tickets={displayTickets}
+          statuses={statuses}
+          editingCell={editingCell}
+          setEditingCell={setEditingCell}
+          onStatusUpdate={(ticketId, value) => {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (ticket) {
+              updateTicket({ ...ticket, status: value });
+            }
+          }}
         />
 
         {/* タイムライン部分（右側） */}
