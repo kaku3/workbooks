@@ -124,6 +124,15 @@
   background: transparent;
 }
 
+.assigneeCell {
+  padding-top: .5rem;
+}
+
+.assigneeCell > div > div > span {
+  padding: 0;
+  font-size: .6rem;
+}
+
 .estimateCell {
   font-size: .7rem;
   text-align: right;
@@ -131,4 +140,8 @@
 .progressCell {
   font-size: .7rem;
   text-align: right;
+}
+
+.statusCell select{
+  padding: 0;
 }

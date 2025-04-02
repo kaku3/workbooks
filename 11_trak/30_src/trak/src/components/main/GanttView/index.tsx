@@ -128,12 +128,6 @@ export default function GanttView({
               updateTicket({ ...ticket, progress: value });
             }
           }}
-          onAssigneeUpdate={(ticketId, value) => {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (ticket) {
-              updateTicket({ ...ticket, assignees: value });
-            }
-          }}
         />
 
         {/* タイムライン部分（右側） */}

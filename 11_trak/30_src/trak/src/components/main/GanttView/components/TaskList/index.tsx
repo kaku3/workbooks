@@ -26,8 +26,7 @@ export default function TaskList({
   setEditingCell,
   onStatusUpdate,
   onEstimateUpdate,
-  onProgressUpdate,
-  onAssigneeUpdate
+  onProgressUpdate
 }: TaskListProps) {
   const formatValue = (value: number) => {
     return value >= 8 ? `${(value / 8).toFixed(1)}d` : `${value}h`;
@@ -38,7 +37,7 @@ export default function TaskList({
     assignee: '120px',
     estimate: '48px',
     progress: '48px',
-    status: '120px'
+    status: '104px'
   }
   
   const headerLabels = [
@@ -74,21 +73,10 @@ export default function TaskList({
                 setEditingCell({type: 'assignee', id: ticket.id!});
               }}
             >
-              {editingCell?.type === 'assignee' && editingCell.id === ticket.id ? (
-                <AssigneeCell
-                  value={ticket.assignees || []}
-                  users={users}
-                  onUpdate={(value) => {
-                    onAssigneeUpdate(ticket.id!, value);
-                    setEditingCell(null);
-                  }}
-                />
-              ) : (
-                <AssigneeCell
-                  value={ticket.assignees || []}
-                  users={users}
-                />
-              )}
+              <AssigneeCell
+                value={ticket.assignees || []}
+                users={users}
+              />
             </div>
             <div 
               className={`${styles.cell} ${styles.estimateCell}`} 
@@ -135,7 +123,7 @@ export default function TaskList({
               </div>
             </div>
             <div 
-              className={styles.cell} 
+              className={`${styles.cell} ${styles.statusCell}`} 
               style={{ width: CELL_WIDTHS.status }} 
               onClick={(e) => {
                 e.stopPropagation();
