@@ -1,5 +1,5 @@
 import { TicketData } from '@/types';
-import styles from '../GanttView.module.css';
+import styles from '../../GanttView.module.css';
 
 interface TimelineProps {
   tickets: TicketData[];
