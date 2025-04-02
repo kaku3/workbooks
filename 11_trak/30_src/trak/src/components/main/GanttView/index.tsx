@@ -71,8 +71,8 @@ export default function GanttView({
   const handleContainerClick = (e: React.MouseEvent) => {
     if (editingCell) {
       const target = e.target as HTMLElement;
-      // ステータスセレクトまたはその子要素以外をクリックした場合
-      if (!target.closest('select')) {
+      // 編集中のセルまたはその子要素以外をクリックした場合
+      if (!target.closest('select') && !target.closest('.' + styles.editingCell)) {
         setEditingCell(null);
       }
     }
@@ -113,6 +113,18 @@ export default function GanttView({
             const ticket = tickets.find(t => t.id === ticketId);
             if (ticket) {
               updateTicket({ ...ticket, status: value });
+            }
+          }}
+          onEstimateUpdate={(ticketId, value) => {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (ticket) {
+              updateTicket({ ...ticket, estimate: value });
+            }
+          }}
+          onProgressUpdate={(ticketId, value) => {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (ticket) {
+              updateTicket({ ...ticket, progress: value });
             }
           }}
         />

@@ -1,5 +1,7 @@
 import styles from './style.module.css';
 import StatusSelect from '../../../TableView/components/StatusSelect';
+import EstimateCell from '../../../TableView/components/cell/EstimateCell';
+import ProgressCell from '../../../TableView/components/cell/ProgressCell';
 import { TicketData, Status } from '@/types';
 import { getTextColor } from '@/lib/utils/colors';
 
@@ -9,6 +11,8 @@ interface TaskListProps {
   editingCell: { type: string; id: string } | null;
   setEditingCell: (cell: { type: string; id: string } | null) => void;
   onStatusUpdate: (ticketId: string, value: string) => void;
+  onEstimateUpdate: (ticketId: string, value: number) => void;
+  onProgressUpdate: (ticketId: string, value: number) => void;
 }
 
 export default function TaskList({ 
@@ -16,12 +20,15 @@ export default function TaskList({
   statuses,
   editingCell,
   setEditingCell,
-  onStatusUpdate 
+  onStatusUpdate,
+  onEstimateUpdate,
+  onProgressUpdate
 }: TaskListProps) {
   const headerLabels = [
     { key: 'title', label: 'タイトル', flex: '1 1 392px' },
     { key: 'assignee', label: '担当者', width: '80px' },
     { key: 'estimate', label: '見積', width: '48px' },
+    { key: 'progress', label: '進捗', width: '48px' },
     { key: 'status', label: 'ステータス', width: '120px' },
   ];
 
@@ -45,7 +52,50 @@ export default function TaskList({
             <div className={styles.cell} style={{ width: '80px' }}>
               {ticket.assignees?.[0]}
             </div>
-            <div className={styles.cell} style={{ width: '48px' }}>{ticket.estimate}</div>
+            <div 
+              className={styles.cell} 
+              style={{ width: '48px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setEditingCell({type: 'estimate', id: ticket.id!});
+              }}
+            >
+              <div className={styles.editableCell}>
+                {editingCell?.type === 'estimate' && editingCell.id === ticket.id ? (
+                  <div className={styles.editingCell}>
+                    <EstimateCell
+                      value={ticket.estimate}
+                      onUpdate={(value) => {
+                        onEstimateUpdate(ticket.id!, value);
+                        setEditingCell(null);
+                      }}
+                    />
+                  </div>
+                ) : ticket.estimate}
+              </div>
+            </div>
+            <div 
+              className={styles.cell} 
+              style={{ width: '48px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setEditingCell({type: 'progress', id: ticket.id!});
+              }}
+            >
+              <div className={styles.editableCell}>
+                {editingCell?.type === 'progress' && editingCell.id === ticket.id ? (
+                  <div className={styles.editingCell}>
+                    <ProgressCell
+                      value={ticket.progress ?? 0}
+                      onUpdate={(value) => {
+                        onProgressUpdate(ticket.id!, value);
+                        setEditingCell(null);
+                      }}
+                    />
+                  </div>
+                ) : `${ticket.progress ?? 0}%`}
+              </div>
+            </div>
             <div 
               className={styles.cell} 
               style={{ width: '120px' }} 
