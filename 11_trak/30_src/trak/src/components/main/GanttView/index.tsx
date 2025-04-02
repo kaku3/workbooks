@@ -18,7 +18,7 @@ export default function GanttView({
   selectedStatuses,
   selectedAssignees,
 }: GanttViewProps) {
-  // ズームレベルのState (25-150%)
+  // ズームレベルのState
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [editingCell, setEditingCell] = useState<{type: string; id: string} | null>(null);
 
@@ -82,8 +82,8 @@ export default function GanttView({
       <div className={styles.zoomControl}>
         <input
           type="range"
-          min="25"
-          max="150"
+          min="40"
+          max="125"
           value={zoomLevel}
           onChange={(e) => setZoomLevel(Number(e.target.value))}
           className={styles.zoomSlider}
