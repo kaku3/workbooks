@@ -62,12 +62,13 @@
   overflow: auto;
   background: white;
   scrollbar-gutter: stable;
-  contain: strict;
+  height: calc(100vh - var(--gantt-header-height) - 56px); /* Account for scale selector height */
 }
 
 .taskList {
   position: sticky;
   left: 0;
+  top: 0;
   background: white;
   border-right: 2px solid #e0e0e0;
   z-index: 4;
@@ -76,7 +77,7 @@
   min-width: var(--gantt-list-width);
   width: var(--gantt-list-width);
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
-  contain: strict;
+  height: fit-content;
 }
 
 .taskHeader {
@@ -107,7 +108,11 @@
 .taskRows {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  min-height: min-content;
+}
+
+.taskRows::-webkit-scrollbar {
+  display: none;
 }
 
 .taskRow {
@@ -139,13 +144,16 @@
 }
 
 .timeline {
-  flex: 1 0 auto;
-  min-width: fit-content;
+  flex: none;
   display: flex;
   flex-direction: column;
   background: white;
   position: relative;
-  contain: strict;
+  height: fit-content;
+}
+
+.timeline::-webkit-scrollbar {
+  display: none;
 }
 
 .timelineHeader {
@@ -183,9 +191,8 @@
 }
 
 .timelineContent {
-  flex: 1;
   position: relative;
-  contain: strict;
+  min-height: min-content;
 }
 
 .timelineRow {
