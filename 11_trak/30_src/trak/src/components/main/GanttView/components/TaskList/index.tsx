@@ -15,7 +15,6 @@ interface TaskListProps {
   onStatusUpdate: (ticketId: string, value: string) => void;
   onEstimateUpdate: (ticketId: string, value: number) => void;
   onProgressUpdate: (ticketId: string, value: number) => void;
-  onAssigneeUpdate: (ticketId: string, value: string[]) => void;
 }
 
 export default function TaskList({ 

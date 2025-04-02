@@ -3,36 +3,26 @@ import styles from './style.module.css';
 
 interface TimelineProps {
   tickets: TicketData[];
-  scale: 'day' | 'week' | 'month';
   timelineRange: {
     start: Date;
     end: Date;
   };
+  zoomLevel?: number; // 25-150% (default 100%)
 }
 
 export default function Timeline({ 
   tickets, 
-  scale, 
   timelineRange,
+  zoomLevel = 100,
 }: TimelineProps) {
-  // スケールに応じた日付の配列を生成
+  // 日付の配列を生成
   const generateTimelineDates = () => {
     const dates: Date[] = [];
     const current = new Date(timelineRange.start);
 
     while (current <= timelineRange.end) {
       dates.push(new Date(current));
-      switch (scale) {
-        case 'day':
-          current.setDate(current.getDate() + 1);
-          break;
-        case 'week':
-          current.setDate(current.getDate() + 7);
-          break;
-        case 'month':
-          current.setMonth(current.getMonth() + 1);
-          break;
-      }
+      current.setDate(current.getDate() + 1);
     }
 
     return dates;
@@ -41,16 +31,15 @@ export default function Timeline({
   const timelineDates = generateTimelineDates();
   let prevDate: Date | null = null;
   
-  // スケールに応じたセル幅を設定
+  // ズームレベルに応じたセル幅を設定 (24px = 100%)
   const baseWidth = 24;
-  const cellWidth = scale === 'day' ? baseWidth : scale === 'week' ? baseWidth * 2.25 : baseWidth * 8;
+  const cellWidth = Math.max(6, Math.min(36, (baseWidth * zoomLevel) / 100));
   const totalWidth = timelineDates.length * cellWidth;
 
   // 日付フォーマッター
   const formatDate = (date: Date, showMonth: boolean) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    if (scale === 'month') return `${month}月`;
     return showMonth ? `${month}/${day}` : `${day}`;
   };
 
@@ -62,38 +51,30 @@ export default function Timeline({
       transparent 1px
     )`;
 
-    const minorGrid = scale === 'day' ? `linear-gradient(90deg, 
+    const minorGrid = `linear-gradient(90deg, 
       var(--gantt-grid-color-light) 1px, 
       transparent 1px
-    )` : null;
+    )`;
 
-    const weekendBackground = scale === 'day' 
-      ? Array.from({ length: 7 }, (_, i) => {
-          const dayOfWeek = (startDayOfWeek + i) % 7;
-          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-          return `${isWeekend ? 'var(--gantt-weekend-color)' : 'transparent'} ${i * cellWidth}px ${(i + 1) * cellWidth}px${i < 6 ? ',' : ''}`;
-        }).join('')
-      : null;
+    const weekendBackground = Array.from({ length: 7 }, (_, i) => {
+      const dayOfWeek = (startDayOfWeek + i) % 7;
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      return `${isWeekend ? 'var(--gantt-weekend-color)' : 'transparent'} ${i * cellWidth}px ${(i + 1) * cellWidth}px${i < 6 ? ',' : ''}`;
+    }).join('');
 
-    const weekendPattern = weekendBackground 
-      ? `repeating-linear-gradient(90deg, ${weekendBackground})`
-      : null;
+    const weekendPattern = `repeating-linear-gradient(90deg, ${weekendBackground})`;
 
-    return [majorGrid, minorGrid, weekendPattern]
-      .filter(Boolean)
-      .join(', ');
+    return [majorGrid, minorGrid, weekendPattern].join(', ');
   };
 
   const backgroundStyle = {
     backgroundColor: '#fff',
     backgroundImage: generateBackground(),
-    backgroundSize: scale === 'day'
-      ? [
-          `${cellWidth * 7}px 100%`,
-          `${cellWidth}px 100%`,
-          `${cellWidth * 7}px 100%`,
-        ].join(', ')
-      : `${cellWidth}px 100%`,
+    backgroundSize: [
+      `${cellWidth * 7}px 100%`,
+      `${cellWidth}px 100%`,
+      `${cellWidth * 7}px 100%`,
+    ].join(', '),
     backgroundRepeat: 'repeat',
     backgroundPositionY: 0
   };
@@ -150,39 +131,16 @@ export default function Timeline({
             const normalizedEndDate = normalizeDate(endDate);
             const normalizedTimelineStart = normalizeDate(timelineRange.start);
 
-            // スケールに応じた位置とサイズの計算
+            // 位置とサイズの計算
             const calculatePosition = () => {
               const days = (normalizedEndDate.getTime() - normalizedStartDate.getTime()) / msPerDay;
               const startDays = (normalizedStartDate.getTime() - normalizedTimelineStart.getTime()) / msPerDay;
+              const offset = Math.max(0, startDays);
 
-              switch (scale) {
-                case 'day': {
-                  const offset = Math.max(0, startDays);
-                  return {
-                    left: offset * cellWidth,
-                    width: Math.max(cellWidth, (days + 1) * cellWidth)
-                  };
-                }
-                case 'week': {
-                  const startWeek = Math.floor(startDays / 7);
-                  const durationWeeks = Math.ceil((days + 1) / 7);
-                  return {
-                    left: startWeek * cellWidth,
-                    width: Math.max(cellWidth, durationWeeks * cellWidth)
-                  };
-                }
-                case 'month': {
-                  const startMonth = normalizedStartDate.getMonth() + normalizedStartDate.getFullYear() * 12;
-                  const endMonth = normalizedEndDate.getMonth() + normalizedEndDate.getFullYear() * 12;
-                  const timelineStartMonth = normalizedTimelineStart.getMonth() + normalizedTimelineStart.getFullYear() * 12;
-                  const monthOffset = startMonth - timelineStartMonth;
-                  const monthDuration = endMonth - startMonth + 1;
-                  return {
-                    left: monthOffset * cellWidth,
-                    width: Math.max(cellWidth, monthDuration * cellWidth)
-                  };
-                }
-              }
+              return {
+                left: offset * cellWidth,
+                width: Math.max(cellWidth, (days + 1) * cellWidth)
+              };
             };
 
             const { left, width } = calculatePosition();

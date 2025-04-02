@@ -9,8 +9,6 @@ import { filterTicketsByStatus, filterTicketsByAssignee } from '../TableView/uti
 import TaskList from './components/TaskList';
 import Timeline from './components/Timeline';
 
-type Scale = 'day' | 'week' | 'month';
-
 interface GanttViewProps {
   selectedStatuses: string[];
   selectedAssignees: string[];
@@ -20,8 +18,8 @@ export default function GanttView({
   selectedStatuses,
   selectedAssignees,
 }: GanttViewProps) {
-  // スケール切替のState
-  const [scale, setScale] = useState<Scale>('day');
+  // ズームレベルのState (25-150%)
+  const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [editingCell, setEditingCell] = useState<{type: string; id: string} | null>(null);
 
   const {
@@ -80,26 +78,17 @@ export default function GanttView({
 
   return (
     <div className={styles.container} onClick={handleContainerClick}>
-      {/* スケール切替ボタン */}
-      <div className={styles.scaleSelector}>
-        <button
-          className={`${styles.scaleButton} ${scale === 'day' ? styles.active : ''}`}
-          onClick={() => setScale('day')}
-        >
-          日
-        </button>
-        <button
-          className={`${styles.scaleButton} ${scale === 'week' ? styles.active : ''}`}
-          onClick={() => setScale('week')}
-        >
-          週
-        </button>
-        <button
-          className={`${styles.scaleButton} ${scale === 'month' ? styles.active : ''}`}
-          onClick={() => setScale('month')}
-        >
-          月
-        </button>
+      {/* ズーム調整スライダー */}
+      <div className={styles.zoomControl}>
+        <input
+          type="range"
+          min="25"
+          max="150"
+          value={zoomLevel}
+          onChange={(e) => setZoomLevel(Number(e.target.value))}
+          className={styles.zoomSlider}
+        />
+        <span className={styles.zoomLevel}>{zoomLevel}%</span>
       </div>
 
       <div className={styles.ganttChart}>
@@ -133,8 +122,8 @@ export default function GanttView({
         {/* タイムライン部分（右側） */}
         <Timeline
           tickets={displayTickets}
-          scale={scale}
           timelineRange={timelineRange}
+          zoomLevel={zoomLevel}
         />
       </div>
     </div>
