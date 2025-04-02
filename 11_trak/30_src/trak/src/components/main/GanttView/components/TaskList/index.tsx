@@ -24,6 +24,10 @@ export default function TaskList({
   onEstimateUpdate,
   onProgressUpdate
 }: TaskListProps) {
+  const formatValue = (value: number) => {
+    return value >= 8 ? `${(value / 8).toFixed(1)}d` : `${value}h`;
+  };
+  
   const headerLabels = [
     { key: 'title', label: 'タイトル', flex: '1 1 392px' },
     { key: 'assignee', label: '担当者', width: '80px' },
@@ -53,7 +57,7 @@ export default function TaskList({
               {ticket.assignees?.[0]}
             </div>
             <div 
-              className={styles.cell} 
+              className={`${styles.cell} ${styles.estimateCell}`} 
               style={{ width: '48px' }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -71,11 +75,11 @@ export default function TaskList({
                       }}
                     />
                   </div>
-                ) : ticket.estimate}
+                ) : formatValue(ticket.estimate)}
               </div>
             </div>
             <div 
-              className={styles.cell} 
+              className={`${styles.cell} ${styles.progressCell}`} 
               style={{ width: '48px' }}
               onClick={(e) => {
                 e.stopPropagation();

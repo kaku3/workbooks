@@ -71,6 +71,9 @@
   display: flex;
   align-items: center;
 }
+.cell:has(.editingCell) {
+  padding: 0!important;
+}
 
 .cell:first-child {
   flex: 1 1 392px;
@@ -78,8 +81,8 @@
 
 .editableCell {
   cursor: text;
-  padding: 0.25rem;
-  border-radius: 4px;
+  padding: 0!important;
+  border-radius: 2px;
   position: relative;
   min-height: 1.5rem;
   width: 100%;
@@ -91,18 +94,23 @@
 
 .editingCell {
   position: absolute;
-  left: -1px;
-  top: -1px;
-  bottom: -1px;
-  right: -1px;
+  left: 0!important;
+  top: 0!important;
+  bottom: 0!important;
+  right: 0!important;
   background: white;
   z-index: 100;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
-  border-radius: 4px;
-  padding: 2px;
+  padding: 0!important;
   display: flex;
   align-items: center;
+}
+.editingCell * {
+  padding: 0!important;
+  top: 0!important;
+  left: 1px!important;
+  right: 1px!important;
+  bottom: 0!important;
+  width: calc(100% - 2px)!important;
 }
 
 .editingCell :global(input) {
@@ -111,6 +119,16 @@
   border: none;
   outline: none;
   font-size: 0.8rem;
-  padding: 2px;
+  padding: 0;
+  border-radius: 0;
   background: transparent;
+}
+
+.estimateCell {
+  font-size: .7rem;
+  text-align: right;
+}
+.progressCell {
+  font-size: .7rem;
+  text-align: right;
 }
