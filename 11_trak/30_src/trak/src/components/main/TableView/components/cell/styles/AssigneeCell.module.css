@@ -1,7 +1,7 @@
 .assigneeCell {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-weight: 500;
   position: relative;
@@ -12,7 +12,7 @@
 }
 
 .assigneeName {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 .assigneeSearch {
@@ -38,7 +38,7 @@
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 101;
-  max-height: 200px;
+  max-height: 400px;
   overflow-y: auto;
 }
 
@@ -81,5 +81,5 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
 }

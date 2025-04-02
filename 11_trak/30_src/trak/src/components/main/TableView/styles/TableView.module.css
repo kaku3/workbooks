@@ -21,7 +21,7 @@
 
 .table th,
 .table td {
-  padding: .25rem .5rem;
+  padding: .1rem .25rem;
   text-align: left;
   position: relative;
   overflow: visible;
@@ -70,6 +70,7 @@
 }
 
 .table_title {
+  font-size: .85rem;
   width: auto;
 }
 
@@ -80,21 +81,24 @@
 
 .table_startDate {
   text-align: right;
-  width: 9rem;
+  font-size: .8rem;
+  width: 8rem;
 }
 
 .table_dueDate {
   text-align: right;
-  width: 9rem;
+  font-size: .8rem;
+  width: 8rem;
 }
 
 .table_estimate {
   text-align: center;
-  width: 5rem;
+  font-size: .8rem;
+  width: 4rem;
 }
 
 .table_assignees {
-  width: 24rem;
+  width: 16rem;
 }
 
 .sortableHeader {
