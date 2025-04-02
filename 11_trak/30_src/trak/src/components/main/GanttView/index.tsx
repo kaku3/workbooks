@@ -29,7 +29,7 @@ export default function GanttView({
     projectStore: { project, isLoadingProject, projectError, fetchProject }
   } = useApplication();
 
-  const { statuses } = useTableData();
+  const { users, statuses } = useTableData();
 
   // フィルター適用済みのチケット一覧
   const displayTickets: TicketData[] = useMemo(() => {
@@ -107,6 +107,7 @@ export default function GanttView({
         <TaskList
           tickets={displayTickets}
           statuses={statuses}
+          users={users}
           editingCell={editingCell}
           setEditingCell={setEditingCell}
           onStatusUpdate={(ticketId, value) => {
@@ -125,6 +126,12 @@ export default function GanttView({
             const ticket = tickets.find(t => t.id === ticketId);
             if (ticket) {
               updateTicket({ ...ticket, progress: value });
+            }
+          }}
+          onAssigneeUpdate={(ticketId, value) => {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (ticket) {
+              updateTicket({ ...ticket, assignees: value });
             }
           }}
         />

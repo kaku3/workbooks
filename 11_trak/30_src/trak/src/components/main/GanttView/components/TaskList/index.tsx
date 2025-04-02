@@ -2,38 +2,51 @@ import styles from './style.module.css';
 import StatusSelect from '../../../TableView/components/StatusSelect';
 import EstimateCell from '../../../TableView/components/cell/EstimateCell';
 import ProgressCell from '../../../TableView/components/cell/ProgressCell';
-import { TicketData, Status } from '@/types';
+import AssigneeCell from '../../../TableView/components/cell/AssigneeCell';
+import { TicketData, Status, User } from '@/types';
 import { getTextColor } from '@/lib/utils/colors';
 
 interface TaskListProps {
   tickets: TicketData[];
   statuses: Status[];
+  users: User[];
   editingCell: { type: string; id: string } | null;
   setEditingCell: (cell: { type: string; id: string } | null) => void;
   onStatusUpdate: (ticketId: string, value: string) => void;
   onEstimateUpdate: (ticketId: string, value: number) => void;
   onProgressUpdate: (ticketId: string, value: number) => void;
+  onAssigneeUpdate: (ticketId: string, value: string[]) => void;
 }
 
 export default function TaskList({ 
   tickets,
   statuses,
+  users,
   editingCell,
   setEditingCell,
   onStatusUpdate,
   onEstimateUpdate,
-  onProgressUpdate
+  onProgressUpdate,
+  onAssigneeUpdate
 }: TaskListProps) {
   const formatValue = (value: number) => {
     return value >= 8 ? `${(value / 8).toFixed(1)}d` : `${value}h`;
   };
+
+  const CELL_WIDTHS = {
+    title: '392px',
+    assignee: '120px',
+    estimate: '48px',
+    progress: '48px',
+    status: '120px'
+  }
   
   const headerLabels = [
-    { key: 'title', label: 'タイトル', flex: '1 1 392px' },
-    { key: 'assignee', label: '担当者', width: '80px' },
-    { key: 'estimate', label: '見積', width: '48px' },
-    { key: 'progress', label: '進捗', width: '48px' },
-    { key: 'status', label: 'ステータス', width: '120px' },
+    { key: 'title', label: 'タイトル', flex: `1 1 ${CELL_WIDTHS.title}` },
+    { key: 'assignee', label: '担当者', width: CELL_WIDTHS.assignee },
+    { key: 'estimate', label: '見積', width: CELL_WIDTHS.estimate },
+    { key: 'progress', label: '進捗', width: CELL_WIDTHS.progress },
+    { key: 'status', label: 'ステータス', width: CELL_WIDTHS.status },
   ];
 
   return (
@@ -53,12 +66,33 @@ export default function TaskList({
         {tickets.map(ticket => (
           <div key={ticket.id} className={styles.taskRow}>
             <div className={styles.cell}>{ticket.title}</div>
-            <div className={styles.cell} style={{ width: '80px' }}>
-              {ticket.assignees?.[0]}
+            <div 
+              className={`${styles.cell} ${styles.assigneeCell}`}
+              style={{ width: CELL_WIDTHS.assignee }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setEditingCell({type: 'assignee', id: ticket.id!});
+              }}
+            >
+              {editingCell?.type === 'assignee' && editingCell.id === ticket.id ? (
+                <AssigneeCell
+                  value={ticket.assignees || []}
+                  users={users}
+                  onUpdate={(value) => {
+                    onAssigneeUpdate(ticket.id!, value);
+                    setEditingCell(null);
+                  }}
+                />
+              ) : (
+                <AssigneeCell
+                  value={ticket.assignees || []}
+                  users={users}
+                />
+              )}
             </div>
             <div 
               className={`${styles.cell} ${styles.estimateCell}`} 
-              style={{ width: '48px' }}
+              style={{ width: CELL_WIDTHS.estimate }}
               onClick={(e) => {
                 e.stopPropagation();
                 setEditingCell({type: 'estimate', id: ticket.id!});
@@ -80,7 +114,7 @@ export default function TaskList({
             </div>
             <div 
               className={`${styles.cell} ${styles.progressCell}`} 
-              style={{ width: '48px' }}
+              style={{ width: CELL_WIDTHS.progress }}
               onClick={(e) => {
                 e.stopPropagation();
                 setEditingCell({type: 'progress', id: ticket.id!});
@@ -102,7 +136,7 @@ export default function TaskList({
             </div>
             <div 
               className={styles.cell} 
-              style={{ width: '120px' }} 
+              style={{ width: CELL_WIDTHS.status }} 
               onClick={(e) => {
                 e.stopPropagation();
                 setEditingCell({type: 'status', id: ticket.id!});
