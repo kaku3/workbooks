@@ -43,7 +43,7 @@ export default function Timeline({
   
   // スケールに応じたセル幅を設定
   const baseWidth = 24;
-  const cellWidth = scale === 'day' ? baseWidth : scale === 'week' ? baseWidth * 2 : baseWidth * 4;
+  const cellWidth = scale === 'day' ? baseWidth : scale === 'week' ? baseWidth * 2.25 : baseWidth * 8;
   const totalWidth = timelineDates.length * cellWidth;
 
   // 日付フォーマッター

@@ -131,6 +131,7 @@
 .assigneeCell > div > div > span {
   padding: 0;
   font-size: .6rem;
+  line-height: 1.2;
 }
 
 .estimateCell {
