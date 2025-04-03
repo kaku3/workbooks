@@ -6,8 +6,8 @@
     "admin@example.com"
   ],
   "status": "close",
-  "startDate": "2025-03-11",
-  "dueDate": "2025-03-16",
+  "startDate": "2025-03-07",
+  "dueDate": "2025-03-12",
   "estimate": 0,
   "content": "## 概要\nタグ入力部をフローポップアップに\n\n- as is\ntagA\ntagB\ntagC\ntagD\n\n- to be\ntagA tagB tagC\ntagD\n\n## 目的\nタグの種類が多く、選択時の視認性が悪いのを改善したい。\n\n## 提案内容\n\n## 期待される効果\n\n## 技術的な考慮事項\n\n## その他\n\n## 対応内容\n",
   "tags": [
@@ -16,5 +16,5 @@
   ],
   "id": "T20250329-095313",
   "createdAt": "2025-03-29T00:53:13.336Z",
-  "updatedAt": "2025-04-03T14:02:22.218Z"
+  "updatedAt": "2025-04-03T16:16:19.145Z"
 }

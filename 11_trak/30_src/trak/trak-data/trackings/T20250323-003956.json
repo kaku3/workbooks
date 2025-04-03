@@ -4,8 +4,8 @@
   "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
-  "startDate": "",
-  "dueDate": "",
+  "startDate": "2025-03-03",
+  "dueDate": "2025-03-08",
   "estimate": 0,
   "content": "## 概要\nTableViewのステータスフィルタの後ろに、(3) のような件数表示を行う。\n0件時は表示しない。また、表示チケットの総数も表示する。\n\n## 目的\n\n## 提案内容\n\n## 期待される効果\n\n## 技術的な考慮事項\n\n## その他\n\n## 対応内容\n以下フォルダ配下のファイルを修正。\n30_src\\trak\\src\\components\\main\\TableView",
   "tags": [
@@ -14,5 +14,5 @@
   ],
   "id": "T20250323-003956",
   "createdAt": "2025-03-22T15:39:56.602Z",
-  "updatedAt": "2025-04-02T15:47:56.417Z"
+  "updatedAt": "2025-04-03T16:16:13.132Z"
 }

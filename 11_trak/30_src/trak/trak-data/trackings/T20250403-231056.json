@@ -3,9 +3,9 @@
   "title": "チケットコピー機能",
   "creator": "admin@example.com",
   "assignees": [],
-  "status": "open",
-  "startDate": "",
-  "dueDate": "",
+  "status": "close",
+  "startDate": "2025-03-06",
+  "dueDate": "2025-03-11",
   "estimate": 0,
   "content": "## 概要\n編集中のチケットを新規チケットとして保存する機能を追加\n\n## 目的\nベースとなるチケットを少し編集して新しいチケットを作成したい要望に対応。\n\n## 提案内容\n\n## 期待される効果\n\n## 技術的な考慮事項\n\n## その他\n\n## 対応内容\nチケットフォーム（編集モード時）、左下にコピーして保存ボタンを追加。\nコピーして保存を押下時、現在編集中のチケットに新規IDを付与して新規チケットとして保存する。\n30_src\\trak\\src\\components\\TicketForm\\index.tsx",
   "tags": [
@@ -14,5 +14,5 @@
   ],
   "id": "T20250403-231056",
   "createdAt": "2025-04-03T14:10:56.078Z",
-  "updatedAt": "2025-04-03T14:10:56.078Z"
+  "updatedAt": "2025-04-03T16:19:23.487Z"
 }

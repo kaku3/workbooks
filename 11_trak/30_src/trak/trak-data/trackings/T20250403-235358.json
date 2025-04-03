@@ -3,7 +3,7 @@
   "title": "GanttView でチケットのタイトル部をクリック時にチケット編集画面を開く",
   "creator": "admin@example.com",
   "assignees": [],
-  "status": "open",
+  "status": "close",
   "startDate": "",
   "dueDate": "",
   "estimate": 0,
@@ -14,5 +14,5 @@
   ],
   "id": "T20250403-235358",
   "createdAt": "2025-04-03T14:53:58.239Z",
-  "updatedAt": "2025-04-03T14:53:58.239Z"
+  "updatedAt": "2025-04-03T15:29:24.165Z"
 }
