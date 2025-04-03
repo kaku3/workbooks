@@ -80,7 +80,7 @@
   z-index: 1;
   user-select: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  will-change: transform, left;
+  will-change: transform, left, width;  /* widthを追加 */
   transform: translate(0, 0);
   transition-property: transform, box-shadow, background-color;
   transition-duration: 0.15s;
@@ -111,6 +111,35 @@
 .timelineBar.dragOver {
   background-color: #64b5f6;
   border-color: #1976d2;
+}
+
+.resizeHandle {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 2;
+}
+
+.resizeHandle:hover {
+  background-color: rgba(25, 118, 210, 0.2);
+}
+
+.resizeHandle.left {
+  left: 0;
+}
+
+.resizeHandle.right {
+  right: 0;
+}
+
+.resizing {
+  opacity: 0.8;
+  transition: none !important;
+  background-color: #90caf9;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .clickable {

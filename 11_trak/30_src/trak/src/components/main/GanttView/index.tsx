@@ -58,7 +58,7 @@ export default function GanttView({
 
 
   if (isLoadingTickets || isLoadingProject) {
-    return <div className={styles.container}>Loading...</div>;
+    return <div className={styles.container}>読込中...</div>;
   }
 
   if (ticketsError || projectError) {

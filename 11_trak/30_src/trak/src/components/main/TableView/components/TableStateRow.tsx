@@ -14,7 +14,7 @@ export default function TableStateRow({
   const getContent = () => {
     switch (type) {
       case 'loading':
-        return '読み込み中...';
+        return '読込中...';
       case 'error':
         return message || 'エラーが発生しました';
       case 'empty':
