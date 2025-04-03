@@ -4,25 +4,21 @@
       "categoryId": "taskType",
       "name": "タスク種別",
       "tags": [
-        {
-          "id": "feature",
-          "name": "機能追加",
-          "color": "#2563eb"
-        },
+
         {
           "id": "bug",
           "name": "バグ",
           "color": "#dc2626"
         },
         {
+          "id": "feature",
+          "name": "機能追加",
+          "color": "#2563eb"
+        },
+        {
           "id": "improvement",
           "name": "改善",
           "color": "#16a34a"
-        },
-        {
-          "id": "documentation",
-          "name": "ドキュメント",
-          "color": "#7c3aed"
         }
       ]
     },
@@ -54,6 +50,52 @@
           "id": "SC301",
           "name": "SC301 - チケット新規作成/編集",
           "color": "#8b5cf6"
+        }
+      ]
+    },
+    {
+      "categoryId": "stage",
+      "name": "工程",
+      "tags": [
+        {
+          "id": "requirement",
+          "name": "要件定義",
+          "color": "#f97316"
+        },
+        {
+          "id": "design",
+          "name": "設計",
+          "color": "#0891b2"
+        },
+        {
+          "id": "development",
+          "name": "開発",
+          "color": "#059669"
+        },
+        {
+          "id": "creation",
+          "name": "制作",
+          "color": "#9333ea"
+        },
+        {
+          "id": "unit-test",
+          "name": "単体試験",
+          "color": "#ca8a04"
+        },
+        {
+          "id": "integration-test",
+          "name": "結合試験",
+          "color": "#c2410c"
+        },
+        {
+          "id": "documentation",
+          "name": "ドキュメント全般",
+          "color": "#7c3aed"
+        },
+        {
+          "id": "operation",
+          "name": "運用",
+          "color": "#ca8a04"
         }
       ]
     }
