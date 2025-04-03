@@ -1,0 +1,18 @@
+{
+  "templateId": "feature",
+  "title": "startDate, dueDate をドラッグ＆ドロップで編集(2)",
+  "creator": "admin@example.com",
+  "assignees": [],
+  "status": "close",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 0,
+  "content": "## 概要\n\n\n## 目的\n\n## 提案内容\n\n## 期待される効果\n\n## 技術的な考慮事項\n\n## その他\n\n## 対応内容\nタイムライン部に\n30_src\\trak\\src\\components\\main\\GanttView\\components\\Timeline\n\n以下操作を追加。\n- タイムラインを左右にドラッグで、startDate, dueDate を移動する機能\n  - プロジェクト期間より前・後の日付を設定することはできない。",
+  "tags": [
+    "feature",
+    "SC201-02"
+  ],
+  "id": "T20250403-231614",
+  "createdAt": "2025-04-03T14:16:14.950Z",
+  "updatedAt": "2025-04-03T14:49:14.880Z"
+}

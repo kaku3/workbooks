@@ -1,0 +1,18 @@
+{
+  "templateId": "feature",
+  "title": "GanttView でチケットのタイトル部をクリック時にチケット編集画面を開く",
+  "creator": "admin@example.com",
+  "assignees": [],
+  "status": "open",
+  "startDate": "",
+  "dueDate": "",
+  "estimate": 0,
+  "content": "## 概要\nTableViewではチケットの編集画面を右パネルで開いているが、同様にGanttViewでも右パネルで編集画面を開く\n\n## 目的\n\n## 提案内容\n\n## 期待される効果\n\n## 技術的な考慮事項\n\n## その他\n\n## 対応内容\nタスクリストのタイトル部クリックで右パネル編集画面を開く\n30_src\\trak\\src\\components\\main\\GanttView\\components\\TaskList\\index.tsx\n\n参考\n30_src\\trak\\src\\contexts\\ui\\slidePanel.ts\nopenEditTicket",
+  "tags": [
+    "feature",
+    "SC201-02"
+  ],
+  "id": "T20250403-235358",
+  "createdAt": "2025-04-03T14:53:58.239Z",
+  "updatedAt": "2025-04-03T14:53:58.239Z"
+}
