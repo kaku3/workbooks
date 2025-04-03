@@ -124,6 +124,15 @@ export default function GanttView({
           tickets={displayTickets}
           timelineRange={timelineRange}
           zoomLevel={zoomLevel}
+          onUpdateTicket={(ticketId, updates) => {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (ticket) {
+              updateTicket({
+                ...ticket,
+                ...updates,
+              });
+            }
+          }}
         />
       </div>
     </div>

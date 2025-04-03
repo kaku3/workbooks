@@ -450,12 +450,44 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
 
           {/* ボタン */}
           <div className={styles.buttons}>
-            <button type="button" onClick={onCancel} className={styles.cancelButton}>
-              キャンセル
-            </button>
-            <button type="submit" className={styles.submitButton}>
-              保存
-            </button>
+            {mode === 'edit' && (
+              <button
+                type="button"
+                onClick={async () => {
+                  // 編集中のデータを新規チケットとして保存
+                  const response = await fetch('/api/tickets', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      ...formData,
+                      creator: session?.user?.email || '',
+                      createdAt: undefined,
+                      updatedAt: undefined
+                    }),
+                  });
+                  const result = await response.json();
+                  if (!result.success) {
+                    throw new Error(result.error || 'チケットのコピーに失敗しました');
+                  }
+                  // 作成後にチケット一覧を更新
+                  fetchTickets();
+                  onClose();
+                }}
+                className={styles.cancelButton}
+              >
+                コピーして保存
+              </button>
+            )}
+            <div className={styles.rightButtons}>
+              <button type="button" onClick={onCancel} className={styles.cancelButton}>
+                キャンセル
+              </button>
+              <button type="submit" className={styles.submitButton}>
+                保存
+              </button>
+            </div>
           </div>
         </form>
       </div>

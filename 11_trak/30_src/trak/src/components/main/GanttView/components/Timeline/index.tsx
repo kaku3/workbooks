@@ -1,5 +1,6 @@
 import { TicketData } from '@/types';
 import styles from './style.module.css';
+import { useState } from 'react';
 
 interface TimelineProps {
   tickets: TicketData[];
@@ -8,12 +9,14 @@ interface TimelineProps {
     end: Date;
   };
   zoomLevel?: number; // 25-150% (default 100%)
+  onUpdateTicket?: (ticketId: string, updates: Partial<TicketData>) => void;
 }
 
 export default function Timeline({ 
   tickets, 
   timelineRange,
   zoomLevel = 100,
+  onUpdateTicket,
 }: TimelineProps) {
   // 日付の配列を生成
   const generateTimelineDates = () => {
@@ -114,6 +117,142 @@ export default function Timeline({
     backgroundPositionY: 0
   };
 
+  // 日付をYYYY-MM-DD形式に変換
+  const formatDateForApi = (date: Date): string => {
+    return date.toISOString().split('T')[0];
+  };
+
+  // タイムライン行のクリックハンドラー
+  const handleTimelineRowClick = (ticket: TicketData, clickEvent: React.MouseEvent<HTMLDivElement>) => {
+    if (!onUpdateTicket || (ticket.startDate && ticket.dueDate)) {
+      return; // 更新コールバックがない、または既に日付が設定されている場合は何もしない
+    }
+
+    // クリックされた位置から日付を計算
+    const rect = clickEvent.currentTarget.getBoundingClientRect();
+    const offsetX = clickEvent.clientX - rect.left;
+    const dayIndex = Math.floor(offsetX / cellWidth);
+    
+    // クリックされた日付を計算
+    const clickedDate = new Date(timelineRange.start);
+    clickedDate.setDate(clickedDate.getDate() + dayIndex);
+    
+    // 終了日（開始日+5日）を計算
+    const endDate = new Date(clickedDate);
+    endDate.setDate(endDate.getDate() + 5);
+
+    // チケットを更新
+    onUpdateTicket(ticket.id!, {
+      startDate: formatDateForApi(clickedDate),
+      dueDate: formatDateForApi(endDate)
+    });
+  };
+
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dragStartX, setDragStartX] = useState<number>(0);
+  const [dragStartOffset, setDragStartOffset] = useState<number>(0);
+  const [dragStartDate, setDragStartDate] = useState<Date | null>(null);
+  const [dragDelta, setDragDelta] = useState<number>(0);
+
+  // ドラッグ開始時のハンドラー
+  const handleDragStart = (e: React.DragEvent, ticket: TicketData) => {
+    if (!ticket.startDate || !ticket.dueDate) return;
+    
+    const element = e.currentTarget as HTMLDivElement;
+    const rect = element.getBoundingClientRect();
+
+    console.log('Drag start', {
+      clientX: e.clientX,
+      rectLeft: rect.left,
+      elementOffsetLeft: element.offsetLeft,
+      ticket: ticket.title
+    });
+
+    setDraggingId(ticket.id!);
+    setDragStartX(e.clientX);
+    setDragStartOffset(element.offsetLeft);
+    setDragStartDate(new Date(ticket.startDate));
+    
+    // ゴースト画像を設定
+    const ghost = document.createElement('div');
+    ghost.style.display = 'none';
+    document.body.appendChild(ghost);
+    e.dataTransfer.setDragImage(ghost, 0, 0);
+    setTimeout(() => document.body.removeChild(ghost), 0);
+
+    element.classList.add(styles.dragging);
+  };
+
+  // ドラッグ中のハンドラー
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (!draggingId) return;
+
+    const deltaX = e.clientX - dragStartX;
+    const daysDelta = Math.round(deltaX / cellWidth);
+
+    // 即座に視覚的な位置を更新
+    const element = document.querySelector(`.${styles.dragging}`);
+    if (element) {
+      (element as HTMLElement).style.transform = `translate(${deltaX}px, -2px)`;
+      (element as HTMLElement).style.transition = 'none';
+    }
+
+    setDragDelta(daysDelta);
+  };
+
+  // ドラッグ終了時のハンドラー
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!draggingId || !dragStartDate || !onUpdateTicket) return;
+
+    const deltaX = e.clientX - dragStartX;
+    const daysDelta = Math.round(deltaX / cellWidth);
+
+    const ticket = tickets.find(t => t.id === draggingId);
+    if (ticket && daysDelta !== 0 && ticket.startDate && ticket.dueDate) {
+      const newStartDate = new Date(ticket.startDate);
+      newStartDate.setDate(newStartDate.getDate() + daysDelta);
+      
+      const newDueDate = new Date(ticket.dueDate);
+      newDueDate.setDate(newDueDate.getDate() + daysDelta);
+
+      // データの更新を即座に実行
+      onUpdateTicket(draggingId, {
+        startDate: formatDateForApi(newStartDate),
+        dueDate: formatDateForApi(newDueDate)
+      });
+
+      // ドラッグされた要素のスタイルを即座に更新
+      const draggingElement = document.querySelector(`.${styles.dragging}`);
+      if (draggingElement) {
+        const element = draggingElement as HTMLElement;
+        const currentLeft = parseInt(element.style.left);
+        element.style.left = `${currentLeft + deltaX}px`;
+        element.style.transform = '';
+        element.classList.remove(styles.dragging);
+      }
+    }
+
+    setDraggingId(null);
+    setDragStartDate(null);
+    setDragDelta(0);
+  };
+
+  // ドラッグがキャンセルされた時のハンドラー
+  const handleDragEnd = (e: React.DragEvent) => {
+    // ドロップ先が無効な場合は元の位置に戻す
+    const draggingElement = document.querySelector(`.${styles.dragging}`);
+    if (draggingElement) {
+      (draggingElement as HTMLElement).style.transform = '';
+      draggingElement.classList.remove(styles.dragging);
+    }
+    setDraggingId(null);
+    setDragStartDate(null);
+    setDragDelta(0);
+  };
+
   return (
     <div className={styles.timeline}>
       <div className={styles.timelineHeader}>
@@ -137,7 +276,11 @@ export default function Timeline({
         </div>
       </div>
       <div className={styles.timelineContent}>
-        <div style={{ width: totalWidth + 'px' }}>
+        <div 
+          style={{ width: totalWidth + 'px' }}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
           {tickets.map(ticket => {
             const startDate = ticket.startDate ? new Date(ticket.startDate) : null;
             const endDate = ticket.dueDate ? new Date(ticket.dueDate) : null;
@@ -146,8 +289,10 @@ export default function Timeline({
               return (
                 <div 
                   key={ticket.id} 
-                  className={styles.timelineRow}
+                  className={`${styles.timelineRow} ${!ticket.startDate && !ticket.dueDate ? styles.clickable : ''}`}
                   style={backgroundStyle}
+                  onClick={(e) => handleTimelineRowClick(ticket, e)}
+                  title={!ticket.startDate && !ticket.dueDate ? "Click to set dates" : undefined}
                 />
               );
             }
@@ -190,8 +335,13 @@ export default function Timeline({
                   className={styles.timelineBar}
                   style={{
                     left: `${left}px`,
-                    width: `${width}px`
+                    width: `${width}px`,
+                    position: 'absolute'
                   }}
+                  draggable={true}
+                  onDragStart={(e) => handleDragStart(e, ticket)}
+                  onDragEnd={handleDragEnd}
+                  onDragOver={handleDragOver}
                 >
                   {ticket.title}
                 </div>

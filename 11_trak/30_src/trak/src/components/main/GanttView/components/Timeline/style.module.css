@@ -57,6 +57,7 @@
   background: white;
   contain: strict;
   will-change: transform;
+  overflow: visible;
 }
 
 .timelineBar {
@@ -66,7 +67,7 @@
   border-radius: 3px;
   background-color: var(--gantt-bar-bg);
   border: 1px solid var(--gantt-bar-color);
-  cursor: pointer;
+  cursor: grab;
   font-size: 12px;
   padding: 0 8px;
   display: flex;
@@ -75,15 +76,67 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--gantt-bar-color);
-  transition: all 0.15s ease-in-out;
+  transition: box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out;
   z-index: 1;
   user-select: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  will-change: transform, box-shadow;
+  will-change: transform, left;
+  transform: translate(0, 0);
+  transition-property: transform, box-shadow, background-color;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-in-out;
+}
+
+.timelineBar:active {
+  cursor: grabbing;
 }
 
 .timelineBar:hover {
   background-color: #90caf9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
+}
+
+.timelineBar.dragging {
+  opacity: 0.8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  cursor: grabbing;
+  z-index: 100;
+  transition: none !important;
+  background-color: #64b5f6;
+}
+
+.timelineBar.dragOver {
+  background-color: #64b5f6;
+  border-color: #1976d2;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.clickable:hover {
+  background-color: rgba(144, 202, 249, 0.1) !important;
+}
+
+.clickable::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 49%,
+    rgba(144, 202, 249, 0.2) 49%,
+    rgba(144, 202, 249, 0.2) 51%,
+    transparent 51%
+  );
+  background-size: 10px 10px;
+  pointer-events: none;
+  opacity: 0.5;
 }
