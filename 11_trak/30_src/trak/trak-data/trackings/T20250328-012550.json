@@ -4,9 +4,9 @@
   "creator": "admin@example.com",
   "assignees": [],
   "status": "close",
-  "startDate": "",
-  "dueDate": "",
-  "estimate": 24,
+  "startDate": "2025-03-09",
+  "dueDate": "2025-03-14",
+  "estimate": 32,
   "content": "## 目的\nTableView の操作メニューをGanttViewでも使えるようにしたい。\n\n## 作業内容\n現状 TableView に実装している、新規チケット作成・チケット数表示・ステータスフィルタを TicketToolbarコンポーネントを作成し移植する。\n\n## 完了条件\n- TicketMenu 作成\n- 新規チケットボタン・チケット数表示・ステータスフィルタ移植\n\n## 注意事項\n\n## 参考情報\n",
   "tags": [
     "improvement",
@@ -14,6 +14,7 @@
   ],
   "id": "T20250328-012550",
   "createdAt": "2025-03-27T16:25:50.515Z",
-  "updatedAt": "2025-03-30T14:05:52.831Z",
-  "ticketId": "T20250328-012550"
+  "updatedAt": "2025-04-03T14:02:19.453Z",
+  "ticketId": "T20250328-012550",
+  "progress": 30
 }
