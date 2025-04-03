@@ -204,11 +204,16 @@
 
 .buttons {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #e5e7eb;
   margin-top: auto;
+}
+
+.rightButtons {
+  display: flex;
+  gap: 1rem;
 }
 
 .cancelButton {
