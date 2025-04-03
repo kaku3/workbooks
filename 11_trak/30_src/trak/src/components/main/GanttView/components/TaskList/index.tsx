@@ -34,8 +34,8 @@ export default function TaskList({
   const CELL_WIDTHS = {
     title: '392px',
     assignee: '120px',
-    estimate: '48px',
-    progress: '48px',
+    estimate: '44px',
+    progress: '44px',
     status: '104px'
   }
   
@@ -63,7 +63,7 @@ export default function TaskList({
       <div className={styles.taskRows}>
         {tickets.map(ticket => (
           <div key={ticket.id} className={styles.taskRow}>
-            <div className={styles.cell}>{ticket.title}</div>
+            <div className={`${styles.cell} ${styles.titleCell}`}>{ticket.title}</div>
             <div 
               className={`${styles.cell} ${styles.assigneeCell}`}
               style={{ width: CELL_WIDTHS.assignee }}

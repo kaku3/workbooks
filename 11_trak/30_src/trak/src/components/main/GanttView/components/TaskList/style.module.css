@@ -124,6 +124,10 @@
   background: transparent;
 }
 
+.titleCell {
+  font-size: .7rem;;
+}
+
 .assigneeCell {
   padding-top: .5rem;
 }
