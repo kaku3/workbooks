@@ -7,10 +7,9 @@ interface SlidePanelProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  title?: string;
 }
 
-export default function SlidePanel({ isOpen, onClose, children, title }: SlidePanelProps) {
+export default function SlidePanel({ isOpen, onClose, children }: SlidePanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

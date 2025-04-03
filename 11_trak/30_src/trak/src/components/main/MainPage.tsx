@@ -7,6 +7,8 @@ import styles from './MainPage.module.css';
 import TableView from './TableView/index';
 import GanttView from './GanttView/index';
 import TicketToolbar from './TicketToolbar';
+import SlidePanel from '../common/SlidePanel';
+import TicketForm from '../TicketForm';
 import { useTableData } from './TableView/hooks/useTableData';
 
 type ViewMode = 'gantt' | 'table';
@@ -16,7 +18,10 @@ export default function MainPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
   const { statuses } = useTableData();
-  const { preferences, updateTableViewPreferences, isLoadingPreferences } = useApplication().preferencesStore;
+  const { 
+    preferencesStore: { preferences, updateTableViewPreferences, isLoadingPreferences },
+    slidePanelStore: { isOpen: slidePanelOpen, mode: ticketFormMode, ticketId: selectedTicketId, handleClose: handleClosePanel }
+  } = useApplication();
 
   // Restore selected filters from preferences when loaded
   useEffect(() => {
@@ -119,6 +124,18 @@ export default function MainPage() {
           />
         )}
       </div>
+
+      {/* チケット編集パネル */}
+      <SlidePanel 
+        isOpen={slidePanelOpen} 
+        onClose={handleClosePanel}
+      >
+        <TicketForm
+          mode={ticketFormMode}
+          ticketId={selectedTicketId}
+          onClose={handleClosePanel}
+        />
+      </SlidePanel>
     </div>
   );
 }

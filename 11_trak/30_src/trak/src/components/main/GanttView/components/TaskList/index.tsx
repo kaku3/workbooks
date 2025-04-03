@@ -5,6 +5,7 @@ import ProgressCell from '../../../TableView/components/cell/ProgressCell';
 import AssigneeCell from '../../../TableView/components/cell/AssigneeCell';
 import { TicketData, Status, User } from '@/types';
 import { getTextColor } from '@/lib/utils/colors';
+import { useApplication } from '@/contexts/ApplicationContext';
 
 interface TaskListProps {
   tickets: TicketData[];
@@ -27,6 +28,10 @@ export default function TaskList({
   onEstimateUpdate,
   onProgressUpdate
 }: TaskListProps) {
+  const {
+    openEditTicket,
+  } = useApplication().slidePanelStore;
+
   const formatValue = (value: number) => {
     return value >= 8 ? `${(value / 8).toFixed(1)}d` : `${value}h`;
   };
@@ -63,7 +68,13 @@ export default function TaskList({
       <div className={styles.taskRows}>
         {tickets.map(ticket => (
           <div key={ticket.id} className={styles.taskRow}>
-            <div className={`${styles.cell} ${styles.titleCell}`}>{ticket.title}</div>
+            <div 
+              className={`${styles.cell} ${styles.titleCell}`}
+              onClick={() => openEditTicket(ticket.id!)}
+              style={{ cursor: 'pointer' }}
+            >
+              {ticket.title}
+            </div>
             <div 
               className={`${styles.cell} ${styles.assigneeCell}`}
               style={{ width: CELL_WIDTHS.assignee }}

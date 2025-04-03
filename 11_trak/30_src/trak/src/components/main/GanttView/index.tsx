@@ -77,7 +77,8 @@ export default function GanttView({
   };
 
   return (
-    <div className={styles.container} onClick={handleContainerClick}>
+    <>
+      <div className={styles.container} onClick={handleContainerClick}>
       {/* ズーム調整スライダー */}
       <div className={styles.zoomControl}>
         <input
@@ -135,6 +136,7 @@ export default function GanttView({
           }}
         />
       </div>
-    </div>
+      </div>
+    </>
   );
 }

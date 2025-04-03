@@ -2,10 +2,7 @@
 
 import tableStyles from './styles/TableView.module.css';
 import dragStyles from './styles/DragDrop.module.css';
-import SlidePanel from '../../common/SlidePanel';
-import TicketForm from '../../TicketForm';
 import { useEffect, useMemo, useState } from 'react';
-import { TagsProvider } from '../TagsContext';
 import SortHeader from './components/SortHeader';
 import TableStateRow from './components/TableStateRow';
 import { TableCell } from './components/TableCell';
@@ -92,12 +89,8 @@ export default function TableView({
   };
 
   const {
-    isOpen: slidePanelOpen,
-    mode: ticketFormMode,
-    ticketId: selectedTicketId,
     openEditTicket,
-    handleClose: handleClosePanel,
-  } = useApplication().slidePanelStore
+  } = useApplication().slidePanelStore;
 
   const displayTickets:TicketData[] = useMemo(() => {
     const statusFilteredTickets = filterTicketsByStatus(tickets, selectedStatuses);
@@ -114,7 +107,6 @@ export default function TableView({
   const isLoadingData = isLoadingTickets || isLoadingSortOrders;
 
   return (
-    <TagsProvider>
       <div className={tableStyles.container} onClick={(e) => {
           const target = e.target as HTMLElement;
           if (!target.closest('table') && !target.closest('button')) {
@@ -231,17 +223,5 @@ export default function TableView({
           </table>
         </div>
       </div>
-      <SlidePanel 
-        isOpen={slidePanelOpen} 
-        onClose={handleClosePanel}
-        title={ticketFormMode === 'new' ? 'チケット作成' : 'チケット編集'}
-      >
-        <TicketForm
-          mode={ticketFormMode}
-          ticketId={selectedTicketId}
-          onClose={handleClosePanel}
-        />
-      </SlidePanel>
-    </TagsProvider>
   );
 }
