@@ -8,8 +8,11 @@
   - TypeScript
   - Material-UI (@mui/material)
   - NextAuth.js (認証)
-  - ガントチャート用ライブラリ（検討中）
-  - テーブル用ライブラリ（検討中）
+  - カスタムガントチャート実装
+    - Timeline コンポーネント
+    - TaskList コンポーネント
+    - Grid システム
+    - 日付計算ユーティリティ
 
 ### バックエンド
 - Next.js API Routes

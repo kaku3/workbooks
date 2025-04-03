@@ -93,6 +93,26 @@ flowchart TD
     subgraph Pages
         Main[MainPage] --> Table[TableView]
         Main --> Gantt[GanttView]
+        
+        subgraph GanttComponents
+            Gantt --> Timeline[Timeline]
+            Gantt --> TaskList[TaskList]
+            
+            subgraph Timeline[Timeline Component]
+                Grid[Grid Layout]
+                DateHeader[Date Headers]
+                TaskBars[Task Bars]
+                
+                Grid --> DateHeader
+                Grid --> TaskBars
+            end
+            
+            subgraph TaskList[TaskList Component]
+                Items[Task Items]
+                Labels[Task Labels]
+                Headers[Column Headers]
+            end
+        end
         Main --> New[新規チケット]
 
         subgraph TableComponents
