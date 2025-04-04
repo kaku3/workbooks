@@ -69,7 +69,7 @@
   border: 1px solid var(--gantt-bar-color);
   cursor: grab;
   font-size: 12px;
-  padding: 0 8px;
+  padding: 0 12px;  /* ハンドルのための余白を確保 */
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -115,23 +115,29 @@
 
 .resizeHandle {
   position: absolute;
-  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
   width: 8px;
-  height: 100%;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--gantt-bar-color);
   cursor: col-resize;
   z-index: 2;
+  touch-action: none;
+  transition: background-color 0.15s ease;
 }
 
 .resizeHandle:hover {
-  background-color: rgba(25, 118, 210, 0.2);
+  background-color: #1976d2;
+  transform: translateY(-50%) scale(1.2);
 }
 
 .resizeHandle.left {
-  left: 0;
+  left: -4px;
 }
 
 .resizeHandle.right {
-  right: 0;
+  right: -4px;
 }
 
 .resizing {
@@ -140,6 +146,7 @@
   background-color: #90caf9;
   z-index: 1000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: all !important;
 }
 
 .clickable {

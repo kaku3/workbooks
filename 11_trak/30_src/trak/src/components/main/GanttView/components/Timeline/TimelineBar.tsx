@@ -21,6 +21,8 @@ export function TimelineBar({
 }: TimelineBarProps) {
   const [resizing, setResizing] = useState<'left' | 'right' | null>(null);
   const [resizeStartX, setResizeStartX] = useState<number>(0);
+  const [resizeStartWidth, setResizeStartWidth] = useState<number>(0);
+  const [resizeStartLeft, setResizeStartLeft] = useState<number>(0);
   const [dragStartX, setDragStartX] = useState<number>(0);
   const [dragStartLeft, setDragStartLeft] = useState<number>(0);
 
@@ -93,113 +95,121 @@ export function TimelineBar({
     e.preventDefault();
     e.stopPropagation();
 
-    const bar = e.currentTarget.parentElement as HTMLElement;
-    if (!bar || resizing) return;
+    const bar = e.currentTarget.closest(`.${styles.timelineBar}`) as HTMLElement;
+    if (!bar) return;
+
+    const startLeft = parseFloat(bar.style.left);
+    const startWidth = parseFloat(bar.style.width);
+
+    console.log('Resize start:', {
+      ticketId: ticket.id,
+      handle,
+      mouseX: e.clientX,
+      startLeft,
+      startWidth
+    });
 
     setResizing(handle);
     setResizeStartX(e.clientX);
+    setResizeStartLeft(startLeft);
+    setResizeStartWidth(startWidth);
     
     bar.classList.add(styles.resizing);
-    bar.dataset.startLeft = String(left);
-    bar.dataset.startWidth = String(width);
 
-    const handleMouseMove = (e: MouseEvent) => {
+    function onMouseMove(e: MouseEvent) {
       e.preventDefault();
-      if (!resizing || !ticket.startDate || !ticket.dueDate) return;
+      if (!ticket.startDate || !ticket.dueDate) return;
 
       const deltaX = e.clientX - resizeStartX;
       const daysDelta = Math.round(deltaX / cellWidth);
-      
+
+      // 新しい日付を計算
       const startDate = new Date(ticket.startDate);
       const dueDate = new Date(ticket.dueDate);
-      const startLeft = left;
-      const startWidth = width;
 
       if (handle === 'left') {
-        const newStartDate = new Date(startDate);
-        newStartDate.setDate(startDate.getDate() + daysDelta);
-        if (newStartDate > dueDate || newStartDate < projectBeginDate) return;
-
-        const newWidth = Math.max(cellWidth, startWidth - deltaX);
-        bar.style.left = `${startLeft + deltaX}px`;
-        bar.style.width = `${newWidth}px`;
+        const newWidth = startWidth - deltaX;
+        if (newWidth >= cellWidth) {
+          const newDate = new Date(startDate);
+          newDate.setDate(startDate.getDate() + daysDelta);
+          if (newDate <= dueDate && newDate >= projectBeginDate) {
+            requestAnimationFrame(() => {
+              bar.style.left = `${startLeft + deltaX}px`;
+              bar.style.width = `${newWidth}px`;
+            });
+          }
+        }
       } else {
-        const newDueDate = new Date(dueDate);
-        newDueDate.setDate(dueDate.getDate() + daysDelta);
-        if (newDueDate < startDate) return;
-
-        const newWidth = Math.max(cellWidth, startWidth + deltaX);
-        bar.style.width = `${newWidth}px`;
+        const newWidth = startWidth + deltaX;
+        if (newWidth >= cellWidth) {
+          const newDate = new Date(dueDate);
+          newDate.setDate(dueDate.getDate() + daysDelta);
+          if (newDate >= startDate) {
+            requestAnimationFrame(() => {
+              bar.style.width = `${newWidth}px`;
+            });
+          }
+        }
       }
-    };
+    }
 
-    const handleMouseUp = (e: MouseEvent) => {
+    function onMouseUp(e: MouseEvent) {
       e.preventDefault();
-      if (!resizing || !ticket.startDate || !ticket.dueDate) return;
-
       const deltaX = e.clientX - resizeStartX;
       const daysDelta = Math.round(deltaX / cellWidth);
 
       if (handle === 'left') {
         const newStartDate = new Date(ticket.startDate);
         newStartDate.setDate(newStartDate.getDate() + daysDelta);
-        
-        if (newStartDate <= dueDate && newStartDate >= projectBeginDate) {
-          requestAnimationFrame(() => {
-            onUpdate(ticket.id!, {
-              startDate: formatDateForApi(newStartDate)
-            });
-          });
+        if (newStartDate <= new Date(ticket.dueDate) && newStartDate >= projectBeginDate) {
+          onUpdate(ticket.id!, { startDate: formatDateForApi(newStartDate) });
         }
       } else {
         const newDueDate = new Date(ticket.dueDate);
-        newDueDate.setDate(dueDate.getDate() + daysDelta);
-        
-        if (newDueDate >= startDate) {
-          requestAnimationFrame(() => {
-            onUpdate(ticket.id!, {
-              dueDate: formatDateForApi(newDueDate)
-            });
-          });
+        newDueDate.setDate(newDueDate.getDate() + daysDelta);
+        if (newDueDate >= new Date(ticket.startDate)) {
+          onUpdate(ticket.id!, { dueDate: formatDateForApi(newDueDate) });
         }
       }
 
       bar.classList.remove(styles.resizing);
-      bar.style.transform = '';
       setResizing(null);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   };
 
   return (
     <div 
+      id={`timeline-bar-${ticket.id}`}  // IDを追加
       className={styles.timelineBar}
       style={{
         left: `${left}px`,
         width: `${width}px`,
         position: 'absolute',
-        willChange: 'transform, left',
-        transition: 'none'
+        willChange: 'transform, left, width',
+        transition: 'none',
+        touchAction: 'none',
+        cursor: 'grab'  // ドラッグ用のカーソルを明示的に指定
       }}
       draggable={true}
       onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
-      data-original-left={left}
-      data-original-width={width}
     >
       <div
         className={`${styles.resizeHandle} ${styles.left}`}
         onMouseDown={(e) => handleResizeStart(e, 'left')}
+        title="開始日を変更"  // ツールチップを追加
       />
       {ticket.title}
       <div
         className={`${styles.resizeHandle} ${styles.right}`}
         onMouseDown={(e) => handleResizeStart(e, 'right')}
+        title="終了日を変更"  // ツールチップを追加
       />
     </div>
   );
