@@ -7,13 +7,62 @@ flowchart TD
     UI[Next.js UI] --> Auth[NextAuth.js]
     UI --> API[API Routes]
     Auth --> API
-    API --> FS[File System]
+    
+    subgraph Services[Service Layer]
+        PS[Preferences Service]
+        CS[Config Service]
+        PJS[Project Service]
+        SS[Statuses Service]
+        TS[Tags Service]
+        TPS[Templates Service]
+        TKS[Tickets Service]
+        TSS[Ticket Sort Service]
+    end
+    
+    API --> Services
+    Services --> FS[File System]
     FS --> TD[trak-data/]
     TD --> T[tickets/]
     TD --> TR[trackings/]
     TD --> C[configs/]
     TD --> TP[templates/]
 ```
+
+## サービスレイヤー構造
+
+各サービスは特定のドメインロジックと責務を持ち、ファイルシステムとの相互作用を抽象化します：
+
+1. Preferences Service
+   - ユーザー固有の設定管理
+   - 設定の永続化と取得
+
+2. Config Service
+   - システム全体の設定管理
+   - 環境設定の制御
+
+3. Project Service
+   - プロジェクト全体の設定管理
+   - プロジェクト情報の制御
+
+4. Statuses Service
+   - チケットステータスの定義管理
+   - ステータスワークフローの制御
+
+5. Tags Service
+   - タグ定義の管理
+   - タグ使用状況の追跡
+
+6. Templates Service
+   - チケットテンプレートの管理
+   - テンプレート適用ロジック
+
+7. Tickets Service
+   - チケットのCRUD操作
+   - チケットメタデータの管理
+
+8. Ticket Sort Service
+   - チケットの表示順序管理
+   - ソート設定の永続化
 
 ## テーブルビュー構造
 
