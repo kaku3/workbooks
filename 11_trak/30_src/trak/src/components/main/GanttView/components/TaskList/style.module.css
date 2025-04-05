@@ -38,6 +38,11 @@
   align-items: center;
 }
 
+.headerCell:first-child {
+  padding: 0;
+  width: 8px!important;
+}
+
 .taskRows {
   display: flex;
   flex-direction: column;
@@ -54,6 +59,49 @@
   height: var(--gantt-row-height);
   background: white;
   contain: strict;
+  position: relative;
+}
+
+.taskRow[data-dragging="top"]::before,
+.taskRow[data-dragging="bottom"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
+  pointer-events: none;
+  z-index: 2;
+  transform-origin: center;
+  box-shadow: 
+    0 0 10px rgba(59, 130, 246, 0.6),
+    0 0 20px rgba(59, 130, 246, 0.3);
+  animation: borderPulse 0.8s ease-in-out infinite;
+}
+
+.taskRow[data-dragging="top"]::before {
+  top: -3px;
+  transform: translateY(-50%);
+}
+
+.taskRow[data-dragging="bottom"]::after {
+  bottom: -3px;
+  transform: translateY(50%);
+}
+
+@keyframes borderPulse {
+  0% {
+    transform: scaleX(0.97);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0.97);
+    opacity: 0.8;
+  }
 }
 
 .taskRow:hover {
@@ -75,8 +123,17 @@
   padding: 0!important;
 }
 
-.cell:first-child {
-  flex: 1 1 392px;
+.handleCell {
+  justify-content: center;
+  padding: 0!important;
+}
+
+.handleCell > div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .editableCell {
@@ -125,6 +182,7 @@
 }
 
 .titleCell {
+  flex: 1 1 384px;
   font-size: .7rem;
   align-items: center;
   padding: 2px 4px;
@@ -178,6 +236,28 @@
 .progressCell {
   font-size: .7rem;
   text-align: right;
+  position: relative;
+}
+
+.progressCell.overdue {
+  background-color: #ffebee;
+}
+
+.progressCell::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: #e3f2fd;
+  z-index: 0;
+  transition: width 0.2s ease;
+  width: var(--progress-width, 0%);
+}
+
+.progressCell > * {
+  position: relative;
+  z-index: 1;
 }
 
 .statusCell select{
