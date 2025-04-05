@@ -117,8 +117,8 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 16px;
   border-radius: 50%;
   background-color: var(--gantt-bar-color);
   cursor: col-resize;
@@ -133,11 +133,11 @@
 }
 
 .resizeHandle.left {
-  left: -4px;
+  left: -8px;
 }
 
 .resizeHandle.right {
-  right: -4px;
+  right: -8px;
 }
 
 .resizing {

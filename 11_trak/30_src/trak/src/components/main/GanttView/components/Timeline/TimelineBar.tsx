@@ -98,19 +98,14 @@ export function TimelineBar({
     const bar = e.currentTarget.closest(`.${styles.timelineBar}`) as HTMLElement;
     if (!bar) return;
 
-    const startLeft = parseFloat(bar.style.left);
-    const startWidth = parseFloat(bar.style.width);
+    // クロージャ内で使用する値をローカル変数として保持
+    const startX = e.clientX;
+    const startLeft = left;
+    const startWidth = width;
 
-    console.log('Resize start:', {
-      ticketId: ticket.id,
-      handle,
-      mouseX: e.clientX,
-      startLeft,
-      startWidth
-    });
-
+    // Reactの状態も更新（他の場所で使う場合のため）
     setResizing(handle);
-    setResizeStartX(e.clientX);
+    setResizeStartX(startX);
     setResizeStartLeft(startLeft);
     setResizeStartWidth(startWidth);
     
@@ -120,42 +115,54 @@ export function TimelineBar({
       e.preventDefault();
       if (!ticket.startDate || !ticket.dueDate) return;
 
-      const deltaX = e.clientX - resizeStartX;
+      // ローカル変数を使用
+      const deltaX = e.clientX - startX;
       const daysDelta = Math.round(deltaX / cellWidth);
 
+      // デバッグログの追加
+      if (Math.abs(deltaX) % 10 === 0) {
+        console.log('Resize move:', {
+          clientX: e.clientX,
+          startX,
+          deltaX,
+          startWidth,
+          newWidth: handle === 'left' ? startWidth - deltaX : startWidth + deltaX
+        });
+      }
+
       // 新しい日付を計算
-      const startDate = new Date(ticket.startDate);
-      const dueDate = new Date(ticket.dueDate);
+      const originalStartDate = new Date(ticket.startDate);
+      const originalDueDate = new Date(ticket.dueDate);
 
       if (handle === 'left') {
-        const newWidth = startWidth - deltaX;
-        if (newWidth >= cellWidth) {
-          const newDate = new Date(startDate);
-          newDate.setDate(startDate.getDate() + daysDelta);
-          if (newDate <= dueDate && newDate >= projectBeginDate) {
-            requestAnimationFrame(() => {
-              bar.style.left = `${startLeft + deltaX}px`;
-              bar.style.width = `${newWidth}px`;
-            });
-          }
+        const newWidth = Math.max(cellWidth, startWidth - deltaX);
+        const widthDelta = startWidth - newWidth;
+        const newLeft = startLeft + widthDelta;
+
+        const newDate = new Date(originalStartDate);
+        newDate.setDate(originalStartDate.getDate() + daysDelta);
+        
+        if (newDate <= originalDueDate && newDate >= projectBeginDate) {
+          bar.style.left = `${newLeft}px`;
+          bar.style.width = `${newWidth}px`;
         }
       } else {
-        const newWidth = startWidth + deltaX;
-        if (newWidth >= cellWidth) {
-          const newDate = new Date(dueDate);
-          newDate.setDate(dueDate.getDate() + daysDelta);
-          if (newDate >= startDate) {
-            requestAnimationFrame(() => {
-              bar.style.width = `${newWidth}px`;
-            });
-          }
+        const newWidth = Math.max(cellWidth, startWidth + deltaX);
+        
+        const newDate = new Date(originalDueDate);
+        newDate.setDate(originalDueDate.getDate() + daysDelta);
+        
+        if (newDate >= originalStartDate) {
+          bar.style.width = `${newWidth}px`;
         }
       }
     }
 
     function onMouseUp(e: MouseEvent) {
       e.preventDefault();
-      const deltaX = e.clientX - resizeStartX;
+      
+      // ローカル変数を使用
+      const deltaX = e.clientX - startX;
       const daysDelta = Math.round(deltaX / cellWidth);
 
       if (handle === 'left') {
