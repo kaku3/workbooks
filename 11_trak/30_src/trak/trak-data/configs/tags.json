@@ -98,6 +98,32 @@
           "color": "#ca8a04"
         }
       ]
+    },
+    {
+      "categoryId": "area",
+      "name": "開発領域",
+      "tags": [
+        {
+          "id": "frontend",
+          "name": "フロントエンド",
+          "color": "#0ea5e9"
+        },
+        {
+          "id": "backend",
+          "name": "バックエンド",
+          "color": "#059669"
+        },
+        {
+          "id": "api",
+          "name": "API",
+          "color": "#8b5cf6"
+        },
+        {
+          "id": "batch",
+          "name": "バッチ",
+          "color": "#f97316"
+        }
+      ]
     }
   ]
 }
