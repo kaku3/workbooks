@@ -1,15 +1,11 @@
-import fs from 'fs';
-import path from 'path';
+import { loadProject } from '@/backend/services/project';
 
 export async function GET() {
   try {
-    // project.jsonを読み込む
-    const projectPath = path.join(process.cwd(), 'trak-data', 'configs', 'project.json');
-    const projectData = JSON.parse(fs.readFileSync(projectPath, 'utf8'));
-
+    const project = loadProject();
     return Response.json({ 
       success: true,
-      project: projectData
+      project
     });
   } catch (error) {
     console.error('Failed to read project data:', error);

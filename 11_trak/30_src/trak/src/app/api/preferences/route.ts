@@ -1,22 +1,6 @@
 import { auth } from '@/auth/serverAuth';
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { NextResponse } from 'next/server';
-import path from 'path';
-
-interface Preferences {
-  tableView?: {
-    sortColumn: string | null;
-    sortDirection: 'asc' | 'desc' | null;
-    selectedStatuses: string[];
-  };
-}
-
-const PREFERENCES_DIR = path.join(process.cwd(), 'trak-data', 'preferences');
-
-// ディレクトリが存在しない場合は作成
-if (!existsSync(PREFERENCES_DIR)) {
-  mkdirSync(PREFERENCES_DIR, { recursive: true });
-}
+import { type Preferences, loadPreferences, savePreferences } from '@/backend/services/preferences';
 
 export async function GET() {
   try {
@@ -25,13 +9,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const preferencesPath = path.join(PREFERENCES_DIR, `${session.user.email}.json`);
-    
-    if (!existsSync(preferencesPath)) {
-      return NextResponse.json({});
-    }
-
-    const preferences = JSON.parse(readFileSync(preferencesPath, 'utf-8'));
+    const preferences = loadPreferences(session.user.email);
     return NextResponse.json(preferences);
   } catch (error) {
     console.error('Error reading preferences:', error);
@@ -47,9 +25,7 @@ export async function PUT(request: Request) {
     }
 
     const preferences: Preferences = await request.json();
-    const preferencesPath = path.join(PREFERENCES_DIR, `${session.user.email}.json`);
-
-    writeFileSync(preferencesPath, JSON.stringify(preferences, null, 2));
+    savePreferences(session.user.email, preferences);
     return NextResponse.json({ message: 'Preferences updated' });
   } catch (error) {
     console.error('Error updating preferences:', error);

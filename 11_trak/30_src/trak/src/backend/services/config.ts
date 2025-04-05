@@ -4,11 +4,13 @@ import { UsersConfigSchema, type UsersConfig } from '../models/user';
 
 /**
  * trak-dataディレクトリのパスを取得
- * 開発時は ./trak-data を使用
+ * 環境変数 TRAK_DATA_FOLDER で指定されたパスを使用
+ * 未指定の場合は ./trak-data を使用
  */
-const getTrakDataPath = () => {
-  // TODO: 環境変数などで切り替え可能にする
-  return path.join(process.cwd(), 'trak-data');
+export const getTrakDataPath = () => {
+  const dataPath = process.env.TRAK_DATA_FOLDER || 'trak-data';
+  // 絶対パスの場合はそのまま使用し、相対パスの場合は process.cwd() からの相対パスとして扱う
+  return path.isAbsolute(dataPath) ? dataPath : path.join(process.cwd(), dataPath);
 };
 
 /**

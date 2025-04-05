@@ -23,7 +23,8 @@ const nextConfig = {
   // 環境変数の設定
   env: {
     APP_NAME: 'Trak',
-    APP_VERSION: '0.1.0'
+    APP_VERSION: '0.1.0',
+    TRAK_DATA_FOLDER: process.env.TRAK_DATA_FOLDER
   },
 
   // TypeScript Pathsの設定
