@@ -9,7 +9,7 @@
   --gantt-grid-color: rgba(224, 224, 224, 0.8);
   --gantt-grid-color-light: rgba(224, 224, 224, 0.3);
   --gantt-bar-color: #1976d2;
-  --gantt-bar-bg: #bbdefb;
+  --gantt-bar-bg: rgba(187, 222, 251, 0.1);
 
   width: 100%;
   height: 100%;

@@ -1,25 +1,13 @@
 import { useState, useEffect } from 'react';
-import type { User, Status } from '@/types';
+import type { Status } from '@/types';
+import { useApplication } from '@/contexts/ApplicationContext';
 
 export const useTableData = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const { userStore } = useApplication();
   const [statuses, setStatuses] = useState<Status[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch('/api/users');
-        const data = await response.json();
-        if (data.users) {
-          setUsers(data.users);
-        }
-      } catch (err) {
-        setError('ユーザーデータの取得に失敗しました');
-        console.error('ユーザーデータの取得に失敗:', err);
-      }
-    };
-
     const fetchStatuses = async () => {
       try {
         const response = await fetch('/api/statuses');
@@ -40,15 +28,15 @@ export const useTableData = () => {
       }
     };
 
-    Promise.all([fetchUsers(), fetchStatuses()]).catch(err => {
+    fetchStatuses().catch(err => {
       console.error('データ取得に失敗:', err);
       setError('データの取得に失敗しました');
     });
   }, []);
 
   return {
-    users,
+    users: userStore.users,
     statuses,
-    error,
+    error: error || userStore.usersError,
   };
 };

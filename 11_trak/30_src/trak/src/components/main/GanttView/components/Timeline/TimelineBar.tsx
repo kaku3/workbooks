@@ -1,6 +1,8 @@
-import { TicketData } from '@/types';
-import { useState } from 'react';
 import styles from './style.module.css';
+import { useState } from 'react';
+import { TicketData } from '@/types';
+import { getTimelineBarColor } from '@/lib/utils/colors';
+import { useApplication } from '@/contexts/ApplicationContext';
 
 interface TimelineBarProps {
   ticket: TicketData;
@@ -19,6 +21,8 @@ export function TimelineBar({
   cellWidth,
   onUpdate
 }: TimelineBarProps) {
+  const { userStore } = useApplication();
+
   const [resizing, setResizing] = useState<'left' | 'right' | null>(null);
   const [resizeStartX, setResizeStartX] = useState<number>(0);
   const [resizeStartWidth, setResizeStartWidth] = useState<number>(0);
@@ -189,6 +193,12 @@ export function TimelineBar({
     document.addEventListener('mouseup', onMouseUp);
   };
 
+  const getBackgroundColor = () => {
+    return ticket.assignees && ticket.assignees.length > 0 
+      ? getTimelineBarColor(userStore.users.find(u => u.email === ticket.assignees[0])?.id || '')
+      : undefined;
+  }
+
   return (
     <div 
       id={`timeline-bar-${ticket.id}`}  // IDを追加
@@ -200,7 +210,9 @@ export function TimelineBar({
         willChange: 'transform, left, width',
         transition: 'none',
         touchAction: 'none',
-        cursor: 'grab'  // ドラッグ用のカーソルを明示的に指定
+        cursor: 'grab',  // ドラッグ用のカーソルを明示的に指定
+        display: 'flex',  // flexboxを追加
+        backgroundColor: getBackgroundColor()
       }}
       draggable={true}
       onDragStart={handleDragStart}
@@ -212,12 +224,16 @@ export function TimelineBar({
         onMouseDown={(e) => handleResizeStart(e, 'left')}
         title="開始日を変更"  // ツールチップを追加
       />
-      {ticket.title}
+      <div className={styles.barContent}>
+      </div>
       <div
         className={`${styles.resizeHandle} ${styles.right}`}
         onMouseDown={(e) => handleResizeStart(e, 'right')}
         title="終了日を変更"  // ツールチップを追加
       />
+      <div className={styles.taskTitle}>
+        {ticket.title}
+      </div>
     </div>
   );
 }

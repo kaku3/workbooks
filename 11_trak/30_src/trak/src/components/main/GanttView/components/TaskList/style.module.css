@@ -125,7 +125,40 @@
 }
 
 .titleCell {
-  font-size: .7rem;;
+  font-size: .7rem;
+  align-items: center;
+  padding: 2px 4px;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  gap: 4px;
+  min-width: 0;
+}
+
+.tagList {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.titleContainer > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.tag {
+  font-size: 0.6rem;
+  padding: 0px 4px;
+  border-radius: 4px;
+  color: white;
+  white-space: nowrap;
 }
 
 .assigneeCell {

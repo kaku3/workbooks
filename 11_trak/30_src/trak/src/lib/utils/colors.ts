@@ -1,20 +1,12 @@
 const USER_COLORS = [
-  '#f87171', // red
-  '#fb923c', // orange
-  '#fbbf24', // amber 
-  '#a3e635', // lime
-  '#4ade80', // green
-  '#2dd4bf', // teal
-  '#38bdf8', // sky
-  '#818cf8', // indigo
-  '#a78bfa', // purple
-  '#e879f9', // fuchsia
-  '#fb7185', // rose
-  '#f472b6', // pink
-  '#9ca3af', // gray
-  '#6ee7b7', // emerald
-  '#93c5fd', // blue
-  '#c084fc'  // violet
+  '#EF4444', // より鮮やかな赤
+  '#F97316', // より鮮やかなオレンジ
+  '#22C55E', // より鮮やかな緑
+  '#06B6D4', // より鮮やかなシアン
+  '#3B82F6', // より鮮やかな青
+  '#8B5CF6', // より鮮やかな紫
+  '#EC4899', // より鮮やかなピンク
+  '#F59E0B'  // より鮮やかな琥珀色
 ];
 
 // ユーザーIDから色を生成
@@ -29,17 +21,34 @@ export function getUserColor(id: string): string {
   return USER_COLORS[colorIndex];
 }
 
-// 色の明度を判定して文字色を返す
+/**
+ * 色の明度を判定して文字色を返す
+ * 輝度が0.8より大きい場合は暗い文字色、そうでない場合は明るい文字色
+ * @param backgroundColor 
+ * @returns 
+ */
 export function getTextColor(backgroundColor: string): string {
-  // カラーコードからRGB値を抽出
-  const hex = backgroundColor.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-
-  // 輝度を計算
+  const { r, g, b } = hexToRgb(backgroundColor);
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-  // 輝度が0.8より大きい場合は暗い文字色、そうでない場合は明るい文字色
   return luminance > 0.8 ? '#1e293b' : '#ffffff';
+}
+
+/**
+ * タイムラインバーの色を取得する関数
+ * @param backgroundColor 
+ * @returns 
+ */
+export function getTimelineBarColor(id: string): string {
+  const color = getUserColor(id);
+  const { r, g, b } = hexToRgb(color);
+  return `rgba(${r}, ${g}, ${b}, 0.2)`;
+}
+
+export function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const hexWithoutHash = hex.replace('#', '');
+  return {
+    r: parseInt(hexWithoutHash.substring(0, 2), 16),
+    g: parseInt(hexWithoutHash.substring(2, 4), 16),
+    b: parseInt(hexWithoutHash.substring(4, 6), 16)
+  };
 }

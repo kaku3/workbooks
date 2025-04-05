@@ -6,6 +6,7 @@ import AssigneeCell from '../../../TableView/components/cell/AssigneeCell';
 import { TicketData, Status, User } from '@/types';
 import { getTextColor } from '@/lib/utils/colors';
 import { useApplication } from '@/contexts/ApplicationContext';
+import { useTags } from '../../../TagsContext';
 
 interface TaskListProps {
   tickets: TicketData[];
@@ -31,6 +32,7 @@ export default function TaskList({
   const {
     openEditTicket,
   } = useApplication().slidePanelStore;
+  const { tags } = useTags();
 
   const formatValue = (value: number) => {
     return value >= 8 ? `${(value / 8).toFixed(1)}d` : `${value}h`;
@@ -73,7 +75,26 @@ export default function TaskList({
               onClick={() => openEditTicket(ticket.id!)}
               style={{ cursor: 'pointer' }}
             >
-              {ticket.title}
+              <div className={styles.titleContainer}>
+                {ticket.tags && ticket.tags.length > 0 && (
+                  <div className={styles.tagList}>
+                    {ticket.tags.map(tagId => {
+                      const tag = tags.find(t => t.id === tagId);
+                      if (!tag) return null;
+                      return (
+                        <span
+                          key={tag.id}
+                          className={styles.tag}
+                          style={{ backgroundColor: tag.color }}
+                        >
+                          {tag.name}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+                <span>{ticket.title}</span>
+              </div>
             </div>
             <div 
               className={`${styles.cell} ${styles.assigneeCell}`}
