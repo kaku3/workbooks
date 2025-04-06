@@ -1,27 +1,9 @@
-export interface Tag {
-  id: string;
-  name: string;
-  color: string;
-}
+import { type Tag, type CategoryTag } from '../backend/models/tag';
+import { type User } from '../backend/models/user';
+import { type Status } from '../backend/models/status';
+import { type TicketSortData } from '../backend/models/ticket-sort';
 
-export interface CategoryTag {
-  categoryId: string;
-  name: string;
-  tags: Tag[];
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-export interface Status {
-  id: string;
-  name: string;
-  color: string;
-}
+export type { Tag, CategoryTag, User, Status, TicketSortData };
 
 export interface Column {
   label: string;
@@ -50,8 +32,4 @@ export interface TicketData {
   userOrder?: number;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface TicketSortData {
-  [key: string]: number;
 }
