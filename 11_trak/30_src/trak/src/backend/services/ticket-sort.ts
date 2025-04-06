@@ -1,14 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { getTrakDataPath } from './config';
-
-export interface TicketSortData {
-  [key: string]: number;  // ticketId: order
-}
-
-export interface BatchUpdateData {
-  orders: { ticketId: string, order: number }[];
-}
+import { type TicketSortData, type BatchUpdateData } from '../models/ticket-sort';
 
 /**
  * ソートデータを保存するファイルのパスを取得
