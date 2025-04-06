@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import styles from './ImportExportDialog.module.css';
+import { useApplication } from '@/contexts/ApplicationContext';
 
 interface ImportExportDialogProps {
   isOpen: boolean;
@@ -10,12 +11,19 @@ export default function ImportExportDialog({ isOpen, onClose }: ImportExportDial
   const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
   const [isImporting, setIsImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
+  const { fetchTickets } = useApplication().ticketStore;
   const [importResult, setImportResult] = useState<{
     success: boolean;
     updatedCount: number;
     createdCount: number;
     errors?: { row?: number; message: string; field?: string }[];
   } | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setImportResult(null);
+    }
+  }, [isOpen]);
 
   const handleFileSelect = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -41,10 +49,17 @@ export default function ImportExportDialog({ isOpen, onClose }: ImportExportDial
       }
 
       setImportResult(result);
+      // インポート成功時にチケット一覧を更新
+      await fetchTickets();
     } catch (error) {
       setImportError(error instanceof Error ? error.message : '不明なエラーが発生しました');
     } finally {
       setIsImporting(false);
+      // ファイル入力をリセット
+      const fileInput = document.getElementById('file-input') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
     }
   }, []);
 
