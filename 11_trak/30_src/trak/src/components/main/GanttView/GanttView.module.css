@@ -67,7 +67,7 @@
   overflow: auto;
   background: white;
   scrollbar-gutter: stable;
-  height: calc(100vh - var(--gantt-header-height) - 56px); /* Account for scale selector height */
+  max-height: calc(100vh - var(--gantt-header-height) - 120px); /* Account for scale selector height */
 }
 
 .ganttChart::-webkit-scrollbar {
