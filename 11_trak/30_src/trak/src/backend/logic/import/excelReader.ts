@@ -19,21 +19,13 @@ export interface RawTicketData {
   content?: string;
 }
 
-const REQUIRED_SHEETS = ['Project', 'Tickets'];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const REQUIRED_SHEETS = ['WBS'];
 
 /**
  * インポートファイルの基本検証
  */
 export async function validateImportFile(file: ArrayBuffer): Promise<ValidationResult> {
   try {
-    // ファイルサイズチェック
-    if (file.byteLength > MAX_FILE_SIZE) {
-      return {
-        isValid: false,
-        error: "ファイルサイズが10MBを超えています"
-      };
-    }
 
     // Excel形式チェック
     const workbook = XLSX.read(file, { type: 'array' });
@@ -61,7 +53,7 @@ export async function validateImportFile(file: ArrayBuffer): Promise<ValidationR
  */
 export async function readProjectFromExcel(file: ArrayBuffer): Promise<Partial<Project>> {
   const workbook = XLSX.read(file, { type: 'array' });
-  const sheet = workbook.Sheets['Project'];
+  const sheet = workbook.Sheets['WBS'];
 
   // セル参照を使用して値を取得
   const getValue = (address: string) => {
@@ -82,7 +74,7 @@ export async function readProjectFromExcel(file: ArrayBuffer): Promise<Partial<P
  */
 export async function readTicketsFromExcel(file: ArrayBuffer): Promise<RawTicketData[]> {
   const workbook = XLSX.read(file, { type: 'array' });
-  const sheet = workbook.Sheets['Tickets'];
+  const sheet = workbook.Sheets['WBS'];
   
   // ヘッダー行以降のデータを取得（5行目から）
   interface ExcelRow {

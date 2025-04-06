@@ -6,7 +6,7 @@ import { type TicketData, type APIResponse } from '../models/ticket';
 /**
  * チケットIDを生成
  */
-const generateTicketId = () => {
+const generateTicketId = (sequenceNumber?: number) => {
   const now = new Date();
   
   const year = now.getFullYear();
@@ -17,7 +17,10 @@ const generateTicketId = () => {
   const minutes = String(now.getMinutes()).padStart(2, '0');
   const seconds = String(now.getSeconds()).padStart(2, '0');
   
-  return `T${year}${month}${day}-${hours}${minutes}${seconds}`;
+  const baseId = `T${year}${month}${day}-${hours}${minutes}${seconds}`;
+  return sequenceNumber !== undefined
+    ? `${baseId}-${String(sequenceNumber).padStart(4, '0')}`
+    : baseId;
 };
 
 /**
@@ -50,8 +53,11 @@ export const loadTickets = async (): Promise<{ tickets: TicketData[] }> => {
 /**
  * 新規チケットを作成
  */
-export const createTicket = async (data: TicketData): Promise<APIResponse> => {
-  const ticketId = generateTicketId();
+export const createTicket = async (
+  data: TicketData,
+  sequenceNumber?: number
+): Promise<APIResponse> => {
+  const ticketId = generateTicketId(sequenceNumber);
 
   // チケットの内容をMarkdownファイルとして保存
   const ticketsDir = path.join(getTrakDataPath(), 'tickets');
