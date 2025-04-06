@@ -9,10 +9,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  background-color: #37474f;
+  border-bottom: 1px solid #455a64;
   margin-bottom: .5rem;
   height: 32px;
+  color: #e4e6eb;
 }
 
 .leftSection {
@@ -28,7 +29,7 @@
 }
 
 .userInfo {
-  color: #666;
+  color: #e4e6eb;
   font-size: 0.9rem;
 }
 
@@ -55,26 +56,26 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 0 1rem 0 .25rem;
+  padding: 0 1.25rem 0 .5rem;
   border: none;
-  border-bottom: 3px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: #666;
+  border-radius: 2px 2px 0 0;
+  background-color: #dee2e6;
+  color: #495057;
   cursor: pointer;
   font-size: .7rem;
   transition: all 0.2s ease;
+  height: 32px;
 }
 
 .viewTab:hover {
-  color: #007bff;
-  background-color: rgba(0, 123, 255, 0.05);
+  background-color: #e9ecef;
 }
 
 .viewTab.active {
-  color: #007bff;
-  border-bottom-color: #007bff;
-  background-color: rgba(0, 123, 255, 0.05);
+  color: #2f3542;
+  border-bottom-color: #455a64;
+  background-color: white;
+  font-weight: 600;
 }
 
 .viewIcon {
@@ -83,7 +84,7 @@
 }
 
 .viewTab.active .viewIcon {
-  color: #007bff;
+  color: #2f3542;
 }
 
 .searchBar {
