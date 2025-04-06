@@ -76,12 +76,19 @@ export default function MainPage() {
             className={`${styles.viewTab} ${viewMode === 'table' ? styles.active : ''}`}
             onClick={() => setViewMode('table')}
           >
+            <svg className={styles.viewIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+            </svg>
             チケット一覧
           </button>
           <button
             className={`${styles.viewTab} ${viewMode === 'gantt' ? styles.active : ''}`}
             onClick={() => setViewMode('gantt')}
           >
+            <svg className={styles.viewIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <path d="M7 8h8M7 12h12M7 16h6" />
+            </svg>
             ガントチャート
           </button>
         </div>

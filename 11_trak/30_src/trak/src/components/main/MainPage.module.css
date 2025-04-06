@@ -8,16 +8,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+  padding: 0 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
   margin-bottom: .5rem;
-  height: 48px;
+  height: 32px;
 }
 
 .leftSection {
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  height: 100%;
 }
 
 .rightSection {
@@ -32,7 +33,7 @@
 }
 
 .logoutButton {
-  padding: 0.25rem 0.75rem;
+  padding: 0.1rem 0.5rem;
   background: #dc3545;
   color: white;
   border: none;
@@ -51,17 +52,38 @@
 }
 
 .viewTab {
-  padding: 0.25rem 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 1rem 0 .25rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #666;
   cursor: pointer;
+  font-size: .7rem;
+  transition: all 0.2s ease;
+}
+
+.viewTab:hover {
+  color: #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
 }
 
 .viewTab.active {
-  background: #007bff;
-  color: white;
-  border-color: #0056b3;
+  color: #007bff;
+  border-bottom-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.viewIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.viewTab.active .viewIcon {
+  color: #007bff;
 }
 
 .searchBar {
