@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getTrakDataPath } from './config';
-import { type StatusConfig } from '../models/statuses';
+import { type StatusConfig } from '../models/status';
 
 /**
  * ステータス設定を読み込む

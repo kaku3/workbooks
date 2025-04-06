@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { getTrakDataPath } from './config';
-import { type Tag, type CategoryTag, type TagsConfig, type NewTagRequest } from '../models/tags';
+import { type Tag, type CategoryTag, type TagsConfig, type NewTagRequest } from '../models/tag';
 
 /**
  * カテゴリー化されたタグをフラットな配列に変換

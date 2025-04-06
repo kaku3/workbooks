@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getTrakDataPath } from './config';
-import { type Preferences } from '../models/preferences';
+import { type Preference } from '../models/preference';
 
 /**
  * ユーザー設定を保存するディレクトリのパスを取得
@@ -17,7 +17,7 @@ const getPreferencesDir = () => {
 /**
  * ユーザー設定を読み込む
  */
-export const loadPreferences = (userEmail: string): Preferences => {
+export const loadPreferences = (userEmail: string): Preference => {
   const preferencesPath = path.join(getPreferencesDir(), `${userEmail}.json`);
   
   if (!fs.existsSync(preferencesPath)) {
@@ -30,7 +30,7 @@ export const loadPreferences = (userEmail: string): Preferences => {
 /**
  * ユーザー設定を保存
  */
-export const savePreferences = (userEmail: string, preferences: Preferences): void => {
+export const savePreferences = (userEmail: string, preferences: Preference): void => {
   const preferencesPath = path.join(getPreferencesDir(), `${userEmail}.json`);
   fs.writeFileSync(preferencesPath, JSON.stringify(preferences, null, 2));
 };

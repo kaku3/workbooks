@@ -1,6 +1,7 @@
 import { auth } from '@/auth/serverAuth';
 import { NextResponse } from 'next/server';
-import { type Preferences, loadPreferences, savePreferences } from '@/backend/services/preferences';
+import { loadPreferences, savePreferences } from '@/backend/services/preferences';
+import { type Preference } from '@/backend/models/preference';
 
 export async function GET() {
   try {
@@ -24,7 +25,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const preferences: Preferences = await request.json();
+    const preferences: Preference = await request.json();
     savePreferences(session.user.email, preferences);
     return NextResponse.json({ message: 'Preferences updated' });
   } catch (error) {

@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { getTrakDataPath } from './config';
-import { type Template, type TemplatesConfig } from '../models/templates';
+import { type Template, type TemplatesConfig } from '../models/template';
 
 /**
  * テンプレート設定とその内容を読み込む
