@@ -105,17 +105,17 @@
       "tags": [
         {
           "id": "frontend",
-          "name": "フロントエンド",
+          "name": "frontend",
           "color": "#0ea5e9"
         },
         {
           "id": "backend",
-          "name": "バックエンド",
+          "name": "backend",
           "color": "#059669"
         },
         {
           "id": "api",
-          "name": "API",
+          "name": "api",
           "color": "#8b5cf6"
         },
         {
