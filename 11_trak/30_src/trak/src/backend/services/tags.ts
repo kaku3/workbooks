@@ -1,22 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { getTrakDataPath } from './config';
-
-export interface Tag {
-  id: string;
-  name: string;
-  color: string;
-}
-
-export interface CategoryTag {
-  categoryId: string;
-  name: string;
-  tags: Tag[];
-}
-
-export interface TagsConfig {
-  tags: CategoryTag[];
-}
+import { type Tag, type CategoryTag, type TagsConfig, type NewTagRequest } from '../models/tags';
 
 /**
  * カテゴリー化されたタグをフラットな配列に変換
@@ -49,9 +34,6 @@ export const loadTags = async (): Promise<{ categories: TagsConfig; tags: Tag[] 
   }
 };
 
-export interface NewTagRequest extends Tag {
-  categoryId: string;
-}
 
 /**
  * 新しいタグを作成
