@@ -1,13 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getTrakDataPath } from './config';
-
-export interface Project {
-  id: string;
-  name: string;
-  beginDate: string;
-  endDate: string;
-}
+import { type Project } from '../models/project';
 
 /**
  * プロジェクト設定を読み込む

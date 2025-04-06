@@ -1,16 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getTrakDataPath } from './config';
-
-export interface Status {
-  id: string;
-  name: string;
-  color: string;
-}
-
-export interface StatusConfig {
-  statuses: Status[];
-}
+import { type StatusConfig } from '../models/statuses';
 
 /**
  * ステータス設定を読み込む
