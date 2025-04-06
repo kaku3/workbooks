@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { 
   loadSortData, 
   updateTicketOrder, 
-  batchUpdateOrders,
-  type BatchUpdateData 
+  batchUpdateOrders 
 } from '@/backend/services/ticket-sort';
+
+import { type BatchUpdateData } from '@/backend/models/ticket-sort';
+
 
 // GETリクエストハンドラ
 export async function GET() {
