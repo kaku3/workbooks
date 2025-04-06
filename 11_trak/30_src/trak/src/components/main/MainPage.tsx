@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { useApplication } from '@/contexts/ApplicationContext';
+import ImportExportDialog from '../ImportExportDialog/ImportExportDialog';
 import styles from './MainPage.module.css';
 import TableView from './TableView/index';
 import GanttView from './GanttView/index';
@@ -15,6 +16,7 @@ type ViewMode = 'gantt' | 'table';
 
 export default function MainPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
+  const [isImportExportOpen, setIsImportExportOpen] = useState(false);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
   const { statuses } = useTableData();
@@ -93,6 +95,25 @@ export default function MainPage() {
           </button>
         </div>
 
+        <div className={styles.centerSection}>
+          {/* 機能ボタン */}
+          <button
+            className={styles.importExportButton}
+            onClick={() => setIsImportExportOpen(true)}
+          >
+            <svg
+              className={styles.viewIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 3v12M3 15l9 9 9-9M3 9l9-9 9 9" />
+            </svg>
+            インポート / エクスポート
+          </button>
+        </div>
+
         <div className={styles.rightSection}>
           {/* ユーザー情報とログアウト */}
           <div className={styles.userInfo}>
@@ -143,6 +164,12 @@ export default function MainPage() {
           onClose={handleClosePanel}
         />
       </SlidePanel>
+
+      {/* インポート/エクスポートダイアログ */}
+      <ImportExportDialog
+        isOpen={isImportExportOpen}
+        onClose={() => setIsImportExportOpen(false)}
+      />
     </div>
   );
 }
