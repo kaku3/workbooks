@@ -26,3 +26,13 @@ export interface APIResponse {
   ticketId: string;
   error?: string;
 }
+
+/**
+ * チケット取得APIレスポンスの型定義
+ */
+export interface GetTicketResponse {
+  success: boolean;
+  ticket?: TicketData;
+  ticketId: string;
+  error?: string;
+}
