@@ -10,5 +10,5 @@ export default async function HomePage() {
     redirect('/auth/signin');
   }
 
-  return <MainPage initialTicketId={undefined} />;
+  return <MainPage />;
 }

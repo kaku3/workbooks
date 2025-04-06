@@ -87,7 +87,6 @@ export default function TicketToolbar({
       <SlidePanel 
         isOpen={slidePanelOpen} 
         onClose={handleClosePanel}
-        title={ticketFormMode === 'new' ? 'チケット作成' : 'チケット編集'}
       >
         <TicketForm
           mode={ticketFormMode}
