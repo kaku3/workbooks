@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useApplication } from '@/contexts/ApplicationContext';
 import { useTableData } from '../TableView/hooks/useTableData';
 import styles from './GanttView.module.css';
@@ -18,6 +18,7 @@ export default function GanttView({
   selectedStatuses,
   selectedAssignees,
 }: GanttViewProps) {
+  const timelineRef = useRef<HTMLDivElement>(null);
   // ズームレベルのState
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [editingCell, setEditingCell] = useState<{type: string; id: string} | null>(null);
@@ -64,6 +65,31 @@ export default function GanttView({
   }, [project]);
 
 
+  // タイムラインの初期スクロール位置を設定
+  useEffect(() => {
+    if (!timelineRef.current || !project) return;
+
+    const now = new Date();
+    const oneWeekAgo = new Date(now);
+    oneWeekAgo.setDate(now.getDate() - 7);
+    
+    // プロジェクト開始日と1週間前の日付を比較し、より新しい方を基準にする
+    const scrollDate = new Date(Math.max(
+      new Date(project.beginDate).getTime(),
+      oneWeekAgo.getTime()
+    ));
+
+    // スクロール位置を計算 (24pxがデフォルトのセル幅)
+    const baseWidth = 24;
+    const cellWidth = Math.max(6, Math.min(36, (baseWidth * zoomLevel) / 100));
+    const daysFromStart = Math.floor(
+      (scrollDate.getTime() - new Date(project.beginDate).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const scrollPosition = daysFromStart * cellWidth;
+
+    timelineRef.current.scrollLeft = scrollPosition;
+  }, [project, zoomLevel]);
+
   if (isLoadingTickets || isLoadingProject) {
     return <div className={styles.container}>読込中...</div>;
   }
@@ -99,7 +125,7 @@ export default function GanttView({
         <span className={styles.zoomLevel}>{zoomLevel}%</span>
       </div>
 
-      <div className={styles.ganttChart}>
+      <div className={styles.ganttChart} ref={timelineRef}>
         {/* タスク一覧部分（左側） */}
         <TaskList
           tickets={displayTickets}

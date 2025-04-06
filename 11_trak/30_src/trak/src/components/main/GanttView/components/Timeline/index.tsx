@@ -14,8 +14,8 @@ interface TimelineProps {
   onUpdateTicket?: (ticketId: string, updates: Partial<TicketData>) => void;
 }
 
-export default function Timeline({ 
-  tickets, 
+export default function Timeline({
+  tickets,
   timelineRange,
   zoomLevel = 100,
   onUpdateTicket,
@@ -71,7 +71,7 @@ export default function Timeline({
   // グリッドと背景を生成
   const generateBackground = () => {
     // 土日のマスク
-    const weekendsPattern = timelineDates.reduce((acc, date, index) => {
+    const weekendsPattern = timelineDates.reduce((acc: string[], date: Date, index: number) => {
       const pos = index * cellWidth;
       if (date.getDay() === 0 || date.getDay() === 6) {
         acc.push(`transparent ${pos}px`);
@@ -80,7 +80,7 @@ export default function Timeline({
         acc.push(`transparent ${pos + cellWidth}px`);
       }
       return acc;
-    }, [] as string[]);
+    }, []);
     
     const weekendMask = weekendsPattern.length > 0 
       ? `linear-gradient(90deg, ${weekendsPattern.join(', ')})` 
@@ -95,7 +95,7 @@ export default function Timeline({
     )`;
 
     // 月初線
-    const monthStarts = timelineDates.reduce((acc, date, index) => {
+    const monthStarts = timelineDates.reduce((acc: string[], date: Date, index: number) => {
       if (date.getDate() === 1) {
         const pos = index * cellWidth;
         acc.push(`transparent ${pos}px`);
@@ -104,7 +104,7 @@ export default function Timeline({
         acc.push(`transparent ${pos + 1}px`);
       }
       return acc;
-    }, [] as string[]);
+    }, []);
 
     const monthLines = monthStarts.length > 0 
       ? `linear-gradient(90deg, ${monthStarts.join(', ')})` 
