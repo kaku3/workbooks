@@ -8,8 +8,8 @@ interface ImportExportDialogProps {
 }
 
 export default function ImportExportDialog({ isOpen, onClose }: ImportExportDialogProps) {
-  const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
   const [isImporting, setIsImporting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const { fetchTickets } = useApplication().ticketStore;
   const [importResult, setImportResult] = useState<{
@@ -69,28 +69,14 @@ export default function ImportExportDialog({ isOpen, onClose }: ImportExportDial
     <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className={styles.dialog}>
         <div className={styles.header}>
-          <div className={styles.tabs}>
-            <button
-              className={`${styles.tab} ${activeTab === 'import' ? styles.active : ''}`}
-              onClick={() => setActiveTab('import')}
-            >
-              インポート
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'export' ? styles.active : ''}`}
-              onClick={() => setActiveTab('export')}
-            >
-              エクスポート
-            </button>
-          </div>
+          <h2>データのインポート・エクスポート</h2>
           <button className={styles.closeButton} onClick={onClose}>
             ×
           </button>
         </div>
 
         <div className={styles.content}>
-          {activeTab === 'import' ? (
-            <div className={styles.importSection}>
+          <div className={styles.importSection}>
               <div className={styles.dropzone}>
                 <p>Excelファイルをインポート</p>
                 <input
@@ -134,24 +120,47 @@ export default function ImportExportDialog({ isOpen, onClose }: ImportExportDial
                   </div>
                 )}
               </div>
-            </div>
-          ) : (
-            <div className={styles.exportSection}>
+          </div>
+          <div className={styles.exportSection}>
               <div className={styles.exportOptions}>
-                <h3>エクスポート形式</h3>
+                <h3>エクスポート</h3>
                 <div className={styles.formatOption}>
-                  <button className={styles.exportButton}>
-                    Excel形式でエクスポート
-                  </button>
-                </div>
-                <div className={styles.formatOption}>
-                  <button className={styles.exportButton}>
-                    JSON形式でエクスポート
+                  <button 
+                    className={styles.exportButton}
+                    onClick={async () => {
+                      setIsExporting(true);
+                      try {
+                        const response = await fetch('/api/export', {
+                          method: 'GET',
+                        });
+                        
+                        if (!response.ok) {
+                          const error = await response.json();
+                          throw new Error(error.error || 'エクスポートに失敗しました');
+                        }
+
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'trak_export.xlsx';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                      } catch (error) {
+                        alert(error instanceof Error ? error.message : '不明なエラーが発生しました');
+                      } finally {
+                        setIsExporting(false);
+                      }
+                    }}
+                    disabled={isExporting}
+                  >
+                    {isExporting ? 'エクスポート中...' : 'Excel形式でダウンロード'}
                   </button>
                 </div>
               </div>
             </div>
-          )}
         </div>
       </div>
     </div>
