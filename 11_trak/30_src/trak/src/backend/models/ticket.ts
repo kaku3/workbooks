@@ -10,6 +10,7 @@ export interface TicketData {
   startDate: string;
   dueDate: string;
   estimate: number;
+  progress?: number;
   content: string;
   templateId: string;
   tags?: string[];
