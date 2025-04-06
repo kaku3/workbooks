@@ -100,18 +100,18 @@ export default function MainPage() {
         </div>
       </div>
 
-      {/* チケットツールバー */}
-      <TicketToolbar
-        statuses={statuses}
-        users={useTableData().users}
-        selectedStatuses={selectedStatuses}
-        selectedAssignees={selectedAssignees}
-        onStatusChange={handleStatusChange}
-        onAssigneeChange={handleAssigneeChange}
-      />
 
       {/* メインコンテンツエリア */}
       <div className={styles.content}>
+        {/* チケットツールバー */}
+        <TicketToolbar
+          statuses={statuses}
+          users={useTableData().users}
+          selectedStatuses={selectedStatuses}
+          selectedAssignees={selectedAssignees}
+          onStatusChange={handleStatusChange}
+          onAssigneeChange={handleAssigneeChange}
+        />
         {viewMode === 'table' ? (
           <TableView 
             selectedStatuses={selectedStatuses}
