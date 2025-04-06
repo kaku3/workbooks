@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadTickets, createTicket, updateTicket, deleteTicket } from '@/backend/services/tickets';
-import type { TicketData } from '@/backend/services/tickets';
+import type { TicketData } from '@/backend/models/ticket';
 
 export async function GET() {
   try {
