@@ -1,16 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { getTrakDataPath } from './config';
-
-export interface Template {
-  id: string;
-  name: string;
-  content?: string;
-}
-
-export interface TemplatesConfig {
-  templates: Template[];
-}
+import { type Template, type TemplatesConfig } from '../models/templates';
 
 /**
  * テンプレート設定とその内容を読み込む
