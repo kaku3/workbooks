@@ -1,14 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getTrakDataPath } from './config';
-
-export interface Preferences {
-  tableView?: {
-    sortColumn: string | null;
-    sortDirection: 'asc' | 'desc' | null;
-    selectedStatuses: string[];
-  };
-}
+import { type Preferences } from '../models/preferences';
 
 /**
  * ユーザー設定を保存するディレクトリのパスを取得
