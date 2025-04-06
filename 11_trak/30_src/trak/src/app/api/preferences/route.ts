@@ -1,6 +1,6 @@
 import { auth } from '@/auth/serverAuth';
 import { NextResponse } from 'next/server';
-import { loadPreferences, savePreferences } from '@/backend/services/preferences';
+import { loadPreferences, savePreferences } from '@/backend/services/preference';
 import { type Preference } from '@/backend/models/preference';
 
 export async function GET() {

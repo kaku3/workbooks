@@ -1,7 +1,7 @@
 import NextAuth, { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
-import { loadUsers } from '@/backend/services/users';
+import { loadUsers } from '@/backend/services/user';
 import type { 
   DefaultSession, 
   Session,

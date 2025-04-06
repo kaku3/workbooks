@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { loadTags, createTag } from '@/backend/services/tags';
+import { loadTags, createTag } from '@/backend/services/tag';
 
 // GET /api/tags
 export async function GET() {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { loadStatuses } from '@/backend/services/statuses';
+import { loadStatuses } from '@/backend/services/status';
 
 export async function GET() {
   try {

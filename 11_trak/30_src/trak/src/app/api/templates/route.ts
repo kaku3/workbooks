@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { loadTemplates } from '@/backend/services/templates';
+import { loadTemplates } from '@/backend/services/template';
 
 export async function GET() {
   try {
