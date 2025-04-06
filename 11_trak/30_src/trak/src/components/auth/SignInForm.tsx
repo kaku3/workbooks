@@ -3,14 +3,7 @@
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { 
-  Button,
-  TextField,
-  Alert,
-  Box,
-  Paper,
-  Stack
-} from '@mui/material';
+import styles from './SignInForm.module.css';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -44,44 +37,45 @@ export default function SignInForm() {
   };
 
   return (
-    <Paper elevation={0}>
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-        <Stack spacing={2}>
+    <div className={styles.formContainer}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.formContent}>
           {error && (
-            <Alert severity="error">
+            <div className={styles.error}>
               {error}
-            </Alert>
+            </div>
           )}
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="メールアドレス"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="パスワード"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <Button
+          <div className={styles.inputGroup}>
+            <input
+              required
+              id="email"
+              type="email"
+              name="email"
+              placeholder="メールアドレス"
+              autoComplete="email"
+              autoFocus
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.inputGroup}>
+            <input
+              required
+              type="password"
+              name="password"
+              id="password"
+              placeholder="パスワード"
+              autoComplete="current-password"
+              className={styles.input}
+            />
+          </div>
+          <button
             type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            className={styles.submitButton}
           >
             サインイン
-          </Button>
-        </Stack>
-      </Box>
-    </Paper>
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

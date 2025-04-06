@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.formWrapper {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+}

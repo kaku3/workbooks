@@ -1,24 +1,15 @@
 'use client';
 
-import { Container, Box, Typography } from '@mui/material';
 import SignInForm from './SignInForm';
+import styles from './SignInContainer.module.css';
 
 export default function SignInContainer() {
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-          サインイン
-        </Typography>
+    <main className={styles.container}>
+      <div className={styles.formWrapper}>
+        <h1 className={styles.title}>サインイン</h1>
         <SignInForm />
-      </Box>
-    </Container>
+      </div>
+    </main>
   );
 }
