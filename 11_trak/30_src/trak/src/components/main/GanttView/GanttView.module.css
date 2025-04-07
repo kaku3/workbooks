@@ -4,7 +4,7 @@
   --gantt-bar-height: 24px;
   --gantt-cell-width: 24px;
   --gantt-list-width: 828px;
-  --gantt-weekend-color: rgba(255, 228, 230, 0.35);
+  --gantt-holiday-color: rgba(255, 228, 230, 0.5);
   --gantt-weekend-header-color: #ffebee;
   --gantt-grid-color: rgba(224, 224, 224, 0.8);
   --gantt-grid-color-light: rgba(224, 224, 224, 0.3);
@@ -68,6 +68,8 @@
   background: white;
   scrollbar-gutter: stable;
   max-height: calc(100vh - var(--gantt-header-height) - 120px); /* Account for scale selector height */
+
+  padding-bottom: 16px;
 }
 
 .ganttChart::-webkit-scrollbar {

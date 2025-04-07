@@ -1,13 +1,16 @@
-'use client';
+"use client";
 
-import { useMemo, useState, useEffect, useRef } from 'react';
-import { useApplication } from '@/contexts/ApplicationContext';
-import { useTableData } from '../TableView/hooks/useTableData';
-import styles from './GanttView.module.css';
-import { TicketData } from '@/types';
-import { filterTicketsByStatus, filterTicketsByAssignee } from '../TableView/utils/tableUtils';
-import TaskList from './components/TaskList';
-import Timeline from './components/Timeline';
+import { useMemo, useState, useEffect, useRef } from "react";
+import { useApplication } from "@/contexts/ApplicationContext";
+import { useTableData } from "../TableView/hooks/useTableData";
+import styles from "./GanttView.module.css";
+import { TicketData } from "@/types";
+import {
+  filterTicketsByStatus,
+  filterTicketsByAssignee,
+} from "../TableView/utils/tableUtils";
+import TaskList from "./components/TaskList";
+import Timeline from "./components/Timeline";
 
 interface GanttViewProps {
   selectedStatuses: string[];
@@ -21,12 +24,15 @@ export default function GanttView({
   const timelineRef = useRef<HTMLDivElement>(null);
   // ズームレベルのState
   const [zoomLevel, setZoomLevel] = useState<number>(100);
-  const [editingCell, setEditingCell] = useState<{type: string; id: string} | null>(null);
+  const [editingCell, setEditingCell] = useState<{
+    type: string;
+    id: string;
+  } | null>(null);
 
   const {
     ticketStore: { tickets, isLoadingTickets, ticketsError, updateTicket },
     projectStore: { project, isLoadingProject, projectError, fetchProject },
-    ticketSortStore: { sortOrders, fetchSortOrders, updateBatchOrders }
+    ticketSortStore: { sortOrders, fetchSortOrders, updateBatchOrders },
   } = useApplication();
 
   const { users, statuses } = useTableData();
@@ -39,8 +45,14 @@ export default function GanttView({
 
   // フィルター適用済みのチケット一覧
   const displayTickets: TicketData[] = useMemo(() => {
-    const statusFilteredTickets = filterTicketsByStatus(tickets, selectedStatuses);
-    const assigneeFilteredTickets = filterTicketsByAssignee(statusFilteredTickets, selectedAssignees);
+    const statusFilteredTickets = filterTicketsByStatus(
+      tickets,
+      selectedStatuses
+    );
+    const assigneeFilteredTickets = filterTicketsByAssignee(
+      statusFilteredTickets,
+      selectedAssignees
+    );
     return assigneeFilteredTickets.sort((a, b) => {
       const orderA = sortOrders[a.id!] ?? 0;
       const orderB = sortOrders[b.id!] ?? 0;
@@ -53,17 +65,20 @@ export default function GanttView({
     if (project) {
       return {
         start: new Date(project.beginDate),
-        end: new Date(project.endDate)
+        end: (() => {
+          const endDate = new Date(project.endDate);
+          endDate.setMonth(endDate.getMonth() + 1);
+          return endDate;
+        })(),
       };
     }
     // プロジェクト情報がない場合はデフォルト値
     const now = new Date();
     return {
       start: new Date(now.setDate(now.getDate() - 7)),
-      end: new Date(now.setDate(now.getDate() + 37))
+      end: new Date(now.setDate(now.getDate() + 37)),
     };
   }, [project]);
-
 
   // タイムラインの初期スクロール位置を設定
   useEffect(() => {
@@ -72,18 +87,18 @@ export default function GanttView({
     const now = new Date();
     const oneWeekAgo = new Date(now);
     oneWeekAgo.setDate(now.getDate() - 7);
-    
+
     // プロジェクト開始日と1週間前の日付を比較し、より新しい方を基準にする
-    const scrollDate = new Date(Math.max(
-      new Date(project.beginDate).getTime(),
-      oneWeekAgo.getTime()
-    ));
+    const scrollDate = new Date(
+      Math.max(new Date(project.beginDate).getTime(), oneWeekAgo.getTime())
+    );
 
     // スクロール位置を計算 (24pxがデフォルトのセル幅)
     const baseWidth = 24;
     const cellWidth = Math.max(6, Math.min(36, (baseWidth * zoomLevel) / 100));
     const daysFromStart = Math.floor(
-      (scrollDate.getTime() - new Date(project.beginDate).getTime()) / (1000 * 60 * 60 * 24)
+      (scrollDate.getTime() - new Date(project.beginDate).getTime()) /
+        (1000 * 60 * 60 * 24)
     );
     const scrollPosition = daysFromStart * cellWidth;
 
@@ -95,7 +110,11 @@ export default function GanttView({
   }
 
   if (ticketsError || projectError) {
-    return <div className={styles.container}>Error: {ticketsError || projectError}</div>;
+    return (
+      <div className={styles.container}>
+        Error: {ticketsError || projectError}
+      </div>
+    );
   }
 
   // 外側クリック時に編集モードを解除
@@ -103,7 +122,10 @@ export default function GanttView({
     if (editingCell) {
       const target = e.target as HTMLElement;
       // 編集中のセルまたはその子要素以外をクリックした場合
-      if (!target.closest('select') && !target.closest('.' + styles.editingCell)) {
+      if (
+        !target.closest("select") &&
+        !target.closest("." + styles.editingCell)
+      ) {
         setEditingCell(null);
       }
     }
@@ -112,88 +134,94 @@ export default function GanttView({
   return (
     <>
       <div className={styles.container} onClick={handleContainerClick}>
-      {/* ズーム調整スライダー */}
-      <div className={styles.zoomControl}>
-        <input
-          type="range"
-          min="40"
-          max="125"
-          value={zoomLevel}
-          onChange={(e) => setZoomLevel(Number(e.target.value))}
-          className={styles.zoomSlider}
-        />
-        <span className={styles.zoomLevel}>{zoomLevel}%</span>
-      </div>
+        {/* ズーム調整スライダー */}
+        <div className={styles.zoomControl}>
+          <input
+            type="range"
+            min="40"
+            max="125"
+            value={zoomLevel}
+            onChange={(e) => setZoomLevel(Number(e.target.value))}
+            className={styles.zoomSlider}
+          />
+          <span className={styles.zoomLevel}>{zoomLevel}%</span>
+        </div>
 
-      <div className={styles.ganttChart} ref={timelineRef}>
-        {/* タスク一覧部分（左側） */}
-        <TaskList
-          tickets={displayTickets}
-          statuses={statuses}
-          users={users}
-          editingCell={editingCell}
-          setEditingCell={setEditingCell}
-          onDragEnd={(sourceIndex, targetIndex) => {
-            const updatedOrders = displayTickets.reduce<{ ticketId: string; order: number }[]>((acc, ticket, index) => {
-              if (index === sourceIndex) return acc;
-              
-              if (sourceIndex < targetIndex) {
-                if (index > sourceIndex && index < targetIndex) {
-                  acc.push({ ticketId: ticket.id!, order: index - 1 });
-                } else {
-                  acc.push({ ticketId: ticket.id!, order: index });
-                }
-              } else {
-                if (index >= targetIndex && index < sourceIndex) {
-                  acc.push({ ticketId: ticket.id!, order: index + 1 });
-                } else {
-                  acc.push({ ticketId: ticket.id!, order: index });
-                }
-              }
-              return acc;
-            }, []);
-            
-            const movedTicket = displayTickets[sourceIndex];
-            updatedOrders.push({ ticketId: movedTicket.id!, order: sourceIndex < targetIndex ? targetIndex - 1 : targetIndex });
-            
-            updateBatchOrders(updatedOrders);
-          }}
-          onStatusUpdate={(ticketId, value) => {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (ticket) {
-              updateTicket({ ...ticket, status: value });
-            }
-          }}
-          onEstimateUpdate={(ticketId, value) => {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (ticket) {
-              updateTicket({ ...ticket, estimate: value });
-            }
-          }}
-          onProgressUpdate={(ticketId, value) => {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (ticket) {
-              updateTicket({ ...ticket, progress: value });
-            }
-          }}
-        />
+        <div className={styles.ganttChart} ref={timelineRef}>
+          {/* タスク一覧部分（左側） */}
+          <TaskList
+            tickets={displayTickets}
+            statuses={statuses}
+            users={users}
+            editingCell={editingCell}
+            setEditingCell={setEditingCell}
+            onDragEnd={(sourceIndex, targetIndex) => {
+              const updatedOrders = displayTickets.reduce<
+                { ticketId: string; order: number }[]
+              >((acc, ticket, index) => {
+                if (index === sourceIndex) return acc;
 
-        {/* タイムライン部分（右側） */}
-        <Timeline
-          tickets={displayTickets}
-          timelineRange={timelineRange}
-          zoomLevel={zoomLevel}
-          onUpdateTicket={(ticketId, updates) => {
-            const ticket = tickets.find(t => t.id === ticketId);
-            if (ticket) {
-              updateTicket({
-                ...ticket,
-                ...updates,
+                if (sourceIndex < targetIndex) {
+                  if (index > sourceIndex && index < targetIndex) {
+                    acc.push({ ticketId: ticket.id!, order: index - 1 });
+                  } else {
+                    acc.push({ ticketId: ticket.id!, order: index });
+                  }
+                } else {
+                  if (index >= targetIndex && index < sourceIndex) {
+                    acc.push({ ticketId: ticket.id!, order: index + 1 });
+                  } else {
+                    acc.push({ ticketId: ticket.id!, order: index });
+                  }
+                }
+                return acc;
+              }, []);
+
+              const movedTicket = displayTickets[sourceIndex];
+              updatedOrders.push({
+                ticketId: movedTicket.id!,
+                order:
+                  sourceIndex < targetIndex ? targetIndex - 1 : targetIndex,
               });
-            }
-          }}
-        />
-      </div>
+
+              updateBatchOrders(updatedOrders);
+            }}
+            onStatusUpdate={(ticketId, value) => {
+              const ticket = tickets.find((t) => t.id === ticketId);
+              if (ticket) {
+                updateTicket({ ...ticket, status: value });
+              }
+            }}
+            onEstimateUpdate={(ticketId, value) => {
+              const ticket = tickets.find((t) => t.id === ticketId);
+              if (ticket) {
+                updateTicket({ ...ticket, estimate: value });
+              }
+            }}
+            onProgressUpdate={(ticketId, value) => {
+              const ticket = tickets.find((t) => t.id === ticketId);
+              if (ticket) {
+                updateTicket({ ...ticket, progress: value });
+              }
+            }}
+          />
+
+          {/* タイムライン部分（右側） */}
+          <Timeline
+            tickets={displayTickets}
+            timelineRange={timelineRange}
+            zoomLevel={zoomLevel}
+            onUpdateTicket={(ticketId, updates) => {
+              const ticket = tickets.find((t) => t.id === ticketId);
+              if (ticket) {
+                updateTicket({
+                  ...ticket,
+                  ...updates,
+                });
+              }
+            }}
+          />
+        </div>
       </div>
     </>
   );
