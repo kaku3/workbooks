@@ -152,7 +152,6 @@ export default function AssigneeCell({
                 onClick={() => handleAdd(user.email)}
               >
                 <span className={styles.searchItemName}>{user.name}</span>
-                <span className={styles.searchItemEmail}>{user.email}</span>
               </div>
             ))}
           </div>

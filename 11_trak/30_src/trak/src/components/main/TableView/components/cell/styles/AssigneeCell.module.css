@@ -48,13 +48,17 @@
   display: flex;
   flex-direction: column;
 }
+.searchItem + .searchItem {
+  border-top: 1px solid #e5e7eb;
+}
 
 .searchItem:hover {
   background-color: #f3f4f6;
 }
 
 .searchItemName {
-  font-weight: 500;
+  font-size: .8rem;
+  font-weight: bold;
 }
 
 .searchItemEmail {
