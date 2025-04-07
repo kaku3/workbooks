@@ -163,10 +163,11 @@ export default function Timeline({
       const dayIndex = Math.floor(offsetX / cellWidth);
 
       const clickedDate = new Date(timelineRange.start);
-      clickedDate.setDate(clickedDate.getDate() + dayIndex);
+      clickedDate.setDate(clickedDate.getDate() + dayIndex + 1);
 
       const endDate = new Date(clickedDate);
-      endDate.setDate(endDate.getDate() + 5);
+      const estimate = Math.floor(ticket.estimate / 8);
+      endDate.setDate(endDate.getDate() + (estimate > 0 ? (estimate - 1) : 5));
 
       onUpdateTicket(ticket.id!, {
         startDate: formatDateForApi(clickedDate),
