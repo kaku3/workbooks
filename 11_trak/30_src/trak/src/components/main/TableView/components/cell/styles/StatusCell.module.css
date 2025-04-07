@@ -1,6 +1,7 @@
 .statusCell {
   display: inline-block;
   padding: 0.1rem;
+  font-size: .85rem;
   text-align: center;
   min-width: 6rem;
   position: relative;
