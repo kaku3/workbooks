@@ -1,8 +1,8 @@
-import { TicketData } from '@/types';
-import styles from './style.module.css';
-import { useCallback } from 'react';
-import { TimelineBar } from './TimelineBar';
-import { useApplication } from '@/contexts/ApplicationContext';
+import { TicketData } from "@/types";
+import styles from "./style.module.css";
+import { useCallback } from "react";
+import { TimelineBar } from "./TimelineBar";
+import { useApplication } from "@/contexts/ApplicationContext";
 
 interface TimelineProps {
   tickets: TicketData[];
@@ -20,7 +20,7 @@ export default function Timeline({
   zoomLevel = 100,
   onUpdateTicket,
 }: TimelineProps) {
-  const { project } = useApplication().projectStore;
+  const { holidays } = useApplication().holidayStore;
 
   // 日付の配列を生成
   const generateTimelineDates = () => {
@@ -37,7 +37,7 @@ export default function Timeline({
 
   const timelineDates = generateTimelineDates();
   let prevDate: Date | null = null;
-  
+
   // ズームレベルに応じたセル幅を設定 (24px = 100%)
   const baseWidth = 24;
   const cellWidth = Math.max(6, Math.min(36, (baseWidth * zoomLevel) / 100));
@@ -50,11 +50,21 @@ export default function Timeline({
       return true;
     } else if (zoomLevel > 50) {
       // 50-80%は月初と月曜日のみ表示
-      return date.getDate() === 1 || date.getDay() === 1;
+      return date.getDate() === 1 || date.getDay() === 1 || isToday(date);
     } else {
       // 50%以下は月初のみ表示
-      return date.getDate() === 1;
+      return date.getDate() === 1 || isToday(date);
     }
+  };
+
+  // 本日の日付かどうかを判定
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
   };
 
   // 日付フォーマッター
@@ -70,21 +80,34 @@ export default function Timeline({
 
   // グリッドと背景を生成
   const generateBackground = () => {
-    // 土日のマスク
-    const weekendsPattern = timelineDates.reduce((acc: string[], date: Date, index: number) => {
+    console.log(holidays);
+
+    // 土日と祝日のマスク
+    const nonWorkingDayPattern: string[] = [];
+
+    // 各日付のマスクを作成
+    timelineDates.forEach((date: Date, index: number) => {
       const pos = index * cellWidth;
-      if (date.getDay() === 0 || date.getDay() === 6) {
-        acc.push(`transparent ${pos}px`);
-        acc.push(`var(--gantt-weekend-color) ${pos}px`);
-        acc.push(`var(--gantt-weekend-color) ${pos + cellWidth}px`);
-        acc.push(`transparent ${pos + cellWidth}px`);
+      const dateStr = date.toISOString().split("T")[0];
+      // 土日または祝日の場合
+      if (
+        date.getDay() === 0 ||
+        date.getDay() === 6 ||
+        holidays.some((h) => h.date === dateStr)
+      ) {
+        nonWorkingDayPattern.push(`transparent ${pos}px`);
+        nonWorkingDayPattern.push(`var(--gantt-holiday-color) ${pos}px`);
+        nonWorkingDayPattern.push(
+          `var(--gantt-holiday-color) ${pos + cellWidth}px`
+        );
+        nonWorkingDayPattern.push(`transparent ${pos + cellWidth}px`);
       }
-      return acc;
-    }, []);
-    
-    const weekendMask = weekendsPattern.length > 0 
-      ? `linear-gradient(90deg, ${weekendsPattern.join(', ')})` 
-      : '';
+    });
+
+    const nonWorkingDayMask =
+      nonWorkingDayPattern.length > 0
+        ? `linear-gradient(90deg, ${nonWorkingDayPattern.join(", ")})`
+        : "";
 
     // 日グリッド
     const dailyGrid = `repeating-linear-gradient(90deg,
@@ -95,74 +118,89 @@ export default function Timeline({
     )`;
 
     // 月初線
-    const monthStarts = timelineDates.reduce((acc: string[], date: Date, index: number) => {
-      if (date.getDate() === 1) {
-        const pos = index * cellWidth;
-        acc.push(`transparent ${pos}px`);
-        acc.push(`rgba(0, 0, 0, 0.3) ${pos}px`);
-        acc.push(`rgba(0, 0, 0, 0.3) ${pos + 1}px`);
-        acc.push(`transparent ${pos + 1}px`);
-      }
-      return acc;
-    }, []);
+    const monthStarts = timelineDates.reduce(
+      (acc: string[], date: Date, index: number) => {
+        if (date.getDate() === 1) {
+          const pos = index * cellWidth;
+          acc.push(`transparent ${pos}px`);
+          acc.push(`rgba(0, 0, 0, 0.3) ${pos}px`);
+          acc.push(`rgba(0, 0, 0, 0.3) ${pos + 1}px`);
+          acc.push(`transparent ${pos + 1}px`);
+        }
+        return acc;
+      },
+      []
+    );
 
-    const monthLines = monthStarts.length > 0 
-      ? `linear-gradient(90deg, ${monthStarts.join(', ')})` 
-      : '';
+    const monthLines =
+      monthStarts.length > 0
+        ? `linear-gradient(90deg, ${monthStarts.join(", ")})`
+        : "";
 
-    return [weekendMask, dailyGrid, monthLines].join(', ');
+    return [nonWorkingDayMask, dailyGrid, monthLines].join(", ");
   };
 
   const backgroundStyle = {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     backgroundImage: generateBackground(),
     backgroundSize: `100% 100%, ${cellWidth}px 100%, 100% 100%`,
-    backgroundRepeat: 'no-repeat, repeat, no-repeat',
-    backgroundPositionY: 0
+    backgroundRepeat: "no-repeat, repeat, no-repeat",
+    backgroundPositionY: 0,
   };
 
   // 日付をYYYY-MM-DD形式に変換
   const formatDateForApi = useCallback((date: Date): string => {
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   }, []);
 
   // タイムライン行のクリックハンドラー
-  const handleTimelineRowClick = useCallback((ticket: TicketData, clickEvent: React.MouseEvent<HTMLDivElement>) => {
-    if (!onUpdateTicket || (ticket.startDate && ticket.dueDate)) return;
+  const handleTimelineRowClick = useCallback(
+    (ticket: TicketData, clickEvent: React.MouseEvent<HTMLDivElement>) => {
+      if (!onUpdateTicket || (ticket.startDate && ticket.dueDate)) return;
 
-    const rect = clickEvent.currentTarget.getBoundingClientRect();
-    const offsetX = clickEvent.clientX - rect.left;
-    const dayIndex = Math.floor(offsetX / cellWidth);
-    
-    const clickedDate = new Date(timelineRange.start);
-    clickedDate.setDate(clickedDate.getDate() + dayIndex);
-    
-    const endDate = new Date(clickedDate);
-    endDate.setDate(endDate.getDate() + 5);
+      const rect = clickEvent.currentTarget.getBoundingClientRect();
+      const offsetX = clickEvent.clientX - rect.left;
+      const dayIndex = Math.floor(offsetX / cellWidth);
 
-    onUpdateTicket(ticket.id!, {
-      startDate: formatDateForApi(clickedDate),
-      dueDate: formatDateForApi(endDate)
-    });
-  }, [onUpdateTicket, timelineRange.start, cellWidth, formatDateForApi]);
-  
+      const clickedDate = new Date(timelineRange.start);
+      clickedDate.setDate(clickedDate.getDate() + dayIndex);
+
+      const endDate = new Date(clickedDate);
+      endDate.setDate(endDate.getDate() + 5);
+
+      onUpdateTicket(ticket.id!, {
+        startDate: formatDateForApi(clickedDate),
+        dueDate: formatDateForApi(endDate),
+      });
+    },
+    [onUpdateTicket, timelineRange.start, cellWidth, formatDateForApi]
+  );
+
   const projectBeginDate = new Date(timelineRange.start);
 
   return (
     <div className={styles.timeline}>
       <div className={styles.timelineHeader}>
-        <div style={{ width: totalWidth + 'px', display: 'flex' }}>
-          {timelineDates.map(date => {
-            const showMonth = !prevDate || prevDate.getMonth() !== date.getMonth();
-            const formattedDate = shouldShowDate(date) ? formatDate(date, showMonth) : '';
+        <div style={{ width: totalWidth + "px", display: "flex" }}>
+          {timelineDates.map((date) => {
+            const showMonth =
+              !prevDate || prevDate.getMonth() !== date.getMonth();
+            const formattedDate = shouldShowDate(date)
+              ? formatDate(date, showMonth)
+              : "";
             prevDate = new Date(date);
             return (
               <div
                 key={date.getTime()}
                 className={`${styles.timelineHeaderCell} ${
-                  [0, 6].includes(date.getDay()) ? styles.weekend : ''
-                }`}
-                style={{ width: cellWidth + 'px' }}
+                  [0, 6].includes(date.getDay()) ||
+                  holidays.some(
+                    (h) => h.date === date.toISOString().split("T")[0]
+                  )
+                    ? styles.weekend
+                    : ""
+                } ${isToday(date) ? styles.today : ""}`}
+                style={{ width: cellWidth + "px" }}
               >
                 {formattedDate}
               </div>
@@ -171,19 +209,27 @@ export default function Timeline({
         </div>
       </div>
       <div className={styles.timelineContent}>
-        <div style={{ width: totalWidth + 'px' }}>
-          {tickets.map(ticket => {
-            const startDate = ticket.startDate ? new Date(ticket.startDate) : null;
+        <div style={{ width: totalWidth + "px" }}>
+          {tickets.map((ticket) => {
+            const startDate = ticket.startDate
+              ? new Date(ticket.startDate)
+              : null;
             const endDate = ticket.dueDate ? new Date(ticket.dueDate) : null;
 
             if (!startDate || !endDate) {
               return (
-                <div 
-                  key={ticket.id} 
-                  className={`${styles.timelineRow} ${!ticket.startDate && !ticket.dueDate ? styles.clickable : ''}`}
+                <div
+                  key={ticket.id}
+                  className={`${styles.timelineRow} ${
+                    !ticket.startDate && !ticket.dueDate ? styles.clickable : ""
+                  }`}
                   style={backgroundStyle}
                   onClick={(e) => handleTimelineRowClick(ticket, e)}
-                  title={!ticket.startDate && !ticket.dueDate ? "Click to set dates" : undefined}
+                  title={
+                    !ticket.startDate && !ticket.dueDate
+                      ? "Click to set dates"
+                      : undefined
+                  }
                 />
               );
             }
@@ -200,19 +246,24 @@ export default function Timeline({
             const normalizedTimelineStart = normalizeDate(timelineRange.start);
 
             const { left, width } = (() => {
-              const days = (normalizedEndDate.getTime() - normalizedStartDate.getTime()) / msPerDay;
-              const startDays = (normalizedStartDate.getTime() - normalizedTimelineStart.getTime()) / msPerDay;
+              const days =
+                (normalizedEndDate.getTime() - normalizedStartDate.getTime()) /
+                msPerDay;
+              const startDays =
+                (normalizedStartDate.getTime() -
+                  normalizedTimelineStart.getTime()) /
+                msPerDay;
               const offset = Math.max(0, startDays);
 
               return {
                 left: offset * cellWidth,
-                width: Math.max(cellWidth, (days + 1) * cellWidth)
+                width: Math.max(cellWidth, (days + 1) * cellWidth),
               };
             })();
 
             return (
-              <div 
-                key={ticket.id} 
+              <div
+                key={ticket.id}
                 className={styles.timelineRow}
                 style={backgroundStyle}
               >

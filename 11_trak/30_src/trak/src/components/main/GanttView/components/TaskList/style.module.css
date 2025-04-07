@@ -240,7 +240,7 @@
 }
 
 .progressCell.overdue {
-  background-color: #ffebee;
+  background-color: #ffe4e6;
 }
 
 .progressCell::before {
@@ -249,7 +249,7 @@
   left: 0;
   top: 0;
   height: 100%;
-  background-color: #e3f2fd;
+  background-color: #e0f2ff;
   z-index: 0;
   transition: width 0.2s ease;
   width: var(--progress-width, 0%);

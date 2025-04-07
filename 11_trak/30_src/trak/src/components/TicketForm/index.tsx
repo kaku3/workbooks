@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
-import MDEditor from '@uiw/react-md-editor';
-import { getUserColor, getTextColor } from '@/lib/utils/colors';
-import styles from './TicketForm.module.css';
-import EstimateInput from './EstimateInput';
-import TagInput from './TagInput';
-import { TagsProvider } from '../main/TagsContext';
-import { useApplication } from '@/contexts/ApplicationContext';
+import styles from "./TicketForm.module.css";
+import { useState, useEffect, useRef } from "react";
+import { useSession } from "next-auth/react";
+import MDEditor from "@uiw/react-md-editor";
+import { getUserColor, getTextColor } from "@/lib/utils/colors";
+import EstimateInput from "./EstimateInput";
+import TagInput from "./TagInput";
+import { TagsProvider } from "../main/TagsContext";
+import { useApplication } from "@/contexts/ApplicationContext";
 
 interface TicketFormProps {
-  mode: 'new' | 'edit';
+  mode: "new" | "edit";
   ticketId?: string;
   onClose: () => void;
 }
@@ -48,28 +48,32 @@ interface Status {
   color: string;
 }
 
-export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps) {
+export default function TicketForm({
+  mode,
+  ticketId,
+  onClose,
+}: TicketFormProps) {
   const { data: session } = useSession();
   const { updateTicket, fetchTickets } = useApplication().ticketStore;
   const searchRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState<TicketData>({
-    templateId: '',
-    title: '',
-    creator: session?.user?.email || '',
+    templateId: "",
+    title: "",
+    creator: session?.user?.email || "",
     assignees: [],
-    status: 'open',
-    startDate: '',
-    dueDate: '',
+    status: "open",
+    startDate: "",
+    dueDate: "",
     estimate: 0,
-    content: '',
-    tags: []
+    content: "",
+    tags: [],
   });
 
   const [templates, setTemplates] = useState<Template[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
@@ -79,20 +83,20 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
     const fetchData = async () => {
       try {
         // Always fetch users for both new and edit modes
-        const usersResponse = await fetch('/api/users');
+        const usersResponse = await fetch("/api/users");
         const usersData = await usersResponse.json();
-        
+
         if (usersData.users) {
           setUsers(usersData.users);
-          
+
           // For edit mode, fetch ticket data
-          if (mode === 'edit' && ticketId) {
+          if (mode === "edit" && ticketId) {
             const ticketResponse = await fetch(`/api/tickets/${ticketId}`);
             const ticketData = await ticketResponse.json();
-            
+
             if (ticketData.success && ticketData.ticket) {
               setFormData(ticketData.ticket);
-              const selectedUsers = usersData.users.filter((user: User) => 
+              const selectedUsers = usersData.users.filter((user: User) =>
                 ticketData.ticket.assignees.includes(user.email)
               );
               setSelectedUsers(selectedUsers);
@@ -100,7 +104,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
           }
         }
       } catch (error) {
-        console.error('データの取得に失敗:', error);
+        console.error("データの取得に失敗:", error);
       }
     };
 
@@ -111,13 +115,13 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const response = await fetch('/api/templates');
+        const response = await fetch("/api/templates");
         const data = await response.json();
         if (data.templates) {
           setTemplates(data.templates);
         }
       } catch (error) {
-        console.error('テンプレートの取得に失敗:', error);
+        console.error("テンプレートの取得に失敗:", error);
       }
     };
     fetchTemplates();
@@ -127,20 +131,20 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
   useEffect(() => {
     const fetchStatuses = async () => {
       try {
-        const response = await fetch('/api/statuses');
+        const response = await fetch("/api/statuses");
         const data = await response.json();
         if (data.statuses) {
           setStatuses(data.statuses);
         }
       } catch {
         setStatuses([
-          { id: 'open', name: 'Open', color: '#3b82f6' },
-          { id: 'in-progress', name: 'In Progress', color: '#8b5cf6' },
-          { id: 'in-review', name: 'In Review', color: '#10b981' },
-          { id: 'completed', name: 'Completed', color: '#059669' },
-          { id: 'close', name: 'Close', color: '#6b7280' },
-          { id: 'blocked', name: 'Blocked', color: '#ef4444' },
-          { id: 'waiting', name: 'Waiting', color: '#f59e0b' }
+          { id: "open", name: "Open", color: "#3b82f6" },
+          { id: "in-progress", name: "In Progress", color: "#8b5cf6" },
+          { id: "in-review", name: "In Review", color: "#10b981" },
+          { id: "completed", name: "Completed", color: "#059669" },
+          { id: "close", name: "Close", color: "#6b7280" },
+          { id: "blocked", name: "Blocked", color: "#ef4444" },
+          { id: "waiting", name: "Waiting", color: "#f59e0b" },
         ]);
       }
     };
@@ -150,58 +154,63 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
   // ユーザー検索
   useEffect(() => {
     const searchLower = searchText.toLowerCase();
-    const filtered = users.filter(user => {
+    const filtered = users.filter((user) => {
       const nameMatch = user.name.toLowerCase().includes(searchLower);
       const emailMatch = user.email.toLowerCase().includes(searchLower);
-      return !selectedUsers.some(selected => selected.email === user.email) && 
-             (nameMatch || emailMatch);
+      return (
+        !selectedUsers.some((selected) => selected.email === user.email) &&
+        (nameMatch || emailMatch)
+      );
     });
     setFilteredUsers(filtered);
-    setShowSearch(searchText !== '');
+    setShowSearch(searchText !== "");
   }, [searchText, users, selectedUsers]);
 
   // 検索結果の外側クリックで閉じる
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setShowSearch(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // テンプレート選択時の処理
   const onTemplateChange = (templateId: string) => {
-    const selectedTemplate = templates.find(t => t.id === templateId);
+    const selectedTemplate = templates.find((t) => t.id === templateId);
     if (selectedTemplate) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         templateId,
-        content: selectedTemplate.content
+        content: selectedTemplate.content,
       }));
     }
   };
 
   // 担当者の追加
   const onUserSelect = (user: User) => {
-    if (!selectedUsers.some(selected => selected.email === user.email)) {
+    if (!selectedUsers.some((selected) => selected.email === user.email)) {
       setSelectedUsers([...selectedUsers, user]);
       setFormData({
         ...formData,
-        assignees: [...formData.assignees, user.email]
+        assignees: [...formData.assignees, user.email],
       });
     }
-    setSearchText('');
+    setSearchText("");
     setShowSearch(false);
   };
 
   // 担当者の削除
   const onUserRemove = (email: string) => {
-    setSelectedUsers(selectedUsers.filter(user => user.email !== email));
+    setSelectedUsers(selectedUsers.filter((user) => user.email !== email));
     setFormData({
       ...formData,
-      assignees: formData.assignees.filter(e => e !== email)
+      assignees: formData.assignees.filter((e) => e !== email),
     });
   };
 
@@ -209,34 +218,34 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
     e.preventDefault();
 
     try {
-      if (mode === 'edit' && ticketId) {
+      if (mode === "edit" && ticketId) {
         const success = await updateTicket({
           ...formData,
-          id: ticketId
+          id: ticketId,
         });
-        
+
         if (success) {
           onClose();
         }
       } else {
         // 新規チケットの作成
-        const response = await fetch('/api/tickets', {
-          method: 'POST',
+        const response = await fetch("/api/tickets", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
         });
         const result = await response.json();
         if (!result.success) {
-          throw new Error(result.error || 'チケットの作成に失敗しました');
+          throw new Error(result.error || "チケットの作成に失敗しました");
         }
         // 作成後にチケット一覧を更新
         fetchTickets();
         onClose();
       }
     } catch (error) {
-      console.error('保存に失敗:', error);
+      console.error("保存に失敗:", error);
     }
   };
 
@@ -245,8 +254,8 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
   };
 
   // 現在選択中のステータスの色を取得
-  const currentStatus = statuses.find(s => s.id === formData.status);
-  const statusColor = currentStatus?.color || '#3b82f6';
+  const currentStatus = statuses.find((s) => s.id === formData.status);
+  const statusColor = currentStatus?.color || "#3b82f6";
   const statusTextColor = getTextColor(statusColor);
 
   return (
@@ -270,7 +279,9 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
               type="text"
               className={styles.input}
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               required
             />
           </div>
@@ -286,7 +297,7 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
               required
             >
               <option value="">選択してください</option>
-              {templates.map(template => (
+              {templates.map((template) => (
                 <option key={template.id} value={template.id}>
                   {template.name}
                 </option>
@@ -300,7 +311,9 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
             <div data-color-mode="light">
               <MDEditor
                 value={formData.content}
-                onChange={(value) => setFormData({ ...formData, content: value || '' })}
+                onChange={(value) =>
+                  setFormData({ ...formData, content: value || "" })
+                }
                 height={400}
                 preview="edit"
               />
@@ -316,21 +329,23 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
                 id="status"
                 className={styles.select}
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value })
+                }
                 required
-                style={{ 
+                style={{
                   backgroundColor: statusColor,
                   color: statusTextColor,
-                  borderColor: statusColor
+                  borderColor: statusColor,
                 }}
               >
-                {statuses.map(status => (
-                  <option 
-                    key={status.id} 
+                {statuses.map((status) => (
+                  <option
+                    key={status.id}
                     value={status.id}
                     style={{
                       backgroundColor: status.color,
-                      color: getTextColor(status.color)
+                      color: getTextColor(status.color),
                     }}
                   >
                     {status.name}
@@ -349,7 +364,9 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
                 type="date"
                 className={styles.input}
                 value={formData.startDate}
-                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, startDate: e.target.value })
+                }
               />
             </div>
 
@@ -361,7 +378,9 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
                 type="date"
                 className={styles.input}
                 value={formData.dueDate}
-                onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, dueDate: e.target.value })
+                }
               />
             </div>
 
@@ -370,7 +389,9 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
               <label htmlFor="estimate">見積</label>
               <EstimateInput
                 value={formData.estimate}
-                onChange={(value) => setFormData({ ...formData, estimate: value })}
+                onChange={(value) =>
+                  setFormData({ ...formData, estimate: value })
+                }
               />
             </div>
           </div>
@@ -383,7 +404,9 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
                 id="creator"
                 type="text"
                 className={styles.input}
-                value={users.find(u => u.email === formData.creator)?.name || ''}
+                value={
+                  users.find((u) => u.email === formData.creator)?.name || ""
+                }
                 readOnly
                 disabled
               />
@@ -391,25 +414,33 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
 
             {/* 担当者（横並び） */}
             <div className={styles.assigneeContainer}>
-              <label className={styles.assigneeLabel} htmlFor="assignees">担当者</label>
+              <label className={styles.assigneeLabel} htmlFor="assignees">
+                担当者
+              </label>
               <div className={styles.assigneeField} ref={searchRef}>
                 <div className={styles.assigneeWrapper}>
                   <div className={styles.assigneeList}>
-                    {selectedUsers.map(user => {
+                    {selectedUsers.map((user) => {
                       const backgroundColor = getUserColor(user.id);
                       const color = getTextColor(backgroundColor);
                       return (
-                        <span 
-                          key={user.email} 
+                        <span
+                          key={user.email}
                           className={styles.assigneeTag}
                           style={{ backgroundColor, color }}
                         >
-                          <span className={styles.assigneeName} title={user.email}>
+                          <span
+                            className={styles.assigneeName}
+                            title={user.email}
+                          >
                             {user.name}
                           </span>
                           <button
                             type="button"
                             className={styles.removeButton}
+                            style={{
+                              color: getTextColor(getUserColor(user?.id || "")),
+                            }}
                             onClick={() => onUserRemove(user.email)}
                           >
                             ×
@@ -432,14 +463,18 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
                 </div>
                 {showSearch && filteredUsers.length > 0 && (
                   <div className={styles.searchResults}>
-                    {filteredUsers.map(user => (
+                    {filteredUsers.map((user) => (
                       <div
                         key={user.email}
                         className={styles.searchItem}
                         onClick={() => onUserSelect(user)}
                       >
-                        <span className={styles.searchItemName}>{user.name}</span>
-                        <span className={styles.searchItemEmail}>{user.email}</span>
+                        <span className={styles.searchItemName}>
+                          {user.name}
+                        </span>
+                        <span className={styles.searchItemEmail}>
+                          {user.email}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -450,26 +485,28 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
 
           {/* ボタン */}
           <div className={styles.buttons}>
-            {mode === 'edit' && (
+            {mode === "edit" && (
               <button
                 type="button"
                 onClick={async () => {
                   // 編集中のデータを新規チケットとして保存
-                  const response = await fetch('/api/tickets', {
-                    method: 'POST',
+                  const response = await fetch("/api/tickets", {
+                    method: "POST",
                     headers: {
-                      'Content-Type': 'application/json',
+                      "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
                       ...formData,
-                      creator: session?.user?.email || '',
+                      creator: session?.user?.email || "",
                       createdAt: undefined,
-                      updatedAt: undefined
+                      updatedAt: undefined,
                     }),
                   });
                   const result = await response.json();
                   if (!result.success) {
-                    throw new Error(result.error || 'チケットのコピーに失敗しました');
+                    throw new Error(
+                      result.error || "チケットのコピーに失敗しました"
+                    );
                   }
                   // 作成後にチケット一覧を更新
                   fetchTickets();
@@ -481,7 +518,11 @@ export default function TicketForm({ mode, ticketId, onClose }: TicketFormProps)
               </button>
             )}
             <div className={styles.rightButtons}>
-              <button type="button" onClick={onCancel} className={styles.cancelButton}>
+              <button
+                type="button"
+                onClick={onCancel}
+                className={styles.cancelButton}
+              >
                 キャンセル
               </button>
               <button type="submit" className={styles.submitButton}>

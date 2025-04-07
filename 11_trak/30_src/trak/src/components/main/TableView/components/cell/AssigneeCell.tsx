@@ -1,7 +1,7 @@
-import styles from './styles/AssigneeCell.module.css';
-import { useState, useRef, useEffect } from 'react';
-import { getUserColor, getTextColor } from '@/lib/utils/colors';
-import type { User } from '@/types';
+import styles from "./styles/AssigneeCell.module.css";
+import { useState, useRef, useEffect } from "react";
+import { getUserColor, getTextColor } from "@/lib/utils/colors";
+import type { User } from "@/types";
 
 interface AssigneeCellProps {
   value: string[];
@@ -12,9 +12,9 @@ interface AssigneeCellProps {
 export default function AssigneeCell({
   value,
   users,
-  onUpdate
+  onUpdate,
 }: AssigneeCellProps): JSX.Element {
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -29,9 +29,9 @@ export default function AssigneeCell({
 
   // ユーザー検索
   useEffect(() => {
-    if (onUpdate && searchText !== '') {
+    if (onUpdate && searchText !== "") {
       const searchLower = searchText.toLowerCase();
-      const filtered = users.filter(user => {
+      const filtered = users.filter((user) => {
         const nameMatch = user.name.toLowerCase().includes(searchLower);
         const emailMatch = user.email.toLowerCase().includes(searchLower);
         return nameMatch || emailMatch;
@@ -46,16 +46,20 @@ export default function AssigneeCell({
   useEffect(() => {
     if (onUpdate) {
       const handleClickOutside = (event: MouseEvent) => {
-        if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        if (
+          searchRef.current &&
+          !searchRef.current.contains(event.target as Node)
+        ) {
           setShowDropdown(false);
-          setSearchText('');
+          setSearchText("");
           // Trigger update to exit edit mode
           onUpdate(value);
         }
       };
 
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [onUpdate]);
 
@@ -67,20 +71,18 @@ export default function AssigneeCell({
 
     return (
       <div className={styles.assigneeTags}>
-        {value.map(email => {
-          const user = users.find(u => u.email === email);
+        {value.map((email) => {
+          const user = users.find((u) => u.email === email);
           return (
             <div
               key={email}
               className={styles.assigneeCell}
               style={{
-                backgroundColor: getUserColor(user?.id || ''),
-                color: getTextColor(getUserColor(user?.id || ''))
+                backgroundColor: getUserColor(user?.id || ""),
+                color: getTextColor(getUserColor(user?.id || "")),
               }}
             >
-              <span className={styles.assigneeName}>
-                {user?.name || email}
-              </span>
+              <span className={styles.assigneeName}>{user?.name || email}</span>
             </div>
           );
         })}
@@ -89,7 +91,7 @@ export default function AssigneeCell({
   }
 
   const handleRemove = (email: string) => {
-    const newValue = value.filter(v => v !== email);
+    const newValue = value.filter((v) => v !== email);
     if (newValue.length !== value.length) {
       onUpdate(newValue);
     }
@@ -99,7 +101,7 @@ export default function AssigneeCell({
     if (!value.includes(email)) {
       onUpdate([...value, email]);
     }
-    setSearchText('');
+    setSearchText("");
   };
 
   // 編集可能な場合は検索インターフェースを表示
@@ -107,15 +109,15 @@ export default function AssigneeCell({
     <div className={`${styles.editableCell} ${styles.editingCell}`}>
       <div className={styles.assigneeSearch} ref={searchRef}>
         <div className={styles.assigneeTags}>
-          {value.map(email => {
-            const user = users.find(u => u.email === email);
+          {value.map((email) => {
+            const user = users.find((u) => u.email === email);
             return (
               <div
                 key={email}
                 className={styles.assigneeCell}
                 style={{
-                  backgroundColor: getUserColor(user?.id || ''),
-                  color: getTextColor(getUserColor(user?.id || ''))
+                  backgroundColor: getUserColor(user?.id || ""),
+                  color: getTextColor(getUserColor(user?.id || "")),
                 }}
               >
                 <span className={styles.assigneeName}>
@@ -124,6 +126,7 @@ export default function AssigneeCell({
                 <button
                   type="button"
                   className={styles.removeButton}
+                  style={{ color: getTextColor(getUserColor(user?.id || "")) }}
                   onClick={() => handleRemove(email)}
                 >
                   ×
@@ -142,7 +145,7 @@ export default function AssigneeCell({
         />
         {showDropdown && filteredUsers.length > 0 && (
           <div className={styles.searchResults}>
-            {filteredUsers.map(user => (
+            {filteredUsers.map((user) => (
               <div
                 key={user.email}
                 className={styles.searchItem}
@@ -154,7 +157,6 @@ export default function AssigneeCell({
             ))}
           </div>
         )}
-
       </div>
     </div>
   );

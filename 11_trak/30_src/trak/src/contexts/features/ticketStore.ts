@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import type { TicketData } from '@/types';
+import { useState, useCallback } from "react";
+import type { TicketData } from "@/types";
 
 export interface TicketStore {
   tickets: TicketData[];
@@ -19,24 +19,28 @@ export function useTicketStore(): TicketStore {
 
   // チケットの取得
   const fetchTickets = useCallback(async () => {
-    console.log('[ApplicationContext] fetchTickets called');
+    console.log("[ApplicationContext] fetchTickets called");
     setIsLoadingTickets(true);
-    
+
     try {
-      const response = await fetch('/api/tickets');
+      const response = await fetch("/api/tickets");
       const data = await response.json();
-      
+
       if (!data.success) {
-        throw new Error(data.error || 'チケットの取得に失敗しました');
+        throw new Error(data.error || "チケットの取得に失敗しました");
       }
 
       const newTickets = [...data.tickets];
-      console.log('[ApplicationContext] fetchTickets success:', newTickets);
+      console.log(
+        "[ApplicationContext] fetchTickets success:",
+        newTickets.length
+      );
       setTickets(newTickets);
       setTicketsError(null);
     } catch (err) {
-      console.error('[ApplicationContext] fetchTickets error:', err);
-      const errorMessage = err instanceof Error ? err.message : '予期せぬエラーが発生しました';
+      console.error("[ApplicationContext] fetchTickets error:", err);
+      const errorMessage =
+        err instanceof Error ? err.message : "予期せぬエラーが発生しました";
       setTicketsError(errorMessage);
     } finally {
       setIsLoadingTickets(false);
@@ -45,51 +49,51 @@ export function useTicketStore(): TicketStore {
 
   // チケットの更新
   const updateTicket = useCallback(async (updatedTicket: TicketData) => {
-    console.log('[ApplicationContext] updateTicket:', updatedTicket);
+    console.log("[ApplicationContext] updateTicket:", updatedTicket);
     try {
       const response = await fetch(`/api/tickets/${updatedTicket.id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedTicket),
       });
-      
+
       const data = await response.json();
-      
+
       if (!data.success) {
-        throw new Error(data.error || '更新に失敗しました');
+        throw new Error(data.error || "更新に失敗しました");
       }
 
-      setTickets(prev => prev.map(t => 
-        t.id === updatedTicket.id ? updatedTicket : t
-      ));
-      
+      setTickets((prev) =>
+        prev.map((t) => (t.id === updatedTicket.id ? updatedTicket : t))
+      );
+
       return true;
     } catch (err) {
-      console.error('[ApplicationContext] updateTicket error:', err);
+      console.error("[ApplicationContext] updateTicket error:", err);
       return false;
     }
   }, []);
 
   // チケットの削除
   const deleteTicket = useCallback(async (ticketId: string) => {
-    console.log('[ApplicationContext] deleteTicket:', ticketId);
+    console.log("[ApplicationContext] deleteTicket:", ticketId);
     try {
       const response = await fetch(`/api/tickets/${ticketId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
-      
+
       const data = await response.json();
-      
+
       if (!data.success) {
-        throw new Error(data.error || '削除に失敗しました');
+        throw new Error(data.error || "削除に失敗しました");
       }
 
-      setTickets(prev => prev.filter(t => t.id !== ticketId));
+      setTickets((prev) => prev.filter((t) => t.id !== ticketId));
       return true;
     } catch (err) {
-      console.error('[ApplicationContext] deleteTicket error:', err);
+      console.error("[ApplicationContext] deleteTicket error:", err);
       return false;
     }
   }, []);
@@ -103,4 +107,3 @@ export function useTicketStore(): TicketStore {
     deleteTicket,
   };
 }
-

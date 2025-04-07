@@ -21,15 +21,23 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+.field > label {
+  font-weight: bold;
+  font-size: 0.75rem;
+  color: #374151;
+}
 
 .fieldHorizontal {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  font-size: .8rem;
 }
 
 .fieldHorizontal > label {
-  width: 8rem;
+  font-weight: bold;
+  width: 6rem;
+  color: #374151;
 }
 .fieldHorizontal > input, .fieldHorizontal > select {
   width: auto;
@@ -37,7 +45,7 @@
 }
 
 .input {
-  padding: 0.5rem;
+  padding: .25rem .5rem;
   border: 1px solid #e5e7eb;
   border-radius: 0.375rem;
   font-size: 0.875rem;
@@ -46,7 +54,6 @@
 .input:focus {
   outline: none;
   border-color: #3b82f6;
-  ring: 2px #3b82f6;
 }
 
 .rowFields {
@@ -59,6 +66,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+.rowField > label {
+  font-weight: bold;
+  font-size: 0.75rem;
+  color: #374151;
 }
 
 .spacer {
@@ -82,8 +94,12 @@
   width: 12rem;
 }
 
+.creatorField > input {
+  padding: .7rem;
+}
+
 .select {
-  padding: 0.5rem;
+  padding: .25rem .5rem;
   border: 1px solid #e5e7eb;
   border-radius: 0.375rem;
   font-size: 0.875rem;
@@ -100,6 +116,11 @@
   flex-direction: column;
   gap: 0.5rem;
   flex-grow: 1;
+}
+.assigneeContainer > label {
+  font-weight: bold;
+  font-size: 0.75rem;
+  color: #374151;
 }
 
 .assigneeField {
@@ -182,11 +203,11 @@
 }
 
 .searchItem {
-  padding: 0.5rem 0.75rem;
+  padding: .25rem .5rem;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   gap: 0.25rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .searchItem:hover {
@@ -194,7 +215,8 @@
 }
 
 .searchItemName {
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: bold;
 }
 
 .searchItemEmail {
@@ -263,7 +285,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 0.375rem;
   font-size: 0.875rem;
   color: white;

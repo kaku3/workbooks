@@ -1,7 +1,8 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 8px);
+  overflow: hidden;
 }
 
 .header {
@@ -152,12 +153,11 @@
 
 .content {
   margin: .5rem;
-
   flex: 1;
   background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
-  overflow: auto;
+  min-height: 0; /* Flexboxのスクロール問題を解決 */
 }
 
 /* レスポンシブ対応 */

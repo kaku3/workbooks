@@ -195,3 +195,10 @@
   color: #666;
   font-size: 0.8em;
 }
+
+.today {
+  font-weight: bold;
+  background-color: #fff3cd !important; /* 薄い黄色で目立つように */
+  border: 1px solid #ffeeba !important;
+  color: #856404;
+}
