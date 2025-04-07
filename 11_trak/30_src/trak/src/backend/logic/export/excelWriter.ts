@@ -53,7 +53,7 @@ export class ExcelWriter {
     users: User[]
   ): void {
     tickets.forEach((ticket, index) => {
-      const rowIndex = index + 5; // データ開始行
+      const rowIndex = index + 4; // データ開始行
 
       // タグ名の取得
       const tagNames = (ticket.tags || [])
@@ -63,7 +63,8 @@ export class ExcelWriter {
       // 1つ目のタグ
       const firstTag = tagNames[0] || "";
       // 2つ目以降のタグをセミコロン区切りで結合
-      const remainingTags = tagNames.slice(1).join(";");
+      const remainingTagsString = tagNames.slice(1).join(";");
+
 
       // ステータス名の取得
       const status = statuses.find((s) => s.id === ticket.status)?.name ?? "";
@@ -79,7 +80,7 @@ export class ExcelWriter {
       // 各列にデータを設定
       this.sheet.cell(`A${rowIndex}`).value(ticket.id);
       this.sheet.cell(`B${rowIndex}`).value(firstTag);
-      this.sheet.cell(`C${rowIndex}`).value(remainingTags);
+      this.sheet.cell(`C${rowIndex}`).value(remainingTagsString);
       this.sheet.cell(`D${rowIndex}`).value(ticket.title);
       this.sheet.cell(`E${rowIndex}`).value(assigneeNames);
       this.sheet
