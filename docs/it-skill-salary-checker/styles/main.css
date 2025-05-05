@@ -9,28 +9,31 @@ body {
 /* スキルレーダーチャート用レイアウト */
 .skill-chart-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 32px;
   margin-bottom: 30px;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: stretch;
+  align-items: stretch;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
   padding: 2.5rem 2rem;
+  box-sizing: border-box;
 }
 
 /* チャート側 */
 .skill-chart {
+  width: calc(50% - 16px);
+  min-width: 0;
+  max-width: calc(50% - 16px);
+  box-sizing: border-box;
   padding: 1.5rem 1rem 3rem;
   display: flex;
   flex-grow: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 30%;
-  min-width: 400px;
-  max-width: 700px;
   height: 100%;
   min-height: 700px;
   color: #222;
@@ -41,9 +44,11 @@ body {
 
 /* 入力・情報側 */
 .skill-inputs {
-  display: flex;
-  flex-grow: 2;
-  flex-direction: row;
+  width: calc(50% - 16px);
+  min-width: 0;
+  max-width: calc(50% - 16px);
+  box-sizing: border-box;
+  display: block;
   align-items: flex-start;
   background: #f8fafc;
   border-radius: 16px;
@@ -55,9 +60,9 @@ body {
 }
 
 #skillForm {
-  width: 328px;
-  min-width: 328px;
-  max-width: 328px;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
   flex: 0 0 auto;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -109,27 +114,57 @@ body {
   color: #555;
 }
 
+.skill-info-row #skill-information {
+  background: #f8fafc;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 15px;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin: 10px 0;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-x: auto;
+}
+.skill-info-row #skill-information h4 {
+  margin: 0;
+  font-size: .9rem;
+  font-weight: bold;
+  color: #1976d2;
+}
+.skill-info-row #skill-information h4 + div {
+  margin: .25rem 0;
+  font-size: .8rem;
+  color: #555;
+}
+.skill-info-row #skill-information div ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: .8rem;
+  color: #555;
+}
+.skill-info-row #skill-information div ul li {
+  margin: 0;
+  padding: 0;
+  font-size: .8rem;
+  color: #555;
+}
+
 .evaluation-card {
+  margin: 24px auto 20px auto;
+  padding: 1rem;
   flex: 1 1 0;
   min-width: 0;
-  max-width: none;
+  max-width: 800px;
   width: 100%;
   height: fit-content;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  background: #e3f0ff; /* グラデーションから単色に変更 */
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(50, 120, 255, 0.10);
   color: #222;
-  margin: 20px 0;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  margin: 24px auto 20px auto;
-  max-width: 800px;
+  border: 1px solid #b3e0ff;
+  /* padding, margin, max-widthは既存のまま */
 }
 
 .evaluation-card h3 {
@@ -202,19 +237,6 @@ body {
   z-index: 19;
   height: 32px;
 }
-.skill-inputs input[type="number"] {
-  width: 2.5rem;
-  padding: 0.1rem;
-}
-.skill-inputs input[type="range"] {
-  flex: 1 1 96px;
-  min-width: 96px;
-  max-width: 96px;
-  /* Chrome/Edgeでの縦ボーダー消去 */
-  background: none;
-  border: none;
-  box-shadow: none;
-}
 
 .skill-inputs td:first-child,
 .skill-inputs th:first-child {
@@ -222,14 +244,6 @@ body {
   width: 140px;
   min-width: 140px;
   max-width: 140px;
-}
-
-.skill-inputs td:nth-child(2),
-.skill-inputs th:nth-child(2) {
-  width: 160px;
-  min-width: 160px;
-  max-width: 160px;
-  box-sizing: border-box;
 }
 
 .skill-chart canvas {
@@ -243,12 +257,30 @@ body {
 .input-cell {
   display: flex;
   align-items: center;
-  gap: 0.5em;
+  gap: 0.25rem;
   min-width: 120px;
-  max-width: 220px;
+  max-width: 100%;
   width: 100%;
   box-sizing: border-box;
   border: none;
+}
+
+.input-cell input[type="number"] {
+  width: 2.5rem;
+  min-width: 2.5rem;
+  max-width: 2.5rem;
+  flex: 0 0 2.5rem;
+  margin-right: 0.1rem;
+}
+
+.input-cell input[type="range"] {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  /* Chrome/Edgeでの縦ボーダー消去 */
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 
 /* グループ色分け */
@@ -318,6 +350,12 @@ body {
   margin-bottom: 1.2em;
   box-shadow: 0 2px 8px rgba(25, 118, 210, 0.06);
   border-radius: 12px 12px 0 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+.skill-criteria-tab-bar > * {
+  display: inline-block;
 }
 .skill-criteria-tab-btn {
   border: none;
@@ -442,6 +480,17 @@ body {
   font-weight: bold;
 }
 
+.skill-row .angle-icon {
+  display: inline-block;
+  width: 1.2em;
+  text-align: center;
+  font-size: 1em;
+  color: #1976d2;
+  transition: transform 0.15s;
+  user-select: none;
+  vertical-align: middle;
+}
+
 /* スクロールバーを細く */
 #skillForm::-webkit-scrollbar {
   width: 8px;
@@ -485,10 +534,8 @@ body {
   }
   .skill-chart, .skill-inputs {
     width: 100%;
-  }
-  .skill-inputs {
-    flex-direction: column;
-    gap: 1rem;
+    max-width: 100%;
+    min-width: 0;
   }
   .information-container {
     width: 100%;
@@ -530,6 +577,16 @@ body {
   }
   #skill-information {
     max-width: 100%;
+  }
+  .skill-chart {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    /* 必要に応じてmarginやpaddingも調整 */
+  }
+  .skill-inputs {
+    width: 100%;
+    /* ...existing code... */
   }
 }
 
@@ -600,17 +657,18 @@ body {
 
 /* 評価ボタンのスタイル */
 .evaluate-btn {
-  background-color: #2196F3;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 15px;
   display: block;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto; /* ボタンを中央寄せ */
+  padding: 12px 20px;
+  font-size: 16px;
   width: 100%;
   max-width: 200px;
+  color: white;
+  background-color: #2196F3;
+  border: none;
+  border-radius: 4px;
   text-align: center;
   transition: background-color 0.3s;
   font-weight: bold;
@@ -794,4 +852,51 @@ body {
 .category-score {
   font-weight: bold;
   color: #1976D2;
+}
+
+/* skill-criteria-tab-bar 横スクロール対応 */
+.skill-criteria-tab-bar {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+.skill-criteria-tab-bar > * {
+  display: inline-block;
+}
+
+/* criteria-table 横スクロール対応 */
+.criteria-table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+}
+.criteria-table table {
+  width: 100%;
+  min-width: 1460px; /* 200+660+600 */
+  table-layout: auto;
+}
+.criteria-table th:nth-child(1),
+.criteria-table td:nth-child(1) {
+  min-width: 200px;
+}
+.criteria-table th:nth-child(2),
+.criteria-table td:nth-child(2) {
+  min-width: 660px;
+}
+.criteria-table th:nth-child(3),
+.criteria-table td:nth-child(3) {
+  min-width: 600px;
+}
+
+/* スクロールバーを細く（横スクロール用） */
+.skill-criteria-tab-bar::-webkit-scrollbar,
+.criteria-table::-webkit-scrollbar {
+  height: 7px;
+}
+.skill-criteria-tab-bar::-webkit-scrollbar-thumb,
+.criteria-table::-webkit-scrollbar-thumb {
+  background: #d0d7de;
+  border-radius: 4px;
 }

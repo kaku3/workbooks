@@ -20,6 +20,21 @@
 </head>
 <body>
   <h2 class="page-title">エンジニア年収自己診断</h2>
+  <div class="rules-card" style="max-width:800px;margin:24px auto 20px auto;background:#e3f0ff;border-radius:16px;box-shadow:0 4px 16px rgba(50,120,255,0.10);padding:1.5rem 1.2rem 1.2rem 1.2rem;border:1px solid #b3e0ff;color:#222;">
+    <div style="font-size:1.15em;font-weight:bold;margin-bottom:0.7em;color:#1976d2;">
+      あなたのスキル、本当の市場価値は？<br>
+      <span style="font-size:0.98em;font-weight:normal;color:#1565c0;">
+        AIが診断！現在の推定年収と具体的なキャリアアップアドバイスが分かる
+      </span>
+    </div>
+    <ul style="margin:0 0 0.5em 1.2em;padding:0;list-style:disc;">
+      <li>各スキルについて自己評価 <b>0 - 100 点</b> を入力</li>
+      <li>採点基準が分からない時は<b>スキル名をクリック</b>で採点基準表示</li>
+      <li>一通り入力後、<b>診断する</b>ボタン押下で診断</li>
+      <li>入力データはPC内のローカルストレージに保存しており、収集は一切しておりません</li>
+      <li>【注意】採点基準/アドバイス、推定年収はAIによるもので保証するものではありません</li>
+    </ul>
+  </div>
   <div class="skill-chart-container">
     <div class="skill-chart">
       <canvas id="radarChart" width="700" height="700"></canvas>
@@ -35,13 +50,11 @@
     </div>
     <div class="skill-inputs">
       <form id="skillForm"></form>
-      <div id="skill-information"></div>
     </div>
   </div>
   <div id="evaluation" class="evaluation-card">
-    <h3>AI診断</h3>
-    <div id="evaluation-result" class="evaluation-content"></div>
     <button type="button" id="evaluate-button" class="evaluate-btn">診断する</button>
+    <div id="evaluation-result" class="evaluation-content"></div>
   </div>
   <div id="skill-criteria">
     <div class="skill-criteria-tab-bar">

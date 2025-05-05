@@ -52,17 +52,50 @@ function renderSkillTable(role, editable = false) {
   return html;
 }
 
-// skill-rowクリック時に説明を右側に表示＋選択中表現
+// skill-rowクリック時に説明を選択行の下に表示＋選択中はアングルを下向き、再クリックで解除
 function setupSkillRowClick() {
-  const info = document.getElementById('skill-information');
   const rows = document.querySelectorAll('.skill-row');
+  let lastInfoRow = null;
+  let lastSelectedRow = null;
   rows.forEach(row => {
-    row.addEventListener('click', function() {
-      rows.forEach(r => r.classList.remove('selected'));
+    // 左端にアングルを追加
+    const td = row.querySelector('td:first-child');
+    if (td && !td.querySelector('.angle-icon')) {
+      const angle = document.createElement('span');
+      angle.className = 'angle-icon';
+      angle.textContent = '▶';
+      angle.style.marginRight = '0.5em';
+      angle.style.cursor = 'pointer';
+      td.prepend(angle);
+    }
+    row.addEventListener('click', function(e) {
+      // アングルクリックでも行クリックでも同じ挙動
+      const isSameRow = lastSelectedRow === this;
+      // 選択状態リセット
+      rows.forEach(r => {
+        r.classList.remove('selected');
+        const icon = r.querySelector('.angle-icon');
+        if (icon) icon.textContent = '▶';
+      });
+      // 既存の説明行を削除
+      if (lastInfoRow && lastInfoRow.parentNode) {
+        lastInfoRow.parentNode.removeChild(lastInfoRow);
+        lastInfoRow = null;
+      }
+      if (isSameRow) {
+        // すでに選択中の行を再クリック→選択解除＆ヒント非表示
+        lastSelectedRow = null;
+        return;
+      }
+      // 新たに選択
       this.classList.add('selected');
+      const angleIcon = this.querySelector('.angle-icon');
+      if (angleIcon) angleIcon.textContent = '▼';
+      // 説明行を作成して挿入
       const idx = Number(this.getAttribute('data-skill-index'));
       const skill = skillSet[idx];
-      let html = `<h4>${skill.name}</h4>`;
+      let html = `<div id="skill-information">`;
+      html += `<h4>${skill.name}</h4>`;
       if (skill.desc) {
         html += `<div>${skill.desc}</div>`;
       }
@@ -82,13 +115,21 @@ function setupSkillRowClick() {
           html += `<div style='font-size:0.95em;'>${skill.learnings.replace(/\n/g, '<br>')}</div>`;
         }
       }
-      info.innerHTML = html;
+      html += `</div>`;
+      // 新しい説明行を作成
+      const infoRow = document.createElement('tr');
+      infoRow.className = 'skill-info-row';
+      const infoTd = document.createElement('td');
+      infoTd.colSpan = 2;
+      infoTd.innerHTML = html;
+      infoRow.appendChild(infoTd);
+      // この行の直後に挿入
+      this.parentNode.insertBefore(infoRow, this.nextSibling);
+      lastInfoRow = infoRow;
+      lastSelectedRow = this;
     });
   });
-  // 初期化時は最初のスキルを選択
-  if (rows.length > 0) {
-    rows[0].click();
-  }
+  // 初期化時は最初のスキルを選択しない
 }
 
 // タブ・テーブル初期化
@@ -366,7 +407,7 @@ function renderSkillCriteria() {
     const groupDiv = document.querySelector(`.skill-criteria-group[data-group='${groupKey}']`);
     if (!groupDiv) return;
     let html = `<h3>${groupOrder.find(g => g.key === groupKey).label}の採点基準・学習方法</h3>`;
-    html += '<table class="criteria-table"><thead><tr><th>スキル</th><th>採点基準</th><th>学習方法</th></tr></thead><tbody>';
+    html += '<div class="criteria-table"><table><thead><tr><th>スキル</th><th>採点基準</th><th>学習方法</th></tr></thead><tbody>';
     skillSet.filter(skill => skill.group === groupKey).forEach(skill => {
       html += `<tr><td>${skill.name}</td><td>`;
       if (Array.isArray(skill.criteria)) {
@@ -382,7 +423,7 @@ function renderSkillCriteria() {
       }
       html += `</td></tr>`;
     });
-    html += '</tbody></table>';
+    html += '</tbody></table></div>'; // --- ここまで ---
     groupDiv.innerHTML = html;
   });
 
