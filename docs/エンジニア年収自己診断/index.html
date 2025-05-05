@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>エンジニア年収自己診断</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <h2 class="page-title">エンジニア年収自己診断</h2>
+  <div class="skill-chart-container">
+    <div class="skill-chart">
+      <canvas id="radarChart" width="700" height="700"></canvas>
+      <div class="chart-controls">
+        <label><input type="checkbox" class="chart-toggle" value="self" checked>自己評価</label>
+        <label><input type="checkbox" class="chart-toggle" value="tester">テスター</label>
+        <label><input type="checkbox" class="chart-toggle" value="tester-adv">上級テスター</label>
+        <label><input type="checkbox" class="chart-toggle" value="pg">PG</label>
+        <label><input type="checkbox" class="chart-toggle" value="se">SE</label>
+        <label><input type="checkbox" class="chart-toggle" value="plpm">PL/PM</label>
+        <label><input type="checkbox" class="chart-toggle" value="consultant">ITコンサルタント</label>
+      </div>
+    </div>
+    <div class="skill-inputs">
+      <form id="skillForm"></form>
+      <div id="skill-information"></div>
+    </div>
+  </div>
+  <div id="evaluation" class="evaluation-card">
+    <h3>AI診断</h3>
+    <div id="evaluation-result" class="evaluation-content"></div>
+    <button type="button" id="evaluate-button" class="evaluate-btn">診断する</button>
+  </div>
+  <div id="skill-criteria">
+    <div class="skill-criteria-tab-bar">
+      <button type="button" class="skill-criteria-tab-btn active" data-group="ヒューマン">ヒューマンスキル</button>
+      <button type="button" class="skill-criteria-tab-btn" data-group="業務">業務スキル</button>
+      <button type="button" class="skill-criteria-tab-btn" data-group="技術">技術スキル</button>
+      <button type="button" class="skill-criteria-tab-btn" data-group="マネジメント">マネジメントスキル</button>
+    </div>
+    <div class="skill-criteria-group active" data-group="ヒューマン"></div>
+    <div class="skill-criteria-group" data-group="業務"></div>
+    <div class="skill-criteria-group" data-group="技術"></div>
+    <div class="skill-criteria-group" data-group="マネジメント"></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="data/skill.js"></script>
+  <script src="data/evaluation.js"></script>
+  <script src="scripts/evaluation.js"></script>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

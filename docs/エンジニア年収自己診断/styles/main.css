@@ -1,0 +1,797 @@
+body {
+  background: #f6f8fa;
+  color: #222;
+  font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* スキルレーダーチャート用レイアウト */
+.skill-chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-bottom: 30px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 2.5rem 2rem;
+}
+
+/* チャート側 */
+.skill-chart {
+  padding: 1.5rem 1rem 3rem;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  min-width: 400px;
+  max-width: 700px;
+  height: 100%;
+  min-height: 700px;
+  color: #222;
+  background: #f8fafc;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+/* 入力・情報側 */
+.skill-inputs {
+  display: flex;
+  flex-grow: 2;
+  flex-direction: row;
+  align-items: flex-start;
+  background: #f8fafc;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 1.5rem 1rem;
+  color: #222;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+#skillForm {
+  width: 328px;
+  min-width: 328px;
+  max-width: 328px;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-height: calc(100vh - 3.5rem - 48px);
+  min-height: 540px;
+}
+
+#skill-information {
+  flex-grow: 1;
+  min-width: 0;
+  max-width: none;
+  width: 100%;
+  height: fit-content;
+  background: #f8fafc;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 15px;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-x: auto;
+}
+#skill-information h4 {
+  margin: 0;
+  font-size: .9rem;
+  font-weight: bold;
+  color: #1976d2;
+}
+#skill-information h4 + div {
+  margin: .25rem 0;
+  font-size: .8rem;
+  color: #555;
+}
+
+#skill-information div ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: .8rem;
+  color: #555;
+}
+#skill-information div ul li {
+  margin: 0;
+  padding: 0;
+  font-size: .8rem;
+  color: #555;
+}
+
+.evaluation-card {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+  width: 100%;
+  height: fit-content;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  color: #222;
+  margin: 20px 0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin: 24px auto 20px auto;
+  max-width: 800px;
+}
+
+.evaluation-card h3 {
+  margin: 0;
+  font-size: .9rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 0;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  color: #333;
+  margin-top: 0;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.skill-inputs table {
+  border-collapse: collapse;
+  font-size: 0.75em;
+  table-layout: fixed;
+  margin-top: 0;
+  color: #222;
+  margin-right: 12px;
+  border-top: none;
+}
+.skill-inputs th, .skill-inputs td {
+  border: 1px solid #ccc;
+  padding: .1rem .5rem;
+  text-align: left;
+  vertical-align: middle;
+  color: #222;
+  border-top: none;
+}
+.skill-inputs th {
+  background: #f0f4f8;
+  border-top: none;
+}
+.skill-inputs td {
+  padding: .05rem .25rem;
+}
+.skill-inputs thead th {
+  position: sticky;
+  top: 40px; /* タブバーの高さ分を正確に調整（例: 40px） */
+  background: #f0f4f8;
+  z-index: 5;
+  height: 36px;
+  border-top: none;
+}
+#skillForm table thead th {
+  position: sticky;
+  top: 0;
+  background: #f0f4f8;
+  z-index: 20;
+  height: 36px;
+  border-top: none;
+}
+.skill-inputs tbody th[colspan] {
+  position: sticky;
+  top: 76px; /* タブバー+thead分（例: 40+36=76px） */
+  background: #e2e8f0;
+  z-index: 4;
+  height: 32px;
+}
+#skillForm table tbody th[colspan] {
+  position: sticky;
+  top: 36px;
+  background: #e2e8f0;
+  z-index: 19;
+  height: 32px;
+}
+.skill-inputs input[type="number"] {
+  width: 2.5rem;
+  padding: 0.1rem;
+}
+.skill-inputs input[type="range"] {
+  flex: 1 1 96px;
+  min-width: 96px;
+  max-width: 96px;
+  /* Chrome/Edgeでの縦ボーダー消去 */
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.skill-inputs td:first-child,
+.skill-inputs th:first-child {
+  white-space: nowrap;
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
+}
+
+.skill-inputs td:nth-child(2),
+.skill-inputs th:nth-child(2) {
+  width: 160px;
+  min-width: 160px;
+  max-width: 160px;
+  box-sizing: border-box;
+}
+
+.skill-chart canvas {
+  width: 700px !important;
+  height: 700px !important;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+.input-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 120px;
+  max-width: 220px;
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+}
+
+/* グループ色分け */
+.group-header.group-human, .group-human td {
+  background: #e3f0fc;
+}
+.group-header.group-business, .group-business td {
+  background: #e6f7e6;
+}
+.group-header.group-tech, .group-tech td {
+  background: #fff3e0;
+}
+.group-header.group-mgmt, .group-mgmt td {
+  background: #f3e6fa;
+}
+
+.skill-row td:first-child {
+  cursor: pointer;
+}
+
+/* chart-controlsのラベルを横並び・折り返し防止 */
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em 1.5em;
+  align-items: center;
+  margin-bottom: 1em;
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  justify-content: center;
+}
+.chart-controls label {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0.4em;
+  margin-right: 0;
+  font-size: 1em;
+  color: #333;
+  line-height: 1.2;
+}
+.chart-controls input[type="checkbox"] {
+  flex-shrink: 0;
+}
+.chart-controls .chart-avg {
+  margin-left: 0.2em;
+  font-size: 0.95em;
+  color: #888;
+}
+
+#skill-criteria {
+  margin: 2.5rem auto 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 1.5rem 1rem;
+  color: #222;
+}
+.skill-criteria-tab-bar {
+  display: flex;
+  gap: 0.5em;
+  border-bottom: none;
+  background: #f8fafc;
+  padding: 0.5em 1em 0 1em;
+  margin-bottom: 1.2em;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.06);
+  border-radius: 12px 12px 0 0;
+}
+.skill-criteria-tab-btn {
+  border: none;
+  background: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: .5rem 1.5rem .4rem 1.5rem;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  color: #1976d2;
+  border-bottom: 3px solid transparent;
+  transition: background 0.2s, color 0.2s, border-bottom 0.2s;
+  box-shadow: none;
+}
+.skill-criteria-tab-btn.active {
+  background: #fff;
+  color: #1565c0;
+  border-bottom: 3px solid #1976d2;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  z-index: 2;
+}
+.skill-criteria-tab-btn:not(.active):hover {
+  background: #e3f0fc;
+  color: #1976d2;
+}
+
+.skill-criteria-group {
+  display: none;
+  color: #222;
+  background: #fff;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 2px 12px rgba(25, 118, 210, 0.06);
+  padding: 2rem 2.5rem 2.5rem 2.5rem;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.3s;
+}
+.skill-criteria-group.active {
+  display: block;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.skill-criteria-group table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #f8fafc;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(25, 118, 210, 0.04);
+}
+.skill-criteria-group th, .skill-criteria-group td {
+  padding: 0.7em 1em;
+  border: none;
+  font-size: 1em;
+}
+.skill-criteria-group th {
+  background: #e3f0fc;
+  color: #1976d2;
+  font-weight: 700;
+}
+.skill-criteria-group tr:nth-child(even) td {
+  background: #f3f7fb;
+}
+.skill-criteria-group tr:nth-child(odd) td {
+  background: #f8fafc;
+}
+.skill-criteria-group td {
+  border-bottom: 1px solid #e0e7ef;
+  color: #888;
+  line-height: 1.8;
+  font-size: 0.98em;
+}
+.skill-criteria-group tr:last-child td {
+  border-bottom: none;
+}
+
+.skill-criteria-group h3 {
+  font-size: 1.2rem;
+  color: #1976d2;
+  margin: 0 0 1.2em 0;
+  font-weight: 600;
+}
+
+/* テーブルのテキストカラーを明示的に指定 */
+.skill-inputs table,
+.skill-inputs th,
+.skill-inputs td,
+#skill-criteria table,
+#skill-criteria th,
+#skill-criteria td {
+  color: #222;
+}
+
+.page-title {
+  margin: 1rem 0;
+  padding: .5rem 1rem;
+  font-size: 2.2rem;
+  font-weight: lighter;
+  letter-spacing: 0.04rem;
+  color: #1976d2;
+  background: linear-gradient(90deg, #e3f0fc 0%, #fff 100%);
+  border-left: 8px solid #1976d2;
+  border-radius: 0 16px 16px 0;
+  width: 100%;
+  box-shadow: 0 2px 12px rgba(25, 118, 210, 0.08);
+  box-sizing: border-box;
+}
+
+/* ホバー・選択中表現 */
+.skill-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.skill-row:hover {
+  background: #e3f0fc !important;
+}
+.skill-row.selected {
+  background: #bbdefb !important;
+  font-weight: bold;
+}
+
+/* スクロールバーを細く */
+#skillForm::-webkit-scrollbar {
+  width: 8px;
+}
+#skillForm::-webkit-scrollbar-thumb {
+  background: #d0d7de;
+  border-radius: 4px;
+}
+
+#skillForm table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-top: none;
+}
+
+#skillForm table,
+.skill-inputs table {
+  border-spacing: 0;
+  margin-top: 0;
+  border-collapse: collapse;
+  border-top: none;
+}
+#skillForm th,
+.skill-inputs th {
+  margin-top: 0;
+  padding-top: 0.4em;
+  border-top: none;
+}
+#skillForm thead,
+.skill-inputs thead {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+@media (max-width: 900px) {
+  .skill-chart-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .skill-chart, .skill-inputs {
+    width: 100%;
+  }
+  .skill-inputs {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .information-container {
+    width: 100%;
+  }
+  #skillForm {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .skill-inputs td:nth-child(2),
+  .skill-inputs th:nth-child(2) {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+  .skill-inputs input[type="range"] {
+    flex: 1 1 calc(100% - 3.5rem);
+    min-width: calc(100% - 3.5rem);
+    max-width: calc(100% - 3.5rem);
+  }
+
+  #skill-information,
+  .evaluation-card {
+    max-width: calc(100% - 2rem);
+    min-width: 0;
+    position: static;
+  }
+}
+
+@media (max-width: 1100px) {
+  .skill-chart-container {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .skill-chart, .skill-inputs {
+    max-width: 100%;
+    min-width: 0;
+  }
+  #skill-information {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .skill-chart-container {
+    gap: 12px;
+  }
+  .skill-chart, .skill-inputs {
+    padding: 0;
+  }
+  #skill-information {
+    font-size: 0.95em;
+    padding: 10px;
+  }
+}
+
+.criteria-list {
+  font-size: 0.92em;
+  margin: 0.2em 0 0.2em 0;
+  padding: 0 0 0 0.5em;
+  list-style: none;
+}
+.criteria-list li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.1em;
+}
+.criteria-label {
+  font-weight: bold;
+  color: #1976d2;
+  font-size: 0.98em;
+  min-width: 5.5em;
+  margin-right: 0.3em;
+  flex-shrink: 0;
+}
+.criteria-body {
+  color: #888;
+  font-size: 0.92em;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.learning-list {
+  font-size: 0.92em;
+  margin: 0.2em 0 0.2em 0;
+  padding: 0 0 0 0.5em;
+  list-style: none;
+}
+.learning-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.1em;
+}
+.learning-label {
+  font-weight: bold;
+  color: #1976d2;
+  font-size: 0.98em;
+  min-width: 1.5em;
+  margin-right: 0.3em;
+  flex-shrink: 0;
+}
+.learning-body {
+  color: #888;
+  font-size: 0.92em;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+/* 評価ボタンのスタイル */
+.evaluate-btn {
+  background-color: #2196F3;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  text-align: center;
+  transition: background-color 0.3s;
+  font-weight: bold;
+}
+
+.evaluate-btn:hover {
+  background-color: #1976D2;
+}
+
+.evaluate-btn:active {
+  background-color: #0D47A1;
+  transform: translateY(1px);
+}
+
+.evaluation-result {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.evaluation-summary {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.evaluation-title {
+  color: #2196F3;
+  margin: 15px 0;
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.evaluation-description {
+  color: #555;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
+
+.evaluation-salary {
+  font-weight: bold;
+  color: #4CAF50;
+  margin: 15px 0;
+  font-size: 1.3em;
+}
+
+.salary-range {
+  background-color: #e8f5e9;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.next-role {
+  color: #7B1FA2;
+  margin: 10px 0;
+}
+
+.total-score {
+  font-size: 1.1em;
+  margin: 10px 0;
+}
+
+.total-score .score {
+  font-weight: bold;
+  color: #1976D2;
+}
+
+.salary-effect {
+  margin: 10px 0;
+  padding: 5px 10px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.salary-effect.positive {
+  background-color: #e8f5e9;
+  color: #2E7D32;
+}
+
+.salary-effect.negative {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.evaluation-advice {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #e3f2fd;
+  border-radius: 5px;
+}
+
+.evaluation-advice h4 {
+  color: #1565C0;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.evaluation-analysis {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  gap: 20px;
+}
+
+.strengths-section, .weaknesses-section {
+  flex: 1;
+  min-width: 250px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.strengths-section {
+  background-color: #e8f5e9;
+}
+
+.weaknesses-section {
+  background-color: #fff3e0;
+}
+
+.strengths-section h4, .weaknesses-section h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.strengths-list, .weaknesses-list, .category-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.strengths-list li, .weaknesses-list li, .category-list li {
+  margin-bottom: 8px;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.strengths-list li {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.weaknesses-list li {
+  background-color: rgba(255, 152, 0, 0.1);
+}
+
+.skill-name {
+  font-weight: bold;
+}
+
+.skill-group {
+  font-size: 0.9em;
+  color: #616161;
+}
+
+.skill-diff {
+  font-weight: bold;
+}
+
+.skill-diff.positive {
+  color: #2E7D32;
+}
+
+.skill-diff.negative {
+  color: #c62828;
+}
+
+.category-averages {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.category-name {
+  font-weight: bold;
+  min-width: 150px;
+  display: inline-block;
+}
+
+.category-score {
+  font-weight: bold;
+  color: #1976D2;
+}
