@@ -68,6 +68,16 @@ function setupSkillRowClick() {
       angle.style.cursor = 'pointer';
       td.prepend(angle);
     }
+    
+    // 入力フィールドにフォーカスイベントを追加
+    const numberInput = row.querySelector('input[type=number]');
+    if (numberInput) {
+      numberInput.addEventListener('focus', function() {
+        // 親の行要素のクリックイベントをトリガー
+        row.click();
+      });
+    }
+    
     row.addEventListener('click', function(e) {
       // アングルクリックでも行クリックでも同じ挙動
       const isSameRow = lastSelectedRow === this;
