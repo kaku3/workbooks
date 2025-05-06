@@ -144,7 +144,7 @@ function generateShareUrl(inputObj) {
 }
 window.generateShareUrl = generateShareUrl;
 
-const shareText = '#エンジニア年収自己診断 #ITチェッカー';
+const shareText = '#IT年収チェッカー';
 /**
  * X（旧Twitter）共有ボタンのHTMLを生成
  * @param {string} shareUrl - 共有用URL
