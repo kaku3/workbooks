@@ -144,14 +144,39 @@ function generateShareUrl(inputObj) {
 }
 window.generateShareUrl = generateShareUrl;
 
+const shareText = '#エンジニア年収自己診断 #ITチェッカー';
+/**
+ * X（旧Twitter）共有ボタンのHTMLを生成
+ * @param {string} shareUrl - 共有用URL
+ * @returns {string} ボタンHTML
+ */
+function createXShareButtonHtml(shareUrl) {
+  const url = encodeURIComponent(shareUrl);
+  // ハッシュタグとコピー文言を追加
+  const text = encodeURIComponent(shareText);
+  const xUrl = `https://x.com/intent/tweet?url=${url}&text=${text}`;
+  // 黒丸＋白XのSVG
+  const xIcon = `<svg viewBox="0 0 24 24" width="28" height="28" style="vertical-align:middle;">
+    <circle cx="12" cy="12" r="12" fill="#000"/>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+      fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+  return `<a href="${xUrl}" target="_blank" rel="noopener noreferrer" id="x-share-btn" style="margin-left:8px;display:inline-flex;align-items:center;text-decoration:none;">
+    ${xIcon}
+  </a>`;
+}
+window.createXShareButtonHtml = createXShareButtonHtml;
+
 /**
  * Facebook共有ボタンのHTMLを生成
  * @param {string} shareUrl - 共有用URL
  * @returns {string} ボタンHTML
  */
 function createFacebookShareButtonHtml(shareUrl) {
+  // ハッシュタグとコピー文言を追加
   const url = encodeURIComponent(shareUrl);
-  const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+  const quote = encodeURIComponent(shareText);
+  const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${quote}`;
   // Facebook公式カラーのSVGアイコン
   const fbIcon = `<svg width="28" height="28" viewBox="0 0 32 32" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
     <circle cx="16" cy="16" r="16" fill="#1877F3"/>
@@ -193,26 +218,6 @@ function createShareButtonHtml(shareUrl) {
     + `<input id="share-url" type="text" value="${shareUrl}" readonly style="width:60%;margin-left:8px;vertical-align:middle;height:28px;">`;
 }
 window.createShareButtonHtml = createShareButtonHtml;
-
-/**
- * X（旧Twitter）共有ボタンのHTMLを生成
- * @param {string} shareUrl - 共有用URL
- * @returns {string} ボタンHTML
- */
-function createXShareButtonHtml(shareUrl) {
-  const url = encodeURIComponent(shareUrl);
-  const xUrl = `https://x.com/intent/tweet?url=${url}`;
-  // 黒丸＋白XのSVG
-  const xIcon = `<svg viewBox="0 0 24 24" width="28" height="28" style="vertical-align:middle;">
-    <circle cx="12" cy="12" r="12" fill="#000"/>
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-      fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`;
-  return `<a href="${xUrl}" target="_blank" rel="noopener noreferrer" id="x-share-btn" style="margin-left:8px;display:inline-flex;align-items:center;text-decoration:none;">
-    ${xIcon}
-  </a>`;
-}
-window.createXShareButtonHtml = createXShareButtonHtml;
 
 /**
  * 共有ボタンのクリックイベントをセットアップ
