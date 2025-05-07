@@ -35,21 +35,38 @@ function learningsListHtml(learningsArr) {
 
 // テーブル生成（自己評価のみ、説明列なし）
 function renderSkillTable(role, editable = false) {
-  let html = '<table><thead><tr><th>スキル</th><th>自己評価</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>スキル</th><th id="self-total-header-th">自己評価</th></tr></thead><tbody>';
   groupOrder.forEach(group => {
-    html += `<tr class="group-header"><th colspan="2" style="background:${group.color}">${group.label}</th></tr>`;
+    // グループヘッダにidを付与
+    html += `<tr class="group-header"><th colspan="2" id="group-total-header-${group.key}" style="background:${group.color}">${group.label}</th></tr>`;
     skillSet.filter(s => s.group === group.key).forEach((skill, idx) => {
+      const value = skill.samples[role] ?? 0;
+      // 危険(赤)～安全(緑)のグラデーション色を計算
+      const safeColor = getSafeColor(value);
       html += `<tr class="skill-row" data-skill-index="${skillSet.indexOf(skill)}" style="background:${group.color}"><td>${skill.name}</td><td class="input-cell">`;
       if (editable) {
-        html += `<input type="number" name="${skill.name}" min="0" max="100" value="${skill.samples[role] ?? 0}"><input type="range" name="${skill.name}_slider" min="0" max="100" value="${skill.samples[role] ?? 0}" step="5" tabindex="-1">`;
+        html += `<input type="number" name="${skill.name}" min="0" max="100" value="${value}">`
+              + `<input type="range" name="${skill.name}_slider" min="0" max="100" value="${value}" step="5" tabindex="-1" style="background:${safeColor};">`;
       } else {
-        html += `<input type="number" value="${skill.samples[role] ?? 0}" disabled><input type="range" value="${skill.samples[role] ?? 0}" disabled tabindex="-1">`;
+        html += `<input type="number" value="${value}" disabled>`
+              + `<input type="range" value="${value}" disabled tabindex="-1" style="background:${safeColor};">`;
       }
       html += `</td></tr>`;
     });
   });
   html += '</tbody></table>';
   return html;
+}
+
+// 危険(赤)～安全(緑)のグラデーション色を返す
+function getSafeColor(val) {
+  // 0=赤(255,60,60)→100=緑(60,180,75)
+  const r1=255,g1=60,b1=60, r2=60,g2=180,b2=75;
+  const t = Math.max(0, Math.min(100, Number(val))) / 100;
+  const r = Math.round(r1 + (r2 - r1) * t);
+  const g = Math.round(g1 + (g2 - g1) * t);
+  const b = Math.round(b1 + (b2 - b1) * t);
+  return `linear-gradient(90deg, rgb(${r1},${g1},${b1}) 0%, rgb(${r},${g},${b}) ${t*100}%, rgb(${r2},${g2},${b2}) 100%)`;
 }
 
 // skill-rowクリック時に説明を選択行の下に表示＋選択中はアングルを下向き、再クリックで解除
@@ -73,12 +90,18 @@ function setupSkillRowClick() {
     const numberInput = row.querySelector('input[type=number]');
     if (numberInput) {
       numberInput.addEventListener('focus', function() {
-        // 親の行要素のクリックイベントをトリガー
-        row.click();
+        // 行が未選択の場合のみクリックイベントをトリガー
+        if (!row.classList.contains('selected')) {
+          row.click();
+        }
       });
     }
-    
+
     row.addEventListener('click', function(e) {
+      // input要素からのクリックの場合はtoggleしない
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.closest('input'))) {
+        return;
+      }
       // アングルクリックでも行クリックでも同じ挙動
       const isSameRow = lastSelectedRow === this;
       // 選択状態リセット
@@ -142,6 +165,37 @@ function setupSkillRowClick() {
   // 初期化時は最初のスキルを選択しない
 }
 
+// 自己評価thの(n/m)部分だけ書き換える
+function updateSelfTotalHeader() {
+  const th = document.getElementById('self-total-header-th');
+  if (!th) return;
+  // 合計値計算
+  const totalMax = skillSet.length * 100;
+  let totalValue = 0;
+  skillSet.forEach(s => {
+    const input = document.querySelector(`input[name='${s.name}']`);
+    totalValue += input ? Number(input.value) : (s.samples?.self ?? 0);
+  });
+  th.innerHTML = `自己評価 <span class="self-total-header">(${totalValue}/${totalMax})</span>`;
+}
+
+// グループごとのヘッダ(n/m)を更新
+function updateSelfGroupHeader() {
+  groupOrder.forEach(group => {
+    const th = document.getElementById(`group-total-header-${group.key}`);
+    if (!th) return;
+    const groupSkills = skillSet.filter(s => s.group === group.key);
+    const groupMax = groupSkills.length * 100;
+    let groupValue = 0;
+    groupSkills.forEach(s => {
+      const input = document.querySelector(`input[name='${s.name}']`);
+      groupValue += input ? Number(input.value) : (s.samples?.self ?? 0);
+    });
+    // ラベル部分だけ書き換え
+    th.innerHTML = `${group.label} <span class="group-total-header">(${groupValue}/${groupMax})</span>`;
+  });
+}
+
 // タブ・テーブル初期化
 function getRoleAverage(role) {
   // skillSetからroleごとの平均点を算出
@@ -183,6 +237,8 @@ function setupSkillTabs() {
   const form = document.getElementById('skillForm');
   form.innerHTML = `<div class="tab-content" data-role="self" style="display:block;">${renderSkillTable('self', true)}</div>`;
   setupSkillRowClick();
+  updateSelfTotalHeader(); // 追加: 初期表示時にも呼ぶ
+  updateSelfGroupHeader(); // 追加
 }
 
 // チェックボックスでグラフ表示切替
@@ -368,6 +424,9 @@ function loadSelfSkillFromLocalStorage() {
         if (rangeInput) rangeInput.value = values[s.name];
       }
     });
+    // ここで自己評価合計ヘッダも更新
+    updateSelfTotalHeader();
+    updateSelfGroupHeader(); // 追加
   } catch(e) {}
 }
 
@@ -376,20 +435,35 @@ function setupInputSync() {
     const numberInput = document.querySelector(`input[name='${s.name}']`);
     const rangeInput = document.querySelector(`input[name='${s.name}_slider']`);
     if (numberInput && rangeInput) {
+      // 値変更時にスライダー色も更新
+      function updateRangeColor() {
+        rangeInput.style.background = getSafeColor(rangeInput.value);
+      }
       numberInput.addEventListener('input', () => {
         rangeInput.value = numberInput.value;
+        updateRangeColor();
         saveSelfSkillToLocalStorage();
         renderRadarChart();
-        updateSelfTabAverage(); // 追加
+        updateSelfTabAverage();
+        updateSelfTotalHeader(); // 追加
+        updateSelfGroupHeader(); // 追加
       });
       rangeInput.addEventListener('input', () => {
         numberInput.value = rangeInput.value;
+        updateRangeColor();
         saveSelfSkillToLocalStorage();
         renderRadarChart();
-        updateSelfTabAverage(); // 追加
+        updateSelfTabAverage();
+        updateSelfTotalHeader(); // 追加
+        updateSelfGroupHeader(); // 追加
       });
+      // 初期色
+      updateRangeColor();
     }
   });
+  // 初期表示時もthを更新
+  updateSelfTotalHeader();
+  updateSelfGroupHeader(); // 追加
 }
 
 function roleLabel(role) {
