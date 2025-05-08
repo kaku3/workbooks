@@ -71,60 +71,18 @@ body {
   min-height: 540px;
 }
 
-#skill-information {
-  flex-grow: 1;
-  min-width: 0;
-  max-width: none;
-  width: 100%;
-  height: fit-content;
-  background: #f8fafc;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
-  padding: 15px;
-  color: #222;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  margin-bottom: 20px;
-  box-sizing: border-box;
-  word-break: break-word;
-  overflow-x: auto;
-}
-#skill-information h4 {
-  margin: 0;
-  font-size: .9rem;
-  font-weight: bold;
-  color: #1976d2;
-}
-#skill-information h4 + div {
-  margin: .25rem 0;
-  font-size: .8rem;
-  color: #555;
-}
-
-#skill-information div ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: .8rem;
-  color: #555;
-}
-#skill-information div ul li {
-  margin: 0;
-  padding: 0;
-  font-size: .8rem;
-  color: #555;
-}
-
 .skill-info-row #skill-information {
+  margin: 10px 0;
+  padding: .5rem;
+  max-height: 10rem;
   background: #f8fafc;
   border: 1px solid #d0d7de;
   border-radius: 8px;
-  padding: 15px;
   color: #222;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  margin: 10px 0;
   box-sizing: border-box;
   word-break: break-word;
-  overflow-x: auto;
+  overflow: auto;
 }
 .skill-info-row #skill-information h4 {
   margin: 0;
