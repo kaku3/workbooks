@@ -128,7 +128,7 @@ function setupSkillRowClick() {
       const idx = Number(this.getAttribute('data-skill-index'));
       const skill = skillSet[idx];
       let html = `<div id="skill-information">`;
-      html += `<h4>${skill.name}</h4>`;
+      // html += `<h4>${skill.name}</h4>`;
       if (skill.desc) {
         html += `<div>${skill.desc}</div>`;
       }
