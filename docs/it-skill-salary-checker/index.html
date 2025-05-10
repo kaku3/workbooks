@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <h2 class="page-title">ITエンジニア年収チェッカー</h2>
+  <h1 class="page-title"><div>ITエンジニア</div><div>年収チェッカー</div></h1>
   <div class="rules-card" style="max-width:800px;margin:24px auto 20px auto;background:#e3f0ff;border-radius:16px;box-shadow:0 4px 16px rgba(50,120,255,0.10);padding:1.5rem 1.2rem 1.2rem 1.2rem;border:1px solid #b3e0ff;color:#222;">
     <div style="font-size:1.15em;font-weight:bold;margin-bottom:0.7em;color:#1976d2;">
       あなたのスキル、本当の市場価値は？<br>
@@ -40,9 +40,8 @@
       <form id="skillForm"></form>
     </div>
     <div class="skill-chart">
-      <canvas id="radarChart" width="700" height="700"></canvas>
       <div class="chart-controls">
-        <label><input type="checkbox" class="chart-toggle" value="self" checked>自己評価</label>
+        <label><input type="checkbox" class="chart-toggle" value="self" checked disabled>自己評価</label>
         <label><input type="checkbox" class="chart-toggle" value="tester">テスター</label>
         <label><input type="checkbox" class="chart-toggle" value="tester-adv">上級テスター</label>
         <label><input type="checkbox" class="chart-toggle" value="pg">PG</label>
@@ -50,6 +49,7 @@
         <label><input type="checkbox" class="chart-toggle" value="plpm">PL/PM</label>
         <label><input type="checkbox" class="chart-toggle" value="consultant">ITコンサルタント</label>
       </div>
+      <canvas id="radarChart" width="700" height="700"></canvas>
     </div>
   </div>
   <div id="evaluation" class="evaluation-card">

@@ -110,7 +110,7 @@ body {
 }
 
 .evaluation-card {
-  margin: 24px auto 20px auto;
+  margin: 1rem auto 1rem auto;
   padding: 1rem;
   flex: 1 1 0;
   min-width: 0;
@@ -293,7 +293,7 @@ body {
 }
 
 #skill-criteria {
-  margin: 2.5rem auto 0 auto;
+  margin: 2rem auto 0 auto;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
@@ -425,6 +425,9 @@ body {
   box-shadow: 0 2px 12px rgba(25, 118, 210, 0.08);
   box-sizing: border-box;
 }
+.page-title > div {
+  display: inline-block;
+}
 
 /* ホバー・選択中表現 */
 .skill-row {
@@ -486,7 +489,36 @@ body {
   border-top: none;
 }
 
+
+@media (max-width: 1100px) {
+  .skill-chart-container {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .skill-chart, .skill-inputs {
+    max-width: 100%;
+    min-width: 0;
+  }
+  #skill-information {
+    max-width: 100%;
+  }
+  .skill-chart {
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    min-height: auto;
+  }
+  .skill-inputs {
+    width: 100%;
+  }
+}
+
 @media (max-width: 900px) {
+  .page-title > div:first-child {
+    display: block;
+    font-size: 1.2rem;
+  }
+
   .skill-chart-container {
     flex-direction: column;
     gap: 1.5rem;
@@ -519,7 +551,7 @@ body {
 
   #skill-information,
   .evaluation-card {
-    max-width: calc(100% - 2rem);
+    max-width: calc(100% - 3rem);
     min-width: 0;
     position: static;
   }
@@ -531,33 +563,10 @@ body {
   }
 }
 
-@media (max-width: 1100px) {
-  .skill-chart-container {
-    flex-direction: column;
-    gap: 24px;
-  }
-  .skill-chart, .skill-inputs {
-    max-width: 100%;
-    min-width: 0;
-  }
-  #skill-information {
-    max-width: 100%;
-  }
-  .skill-chart {
-    width: 100% !important;
-    min-width: 0;
-    max-width: 100%;
-    min-height: auto;
-  }
-  .skill-inputs {
-    width: 100%;
-    /* ...existing code... */
-  }
-}
-
 @media (max-width: 600px) {
   .skill-chart-container {
-    gap: 12px;
+    padding: 0;
+    gap: 0;
   }
   .skill-chart, .skill-inputs {
     padding: 0;
@@ -571,6 +580,12 @@ body {
     max-height: 70vw;
     min-height: 160px;
     aspect-ratio: 1 / 1;
+  }
+  #skill-criteria {
+    padding: 0;
+  }
+  #skill-criteria .skill-criteria-group{
+    padding: 0 .5rem;
   }
 }
 

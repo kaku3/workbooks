@@ -127,7 +127,7 @@ function setupSkillRowClick() {
       // 説明行を作成して挿入
       const idx = Number(this.getAttribute('data-skill-index'));
       const skill = skillSet[idx];
-      let html = `<div id="skill-information">`;
+      let html = `<div id="skill-information" tabindex="-1">`;
       // html += `<h4>${skill.name}</h4>`;
       if (skill.desc) {
         html += `<div>${skill.desc}</div>`;
@@ -324,7 +324,7 @@ function renderRadarChart() {
       datasets.push({
         label: roleLabel(role),
         data: getRoleSkillValues(role),
-        backgroundColor: hexToRgba(roleColors[role],0.12),
+        backgroundColor: hexToRgba(roleColors[role], 0.04), // ← alphaを0.04に変更
         borderColor: roleColors[role],
         pointBackgroundColor: roleColors[role],
         pointBorderColor: '#fff',
@@ -395,9 +395,10 @@ function renderChartControls() {
   ];
   chartControls.innerHTML = roles.map(r => {
     const avg = getRoleAverage(r.key);
-    // チェック状態維持
-    const checked = document.querySelector(`.chart-toggle[value='${r.key}']`)?.checked ? 'checked' : '';
-    return `<label><input type="checkbox" class="chart-toggle" value="${r.key}" ${checked}>${r.label} <span class="chart-avg">(${avg})</span></label>`;
+    const currentElement = document.querySelector(`.chart-toggle[value='${r.key}']`);
+    const checked = currentElement?.checked ? 'checked' : '';
+    const disabled = currentElement?.disabled ? 'disabled' : '';
+    return `<label><input type="checkbox" class="chart-toggle" value="${r.key}" ${checked} ${disabled}>${r.label} <span class="chart-avg">(${avg})</span></label>`;
   }).join('');
 }
 
@@ -409,6 +410,24 @@ function saveSelfSkillToLocalStorage() {
     if (input) values[s.name] = Number(input.value);
   });
   localStorage.setItem('devStandardCareerPathSkill', JSON.stringify(values));
+
+  // ★ ここから修正: 自己評価とclosestRoleだけチェックON
+  if (typeof findClosestRole === 'function') {
+    const userValues = skillSet.map(s => {
+      const input = document.querySelector(`input[name='${s.name}']`);
+      return input ? Number(input.value) : (s.samples.self ?? 0);
+    });
+    const closestRole = findClosestRole(userValues);
+    document.querySelectorAll('.chart-toggle').forEach(cb => {
+      if (cb.value === 'self' || cb.value === closestRole) {
+        cb.checked = true;
+      } else {
+        cb.checked = false;
+      }
+    });
+    saveChartTogglesToLocalStorage();
+    renderRadarChart();
+  }
 }
 
 function loadSelfSkillFromLocalStorage() {

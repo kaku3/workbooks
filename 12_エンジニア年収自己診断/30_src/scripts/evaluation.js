@@ -141,7 +141,7 @@ function generateEvaluation(userValues) {
   const totalScore = Math.round(userValues.reduce((sum, val) => sum + val, 0) / userValues.length);
 
   // 低スコアの場合は「該当なし」評価
-  if (totalScore < 40) {
+  if (totalScore < 20) {
     return {
       role: 'none',
       roleName: '',
