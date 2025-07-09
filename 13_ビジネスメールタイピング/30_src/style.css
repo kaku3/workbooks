@@ -1,0 +1,317 @@
+body {
+    font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+header {
+    width: 100%; /* 横全画面 */
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+h1 {
+    color: #2c3e50;
+}
+
+.main-wrapper {
+    display: flex;
+    width: 100%; /* 横全画面 */
+    max-width: 100%;
+    flex-grow: 1;
+    gap: 20px;
+}
+
+.side-nav {
+    width: 120px; /* ナビゲーションの固定幅 */
+    background-color: #34495e;
+    color: white;
+    border-radius: 8px;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.side-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.side-nav li {
+    width: 100%;
+}
+
+.side-nav .nav-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 0;
+    background-color: transparent;
+    color: white;
+    border: none;
+    text-align: center;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.side-nav .nav-btn:hover {
+    background-color: #2c3e50;
+}
+
+.side-nav .nav-btn.active {
+    background-color: #2c3e50;
+    font-weight: bold;
+}
+
+.left-panel {
+    width: calc(45% - 120px); /* お題リストの幅 */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.question-list-panel h2 {
+    margin-top: 0;
+    color: #34495e;
+}
+
+.question-list-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.question-list-panel li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s;
+}
+
+.question-list-panel li:last-child {
+    border-bottom: none;
+}
+
+.question-list-panel li:hover {
+    background-color: #e9ecef;
+}
+
+.question-list-panel li.active {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+#history-list-panel {
+    /* 履歴リストのスタイル */
+}
+
+#history-list-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#history-list-panel li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#history-list-panel li:last-child {
+    border-bottom: none;
+}
+
+.content-area {
+    flex-grow: 1;
+    width: calc(55% - 120px); /* 詳細部の幅 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.view-panel {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#received-email-full {
+    flex-grow: 1; /* 初期表示で全画面 */
+    display: flex;
+    flex-direction: column;
+}
+
+.email-panel .email-body {
+    flex-grow: 1;
+    height: auto; /* 高さを自動調整 */
+    white-space: pre-wrap;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    align-self: flex-end; /* 右寄せ */
+}
+
+#game-view {
+    display: flex; /* ゲーム中は横並び */
+    padding: 0;
+}
+
+.typing-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#game-reply-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 1.2em;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    min-height: 150px; /* 高さを確保 */
+}
+
+#input-area {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    resize: none; /* リサイズを無効化 */
+    margin-top: auto; /* 下端に配置 */
+    flex-grow: 0; /* 高さを固定 */
+    height: 48px; /* 1行分の高さ (font-size + padding) */
+}
+
+#input-area.incorrect-line {
+    border-color: #e74c3c; /* エラー時の枠線色 */
+    box-shadow: 0 0 5px #e74c3c; /* エラー時の影 */
+}
+
+#input-area:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.reply-panel {
+    width: 50%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reply-panel .email-body {
+    height: calc(100% - 60px); /* 親の高さに合わせる */
+}
+
+.bottom-status-area {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+}
+
+.status-area {
+    display: flex;
+    gap: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.highscore-area {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #e67e22;
+}
+
+#settings-btn {
+    padding: 8px 15px;
+    background-color: #7f8c8d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* モーダル */
+.modal {
+    display: none; /* 初期状態では非表示 */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-content input {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.modal-content button {
+    padding: 10px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* タイピング中の文字色 */
+.correct { color: #2980b9; }
+.incorrect { color: #c0392b; text-decoration: line-through; }
+.untyped { color: #95a5a6; }
