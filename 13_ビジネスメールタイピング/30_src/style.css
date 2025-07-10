@@ -1,3 +1,66 @@
+.status-time .icon-clock {
+    font-size: 1.1em;
+    margin-right: 3px;
+    vertical-align: -2px;
+}
+.status-accuracy .icon-accuracy {
+    font-size: 1.1em;
+    margin-right: 3px;
+    vertical-align: -2px;
+}
+.reply-subject-display {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: #234;
+    font-weight: normal;
+    letter-spacing: 0.01em;
+    background: #fff;
+    border-radius: 8px 8px 0 0;
+    gap: .5rem;
+}
+.reply-subject-display span {
+    font-weight: normal;
+}
+/* 入力中の行の強調 */
+.game-line.current {
+    color: #222;
+    font-weight: bold;
+    background: #eaf6ff;
+    opacity: 1;
+    transition: background 0.3s, color 0.3s;
+}
+/* 確定済み行は通常色 */
+.game-line.confirmed {
+    color: #444;
+    font-weight: normal;
+    background: none;
+    opacity: 1;
+}
+/* 未確定行は薄く */
+.game-line:not(.confirmed):not(.current) {
+    color: #aaa;
+    font-weight: normal;
+    opacity: 0.7;
+    background: none;
+}
+/* 空行（改行マーク）用スタイル */
+.game-line.empty-line {
+    min-height: 1.8em;
+    text-align: left;
+}
+.game-line .empty-mark {
+    color: #888;
+    font-size: 1.2em;
+    font-family: monospace;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    vertical-align: middle;
+    user-select: none;
+}
 body {
     font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', sans-serif;
     background-color: #f4f4f4;
@@ -81,7 +144,7 @@ h1 {
 }
 
 .left-panel {
-    width: calc(45% - 120px); /* お題リストの幅 */
+    width: calc(50% - 120px); /* お題リストの幅を広げる */
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -109,10 +172,13 @@ h1 {
 }
 
 .question-list-panel li {
-    padding: 10px;
+    padding: 12px 15px;
     cursor: pointer;
     border-bottom: 1px solid #eee;
     transition: background-color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .question-list-panel li:last-child {
@@ -123,14 +189,32 @@ h1 {
     background-color: #e9ecef;
 }
 
+.question-title {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 15px;
+}
+
+.question-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85em;
+    color: #555;
+    flex-shrink: 0; /* 横幅が狭まっても縮まないようにする */
+}
+
 .question-list-panel li.active {
-    background-color: #3498db;
-    color: white;
+    background-color: #e3f1fb; /* 薄い青 */
+    color: #2176b6;
     font-weight: bold;
 }
 
-#history-list-panel {
-    /* 履歴リストのスタイル */
+.question-list-panel li.active .question-stats {
+    color: #2176b6;
+    filter: brightness(1.1);
+}
 }
 
 #history-list-panel ul {
@@ -150,7 +234,7 @@ h1 {
 
 .content-area {
     flex-grow: 1;
-    width: calc(55% - 120px); /* 詳細部の幅 */
+    width: calc(50% - 120px); /* 詳細部の幅を調整 */
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -179,6 +263,31 @@ h1 {
     flex-grow: 1;
     height: auto; /* 高さを自動調整 */
     white-space: pre-wrap;
+    font-size: 1.1em; /* 少し大きめ */
+    background: #fff;
+    border: 1.5px solid #cbe6fa;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 18px 20px;
+    margin-bottom: 8px;
+    color: #234;
+    letter-spacing: 0.01em;
+    line-height: 2;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.email-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.email-header p {
+    margin: 0;
 }
 
 .action-btn {
@@ -188,8 +297,6 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 20px;
-    align-self: flex-end; /* 右寄せ */
 }
 
 #game-view {
@@ -201,6 +308,7 @@ h1 {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 #game-reply-body {
@@ -212,7 +320,13 @@ h1 {
     border-radius: 4px;
     background-color: #f9f9f9;
     margin-bottom: 10px;
-    min-height: 150px; /* 高さを確保 */
+    overflow-y: auto; /* スクロール可能に */
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* 下詰め */
 }
 
 #input-area {
@@ -250,28 +364,16 @@ h1 {
     height: calc(100% - 60px); /* 親の高さに合わせる */
 }
 
-.bottom-status-area {
-    width: 100%;
-    max-width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    padding: 10px 0;
-    border-top: 1px solid #eee;
-}
-
 .status-area {
     display: flex;
+    justify-content: end;
     gap: 20px;
     font-size: 1.1em;
     font-weight: bold;
 }
-
-.highscore-area {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #e67e22;
+.status-area p {
+    margin: 0;
+    color: #2c3e50;
 }
 
 #settings-btn {
@@ -281,6 +383,127 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* ゲーム用モーダル */
+#game-modal .game-modal-content {
+    display: flex;
+    width: 95vw;
+    height: 90vh;
+    max-width: none;
+    margin: 0 auto;
+    padding: 0;
+    max-height: 100vh;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.modal-left-panel, .modal-right-panel {
+    width: 50%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 90vh;
+    min-height: 0;
+    background-color: #fdfdfd; /* 右パネルと背景色を合わせる */
+}
+
+.modal-left-panel {
+    border-right: 1px solid #ccc;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.modal-left-panel h3 {
+    margin: 0;
+    font-size: 1.2em;
+    align-self: flex-start;
+}
+}
+
+.modal-right-panel {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 50%;
+}
+
+.modal-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    width: 100%;
+}
+.modal-header-bar h3 {
+    margin: 0;
+    font-size: 1.2em;
+    align-self: flex-start;
+}
+.modal-header-bar .status-area {
+    display: flex;
+    gap: 18px;
+    font-size: 1em;
+    font-weight: normal;
+    color: #2176b6;
+    margin-top: 0;
+    align-items: flex-start;
+}
+
+.modal-left-panel .email-body,
+.modal-right-panel .typing-area .email-body {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 1.1em;
+    overflow-y: auto;
+}
+
+.modal-bottom-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin-top: auto; /* 下部に固定 */
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    flex-shrink: 0;
+    min-height: 48px;
+}
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+#send-btn {
+    background-color: #2ecc71;
+    color: white;
+    border-color: #2ecc71;
+}
+
+#send-btn:disabled {
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+    cursor: not-allowed;
 }
 
 /* モーダル */
@@ -294,6 +517,8 @@ h1 {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
+    align-items: center; /* for game-modal */
+    justify-content: center; /* for game-modal */
 }
 
 .modal-content {

@@ -41,30 +41,46 @@
             <div id="received-email-full" class="email-panel received-panel">
                 <div class="email-header">
                     <p><strong>件名:</strong> <span id="received-subject-full"></span></p>
+                    <button id="reply-btn" class="action-btn">返信</button>
                 </div>
                 <div id="received-body-full" class="email-body"></div>
-                <button id="reply-btn" class="action-btn">返信</button>
-            </div>
-
-            <!-- ゲーム中表示時 -->
-            <div id="game-view" class="view-panel hidden">
-                <div class="typing-area">
-                    <p class="reply-subject-display">件名: <span id="reply-subject-game"></span></p>
-                    <div id="game-reply-body" class="email-body"></div>
-                    <textarea id="input-area" rows="1" placeholder="ここに1文字目を入力でゲームスタート"></textarea>
-                </div>
             </div>
         </div>
     </div>
 
-    <div class="bottom-status-area">
-        <div class="status-area">
-            <p>Time: <span id="time">0.00</span>s</p>
-            <p>WPM: <span id="wpm">0</span></p>
-            <p>Accuracy: <span id="accuracy">100</span>%</p>
-        </div>
+    <!-- <div class="bottom-status-area">
         <div class="highscore-area">
             <p>High Score: <span id="highscore">0.00</span> WPM</p>
+        </div>
+    </div> -->
+
+    <!-- ゲーム用モーダル -->
+    <div id="game-modal" class="modal">
+        <div class="game-modal-content">
+            <div class="modal-left-panel">
+                <h3>受信メール</h3>
+                <div class="email-header">
+                    <p><strong>件名:</strong> <span id="modal-received-subject"></span></p>
+                </div>
+                <div id="modal-received-body" class="email-body"></div>
+            </div>
+            <div class="modal-right-panel">
+                <div class="status-area">
+                    <p class="status-time"><span class="icon-clock" aria-label="タイマー">⏱️</span> <span id="time">0.00</span> 秒</p>
+                    <p class="status-accuracy"><span class="icon-accuracy" aria-label="正確さ">✔️</span> <span id="accuracy">100</span>%</p>
+                </div>
+                <div class="typing-area">
+                    <p class="reply-subject-display">件名: <span id="reply-subject-game"></span></p>
+                    <div id="game-reply-body" class="email-body"></div>
+                    <input id="input-area" type="text" autocomplete="off" placeholder="1行目を入力してスタート" />
+                </div>
+                <div class="modal-bottom-bar">
+                    <div class="modal-actions">
+                        <button id="cancel-game-btn" class="modal-btn">キャンセル</button>
+                        <button id="send-btn" class="modal-btn" disabled>送信</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -85,6 +101,7 @@
     </div>
 
     <script src="data/questions.js"></script>
+    <script src="data/ratingTable.js"></script>
     <script src="scripts/settings.js"></script>
     <script src="scripts/ui.js"></script>
     <script src="scripts/game.js"></script>

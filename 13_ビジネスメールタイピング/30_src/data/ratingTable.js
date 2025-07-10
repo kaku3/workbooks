@@ -4,29 +4,30 @@
  * 各難易度におけるSランク達成の目標時間（秒）
  * difficulty (id) は1から始まるため、配列のインデックスと合わせるために0番目はダミー
  */
-export const S_RANK_TARGET_TIMES = [
+const _s_rank_target_time_base = 2;
+window.S_RANK_TARGET_TIMES = [
   null, // difficulty 0 (dummy)
-  20, // difficulty 1
-  24, // difficulty 2
-  30, // difficulty 3
-  36, // difficulty 4
-  44, // difficulty 5
-  54, // difficulty 6
-  66, // difficulty 7
-  80, // difficulty 8
-  98, // difficulty 9
-  120  // difficulty 10
+  20 * _s_rank_target_time_base, // difficulty 1
+  24 * _s_rank_target_time_base, // difficulty 2
+  30 * _s_rank_target_time_base, // difficulty 3
+  36 * _s_rank_target_time_base, // difficulty 4
+  44 * _s_rank_target_time_base, // difficulty 5
+  54 * _s_rank_target_time_base, // difficulty 6
+  66 * _s_rank_target_time_base, // difficulty 7
+  80 * _s_rank_target_time_base, // difficulty 8
+  98 * _s_rank_target_time_base, // difficulty 9
+  120 * _s_rank_target_time_base // difficulty 10
 ];
 
 /**
  * Sランク目標時間に対する各ランクの達成時間倍率
  */
-export const RANK_MULTIPLIERS = {
+window.RANK_MULTIPLIERS = {
   'S': 1.0,   // 目標時間以内
-  'A': 1.5,   // 目標時間 × 1.5倍以内
-  'B': 2.25,  // 目標時間 × 2.25倍以内
-  'C': 3.0,   // 目標時間 × 3.0倍以内
-  'D': 4.0    // 目標時間 × 4.0倍以内
+  'A': 1.8,   // 目標時間 × 1.8倍以内（甘め）
+  'B': 2.7,   // 目標時間 × 2.7倍以内
+  'C': 3.6,   // 目標時間 × 3.6倍以内
+  'D': 5.0    // 目標時間 × 5.0倍以内
   // EランクはDランクの倍率を超える場合
 };
 
@@ -36,27 +37,27 @@ export const RANK_MULTIPLIERS = {
  * @param {number} timeTaken - 回答にかかった時間（秒）
  * @returns {string} ランク (S, A, B, C, D, E)
  */
-export function calculateRank(difficulty, timeTaken) {
+window.calculateRank = function(difficulty, timeTaken) {
   if (difficulty < 1 || difficulty > 10) {
     console.warn("Invalid difficulty level:", difficulty);
     return 'E'; // Default to lowest rank for invalid difficulty
   }
 
-  const sTargetTime = S_RANK_TARGET_TIMES[difficulty];
+  const sTargetTime = window.S_RANK_TARGET_TIMES[difficulty];
   if (!sTargetTime) {
     console.warn("S_RANK_TARGET_TIMES not defined for difficulty:", difficulty);
     return 'E';
   }
 
-  if (timeTaken <= sTargetTime * RANK_MULTIPLIERS['S']) {
+  if (timeTaken <= sTargetTime * window.RANK_MULTIPLIERS['S']) {
     return 'S';
-  } else if (timeTaken <= sTargetTime * RANK_MULTIPLIERS['A']) {
+  } else if (timeTaken <= sTargetTime * window.RANK_MULTIPLIERS['A']) {
     return 'A';
-  } else if (timeTaken <= sTargetTime * RANK_MULTIPLIERS['B']) {
+  } else if (timeTaken <= sTargetTime * window.RANK_MULTIPLIERS['B']) {
     return 'B';
-  } else if (timeTaken <= sTargetTime * RANK_MULTIPLIERS['C']) {
+  } else if (timeTaken <= sTargetTime * window.RANK_MULTIPLIERS['C']) {
     return 'C';
-  } else if (timeTaken <= sTargetTime * RANK_MULTIPLIERS['D']) {
+  } else if (timeTaken <= sTargetTime * window.RANK_MULTIPLIERS['D']) {
     return 'D';
   } else {
     return 'E';
