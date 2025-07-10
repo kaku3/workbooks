@@ -366,7 +366,7 @@ h1 {
 
 .status-area {
     display: flex;
-    justify-content: end;
+    justify-content: start;
     gap: 20px;
     font-size: 1.1em;
     font-weight: bold;
@@ -469,7 +469,7 @@ h1 {
 
 .modal-bottom-bar {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: flex-end;
     margin-top: auto; /* 下部に固定 */
     padding-top: 15px;

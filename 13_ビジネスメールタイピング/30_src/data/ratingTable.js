@@ -4,7 +4,7 @@
  * 各難易度におけるSランク達成の目標時間（秒）
  * difficulty (id) は1から始まるため、配列のインデックスと合わせるために0番目はダミー
  */
-const _s_rank_target_time_base = 2;
+const _s_rank_target_time_base = 3.5;
 window.S_RANK_TARGET_TIMES = [
   null, // difficulty 0 (dummy)
   20 * _s_rank_target_time_base, // difficulty 1

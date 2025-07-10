@@ -106,73 +106,90 @@ window.handleTyping = function(e) {
 
     if (!gameStartTime) {
         startGame();
-        // 2行目以降のプレースホルダを切り替え
         if (currentLineIndex === 0) {
             inputArea.placeholder = '２行目を入力';
         }
     } else {
-        // 現在の行に応じてプレースホルダを更新
         inputArea.placeholder = `${currentLineIndex + 1}行目を入力`;
     }
 
-    // 現在の行のみ判定
+    // 必要最小限のDOM更新のみ
     const currentLine = lines[currentLineIndex] || '';
     const typedText = (window.inputArea && window.inputArea.value !== undefined) ? window.inputArea.value : inputArea.value;
     const lineDivs = gameReplyBodyEl.querySelectorAll('.game-line');
     if (!lineDivs[currentLineIndex]) return;
-    const spans = lineDivs[currentLineIndex].querySelectorAll('span');
+    const currentDiv = lineDivs[currentLineIndex];
+    const spans = currentDiv.querySelectorAll('span');
 
+    // 入力中の行のspanのみclassを最小限で更新（完全一致・未入力は一括処理）
     typedChars = typedText.length;
     let currentCorrectCount = 0;
-    for (let i = 0; i < currentLine.length; i++) {
-        if (i < typedText.length) {
-            if (typedText[i] === currentLine[i]) {
-                spans[i].className = 'correct';
-                currentCorrectCount++;
+    if (typedText === currentLine && currentLine.length > 0) {
+        // 完全一致なら全span correct
+        for (let i = 0; i < spans.length; i++) {
+            if (spans[i].className !== 'correct') spans[i].className = 'correct';
+        }
+        currentCorrectCount = currentLine.length;
+    } else if (typedText.length === 0 && currentLine.length > 0) {
+        // 未入力なら全span untyped
+        for (let i = 0; i < spans.length; i++) {
+            if (spans[i].className !== 'untyped') spans[i].className = 'untyped';
+        }
+        currentCorrectCount = 0;
+    } else {
+        // 差分のみclass更新
+        for (let i = 0; i < currentLine.length; i++) {
+            if (i < typedText.length) {
+                if (typedText[i] === currentLine[i]) {
+                    if (spans[i].className !== 'correct') spans[i].className = 'correct';
+                    currentCorrectCount++;
+                } else {
+                    if (spans[i].className !== 'incorrect') spans[i].className = 'incorrect';
+                }
             } else {
-                spans[i].className = 'incorrect';
+                if (spans[i].className !== 'untyped') spans[i].className = 'untyped';
             }
-        } else {
-            spans[i].className = 'untyped';
         }
     }
     correctChars = currentCorrectCount;
     incorrectChars = typedChars - currentCorrectCount;
     calculateAccuracy();
 
-    // 表示制御: 入力済み行と現在行は表示、それ以外は非表示
-    lineDivs.forEach((div, idx) => {
+    // 行の表示・class切り替えは必要な行のみ
+    // 前の行（currentLineIndex-1）、現在行、次の行（currentLineIndex+1）だけを更新
+    for (let idx = 0; idx < lineDivs.length; idx++) {
+        const div = lineDivs[idx];
+        if (idx < currentLineIndex - 1 || idx > currentLineIndex + 1) continue; // それ以外は何もしない
         if (idx < currentLineIndex) {
-            div.style.display = '';
-            div.classList.add('confirmed');
+            if (div.style.display !== '') div.style.display = '';
+            if (!div.classList.contains('confirmed')) div.classList.add('confirmed');
             div.classList.remove('current');
         } else if (idx === currentLineIndex) {
-            div.style.display = '';
-            div.classList.add('current');
+            if (div.style.display !== '') div.style.display = '';
+            if (!div.classList.contains('current')) div.classList.add('current');
             div.classList.remove('confirmed');
-        } else {
-            div.style.display = 'none';
+        } else if (idx === currentLineIndex + 1) {
+            if (div.style.display !== 'none') div.style.display = 'none';
             div.classList.remove('confirmed');
             div.classList.remove('current');
         }
-        // 余白リセット
         div.style.marginTop = '';
         div.style.marginBottom = '';
-    });
-    // 入力行が一番下に来るように、flexbox順序を調整
-    // すべての行のorderをリセット
-    lineDivs.forEach((div, idx) => {
-        div.style.order = idx;
-    });
+    }
+
+    // order調整も必要な行のみ
     // 入力済み行と現在行だけを下に寄せる
-    // 表示されている行のうち、最初の行のorderを調整
     const shown = Array.from(lineDivs).filter((div, idx) => idx <= currentLineIndex);
     const total = shown.length;
     shown.forEach((div, i) => {
-        div.style.order = i + (lineDivs.length - total);
+        const newOrder = i + (lineDivs.length - total);
+        if (div.style.order != newOrder) div.style.order = newOrder;
     });
-    // 入力行が見切れた場合はスクロール
-    lineDivs[currentLineIndex].scrollIntoView({block: 'end', behavior: 'smooth'});
+
+    // 入力行が見切れた場合はスクロール（行進時のみ）
+    if (e && e.type === 'keydown' && e.key === 'Enter') {
+        currentDiv.scrollIntoView({block: 'end', behavior: 'smooth'});
+    }
 }
 
 function finishGame() {
@@ -244,15 +261,14 @@ window.initGame = function() {
         if (e.key === 'Enter') {
             const currentLine = lines[currentLineIndex] || '';
             const typedText = window.inputArea.value;
-            // 空行（currentLineが空文字）の場合は、入力も空文字ならOK
             if (typedText === currentLine || (currentLine === '' && typedText === '')) {
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     window.inputArea.value = '';
                     window.inputArea.focus();
-                    // プレースホルダを次の行に
                     window.inputArea.placeholder = `${currentLineIndex + 1}行目を入力`;
-                    window.handleTyping();
+                    // 行進時のみ必要なDOM更新＋スクロール
+                    window.handleTyping({type:'keydown', key:'Enter'});
                 } else {
                     finishGame();
                 }
