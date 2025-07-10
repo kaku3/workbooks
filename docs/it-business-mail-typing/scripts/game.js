@@ -195,6 +195,9 @@ window.handleTyping = function(e) {
 function finishGame() {
     stopGame();
     inputArea.disabled = true; // 入力エリアを無効化
+    // 送信ボタンを有効化
+    const sendBtn = document.getElementById('send-btn');
+    if (sendBtn) sendBtn.disabled = false;
 
     const elapsedTime = (new Date() - gameStartTime) / 1000;
     const finalAccuracy = calculateAccuracy();

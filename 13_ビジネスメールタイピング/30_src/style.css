@@ -1,3 +1,7 @@
+#settings-modal p {
+    font-size: .75rem;
+}
+
 .status-time .icon-clock {
     font-size: 1.1em;
     margin-right: 3px;
