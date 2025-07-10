@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ビジネスメールタイピング</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>ちょっと香ばしいビジネスメールタイピング</h1>
+        <button id="settings-btn">設定 ⚙</button>
+    </header>
+
+    <div class="main-wrapper">
+        <nav class="side-nav">
+            <ul>
+                <li><button id="inbox-btn" class="nav-btn active">出題トレイ</button></li>
+                <li><button id="history-btn" class="nav-btn">履歴</button></li>
+            </ul>
+        </nav>
+
+        <div class="left-panel">
+            <div id="inbox-list-panel" class="question-list-panel">
+                <h2>✉️ 出題トレイ</h2>
+                <ul id="question-selector">
+                    <!-- お題選択リストがここに動的に追加されます -->
+                </ul>
+            </div>
+            <div id="history-list-panel" class="question-list-panel hidden">
+                <h2>🕒 履歴</h2>
+                <ul id="history-list">
+                    <!-- 履歴リストがここに動的に追加されます -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <!-- 受信メール詳細表示時 -->
+            <div id="received-email-full" class="email-panel received-panel">
+                <div class="email-header">
+                    <p><strong>件名:</strong> <span id="received-subject-full"></span></p>
+                    <button id="reply-btn" class="action-btn">返信</button>
+                </div>
+                <div id="received-body-full" class="email-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="bottom-status-area">
+        <div class="highscore-area">
+            <p>High Score: <span id="highscore">0.00</span> WPM</p>
+        </div>
+    </div> -->
+
+    <!-- ゲーム用モーダル -->
+    <div id="game-modal" class="modal">
+        <div class="game-modal-content">
+            <div class="modal-left-panel">
+                <h3>受信メール</h3>
+                <div class="email-header">
+                    <p><strong>件名:</strong> <span id="modal-received-subject"></span></p>
+                </div>
+                <div id="modal-received-body" class="email-body"></div>
+            </div>
+            <div class="modal-right-panel">
+                <div class="typing-area">
+                    <p class="reply-subject-display">件名: <span id="reply-subject-game"></span></p>
+                    <div id="game-reply-body" class="email-body"></div>
+                    <input id="input-area" type="text" autocomplete="off" placeholder="1行目を入力してスタート" />
+                </div>
+                <div class="modal-bottom-bar">
+                    <div class="status-area">
+                        <p class="status-time"><span class="icon-clock" aria-label="タイマー">⏱️</span> <span id="time">0.00</span> 秒</p>
+                        <p class="status-accuracy"><span class="icon-accuracy" aria-label="正確さ">✔️</span> <span id="accuracy">100</span>%</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button id="cancel-game-btn" class="modal-btn">キャンセル</button>
+                        <button id="send-btn" class="modal-btn" disabled>送信</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 設定モーダル -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <h2>ユーザー情報設定</h2>
+            <label for="user-company">あなたの会社名:</label>
+            <input type="text" id="user-company" placeholder="株式会社△△">
+            <label for="user-name">あなたの名前:</label>
+            <input type="text" id="user-name" placeholder="佐藤">
+            <label for="customer-company">相手の会社名:</label>
+            <input type="text" id="customer-company" placeholder="株式会社B">
+            <label for="customer-name">相手の名前:</label>
+            <input type="text" id="customer-name" placeholder="田中">
+            <button id="save-settings-btn">保存</button>
+        </div>
+    </div>
+
+    <script src="data/questions.js"></script>
+    <script src="data/ratingTable.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/game.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
