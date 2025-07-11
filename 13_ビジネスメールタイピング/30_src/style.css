@@ -1,3 +1,133 @@
+/* 3カラム横並びレイアウト調整 */
+.modal-panels-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 0;
+    min-height: 320px;
+    flex-grow: 1;
+}
+.modal-left-panel, .modal-right-panel {
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    padding: 0 8px;
+}
+.progressbar-area {
+    width: 100%;
+    margin: 8px 0 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+}
+/* 横並びレイアウト調整 */
+.modal-panels-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 0;
+}
+.modal-left-panel, .modal-right-panel {
+    width: 50%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+.modal-bottom-bar {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5em;
+    margin-top: 0.5em;
+    padding: 0 32px 24px 32px;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+/* --- 時間経過バー --- */
+#game-modal .progressbar-area {
+    width: 100%;
+    margin: 8px 0 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+}
+#time-progress-labels {
+    width: 100%;
+    height: 1.2em;
+    margin-bottom: 2px;
+    font-size: 0.95em;
+    color: #888;
+    letter-spacing: 0.1em;
+    position: relative;
+}
+#time-progress-bg {
+    width: 100%;
+    height: 18px;
+    background: #eee;
+    border-radius: 9px;
+    overflow: hidden;
+    position: relative;
+}
+#time-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2980b9 0%, #27ae60 40%, #f1c40f 60%, #e67e22 80%, #c0392b 95%, #888 100%);
+    border-radius: 9px 0 0 9px;
+    transition: width 0.2s;
+}
+.modal-bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+}
+.modal-bottom-bar > div {
+    width: 100%;
+}
+.modal-actions {
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+#time-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95em;
+    color: #888;
+    margin-bottom: 2px;
+    letter-spacing: 0.1em;
+    width: 100%;
+}
+.rank-label {
+    position: absolute;
+    top: 0;
+    font-weight: bold;
+    font-size: 0.95em;
+    min-width: 1.4em;
+    text-align: center;
+    pointer-events: none;
+}
+#time-progress-bg {
+    width: 100%;
+    height: 14px;
+    background: #eee;
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+}
+#time-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2980b9 0%, #27ae60 40%, #f1c40f 60%, #e67e22 80%, #c0392b 95%, #888 100%);
+    border-radius: 7px 0 0 7px;
+    transition: width 0.2s;
+}
 #settings-modal p {
     font-size: .75rem;
 }
@@ -392,6 +522,7 @@ h1 {
 /* ゲーム用モーダル */
 #game-modal .game-modal-content {
     display: flex;
+    flex-direction: column;
     width: 95vw;
     height: 90vh;
     max-width: none;
@@ -400,6 +531,9 @@ h1 {
     max-height: 100vh;
     box-sizing: border-box;
     overflow: auto;
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
 }
 
 .modal-left-panel, .modal-right-panel {
@@ -410,7 +544,11 @@ h1 {
     flex-direction: column;
     overflow-y: auto;
     max-height: 90vh;
-    min-height: 0;
+    min-height: 320px;
+}
+.modal-left-panel {
+    border-right: 1px solid #ccc;
+}
     background-color: #fdfdfd; /* 右パネルと背景色を合わせる */
 }
 

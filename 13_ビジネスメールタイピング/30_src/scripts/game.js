@@ -83,11 +83,42 @@ function resetGameStats() {
     inputArea.classList.remove('incorrect-line');
 }
 
+
 function updateTimer() {
     if (!gameStartTime) return;
     const elapsedTime = (new Date() - gameStartTime) / 1000;
     timeEl.textContent = elapsedTime.toFixed(2);
+    updateTimeProgressBar(elapsedTime);
     // calculateWPM(elapsedTime); // WPMは非表示
+}
+
+// 時間経過バーの更新
+function updateTimeProgressBar(elapsedTime) {
+    const bar = document.getElementById('time-progress-bar');
+    const labels = document.querySelectorAll('#time-progress-labels .rank-label');
+    if (!bar || !currentQuestion || !window.QUESTION_RATINGS) return;
+    // 設問IDから評価データ取得
+    const qRating = window.QUESTION_RATINGS.find(q => q.id === currentQuestion.id);
+    if (!qRating || !qRating.ratings) return;
+    // Eランクの最大時間
+    const maxTime = qRating.ratings[qRating.ratings.length - 1].time;
+    // 進捗率
+    let percent = Math.min(100, (elapsedTime / maxTime) * 100);
+    bar.style.width = percent + '%';
+    // ランクラベルの位置を動的に配置
+    if (labels.length === qRating.ratings.length) {
+        qRating.ratings.forEach((r, i) => {
+            const pos = Math.min(100, (r.time / maxTime) * 100);
+            labels[i].style.position = 'absolute';
+            labels[i].style.left = `calc(${pos}% - 0.7em)`;
+            labels[i].style.transform = 'none';
+            labels[i].style.minWidth = '1.4em';
+            labels[i].style.textAlign = 'center';
+        });
+        // 親divのpositionをrelativeに
+        const labelParent = document.getElementById('time-progress-labels');
+        if (labelParent) labelParent.style.position = 'relative';
+    }
 }
 
 
