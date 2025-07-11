@@ -192,6 +192,23 @@ window.handleTyping = function(e) {
     }
 }
 
+
+// 指定した設問ID・経過時間からランク・コメントを取得
+function getRatingByQuestionIdAndTime(questionId, elapsedTime) {
+    if (!window.QUESTION_RATINGS) return { rank: 'E', comment: '評価データ未設定' };
+    const qRating = window.QUESTION_RATINGS.find(q => q.id === questionId);
+    if (!qRating || !qRating.ratings) return { rank: 'E', comment: '評価データ未設定' };
+    // ratingsはtime昇順なので、最初に条件を満たしたものを返す
+    for (const r of qRating.ratings) {
+        if (elapsedTime <= r.time) {
+            return { rank: r.rank, comment: r.comment };
+        }
+    }
+    // どれにも該当しなければ一番下のランク
+    const last = qRating.ratings[qRating.ratings.length - 1];
+    return { rank: last.rank, comment: last.comment };
+}
+
 function finishGame() {
     stopGame();
     inputArea.disabled = true; // 入力エリアを無効化
@@ -201,8 +218,12 @@ function finishGame() {
 
     const elapsedTime = (new Date() - gameStartTime) / 1000;
     const finalAccuracy = calculateAccuracy();
-    const finalRank = calculateRank(currentQuestion.difficulty, elapsedTime);
+    // 新ロジック: 設問ID・経過時間からランク・コメント取得
+    const ratingResult = getRatingByQuestionIdAndTime(currentQuestion.id, elapsedTime);
+    const finalRank = ratingResult.rank;
+    // 必要に応じてコメントも保存や表示に利用可能
     saveHistory(elapsedTime, finalAccuracy, finalRank, elapsedTime);
+    // 例: コメントを画面に表示したい場合はここでDOM操作を追加
 }
 
 function loadHighScore() {
