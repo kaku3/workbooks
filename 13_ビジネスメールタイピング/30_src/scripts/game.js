@@ -96,7 +96,39 @@ function updateTimer() {
 function updateTimeProgressBar(elapsedTime) {
     const bar = document.getElementById('time-progress-bar');
     const labels = document.querySelectorAll('#time-progress-labels .rank-label');
-    if (!bar || !currentQuestion || !window.QUESTION_RATINGS) return;
+    if (!bar || !currentQuestion || !window.QUESTION_RATINGS) {
+        // ゲーム未開始時も、currentQuestionがあれば閾値位置にラベルを配置
+        if (bar) bar.style.width = '0%';
+        const labelParent = document.getElementById('time-progress-labels');
+        const labels = document.querySelectorAll('#time-progress-labels .rank-label');
+        if (labelParent) labelParent.style.position = 'relative';
+        // currentQuestionがあれば閾値位置、なければ左端
+        let qRating = null;
+        if (window.QUESTION_RATINGS && currentQuestion) {
+            qRating = window.QUESTION_RATINGS.find(q => q.id === currentQuestion.id);
+        }
+        if (qRating && qRating.ratings && labels.length === qRating.ratings.length) {
+            const maxTime = qRating.ratings[qRating.ratings.length - 1].time;
+            qRating.ratings.forEach((r, i) => {
+                const pos = Math.min(100, (r.time / maxTime) * 100);
+                labels[i].style.position = 'absolute';
+                labels[i].style.left = `calc(${pos}% - 0.7em)`;
+                labels[i].style.transform = 'none';
+                labels[i].style.minWidth = '1.4em';
+                labels[i].style.textAlign = 'center';
+            });
+        } else if (labels.length > 0) {
+            // fallback: 全部左端
+            for (let i = 0; i < labels.length; i++) {
+                labels[i].style.position = 'absolute';
+                labels[i].style.left = `calc(0% - 0.7em)`;
+                labels[i].style.transform = 'none';
+                labels[i].style.minWidth = '1.4em';
+                labels[i].style.textAlign = 'center';
+            }
+        }
+        return;
+    }
     // 設問IDから評価データ取得
     const qRating = window.QUESTION_RATINGS.find(q => q.id === currentQuestion.id);
     if (!qRating || !qRating.ratings) return;

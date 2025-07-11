@@ -1,0 +1,247 @@
+/* ロック中の問題リスト項目 */
+#question-selector li.locked {
+  opacity: 0.5;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, #f8f8f8 0 10px, #eee 10px 20px);
+  color: #aaa;
+}
+
+/* 解放条件表示部 */
+#unlock-conditions-row {
+  font-size: 0.95em;
+  margin-bottom: 0.5em;
+  padding: 0.2em 0.5em;
+  background: #f7f7f7;
+  border-radius: 4px;
+}
+.unlock-cond {
+  color: #1976d2;
+  margin: 0 0.2em;
+}
+/* お題リスト部のリスト表示・詳細画面の返信ボタンのスタイル修正 */
+.question-list-panel {
+    margin-bottom: 20px;
+}
+.question-list-panel h2 {
+    margin-top: 0;
+    color: #34495e;
+    position: sticky;
+    top: -20px;
+    background-color: #fff;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    z-index: 1;
+}
+.question-list-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.question-list-panel li {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: none;
+}
+.question-list-panel li:last-child {
+    border-bottom: none;
+}
+.question-list-panel li:hover {
+    background-color: #e9ecef;
+}
+.question-title {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 15px;
+}
+.question-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85em;
+    color: #555;
+    flex-shrink: 0;
+}
+.question-list-panel li.active {
+    background-color: #e3f1fb;
+    color: #2176b6;
+    font-weight: bold;
+}
+.question-list-panel li.active .question-stats {
+    color: #2176b6;
+    filter: brightness(1.1);
+}
+
+.email-panel .email-body {
+    flex-grow: 1;
+    height: auto;
+    white-space: pre-wrap;
+    font-size: 1.1em;
+    background: #fff;
+    border: 1.5px solid #cbe6fa;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 18px 20px;
+    margin-bottom: 8px;
+    color: #234;
+    letter-spacing: 0.01em;
+    line-height: 2;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.email-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.email-header p {
+    margin: 0;
+}
+.action-btn {
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+.action-btn:hover {
+    background-color: #27ae60;
+}
+/* main.css: アプリ全体の共通レイアウト・外観 */
+body {
+    font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+header {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 1.6em;
+    margin: 5px 0;
+}
+
+.main-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    flex-grow: 1;
+    gap: 20px;
+    min-height: 0;
+}
+
+.side-nav {
+    width: 120px;
+    background-color: #34495e;
+    color: white;
+    border-radius: 8px;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.side-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.side-nav li {
+    width: 100%;
+}
+
+.side-nav .nav-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 0;
+    background-color: transparent;
+    color: white;
+    border: none;
+    text-align: center;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.side-nav .nav-btn:hover {
+    background-color: #2c3e50;
+}
+
+.side-nav .nav-btn.active {
+    background-color: #2c3e50;
+    font-weight: bold;
+}
+
+.left-panel {
+    width: calc(50% - 120px);
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.content-area {
+    flex-grow: 1;
+    width: calc(50% - 120px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.view-panel {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.status-area {
+    display: flex;
+    justify-content: start;
+    gap: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.status-area p {
+    margin: 0;
+    color: #2c3e50;
+}

@@ -61,6 +61,9 @@ function setupUIEventListeners() {
 }
 
 function showGameModal(question) {
+    // currentQuestionを必ずセット
+    currentQuestion = question;
+
     const userInfo = loadUserInfo() || {};
 
     // モーダルの内容をセット
@@ -69,6 +72,21 @@ function showGameModal(question) {
 
     // ゲームの準備
     prepareGame();
+
+    // タイマーバーをリセット
+    const bar = document.getElementById('time-progress-bar');
+    if (bar) bar.style.width = '0%';
+    // ランクラベル位置も初期化（updateTimeProgressBarで再配置される）
+    updateTimeProgressBar(0); // ←ここでラベルを正しい位置に初期化
+
+    // 入力欄リセット
+    if (window.inputArea) {
+        window.inputArea.value = '';
+        window.inputArea.disabled = false;
+    }
+    // 送信ボタンを無効化
+    const sendBtn = document.getElementById('send-btn');
+    if (sendBtn) sendBtn.disabled = true;
 
     // モーダルを表示
     gameModal.style.display = 'flex';
@@ -84,7 +102,31 @@ function updateQuestionList(questions, onSelect) {
     const history = JSON.parse(localStorage.getItem('typingGameHistory')) || [];
     questionSelector.innerHTML = '';
 
+    // 解放条件データ
+    const unlocks = window.UNLOCK_CONDITIONS || [];
+    // どの問題が解放済みかを判定
+    function isUnlocked(q) {
+        const cond = unlocks.find(u => u.id === q.id);
+        if (!cond || !cond.required || cond.required.length === 0) return true; // 1問目など
+        // いずれかの条件を満たせば解放
+        return cond.required.some(req => {
+            if (req.type === 'rank') {
+                // 指定問題で指定ランク以上
+                const h = history.filter(h => h.questionId === req.targetId && h.rank && h.rank <= req.value);
+                return h.length > 0;
+            } else if (req.type === 'play') {
+                // 指定問題で指定回数以上プレイ
+                const h = history.filter(h => h.questionId === req.targetId);
+                return h.length >= req.value;
+            }
+            return false;
+        });
+    }
+
     questions.forEach(q => {
+        const unlocked = isUnlocked(q);
+        if (!unlocked) return; // ロックされている問題は非表示
+
         const li = document.createElement('li');
         li.dataset.questionId = q.id;
 
@@ -104,7 +146,6 @@ function updateQuestionList(questions, onSelect) {
             bestTime = bestTimeInt.toString().padStart(3, '0');
         }
         const bestRank = playCount > 0 ? questionHistory.reduce((best, current) => current.rank < best ? current.rank : best, 'E') : '-';
-
 
         li.innerHTML = `
             <span class="question-title">${q.title}</span>
@@ -131,6 +172,33 @@ function updateQuestionList(questions, onSelect) {
         });
         questionSelector.appendChild(li);
     });
+    // 2段目: 解放条件表示
+    let condDiv = document.getElementById('unlock-conditions-row');
+    if (!condDiv) {
+        condDiv = document.createElement('div');
+        condDiv.id = 'unlock-conditions-row';
+        condDiv.style.margin = '0.5em 0 0.5em 0';
+        questionSelector.parentNode.insertBefore(condDiv, questionSelector.nextSibling);
+    }
+    // 次に解放される問題の条件を表示
+    const nextLocked = questions.find(q => !isUnlocked(q));
+    if (nextLocked) {
+        const cond = unlocks.find(u => u.id === nextLocked.id);
+        if (cond && cond.required && cond.required.length > 0) {
+            // descのテンプレートを置換
+            function renderDesc(r) {
+                let desc = r.desc;
+                desc = desc.replace(/\{targetId\}/g, r.targetId).replace(/\{value\}/g, r.value);
+                return desc;
+            }
+            condDiv.innerHTML = '<span style="color:#888;">次の問題の解放条件：</span>' +
+                cond.required.map(r => `<span class=\"unlock-cond\">${renderDesc(r)}</span>`).join('<span style="color:#aaa;"> または </span>');
+        } else {
+            condDiv.innerHTML = '';
+        }
+    } else {
+        condDiv.innerHTML = '';
+    }
 }
 
 function displayQuestionDetails(question) {
