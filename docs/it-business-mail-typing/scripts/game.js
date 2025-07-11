@@ -83,11 +83,74 @@ function resetGameStats() {
     inputArea.classList.remove('incorrect-line');
 }
 
+
 function updateTimer() {
     if (!gameStartTime) return;
     const elapsedTime = (new Date() - gameStartTime) / 1000;
     timeEl.textContent = elapsedTime.toFixed(2);
+    updateTimeProgressBar(elapsedTime);
     // calculateWPM(elapsedTime); // WPMは非表示
+}
+
+// 時間経過バーの更新
+function updateTimeProgressBar(elapsedTime) {
+    const bar = document.getElementById('time-progress-bar');
+    const labels = document.querySelectorAll('#time-progress-labels .rank-label');
+    if (!bar || !currentQuestion || !window.QUESTION_RATINGS) {
+        // ゲーム未開始時も、currentQuestionがあれば閾値位置にラベルを配置
+        if (bar) bar.style.width = '0%';
+        const labelParent = document.getElementById('time-progress-labels');
+        const labels = document.querySelectorAll('#time-progress-labels .rank-label');
+        if (labelParent) labelParent.style.position = 'relative';
+        // currentQuestionがあれば閾値位置、なければ左端
+        let qRating = null;
+        if (window.QUESTION_RATINGS && currentQuestion) {
+            qRating = window.QUESTION_RATINGS.find(q => q.id === currentQuestion.id);
+        }
+        if (qRating && qRating.ratings && labels.length === qRating.ratings.length) {
+            const maxTime = qRating.ratings[qRating.ratings.length - 1].time;
+            qRating.ratings.forEach((r, i) => {
+                const pos = Math.min(100, (r.time / maxTime) * 100);
+                labels[i].style.position = 'absolute';
+                labels[i].style.left = `calc(${pos}% - 0.7em)`;
+                labels[i].style.transform = 'none';
+                labels[i].style.minWidth = '1.4em';
+                labels[i].style.textAlign = 'center';
+            });
+        } else if (labels.length > 0) {
+            // fallback: 全部左端
+            for (let i = 0; i < labels.length; i++) {
+                labels[i].style.position = 'absolute';
+                labels[i].style.left = `calc(0% - 0.7em)`;
+                labels[i].style.transform = 'none';
+                labels[i].style.minWidth = '1.4em';
+                labels[i].style.textAlign = 'center';
+            }
+        }
+        return;
+    }
+    // 設問IDから評価データ取得
+    const qRating = window.QUESTION_RATINGS.find(q => q.id === currentQuestion.id);
+    if (!qRating || !qRating.ratings) return;
+    // Eランクの最大時間
+    const maxTime = qRating.ratings[qRating.ratings.length - 1].time;
+    // 進捗率
+    let percent = Math.min(100, (elapsedTime / maxTime) * 100);
+    bar.style.width = percent + '%';
+    // ランクラベルの位置を動的に配置
+    if (labels.length === qRating.ratings.length) {
+        qRating.ratings.forEach((r, i) => {
+            const pos = Math.min(100, (r.time / maxTime) * 100);
+            labels[i].style.position = 'absolute';
+            labels[i].style.left = `calc(${pos}% - 0.7em)`;
+            labels[i].style.transform = 'none';
+            labels[i].style.minWidth = '1.4em';
+            labels[i].style.textAlign = 'center';
+        });
+        // 親divのpositionをrelativeに
+        const labelParent = document.getElementById('time-progress-labels');
+        if (labelParent) labelParent.style.position = 'relative';
+    }
 }
 
 
@@ -192,6 +255,23 @@ window.handleTyping = function(e) {
     }
 }
 
+
+// 指定した設問ID・経過時間からランク・コメントを取得
+function getRatingByQuestionIdAndTime(questionId, elapsedTime) {
+    if (!window.QUESTION_RATINGS) return { rank: 'E', comment: '評価データ未設定' };
+    const qRating = window.QUESTION_RATINGS.find(q => q.id === questionId);
+    if (!qRating || !qRating.ratings) return { rank: 'E', comment: '評価データ未設定' };
+    // ratingsはtime昇順なので、最初に条件を満たしたものを返す
+    for (const r of qRating.ratings) {
+        if (elapsedTime <= r.time) {
+            return { rank: r.rank, comment: r.comment };
+        }
+    }
+    // どれにも該当しなければ一番下のランク
+    const last = qRating.ratings[qRating.ratings.length - 1];
+    return { rank: last.rank, comment: last.comment };
+}
+
 function finishGame() {
     stopGame();
     inputArea.disabled = true; // 入力エリアを無効化
@@ -201,8 +281,12 @@ function finishGame() {
 
     const elapsedTime = (new Date() - gameStartTime) / 1000;
     const finalAccuracy = calculateAccuracy();
-    const finalRank = calculateRank(currentQuestion.difficulty, elapsedTime);
+    // 新ロジック: 設問ID・経過時間からランク・コメント取得
+    const ratingResult = getRatingByQuestionIdAndTime(currentQuestion.id, elapsedTime);
+    const finalRank = ratingResult.rank;
+    // 必要に応じてコメントも保存や表示に利用可能
     saveHistory(elapsedTime, finalAccuracy, finalRank, elapsedTime);
+    // 例: コメントを画面に表示したい場合はここでDOM操作を追加
 }
 
 function loadHighScore() {

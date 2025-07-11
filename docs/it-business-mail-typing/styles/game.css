@@ -1,0 +1,197 @@
+/* ゲームモーダル内の受信メール・送信メール見本・入力欄のスタイル補強 */
+.modal-left-panel .email-body {
+    flex-grow: 1;
+    min-height: 120px;
+    background: #fff;
+    border: 1.5px solid #cbe6fa;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 18px 20px;
+    margin-bottom: 8px;
+    color: #234;
+    letter-spacing: 0.01em;
+    line-height: 2;
+    font-size: 1.1em;
+    white-space: pre-wrap;
+    transition: background 0.3s, box-shadow 0.3s;
+    overflow-y: auto;
+}
+.typing-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+#game-reply-body {
+    flex: 1 1 auto;
+    min-height: 120px;
+    max-height: 260px;
+    overflow-y: auto;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+#input-area {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    resize: none;
+    margin-top: auto;
+    flex-grow: 0;
+    height: 48px;
+}
+/* game.css: ゲーム画面・モーダル・進捗バー */
+.modal-panels-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 0;
+    min-height: 320px;
+    flex-grow: 1;
+}
+.modal-left-panel, .modal-right-panel {
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    padding: 0 8px;
+}
+.modal-left-panel {
+    border-right: 1px solid #ccc;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.modal-right-panel {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 50%;
+}
+
+.progressbar-area {
+    width: 100%;
+    margin: 8px 0 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+}
+#time-progress-labels {
+    width: 100%;
+    height: 1.2em;
+    margin-bottom: 2px;
+    font-size: 0.95em;
+    color: #888;
+    letter-spacing: 0.1em;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+.rank-label {
+    position: absolute;
+    top: 0;
+    font-weight: bold;
+    font-size: 0.95em;
+    min-width: 1.4em;
+    text-align: center;
+    pointer-events: none;
+}
+#time-progress-bg {
+    width: 100%;
+    height: 14px;
+    background: #eee;
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+}
+#time-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2980b9 0%, #27ae60 40%, #f1c40f 60%, #e67e22 80%, #c0392b 95%, #888 100%);
+    border-radius: 7px 0 0 7px;
+    transition: width 0.2s;
+}
+.modal-bottom-bar {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5em;
+    margin-top: 0.5em;
+    padding: 0 32px 24px 32px;
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    flex-shrink: 0;
+    min-height: 48px;
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+.modal-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+#send-btn {
+    background-color: #2ecc71;
+    color: white;
+    border-color: #2ecc71;
+}
+#send-btn:disabled {
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+    cursor: not-allowed;
+}
+/* ゲーム用モーダル全体 */
+#game-modal .game-modal-content {
+    display: flex;
+    flex-direction: column;
+    width: 95vw;
+    height: 90vh;
+    max-width: none;
+    margin: 0 auto;
+    padding: 0;
+    max-height: 100vh;
+    box-sizing: border-box;
+    overflow: auto;
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+/* モーダル背景 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,69 @@
+/* typing.css: タイピングエリア・入力欄・行表示 */
+#game-reply-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 1.2em;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+#input-area {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    resize: none;
+    margin-top: auto;
+    flex-grow: 0;
+    height: 48px;
+}
+#input-area.incorrect-line {
+    border-color: #e74c3c;
+    box-shadow: 0 0 5px #e74c3c;
+}
+#input-area:focus {
+    outline: none;
+    border-color: #3498db;
+}
+.game-line.current {
+    color: #222;
+    font-weight: bold;
+    background: #eaf6ff;
+    opacity: 1;
+    transition: background 0.3s, color 0.3s;
+}
+.game-line.confirmed {
+    color: #444;
+    font-weight: normal;
+    background: none;
+    opacity: 1;
+}
+.game-line:not(.confirmed):not(.current) {
+    color: #aaa;
+    font-weight: normal;
+    opacity: 0.7;
+    background: none;
+}
+.game-line.empty-line {
+    min-height: 1.8em;
+    text-align: left;
+}
+.game-line .empty-mark {
+    color: #888;
+    font-size: 1.2em;
+    font-family: monospace;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    vertical-align: middle;
+    user-select: none;
+}

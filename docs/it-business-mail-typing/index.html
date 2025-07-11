@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ビジネスメールタイピング</title>
-    <link rel="stylesheet" href="style.css">
+    <title>香ばしいビジメ - 極</title>
+    <meta name="description" content="香ばしいビジネスメールを題材にしたタイピングゲーム。反復練習でタイピング速度を鍛えながら、ビジネスメール作成のコツも掴める！あなたも「香ばしいビジメ」で、タイピングとメールの達人を目指しませんか？">
+    <meta property="og:title" content="香ばしいビジメ - 極">
+    <meta property="og:description" content="香ばしいビジネスメールを題材にしたタイピングゲーム。反復練習でタイピング速度を鍛えながら、ビジネスメール作成のコツも掴める！あなたも「香ばしいビジメ」で、タイピングとメールの達人を目指しませんか？">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kaku3.github.io/workbooks/it-business-mail-typing/index.html">
+    <meta property="og:image" content="https://kaku3.github.io/workbooks/it-business-mail-typing/images/ogp.png">
+    <meta property="og:site_name" content="香ばしいビジメ - 極">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/game.css">
+    <link rel="stylesheet" href="styles/setting.css">
+    <link rel="stylesheet" href="styles/typing.css">
+    <link rel="stylesheet" href="styles/util.css">
 </head>
 <body>
 
     <header>
-        <h1>ちょっと香ばしいビジネスメールタイピング</h1>
+        <h1>香ばしいビジメ - 極</h1>
         <button id="settings-btn">設定 ⚙</button>
     </header>
 
@@ -57,28 +69,43 @@
     <!-- ゲーム用モーダル -->
     <div id="game-modal" class="modal">
         <div class="game-modal-content">
-            <div class="modal-left-panel">
-                <h3>受信メール</h3>
-                <div class="email-header">
-                    <p><strong>件名:</strong> <span id="modal-received-subject"></span></p>
+            <div class="modal-panels-row">
+                <div class="modal-left-panel">
+                    <h3>受信メール</h3>
+                    <div class="email-header">
+                        <p><strong>件名:</strong> <span id="modal-received-subject"></span></p>
+                    </div>
+                    <div id="modal-received-body" class="email-body"></div>
                 </div>
-                <div id="modal-received-body" class="email-body"></div>
+                <div class="modal-right-panel">
+                    <div class="typing-area">
+                        <p class="reply-subject-display">件名: <span id="reply-subject-game"></span></p>
+                        <div id="game-reply-body" class="email-body"></div>
+                        <input id="input-area" type="text" autocomplete="off" placeholder="1行目を入力してスタート" />
+                    </div>
+                </div>
             </div>
-            <div class="modal-right-panel">
-                <div class="typing-area">
-                    <p class="reply-subject-display">件名: <span id="reply-subject-game"></span></p>
-                    <div id="game-reply-body" class="email-body"></div>
-                    <input id="input-area" type="text" autocomplete="off" placeholder="1行目を入力してスタート" />
+            <div class="modal-bottom-bar">
+                <div class="status-area">
+                    <p class="status-time"><span class="icon-clock" aria-label="タイマー">⏱️</span> <span id="time">0.00</span> 秒</p>
+                    <p class="status-accuracy"><span class="icon-accuracy" aria-label="正確さ">✔️</span> <span id="accuracy">100</span>%</p>
                 </div>
-                <div class="modal-bottom-bar">
-                    <div class="status-area">
-                        <p class="status-time"><span class="icon-clock" aria-label="タイマー">⏱️</span> <span id="time">0.00</span> 秒</p>
-                        <p class="status-accuracy"><span class="icon-accuracy" aria-label="正確さ">✔️</span> <span id="accuracy">100</span>%</p>
+                <div class="progressbar-area">
+                    <div id="time-progress-labels">
+                        <span class="rank-label">S</span>
+                        <span class="rank-label">A</span>
+                        <span class="rank-label">B</span>
+                        <span class="rank-label">C</span>
+                        <span class="rank-label">D</span>
+                        <span class="rank-label">E</span>
                     </div>
-                    <div class="modal-actions">
-                        <button id="cancel-game-btn" class="modal-btn">キャンセル</button>
-                        <button id="send-btn" class="modal-btn" disabled>送信</button>
+                    <div id="time-progress-bg">
+                        <div id="time-progress-bar"></div>
                     </div>
+                </div>
+                <div class="modal-actions">
+                    <button id="cancel-game-btn" class="modal-btn">キャンセル</button>
+                    <button id="send-btn" class="modal-btn" disabled>送信</button>
                 </div>
             </div>
         </div>
@@ -102,7 +129,8 @@
     </div>
 
     <script src="data/questions.js"></script>
-    <script src="data/ratingTable.js"></script>
+    <script src="data/ratings.js"></script>
+    <script src="data/unlock_conditions.js"></script>
     <script src="scripts/settings.js"></script>
     <script src="scripts/ui.js"></script>
     <script src="scripts/game.js"></script>

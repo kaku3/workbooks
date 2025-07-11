@@ -1,0 +1,5 @@
+/* util.css: 汎用ユーティリティ・状態色 */
+.hidden { display: none !important; }
+.correct { color: #2980b9; }
+.incorrect { color: #c0392b; text-decoration: line-through; }
+.untyped { color: #95a5a6; }

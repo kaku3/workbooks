@@ -27,11 +27,11 @@ function showSettingsModal() {
         customerCompanyInput.value = userInfo.customer_company || '';
         customerNameInput.value = userInfo.customer_name || '';
     }
-    settingsModal.style.display = 'block';
+    settingsModal.classList.add('active');
 }
 
 function hideSettingsModal() {
-    settingsModal.style.display = 'none';
+    settingsModal.classList.remove('active');
 }
 
 function initSettings() {

@@ -1,0 +1,118 @@
+/* setting.css: 設定画面・設定ボタン */
+#settings-btn {
+    padding: 8px 15px;
+    background-color: #7f8c8d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#settings-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+}
+#settings-modal.active {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+#settings-modal .modal-content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    padding: 22px 24px 14px 24px;
+    min-width: 260px;
+    max-width: 95vw;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+#settings-modal h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #1976d2;
+    font-size: 1.08em;
+    text-align: center;
+}
+#settings-modal label {
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 2px;
+    font-size: 0.98em;
+    align-self: flex-start;
+}
+#settings-modal input[type="text"] {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.98em;
+    margin-bottom: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+#save-settings-btn {
+    margin-top: 10px;
+    padding: 7px 16px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 80px;
+}
+#save-settings-btn:hover {
+    background: #125ea7;
+}
+#settings-modal p {
+    font-size: .75rem;
+    color: #888;
+    margin-top: 8px;
+    text-align: center;
+}
+#settings-modal h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #1976d2;
+    font-size: 1.2em;
+}
+#settings-modal label {
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+#settings-modal input[type="text"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 4px;
+}
+#save-settings-btn {
+    margin-top: 12px;
+    padding: 8px 18px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#save-settings-btn:hover {
+    background: #125ea7;
+}
+#settings-modal p {
+    font-size: .75rem;
+    color: #888;
+    margin-top: 8px;
+}
