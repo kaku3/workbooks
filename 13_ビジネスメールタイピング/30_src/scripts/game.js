@@ -75,6 +75,7 @@ function resetGameStats() {
     typedChars = 0;
     correctChars = 0;
     incorrectChars = 0;
+    currentLineIndex = 0; // ここでリセット
     timeEl.textContent = '0.00';
     // wpmEl.textContent = '0';
     accuracyEl.textContent = '100';
