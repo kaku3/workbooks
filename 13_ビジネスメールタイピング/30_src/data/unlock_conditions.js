@@ -6,7 +6,7 @@
 
 // --- 開発用: 全出題を常時アンロックするdebugフラグ ---
 // window.DEBUG_UNLOCK_ALL = true; で全問題が常に解放されます（UI側で判定してください）
-window.DEBUG_UNLOCK_ALL = true;
+window.DEBUG_UNLOCK_ALL = false;
 window.UNLOCK_CONDITIONS = [
   { id: 1, required: [] },
   { id: 2, required: [

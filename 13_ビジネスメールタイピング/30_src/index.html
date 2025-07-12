@@ -136,6 +136,32 @@
         </div>
     </div>
 
+    <!-- 結果表示モーダル -->
+    <div id="result-modal" class="modal" style="display:none;">
+        <div class="result-modal-content">
+            <div class="result-mail-anim">
+                <svg id="result-mail-svg" width="64" height="64" viewBox="0 0 64 64">
+                  <rect x="8" y="20" width="48" height="28" rx="6" fill="#fff" stroke="#1976d2" stroke-width="2"/>
+                  <polyline points="8,20 32,40 56,20" fill="none" stroke="#1976d2" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="result-rank" id="result-rank">S</div>
+            <div class="result-time"><span id="result-time">0.00</span> 秒</div>
+            <div class="result-comment" id="result-comment">コメントが入ります</div>
+            <div class="result-share">
+                <a id="result-share-fb" href="#" target="_blank" rel="noopener" title="Facebookでシェア">
+                    <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" style="height:28px;vertical-align:middle;">
+                </a>
+                <a id="result-share-x" href="#" target="_blank" rel="noopener" title="Xでシェア">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+            </div>
+            <button id="result-close-btn" class="modal-btn">閉じる</button>
+        </div>
+    </div>
+
     <!-- 設定モーダル -->
     <div id="settings-modal" class="modal">
         <div class="modal-content">

@@ -1,3 +1,90 @@
+/* 結果表示モーダル */
+#result-modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.32);
+  justify-content: center;
+  align-items: center;
+}
+.result-modal-content {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+  padding: 36px 32px 28px 32px;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  position: relative;
+  animation: popin 0.4s cubic-bezier(.5,1.8,.5,1) 1;
+}
+@keyframes popin {
+  0% { transform: scale(0.7); opacity: 0; }
+  80% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.result-mail-anim {
+  margin-bottom: 18px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+#result-mail-svg {
+  animation: mailmove 1.2s cubic-bezier(.5,1.8,.5,1) 1;
+}
+@keyframes mailmove {
+  0% { transform: translateY(32px) scale(0.7); opacity: 0; }
+  60% { transform: translateY(-8px) scale(1.1); opacity: 1; }
+  80% { transform: translateY(0) scale(0.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+.result-rank {
+  font-size: 3.2em;
+  font-weight: bold;
+  margin-bottom: 8px;
+  letter-spacing: 0.1em;
+  color: #e67e22;
+  text-shadow: 0 2px 8px #f5e6c3, 0 0px 1px #fff;
+}
+.result-time {
+  font-size: 1.4em;
+  color: #1976d2;
+  margin-bottom: 10px;
+}
+.result-comment {
+  font-size: 1.1em;
+  color: #444;
+  margin-bottom: 18px;
+  min-height: 2.5em;
+}
+.result-share {
+  margin-bottom: 18px;
+}
+.result-share a {
+  margin: 0 8px;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.result-share a:hover {
+  transform: scale(1.15);
+}
+#result-close-btn {
+  margin-top: 8px;
+  padding: 10px 32px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+  transition: background 0.2s;
+}
+#result-close-btn:hover {
+  background: #1251a3;
+}
 /* ロック中の問題リスト項目 */
 #question-selector li.locked {
   opacity: 0.5;

@@ -44,17 +44,56 @@ function setupUIEventListeners() {
     sendBtn.addEventListener('click', () => {
         // このボタンはゲームクリア後にのみ有効化される
         hideGameModal();
-        alert('メールを送信しました！');
-        // ゲーム完了後にお題リストの表示を更新
-        updateQuestionList(window.questions, (questionId) => {
-            currentQuestion = window.questions.find(q => q.id === questionId);
-            if (currentQuestion) {
-                displayQuestionDetails(currentQuestion);
-                resetGameStats();
-            }
-        });
+        // 結果モーダル表示
+        showResultModal();
     });
+    // 結果モーダル閉じる
+    const resultCloseBtn = document.getElementById('result-close-btn');
+    if (resultCloseBtn) {
+        resultCloseBtn.addEventListener('click', () => {
+            document.getElementById('result-modal').style.display = 'none';
+            // ゲーム完了後にお題リストの表示を更新
+            updateQuestionList(window.questions, (questionId) => {
+                currentQuestion = window.questions.find(q => q.id === questionId);
+                if (currentQuestion) {
+                    displayQuestionDetails(currentQuestion);
+                }
+            });
+        });
+    }
 }
+
+// 結果モーダル表示処理
+function showResultModal() {
+    // 最新履歴から情報取得
+    const history = JSON.parse(localStorage.getItem('typingGameHistory')) || [];
+    const last = history[0];
+    if (!last) return;
+    // ランク・時間・設問ID
+    const { rank, time, questionId } = last;
+    // コメント取得
+    let comment = '';
+    if (window.QUESTION_RATINGS) {
+        const q = window.QUESTION_RATINGS.find(q => q.id === questionId);
+        if (q && q.ratings) {
+            const r = q.ratings.find(r => r.rank === rank);
+            if (r) comment = r.comment;
+        }
+    }
+    // セット
+    document.getElementById('result-rank').textContent = rank;
+    document.getElementById('result-time').textContent = Number(time).toFixed(2);
+    document.getElementById('result-comment').textContent = comment || '';
+    // シェアボタンURL
+    const url = encodeURIComponent(location.href.replace(/#.*$/, ''));
+    const text = encodeURIComponent(`香ばしビジメ - 極タイピング\n${rank}ランク (${Number(time).toFixed(2)}秒) を獲得！`);
+    document.getElementById('result-share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    document.getElementById('result-share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+    // モーダル表示
+
+    document.getElementById('result-modal').style.display = 'flex';
+}
+
 
 function showGameModal(question) {
     // currentQuestionを必ずセット
