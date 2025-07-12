@@ -59,6 +59,10 @@ function setupUIEventListeners() {
                     displayQuestionDetails(currentQuestion);
                 }
             });
+            // 履歴グラフも明示的に再描画（現在のお題があれば）
+            if (currentQuestion) {
+                showHistoryPanel(currentQuestion.id);
+            }
         });
     }
 }
@@ -242,33 +246,57 @@ function updateQuestionList(questions, onSelect) {
         condDiv.style.margin = '0.5em 0 0.5em 0';
         questionSelector.parentNode.insertBefore(condDiv, questionSelector.nextSibling);
     }
-    // 次に解放される問題の条件を表示
-    const nextLocked = questions.find(q => !isUnlocked(q));
-    if (nextLocked) {
-        const cond = unlocks.find(u => u.id === nextLocked.id);
-        if (cond && cond.required && cond.required.length > 0) {
-            // descのテンプレートを置換
-            function renderDesc(r) {
-                let desc = r.desc;
-                // targetIds優先、なければtargetId
-                if (r.targetIds && Array.isArray(r.targetIds)) {
-                    desc = desc.replace(/\{targetIds\}/g, r.targetIds.join(','));
-                    // targetIdも配列で来ている場合に備えて
-                    desc = desc.replace(/\{targetId\}/g, r.targetIds.join(','));
-                } else if (Array.isArray(r.targetId)) {
-                    desc = desc.replace(/\{targetIds\}/g, r.targetId.join(','));
-                    desc = desc.replace(/\{targetId\}/g, r.targetId.join(','));
-                } else if (r.targetId) {
-                    desc = desc.replace(/\{targetId\}/g, r.targetId);
-                }
-                desc = desc.replace(/\{value\}/g, r.value);
-                return desc;
+    // 次に解放される問題の条件をすべて表示（複数同時ロック対応・現時点で達成可能なもののみ）
+    const nextLockedList = questions.filter(q => {
+        if (isUnlocked(q)) return false; // 既に解放済みは除外
+        // 依存する前提問題が未解放なら除外
+        const cond = unlocks.find(u => u.id === q.id);
+        if (!cond || !cond.required || cond.required.length === 0) return true;
+        // すべてのrequired条件のtargetId/targetIdsが解放済みか判定
+        return cond.required.some(r => {
+            // rank/play両対応
+            let targets = [];
+            if (r.targetIds && Array.isArray(r.targetIds)) {
+                targets = r.targetIds;
+            } else if (Array.isArray(r.targetId)) {
+                targets = r.targetId;
+            } else if (r.targetId) {
+                targets = [r.targetId];
             }
-            condDiv.innerHTML = '<span style="color:#888;">次の問題の解放条件：</span>' +
-                cond.required.map(r => `<span class=\"unlock-cond\">${renderDesc(r)}</span>`).join('<span style="color:#aaa;"> または </span>');
-        } else {
-            condDiv.innerHTML = '';
+            // 依存先がすべて解放済みならtrue
+            return targets.every(tid => {
+                const qDep = questions.find(q2 => q2.id === tid);
+                return qDep && isUnlocked(qDep);
+            });
+        });
+    });
+    if (nextLockedList.length > 0) {
+        function renderDesc(r) {
+            let desc = r.desc;
+            if (r.targetIds && Array.isArray(r.targetIds)) {
+                desc = desc.replace(/\{targetIds\}/g, r.targetIds.join(','));
+                desc = desc.replace(/\{targetId\}/g, r.targetIds.join(','));
+            } else if (Array.isArray(r.targetId)) {
+                desc = desc.replace(/\{targetIds\}/g, r.targetId.join(','));
+                desc = desc.replace(/\{targetId\}/g, r.targetId.join(','));
+            } else if (r.targetId) {
+                desc = desc.replace(/\{targetId\}/g, r.targetId);
+            }
+            desc = desc.replace(/\{value\}/g, r.value);
+            return desc;
         }
+        let html = '<div style="color:#888; font-weight:bold; margin-bottom:0.3em;">次の問題の解放条件：</div>';
+        html += nextLockedList.map(q => {
+            const cond = unlocks.find(u => u.id === q.id);
+            if (cond && cond.required && cond.required.length > 0) {
+                return `<div class=\"unlock-cond-group\"><span class=\"unlock-cond-title\">${q.id}問目：</span>` +
+                    cond.required.map(r => `<span class=\"unlock-cond\">${renderDesc(r)}</span>`).join('<span style=\"color:#aaa;\"> または </span>') +
+                    '</div>';
+            } else {
+                return '';
+            }
+        }).filter(Boolean).join('');
+        condDiv.innerHTML = html;
     } else {
         condDiv.innerHTML = '';
     }

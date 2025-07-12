@@ -50,6 +50,11 @@ function prepareGame() {
     inputArea.setAttribute('maxlength', 200);
     // プレースホルダを1行目用に
     inputArea.placeholder = '１行目を入力してスタート';
+    // 入力欄をリセット（前回のinputArea参照をクリア）
+    if (window.inputArea && window.inputArea !== inputArea) {
+        window.inputArea.value = '';
+        window.inputArea.placeholder = '１行目を入力してスタート';
+    }
     setTimeout(() => inputArea.focus(), 100);
 }
 
