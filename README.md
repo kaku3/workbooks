@@ -25,7 +25,6 @@
 
 まとめると、**「エンジニアの仕事」** はこれらの能力を駆使して、お客様の困りごとをヒアリングして、課題を知覚して、論理的に考えて、問題の解決方法をお客様に提案し、文書化してメンバーに伝え、ITスキルやプログラミングスキルを駆使してリリース物を製造して納品してお客様に幸せになってもらう仕事と言えるでしょう。
 
-
 ## 本リポジトリで提供するもの
 
 『プログラム問題集』ではなく、『お仕事問題集』を提供したいと考えています。
@@ -42,13 +41,11 @@
 
 ※たまに趣味で、ただのプログラム問題集も混じっています。
 
-
 ## プログラム学習について
 
 プログラムの学習についても、本リポジトリの問題集で可能ですが量が少ないです。
 [Udemy](https://www.udemy.com/ja/courses/it-and-software/)　や、書籍でとにかく身につくまで反復を繰り返すことをオススメします。
 『言語』の習得には、とにもかくにも反復演習が必要です。テキストをなぞるだけではなく、**パズルを解くように楽しみながら課題を整理、理解して、ロジックやアルゴリズムに落とし込んでプログラムを書く** といったアウトプットを繰り返すことが重要かと思います。
-
 
 ## 環境
 
@@ -61,14 +58,13 @@
 |[PlantUML](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) |VSCode 拡張機能。コードでUMLが書ける。 |
 |[Draw.io Integration](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)| VSCode 拡張機能。図形描画ツール。 |
 
-
 ## 課題集
 
 |課題|内容|要素技術|
 |---|---|---|
 |[試験進捗集計ツール](./01_%E8%A9%A6%E9%A8%93%E7%B5%90%E6%9E%9C%E9%9B%86%E8%A8%88%E3%83%84%E3%83%BC%E3%83%AB/)   |試験項目書を解析して、試験結果・進捗の集計を行う。|nodejs, html, javascript, jQuery
 |[試験進捗集計ツール2](./02_%E8%A9%A6%E9%A8%93%E7%B5%90%E6%9E%9C%E9%9B%86%E8%A8%88%E3%83%84%E3%83%BC%E3%83%AB2/)   |試験進捗集計ツール機能追加。デイリー/担当者単位集計|nodejs, html, javascript, jQuery, DataTable, Chart.js, Tailwind CSS, React
-|[Switch ソフトウェア一覧](./03_switch_eshop/)|My Nintendo Store ゲーム一覧 |nodejs, got, cheerio, sharp, axios, Nuxt.js, Vue.js, Vuetify
+|[Switch ソフトウェア一覧](./03_switch_eshop/)|Nintendo SwitchのeShopからソフトウェア情報を収集し、表示するWebアプリケーション。|Node.js, Nuxt.js, Vue.js, Vuetify, スクレイピング関連ライブラリ
 |[インタラクティブサイトマップ](./04_インタラクティブサイトマップ/)|爆速サイトマップ作成ツール | nodejs, html, jQuery
 |[家計簿](./05_家計簿/) | レシート読み取り(OCR)家計簿のPoCを行う。| nodejs, Cloud Vision API, Nuxt.js, Vue.js, Vuetify, 凸包
 |[労働問題と詐欺グラフ](./06_労働問題と詐欺グラフ/)| バーチャートレース（グラフ）作成を行う。| Python, Pandas
