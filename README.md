@@ -72,3 +72,10 @@
 |[インタラクティブサイトマップ](./04_インタラクティブサイトマップ/)|爆速サイトマップ作成ツール | nodejs, html, jQuery
 |[家計簿](./05_家計簿/) | レシート読み取り(OCR)家計簿のPoCを行う。| nodejs, Cloud Vision API, Nuxt.js, Vue.js, Vuetify, 凸包
 |[労働問題と詐欺グラフ](./06_労働問題と詐欺グラフ/)| バーチャートレース（グラフ）作成を行う。| Python, Pandas
+|[共有地の悲劇 API](./07_共有地の悲劇_API仕様書とスタブ/)|「共有地の悲劇」シミュレーションAPIの仕様書とスタブを作成する。|Python, FastAPI
+|[きょうは何たべよ](./08_きょうは何たべよ/)|現在地周辺の飲食店を検索・提案するWebアプリを作成する。|HTML, CSS, JavaScript, jQuery, Hot Pepper WebサービスAPI, Nominatim OpenStreetMap API JavaScript
+|[Qiita記事簡易一覧](./09_Qiita記事簡易一覧/)|指定ユーザーのQiita記事一覧を生成する。|nodejs, axios
+|[投票率データ処理](./10_投票率/)|投票率のCSVデータを処理する。|nodejs, csv-parse
+|[チケット管理システム(trak)](./11_trak/)|AIエージェントを活用してチケット管理システムを開発する。|Next.js, TypeScript, NextAuth
+|[エンジニア年収自己診断](./12_エンジニア年収自己診断/)|スキルの自己評価から年収や適職を診断するWebアプリを作成する。|HTML, CSS, JavaScript, Chart.js
+|[ビジネスメールタイピング](./13_ビジネスメールタイピング/)|ビジネスメールの返信を題材にしたタイピングゲームを作成する。|HTML, CSS, JavaScript
