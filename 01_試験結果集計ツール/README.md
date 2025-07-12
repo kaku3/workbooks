@@ -1,21 +1,39 @@
 # 試験結果集計ツール
 
-業務プログラム学習用課題。
+このプロジェクトは、試験項目書（Excelファイル）を解析し、試験結果を集計・可視化するツールの基本的なバージョンです。業務プログラム学習用課題として、Node.jsの基本的なファイル操作、Excelデータの読み込み、集計、HTML出力などの要素技術を学ぶことを目的としています。
 
-※[VS Code](https://code.visualstudio.com/download) + [Markdown Preview Enhanced](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced) で参照してください。
+## 機能概要
 
-本稿に含まれるもの。
+-   **試験項目書解析:** Excel形式の試験項目書を読み込み、個々のテストケースの結果を抽出します。
+-   **集計:** 試験結果をステータス（OK, NG, 保留など）別に集計します。
+-   **可視化:** 集計結果をWeb UI上で表示します。
 
-- [課題](./00_docs/%E5%95%8F%E9%A1%8C%E9%9B%86.md)
-- 要素技術
-  - [nodejs 基本](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/README.md)
-  - [Hello World](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-hello-world.js)
-  - [起動引数解析](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-args.js)
-  - [Excel読み込み](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-excel-read.js)
-  - [file読み書き](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-file-io.js)
-  - [json読み書き](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-json-io.js)
-  - [配列操作](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-arrays.js)
-  - [フォルダ内ファイル取得](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/sample-glob.js)
-- [サンプルソース](./10_src/)
-  - 試験項目集計
-  - 集計結果表示
+## 解答例
+
+### 1. 集計処理
+
+試験項目書を読み込み、集計処理を行うNode.jsスクリプトです。
+
+-   **`01_解答例_集計_1`**: Excelファイルを読み込み、試験結果を集計してJSONファイルに出力します。
+    -   **技術要素:** Node.js, `xlsx`, `yargs`
+    -   **使い方:** `node aggregation.js -i <入力Excelファイル> -o <出力JSONファイル>`
+-   **`02_解答例_集計_2`**: (`01`と同様の機能を持つと推測されます。詳細な違いはコード比較が必要です。)
+
+### 2. UI表示
+
+集計されたデータをWeb UIで表示する例です。
+
+-   **`10_解答例_UI_1`**: 静的なHTMLファイルで集計結果を表示します。
+    -   **技術要素:** HTML, CSS, JavaScript
+-   **`11_解答例_UI_2`**: EJSテンプレートを用いてHTMLを生成し、集計結果を表示します。
+    -   **技術要素:** Node.js, EJS, HTML, CSS, JavaScript
+    -   **使い方:** `node create-index.js` を実行し、`index.html`を生成します。
+
+## 開発環境
+
+-   Node.js
+
+## 関連ドキュメント
+
+-   [課題](./00_docs/%E5%95%8F%E9%A1%8C%E9%9B%86.md)
+-   [要素技術](./10_src/00_%E8%A6%81%E7%B4%A0%E6%8A%80%E8%A1%93/README.md)
