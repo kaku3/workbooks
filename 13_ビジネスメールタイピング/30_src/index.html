@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>香ばしビジメ - 極</title>
+    <title>香ばしビジメ - 極タイピング</title>
     <meta name="description" content="香ばしいビジネスメールを題材にしたタイピングゲーム。反復練習でタイピング速度を鍛えながら、ビジネスメール作成のコツも掴める！あなたも「香ばしビジメ」で、タイピングとメールの達人を目指しませんか？">
-    <meta property="og:title" content="香ばしビジメ - 極">
+    <meta property="og:title" content="香ばしビジメ - 極タイピング">
     <meta property="og:description" content="香ばしいビジネスメールを題材にしたタイピングゲーム。反復練習でタイピング速度を鍛えながら、ビジネスメール作成のコツも掴める！あなたも「香ばしビジメ」で、タイピングとメールの達人を目指しませんか？">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kaku3.github.io/workbooks/it-business-mail-typing/index.html">
     <meta property="og:image" content="https://kaku3.github.io/workbooks/it-business-mail-typing/images/ogp.png">
-    <meta property="og:site_name" content="香ばしビジメ - 極">
+    <meta property="og:site_name" content="香ばしビジメ - 極タイピング">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/game.css">
@@ -20,19 +20,21 @@
 </head>
 <body>
 
+
+
     <header>
-        <h1>香ばしビジメ - 極</h1>
-        <button id="settings-btn">設定 ⚙</button>
+        <h1>香ばしビジメ - 極タイピング</h1>
     </header>
 
-    <div class="main-wrapper">
+    <main class="main-wrapper">
         <nav class="side-nav">
             <ul>
                 <li><button id="inbox-btn" class="nav-btn active">出題トレイ</button></li>
-                <li><button id="history-btn" class="nav-btn">履歴</button></li>
             </ul>
+            <div class="side-nav-bottom">
+                <button id="settings-btn">設定 ⚙</button>
+            </div>
         </nav>
-
         <div class="left-panel">
             <div id="inbox-list-panel" class="question-list-panel">
                 <h2>✉️ 出題トレイ</h2>
@@ -40,31 +42,54 @@
                     <!-- お題選択リストがここに動的に追加されます -->
                 </ul>
             </div>
-            <div id="history-list-panel" class="question-list-panel hidden">
-                <h2>🕒 履歴</h2>
-                <ul id="history-list">
-                    <!-- 履歴リストがここに動的に追加されます -->
-                </ul>
-            </div>
         </div>
-
         <div class="content-area">
             <!-- 受信メール詳細表示時 -->
             <div id="received-email-full" class="email-panel received-panel">
                 <div class="email-header">
-                    <p><strong>件名:</strong> <span id="received-subject-full"></span></p>
+                    <p><span class="subject-label">件名:</span> <span id="received-subject-full"></span></p>
                     <button id="reply-btn" class="action-btn">返信</button>
                 </div>
                 <div id="received-body-full" class="email-body"></div>
             </div>
+            <div id="reply-point-panel" class="reply-point-panel" style="display:none;">
+                <h3>返信のポイント</h3>
+                <div id="reply-point-text"></div>
+            </div>
+            <div id="rank-panel" class="rank-panel" style="display:none;">
+                <h3>評価</h3>
+                <div id="rank-criteria-row">
+                  <span class="rank-label rank-s">S:</span> <span id="rank-s-cond"></span>
+                  <span class="rank-label rank-a">A:</span> <span id="rank-a-cond"></span>
+                  <span class="rank-label rank-b">B:</span> <span id="rank-b-cond"></span>
+                  <span class="rank-label rank-c">C:</span> <span id="rank-c-cond"></span>
+                  <span class="rank-label rank-d">D:</span> <span id="rank-d-cond"></span>
+                  <span class="rank-label rank-e">E:</span> <span id="rank-e-cond"></span>
+                </div>
+            </div>
+            <div id="history-panel" class="history-panel" style="display:none;">
+                <h3>履歴</h3>
+                <canvas id="history-graph" width="600" height="120" style="width:100%;max-width:100%;display:block;"></canvas>
+                <div id="history-empty-msg" style="display:none; color:#666; font-size:15px; margin:16px 0; text-align:center;">履歴はまだありません。返信ボタンを押して返信を作成してください。</div>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <!-- <div class="bottom-status-area">
-        <div class="highscore-area">
-            <p>High Score: <span id="highscore">0.00</span> WPM</p>
+    <footer>
+        <div class="footer-left">
+            <a href="https://github.com/kaku3/workbooks" target="_blank" rel="noopener noreferrer">©エンジニアのためのお仕事問題集</a>
         </div>
-    </div> -->
+        <div class="footer-right">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://kaku3.github.io/workbooks/it-business-mail-typing/index.html" target="_blank" rel="noopener noreferrer" class="footer-share-btn" title="Facebookでシェア">
+                <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" style="height:22px;vertical-align:middle;">
+            </a>
+            <a href="https://twitter.com/intent/tweet?url=https://kaku3.github.io/workbooks/it-business-mail-typing/index.html&text=香ばしビジメ - 極タイピング" target="_blank" rel="noopener noreferrer" class="footer-share-btn" title="Xでシェア">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+        </div>
+    </footer>
 
     <!-- ゲーム用モーダル -->
     <div id="game-modal" class="modal">
