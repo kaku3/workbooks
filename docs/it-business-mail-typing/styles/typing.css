@@ -1,15 +1,21 @@
+ .typing-flexbox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
 /* typing.css: タイピングエリア・入力欄・行表示 */
 #game-reply-body {
     white-space: pre-wrap;
     line-height: 1.6;
     font-size: 1.2em;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     background-color: #f9f9f9;
-    margin-bottom: 10px;
+    margin-bottom: 0;
     overflow-y: auto;
-    flex: 1 1 auto;
+    flex: 1 1 0%;
     min-height: 0;
     max-height: none;
     display: flex;
@@ -20,12 +26,24 @@
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 1.2em;
     font-family: 'Courier New', Courier, monospace;
+    background-color: #f9f9f9;
+    line-height: 1.6;
     resize: none;
-    margin-top: auto;
-    flex-grow: 0;
-    height: 48px;
+    margin-top: 0;
+    flex-shrink: 0;
+    min-height: 48px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding-right: 0.7em;
+    letter-spacing: 0;
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+#game-reply-body {
+    font-family: 'Courier New', Courier, monospace;
 }
 #input-area.incorrect-line {
     border-color: #e74c3c;

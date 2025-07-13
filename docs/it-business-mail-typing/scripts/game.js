@@ -295,28 +295,6 @@ function finishGame() {
     // 例: コメントを画面に表示したい場合はここでDOM操作を追加
 }
 
-function loadHighScore() {
-    const score = localStorage.getItem(HIGHSCORE_KEY);
-    return score ? parseFloat(score) : 0;
-}
-
-/* function updateHighScore(wpm) {
-    const currentHighScore = loadHighScore();
-    if (wpm > currentHighScore) {
-        localStorage.setItem(HIGHSCORE_KEY, wpm.toFixed(2));
-        if (highscoreEl) {
-            highscoreEl.textContent = wpm.toFixed(2);
-        }
-    }
-} */
-
-/* function displayHighScore() {
-    if (highscoreEl) {
-        highscoreEl.textContent = loadHighScore().toFixed(2);
-    }
-} */
-
-
 function saveHistory(time, accuracy, rank, elapsedTime) {
     const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
     const newRecord = {
@@ -337,19 +315,25 @@ function saveHistory(time, accuracy, rank, elapsedTime) {
 
 
 window.initGame = function() {
-    inputArea.setAttribute('type', 'text');
     inputArea.setAttribute('autocomplete', 'off');
     inputArea.setAttribute('spellcheck', 'false');
     inputArea.value = '';
-    // 既存のkeydownイベントを全て解除
+    inputArea.style.height = 'auto'; // 高さも初期化
+    inputArea.style.removeProperty('height'); // インラインheightを完全に消す
+    // 既存のイベントを全て解除し、textarea用に再設定
     const newInputArea = inputArea.cloneNode(true);
+    newInputArea.style.height = 'auto'; // 新しいノードにも高さ初期化
+    newInputArea.style.removeProperty('height'); // インラインheightを完全に消す
     inputArea.parentNode.replaceChild(newInputArea, inputArea);
     window.inputArea = newInputArea;
-    // 入力時にリアルタイム判定
+    // 入力時にリアルタイム判定＋自動リサイズ
     window.inputArea.addEventListener('input', function(e) {
         window.handleTyping(e);
+        // 自動リサイズ
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
     });
-    // Enterで行送り
+    // Enterで行送り（textareaのデフォルト改行を抑止）
     window.inputArea.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             const currentLine = lines[currentLineIndex] || '';
@@ -362,11 +346,18 @@ window.initGame = function() {
                     window.inputArea.placeholder = `${currentLineIndex + 1}行目を入力`;
                     // 行進時のみ必要なDOM更新＋スクロール
                     window.handleTyping({type:'keydown', key:'Enter'});
+                    // 高さリセット
+                    window.inputArea.style.height = 'auto';
                 } else {
                     finishGame();
                 }
             }
             e.preventDefault();
         }
+    });
+    // paste チート対策
+    window.inputArea.addEventListener('paste', function(e) {
+        e.preventDefault();
+        // alert('ペーストは禁止されています');
     });
 }
