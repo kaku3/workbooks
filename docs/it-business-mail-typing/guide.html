@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ビジネスメールタイピング ガイド</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+    body {
+      font-family: 'M PLUS Rounded 1c', 'Segoe UI', 'Meiryo', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+      padding: 32px 40px;
+    }
+    h1 {
+      font-size: 2em;
+      color: #0d47a1;
+      text-align: center;
+      margin-bottom: 0.7em;
+    }
+    h2 {
+      font-size: 1.4em;
+      color: #1565c0;
+      border-bottom: 2px solid #1565c0;
+      padding-bottom: 0.4em;
+      margin-top: 2em;
+    }
+    p, li {
+      font-size: 1.05em;
+      line-height: 1.8;
+    }
+    .card {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 24px;
+      margin-top: 1.5em;
+      border: 1px solid #e0e0e0;
+    }
+    .story-card {
+      position: relative;
+      background-image: url('images/ogp.png');
+      background-size: cover;
+      background-position: center;
+      border: 1px solid #555;
+      text-align: center;
+      overflow: hidden; /* for pseudo-element */
+    }
+    .story-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+    .story-card p {
+      position: relative;
+      z-index: 2;
+      font-size: 1.25em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    ul li {
+      padding-left: 1.4em;
+      position: relative;
+      margin-bottom: 0.7em;
+    }
+    ul li::before {
+      content: '●';
+      position: absolute;
+      left: 0;
+      color: #1976d2;
+      font-size: 0.8em;
+      top: 0.2em;
+    }
+    .game-flow-card {
+      padding: 24px 16px;
+    }
+    .image-gallery {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+    .image-gallery .step {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .image-gallery .arrow {
+      flex-shrink: 0;
+      font-size: 2.5em;
+      color: #1976d2;
+    }
+    .image-gallery img {
+      width: 100%;
+      max-width: 250px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 0.8em;
+    }
+    .image-gallery b {
+      font-size: 0.95em;
+      color: #1565c0;
+    }
+    .image-gallery p {
+      font-size: 0.9em;
+      line-height: 1.5;
+      margin-top: 0.5em;
+      color: #555;
+    }
+    .effect-card {
+      background: #fffde7;
+      border-color: #fff9c4;
+    }
+    .effect-card ul li::before {
+      content: '✔';
+      color: #f57f17;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 2.5em;
+      font-size: 0.95em;
+      color: #777;
+    }
+    a {
+      color: #1976d2;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      .image-gallery {
+        flex-direction: column;
+        align-items: center;
+      }
+      .image-gallery .arrow {
+        transform: rotate(90deg);
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>香ばしビジメ - 極タイピング</h1>
+
+    <div class="card story-card">
+      <p>
+        次々に舞い込む"香ばしい"メールへの返信。<br>
+        そのタイピング速度と正確さのみが、あなたの時給を左右する。
+      </p>
+    </div>
+
+    <h2>業務指示</h2>
+    <div class="card">
+      <ul>
+        <li><b>課題メールを選択:</b> 「出題トレイ」から気になるメールを選んで内容をチェックすること。</li>
+        <li><b>返信メールを作成:</b> 「返信」ボタンを押し作成画面へ進み、見本通りにタイピングすること。</li>
+        <li><b>結果をチェック:</b> 送信後、結果が提示されるため速やかに確認すること。</li>
+      </ul>
+      <p style="margin-top: 1.5em; text-align: center; font-weight: bold; color: #c62828;">
+        良い結果のみが、あなたの評価（人月単価）を上昇させる。常に最高の結果を追求すること。
+      </p>
+    </div>
+
+    <h2>業務の流れ</h2>
+    <div class="card game-flow-card">
+      <div class="image-gallery">
+        <div class="step">
+          <b>1. メール選択</b>
+          <img src="images/main.png" alt="出題トレイ画面">
+          <p>挑戦するメールを選択する。</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="step">
+          <b>2. タイピング</b>
+          <img src="images/game.png" alt="メール作成画面">
+          <p>見本通りに素早く入力する。</p>
+        </div>
+        <div class="arrow">→</div>
+        <div class="step">
+          <b>3. 結果確認</b>
+          <img src="images/result.png" alt="結果画面">
+          <p>評価とスコアを確認する。</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>本業務を通じて得られるスキル</h2>
+    <div class="card effect-card">
+      <ul>
+        <li>時給400円という底辺から、まずは時給4000円（人月64万円）を目指す、IT業界のシビアな給与体系を肌で感じられる。</li>
+        <li>ビジネスメールで使える、丁寧な言い回しや定型文が習得できる。</li>
+        <li>タイピング速度・正確性の向上が見込める。</li>
+        <li>反復訓練を通じ、実践的なスキルアップが可能。</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <p>より詳しい情報は<a href="https://note.com/kakup/n/n23c4a96fe22f" target="_blank">開発者ノート</a>を参照のこと。</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="styles/setting.css">
     <link rel="stylesheet" href="styles/typing.css">
     <link rel="stylesheet" href="styles/util.css">
+    <link rel="stylesheet" href="styles/result.css">
 </head>
 <body>
 
@@ -24,6 +25,9 @@
 
     <header>
         <h1>香ばしビジメ - 極タイピング</h1>
+        <div id="wage-info" style="position:absolute;top:0.6rem;right:2.5rem;font-size:1.1em;color:#1976d2;background:#fff7e0;padding:6px 16px;border-radius:8px;box-shadow:0 1px 4px #0001;z-index:10;">
+            あなたの時給 <span id="wage-value">0</span>円 : 人月単価 <span id="wage-monthly">0</span>円
+        </div>
     </header>
 
     <main class="main-wrapper">
@@ -32,6 +36,7 @@
                 <li><button id="inbox-btn" class="nav-btn active">出題トレイ</button></li>
             </ul>
             <div class="side-nav-bottom">
+                <button id="howto-btn">ガイド 🛈</button>
                 <button id="settings-btn">設定 ⚙</button>
             </div>
         </nav>
@@ -142,6 +147,7 @@
     <div id="result-modal" class="modal" style="display:none;">
         <div class="result-modal-content">
             <div class="result-mail-anim">
+                <div id="wage-up-notice" style="display:none;"></div>
                 <svg id="result-mail-svg" width="64" height="64" viewBox="0 0 64 64">
                   <rect x="8" y="20" width="48" height="28" rx="6" fill="#fff" stroke="#1976d2" stroke-width="2"/>
                   <polyline points="8,20 32,40 56,20" fill="none" stroke="#1976d2" stroke-width="2"/>

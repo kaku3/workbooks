@@ -1,0 +1,85 @@
+/* 結果モーダル専用スタイル */
+#result-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+#result-modal .result-modal-content {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    padding: 32px 32px 24px 32px;
+    max-width: 420px;
+    width: 90vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+#result-modal .result-mail-anim {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+#result-modal .result-rank {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #1976d2;
+    margin-bottom: 8px;
+}
+#result-modal .result-time {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 8px;
+}
+#result-modal .result-comment {
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 16px;
+    text-align: center;
+}
+#result-modal .result-share {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+#result-modal .modal-btn {
+    padding: 10px 24px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #1976d2;
+    color: #fff;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 8px;
+}
+#result-modal #wage-up-notice {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff7e0;
+    color: #e67e22;
+    border-radius: 8px;
+    padding: 8px 32px;
+    font-size: 1.1em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    z-index: 10;
+    display: none;
+    pointer-events: none;
+    max-width: 90vw;
+    min-width: 220px;
+    text-align: center;
+    word-break: break-all;
+    display: block;
+}

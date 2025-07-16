@@ -47,7 +47,6 @@ function initSettings() {
         hideSettingsModal();
         // 設定変更をUIに即時反映させるため、必要に応じて再描画処理を呼び出す
         // 例: location.reload(); や、特定のUI更新関数を呼び出す
-        alert('設定を保存しました。');
     });
 
     // モーダル外クリックで閉じる
