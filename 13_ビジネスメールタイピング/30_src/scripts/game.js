@@ -434,7 +434,10 @@ function finishGame() {
     onGameFinish(finalRank);
     const afterWage = getWage();
     if (afterWage > beforeWage) {
-        showWageUpNotice(afterWage - beforeWage, afterWage);
+        // 昇給情報を一時保存（結果モーダルで通知表示用）
+        localStorage.setItem('wage_up_notice', JSON.stringify({up: afterWage - beforeWage, now: afterWage}));
+    } else {
+        localStorage.removeItem('wage_up_notice');
     }
 
     // 必要に応じてコメントも保存や表示に利用可能

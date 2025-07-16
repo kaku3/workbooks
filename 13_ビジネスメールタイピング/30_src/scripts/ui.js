@@ -164,6 +164,15 @@ function showResultModal() {
     document.getElementById('result-share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
     // モーダル表示
     document.getElementById('result-modal').style.display = 'flex';
+    // 昇給通知があれば表示
+    try {
+        const notice = JSON.parse(localStorage.getItem('wage_up_notice'));
+        if (notice && notice.up && notice.now) {
+            showWageUpNotice(notice.up, notice.now);
+            // 一度表示したら削除
+            localStorage.removeItem('wage_up_notice');
+        }
+    } catch(e) {}
 }
 
 
@@ -215,17 +224,26 @@ function updateQuestionList(questions, onSelect) {
     function isUnlocked(q) {
         const cond = unlocks.find(u => u.id === q.id);
         if (!cond || !cond.required || cond.required.length === 0) return true; // 1問目など
+        // ランク順序定義
+        const rankOrder = ['E','D','C','B','A','S'];
         // いずれかの条件を満たせば解放
         return cond.required.some(req => {
             if (req.type === 'rank') {
                 if (req.targetIds && Array.isArray(req.targetIds)) {
                     // targetIdsのすべてで条件を満たせばOK（AND）
                     return req.targetIds.every(tid => {
-                        const h = history.filter(h => h.questionId === tid && h.rank && h.rank <= req.value);
+                        const h = history.filter(h => {
+                            if (h.questionId !== tid || !h.rank) return false;
+                            // Cランク以上: rankOrder.indexOf(h.rank) >= rankOrder.indexOf(req.value)
+                            return rankOrder.indexOf(h.rank) >= rankOrder.indexOf(req.value);
+                        });
                         return h.length > 0;
                     });
                 } else if (req.targetId) {
-                    const h = history.filter(h => h.questionId === req.targetId && h.rank && h.rank <= req.value);
+                    const h = history.filter(h => {
+                        if (h.questionId !== req.targetId || !h.rank) return false;
+                        return rankOrder.indexOf(h.rank) >= rankOrder.indexOf(req.value);
+                    });
                     return h.length > 0;
                 }
             } else if (req.type === 'play') {
