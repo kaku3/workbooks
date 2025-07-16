@@ -1,3 +1,66 @@
+// --- 遊び方モーダル ---
+function showHowtoModal() {
+    if (document.getElementById('howto-modal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'howto-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.background = 'rgba(0,0,0,0.5)';
+    modal.style.zIndex = '9999';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+
+    const inner = document.createElement('div');
+    inner.style.background = '#fff';
+    inner.style.borderRadius = '12px';
+    inner.style.boxShadow = '0 2px 24px rgba(0,0,0,0.18)';
+    inner.style.overflow = 'hidden';
+    inner.style.width = '80%';
+    inner.style.height = '96vh';
+    inner.style.maxWidth = 'none';
+    inner.style.maxHeight = '100vh';
+    inner.style.position = 'relative';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '閉じる';
+    closeBtn.style.position = 'absolute';
+    closeBtn.style.top = '18px';
+    closeBtn.style.right = '32px';
+    closeBtn.style.zIndex = '10';
+    closeBtn.style.background = '#1976d2';
+    closeBtn.style.color = '#fff';
+    closeBtn.style.border = 'none';
+    closeBtn.style.borderRadius = '4px';
+    closeBtn.style.padding = '10px 28px';
+    closeBtn.style.fontSize = '1.1em';
+    closeBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.onclick = () => {
+        document.body.removeChild(modal);
+    };
+
+    const iframe = document.createElement('iframe');
+    iframe.src = 'guide.html';
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+
+    inner.appendChild(closeBtn);
+    inner.appendChild(iframe);
+    modal.appendChild(inner);
+    document.body.appendChild(modal);
+}
+// --- 遊び方ボタンイベント登録 ---
+document.addEventListener('DOMContentLoaded', () => {
+    const howtoBtn = document.getElementById('howto-btn');
+    if (howtoBtn) {
+        howtoBtn.addEventListener('click', showHowtoModal);
+    }
+});
 // scripts/ui.js
 
 

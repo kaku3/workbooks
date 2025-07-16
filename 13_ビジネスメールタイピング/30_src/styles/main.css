@@ -1,30 +1,101 @@
-/* 結果表示モーダル */
-#result-modal {
-  display: none;
-  position: fixed;
-  z-index: 10000;
-  left: 0; top: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.32);
-  justify-content: center;
-  align-items: center;
+/* サイドバー下部ボタンを同じ幅・中央揃え */
+.side-nav-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-top: auto;
+    padding: 16px 0 8px 0;
 }
-.result-modal-content {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(44,62,80,0.18);
-  padding: 36px 32px 28px 32px;
-  min-width: 320px;
-  max-width: 90vw;
-  text-align: center;
-  position: relative;
-  animation: popin 0.4s cubic-bezier(.5,1.8,.5,1) 1;
+#howto-btn, #settings-btn {
+    width: 110px;
+    min-width: 0;
+    height: 38px;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    font-size: 1.08em;
+    padding: 0 0 0 0;
+    border-radius: 8px;
+    border: none;
+    background: #f5f7fa;
+    color: #1976d2;
+    font-weight: bold;
+    box-shadow: 0 1px 4px #0001;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
 }
-@keyframes popin {
-  0% { transform: scale(0.7); opacity: 0; }
-  80% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
 }
+#howto-btn:hover, #settings-btn:hover {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
+/* 時給アップ通知エフェクト */
 .result-mail-anim {
+  margin-bottom: 18px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  overflow: visible;
+}
+#wage-up-notice {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  background: linear-gradient(90deg, #fffbe0 60%, #ffe0e0 100%);
+  color: #d2691e;
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 12px 32px;
+  border-radius: 32px;
+  box-shadow: 0 4px 24px #f8cfa055, 0 1px 8px #d2691e22;
+  z-index: 1002;
+  animation: wageUpPop 1.2s cubic-bezier(.5,1.8,.5,1);
+  pointer-events: none;
+  text-shadow: 0 2px 8px #fff7, 0 0px 1px #fff;
+}
+@keyframes wageUpPop {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.7) translateY(30px); }
+  60% { opacity: 1; transform: translateX(-50%) scale(1.15) translateY(-10px); }
+  80% { opacity: 1; transform: translateX(-50%) scale(0.98) translateY(0); }
+  100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+}
+/* 結果表示モーダル */
+    /* サイドメニュー下部のボタン配置（縦並び・幅いっぱい） */
+    .side-nav-bottom {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: auto;
+        padding: 16px 0 8px 0;
+    }
+    .side-nav-bottom button {
+        width: 100%;
+        min-width: 0;
+        margin-bottom: 0;
+        font-size: 1.08em;
+        padding: 12px 0;
+        border-radius: 8px;
+        border: none;
+        background: #f5f7fa;
+        color: #1976d2;
+        font-weight: bold;
+        box-shadow: 0 1px 4px #0001;
+        transition: background 0.2s, color 0.2s;
+        cursor: pointer;
+        display: block;
+    }
+    .side-nav-bottom button:hover {
+        background: #e3f2fd;
+        color: #0d47a1;
+    }
   margin-bottom: 18px;
   height: 64px;
   display: flex;
@@ -380,21 +451,6 @@ footer {
     padding-bottom: 10px;
 }
 
-#settings-btn {
-    width: 90%;
-    padding: 10px 0;
-    background-color: #2c3e50;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.2s;
-}
-#settings-btn:hover {
-    background-color: #1976d2;
-}
 
 .side-nav ul {
     list-style: none;

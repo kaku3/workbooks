@@ -1,3 +1,141 @@
+// --- 時給処理 ---
+const WAGE_KEY = 'wage';
+const WAGE_DATE_KEY = 'wage_last_login';
+const WAGE_PLAY_KEY = 'wage_play_count';
+
+function getWage() {
+    // 初期値400円
+    const val = localStorage.getItem(WAGE_KEY);
+    return val === null ? 400 : parseInt(val, 10);
+}
+function setWage(val) {
+    localStorage.setItem(WAGE_KEY, val);
+    const el = document.getElementById('wage-value');
+    if (el) el.textContent = val;
+    // 人月単価も更新（万円単位、切り捨て）
+    const elm = document.getElementById('wage-monthly');
+    if (elm) {
+        const man = Math.floor(val * 160) / 10000;
+        elm.textContent = man.toFixed(1).replace(/\.0$/, '') + '万';
+    }
+}
+function addWage(val) {
+    setWage(getWage() + val);
+}
+
+// デイリーログイン昇給
+function dailyLoginWageUp() {
+    const today = new Date().toISOString().slice(0,10);
+    if (localStorage.getItem(WAGE_DATE_KEY) !== today) {
+        addWage(1);
+        localStorage.setItem(WAGE_DATE_KEY, today);
+    }
+}
+
+// 10プレイごと昇給
+function playCountWageUp() {
+    let cnt = parseInt(localStorage.getItem(WAGE_PLAY_KEY) || '0', 10) + 1;
+    localStorage.setItem(WAGE_PLAY_KEY, cnt);
+    if (cnt % 10 === 0) addWage(1);
+}
+
+// ランク昇給
+// 職能給：お題ごとに最高ランクを保存し、ランクが上がった時だけ加算
+function rankWageUp(rank) {
+    const table = { 'E':10, 'D':20, 'C':50, 'B':100, 'A':150, 'S':200 };
+    if (!currentQuestion || !currentQuestion.id) return;
+    const key = 'wage_rank_' + currentQuestion.id;
+    const prev = localStorage.getItem(key) || 'E';
+    const rankOrder = ['E','D','C','B','A','S'];
+    if (rankOrder.indexOf(rank) > rankOrder.indexOf(prev)) {
+        if (table[rank]) addWage(table[rank]);
+        localStorage.setItem(key, rank);
+    }
+    // 初回クリア時も加算
+    if (prev === 'E' && rank !== 'E') {
+        localStorage.setItem(key, rank);
+    }
+}
+
+// 初期化
+
+// 初回ログイン時ガイド表示
+document.addEventListener('DOMContentLoaded', () => {
+    setWage(getWage());
+    dailyLoginWageUp();
+
+    // 初回ログイン判定
+    if (!localStorage.getItem('guide_shown')) {
+        showGuideModal();
+        localStorage.setItem('guide_shown', '1');
+    }
+});
+
+// guide.html を iframe で表示するモーダル生成・表示
+function showGuideModal() {
+    // 既に存在する場合は何もしない
+    if (document.getElementById('guide-modal')) return;
+    const modal = document.createElement('div');
+    modal.id = 'guide-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100vw';
+    modal.style.height = '100vh';
+    modal.style.background = 'rgba(0,0,0,0.5)';
+    modal.style.zIndex = '9999';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+
+    const inner = document.createElement('div');
+    inner.style.background = '#fff';
+    inner.style.borderRadius = '8px';
+    inner.style.boxShadow = '0 2px 16px rgba(0,0,0,0.2)';
+    inner.style.overflow = 'hidden';
+    inner.style.width = '96vw';
+    inner.style.height = '96vh';
+    inner.style.maxWidth = '1200px';
+    inner.style.maxHeight = '100vh';
+    inner.style.position = 'relative';
+
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '開始する';
+    closeBtn.style.position = 'absolute';
+    closeBtn.style.right = '24px';
+    closeBtn.style.bottom = '24px';
+    closeBtn.style.zIndex = '10';
+    closeBtn.style.background = '#1976d2';
+    closeBtn.style.color = '#fff';
+    closeBtn.style.border = 'none';
+    closeBtn.style.borderRadius = '4px';
+    closeBtn.style.padding = '12px 32px';
+    closeBtn.style.fontSize = '1.1em';
+    closeBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.onclick = () => {
+        document.body.removeChild(modal);
+    };
+
+    const iframe = document.createElement('iframe');
+    iframe.src = 'guide.html';
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+
+    inner.appendChild(closeBtn);
+    inner.appendChild(iframe);
+    modal.appendChild(inner);
+    document.body.appendChild(modal);
+}
+
+// ゲーム終了時に呼び出す処理例
+function onGameFinish(rank) {
+    playCountWageUp();
+    rankWageUp(rank);
+}
+// --- ここまで時給処理 ---
 let currentQuestion = null;
 let gameStartTime;
 let timerInterval;
@@ -290,9 +428,33 @@ function finishGame() {
     // 新ロジック: 設問ID・経過時間からランク・コメント取得
     const ratingResult = getRatingByQuestionIdAndTime(currentQuestion.id, elapsedTime);
     const finalRank = ratingResult.rank;
+
+    // --- 時給昇給処理 ---
+    const beforeWage = getWage();
+    onGameFinish(finalRank);
+    const afterWage = getWage();
+    if (afterWage > beforeWage) {
+        showWageUpNotice(afterWage - beforeWage, afterWage);
+    }
+
     // 必要に応じてコメントも保存や表示に利用可能
     saveHistory(elapsedTime, finalAccuracy, finalRank, elapsedTime);
     // 例: コメントを画面に表示したい場合はここでDOM操作を追加
+}
+
+// 時給アップ通知を表示
+function showWageUpNotice(up, now) {
+    const el = document.getElementById('wage-up-notice');
+    if (!el) return;
+    el.innerHTML = `💰 <span style="color:#e67e22;">時給UP!</span> +${up}円 → <span style="color:#1976d2;">${now}円</span>`;
+    el.style.display = 'block';
+    el.style.animation = 'none'; // リセット
+    // 強制再描画
+    void el.offsetWidth;
+    el.style.animation = 'wageUpPop 1.2s cubic-bezier(.5,1.8,.5,1)';
+    setTimeout(() => {
+        el.style.display = 'none';
+    }, 1400);
 }
 
 function saveHistory(time, accuracy, rank, elapsedTime) {
