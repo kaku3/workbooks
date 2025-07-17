@@ -1,7 +1,7 @@
 window.questions = [
   {
     "id": 1,
-    "title": "【ご確認】仕様について（保守範囲）",
+    "title": "【ご確認】管理画面の挙動について",
     "difficulty": 3,
     "from_customer": {
       "subject": "【ご確認】管理画面の挙動について",

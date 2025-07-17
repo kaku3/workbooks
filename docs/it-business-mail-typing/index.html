@@ -18,8 +18,29 @@
     <link rel="stylesheet" href="styles/typing.css">
     <link rel="stylesheet" href="styles/util.css">
     <link rel="stylesheet" href="styles/result.css">
+    <link rel="stylesheet" href="styles/blocker.css">
+    <link rel="stylesheet" href="styles/timecard.css">
 </head>
 <body>
+
+    <!-- 画面幅が狭い場合のブロック画面 -->
+    <div id="screen-blocker">
+      <div class="blocker-bg"><img src="images/ogp.png" alt="Ogp"></div>
+      <div class="blocker-inner">
+        <div class="blocker-title1">香ばしビジメ</div>
+        <div class="blocker-title2">極タイピング</div>
+        <div class="blocker-msg">
+          このアプリはPCの大きな画面（横1280px超）でのご利用を推奨しています。<br>
+          画面を広げて再度アクセスしてください。
+        </div>
+      </div>
+      <a href="https://note.com/kakup/n/n23c4a96fe22f" target="_blank" class="blocker-note-link">
+        <span class="blocker-note-link-label">関連記事：</span>
+        なぜ、あの「香ばしいビジネスメール」をひたすら打つことが、SESで「１人称で動ける人」を育てるのか？<br>
+        <span class="blocker-note-link-sub">noteで詳しく読む</span>
+      </a>
+      </div>
+    </div>
 
 
 
@@ -184,6 +205,39 @@
             <input type="text" id="customer-name" placeholder="田中">
             <button id="save-settings-btn">保存</button>
             <p>*アプリ内でのみ利用。サーバに保存などはしていません。</p>
+        </div>
+    </div>
+
+    <!-- タイムカード表示モーダル -->
+    <div id="timecard-modal" style="display:none;">
+        <div class="timecard-modal-content">
+            <div class="timecard-header">
+                <h2>📋 タイムカード</h2>
+                <button class="timecard-close" onclick="hideTimecardModal()">&times;</button>
+            </div>
+            <div class="timecard-body">
+                <div class="timecard-month-nav">
+                    <button onclick="changeTimecardMonth(-1)">← 前月</button>
+                    <span id="timecard-month-display">2024年1月</span>
+                    <button onclick="changeTimecardMonth(1)">次月 →</button>
+                </div>
+                <div class="timecard-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>出勤時刻</th>
+                                <th>退勤時刻</th>
+                                <th>勤務時間</th>
+                                <th>備考</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timecard-table-body">
+                            <!-- 動的に生成される -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

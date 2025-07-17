@@ -1,0 +1,139 @@
+/* noteリンクを一番下・中央・控えめなデザインに */
+.blocker-note-link {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  margin: 0 auto 0 auto;
+  padding: 10px 32px 14px 32px;
+  background: rgba(40,40,40,0.72);
+  color: #ffe082;
+  font-weight: bold;
+  font-size: 1.05em;
+  text-decoration: none;
+  box-shadow: 0 2px 8px #0002;
+  border-radius: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  text-align: center;
+  z-index: 10;
+  letter-spacing: 0.01em;
+  width: 100vw;
+  max-width: 100vw;
+  display: block;
+  box-sizing: border-box;
+}
+.blocker-note-link-label {
+  color: #ffe082;
+  font-size: 0.98em;
+  font-weight: normal;
+  margin-right: 0.5em;
+}
+}
+.blocker-note-link-sub {
+  font-size: 0.95em;
+  color: #ccc;
+  display: block;
+  margin-top: 2px;
+}
+/* 画面幅が1280px以下のときに全画面で警告を表示する */
+#screen-blocker {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #222;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  overflow: hidden;
+}
+#screen-blocker .blocker-bg {
+  position: fixed;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  z-index: 1;
+  background: #222;
+}
+#screen-blocker .blocker-bg img {
+  position: fixed;
+  left: 0; top: 0;
+  width: 100vw;
+  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
+  object-fit: cover;
+  opacity: 0.35;
+  filter: brightness(0.7) blur(1px);
+  z-index: 1;
+}
+#screen-blocker .blocker-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+#screen-blocker .blocker-title1 {
+  font-size: 2.3em;
+  color: #fff;
+  font-weight: bold;
+  margin-bottom: 0.2em;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 8px #0008;
+}
+#screen-blocker .blocker-title2 {
+  font-size: 1.5em;
+  color: #ffe082;
+  font-weight: bold;
+  margin-bottom: 1.2em;
+  letter-spacing: 0.12em;
+  text-shadow: 0 2px 8px #0008;
+}
+#screen-blocker .blocker-msg {
+  font-size: 1.25em;
+  color: #fff;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 1.2em 2.2em;
+  margin-top: 1.2em;
+  box-shadow: 0 2px 12px #0004;
+  text-shadow: 0 1px 4px #0006;
+}
+}
+#screen-blocker .blocker-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+#screen-blocker img {
+  width: 220px;
+  max-width: 60vw;
+  margin-bottom: 32px;
+}
+#screen-blocker h1 {
+  font-size: 2.2em;
+  color: #1976d2;
+  margin-bottom: 18px;
+}
+#screen-blocker p {
+  font-size: 1.2em;
+  color: #333;
+}
+@media (max-width: 1280px) {
+  #screen-blocker { display: flex; }
+  body > *:not(#screen-blocker) { display: none !important; }
+  #screen-blocker .blocker-msg {
+    font-size: 1em;
+    padding: 1em 1.2em;
+  }
+}

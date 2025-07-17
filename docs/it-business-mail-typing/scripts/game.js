@@ -29,6 +29,12 @@ function dailyLoginWageUp() {
     if (localStorage.getItem(WAGE_DATE_KEY) !== today) {
         addWage(1);
         localStorage.setItem(WAGE_DATE_KEY, today);
+        
+        // タイムカード記録（出勤時刻を記録）
+        recordTimecard('login');
+        
+        // ログインボーナス発生フラグを設定
+        localStorage.setItem('show_timecard_on_startup', 'true');
     }
 }
 
@@ -62,6 +68,11 @@ function rankWageUp(rank) {
 // 初回ログイン時ガイド表示
 document.addEventListener('DOMContentLoaded', () => {
     setWage(getWage());
+    
+    // タイムカードの月表示を初期化
+    currentTimecardMonth = new Date().getMonth();
+    currentTimecardYear = new Date().getFullYear();
+    
     dailyLoginWageUp();
 
     // 初回ログイン判定
@@ -116,6 +127,11 @@ function showGuideModal() {
     closeBtn.style.cursor = 'pointer';
     closeBtn.onclick = () => {
         document.body.removeChild(modal);
+        
+        // 初回起動時のフロー: 登場人物設定 → タイムカード
+        setTimeout(() => {
+            showInitialSetup();
+        }, 100);
     };
 
     const iframe = document.createElement('iframe');
@@ -417,6 +433,9 @@ function getRatingByQuestionIdAndTime(questionId, elapsedTime) {
 }
 
 function finishGame() {
+    // 退勤時刻を記録
+    recordTimecard('logout');
+    
     stopGame();
     inputArea.disabled = true; // 入力エリアを無効化
     // 送信ボタンを有効化
@@ -525,4 +544,192 @@ window.initGame = function() {
         e.preventDefault();
         // alert('ペーストは禁止されています');
     });
+}
+
+// 初回起動時の処理フロー
+function showInitialSetup() {
+    // 登場人物設定を表示
+    const settingsModal = document.getElementById('settings-modal');
+    if (settingsModal) {
+        settingsModal.classList.add('active');
+        
+        // 設定モーダルのクローズ処理を上書き
+        const originalSaveBtn = document.getElementById('save-settings-btn');
+        if (originalSaveBtn) {
+            // 元のクリックイベントを削除
+            originalSaveBtn.replaceWith(originalSaveBtn.cloneNode(true));
+            const newSaveBtn = document.getElementById('save-settings-btn');
+            
+            newSaveBtn.onclick = () => {
+                // 設定を保存
+                const userInfo = {
+                    company: document.getElementById('user-company').value,
+                    name: document.getElementById('user-name').value,
+                    customer_company: document.getElementById('customer-company').value,
+                    customer_name: document.getElementById('customer-name').value,
+                };
+                localStorage.setItem('typingGameUserInfo', JSON.stringify(userInfo));
+                
+                // 設定モーダルを閉じる
+                settingsModal.classList.remove('active');
+                
+                // タイムカードを表示（ログインボーナス発生時のみ）
+                if (localStorage.getItem('show_timecard_on_startup') === 'true') {
+                    setTimeout(() => {
+                        showTimecardModal();
+                        localStorage.removeItem('show_timecard_on_startup');
+                    }, 100);
+                }
+            };
+        }
+    }
+}
+
+// タイムカード機能
+let currentTimecardMonth = new Date().getMonth();
+let currentTimecardYear = new Date().getFullYear();
+
+// タイムカード記録
+function recordTimecard(type) {
+    const now = new Date();
+    const today = now.toISOString().slice(0, 10);
+    const timeString = now.toTimeString().slice(0, 8);
+    
+    // 月別のタイムカードデータを取得
+    const monthKey = `timecard_${now.getFullYear()}_${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+    let timecardData = JSON.parse(localStorage.getItem(monthKey) || '{}');
+    
+    if (!timecardData[today]) {
+        timecardData[today] = {};
+    }
+    
+    if (type === 'login') {
+        // 出勤時刻を記録（その日の初回のみ）
+        if (!timecardData[today].loginTime) {
+            timecardData[today].loginTime = timeString;
+        }
+    } else if (type === 'logout') {
+        // 退勤時刻を記録（最新の時刻で上書き）
+        timecardData[today].logoutTime = timeString;
+    }
+    
+    localStorage.setItem(monthKey, JSON.stringify(timecardData));
+}
+
+// タイムカード表示
+function showTimecardModal() {
+    const modal = document.getElementById('timecard-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        updateTimecardDisplay();
+    }
+}
+
+// タイムカード非表示
+function hideTimecardModal() {
+    const modal = document.getElementById('timecard-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// タイムカード月変更
+function changeTimecardMonth(delta) {
+    currentTimecardMonth += delta;
+    if (currentTimecardMonth < 0) {
+        currentTimecardMonth = 11;
+        currentTimecardYear--;
+    } else if (currentTimecardMonth > 11) {
+        currentTimecardMonth = 0;
+        currentTimecardYear++;
+    }
+    updateTimecardDisplay();
+}
+
+// タイムカード表示更新
+function updateTimecardDisplay() {
+    const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    const monthDisplay = document.getElementById('timecard-month-display');
+    if (monthDisplay) {
+        monthDisplay.textContent = `${currentTimecardYear}年${monthNames[currentTimecardMonth]}`;
+    }
+    
+    // 月別のタイムカードデータを取得
+    const monthKey = `timecard_${currentTimecardYear}_${(currentTimecardMonth + 1).toString().padStart(2, '0')}`;
+    const timecardData = JSON.parse(localStorage.getItem(monthKey) || '{}');
+    
+    // テーブル作成
+    const tableBody = document.getElementById('timecard-table-body');
+    if (!tableBody) return;
+    
+    tableBody.innerHTML = '';
+    
+    // その月の日数を取得
+    const daysInMonth = new Date(currentTimecardYear, currentTimecardMonth + 1, 0).getDate();
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${currentTimecardYear}-${(currentTimecardMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        const dayData = timecardData[dateStr];
+        
+        const row = document.createElement('tr');
+        const isToday = dateStr === todayStr;
+        if (isToday) {
+            row.classList.add('timecard-today');
+        }
+        
+        // 日付
+        const dateCell = document.createElement('td');
+        dateCell.textContent = `${day}日`;
+        row.appendChild(dateCell);
+        
+        // 出勤時刻
+        const loginCell = document.createElement('td');
+        loginCell.textContent = dayData?.loginTime || '--:--:--';
+        row.appendChild(loginCell);
+        
+        // 退勤時刻
+        const logoutCell = document.createElement('td');
+        logoutCell.textContent = dayData?.logoutTime || '--:--:--';
+        row.appendChild(logoutCell);
+        
+        // 勤務時間
+        const workTimeCell = document.createElement('td');
+        if (dayData?.loginTime && dayData?.logoutTime) {
+            const workHours = calculateWorkHours(dayData.loginTime, dayData.logoutTime);
+            workTimeCell.textContent = workHours;
+        } else {
+            workTimeCell.textContent = '--:--';
+        }
+        row.appendChild(workTimeCell);
+        
+        // 備考
+        const noteCell = document.createElement('td');
+        let notes = [];
+        if (dayData?.loginTime && dateStr === localStorage.getItem(WAGE_DATE_KEY)) {
+            notes.push('<span class="timecard-bonus">出勤ボーナス +1円</span>');
+        }
+        noteCell.innerHTML = notes.join('<br>') || '';
+        row.appendChild(noteCell);
+        
+        tableBody.appendChild(row);
+    }
+}
+
+// 勤務時間計算
+function calculateWorkHours(loginTime, logoutTime) {
+    const login = new Date(`2000-01-01T${loginTime}`);
+    const logout = new Date(`2000-01-01T${logoutTime}`);
+    
+    if (logout < login) {
+        // 日をまたいだ場合
+        logout.setDate(logout.getDate() + 1);
+    }
+    
+    const diffMs = logout - login;
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return `${diffHours}:${diffMinutes.toString().padStart(2, '0')}`;
 }

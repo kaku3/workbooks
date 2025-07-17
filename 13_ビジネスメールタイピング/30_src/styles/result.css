@@ -78,8 +78,8 @@
     display: none;
     pointer-events: none;
     max-width: 90vw;
-    min-width: 220px;
+    min-width: 320px;
     text-align: center;
-    word-break: break-all;
+    word-break: keep-all;
     display: block;
 }

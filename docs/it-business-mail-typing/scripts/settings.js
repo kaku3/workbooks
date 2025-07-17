@@ -56,8 +56,8 @@ function initSettings() {
         }
     });
 
-    // 初回起動チェック
-    if (!loadUserInfo()) {
-        showSettingsModal();
-    }
+    // 初回起動チェック（game.jsで処理するため無効化）
+    // if (!loadUserInfo()) {
+    //     showSettingsModal();
+    // }
 }
