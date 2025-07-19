@@ -57,18 +57,30 @@
   left: 0; top: 0; width: 100vw; height: 100vh;
   z-index: 1;
   background: #222;
+  overflow: hidden;
 }
-#screen-blocker .blocker-bg img {
-  position: fixed;
-  left: 0; top: 0;
+.blocker-bg video {
   width: 100vw;
   height: 100vh;
-  min-width: 100vw;
-  min-height: 100vh;
   object-fit: cover;
-  opacity: 0.35;
-  filter: brightness(0.7) blur(1px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+.blocker-dot-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 1;
+  pointer-events: none;
+  background:
+    repeating-radial-gradient(circle, rgba(0,0,0,0.18) 0, rgba(0,0,0,0.18) 2px, transparent 3px, transparent 8px),
+    rgba(0,0,0,0.38);
+  background-size: 8px 8px;
+  background-position: 0 0;
 }
 #screen-blocker .blocker-inner {
   position: relative;

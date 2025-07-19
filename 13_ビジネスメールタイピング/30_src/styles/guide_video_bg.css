@@ -1,0 +1,32 @@
+/* story-card用動画＋ドット背景 */
+.story-card {
+  position: relative;
+  background: none !important;
+  overflow: hidden;
+  min-height: 220px;
+}
+.story-card .story-bg-video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.story-card .story-dot-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    repeating-radial-gradient(circle, rgba(0,0,0,0.18) 0, rgba(0,0,0,0.18) 2px, transparent 3px, transparent 8px),
+    rgba(0,0,0,0.38);
+  background-size: 8px 8px;
+  background-position: 0 0;
+}
+.story-card p {
+  position: relative;
+  z-index: 2;
+}

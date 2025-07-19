@@ -25,7 +25,10 @@
 
     <!-- 画面幅が狭い場合のブロック画面 -->
     <div id="screen-blocker">
-      <div class="blocker-bg"><img src="images/ogp.png" alt="Ogp"></div>
+      <div class="blocker-bg">
+        <video id="blocker-bg-video" src="movies/main-visual.mp4" autoplay loop muted playsinline style="width:100vw;height:100vh;object-fit:cover;position:absolute;top:0;left:0;z-index:0;"></video>
+        <div class="blocker-dot-overlay"></div>
+      </div>
       <div class="blocker-inner">
         <div class="blocker-title1">香ばしビジメ</div>
         <div class="blocker-title2">極タイピング</div>
@@ -35,9 +38,9 @@
         </div>
       </div>
       <a href="https://note.com/kakup/n/n23c4a96fe22f" target="_blank" class="blocker-note-link">
-        <span class="blocker-note-link-label">関連記事：</span>
+        <div class="blocker-note-link-label">関連記事：</div>
         なぜ、あの「香ばしいビジネスメール」をひたすら打つことが、SESで「１人称で動ける人」を育てるのか？<br>
-        <span class="blocker-note-link-sub">noteで詳しく読む</span>
+        <div class="blocker-note-link-sub">noteで詳しく読む</div>
       </a>
       </div>
     </div>

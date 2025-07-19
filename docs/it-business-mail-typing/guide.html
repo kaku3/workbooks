@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>ビジネスメールタイピング ガイド</title>
+  <link rel="stylesheet" href="styles/guide_video_bg.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
     body {
@@ -47,22 +48,15 @@
     }
     .story-card {
       position: relative;
-      background-image: url('images/ogp.png');
-      background-size: cover;
-      background-position: center;
+      background: none !important;
       border: 1px solid #555;
       text-align: center;
-      overflow: hidden; /* for pseudo-element */
-    }
-    .story-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: 1;
+      overflow: hidden;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     .story-card p {
       position: relative;
@@ -71,6 +65,11 @@
       font-weight: bold;
       color: #fff;
       text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+      margin: 0;
+      padding: 0 0.5em;
+      display: flex;
+      align-items: center;
+      height: 100%;
     }
     ul {
       list-style: none;
@@ -167,9 +166,11 @@
     <h1>香ばしビジメ - 極タイピング</h1>
 
     <div class="card story-card">
+      <video class="story-bg-video" src="movies/main-visual.mp4" autoplay loop muted playsinline></video>
+      <div class="story-dot-overlay"></div>
       <p>
         次々に舞い込む"香ばしい"メールへの返信。<br>
-        そのタイピング速度と正確さのみが、あなたの時給を左右する。
+        そのタイピング速度と正確さが、あなたの時給を左右する。
       </p>
     </div>
 
