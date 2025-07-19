@@ -1,22 +1,19 @@
-/* サイドバー下部ボタンを同じ幅・中央揃え */
+/* サイドメニュー下部のボタン配置（縦並び・統一スタイル） */
 .side-nav-bottom {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    align-items: center;
     margin-top: auto;
     padding: 16px 0 8px 0;
 }
-#howto-btn, #settings-btn {
-    width: 110px;
+.side-nav-bottom button {
+    width: 100%;
     min-width: 0;
     height: 38px;
-    margin: 0 auto;
-    display: block;
-    text-align: center;
+    margin: 0;
     font-size: 1.08em;
-    padding: 0 0 0 0;
-    border-radius: 8px;
+    padding: 0;
+    border-radius: 4px;
     border: none;
     background: #f5f7fa;
     color: #1976d2;
@@ -24,12 +21,13 @@
     box-shadow: 0 1px 4px #0001;
     transition: background 0.2s, color 0.2s;
     cursor: pointer;
-    vertical-align: middle;
+    display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    line-height: 1;
 }
-}
-#howto-btn:hover, #settings-btn:hover {
+.side-nav-bottom button:hover {
     background: #e3f2fd;
     color: #0d47a1;
 }
@@ -67,35 +65,8 @@
   80% { opacity: 1; transform: translateX(-50%) scale(0.98) translateY(0); }
   100% { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
 }
-/* 結果表示モーダル */
-    /* サイドメニュー下部のボタン配置（縦並び・幅いっぱい） */
-    .side-nav-bottom {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: auto;
-        padding: 16px 0 8px 0;
-    }
-    .side-nav-bottom button {
-        width: 100%;
-        min-width: 0;
-        margin-bottom: 0;
-        font-size: 1.08em;
-        padding: 12px 0;
-        border-radius: 8px;
-        border: none;
-        background: #f5f7fa;
-        color: #1976d2;
-        font-weight: bold;
-        box-shadow: 0 1px 4px #0001;
-        transition: background 0.2s, color 0.2s;
-        cursor: pointer;
-        display: block;
-    }
-    .side-nav-bottom button:hover {
-        background: #e3f2fd;
-        color: #0d47a1;
-    }
+/* 時給アップ通知エフェクト */
+.result-mail-anim {
   margin-bottom: 18px;
   height: 64px;
   display: flex;

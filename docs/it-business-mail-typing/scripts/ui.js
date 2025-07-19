@@ -60,6 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (howtoBtn) {
         howtoBtn.addEventListener('click', showHowtoModal);
     }
+    
+    // 勤怠ボタンイベント登録
+    const timecardBtn = document.getElementById('timecard-btn');
+    if (timecardBtn) {
+        timecardBtn.addEventListener('click', showTimecardModal);
+    }
 });
 // scripts/ui.js
 
