@@ -63,6 +63,20 @@
     cursor: pointer;
     margin-top: 8px;
 }
+
+#result-modal .modal-btn-outline {
+    background: #fff;
+    color: #1976d2;
+    border: 2px solid #1976d2;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(25,118,210,0.06);
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+#result-modal .modal-btn-outline:hover {
+    background: #e3f2fd;
+    color: #0d47a1;
+    border-color: #0d47a1;
+}
 #result-modal #wage-up-notice {
     position: absolute;
     top: 8px;

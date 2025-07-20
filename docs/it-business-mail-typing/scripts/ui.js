@@ -110,11 +110,42 @@ function setupUIEventListeners() {
         });
     }
 
+
+    // モーダルを閉じてメイン画面に戻す共通処理
+    function handleModalClose() {
+        document.getElementById('result-modal').style.display = 'none';
+        // ゲーム完了後にお題リストの表示を更新
+        updateQuestionList(window.questions, (questionId) => {
+            currentQuestion = window.questions.find(q => q.id === questionId);
+            if (currentQuestion) {
+                displayQuestionDetails(currentQuestion);
+            }
+        });
+        // 選択状態を復元
+        if (currentQuestion) {
+            // 一覧のli要素でcurrentQuestion.idと一致するものにactiveを付与
+            document.querySelectorAll('#question-selector li').forEach(item => {
+                if (item.dataset.questionId === String(currentQuestion.id)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            showHistoryPanel(currentQuestion.id);
+        }
+        // メイン画面のBGMを再生
+        if (window.soundManager) {
+            window.soundManager.play('bgm-main');
+        }
+    }
+
     cancelGameBtn.addEventListener('click', () => {
         if (confirm('ゲームを中断して閉じますか？記録は保存されません。')) {
             hideGameModal();
             stopGame();
             resetGameStats();
+            // メイン画面の選択状態・詳細も復元
+            handleModalClose();
         }
     });
 
@@ -127,18 +158,16 @@ function setupUIEventListeners() {
     // 結果モーダル閉じる
     const resultCloseBtn = document.getElementById('result-close-btn');
     if (resultCloseBtn) {
-        resultCloseBtn.addEventListener('click', () => {
+        resultCloseBtn.addEventListener('click', handleModalClose);
+    }
+    // リトライボタン
+    const resultRetryBtn = document.getElementById('result-retry-btn');
+    if (resultRetryBtn) {
+        resultRetryBtn.addEventListener('click', () => {
             document.getElementById('result-modal').style.display = 'none';
-            // ゲーム完了後にお題リストの表示を更新
-            updateQuestionList(window.questions, (questionId) => {
-                currentQuestion = window.questions.find(q => q.id === questionId);
-                if (currentQuestion) {
-                    displayQuestionDetails(currentQuestion);
-                }
-            });
-            // 履歴グラフも明示的に再描画（現在のお題があれば）
+            // ゲームモーダルを再表示
             if (currentQuestion) {
-                showHistoryPanel(currentQuestion.id);
+                showGameModal(currentQuestion);
             }
         });
     }
@@ -200,6 +229,10 @@ function showResultModal() {
 
 
 function showGameModal(question) {
+    // メインBGMを停止
+    if (window.soundManager) {
+        window.soundManager.stop('bgm-main');
+    }
     // currentQuestionを必ずセット
     currentQuestion = question;
 
@@ -222,6 +255,11 @@ function showGameModal(question) {
     if (window.inputArea) {
         window.inputArea.value = '';
         window.inputArea.disabled = false;
+        // IMEをONにする
+        window.inputArea.style.imeMode = 'active';
+        setTimeout(() => {
+            window.inputArea.focus();
+        }, 50);
     }
     // 送信ボタンを無効化
     const sendBtn = document.getElementById('send-btn');

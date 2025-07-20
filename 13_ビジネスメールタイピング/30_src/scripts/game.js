@@ -77,9 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // BGMロード（重複ロード防止）
     if (window.soundManager) {
-        if (!window.soundManager.sounds['bgm']) {
-            window.soundManager.load('bgm', 'sounds/bgm.mp3', true);
-        }
+        const bgms = ['bgm-main','bgm-game'];
+        bgms.forEach(function(name) {
+            if (!window.soundManager.sounds[name]) {
+                window.soundManager.load(name, 'sounds/' + name + '.mp3', true);
+            }
+        });
         // タイピングSEロード（重複ロード防止）
         if (!window.soundManager.sounds['type01']) {
             window.soundManager.loadTypingSe();
@@ -100,6 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // アクセスごとにタイムカードを必ず表示
+    showTimecardModal();
     // 初回ログイン判定
     if (!localStorage.getItem('guide_shown')) {
         showGuideModal();
@@ -192,7 +197,7 @@ const timeEl = document.getElementById('time');
 const accuracyEl = document.getElementById('accuracy');
 const replySubjectGameEl = document.getElementById('reply-subject-game');
 const gameReplyBodyEl = document.getElementById('game-reply-body');
-const inputArea = document.getElementById('input-area');
+window.inputArea = document.getElementById('input-area');
 
 const HIGHSCORE_KEY = 'typingGameHighScore';
 const HISTORY_KEY = 'typingGameHistory';
@@ -225,16 +230,11 @@ function prepareGame() {
     gameReplyBodyEl.scrollTop = gameReplyBodyEl.scrollHeight;
 
     resetGameStats();
-    inputArea.value = '';
-    inputArea.setAttribute('maxlength', 200);
+    window.inputArea.value = '';
+    window.inputArea.setAttribute('maxlength', 200);
     // プレースホルダを1行目用に
-    inputArea.placeholder = '１行目を入力してスタート';
-    // 入力欄をリセット（前回のinputArea参照をクリア）
-    if (window.inputArea && window.inputArea !== inputArea) {
-        window.inputArea.value = '';
-        window.inputArea.placeholder = '１行目を入力してスタート';
-    }
-    setTimeout(() => inputArea.focus(), 100);
+    window.inputArea.placeholder = '１行目を入力してスタート';
+    setTimeout(() => window.inputArea.focus(), 100);
 }
 
 
@@ -242,10 +242,10 @@ function startGame() {
     if (gameStartTime) return; // ゲームが既に始まっている場合は何もしない
     gameStartTime = new Date();
 
-
-    // 1文字目入力時にBGM再生＆タイピングSEコンボリセット
+    // main画面BGM停止、ゲームBGM再生＆タイピングSEコンボリセット
     if (window.soundManager) {
-        window.soundManager.play('bgm');
+        window.soundManager.stop('bgm-main');
+        window.soundManager.play('bgm-game');
         window.soundManager.resetTypingSeCombo();
     }
 
@@ -259,8 +259,15 @@ function stopGame() {
     timerInterval = null;
 
     if (window.soundManager) {
-        window.soundManager.stop('bgm');
-    }    
+        window.soundManager.stop('bgm-game');
+        // main画面に戻る場合はBGM再生（再生中ならplayしない）
+        const bgmMain = window.soundManager.sounds['bgm-main'];
+        if (bgmMain && !bgmMain.paused && !bgmMain.ended) {
+            // すでに再生中なのでplayしない
+        } else {
+            window.soundManager.play('bgm-main');
+        }
+    }
 }
 
 
@@ -274,9 +281,9 @@ function resetGameStats() {
     timeEl.textContent = '0.00';
     // wpmEl.textContent = '0';
     accuracyEl.textContent = '100';
-    inputArea.value = '';
-    inputArea.disabled = false; // 入力エリアを有効化
-    inputArea.classList.remove('incorrect-line');
+    window.inputArea.value = '';
+    window.inputArea.disabled = false; // 入力エリアを有効化
+    window.inputArea.classList.remove('incorrect-line');
 }
 
 
@@ -481,7 +488,11 @@ function finishGame() {
     }
 
     stopGame();
-    inputArea.disabled = true; // 入力エリアを無効化
+    if (window.inputArea) {
+        window.inputArea.value = '';
+        window.inputArea.placeholder = '送信ボタンを押して結果を表示';
+        window.inputArea.disabled = true; // 入力エリアを無効化
+    }
     // 送信ボタンを有効化
     const sendBtn = document.getElementById('send-btn');
     if (sendBtn) sendBtn.disabled = false;
@@ -543,16 +554,16 @@ function saveHistory(time, accuracy, rank, elapsedTime) {
 
 
 window.initGame = function() {
-    inputArea.setAttribute('autocomplete', 'off');
-    inputArea.setAttribute('spellcheck', 'false');
-    inputArea.value = '';
-    inputArea.style.height = 'auto';
-    inputArea.style.removeProperty('height');
+    window.inputArea.setAttribute('autocomplete', 'off');
+    window.inputArea.setAttribute('spellcheck', 'false');
+    window.inputArea.value = '';
+    window.inputArea.style.height = 'auto';
+    window.inputArea.style.removeProperty('height');
     // 既存のイベントを全て解除し、textarea用に再設定
-    const newInputArea = inputArea.cloneNode(true);
+    const newInputArea = window.inputArea.cloneNode(true);
     newInputArea.style.height = 'auto';
     newInputArea.style.removeProperty('height');
-    inputArea.parentNode.replaceChild(newInputArea, inputArea);
+    window.inputArea.parentNode.replaceChild(newInputArea, window.inputArea);
     window.inputArea = newInputArea;
     // IME入力中フラグ
     window.isComposing = false;
@@ -617,7 +628,7 @@ window.initGame = function() {
     });
     // paste チート対策
     window.inputArea.addEventListener('paste', function(e) {
-        e.preventDefault();
+        e.prevent止;
         // alert('ペーストは禁止されています');
     });
 }
@@ -706,6 +717,10 @@ function hideTimecardModal() {
     const modal = document.getElementById('timecard-modal');
     if (modal) {
         modal.style.display = 'none';
+    }
+    // BGMを再生
+    if (window.soundManager) {
+        window.soundManager.play('bgm-main');
     }
 }
 

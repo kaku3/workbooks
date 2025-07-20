@@ -157,8 +157,8 @@
     position: sticky;
     top: -20px;
     background-color: #fff;
-    padding-top: 20px;
-    padding-bottom: 10px;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
     z-index: 1;
 }
 .question-list-panel ul {
@@ -167,7 +167,7 @@
     margin: 0;
 }
 .question-list-panel li {
-    padding: .5rem;
+    padding: .25rem;
     cursor: pointer;
     border-bottom: 1px solid #eee;
     transition: background-color 0.3s;

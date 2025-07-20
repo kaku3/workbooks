@@ -22,12 +22,24 @@ SoundManager.prototype.play = function(name) {
     if (!sound) return;
     if (this.muted) return;
     if (sound.isBgm) {
+
+console.log(`Playing BGM: ${name}`, sound);
+
+        // すでに再生中なら何もしない（頭出し防止）
+        if (!sound.audio.paused && !sound.audio.ended && sound.audio.currentTime > 0) {
+            return;
+        }
         if (this.bgm && this.bgm !== sound.audio) {
             this.bgm.pause();
             this.bgm.currentTime = 0;
         }
         this.bgm = sound.audio;
-        this.bgm.volume = this.bgmVolume;
+        // bgm-mainのみボリューム0.3、それ以外は通常
+        if (name === 'bgm-main') {
+            this.bgm.volume = 0.3;
+        } else {
+            this.bgm.volume = this.bgmVolume;
+        }
         this.bgm.currentTime = 0;
         this.bgm.play();
     } else {
@@ -78,7 +90,7 @@ window.soundManager = new SoundManager();
 
 // --- タイピングSE（効果音）コンボ・順次再生機能 ---
 SoundManager.prototype._typingSeFiles = ['type01', 'type02', 'type03', 'type04', 'type05'];
-SoundManager.prototype._typingSeThresholds = [2, 5, 10, 20, 50]; // 追加タイミング
+SoundManager.prototype._typingSeThresholds = [10, 25, 50, 100]; // 追加タイミング
 SoundManager.prototype._typingSeCombo = 0;
 SoundManager.prototype._typingSeList = ['type01'];
 SoundManager.prototype._typingSeIndex = 0;
@@ -93,14 +105,30 @@ SoundManager.prototype.loadTypingSe = function() {
 // 正打時に呼ぶ: combo加算＆SE再生
 SoundManager.prototype.playTypingSe = function() {
     this._typingSeCombo++;
-    // 閾値到達でSEリスト拡張
+    // 閾値到達でSEリスト拡張（従来通り）
     for (let i = 0; i < this._typingSeThresholds.length; i++) {
         if (this._typingSeCombo === this._typingSeThresholds[i] && this._typingSeList.length < i + 2) {
             this._typingSeList.push(this._typingSeFiles[i + 1]);
         }
     }
-    // 順番に再生
-    const seName = this._typingSeList[this._typingSeIndex % this._typingSeList.length];
+
+    let seName = 'type01';
+    // type01, type02は交互
+    if (this._typingSeList.length >= 2) {
+        seName = (this._typingSeIndex % 2 === 0) ? 'type01' : 'type02';
+    }
+    // type05: 15回に1回
+    if (this._typingSeList.includes('type05') && this._typingSeCombo % 15 === 0) {
+        seName = 'type05';
+    }
+    // type04: 10回に1回
+    else if (this._typingSeList.includes('type04') && this._typingSeCombo % 10 === 0) {
+        seName = 'type04';
+    }
+    // type03: 5回に1回
+    else if (this._typingSeList.includes('type03') && this._typingSeCombo % 5 === 0) {
+        seName = 'type03';
+    }
     this.play(seName);
     this._typingSeIndex++;
 };

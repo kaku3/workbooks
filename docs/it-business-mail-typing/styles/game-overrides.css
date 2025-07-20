@@ -1,3 +1,16 @@
+#game-reply-body {
+  position: relative;
+  overflow: hidden;
+}
+#game-reply-body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('../images/game-reply.jpg') center center / cover no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
 
 #modal-received-body {
   position: relative;
@@ -7,7 +20,7 @@
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: url('../images/game-reply.jpg') center center / cover no-repeat;
+  background: url('../images/game-receive.jpg') center center / cover no-repeat;
   opacity: 0.15;
   pointer-events: none;
   z-index: 0;
