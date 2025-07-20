@@ -1,0 +1,111 @@
+html, body {
+    height: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#wage-info {
+    position: absolute;
+    top: 0.6rem;
+    right: 1.5rem;
+    font-size: 1em;
+    color: #1976d2;
+    background: #fff7e0;
+    padding: 6px 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px #0001;
+    z-index: 10;
+}
+#wage-info span {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+header {
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 1rem;
+    margin-bottom: 20px;
+    background: #f7fafc; /* 明るいグレー */
+    color: #222;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    min-height: 0;
+}
+
+header h1 {
+    color: #222;
+    font-size: 1.2em;
+    font-weight: normal;
+    margin: 0;
+}
+
+footer {
+    width: 100vw;
+    min-width: 100vw;
+    height: 40px;
+    min-height: 40px;
+    background: #f7fafc;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95em;
+    border-top: 1px solid #e0e0e0;
+    flex-shrink: 0;
+    padding: 0 18px;
+    box-sizing: border-box;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.footer-left a {
+    color: #2176b6;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1em;
+}
+.footer-left a:hover {
+    text-decoration: underline;
+}
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+}
+.footer-share-btn img {
+    display: inline-block;
+    vertical-align: middle;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+}
+.footer-share-btn:hover img {
+    opacity: 1;
+}

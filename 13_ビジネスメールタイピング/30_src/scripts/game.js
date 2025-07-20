@@ -65,7 +65,7 @@ function rankWageUp(rank) {
 
 // 初期化
 
-// 初回ログイン時ガイド表示
+// 初回ログイン時ガイド表示 & BGMロード
 document.addEventListener('DOMContentLoaded', () => {
     setWage(getWage());
     
@@ -74,6 +74,31 @@ document.addEventListener('DOMContentLoaded', () => {
     currentTimecardYear = new Date().getFullYear();
     
     dailyLoginWageUp();
+
+    // BGMロード（重複ロード防止）
+    if (window.soundManager) {
+        if (!window.soundManager.sounds['bgm']) {
+            window.soundManager.load('bgm', 'sounds/bgm.mp3', true);
+        }
+        // タイピングSEロード（重複ロード防止）
+        if (!window.soundManager.sounds['type01']) {
+            window.soundManager.loadTypingSe();
+        }
+        // se-ok, se-ngロード
+        if (!window.soundManager.sounds['se-ok']) {
+            window.soundManager.load('se-ok', 'sounds/se-ok.mp3');
+        }
+        if (!window.soundManager.sounds['se-ng']) {
+            window.soundManager.load('se-ng', 'sounds/se-ng.mp3');
+        }
+        // result-s～result-eロード
+        const resultSounds = ['result-s','result-a','result-b','result-c','result-d','result-e'];
+        resultSounds.forEach(function(name) {
+            if (!window.soundManager.sounds[name]) {
+                window.soundManager.load(name, 'sounds/' + name + '.mp3');
+            }
+        });
+    }
 
     // 初回ログイン判定
     if (!localStorage.getItem('guide_shown')) {
@@ -217,6 +242,13 @@ function startGame() {
     if (gameStartTime) return; // ゲームが既に始まっている場合は何もしない
     gameStartTime = new Date();
 
+
+    // 1文字目入力時にBGM再生＆タイピングSEコンボリセット
+    if (window.soundManager) {
+        window.soundManager.play('bgm');
+        window.soundManager.resetTypingSeCombo();
+    }
+
     timerInterval = setInterval(updateTimer, 100);
 }
 
@@ -225,6 +257,10 @@ function stopGame() {
     clearInterval(timerInterval);
 
     timerInterval = null;
+
+    if (window.soundManager) {
+        window.soundManager.stop('bgm');
+    }    
 }
 
 
@@ -325,7 +361,7 @@ function calculateAccuracy() {
 
 window.handleTyping = function(e) {
     const gameModal = document.getElementById('game-modal');
-    if (!currentQuestion || gameModal.style.display !== 'flex') return;
+    if (!currentQuestion || gameModal.style.display !== 'flex') return false;
 
     if (!gameStartTime) {
         startGame();
@@ -340,13 +376,14 @@ window.handleTyping = function(e) {
     const currentLine = lines[currentLineIndex] || '';
     const typedText = (window.inputArea && window.inputArea.value !== undefined) ? window.inputArea.value : inputArea.value;
     const lineDivs = gameReplyBodyEl.querySelectorAll('.game-line');
-    if (!lineDivs[currentLineIndex]) return;
+    if (!lineDivs[currentLineIndex]) return false;
     const currentDiv = lineDivs[currentLineIndex];
     const spans = currentDiv.querySelectorAll('span');
 
     // 入力中の行のspanのみclassを最小限で更新（完全一致・未入力は一括処理）
     typedChars = typedText.length;
     let currentCorrectCount = 0;
+    let hasMistype = false;
     if (typedText === currentLine && currentLine.length > 0) {
         // 完全一致なら全span correct
         for (let i = 0; i < spans.length; i++) {
@@ -368,6 +405,7 @@ window.handleTyping = function(e) {
                     currentCorrectCount++;
                 } else {
                     if (spans[i].className !== 'incorrect') spans[i].className = 'incorrect';
+                    hasMistype = true;
                 }
             } else {
                 if (spans[i].className !== 'untyped') spans[i].className = 'untyped';
@@ -409,10 +447,11 @@ window.handleTyping = function(e) {
         if (div.style.order != newOrder) div.style.order = newOrder;
     });
 
-    // 入力行が見切れた場合はスクロール（行進時のみ）
+    // 入力行が見切れた場合はスクロール（更新時のみ）
     if (e && e.type === 'keydown' && e.key === 'Enter') {
         currentDiv.scrollIntoView({block: 'end', behavior: 'smooth'});
     }
+    return hasMistype;
 }
 
 
@@ -435,7 +474,12 @@ function getRatingByQuestionIdAndTime(questionId, elapsedTime) {
 function finishGame() {
     // 退勤時刻を記録
     recordTimecard('logout');
-    
+
+    // BGM停止
+    if (window.soundManager) {
+        window.soundManager.stop('bgm');
+    }
+
     stopGame();
     inputArea.disabled = true; // 入力エリアを無効化
     // 送信ボタンを有効化
@@ -499,27 +543,67 @@ function saveHistory(time, accuracy, rank, elapsedTime) {
 
 
 window.initGame = function() {
+    // 直前にse-okを鳴らした文字数
+    window.lastSeOkLength = -1;
     inputArea.setAttribute('autocomplete', 'off');
     inputArea.setAttribute('spellcheck', 'false');
     inputArea.value = '';
-    inputArea.style.height = 'auto'; // 高さも初期化
-    inputArea.style.removeProperty('height'); // インラインheightを完全に消す
+    inputArea.style.height = 'auto';
+    inputArea.style.removeProperty('height');
     // 既存のイベントを全て解除し、textarea用に再設定
     const newInputArea = inputArea.cloneNode(true);
-    newInputArea.style.height = 'auto'; // 新しいノードにも高さ初期化
-    newInputArea.style.removeProperty('height'); // インラインheightを完全に消す
+    newInputArea.style.height = 'auto';
+    newInputArea.style.removeProperty('height');
     inputArea.parentNode.replaceChild(newInputArea, inputArea);
     window.inputArea = newInputArea;
-    // 入力時にリアルタイム判定＋自動リサイズ
+    // IME入力中フラグ
+    window.isComposing = false;
+
+    // --- イベント再登録 ---
+    // input: タイピング音/BGM/タイマー/自動リサイズ
     window.inputArea.addEventListener('input', function(e) {
         window.handleTyping(e);
-        // 自動リサイズ
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
+        // 1文字以上入力があれば必ずタイピング音を鳴らす（IME中も鳴らす）
+        if (window.soundManager) {
+            const typedText = this.value;
+            const currentLine = lines[currentLineIndex] || '';
+            if (typedText.length > 0 && typedText.length <= currentLine.length) {
+                window.soundManager.playTypingSe();
+            }
+        }
+        adjustTextareaHeight(this);
+        this._prevValue = this.value;
     });
-    // Enterで行送り（textareaのデフォルト改行を抑止）
+    // compositionstart: IME開始
+    window.inputArea.addEventListener('compositionstart', function() {
+        window.isComposing = true;
+    });
+    // compositionend: IME確定
+    window.inputArea.addEventListener('compositionend', function(e) {
+        window.isComposing = false;
+        window.handleTyping(e);
+        if (window.soundManager) {
+            const currentLine = lines[currentLineIndex] || '';
+            const typedText = window.inputArea.value;
+            // 先頭一致ならOK、そうでなければNG
+            if (typedText.length > 0 && typedText.length <= currentLine.length) {
+                if (currentLine.indexOf(typedText) === 0) {
+                    // 直前と同じ文字数なら鳴らさない
+                    if (window.lastSeOkLength !== typedText.length) {
+                        window.soundManager.play('se-ok');
+                        window.lastSeOkLength = typedText.length;
+                    }
+                } else {
+                    window.soundManager.resetTypingSeCombo();
+                    window.soundManager.play('se-ng');
+                }
+            }
+        }
+    });
+    // keydown: Enter処理
     window.inputArea.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
+            // 通常のEnter処理（SEは一切鳴らさない）
             const currentLine = lines[currentLineIndex] || '';
             const typedText = window.inputArea.value;
             if (typedText === currentLine || (currentLine === '' && typedText === '')) {
@@ -528,9 +612,7 @@ window.initGame = function() {
                     window.inputArea.value = '';
                     window.inputArea.focus();
                     window.inputArea.placeholder = `${currentLineIndex + 1}行目を入力`;
-                    // 行進時のみ必要なDOM更新＋スクロール
                     window.handleTyping({type:'keydown', key:'Enter'});
-                    // 高さリセット
                     window.inputArea.style.height = 'auto';
                 } else {
                     finishGame();
@@ -733,3 +815,11 @@ function calculateWorkHours(loginTime, logoutTime) {
     
     return `${diffHours}:${diffMinutes.toString().padStart(2, '0')}`;
 }
+
+// --- ここから追記 ---
+// 入力エリアのリサイズ処理を共通化
+function adjustTextareaHeight(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+}
+// --- ここまで追記 ---

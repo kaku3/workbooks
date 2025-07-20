@@ -1,3 +1,44 @@
+/* メール詳細部の返信ボタンを目立たせる */
+#reply-btn {
+  background: linear-gradient(90deg, #1565c0 80%, #1976d2 100%);
+  font-weight: bold;;
+}
+#reply-btn:hover, #reply-btn:focus {
+  background: linear-gradient(90deg, #1565c0 80%, #1976d2 100%);
+  box-shadow: 0 4px 16px #1976d255;
+  transform: translateY(-2px) scale(1.04);
+  outline: none;
+}
+/* 返信のポイント・評価基準パネルの背景色のみ変更 */
+#reply-point-panel {
+  background: #fff9c4;
+}
+#rank-panel {
+  background: #e3f2fd;
+}
+/* 返信のポイント・評価基準パネルの背景色を彩度高めに */
+
+/* メール詳細部の件名をボールド・大きく */
+#received-email-full .email-header p {
+  font-weight: bold;
+  font-size: 1.35em;
+  margin: 0;
+}
+#received-email-full .subject-label {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+/* 本文部の枠線を目立つ色に、行間を狭く */
+#received-email-full .email-body {
+  border: 2px solid #1976d2;
+  border-radius: 8px;
+  padding: 14px 18px;
+  background: #fff;
+  line-height: 1.5;
+  margin-top: 10px;
+  font-size: 1.08em;
+}
 /* ゲームモーダル内の受信メール・送信メール見本・入力欄のスタイル補強 */
 .modal-left-panel .email-body {
     flex-grow: 1;
@@ -10,8 +51,8 @@
     margin-bottom: 8px;
     color: #234;
     letter-spacing: 0.01em;
-    line-height: 2;
-    font-size: 1.1em;
+    line-height: 1.5;
+    font-size: 1em;
     white-space: pre-wrap;
     transition: background 0.3s, box-shadow 0.3s;
     overflow-y: auto;
