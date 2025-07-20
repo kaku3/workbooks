@@ -116,6 +116,29 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       margin-top: 0.8em;
+      cursor: zoom-in;
+      transition: box-shadow 0.2s;
+    }
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      align-items: center;
+      justify-content: center;
+    }
+    .image-modal.active {
+      display: flex;
+    }
+    .image-modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      background: #fff;
+      padding: 8px;
+      cursor: zoom-out;
     }
     .image-gallery b {
       font-size: 0.95em;
@@ -160,6 +183,30 @@
       }
     }
   </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.insertAdjacentHTML('beforeend', `
+        <div class="image-modal" id="image-modal">
+          <img src="" alt="拡大画像" />
+        </div>
+      `);
+      const modal = document.getElementById('image-modal');
+      const modalImg = modal.querySelector('img');
+      document.querySelectorAll('.image-gallery img').forEach(img => {
+        img.addEventListener('click', function() {
+          modalImg.src = this.src;
+          modalImg.alt = this.alt;
+          modal.classList.add('active');
+        });
+      });
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal || e.target === modalImg) {
+          modal.classList.remove('active');
+          modalImg.src = '';
+        }
+      });
+    });
+  </script>
 </head>
 <body>
   <div class="container">
