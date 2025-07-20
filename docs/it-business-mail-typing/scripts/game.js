@@ -583,9 +583,10 @@ window.initGame = function() {
         if (window.soundManager) {
             const currentLine = lines[currentLineIndex] || '';
             const typedText = window.inputArea.value;
+
             // 先頭一致ならOK、そうでなければNG
             if (typedText.length > 0 && typedText.length <= currentLine.length) {
-                if (!currentLine.indexOf(typedText) === 0) {
+                if (currentLine.indexOf(typedText) !== 0) {
                     window.soundManager.resetTypingSeCombo();
                     window.soundManager.play('se-ng');
                 }

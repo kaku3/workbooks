@@ -1,0 +1,19 @@
+
+#modal-received-body {
+  position: relative;
+  overflow: hidden;
+}
+#modal-received-body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('../images/game-reply.jpg') center center / cover no-repeat;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+/* 強調テキストや太字にも適用 */
+#modal-received-body, #modal-received-body *, #modal-received-body strong, #modal-received-body b {
+  font-size: 1.2rem;
+  line-height: 2;
+}
