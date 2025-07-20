@@ -543,8 +543,6 @@ function saveHistory(time, accuracy, rank, elapsedTime) {
 
 
 window.initGame = function() {
-    // 直前にse-okを鳴らした文字数
-    window.lastSeOkLength = -1;
     inputArea.setAttribute('autocomplete', 'off');
     inputArea.setAttribute('spellcheck', 'false');
     inputArea.value = '';
@@ -587,13 +585,7 @@ window.initGame = function() {
             const typedText = window.inputArea.value;
             // 先頭一致ならOK、そうでなければNG
             if (typedText.length > 0 && typedText.length <= currentLine.length) {
-                if (currentLine.indexOf(typedText) === 0) {
-                    // 直前と同じ文字数なら鳴らさない
-                    if (window.lastSeOkLength !== typedText.length) {
-                        window.soundManager.play('se-ok');
-                        window.lastSeOkLength = typedText.length;
-                    }
-                } else {
+                if (!currentLine.indexOf(typedText) === 0) {
                     window.soundManager.resetTypingSeCombo();
                     window.soundManager.play('se-ng');
                 }
@@ -603,10 +595,11 @@ window.initGame = function() {
     // keydown: Enter処理
     window.inputArea.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
-            // 通常のEnter処理（SEは一切鳴らさない）
             const currentLine = lines[currentLineIndex] || '';
             const typedText = window.inputArea.value;
             if (typedText === currentLine || (currentLine === '' && typedText === '')) {
+                window.soundManager.play('se-ok');
+
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     window.inputArea.value = '';

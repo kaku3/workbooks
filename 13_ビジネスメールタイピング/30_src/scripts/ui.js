@@ -176,6 +176,15 @@ function showResultModal() {
     const text = encodeURIComponent(`香ばしビジメ - 極タイピング\n${rank}ランク (${Number(time).toFixed(2)}秒)\n「${questionTitle}」でクリア！`);
     document.getElementById('result-share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     document.getElementById('result-share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+
+    // ランクに応じたリザルトSE再生
+    if (window.soundManager && typeof rank === 'string') {
+        const lowerRank = rank.toLowerCase();
+        const seMap = { 's': 'result-s', 'a': 'result-a', 'b': 'result-b', 'c': 'result-c', 'd': 'result-d', 'e': 'result-e' };
+        if (seMap[lowerRank]) {
+            window.soundManager.play(seMap[lowerRank]);
+        }
+    }
     // モーダル表示
     document.getElementById('result-modal').style.display = 'flex';
     // 昇給通知があれば表示

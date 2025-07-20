@@ -42,6 +42,7 @@
 /* ゲームモーダル内の受信メール・送信メール見本・入力欄のスタイル補強 */
 .modal-left-panel .email-body {
     flex-grow: 1;
+    width: calc(100% - 40px);
     min-height: 120px;
     background: #fff;
     border: 1.5px solid #cbe6fa;
