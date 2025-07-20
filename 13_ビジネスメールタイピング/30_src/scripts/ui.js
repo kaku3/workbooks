@@ -66,6 +66,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (timecardBtn) {
         timecardBtn.addEventListener('click', showTimecardModal);
     }
+
+    // ログインボーナス時のタイムカード自動表示
+    try {
+        if (localStorage.getItem('show_timecard_on_startup') === 'true') {
+            showTimecardModal();
+            localStorage.removeItem('show_timecard_on_startup');
+        }
+    } catch(e) {}
 });
 // scripts/ui.js
 
