@@ -88,6 +88,12 @@ function addCareerUIevent() {
         careerBtn.addEventListener('click', function() {
             careerModal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            
+            // iframeの中身をリロードして最新の状態を反映
+            const careerIframe = document.getElementById('career-iframe');
+            if (careerIframe) {
+                careerIframe.src = careerIframe.src;
+            }
         });
         careerClose.addEventListener('click', function() {
             careerModal.style.display = 'none';
