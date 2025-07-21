@@ -106,12 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // アクセスごとにタイムカードを必ず表示
-    showTimecardModal();
     // 初回ログイン判定
     if (!localStorage.getItem('guide_shown')) {
         showGuideModal();
         localStorage.setItem('guide_shown', '1');
+    } else {
+        // アクセスごとにタイムカードを必ず表示
+        showTimecardModal();
     }
 });
 
