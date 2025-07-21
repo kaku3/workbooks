@@ -54,12 +54,16 @@ function showHowtoModal() {
     modal.appendChild(inner);
     document.body.appendChild(modal);
 }
-// --- 遊び方ボタンイベント登録 ---
+// 各種ボタンイベント登録
 document.addEventListener('DOMContentLoaded', () => {
+    // --- 遊び方ボタンイベント登録 ---
     const howtoBtn = document.getElementById('howto-btn');
     if (howtoBtn) {
         howtoBtn.addEventListener('click', showHowtoModal);
     }
+
+    // キャリアボタンイベント登録
+    addCareerUIevent();
     
     // 勤怠ボタンイベント登録
     const timecardBtn = document.getElementById('timecard-btn');
@@ -75,7 +79,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } catch(e) {}
 });
-// scripts/ui.js
+
+function addCareerUIevent() {
+    const careerBtn = document.getElementById('career-btn');
+    const careerModal = document.getElementById('career-modal');
+    const careerClose = document.getElementById('career-modal-close');
+    if (careerBtn && careerModal && careerClose) {
+        careerBtn.addEventListener('click', function() {
+            careerModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+        careerClose.addEventListener('click', function() {
+            careerModal.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+        // モーダル外クリックで閉じる
+        careerModal.addEventListener('click', function(e) {
+            if (e.target === careerModal) {
+                careerModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    }
+}
 
 
 const inboxBtn = document.getElementById('inbox-btn');

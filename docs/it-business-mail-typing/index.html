@@ -51,6 +51,7 @@
         <h1>香ばしビジメ - 極タイピング</h1>
         <div id="wage-info">
             あなたの時給 <span id="wage-value">0</span>円 : 人月単価 <span id="wage-monthly">0</span>円
+            <span class="separator"> : </span><span id="current-title">aaa</span>
         </div>
     </header>
 
@@ -61,6 +62,7 @@
             </ul>
             <div class="side-nav-bottom">
                 <button id="howto-btn">ガイド 🛈</button>
+                <button id="career-btn">キャリア 🏆</button>
                 <button id="timecard-btn">勤怠 📋</button>
                 <button id="settings-btn">設定 ⚙</button>
             </div>
@@ -248,13 +250,23 @@
         </div>
     </div>
 
+    <!-- キャリアモーダル -->
+    <div id="career-modal" class="modal" style="display:none;z-index:2000;">
+        <div class="career-modal-content" style="position:relative;width:1840px;height:1000px;max-width:98vw;max-height:98vh;padding:0;background:#f5f7fa;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.18);overflow:hidden;">
+            <button id="career-modal-close" style="position:absolute;top:12px;right:18px;z-index:10;font-size:2em;background:none;border:none;color:#333;cursor:pointer;">&times;</button>
+            <iframe id="career-iframe" src="career.html" style="width:100%;height:100%;border:none;border-radius:18px;"></iframe>
+        </div>
+    </div>
+
     <script src="data/questions.js"></script>
     <script src="data/ratings.js"></script>
     <script src="data/unlock_conditions.js"></script>
+    <script src="data/titles.js"></script>
     <script src="scripts/sound-manager.js"></script>
     <script src="scripts/settings.js"></script>
     <script src="scripts/ui.js"></script>
     <script src="scripts/game.js"></script>
     <script src="scripts/main.js"></script>
+    <script src="scripts/career.js"></script>
 </body>
 </html>
