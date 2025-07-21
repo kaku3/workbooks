@@ -289,7 +289,7 @@ body {
 }
 
 .title-card {
-  width: calc(50% - 60px);
+  width: calc(50% - 64px);
   position: relative;
   background: #ffffff;
   border-radius: 12px;
