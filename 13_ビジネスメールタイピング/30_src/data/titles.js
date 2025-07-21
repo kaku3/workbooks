@@ -197,7 +197,7 @@ window.titles = [
     "description": "技術力とコミュニケーション力を兼ね備えた、チームの中心的存在（憧れの称号、フィクション要素あり）。",
     "realValue": "技術系リードエンジニアとして、複雑なプロジェクトの技術選定や仕様策定を主導。",
     "unlockCondition": {
-      "playCount": 16,
+      "playCount": 30,
       "hourlyWage": 4000
     },
     "rarity": "legendary",
@@ -209,7 +209,7 @@ window.titles = [
     "description": "多部署・多企業にまたがる大規模プロジェクトを統括する神話級の調整力（完全フィクション設定）。",
     "realValue": "戦略コンサルタント、ITコンサルタントとして独立、企業顧問としての地位確立。",
     "unlockCondition": {
-      "playCount": 17,
+      "playCount": 50,
       "hourlyWage": 4100
     },
     "rarity": "legendary",
@@ -221,7 +221,7 @@ window.titles = [
     "description": "DX分野における芸術的な提案力と実行力を持つ、業界のオピニオンリーダー（幻想的称号）。",
     "realValue": "業界カンファレンスでの講演、書籍執筆、DX関連の最高技術責任者（CTO）候補。",
     "unlockCondition": {
-      "playCount": 18,
+      "playCount": 80,
       "hourlyWage": 4200
     },
     "rarity": "legendary",
@@ -233,7 +233,7 @@ window.titles = [
     "description": "メールとタイピングでIT業界全体に影響を与える、伝説の人物（完全にゲーム的演出）。",
     "realValue": "IT企業の経営陣、テック系スタートアップのCEO、業界団体の要職など最高峰のキャリア。",
     "unlockCondition": {
-      "playCount": 19,
+      "playCount": 100,
       "hourlyWage": 4400
     },
     "rarity": "mythical",
