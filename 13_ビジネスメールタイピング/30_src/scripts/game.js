@@ -18,6 +18,9 @@ function setWage(val) {
         const man = Math.floor(val * 160) / 10000;
         elm.textContent = man.toFixed(1).replace(/\.0$/, '') + '万';
     }
+    window.updateCurrentTitle(); // 現在の称号も更新
+    const titleEl = document.getElementById('current-title');
+    if (titleEl) titleEl.textContent = window.currentTitle.name;
 }
 function addWage(val) {
     setWage(getWage() + val);

@@ -23,6 +23,16 @@ html, body {
     font-size: 1.4em;
     font-weight: bold;
 }
+#wage-info span.separator {
+    margin: 0 4px;
+    font-size: 1.2em;
+    color: #888;
+}
+#wage-info span#current-title {
+    font-size: 1em;
+    font-weight: normal;
+    color: #555;
+}
 
 body {
     display: flex;

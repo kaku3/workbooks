@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キャリア - 香ばしビジメ 極タイピング</title>
+ 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/career.css">
+    <link rel="stylesheet" href="styles/util.css">
+</head>
+<body>
+    <div class="career-container">
+        <!-- ヘッダー部分 -->
+        <section class="career-header">
+            <h1>キャリアモード</h1>
+            <div class="current-status-container">
+                <div class="current-status">
+                    <div class="status-item">
+                        <span class="status-label">現在の称号</span>
+                        <span class="status-value" id="current-title">未経験エンジニア</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">現在の時給</span>
+                        <span class="status-value" id="current-wage">¥0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">プレイ回数</span>
+                        <span class="status-value" id="play-count">0</span>
+                    </div>
+                </div>
+                <!-- 次の称号情報 -->
+                <div class="next-title-section">
+                    <h2>昇進条件</h2>
+                    <div class="next-title-info" id="next-title-info">
+                        <div class="unlock-conditions">
+                            <div class="condition">
+                                <span class="condition-label">時給:</span>
+                                <span class="condition-value" id="required-wage">¥400</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="wage-progress"></div>
+                                </div>
+                                <div class="progress-text" id="wage-progress-text">¥0/¥400</div>
+                            </div>
+                            <div class="condition">
+                                <span class="condition-label">プレイ回数:</span>
+                                <span class="condition-value" id="required-play-count">1回</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="play-progress"></div>
+                                </div>
+                                <div class="progress-text" id="play-progress-text">0/1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 役職一覧 -->
+        <section class="titles-section">
+            <h2>役職一覧</h2>
+            <div class="title-filters">
+                <button class="filter-btn active" data-category="all">全て</button>
+                <button class="filter-btn" data-category="beginner">初級</button>
+                <button class="filter-btn" data-category="junior">ジュニア</button>
+                <button class="filter-btn" data-category="intermediate">中級</button>
+                <button class="filter-btn" data-category="senior">シニア</button>
+                <button class="filter-btn" data-category="expert">エキスパート</button>
+                <button class="filter-btn" data-category="mythical">伝説級</button>
+            </div>
+            <div class="titles-grid" id="titles-grid">
+                <!-- 称号カードがここに動的に生成されます -->
+            </div>
+        </section>
+
+        <!-- 称号詳細モーダル -->
+        <div class="title-modal" id="title-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modal-title">称号名</h3>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="title-rarity" id="modal-rarity">common</div>
+                    <div class="title-description" id="modal-description">称号の説明</div>
+                    <div class="title-real-value">
+                        <h4>実務価値</h4>
+                        <p id="modal-real-value">実務での価値説明</p>
+                    </div>
+                    <div class="unlock-condition">
+                        <h4>解放条件</h4>
+                        <p id="modal-unlock-condition">解放条件の説明</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スクリプト読み込み -->
+    <script src="data/titles.js"></script>
+    <script src="scripts/game.js"></script>
+    <script src="scripts/career.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initCareerPage();
+        });
+    </script>
+</body>
+</html>
