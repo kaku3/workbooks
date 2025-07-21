@@ -74,7 +74,6 @@ function updateNextTitleInfo(playCount, currentWage) {
         nextTitleSection.innerHTML = `
             <h2>🎉 おめでとうございます！</h2>
             <div class="completion-message">
-                <p>全ての称号を解放しました！</p>
                 <p>あなたは真の「ITの覇者」です！</p>
             </div>
         `;
