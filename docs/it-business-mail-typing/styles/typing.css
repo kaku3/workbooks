@@ -3,16 +3,28 @@
     flex-direction: column;
     height: 100%;
     min-height: 0;
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    border-radius: 8px;
 }
+
+/* キーボード表示エリア用ラッパー */
+.typing-area-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 /* typing.css: タイピングエリア・入力欄・行表示 */
 #game-reply-body {
     white-space: pre-wrap;
     line-height: 1.6;
     font-size: 1.2em;
     padding: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(204, 204, 204, 0.3);
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: rgba(249, 249, 249, 0.1);
     margin-bottom: 0;
     overflow-y: auto;
     flex: 1 1 0%;
@@ -24,11 +36,11 @@
 }
 #input-area {
     padding: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(204, 204, 204, 0.3);
     border-radius: 8px;
     font-size: 1.2em;
     font-family: 'Courier New', Courier, monospace;
-    background-color: #f9f9f9;
+    background-color: rgba(255, 255, 255, 0.2);
     line-height: 1.6;
     resize: none;
     margin-top: 0;
@@ -56,7 +68,7 @@
 .game-line.current {
     color: #222;
     font-weight: bold;
-    background: #eaf6ff;
+    background: rgba(234, 246, 255, 0.3);
     opacity: 1;
     transition: background 0.3s, color 0.3s;
 }

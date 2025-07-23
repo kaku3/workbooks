@@ -1,3 +1,7 @@
+// --- GameKeyboard エフェクト用変数 ---
+let lastPhysicalKey = null; // 最後に押された物理キー
+let isComposingText = false; // IME変換中フラグ
+
 // --- 時給処理 ---
 const WAGE_KEY = 'wage';
 const WAGE_DATE_KEY = 'wage_last_login';
@@ -246,6 +250,11 @@ function startGame() {
     if (gameStartTime) return; // ゲームが既に始まっている場合は何もしない
     gameStartTime = new Date();
 
+    // GameKeyboardをリセット
+    if (window.gameKeyboard) {
+        window.gameKeyboard.reset();
+    }
+
     // main画面BGM停止、ゲームBGM再生＆タイピングSEコンボリセット
     if (window.soundManager) {
         window.soundManager.stop('bgm-main');
@@ -288,6 +297,11 @@ function resetGameStats() {
     window.inputArea.value = '';
     window.inputArea.disabled = false; // 入力エリアを有効化
     window.inputArea.classList.remove('incorrect-line');
+    
+    // GameKeyboardをリセット
+    if (window.gameKeyboard) {
+        window.gameKeyboard.reset();
+    }
 }
 
 
@@ -426,6 +440,51 @@ window.handleTyping = function(e) {
     correctChars = currentCorrectCount;
     incorrectChars = typedChars - currentCorrectCount;
     calculateAccuracy();
+
+    // GameKeyboardエフェクト処理（IME対応）
+    if (window.gameKeyboard) {
+        let keyToShow = null;
+        
+        // キーボードエフェクト用のキー決定
+        if (e && e.data && !isComposingText) {
+            // 通常の入力（IMEオフ）
+            keyToShow = e.data;
+        } else if (lastPhysicalKey && isComposingText) {
+            // IME入力中は物理キーを使用
+            keyToShow = lastPhysicalKey;
+        } else if (e && e.type === 'compositionend' && lastPhysicalKey) {
+            // IME確定時も物理キーを使用
+            keyToShow = lastPhysicalKey;
+        }
+        console.log('Key to show:', keyToShow, 'isComposingText:', isComposingText, e);
+
+        if (keyToShow && keyToShow.length === 1) {
+            // 入力されたキーのエフェクト表示
+            window.gameKeyboard.showKeyPress(keyToShow);
+            
+            // 正誤判定によるエフェクト
+            if (typedText.length > 0 && typedText.length <= currentLine.length) {
+                const isCorrect = typedText[typedText.length - 1] === currentLine[typedText.length - 1];
+                if (isCorrect) {
+                    window.gameKeyboard.showCorrectKeyEffect(keyToShow);
+                } else {
+                    window.gameKeyboard.showErrorKeyEffect(keyToShow);
+                }
+            }
+        }
+    }
+
+    // 次に入力するキーのサジェスト表示
+    if (window.gameKeyboard && currentLine && typedText.length < currentLine.length) {
+        const nextChar = currentLine[typedText.length];
+        if (nextChar && nextChar !== '\n') {
+            window.gameKeyboard.showNextKeySuggestion(nextChar);
+        } else {
+            window.gameKeyboard.clearNextKeySuggestion();
+        }
+    } else if (window.gameKeyboard) {
+        window.gameKeyboard.clearNextKeySuggestion();
+    }
 
     // 行の表示・class切り替えは必要な行のみ
     // 前の行（currentLineIndex-1）、現在行、次の行（currentLineIndex+1）だけを更新
@@ -590,10 +649,12 @@ window.initGame = function() {
     // compositionstart: IME開始
     window.inputArea.addEventListener('compositionstart', function() {
         window.isComposing = true;
+        isComposingText = true;
     });
     // compositionend: IME確定
     window.inputArea.addEventListener('compositionend', function(e) {
         window.isComposing = false;
+        isComposingText = false;
         window.handleTyping(e);
         if (window.soundManager) {
             const currentLine = lines[currentLineIndex] || '';
@@ -608,8 +669,59 @@ window.initGame = function() {
             }
         }
     });
-    // keydown: Enter処理
+    // keydown: Enter処理 + 物理キー記録 + キーボードエフェクト
     window.inputArea.addEventListener('keydown', function(e) {
+
+        console.log(e);
+
+        // GameKeyboardエフェクト処理（物理キーベース）
+        if (window.gameKeyboard && e.code) {
+            let keyToShow = null;
+            
+            // e.codeから物理キーを抽出（例：KeyA → A, KeyB → B）
+            if (e.code.startsWith('Key')) {
+                keyToShow = e.code.replace('Key', ''); // KeyA → A
+            } else if (e.code.startsWith('Digit')) {
+                keyToShow = e.code.replace('Digit', ''); // Digit1 → 1
+            } else if (e.code === 'Space') {
+                keyToShow = 'Space';
+            } else if (e.code === 'Period') {
+                keyToShow = '.';
+            } else if (e.code === 'Comma') {
+                keyToShow = ',';
+            } else if (e.code === 'Semicolon') {
+                keyToShow = ';';
+            } else if (e.code === 'Quote') {
+                keyToShow = "'";
+            } else if (e.code === 'Slash') {
+                keyToShow = '/';
+            } else if (e.code === 'Backslash') {
+                keyToShow = '\\';
+            } else if (e.code === 'BracketLeft') {
+                keyToShow = '[';
+            } else if (e.code === 'BracketRight') {
+                keyToShow = ']';
+            } else if (e.code === 'Minus') {
+                keyToShow = '-';
+            } else if (e.code === 'Equal') {
+                keyToShow = '=';
+            }
+            
+            // キーエフェクト表示（修飾キーが押されていない場合のみ）
+            if (keyToShow && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                window.gameKeyboard.showKeyPress(keyToShow);
+            }
+        }
+
+        // 物理キーを記録（GameKeyboardエフェクト用）
+        if (e.key && e.key.length === 1 && e.key.match(/[a-zA-Z0-9.,;:!?@\-_\/\\[\]{}()="'`~^|<>+*&%$#]/) && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            lastPhysicalKey = e.key.toUpperCase(); // 英字は大文字で統一
+        } else if (e.key === 'Space') {
+            lastPhysicalKey = 'Space';
+        } else {
+            lastPhysicalKey = null;
+        }
+
         if (e.key === 'Enter') {
             const currentLine = lines[currentLineIndex] || '';
             const typedText = window.inputArea.value;

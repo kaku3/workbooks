@@ -65,6 +65,7 @@
     min-height: 0;
 }
 #game-reply-body {
+    position: relative;
     flex: 1 1 auto;
     min-height: 120px;
     max-height: 260px;
