@@ -68,7 +68,8 @@
 .game-line.current {
     color: #222;
     font-weight: bold;
-    background: rgba(234, 246, 255, 0.3);
+    background: rgba(234, 246, 255, 0.7);
+    border-radius: 2px;
     opacity: 1;
     transition: background 0.3s, color 0.3s;
 }

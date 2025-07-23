@@ -163,12 +163,9 @@ GameKeyboard.prototype.showKeyPress = function (key) {
   if (!keyElement) return;
 
   const rect = keyElement.rect;
-  const originalFill = rect.getAttribute('fill');
 
-  // 既存のタイマーをクリア
-  if (keyElement.resetTimer) {
-    clearTimeout(keyElement.resetTimer);
-  }
+  // 既存のエフェクトを強制的にクリア
+  this.clearKeyEffect(key);
 
   // キーを押した状態にする
   rect.setAttribute('fill', '#3498db');
@@ -176,7 +173,7 @@ GameKeyboard.prototype.showKeyPress = function (key) {
 
   // 少し遅れて元に戻す
   keyElement.resetTimer = setTimeout(() => {
-    rect.setAttribute('fill', originalFill);
+    rect.setAttribute('fill', '#ecf0f1');
     rect.setAttribute('stroke', '#bdc3c7');
     keyElement.resetTimer = null;
   }, 150);
@@ -278,10 +275,8 @@ GameKeyboard.prototype.showCorrectKeyEffect = function (key) {
 
   const rect = keyElement.rect;
 
-  // 既存のタイマーをクリア
-  if (keyElement.resetTimer) {
-    clearTimeout(keyElement.resetTimer);
-  }
+  // 既存のエフェクトを強制的にクリア
+  this.clearKeyEffect(key);
 
   // 正解時の緑色エフェクト
   rect.setAttribute('fill', '#27ae60');
@@ -342,10 +337,8 @@ GameKeyboard.prototype.showErrorKeyEffect = function (key) {
 
   const rect = keyElement.rect;
 
-  // 既存のタイマーをクリア
-  if (keyElement.resetTimer) {
-    clearTimeout(keyElement.resetTimer);
-  }
+  // 既存のエフェクトを強制的にクリア
+  this.clearKeyEffect(key);
 
   // エラー時の赤色エフェクト
   rect.setAttribute('fill', '#e74c3c');
@@ -407,4 +400,21 @@ GameKeyboard.prototype.clearKeyEffect = function (key) {
   // キーの外観をリセット
   keyElement.rect.setAttribute('fill', '#ecf0f1');
   keyElement.rect.setAttribute('stroke', '#bdc3c7');
+  keyElement.rect.style.filter = '';
+  
+  // グループ内の全てのアニメーション要素を削除
+  const animations = keyElement.group.querySelectorAll('animateTransform, animate');
+  animations.forEach(anim => {
+    if (anim.parentNode) {
+      anim.parentNode.removeChild(anim);
+    }
+  });
+  
+  // rect内のアニメーション要素も削除
+  const rectAnimations = keyElement.rect.querySelectorAll('animate');
+  rectAnimations.forEach(anim => {
+    if (anim.parentNode) {
+      anim.parentNode.removeChild(anim);
+    }
+  });
 };
