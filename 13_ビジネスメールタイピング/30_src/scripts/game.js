@@ -221,21 +221,69 @@ function prepareGame() {
     lines = replyText.split(/\r?\n/);
     currentLineIndex = 0;
 
-    // ゲーム用の表示を生成（各行をdivでラップ）
-    gameReplyBodyEl.innerHTML = lines.map((line, idx) => {
-        let style = '';
-        // 最初は現在の行以外は非表示
-        if (idx !== 0) style = ' style="display:none"';
-        if (line === '') {
-            return `<div class="game-line empty-line" data-line="${idx}"${style}><span class="empty-mark">↵</span></div>`;
-        } else {
-            return `<div class="game-line" data-line="${idx}"${style}>` +
-                line.split('').map(char => `<span class="untyped">${char}</span>`).join('') +
-                `</div>`;
+    // ルビ対応のゲーム用表示を生成
+    if (window.getAllLinesCharacters && currentQuestion.id) {
+        // ルビの置き換え値をユーザー設定と同期
+        if (window.setReplacementValues) {
+            window.setReplacementValues({
+                '{{user_company}}': userInfo.company || 'あなたの会社名',
+                '{{user_name}}': userInfo.name || 'あなたの名前',
+                '{{customer_company}}': userInfo.customer_company || '相手の会社名',
+                '{{customer_name}}': userInfo.customer_name || '相手の名前'
+            });
         }
-    }).join('');
+        
+        // ルビデータが利用可能な場合
+        const allLinesCharacters = window.getAllLinesCharacters(currentQuestion.id);
+        
+        gameReplyBodyEl.innerHTML = `<div class="game-content-wrapper">${lines.map((line, idx) => {
+            let style = '';
+            // 最初は現在の行以外は非表示
+            if (idx !== 0) style = ' style="display:none"';
+            
+            if (line === '') {
+                return `<div class="game-line empty-line" data-line="${idx}"${style}><span class="empty-mark">↵</span></div>`;
+            } else {
+                // ルビ対応の表示を生成
+                let lineHtml = '';
+                if (allLinesCharacters[idx]) {
+                    lineHtml = window.generateGameLineWithRuby(allLinesCharacters[idx], '', line);
+                } else {
+                    // フォールバック：通常の文字表示
+                    lineHtml = line.split('').map(char => `<span class="untyped">${char}</span>`).join('');
+                }
+                
+                return `<div class="game-line" data-line="${idx}"${style}>${lineHtml}</div>`;
+            }
+        }).join('')}</div>`;
+    } else {
+        // ルビデータが利用できない場合の従来の処理
+        gameReplyBodyEl.innerHTML = `<div class="game-content-wrapper">${lines.map((line, idx) => {
+            let style = '';
+            // 最初は現在の行以外は非表示
+            if (idx !== 0) style = ' style="display:none"';
+            if (line === '') {
+                return `<div class="game-line empty-line" data-line="${idx}"${style}><span class="empty-mark">↵</span></div>`;
+            } else {
+                return `<div class="game-line" data-line="${idx}"${style}>` +
+                    line.split('').map(char => `<span class="untyped">${char}</span>`).join('') +
+                    `</div>`;
+            }
+        }).join('')}</div>`;
+    }
     // スクロール位置をリセット
     gameReplyBodyEl.scrollTop = gameReplyBodyEl.scrollHeight;
+
+    // キーボード表示を再表示し、必要に応じて初期化
+    const keyboardContainer = document.getElementById('game-keyboard-container');
+    if (keyboardContainer) {
+        keyboardContainer.style.display = 'flex';
+        
+        // キーボードが初期化されていない場合は再初期化
+        if (!window.gameKeyboard && typeof GameKeyboard !== 'undefined') {
+            window.gameKeyboard = new GameKeyboard('game-keyboard-container');
+        }
+    }
 
     resetGameStats();
     window.inputArea.value = '';
@@ -409,31 +457,65 @@ window.handleTyping = function(e) {
     typedChars = typedText.length;
     let currentCorrectCount = 0;
     let hasMistype = false;
-    if (typedText === currentLine && currentLine.length > 0) {
-        // 完全一致なら全span correct
-        for (let i = 0; i < spans.length; i++) {
-            if (spans[i].className !== 'correct') spans[i].className = 'correct';
-        }
-        currentCorrectCount = currentLine.length;
-    } else if (typedText.length === 0 && currentLine.length > 0) {
-        // 未入力なら全span untyped
-        for (let i = 0; i < spans.length; i++) {
-            if (spans[i].className !== 'untyped') spans[i].className = 'untyped';
-        }
-        currentCorrectCount = 0;
-    } else {
-        // 差分のみclass更新
-        for (let i = 0; i < currentLine.length; i++) {
-            if (i < typedText.length) {
-                if (typedText[i] === currentLine[i]) {
-                    if (spans[i].className !== 'correct') spans[i].className = 'correct';
-                    currentCorrectCount++;
-                } else {
-                    if (spans[i].className !== 'incorrect') spans[i].className = 'incorrect';
-                    hasMistype = true;
-                }
+    
+    // ルビ対応の表示更新
+    if (window.getExpandedLineCharacters && currentQuestion.id) {
+        // ルビデータが利用可能な場合、現在行を再生成
+        const lineCharacters = window.getExpandedLineCharacters(currentQuestion.id, currentLineIndex);
+        if (lineCharacters.length > 0) {
+            const updatedHtml = window.generateGameLineWithRuby(lineCharacters, typedText, currentLine);
+            currentDiv.innerHTML = updatedHtml;
+            
+            // 正誤判定
+            if (typedText === currentLine && currentLine.length > 0) {
+                currentCorrectCount = currentLine.length;
+            } else if (typedText.length === 0 && currentLine.length > 0) {
+                currentCorrectCount = 0;
             } else {
+                for (let i = 0; i < typedText.length && i < currentLine.length; i++) {
+                    if (typedText[i] === currentLine[i]) {
+                        currentCorrectCount++;
+                    } else {
+                        hasMistype = true;
+                    }
+                }
+            }
+        } else {
+            // ルビデータがない場合は従来の処理
+            updateSpansClassic(spans, typedText, currentLine);
+        }
+    } else {
+        // ルビデータが利用できない場合の従来の処理
+        updateSpansClassic(spans, typedText, currentLine);
+    }
+    
+    function updateSpansClassic(spans, typedText, currentLine) {
+        if (typedText === currentLine && currentLine.length > 0) {
+            // 完全一致なら全span correct
+            for (let i = 0; i < spans.length; i++) {
+                if (spans[i].className !== 'correct') spans[i].className = 'correct';
+            }
+            currentCorrectCount = currentLine.length;
+        } else if (typedText.length === 0 && currentLine.length > 0) {
+            // 未入力なら全span untyped
+            for (let i = 0; i < spans.length; i++) {
                 if (spans[i].className !== 'untyped') spans[i].className = 'untyped';
+            }
+            currentCorrectCount = 0;
+        } else {
+            // 差分のみclass更新
+            for (let i = 0; i < currentLine.length; i++) {
+                if (i < typedText.length) {
+                    if (typedText[i] === currentLine[i]) {
+                        if (spans[i].className !== 'correct') spans[i].className = 'correct';
+                        currentCorrectCount++;
+                    } else {
+                        if (spans[i].className !== 'incorrect') spans[i].className = 'incorrect';
+                        hasMistype = true;
+                    }
+                } else {
+                    if (spans[i].className !== 'untyped') spans[i].className = 'untyped';
+                }
             }
         }
     }
@@ -551,6 +633,13 @@ function finishGame() {
     }
 
     stopGame();
+    
+    // キーボード表示を非表示にする
+    const keyboardContainer = document.getElementById('game-keyboard-container');
+    if (keyboardContainer) {
+        keyboardContainer.style.display = 'none';
+    }
+    
     if (window.inputArea) {
         window.inputArea.value = '';
         window.inputArea.placeholder = '送信ボタンを押して結果を表示';

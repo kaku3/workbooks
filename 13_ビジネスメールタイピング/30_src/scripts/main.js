@@ -6,10 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupUIEventListeners();
     initGame();
 
-    // GameKeyboardインスタンスの作成
-    if (typeof GameKeyboard !== 'undefined') {
-        window.gameKeyboard = new GameKeyboard('game-keyboard-container');
-    }
+    // GameKeyboardインスタンスの作成（DOMが完全に読み込まれてから実行）
+    setTimeout(() => {
+        if (typeof GameKeyboard !== 'undefined') {
+            window.gameKeyboard = new GameKeyboard('game-keyboard-container');
+        }
+    }, 100);
 
     // お題リストの読み込みと表示
     updateQuestionList(window.questions, (questionId) => {

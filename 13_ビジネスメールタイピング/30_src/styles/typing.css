@@ -17,23 +17,7 @@
 }
 
 /* typing.css: タイピングエリア・入力欄・行表示 */
-#game-reply-body {
-    white-space: pre-wrap;
-    line-height: 1.6;
-    font-size: 1.2em;
-    padding: 15px;
-    border: 1px solid rgba(204, 204, 204, 0.3);
-    border-radius: 8px;
-    background-color: rgba(249, 249, 249, 0.1);
-    margin-bottom: 0;
-    overflow-y: auto;
-    flex: 1 1 0%;
-    min-height: 0;
-    max-height: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
+/* #game-reply-body のスタイルは game.css で定義済み（重複削除） */
 #input-area {
     padding: 15px;
     border: 1px solid rgba(204, 204, 204, 0.3);
