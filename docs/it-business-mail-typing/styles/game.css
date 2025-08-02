@@ -64,12 +64,14 @@
     height: 100%;
     min-height: 0;
 }
-#game-reply-body {
+/* ゲームモーダル内の#game-reply-bodyのスタイル（優先度を高める） */
+.game-modal-content #game-reply-body {
     position: relative;
     flex: 1 1 auto;
     min-height: 120px;
-    max-height: 260px;
+    max-height: calc(90vh - 400px);
     overflow-y: auto;
+    overflow-x: hidden;
     background: #f9f9f9;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -78,9 +80,16 @@
     font-size: 1.1em;
     line-height: 1.2;
     white-space: pre-wrap;
+    display: block !important;
+    box-sizing: border-box;
+}
+
+/* 内部コンテンツを下詰めにするためのフレックスコンテナ */
+.game-modal-content #game-reply-body .game-content-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    min-height: 100%;
 }
 #input-area {
     width: 100%;
@@ -96,6 +105,54 @@
     height: 48px;
 }
 /* game.css: ゲーム画面・モーダル・進捗バー */
+
+/* ルビ表示のスタイル */
+ruby {
+    ruby-align: center;
+}
+
+ruby rt {
+    font-size: 0.6em;
+    color: #666;
+    font-weight: normal;
+    line-height: 1;
+    margin-top: -0.2em;
+}
+
+.game-line ruby rt {
+    font-size: 0.55em;
+    color: #888;
+}
+
+/* 入力状態別のルビスタイル */
+.correct ruby rt {
+    color: #2ecc71;
+}
+
+.incorrect ruby rt {
+    color: #e74c3c;
+}
+
+.untyped ruby rt {
+    color: #888;
+}
+
+.typed ruby rt {
+    color: #2ecc71;
+}
+
+/* ゲーム画面のルビ調整 */
+#game-reply-body ruby {
+    ruby-position: over;
+    line-height: 1.8;
+}
+
+#game-reply-body ruby rt {
+    font-size: 0.5em;
+    line-height: 1;
+    opacity: 0.9;
+}
+
 .modal-panels-row {
     display: flex;
     flex-direction: row;
