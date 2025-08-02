@@ -14,6 +14,6 @@
 }
 /* 強調テキストや太字にも適用 */
 #modal-received-body, #modal-received-body *, #modal-received-body strong, #modal-received-body b {
-  font-size: 1.2rem;
-  line-height: 2;
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
