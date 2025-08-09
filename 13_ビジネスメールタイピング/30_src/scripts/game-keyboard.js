@@ -517,6 +517,90 @@ GameKeyboard.prototype.createRippleEffect = function (keyElement, opts) {
   }, congested ? 900 : 1200);
 };
 
+// ヒント（収束）リップルを内部生成
+GameKeyboard.prototype.createHintRippleInward = function (keyElement) {
+  const NS = 'http://www.w3.org/2000/svg';
+  if (!this.svg || !keyElement || !keyElement.rect) return;
+  if (typeof this.ensureDefs === 'function') this.ensureDefs();
+
+  const rect = keyElement.rect;
+  const cx = parseFloat(rect.getAttribute('x')) + parseFloat(rect.getAttribute('width')) / 2;
+  const cy = parseFloat(rect.getAttribute('y')) + parseFloat(rect.getAttribute('height')) / 2;
+
+  const vb = this.svg.viewBox && this.svg.viewBox.baseVal ? this.svg.viewBox.baseVal : null;
+  const svgW = vb && vb.width ? vb.width : (parseFloat(this.svg.getAttribute('width')) || 670);
+  const svgH = vb && vb.height ? vb.height : (parseFloat(this.svg.getAttribute('height')) || 240);
+
+  const d1 = Math.hypot(cx - 0,    cy - 0);
+  const d2 = Math.hypot(cx - svgW, cy - 0);
+  const d3 = Math.hypot(cx - 0,    cy - svgH);
+  const d4 = Math.hypot(cx - svgW, cy - svgH);
+  const maxR = Math.max(d1, d2, d3, d4);
+
+  const group = document.createElementNS(NS, 'g');
+  group.setAttribute('class', 'hint-ripple');
+  this.svg.appendChild(group);
+
+  const color = '#3DA5FF';
+  const circle = document.createElementNS(NS, 'circle');
+  circle.setAttribute('cx', cx);
+  circle.setAttribute('cy', cy);
+  circle.setAttribute('r', String(maxR));
+  circle.setAttribute('fill', 'none');
+  circle.setAttribute('stroke', color);
+  circle.setAttribute('stroke-width', '6');
+  circle.setAttribute('opacity', '0.6');
+  circle.setAttribute('filter', 'url(#ripple-glow)');
+  group.appendChild(circle);
+
+  const dur = 0.7;
+  const aR = document.createElementNS(NS, 'animate');
+  aR.setAttribute('attributeName', 'r');
+  aR.setAttribute('from', String(maxR));
+  aR.setAttribute('to', '0');
+  aR.setAttribute('dur', `${dur}s`);
+  aR.setAttribute('begin', 'indefinite');
+  aR.setAttribute('fill', 'freeze');
+
+  const aO = document.createElementNS(NS, 'animate');
+  aO.setAttribute('attributeName', 'opacity');
+  aO.setAttribute('from', '0.6');
+  aO.setAttribute('to', '0');
+  aO.setAttribute('dur', `${dur}s`);
+  aO.setAttribute('begin', 'indefinite');
+  aO.setAttribute('fill', 'freeze');
+
+  const aSW = document.createElementNS(NS, 'animate');
+  aSW.setAttribute('attributeName', 'stroke-width');
+  aSW.setAttribute('from', '6');
+  aSW.setAttribute('to', '0');
+  aSW.setAttribute('dur', `${dur}s`);
+  aSW.setAttribute('begin', 'indefinite');
+  aSW.setAttribute('fill', 'freeze');
+
+  circle.appendChild(aR);
+  circle.appendChild(aO);
+  circle.appendChild(aSW);
+
+  setTimeout(() => {
+    try { aR.beginElement(); aO.beginElement(); aSW.beginElement(); } catch (e) {}
+  }, 0);
+
+  setTimeout(() => {
+    if (group.parentNode) group.parentNode.removeChild(group);
+  }, (dur * 1000) + 80);
+};
+
+// 公開API: キー名からヒント収束リップルを表示
+GameKeyboard.prototype.showHintRipple = function (key) {
+  if (!key) return;
+  let k = key;
+  if (typeof k === 'string' && k.toLowerCase() === 'space') k = 'Space';
+  const el = this.keyElements[k] || this.keyElements[(k && k.toLowerCase) ? k.toLowerCase() : k];
+  if (!el) return;
+  this.createHintRippleInward(el);
+};
+
 // 次に入力するキーのサジェスト表示
 GameKeyboard.prototype.showNextKeySuggestion = function (key) {
   // 前のサジェストをクリア

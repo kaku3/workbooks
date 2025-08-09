@@ -1,5 +1,6 @@
 // --- GameKeyboard エフェクト用変数 ---
 let lastPhysicalKey = null; // 最後に押された物理キー
+window.lastPhysicalKey = lastPhysicalKey;
 let isComposingText = false; // IME変換中フラグ
 
 // --- 時給処理 ---
@@ -196,9 +197,13 @@ let timerInterval;
 
 let typedChars = 0;
 let correctChars = 0;
+window.correctChars = correctChars;
 let incorrectChars = 0;
 let currentLineIndex = 0;
 let lines = [];
+// SuggestController から参照できるよう window にも公開
+window.currentLineIndex = currentLineIndex;
+window.lines = lines;
 
 const timeEl = document.getElementById('time');
 // const wpmEl = document.getElementById('wpm');
@@ -213,6 +218,9 @@ const HISTORY_KEY = 'typingGameHistory';
 function prepareGame() {
     if (!currentQuestion) return;
 
+    // サジェスト等から参照できるよう公開
+    window.currentQuestion = currentQuestion;
+
     const userInfo = loadUserInfo() || {};
     const replyText = replacePlaceholders(currentQuestion.to_customer.body, userInfo);
     replySubjectGameEl.textContent = currentQuestion.to_customer.subject;
@@ -220,6 +228,9 @@ function prepareGame() {
     // 行ごとに分割
     lines = replyText.split(/\r?\n/);
     currentLineIndex = 0;
+    // window へ公開（サジェスト用）
+    window.lines = lines;
+    window.currentLineIndex = currentLineIndex;
 
     // ルビ対応のゲーム用表示を生成
     if (window.getAllLinesCharacters && currentQuestion.id) {
@@ -285,6 +296,21 @@ function prepareGame() {
         }
     }
 
+    // サジェストコントローラの初期化（既存があれば止めて作り直し）
+    if (window.suggestController) {
+        try { window.suggestController.stop(); } catch (_) {}
+        window.suggestController = null;
+    }
+    if (window.gameKeyboard && window.inputArea && typeof window.SuggestController === 'function') {
+        window.suggestController = new window.SuggestController({
+            keyboard: window.gameKeyboard,
+            inputEl: window.inputArea,
+            idleMs: 1200,
+            repeatMs: 900
+        });
+        window.suggestController.start();
+    }
+
     resetGameStats();
     window.inputArea.value = '';
     window.inputArea.setAttribute('maxlength', 200);
@@ -329,6 +355,11 @@ function stopGame() {
             window.soundManager.play('bgm-main');
         }
     }
+
+    // アイドルサジェストを停止
+    if (window.suggestController) {
+        try { window.suggestController.stop(); } catch (_) {}
+    }
 }
 
 
@@ -339,6 +370,7 @@ function resetGameStats() {
     correctChars = 0;
     incorrectChars = 0;
     currentLineIndex = 0; // ここでリセット
+    window.currentLineIndex = currentLineIndex;
     timeEl.textContent = '0.00';
     // wpmEl.textContent = '0';
     accuracyEl.textContent = '100';
@@ -349,6 +381,11 @@ function resetGameStats() {
     // GameKeyboardをリセット
     if (window.gameKeyboard) {
         window.gameKeyboard.reset();
+    }
+
+    // サジェストのタイマーをリセット（再始動は prepareGame で行う）
+    if (window.suggestController) {
+        try { window.suggestController.notifyInput(); } catch (_) {}
     }
 }
 
@@ -447,6 +484,9 @@ window.handleTyping = function(e) {
 
     // 必要最小限のDOM更新のみ
     const currentLine = lines[currentLineIndex] || '';
+    // window へ同期（サジェスト用）
+    window.lines = lines;
+    window.currentLineIndex = currentLineIndex;
     const typedText = (window.inputArea && window.inputArea.value !== undefined) ? window.inputArea.value : inputArea.value;
     const lineDivs = gameReplyBodyEl.querySelectorAll('.game-line');
     if (!lineDivs[currentLineIndex]) return false;
@@ -520,6 +560,7 @@ window.handleTyping = function(e) {
         }
     }
     correctChars = currentCorrectCount;
+    window.correctChars = correctChars;
     incorrectChars = typedChars - currentCorrectCount;
     calculateAccuracy();
 
@@ -557,15 +598,24 @@ window.handleTyping = function(e) {
     }
 
     // 次に入力するキーのサジェスト表示
-    if (window.gameKeyboard && currentLine && typedText.length < currentLine.length) {
-        const nextChar = currentLine[typedText.length];
-        if (nextChar && nextChar !== '\n') {
-            window.gameKeyboard.showNextKeySuggestion(nextChar);
+    // ルール:
+    // - IME編集中は出さない（誤サジェスト防止）
+    // - SuggestController が有効な場合は任せる（ここでは出さない）
+    if (window.gameKeyboard) {
+        const composingNow = !!(window.isComposing || isComposingText);
+        const suggestActive = !!window.suggestController;
+        if (composingNow || suggestActive) {
+            window.gameKeyboard.clearNextKeySuggestion();
+        } else if (currentLine && typedText.length < currentLine.length) {
+            const nextChar = currentLine[typedText.length];
+            if (nextChar && nextChar !== '\n') {
+                window.gameKeyboard.showNextKeySuggestion(nextChar);
+            } else {
+                window.gameKeyboard.clearNextKeySuggestion();
+            }
         } else {
             window.gameKeyboard.clearNextKeySuggestion();
         }
-    } else if (window.gameKeyboard) {
-        window.gameKeyboard.clearNextKeySuggestion();
     }
 
     // 行の表示・class切り替えは必要な行のみ
@@ -720,6 +770,15 @@ window.initGame = function() {
     // IME入力中フラグ
     window.isComposing = false;
 
+    // SuggestController のバインドを新しい input に付け替え
+    if (window.suggestController) {
+        try { window.suggestController.stop(); } catch (_) {}
+        try {
+            window.suggestController.inputEl = window.inputArea;
+            window.suggestController.start();
+        } catch (_) {}
+    }
+
     // --- イベント再登録 ---
     // input: タイピング音/BGM/タイマー/自動リサイズ
     window.inputArea.addEventListener('input', function(e) {
@@ -734,16 +793,31 @@ window.initGame = function() {
         }
         adjustTextareaHeight(this);
         this._prevValue = this.value;
+        // 入力が発生したらサジェストを消す（冗長クリア）
+        if (window.gameKeyboard && typeof window.gameKeyboard.clearNextKeySuggestion === 'function') {
+            window.gameKeyboard.clearNextKeySuggestion();
+        }
     });
     // compositionstart: IME開始
     window.inputArea.addEventListener('compositionstart', function() {
         window.isComposing = true;
         isComposingText = true;
+        if (window.gameKeyboard && typeof window.gameKeyboard.clearNextKeySuggestion === 'function') {
+            window.gameKeyboard.clearNextKeySuggestion();
+        }
+    });
+    // compositionupdate: IME編集中の更新
+    window.inputArea.addEventListener('compositionupdate', function() {
+        if (window.gameKeyboard && typeof window.gameKeyboard.clearNextKeySuggestion === 'function') {
+            window.gameKeyboard.clearNextKeySuggestion();
+        }
     });
     // compositionend: IME確定
     window.inputArea.addEventListener('compositionend', function(e) {
         window.isComposing = false;
         isComposingText = false;
+    // 補助: 最後の物理キーを公開（必要なら）
+    if (typeof lastPhysicalKey !== 'undefined') window.lastPhysicalKey = lastPhysicalKey;
         window.handleTyping(e);
         if (window.soundManager) {
             const currentLine = lines[currentLineIndex] || '';
@@ -763,52 +837,62 @@ window.initGame = function() {
 
         console.log(e);
 
-        // GameKeyboardエフェクト処理（物理キーベース）
-        if (window.gameKeyboard && e.code) {
-            let keyToShow = null;
-            
-            // e.codeから物理キーを抽出（例：KeyA → A, KeyB → B）
+        // GameKeyboardエフェクト処理（物理キーベース）＋ lastPhysicalKey 記録（IMEでも e.code から推定）
+        let keyFromCode = null;
+        if (e.code) {
             if (e.code.startsWith('Key')) {
-                keyToShow = e.code.replace('Key', ''); // KeyA → A
+                keyFromCode = e.code.replace('Key', ''); // KeyA → A
             } else if (e.code.startsWith('Digit')) {
-                keyToShow = e.code.replace('Digit', ''); // Digit1 → 1
+                keyFromCode = e.code.replace('Digit', ''); // Digit1 → 1
             } else if (e.code === 'Space') {
-                keyToShow = 'Space';
+                keyFromCode = 'Space';
             } else if (e.code === 'Period') {
-                keyToShow = '.';
+                keyFromCode = '.';
             } else if (e.code === 'Comma') {
-                keyToShow = ',';
+                keyFromCode = ',';
             } else if (e.code === 'Semicolon') {
-                keyToShow = ';';
+                keyFromCode = ';';
             } else if (e.code === 'Quote') {
-                keyToShow = "'";
+                keyFromCode = "'";
             } else if (e.code === 'Slash') {
-                keyToShow = '/';
+                keyFromCode = '/';
             } else if (e.code === 'Backslash') {
-                keyToShow = '\\';
+                keyFromCode = '\\';
             } else if (e.code === 'BracketLeft') {
-                keyToShow = '[';
+                keyFromCode = '[';
             } else if (e.code === 'BracketRight') {
-                keyToShow = ']';
+                keyFromCode = ']';
             } else if (e.code === 'Minus') {
-                keyToShow = '-';
+                keyFromCode = '-';
             } else if (e.code === 'Equal') {
-                keyToShow = '=';
-            }
-            
-            // キーエフェクト表示（修飾キーが押されていない場合のみ）
-            if (keyToShow && !e.ctrlKey && !e.altKey && !e.metaKey) {
-                window.gameKeyboard.showKeyPress(keyToShow);
+                keyFromCode = '=';
             }
         }
 
-        // 物理キーを記録（GameKeyboardエフェクト用）
-        if (e.key && e.key.length === 1 && e.key.match(/[a-zA-Z0-9.,;:!?@\-_\/\\[\]{}()="'`~^|<>+*&%$#]/) && !e.ctrlKey && !e.altKey && !e.metaKey) {
-            lastPhysicalKey = e.key.toUpperCase(); // 英字は大文字で統一
+        if (window.gameKeyboard && keyFromCode && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            window.gameKeyboard.showKeyPress(keyFromCode);
+            // 何かキーを押したらサジェストは即消す
+            if (typeof window.gameKeyboard.clearNextKeySuggestion === 'function') {
+                window.gameKeyboard.clearNextKeySuggestion();
+            }
+        }
+
+        // 物理キーを記録（優先: e.code からの推定、なければ e.key）
+        if (keyFromCode && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            lastPhysicalKey = keyFromCode.toUpperCase ? keyFromCode.toUpperCase() : keyFromCode;
+            window.lastPhysicalKey = lastPhysicalKey;
+        } else if (e.key && e.key.length === 1 && e.key.match(/[a-zA-Z0-9.,;:!?@\-_\/\\\[\]{}()="'`~^|<>+*&%$#]/) && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            lastPhysicalKey = e.key.toUpperCase();
+            window.lastPhysicalKey = lastPhysicalKey;
         } else if (e.key === 'Space') {
             lastPhysicalKey = 'Space';
+            window.lastPhysicalKey = lastPhysicalKey;
         } else {
-            lastPhysicalKey = null;
+            // 不要に null 化しない（IMEの Process などで keyFromCode を保持）
+            if (!keyFromCode) {
+                lastPhysicalKey = null;
+                window.lastPhysicalKey = lastPhysicalKey;
+            }
         }
 
         if (e.key === 'Enter') {
@@ -819,6 +903,7 @@ window.initGame = function() {
 
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
+                    window.currentLineIndex = currentLineIndex;
                     window.inputArea.value = '';
                     window.inputArea.focus();
                     window.inputArea.placeholder = `${currentLineIndex + 1}行目を入力`;
@@ -833,7 +918,7 @@ window.initGame = function() {
     });
     // paste チート対策
     window.inputArea.addEventListener('paste', function(e) {
-        e.prevent止;
+        e.preventDefault();
         // alert('ペーストは禁止されています');
     });
 }
