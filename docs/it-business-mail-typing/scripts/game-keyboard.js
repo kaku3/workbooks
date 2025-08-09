@@ -25,6 +25,9 @@ function GameKeyboard(containerId) {
   this.svg = null;
   this.keyElements = {};
   this.nextKey = null;
+  // パフォーマンス制御用
+  this._activeEffects = 0;
+  this._lastRippleAt = 0;
   
   // キーボードレイアウト定義（日本語キーボード）
   this.keyLayout = [
@@ -97,6 +100,9 @@ GameKeyboard.prototype.init = function () {
   bg.setAttribute('rx', '8');
   this.svg.appendChild(bg);
 
+  // 追加: エフェクト用の定義を準備
+  this.ensureDefs();
+
   // キーボードのキーを描画
   this.createKeys();
 
@@ -109,6 +115,55 @@ GameKeyboard.prototype.createKeys = function () {
       this.createKey(keyData);
     });
   });
+};
+
+// エフェクト用フィルタ・定義を用意（1回だけ）
+GameKeyboard.prototype.ensureDefs = function () {
+  if (!this.svg) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  let defs = this.svg.querySelector('defs');
+  if (!defs) {
+    defs = document.createElementNS(NS, 'defs');
+    this.svg.appendChild(defs);
+  }
+
+  // リップル用のぼかしグロー
+  if (!this.svg.querySelector('#ripple-glow')) {
+    const filter = document.createElementNS(NS, 'filter');
+    filter.setAttribute('id', 'ripple-glow');
+    filter.setAttribute('x', '-30%');
+    filter.setAttribute('y', '-30%');
+    filter.setAttribute('width', '160%');
+    filter.setAttribute('height', '160%');
+
+    const blur = document.createElementNS(NS, 'feGaussianBlur');
+    blur.setAttribute('in', 'SourceGraphic');
+    blur.setAttribute('stdDeviation', '2.5');
+
+    const merge = document.createElementNS(NS, 'feMerge');
+    const m1 = document.createElementNS(NS, 'feMergeNode');
+    m1.setAttribute('in', 'SourceGraphic');
+    const m2 = document.createElementNS(NS, 'feMergeNode');
+    m2.setAttribute('in', 'SourceGraphic');
+
+    merge.appendChild(m1);
+    merge.appendChild(m2);
+
+    filter.appendChild(blur);
+    filter.appendChild(merge);
+    defs.appendChild(filter);
+  }
+
+  // スパーク用の軽いぼかし
+  if (!this.svg.querySelector('#sparkle-blur')) {
+    const filter = document.createElementNS(NS, 'filter');
+    filter.setAttribute('id', 'sparkle-blur');
+    const blur = document.createElementNS(NS, 'feGaussianBlur');
+    blur.setAttribute('in', 'SourceGraphic');
+    blur.setAttribute('stdDeviation', '0.7');
+    filter.appendChild(blur);
+    defs.appendChild(filter);
+  }
 };
 
 GameKeyboard.prototype.createKey = function (keyData) {
@@ -177,52 +232,373 @@ GameKeyboard.prototype.showKeyPress = function (key) {
     rect.setAttribute('stroke', '#bdc3c7');
     keyElement.resetTimer = null;
   }, 150);
-
-  // リップルエフェクト
-  this.createRippleEffect(keyElement);
+  // 通常タイピング時も中立色のリップルを発火（IME入力でも毎回出るように）
+  this.createRippleEffect(keyElement, { theme: 'neutral' });
 };
 
-// リップルエフェクト作成
-GameKeyboard.prototype.createRippleEffect = function (keyElement) {
+// リップルエフェクト作成（巨大リップル + 花火スパーク）
+// opts.theme: 'neutral' | 'correct' | 'error'
+GameKeyboard.prototype.createRippleEffect = function (keyElement, opts) {
+  const NS = 'http://www.w3.org/2000/svg';
   const rect = keyElement.rect;
-  const x = parseFloat(rect.getAttribute('x')) + parseFloat(rect.getAttribute('width')) / 2;
-  const y = parseFloat(rect.getAttribute('y')) + parseFloat(rect.getAttribute('height')) / 2;
+  const cx = parseFloat(rect.getAttribute('x')) + parseFloat(rect.getAttribute('width')) / 2;
+  const cy = parseFloat(rect.getAttribute('y')) + parseFloat(rect.getAttribute('height')) / 2;
 
-  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  circle.setAttribute('cx', x);
-  circle.setAttribute('cy', y);
-  circle.setAttribute('r', '0');
-  circle.setAttribute('fill', 'none');
-  circle.setAttribute('stroke', '#3498db');
-  circle.setAttribute('stroke-width', '2');
-  circle.setAttribute('opacity', '0.8');
+  // SVGの大きさ（viewBox優先）
+  const vb = this.svg.viewBox && this.svg.viewBox.baseVal ? this.svg.viewBox.baseVal : null;
+  const svgW = vb && vb.width ? vb.width : (parseFloat(this.svg.getAttribute('width')) || 670);
+  const svgH = vb && vb.height ? vb.height : (parseFloat(this.svg.getAttribute('height')) || 240);
 
-  this.svg.appendChild(circle);
+  // 最遠コーナーまで届く半径
+  const d1 = Math.hypot(cx - 0,    cy - 0);
+  const d2 = Math.hypot(cx - svgW, cy - 0);
+  const d3 = Math.hypot(cx - 0,    cy - svgH);
+  const d4 = Math.hypot(cx - svgW, cy - svgH);
+  const maxR = Math.max(d1, d2, d3, d4);
 
-  // アニメーション
-  const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-  animate.setAttribute('attributeName', 'r');
-  animate.setAttribute('from', '0');
-  animate.setAttribute('to', '20');
-  animate.setAttribute('dur', '0.3s');
-  animate.setAttribute('fill', 'freeze');
+  // まとめ用グループ（同時発生OK）
+  const group = document.createElementNS(NS, 'g');
+  group.setAttribute('class', 'ripple-burst');
+  this.svg.appendChild(group);
 
-  const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-  animateOpacity.setAttribute('attributeName', 'opacity');
-  animateOpacity.setAttribute('from', '0.8');
-  animateOpacity.setAttribute('to', '0');
-  animateOpacity.setAttribute('dur', '0.3s');
-  animateOpacity.setAttribute('fill', 'freeze');
+  // テーマ別パレット
+  const theme = (opts && opts.theme) ? opts.theme : 'neutral';
 
-  circle.appendChild(animate);
-  circle.appendChild(animateOpacity);
+  // スロットリング（通常タイピングの連打は20ms未満でスキップ）
+  const now = (window.performance && performance.now) ? performance.now() : Date.now();
+  const dt = now - (this._lastRippleAt || 0);
+  if (theme === 'neutral' && dt < 20) {
+    return;
+  }
+  this._lastRippleAt = now;
+  const palettes = {
+    neutral: ['#6EC1FF', '#3DA5FF', '#2F89FF'],
+    correct: ['#6EC1FF', '#3DA5FF', '#2F89FF'],
+    error:   ['#FF7A7A', '#FF5A5A', '#E74C3C']
+  };
+  const list = palettes[theme] || palettes.neutral;
+  const baseColor = list[Math.floor(Math.random() * list.length)];
 
-  // アニメーション終了後に要素を削除
-  setTimeout(() => {
-    if (circle.parentNode) {
-      circle.parentNode.removeChild(circle);
+  // 同時エフェクトが多いときは簡略化
+  const congested = this._activeEffects > 8 || dt < 25;
+  const ringCount = congested ? 2 : 3;
+  const streakCount = congested ? 8 : 18;
+  const sparkleCount = congested ? 6 : 12;
+
+  // 同時エフェクト数を管理し、溢れたら古いものを捨てる
+  this._activeEffects++;
+  const maxGroups = 14;
+  const groups = this.svg.querySelectorAll('g.ripple-burst');
+  if (groups.length > maxGroups) {
+    const old = groups[0];
+    if (old && old.parentNode) old.parentNode.removeChild(old);
+    // 古いものを消すのでカウントも補正（安全側）
+    this._activeEffects = Math.max(0, this._activeEffects - 1);
+  }
+
+  // 中心フラッシュ（一瞬光って消える）
+  const flash = document.createElementNS(NS, 'circle');
+  flash.setAttribute('cx', cx);
+  flash.setAttribute('cy', cy);
+  flash.setAttribute('r', '0');
+  flash.setAttribute('fill', '#ffffff');
+  flash.setAttribute('opacity', '1');
+  flash.setAttribute('filter', 'url(#ripple-glow)');
+  group.appendChild(flash);
+
+  const flashR = document.createElementNS(NS, 'animate');
+  flashR.setAttribute('attributeName', 'r');
+  flashR.setAttribute('values', '0;16;0');
+  flashR.setAttribute('keyTimes', '0;0.4;1');
+  flashR.setAttribute('dur', congested ? '0.28s' : '0.35s');
+  flashR.setAttribute('fill', 'freeze');
+  flashR.setAttribute('begin', 'indefinite');
+
+  const flashO = document.createElementNS(NS, 'animate');
+  flashO.setAttribute('attributeName', 'opacity');
+  flashO.setAttribute('values', '1;0.9;0');
+  flashO.setAttribute('keyTimes', '0;0.4;1');
+  flashO.setAttribute('dur', congested ? '0.28s' : '0.35s');
+  flashO.setAttribute('fill', 'freeze');
+  flashO.setAttribute('begin', 'indefinite');
+
+  flash.appendChild(flashR);
+  flash.appendChild(flashO);
+  // 即時開始
+  if (typeof flashR.beginElement === 'function') {
+    setTimeout(() => { try { flashR.beginElement(); flashO.beginElement(); } catch(e){} }, 0);
+  }
+
+  // 巨大リップル（リングを時間差で重ねる）
+  for (let i = 0; i < ringCount; i++) {
+    const circle = document.createElementNS(NS, 'circle');
+    circle.setAttribute('cx', cx);
+    circle.setAttribute('cy', cy);
+    circle.setAttribute('r', '0');
+    circle.setAttribute('fill', 'none');
+    circle.setAttribute('stroke', baseColor);
+    circle.setAttribute('stroke-width', String(8 - i * 2));
+    circle.setAttribute('opacity', '0.9');
+    circle.setAttribute('filter', 'url(#ripple-glow)');
+    group.appendChild(circle);
+
+    const delay = 0.08 * i; // 秒
+  const dur = congested ? 0.55 : 0.7;        // 秒
+
+    const aR = document.createElementNS(NS, 'animate');
+    aR.setAttribute('attributeName', 'r');
+    aR.setAttribute('from', '0');
+    aR.setAttribute('to', String(maxR));
+    aR.setAttribute('dur', `${dur}s`);
+    aR.setAttribute('begin', 'indefinite');
+    aR.setAttribute('fill', 'freeze');
+
+    const aO = document.createElementNS(NS, 'animate');
+    aO.setAttribute('attributeName', 'opacity');
+    aO.setAttribute('from', '0.9');
+    aO.setAttribute('to', '0');
+    aO.setAttribute('dur', `${dur}s`);
+    aO.setAttribute('begin', 'indefinite');
+    aO.setAttribute('fill', 'freeze');
+
+    const aSW = document.createElementNS(NS, 'animate');
+    aSW.setAttribute('attributeName', 'stroke-width');
+    aSW.setAttribute('from', circle.getAttribute('stroke-width'));
+    aSW.setAttribute('to', '0');
+    aSW.setAttribute('dur', `${dur}s`);
+    aSW.setAttribute('begin', 'indefinite');
+    aSW.setAttribute('fill', 'freeze');
+
+    circle.appendChild(aR);
+    circle.appendChild(aO);
+    circle.appendChild(aSW);
+
+    // 遅延開始
+    if (typeof aR.beginElement === 'function') {
+      setTimeout(() => { try { aR.beginElement(); aO.beginElement(); aSW.beginElement(); } catch(e){} }, Math.max(0, delay * 1000));
     }
-  }, 300);
+  }
+
+  // 放射状のストリーク（光の筋）
+  for (let k = 0; k < streakCount; k++) {
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', cx);
+    line.setAttribute('y1', cy);
+    line.setAttribute('x2', cx);
+    line.setAttribute('y2', cy);
+    line.setAttribute('stroke', baseColor);
+    line.setAttribute('stroke-width', '3');
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('opacity', '1');
+    if (!congested) {
+      line.setAttribute('filter', 'url(#ripple-glow)');
+    }
+    group.appendChild(line);
+
+    const angle = Math.random() * Math.PI * 2;
+    const len = 30 + Math.random() * 120;
+    const tx = cx + Math.cos(angle) * len;
+    const ty = cy + Math.sin(angle) * len;
+    const delay = Math.random() * 0.06;
+  const dur = (congested ? 0.4 : 0.5) + Math.random() * 0.12;
+
+  const aX2 = document.createElementNS(NS, 'animate');
+    aX2.setAttribute('attributeName', 'x2');
+    aX2.setAttribute('from', String(cx));
+    aX2.setAttribute('to', String(tx));
+    aX2.setAttribute('dur', `${dur}s`);
+  aX2.setAttribute('begin', 'indefinite');
+    aX2.setAttribute('fill', 'freeze');
+
+    const aY2 = document.createElementNS(NS, 'animate');
+    aY2.setAttribute('attributeName', 'y2');
+    aY2.setAttribute('from', String(cy));
+    aY2.setAttribute('to', String(ty));
+    aY2.setAttribute('dur', `${dur}s`);
+  aY2.setAttribute('begin', 'indefinite');
+    aY2.setAttribute('fill', 'freeze');
+
+    const aSW = document.createElementNS(NS, 'animate');
+    aSW.setAttribute('attributeName', 'stroke-width');
+    aSW.setAttribute('from', '3');
+    aSW.setAttribute('to', '0');
+    aSW.setAttribute('dur', `${dur}s`);
+  aSW.setAttribute('begin', 'indefinite');
+    aSW.setAttribute('fill', 'freeze');
+
+    const aO = document.createElementNS(NS, 'animate');
+    aO.setAttribute('attributeName', 'opacity');
+    aO.setAttribute('from', '1');
+    aO.setAttribute('to', '0');
+    aO.setAttribute('dur', `${dur}s`);
+  aO.setAttribute('begin', 'indefinite');
+    aO.setAttribute('fill', 'freeze');
+
+    line.appendChild(aX2);
+    line.appendChild(aY2);
+    line.appendChild(aSW);
+    line.appendChild(aO);
+
+    if (typeof aX2.beginElement === 'function') {
+      setTimeout(() => { try { aX2.beginElement(); aY2.beginElement(); aSW.beginElement(); aO.beginElement(); } catch(e){} }, Math.max(0, delay * 1000));
+    }
+  }
+
+  // スパーク（花火の粒）
+  for (let j = 0; j < sparkleCount; j++) {
+    const sparkle = document.createElementNS(NS, 'circle');
+    sparkle.setAttribute('cx', cx);
+    sparkle.setAttribute('cy', cy);
+    sparkle.setAttribute('r', String(1.6 + Math.random() * 1.2));
+    sparkle.setAttribute('fill', baseColor);
+    sparkle.setAttribute('opacity', '1');
+    if (!congested) {
+      sparkle.setAttribute('filter', 'url(#sparkle-blur)');
+    }
+    group.appendChild(sparkle);
+
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 40 + Math.random() * 140;
+    const tx = cx + Math.cos(angle) * dist;
+    const ty = cy + Math.sin(angle) * dist;
+    const delay = Math.random() * 0.05;
+  const dur = (congested ? 0.45 : 0.55) + Math.random() * 0.16;
+
+  const aX = document.createElementNS(NS, 'animate');
+    aX.setAttribute('attributeName', 'cx');
+    aX.setAttribute('from', String(cx));
+    aX.setAttribute('to', String(tx));
+    aX.setAttribute('dur', `${dur}s`);
+  aX.setAttribute('begin', 'indefinite');
+    aX.setAttribute('fill', 'freeze');
+
+  const aY = document.createElementNS(NS, 'animate');
+  aY.setAttribute('attributeName', 'cy');
+  // 少し落下するキーアニメ調（重力風）
+  const fall = ty + 5 + Math.random() * 20;
+  aY.setAttribute('values', `${cy};${ty};${fall}`);
+  aY.setAttribute('keyTimes', '0;0.8;1');
+  aY.setAttribute('calcMode', 'spline');
+  aY.setAttribute('keySplines', '0.3 0 0.7 1;0.2 0 1 1');
+  aY.setAttribute('dur', `${dur}s`);
+  aY.setAttribute('begin', 'indefinite');
+  aY.setAttribute('fill', 'freeze');
+
+    const aO = document.createElementNS(NS, 'animate');
+    aO.setAttribute('attributeName', 'opacity');
+    aO.setAttribute('from', '1');
+    aO.setAttribute('to', '0');
+    aO.setAttribute('dur', `${dur}s`);
+  aO.setAttribute('begin', 'indefinite');
+    aO.setAttribute('fill', 'freeze');
+
+    const aR = document.createElementNS(NS, 'animate');
+    aR.setAttribute('attributeName', 'r');
+    aR.setAttribute('from', sparkle.getAttribute('r'));
+    aR.setAttribute('to', '0');
+    aR.setAttribute('dur', `${dur}s`);
+  aR.setAttribute('begin', 'indefinite');
+    aR.setAttribute('fill', 'freeze');
+
+    sparkle.appendChild(aX);
+    sparkle.appendChild(aY);
+    sparkle.appendChild(aO);
+    sparkle.appendChild(aR);
+
+    if (typeof aX.beginElement === 'function') {
+      setTimeout(() => { try { aX.beginElement(); aY.beginElement(); aO.beginElement(); aR.beginElement(); } catch(e){} }, Math.max(0, delay * 1000));
+    }
+  }
+
+  // 後片付け
+  setTimeout(() => {
+    if (group.parentNode) group.parentNode.removeChild(group);
+    this._activeEffects = Math.max(0, this._activeEffects - 1);
+  }, congested ? 900 : 1200);
+};
+
+// ヒント（収束）リップルを内部生成
+GameKeyboard.prototype.createHintRippleInward = function (keyElement) {
+  const NS = 'http://www.w3.org/2000/svg';
+  if (!this.svg || !keyElement || !keyElement.rect) return;
+  if (typeof this.ensureDefs === 'function') this.ensureDefs();
+
+  const rect = keyElement.rect;
+  const cx = parseFloat(rect.getAttribute('x')) + parseFloat(rect.getAttribute('width')) / 2;
+  const cy = parseFloat(rect.getAttribute('y')) + parseFloat(rect.getAttribute('height')) / 2;
+
+  const vb = this.svg.viewBox && this.svg.viewBox.baseVal ? this.svg.viewBox.baseVal : null;
+  const svgW = vb && vb.width ? vb.width : (parseFloat(this.svg.getAttribute('width')) || 670);
+  const svgH = vb && vb.height ? vb.height : (parseFloat(this.svg.getAttribute('height')) || 240);
+
+  const d1 = Math.hypot(cx - 0,    cy - 0);
+  const d2 = Math.hypot(cx - svgW, cy - 0);
+  const d3 = Math.hypot(cx - 0,    cy - svgH);
+  const d4 = Math.hypot(cx - svgW, cy - svgH);
+  const maxR = Math.max(d1, d2, d3, d4);
+
+  const group = document.createElementNS(NS, 'g');
+  group.setAttribute('class', 'hint-ripple');
+  this.svg.appendChild(group);
+
+  const color = '#3DA5FF';
+  const circle = document.createElementNS(NS, 'circle');
+  circle.setAttribute('cx', cx);
+  circle.setAttribute('cy', cy);
+  circle.setAttribute('r', String(maxR));
+  circle.setAttribute('fill', 'none');
+  circle.setAttribute('stroke', color);
+  circle.setAttribute('stroke-width', '6');
+  circle.setAttribute('opacity', '0.6');
+  circle.setAttribute('filter', 'url(#ripple-glow)');
+  group.appendChild(circle);
+
+  const dur = 0.7;
+  const aR = document.createElementNS(NS, 'animate');
+  aR.setAttribute('attributeName', 'r');
+  aR.setAttribute('from', String(maxR));
+  aR.setAttribute('to', '0');
+  aR.setAttribute('dur', `${dur}s`);
+  aR.setAttribute('begin', 'indefinite');
+  aR.setAttribute('fill', 'freeze');
+
+  const aO = document.createElementNS(NS, 'animate');
+  aO.setAttribute('attributeName', 'opacity');
+  aO.setAttribute('from', '0.6');
+  aO.setAttribute('to', '0');
+  aO.setAttribute('dur', `${dur}s`);
+  aO.setAttribute('begin', 'indefinite');
+  aO.setAttribute('fill', 'freeze');
+
+  const aSW = document.createElementNS(NS, 'animate');
+  aSW.setAttribute('attributeName', 'stroke-width');
+  aSW.setAttribute('from', '6');
+  aSW.setAttribute('to', '0');
+  aSW.setAttribute('dur', `${dur}s`);
+  aSW.setAttribute('begin', 'indefinite');
+  aSW.setAttribute('fill', 'freeze');
+
+  circle.appendChild(aR);
+  circle.appendChild(aO);
+  circle.appendChild(aSW);
+
+  setTimeout(() => {
+    try { aR.beginElement(); aO.beginElement(); aSW.beginElement(); } catch (e) {}
+  }, 0);
+
+  setTimeout(() => {
+    if (group.parentNode) group.parentNode.removeChild(group);
+  }, (dur * 1000) + 80);
+};
+
+// 公開API: キー名からヒント収束リップルを表示
+GameKeyboard.prototype.showHintRipple = function (key) {
+  if (!key) return;
+  let k = key;
+  if (typeof k === 'string' && k.toLowerCase() === 'space') k = 'Space';
+  const el = this.keyElements[k] || this.keyElements[(k && k.toLowerCase) ? k.toLowerCase() : k];
+  if (!el) return;
+  this.createHintRippleInward(el);
 };
 
 // 次に入力するキーのサジェスト表示
@@ -278,15 +654,18 @@ GameKeyboard.prototype.showCorrectKeyEffect = function (key) {
   // 既存のエフェクトを強制的にクリア
   this.clearKeyEffect(key);
 
-  // 正解時の緑色エフェクト
-  rect.setAttribute('fill', '#27ae60');
-  rect.setAttribute('stroke', '#229954');
+  // 正解時は青系
+  rect.setAttribute('fill', '#2F89FF');
+  rect.setAttribute('stroke', '#1F6FD6');
 
   keyElement.resetTimer = setTimeout(() => {
     rect.setAttribute('fill', '#ecf0f1');
     rect.setAttribute('stroke', '#bdc3c7');
     keyElement.resetTimer = null;
   }, 200);
+
+  // 青系の花火リップル
+  this.createRippleEffect(keyElement, { theme: 'correct' });
 
   this.createCorrectEffect(keyElement);
 };
@@ -301,8 +680,9 @@ GameKeyboard.prototype.createCorrectEffect = function (keyElement) {
   const star = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   star.setAttribute('points', '0,-8 2,-2 8,-2 3,1 5,7 0,4 -5,7 -3,1 -8,-2 -2,-2');
   star.setAttribute('transform', `translate(${x}, ${y})`);
-  star.setAttribute('fill', '#f1c40f');
-  star.setAttribute('stroke', '#f39c12');
+  // 正解は青い星
+  star.setAttribute('fill', '#3DA5FF');
+  star.setAttribute('stroke', '#2F89FF');
   star.setAttribute('opacity', '0');
 
   this.svg.appendChild(star);
@@ -362,6 +742,9 @@ GameKeyboard.prototype.showErrorKeyEffect = function (key) {
       shake.parentNode.removeChild(shake);
     }
   }, 300);
+
+  // 赤系の花火リップル
+  this.createRippleEffect(keyElement, { theme: 'error' });
 };
 
 // キーボード全体をリセット
