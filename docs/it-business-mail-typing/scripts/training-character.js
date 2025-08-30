@@ -15,6 +15,9 @@ class CharacterGame extends TrainingGameBase {
         this.gameHeight = 500;
         this.groundHeight = 50;
         this.characterSizes = ['small', 'medium', 'large'];
+        this.lastSpawnX = null; // 前回のスポーン位置
+        this.lastSpawnLetter = null; // 前回の文字
+        this.spawnCount = 0; // スポーン回数カウンター（レベル20超え用）
         
         // DOMが完全に読み込まれてから初期化
         if (document.readyState === 'loading') {
@@ -47,6 +50,9 @@ class CharacterGame extends TrainingGameBase {
         this.characters = [];
         this.spawnTimer = 0;
         this.isPlaying = true;
+        this.lastSpawnX = null; // スポーン位置をリセット
+        this.lastSpawnLetter = null; // 前回文字をリセット
+        this.spawnCount = 0; // スポーン回数カウンターをリセット
         
         // 既存の文字をクリア
         this.dropContainer.innerHTML = '';
@@ -73,6 +79,24 @@ class CharacterGame extends TrainingGameBase {
         this.spawnTimer++;
         if (this.spawnTimer >= this.spawnInterval) {
             this.spawnCharacter();
+            this.spawnCount++; // スポーン回数をカウント
+
+            if(this.level < 20) {
+                // 偶数レベルでは2つずつスポーン
+                if (this.level % 2 === 0) {
+                    this.spawnCharacter();
+                }
+            } else {
+                // レベル20超えの追加スポーン
+                // ・5レベルに1回 
+                // ・スポーン2回に1回
+                if (this.level % 5 === 0) {
+                    
+                    if (this.spawnCount % 2 === 0) {
+                        this.spawnCharacter();
+                    }
+                }
+            }
             this.spawnTimer = 0;
         }
         
@@ -85,7 +109,16 @@ class CharacterGame extends TrainingGameBase {
     
     spawnCharacter() {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+        
+        // 前回と異なる文字を選択
+        let randomLetter;
+        let attempts = 0;
+        do {
+            randomLetter = letters[Math.floor(Math.random() * letters.length)];
+            attempts++;
+        } while (randomLetter === this.lastSpawnLetter && attempts < 10);
+        
+        this.lastSpawnLetter = randomLetter;
         
         // レベルに応じたサイズ確率調整
         let smallThreshold, mediumThreshold;
@@ -115,11 +148,31 @@ class CharacterGame extends TrainingGameBase {
             randomSize = 'large';   // 稀に出る3打文字（連打要求）
         }
         
-        const randomX = Math.random() * (this.dropContainer.offsetWidth - 400) + 200; // 左右200pxずつマージンを確保（largeサイズ200px対応）
+        // 前回と離れた位置を選択
+        const containerWidth = this.dropContainer.offsetWidth;
+        const marginSize = 200; // 左右200pxずつマージンを確保（largeサイズ200px対応）
+        const availableWidth = containerWidth - (marginSize * 2);
         
-        // サイズに応じて初期Y座標を調整
-        const startYOffset = { small: 0, medium: -30, large: -80 };
-        const initialY = startYOffset[randomSize] || 0;
+        let randomX;
+        if (this.lastSpawnX !== null) {
+            // 前回の位置から最低でも画面幅の1/3以上離れた位置を選択
+            const minDistance = availableWidth / 3;
+            let attempts = 0;
+            
+            do {
+                randomX = Math.random() * availableWidth + marginSize;
+                attempts++;
+            } while (Math.abs(randomX - this.lastSpawnX) < minDistance && attempts < 20);
+        } else {
+            // 初回は任意の位置
+            randomX = Math.random() * availableWidth + marginSize;
+        }
+        
+        this.lastSpawnX = randomX;
+        
+        // サイズに応じて初期Y座標を調整（画面上部に十分な余裕を持たせる）
+        const startYOffset = { small: -50, medium: -80, large: -120 };
+        const initialY = startYOffset[randomSize] || -50;
         
         const character = {
             letter: randomLetter,
@@ -143,8 +196,8 @@ class CharacterGame extends TrainingGameBase {
         const offset = sizeMap[size] || 20;
         
         // サイズに応じて初期位置を調整（大きい文字ほど上からスタート）
-        const startYOffset = { small: 0, medium: -30, large: -80 };
-        const initialY = startYOffset[size] || 0;
+        const startYOffset = { small: -50, medium: -80, large: -120 };
+        const initialY = startYOffset[size] || -50;
         
         element.style.left = (x - offset) + 'px';
         element.style.top = initialY + 'px';
@@ -388,13 +441,13 @@ class CharacterGame extends TrainingGameBase {
     }
     
     updateDropSpeed() {
-        // 基本速度を5%増加（レベル25で頭打ち）
+        // 基本速度を4%増加（レベル25で頭打ち）
         const effectiveLevel = Math.min(this.level, 25);
-        this.dropSpeed = 1 + (effectiveLevel - 1) * 0.05;
+        this.dropSpeed = 1 + (effectiveLevel - 1) * 0.03;
         
         // レベルが4の倍数の時、10%減速
         if (this.level % 4 === 0) {
-            this.dropSpeed *= 0.9;
+            this.dropSpeed *= 0.92;
         }
         
         // スポーン間隔を太鼓の達人風に調整（より多くの文字を画面に）
@@ -494,10 +547,21 @@ class CharacterGame extends TrainingGameBase {
         const historyJson = localStorage.getItem(key);
         const history = historyJson ? JSON.parse(historyJson) : [];
         
+        console.log(`${difficulty}の履歴データを読み込み:`, history);
+        console.log(`${difficulty}の履歴データ数:`, history.length);
+        
         // グラフを描画（データが2個以上ある場合のみ）
         const canvas = document.getElementById(`score-graph-${difficulty}`);
         if (canvas && history.length >= 2) {
             this.drawScoreGraph(canvas, history);
+        } else if (canvas && history.length === 1) {
+            // データが1個の場合は単一ポイント表示
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#4299e1';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Score: ${history[0].score}`, canvas.width / 2, canvas.height / 2);
         } else if (canvas) {
             // データが少ない場合は「No Data」を表示
             const ctx = canvas.getContext('2d');
@@ -516,26 +580,66 @@ class CharacterGame extends TrainingGameBase {
         const ctx = canvas.getContext('2d');
         const width = canvas.width;
         const height = canvas.height;
-        const padding = 20;
+        const padding = 40; // Y軸ラベル用に左パディングを増加
+        const rightPadding = 10;
         
         ctx.clearRect(0, 0, width, height);
         
         if (history.length < 2) return;
         
-        // 最大値を取得
-        const maxScore = Math.max(...history.map(h => h.score));
-        const minScore = Math.min(...history.map(h => h.score));
+        // デバッグ：履歴データをコンソールに出力
+        console.log('グラフ描画データ:', history.map(h => h.score));
+        console.log('履歴データの最初の3つ:', history.slice(0, 3));
+        
+        // スコア値の配列を取得
+        const scores = history.map(h => {
+            const score = typeof h.score === 'number' ? h.score : parseInt(h.score || 0, 10);
+            console.log('スコア変換:', h.score, '->', score);
+            return score;
+        });
+        
+        // 最大値・最小値を取得
+        const maxScore = Math.max(...scores);
+        const minScore = Math.min(...scores);
         const range = maxScore - minScore || 1;
         
-        // グリッド描画
+        console.log('変換後スコア配列:', scores);
+        console.log('最大スコア:', maxScore, '最小スコア:', minScore);
+        
+        // Y軸の範囲を適切に設定（minScoreが0でない場合も考慮）
+        let displayMinScore = minScore;
+        let displayMaxScore = maxScore;
+        
+        // 範囲が小さい場合は少し余裕を持たせる
+        if (range < 100) {
+            const margin = Math.max(10, range * 0.1);
+            displayMinScore = Math.max(0, minScore - margin);
+            displayMaxScore = maxScore + margin;
+        }
+        
+        const displayRange = displayMaxScore - displayMinScore;
+        
+        console.log(`スコア範囲: ${displayMinScore} - ${displayMaxScore} (range: ${displayRange})`);
+        
+        // グリッド＆Y軸ラベル描画
         ctx.strokeStyle = '#333';
+        ctx.fillStyle = '#666';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'right';
         ctx.lineWidth = 1;
+        
         for (let i = 0; i <= 4; i++) {
-            const y = padding + (height - 2 * padding) * i / 4;
+            const y = padding + (height - padding - 10) * i / 4;
+            const scoreValue = Math.round(displayMaxScore - (displayMaxScore - displayMinScore) * i / 4);
+            
+            // グリッドライン
             ctx.beginPath();
             ctx.moveTo(padding, y);
-            ctx.lineTo(width - padding, y);
+            ctx.lineTo(width - rightPadding, y);
             ctx.stroke();
+            
+            // Y軸ラベル
+            ctx.fillText(scoreValue.toString(), padding - 5, y + 4);
         }
         
         // ライン描画
@@ -543,11 +647,14 @@ class CharacterGame extends TrainingGameBase {
         ctx.lineWidth = 2;
         ctx.beginPath();
         
-        const recent = history.slice(-10); // 最新10回分
+        const recent = history.slice(0, 10).reverse(); // 最新10回分を逆順にして右端が最新に
         recent.forEach((entry, i) => {
-            const x = padding + (width - 2 * padding) * i / (recent.length - 1);
-            const normalizedScore = range > 0 ? (entry.score - minScore) / range : 0.5;
-            const y = height - padding - (height - 2 * padding) * normalizedScore;
+            const x = padding + (width - padding - rightPadding) * i / Math.max(1, recent.length - 1);
+            const entryScore = typeof entry.score === 'number' ? entry.score : parseInt(entry.score || 0, 10);
+            const normalizedScore = displayRange > 0 ? (entryScore - displayMinScore) / displayRange : 0.5;
+            const y = (height - 10) - (height - padding - 10) * normalizedScore;
+            
+            console.log(`ポイント${i}: score=${entryScore}, normalized=${normalizedScore}, y=${y}`);
             
             if (i === 0) {
                 ctx.moveTo(x, y);
@@ -561,23 +668,48 @@ class CharacterGame extends TrainingGameBase {
         // ポイント描画
         ctx.fillStyle = '#4299e1';
         recent.forEach((entry, i) => {
-            const x = padding + (width - 2 * padding) * i / (recent.length - 1);
-            const normalizedScore = range > 0 ? (entry.score - minScore) / range : 0.5;
-            const y = height - padding - (height - 2 * padding) * normalizedScore;
+            const x = padding + (width - padding - rightPadding) * i / Math.max(1, recent.length - 1);
+            const entryScore = typeof entry.score === 'number' ? entry.score : parseInt(entry.score || 0, 10);
+            const normalizedScore = displayRange > 0 ? (entryScore - displayMinScore) / displayRange : 0.5;
+            const y = (height - 10) - (height - padding - 10) * normalizedScore;
             
             ctx.beginPath();
             ctx.arc(x, y, 3, 0, 2 * Math.PI);
             ctx.fill();
         });
+        
+        // 最新スコアをハイライト表示
+        if (recent.length > 0) {
+            const lastEntry = recent[recent.length - 1]; // reverse後は末尾が最新データ
+            const x = padding + (width - padding - rightPadding) * (recent.length - 1) / Math.max(1, recent.length - 1); // 右端
+            const lastScore = typeof lastEntry.score === 'number' ? lastEntry.score : parseInt(lastEntry.score || 0, 10);
+            const normalizedScore = displayRange > 0 ? (lastScore - displayMinScore) / displayRange : 0.5;
+            const y = (height - 10) - (height - padding - 10) * normalizedScore;
+            
+            // 最新ポイントを大きく表示
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // スコアを表示
+            ctx.fillStyle = '#333';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(lastScore.toString(), x, y - 10);
+        }
     }
     
     // 難易度別データ保存（ゲーム終了時）
     saveScoreForDifficulty(difficulty, score) {
+        console.log(`${difficulty}でスコア${score}を保存中...`);
+        
         // ハイスコア更新
         const highScoreKey = `training_character_${difficulty}_high_score`;
         const currentHigh = parseInt(localStorage.getItem(highScoreKey) || '0', 10);
         if (score > currentHigh) {
             localStorage.setItem(highScoreKey, score.toString());
+            console.log(`${difficulty}のハイスコアを${score}に更新`);
         }
         
         // 履歴追加
@@ -585,14 +717,19 @@ class CharacterGame extends TrainingGameBase {
         const historyJson = localStorage.getItem(historyKey);
         const history = historyJson ? JSON.parse(historyJson) : [];
         
-        history.unshift({
+        const newEntry = {
             score: score,
             level: this.level,
             date: new Date().toISOString().slice(0, 10)
-        });
+        };
+        
+        history.unshift(newEntry);
         
         if (history.length > 50) history.pop();
         localStorage.setItem(historyKey, JSON.stringify(history));
+        
+        console.log(`${difficulty}の履歴に追加:`, newEntry);
+        console.log(`${difficulty}の全履歴:`, history);
     }
     
     // 難易度選択画面を表示（不要になったが残しておく）
