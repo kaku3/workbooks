@@ -95,8 +95,11 @@ function closeTrainingModal() {
         document.body.removeChild(modal);
     }
     
-    // メインBGMを再開
+    // メインBGMを再開（音量設定を再確認してから再生）
     if (window.soundManager) {
+        const volumeSettings = JSON.parse(localStorage.getItem('typingGameVolumeSettings') || '{"bgm":30,"se":80}');
+        window.soundManager.setBgmVolume(volumeSettings.bgm / 100);
+        window.soundManager.setSeVolume(volumeSettings.se / 100);
         window.soundManager.play('bgm-main');
     }
 }
@@ -227,8 +230,11 @@ function setupUIEventListeners() {
             });
             showHistoryPanel(currentQuestion.id);
         }
-        // メイン画面のBGMを再生
+        // メイン画面のBGMを再生（音量設定を再確認してから再生）
         if (window.soundManager) {
+            const volumeSettings = JSON.parse(localStorage.getItem('typingGameVolumeSettings') || '{"bgm":30,"se":80}');
+            window.soundManager.setBgmVolume(volumeSettings.bgm / 100);
+            window.soundManager.setSeVolume(volumeSettings.se / 100);
             window.soundManager.play('bgm-main');
         }
     }

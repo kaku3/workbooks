@@ -34,12 +34,7 @@ console.log(`Playing BGM: ${name}`, sound);
             this.bgm.currentTime = 0;
         }
         this.bgm = sound.audio;
-        // bgm-mainのみボリューム0.3、それ以外は通常
-        if (name === 'bgm-main') {
-            this.bgm.volume = 0.3;
-        } else {
-            this.bgm.volume = this.bgmVolume;
-        }
+        this.bgm.volume = this.bgmVolume;
         this.bgm.currentTime = 0;
         this.bgm.play();
     } else {

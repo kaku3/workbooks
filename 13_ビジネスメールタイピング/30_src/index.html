@@ -210,14 +210,41 @@
     <div id="settings-modal" class="modal">
         <div class="modal-content">
             <h2>登場人物設定</h2>
-            <label for="user-company">あなたの会社名:</label>
-            <input type="text" id="user-company" placeholder="株式会社△△">
-            <label for="user-name">あなたの名前:</label>
-            <input type="text" id="user-name" placeholder="佐藤">
-            <label for="customer-company">相手の会社名:</label>
-            <input type="text" id="customer-company" placeholder="株式会社B">
-            <label for="customer-name">相手の名前:</label>
-            <input type="text" id="customer-name" placeholder="田中">
+            <div class="input-row">
+                <label for="user-company">あなたの会社名:</label>
+                <input type="text" id="user-company" placeholder="株式会社△△">
+            </div>
+            <div class="input-row">
+                <label for="user-name">あなたの名前:</label>
+                <input type="text" id="user-name" placeholder="佐藤">
+            </div>
+            <div class="input-row">
+                <label for="customer-company">相手の会社名:</label>
+                <input type="text" id="customer-company" placeholder="株式会社B">
+            </div>
+            <div class="input-row">
+                <label for="customer-name">相手の名前:</label>
+                <input type="text" id="customer-name" placeholder="田中">
+            </div>
+            
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+            
+            <h3>音量設定</h3>
+            <div class="volume-row">
+                <label for="bgm-volume">BGM音量:</label>
+                <div class="volume-controls">
+                    <input type="range" id="bgm-volume" min="0" max="100" value="30">
+                    <span id="bgm-volume-value">30%</span>
+                </div>
+            </div>
+            <div class="volume-row">
+                <label for="se-volume">SE音量:</label>
+                <div class="volume-controls">
+                    <input type="range" id="se-volume" min="0" max="100" value="80">
+                    <span id="se-volume-value">80%</span>
+                </div>
+            </div>
+            
             <button id="save-settings-btn">保存</button>
             <p>*アプリ内でのみ利用。サーバに保存などはしていません。</p>
         </div>

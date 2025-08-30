@@ -372,8 +372,9 @@ class CharacterGame extends TrainingGameBase {
     }
     
     updateDropSpeed() {
-        // 基本速度を5%増加
-        this.dropSpeed = 1 + (this.level - 1) * 0.05;
+        // 基本速度を5%増加（レベル25で頭打ち）
+        const effectiveLevel = Math.min(this.level, 25);
+        this.dropSpeed = 1 + (effectiveLevel - 1) * 0.05;
         
         // レベルが4の倍数の時、10%減速
         if (this.level % 4 === 0) {

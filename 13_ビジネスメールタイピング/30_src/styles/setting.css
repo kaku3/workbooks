@@ -29,7 +29,7 @@
     padding: 22px 24px 14px 24px;
     min-width: 260px;
     max-width: 95vw;
-    width: 340px;
+    width: 500px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -47,7 +47,10 @@
     margin-top: 8px;
     margin-bottom: 2px;
     font-size: 0.98em;
-    align-self: flex-start;
+    width: 140px;
+    display: inline-block;
+    text-align: right;
+    padding-right: 10px;
 }
 #settings-modal input[type="text"] {
     padding: 6px 8px;
@@ -55,8 +58,49 @@
     border-radius: 5px;
     font-size: 0.98em;
     margin-bottom: 4px;
-    width: 100%;
+    width: 300px;
     box-sizing: border-box;
+}
+
+/* 入力フィールドの行を横並びに */
+.input-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+/* 音量設定の行も横並びに */
+.volume-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.volume-row label {
+    width: 140px;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.volume-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.volume-controls input[type="range"] {
+    flex: 1;
+    margin: 0;
+}
+
+.volume-controls span {
+    font-weight: bold;
+    color: #1976d2;
+    min-width: 40px;
+    text-align: right;
 }
 #save-settings-btn {
     margin-top: 10px;
@@ -79,40 +123,20 @@
     margin-top: 8px;
     text-align: center;
 }
-#settings-modal h2 {
-    margin-top: 0;
-    margin-bottom: 10px;
+
+/* 音量設定のスタイル */
+#settings-modal h3 {
+    margin-top: 16px;
+    margin-bottom: 8px;
     color: #1976d2;
-    font-size: 1.2em;
+    font-size: 1.1em;
+    text-align: center;
+    width: 100%;
 }
-#settings-modal label {
-    font-weight: bold;
-    margin-top: 8px;
-    margin-bottom: 2px;
-}
-#settings-modal input[type="text"] {
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
-    margin-bottom: 4px;
-}
-#save-settings-btn {
-    margin-top: 12px;
-    padding: 8px 18px;
-    background: #1976d2;
-    color: #fff;
+
+#settings-modal hr {
+    width: 100%;
     border: none;
-    border-radius: 5px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-#save-settings-btn:hover {
-    background: #125ea7;
-}
-#settings-modal p {
-    font-size: .75rem;
-    color: #888;
-    margin-top: 8px;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
 }

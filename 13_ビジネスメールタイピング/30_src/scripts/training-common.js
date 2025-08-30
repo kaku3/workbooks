@@ -24,6 +24,11 @@ class TrainingGameBase {
             this.soundManager.load('type01', 'sounds/type01.mp3');
             this.soundManager.load('type02', 'sounds/type02.mp3');
             this.soundManager.load('type03', 'sounds/type03.mp3');
+            
+            // 保存された音量設定を適用
+            const volumeSettings = JSON.parse(localStorage.getItem('typingGameVolumeSettings') || '{"bgm":30,"se":80}');
+            this.soundManager.setBgmVolume(volumeSettings.bgm / 100);
+            this.soundManager.setSeVolume(volumeSettings.se / 100);
         }
     }
     
