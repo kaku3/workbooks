@@ -1,0 +1,626 @@
+/* CHARACTER DROP 専用スタイル */
+
+/* 背景エフェクト - 夜空と星 */
+#training-container {
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
+        radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
+        radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
+        radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
+        radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
+        radial-gradient(circle at 80% 90%, rgba(255, 255, 255, 0.1) 0%, transparent 2%),
+        linear-gradient(0deg, #000033 0%, #000066 50%, #000033 100%);
+    animation: starry-night 10s linear infinite;
+}
+
+@keyframes starry-night {
+    0%, 100% { 
+        filter: brightness(1);
+    }
+    50% { 
+        filter: brightness(1.1);
+    }
+}
+
+/* UI パネルのスタイル */
+#training-container .ui-panel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+#training-container .level-display,
+#training-container .score-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px 0px #000066;
+    font-family: 'Courier New', monospace;
+}
+
+/* ゲームエリア */
+#training-container #game-area {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    margin-top: 80px;
+}
+
+#training-container #drop-container {
+    position: relative;
+    width: 100%;
+    height: 450px;
+    overflow: hidden;
+}
+
+/* 地面 */
+#training-container #ground {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(0deg, #004400 0%, #006600 50%, #008800 100%);
+    border-top: 3px solid #00aa00;
+}
+
+/* 落下する文字 */
+#training-container .drop-character {
+    position: absolute;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px 0px #000000;
+    pointer-events: none;
+    animation: character-glow 2s infinite alternate;
+    transition: all 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.7); /* 半透明の白枠線 */
+    /* 中央基準の変形を確実にする */
+    transform-origin: center center;
+}
+
+#training-container .drop-character.small {
+    width: 40px;
+    height: 40px;
+    font-size: 2.0em;
+}
+
+#training-container .drop-character.medium {
+    width: 120px;
+    height: 120px;
+    font-size: 2.0em;
+}
+
+#training-container .drop-character.large {
+    width: 200px;
+    height: 200px;
+    font-size: 2.0em;
+}
+
+@keyframes character-glow {
+    0% { 
+        filter: brightness(1);
+        text-shadow: 2px 2px 0px #000000;
+        border-color: rgba(255, 255, 255, 0.7);
+    }
+    100% { 
+        filter: brightness(1.2);
+        text-shadow: 
+            2px 2px 0px #000000,
+            0 0 5px rgba(255, 255, 255, 0.5);
+        border-color: rgba(255, 255, 255, 0.9);
+    }
+}
+
+/* 砕け散るエフェクト - ■が飛び散る */
+#training-container .shatter-effect {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.shatter-particle {
+    position: absolute;
+    font-size: 1em;
+    color: #ffff00;
+    opacity: 1;
+    font-weight: bold;
+    left: 50% !important;
+    top: 50% !important;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.shatter-particle-1 { animation: shatter-fly-1 1s ease-out forwards; }
+.shatter-particle-2 { animation: shatter-fly-2 1s ease-out forwards; }
+.shatter-particle-3 { animation: shatter-fly-3 1s ease-out forwards; }
+.shatter-particle-4 { animation: shatter-fly-4 1s ease-out forwards; }
+.shatter-particle-5 { animation: shatter-fly-5 1s ease-out forwards; }
+.shatter-particle-6 { animation: shatter-fly-6 1s ease-out forwards; }
+
+@keyframes shatter-fly-1 {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-130px, -130px) scale(0.3); opacity: 0; }
+}
+
+@keyframes shatter-fly-2 {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(30px, -130px) scale(0.3); opacity: 0; }
+}
+
+@keyframes shatter-fly-3 {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-130px, 30px) scale(0.3); opacity: 0; }
+}
+
+@keyframes shatter-fly-4 {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(30px, 30px) scale(0.3); opacity: 0; }
+}
+
+@keyframes shatter-fly-5 {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-140px, -50%) scale(0.3); opacity: 0; }
+}
+
+@keyframes shatter-fly-6 {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(40px, -50%) scale(0.3); opacity: 0; }
+}
+
+/* 爆発エフェクト */
+#training-container .explosion-effect {
+    position: absolute;
+    width: 200px;
+    height: 100px;
+    pointer-events: none;
+    transform: translateX(-50%);
+    animation: explosion-animation 1s ease-out forwards;
+    background: radial-gradient(ellipse at center bottom, 
+        #ff4444 0%, 
+        #ff8800 30%, 
+        #ffaa00 60%, 
+        transparent 100%);
+}
+
+@keyframes explosion-animation {
+    0% {
+        transform: translateX(-50%) scale(0.1);
+        opacity: 1;
+        filter: brightness(2);
+    }
+    30% {
+        transform: translateX(-50%) scale(1.2);
+        opacity: 0.9;
+    }
+    70% {
+        transform: translateX(-50%) scale(1.5);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateX(-50%) scale(2);
+        opacity: 0;
+        filter: brightness(1);
+    }
+}
+
+/* タイトル画面のCHARACTER DROP特有エフェクト */
+#training-container #title-screen .game-title {
+    position: relative;
+    color: #ffffff;
+    text-shadow: 
+        2px 2px 0px #000066,
+        0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+#training-container #title-screen .game-title::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: title-scan 4s linear infinite;
+    z-index: -1;
+}
+
+@keyframes title-scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* タイトル画面のレイアウト調整 */
+#training-container #title-screen .start-message {
+    margin-bottom: 30px;
+}
+
+#training-container #title-screen #score-graph {
+    border: none;
+}
+
+/* タイトル画面の難易度カード */
+#training-container #title-screen {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+#training-container #title-screen .game-title {
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #ffffff;
+    text-shadow: 
+        2px 2px 0px #000066,
+        0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+#training-container #title-screen .difficulty-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+#training-container #title-screen .difficulty-card {
+    background: linear-gradient(145deg, #2d3748, #1a202c);
+    border: 2px solid #4a5568;
+    border-radius: 20px;
+    padding: 25px;
+    width: 300px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+#training-container #title-screen .difficulty-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    border-color: #63b3ed;
+    background: linear-gradient(145deg, #3d4852, #2d3748);
+}
+
+#training-container #title-screen .difficulty-header {
+    margin-bottom: 20px;
+}
+
+#training-container #title-screen .difficulty-name {
+    font-size: 2em;
+    font-weight: bold;
+    color: #63b3ed;
+    margin-bottom: 5px;
+}
+
+#training-container #title-screen .difficulty-level {
+    font-size: 1.1em;
+    color: #cbd5e0;
+}
+
+#training-container #title-screen .difficulty-stats {
+    margin-bottom: 20px;
+}
+
+#training-container #title-screen .high-score {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+#training-container #title-screen .graph-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+#training-container #title-screen .start-btn {
+    background: linear-gradient(145deg, #4299e1, #3182ce);
+    border: none;
+    border-radius: 12px;
+    padding: 15px 30px;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(66, 153, 225, 0.3);
+}
+
+#training-container #title-screen .start-btn:hover {
+    background: linear-gradient(145deg, #3182ce, #2b77cb);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
+}
+
+#training-container #title-screen .start-btn:active {
+    transform: translateY(0);
+}
+
+/* 難易度選択画面は削除（不要） */
+
+/* レベルアップエフェクト */
+.levelup-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #ffdd00;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px #ff6600, 0 0 20px rgba(255, 221, 0, 0.8);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.levelup-effect.show {
+    animation: levelup-animation 2s ease-out forwards;
+}
+
+.levelup-text {
+    font-size: 4em;
+    margin-bottom: 10px;
+    animation: levelup-bounce 2s ease-out forwards;
+}
+
+.levelup-level {
+    font-size: 2em;
+    color: #ffffff;
+    text-shadow: 2px 2px 0px #0066ff, 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes levelup-animation {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    40% {
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    60% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+    80% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes levelup-bounce {
+    0%, 20%, 40%, 60%, 80%, 100% {
+        transform: translateY(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateY(-20px);
+    }
+}
+
+/* タイトル画面のレイアウト調整 */
+#training-container #title-screen .start-message {
+    margin-bottom: 30px;
+}
+
+#training-container #title-screen #score-graph {
+    border: none;
+    background: transparent;
+}
+
+/* スコア増加エフェクト */
+#training-container .score-display.score-up {
+    animation: score-popup 0.3s ease-out;
+}
+
+@keyframes score-popup {
+    0% { transform: scale(1); }
+    50% { 
+        transform: scale(1.2);
+        color: #ffff00;
+        text-shadow: 
+            2px 2px 0px #000066,
+            0 0 10px #ffff00;
+    }
+    100% { transform: scale(1); }
+}
+
+/* ゲームオーバー画面 */
+#training-container .game-over-title {
+    font-family: 'Courier New', monospace;
+    font-size: 3em;
+    color: #ff4444;
+    text-shadow: 
+        3px 3px 0px #660000,
+        0 0 20px rgba(255, 68, 68, 0.5);
+    margin-bottom: 30px;
+    animation: game-over-blink 2s infinite;
+}
+
+@keyframes game-over-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* 絶望的なゲームオーバーエフェクト */
+.gameover-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3000;
+    opacity: 0;
+}
+
+.gameover-effect.show {
+    opacity: 1;
+    animation: despair-fade 0.5s ease-out forwards;
+}
+
+.despair-circle {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(0, 0, 0, 0.9) 0%, 
+        rgba(50, 0, 0, 0.8) 40%, 
+        rgba(100, 0, 0, 0.6) 60%, 
+        transparent 70%);
+    transform: scale(0);
+    animation-duration: 2.5s; /* ヒットストップ分延長 */
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation-fill-mode: forwards;
+}
+
+.despair-bottom {
+    bottom: -100%;
+    left: -50%;
+    animation-name: despair-expand-bottom;
+    animation-delay: 0s;
+}
+
+.despair-top {
+    bottom: 50%; /* 円の中心が地面レベルになるよう調整 */
+    left: 50%; /* 初期位置、JSで動的に調整 */
+    transform-origin: center center;
+    animation-name: despair-expand-top-hitstop;
+    animation-delay: 0.3s;
+    /* 初期状態では完全に非表示 */
+    clip-path: circle(0% at 50% 50%);
+    /* 黄色っぽい半透明のグラデーション */
+    background: radial-gradient(circle at 50% 50%, 
+        rgba(255, 255, 0, 0.7) 0%, 
+        rgba(255, 200, 0, 0.5) 30%, 
+        rgba(255, 150, 0, 0.3) 50%, 
+        rgba(255, 100, 0, 0.1) 70%, 
+        transparent 90%);
+    /* 下半分を隠すマスク */
+    -webkit-mask: linear-gradient(to bottom, white 50%, transparent 50%);
+    mask: linear-gradient(to bottom, white 50%, transparent 50%);
+    /* 初期状態で確実に非表示にする */
+    opacity: 0;
+}
+
+@keyframes despair-expand-bottom {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0.9;
+    }
+}
+
+@keyframes despair-expand-top-hitstop {
+    0% {
+        clip-path: circle(0px at 50% 50%); /* pxで明示的に0サイズ */
+        opacity: 0;
+        transform: scale(0.1); /* 初期スケールも小さく */
+    }
+    /* ヒットストップ：一瞬静止 */
+    15% {
+        clip-path: circle(0px at 50% 50%);
+        opacity: 0;
+        transform: scale(0.1);
+    }
+    20% {
+        clip-path: circle(5px at 50% 50%); /* 小さく開始 */
+        opacity: 0.8;
+        transform: scale(0.2);
+    }
+    25% {
+        clip-path: circle(20px at 50% 50%);
+        opacity: 0.9;
+        transform: scale(0.3);
+    }
+    /* 加速度的拡大開始 */
+    40% {
+        clip-path: circle(100px at 50% 50%);
+        opacity: 0.8;
+        transform: scale(0.6);
+    }
+    60% {
+        clip-path: circle(300px at 50% 50%);
+        opacity: 0.7;
+        transform: scale(0.8);
+    }
+    80% {
+        clip-path: circle(600px at 50% 50%);
+        opacity: 0.6;
+        transform: scale(0.9);
+    }
+    100% {
+        clip-path: circle(1200px at 50% 50%); /* 十分大きなサイズ */
+        opacity: 0.5;
+        transform: scale(1);
+    }
+}
+
+@keyframes despair-fade {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.gameover-effect .gameover-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Courier New', monospace;
+    font-size: 4em;
+    font-weight: bold;
+    color: #ff4444;
+    text-shadow: 
+        3px 3px 0px #660000,
+        0 0 30px rgba(255, 68, 68, 0.8);
+    opacity: 0;
+    animation: gameover-text-appear 1s ease-out 1.5s forwards;
+    z-index: 3001;
+}
+
+@keyframes gameover-text-appear {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes game-over-blink {
+    0%, 50% { opacity: 1; }
+    25%, 75% { opacity: 0.7; }
+}

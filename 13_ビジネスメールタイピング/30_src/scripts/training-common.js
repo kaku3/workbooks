@@ -107,9 +107,14 @@ class TrainingGameBase {
         const width = canvas.width;
         const height = canvas.height;
         
-        // 背景をクリア
+        // 背景を描画（データがある場合は枠付き）
         ctx.fillStyle = '#111';
         ctx.fillRect(0, 0, width, height);
+        
+        // 枠を描画
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(0, 0, width, height);
         
         // グラフ描画
         if (scores.length > 1) {
@@ -190,8 +195,11 @@ class TrainingGameBase {
     handleGlobalKeyDown(e) {
         // タイトル画面でのキー押下でゲーム開始
         if (this.currentScreen === 'title' && !this.isPlaying) {
-            e.preventDefault();
-            this.startGame();
+            // REACTORモードはスペースキーのみ、CHARACTER DROPモードもスペースキーのみ
+            if (e.key === ' ') {
+                e.preventDefault();
+                this.startGame();
+            }
             return;
         }
         
