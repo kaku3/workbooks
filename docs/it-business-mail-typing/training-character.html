@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHARACTER DROP Training</title>
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/util.css">
+    <link rel="stylesheet" href="styles/training.css">
+    <link rel="stylesheet" href="styles/training-character.css">
+</head>
+<body>
+    <div id="training-container">
+        <!-- タイトル画面 -->
+        <div id="title-screen" class="screen active">
+            <div class="game-title">CHARACTER DROP</div>
+            <div class="difficulty-cards">
+                <div class="difficulty-card" data-difficulty="easy">
+                    <div class="difficulty-header">
+                        <div class="difficulty-name">EASY</div>
+                        <div class="difficulty-level">Level 1〜</div>
+                    </div>
+                    <div class="difficulty-stats">
+                        <div class="high-score">High Score: <span id="high-score-easy">0</span></div>
+                        <div class="graph-container">
+                            <canvas id="score-graph-easy" width="280" height="120"></canvas>
+                        </div>
+                    </div>
+                    <div class="difficulty-action">
+                        <button class="start-btn">START</button>
+                    </div>
+                </div>
+                
+                <div class="difficulty-card" data-difficulty="normal">
+                    <div class="difficulty-header">
+                        <div class="difficulty-name">NORMAL</div>
+                        <div class="difficulty-level">Level 10〜</div>
+                    </div>
+                    <div class="difficulty-stats">
+                        <div class="high-score">High Score: <span id="high-score-normal">0</span></div>
+                        <div class="graph-container">
+                            <canvas id="score-graph-normal" width="280" height="120"></canvas>
+                        </div>
+                    </div>
+                    <div class="difficulty-action">
+                        <button class="start-btn">START</button>
+                    </div>
+                </div>
+                
+                <div class="difficulty-card" data-difficulty="hard">
+                    <div class="difficulty-header">
+                        <div class="difficulty-name">HARD</div>
+                        <div class="difficulty-level">Level 20〜</div>
+                    </div>
+                    <div class="difficulty-stats">
+                        <div class="high-score">High Score: <span id="high-score-hard">0</span></div>
+                        <div class="graph-container">
+                            <canvas id="score-graph-hard" width="280" height="120"></canvas>
+                        </div>
+                    </div>
+                    <div class="difficulty-action">
+                        <button class="start-btn">START</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ゲーム画面 -->
+        <div id="game-screen" class="screen">
+            <div class="ui-panel">
+                <div class="level-display">LEVEL: <span id="current-level">1</span></div>
+                <div class="score-display">SCORE: <span id="current-score">0</span></div>
+            </div>
+            <div id="game-area">
+                <div id="drop-container"></div>
+                <div id="ground"></div>
+            </div>
+            <!-- レベルアップエフェクト -->
+            <div id="levelup-effect" class="levelup-effect">
+                <div class="levelup-text">LEVEL UP!</div>
+                <div class="levelup-level">LEVEL <span id="levelup-level-num">2</span></div>
+            </div>
+            <!-- ゲームオーバーエフェクト -->
+            <div id="gameover-effect" class="gameover-effect">
+                <div class="despair-circle despair-bottom"></div>
+                <div class="despair-circle despair-top"></div>
+                <div class="gameover-text">GAME OVER</div>
+            </div>
+        </div>
+        
+        <!-- ゲームオーバー画面 -->
+        <div id="gameover-screen" class="screen">
+            <div class="game-over-title">GAME OVER</div>
+            <div class="final-score">SCORE: <span id="final-score">0</span></div>
+            <div class="gameover-actions">
+                <button id="title-btn">TITLE</button>
+                <button id="retry-btn">TRY AGAIN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/sound-manager.js"></script>
+    <script src="scripts/training-common.js"></script>
+    <script src="scripts/training-character.js"></script>
+
+    <script>
+    // iframe内でのキー入力を確実に処理するための追加コード
+    document.addEventListener('DOMContentLoaded', function() {
+        // bodyにフォーカスを設定
+        document.body.focus();
+        
+        // キー入力イベントの追加登録
+        document.addEventListener('keydown', function(e) {
+            // イベントの重複防止
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (window.characterGame) {
+                window.characterGame.handleGlobalKeyDown(e);
+            }
+        });
+        
+        // クリック時にフォーカスを確保
+        document.addEventListener('click', function() {
+            document.body.focus();
+        });
+        
+        // ページロード時にフォーカス確保
+        setTimeout(() => {
+            document.body.focus();
+        }, 100);
+    });
+    </script>
+</body>
+</html>

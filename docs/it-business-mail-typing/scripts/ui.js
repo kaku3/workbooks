@@ -54,6 +54,53 @@ function showHowtoModal() {
     modal.appendChild(inner);
     document.body.appendChild(modal);
 }
+
+// --- トレーニングモーダル ---
+function showTrainingModal(gameType) {
+    // 既存のモーダルがあれば削除
+    const existingModal = document.getElementById('training-modal');
+    if (existingModal) {
+        document.body.removeChild(existingModal);
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'training-modal';
+    modal.className = 'training-modal';
+    modal.innerHTML = `
+        <button class="training-close" onclick="closeTrainingModal()">&times;</button>
+        <div class="training-content">
+            <iframe src="training-${gameType}.html" style="width:100%;height:100%;border:none;" tabindex="0" onload="this.focus()"></iframe>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // iframe が読み込まれた後でフォーカスを確実に設定
+    setTimeout(() => {
+        const iframe = modal.querySelector('iframe');
+        if (iframe) {
+            iframe.focus();
+            console.log('Training iframe focused');
+        }
+    }, 100);
+    
+    // メインBGMを停止
+    if (window.soundManager) {
+        window.soundManager.stop('bgm-main');
+    }
+}
+
+function closeTrainingModal() {
+    const modal = document.getElementById('training-modal');
+    if (modal) {
+        document.body.removeChild(modal);
+    }
+    
+    // メインBGMを再開
+    if (window.soundManager) {
+        window.soundManager.play('bgm-main');
+    }
+}
+
 // 各種ボタンイベント登録
 document.addEventListener('DOMContentLoaded', () => {
     // --- 遊び方ボタンイベント登録 ---
@@ -64,6 +111,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // キャリアボタンイベント登録
     addCareerUIevent();
+    
+    // トレーニングボタンイベント登録
+    const trainingABtn = document.getElementById('training-a-btn');
+    if (trainingABtn) {
+        trainingABtn.addEventListener('click', () => {
+            showTrainingModal('reactor');
+        });
+    }
+    
+    const trainingBBtn = document.getElementById('training-b-btn');
+    if (trainingBBtn) {
+        trainingBBtn.addEventListener('click', () => {
+            showTrainingModal('character');
+        });
+    }
     
     // 勤怠ボタンイベント登録
     const timecardBtn = document.getElementById('timecard-btn');
