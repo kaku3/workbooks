@@ -87,13 +87,29 @@ class CharacterGame extends TrainingGameBase {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const randomLetter = letters[Math.floor(Math.random() * letters.length)];
         
-        // サイズ選択：太鼓の達人風のメリハリ
-        // small 75%, medium 20%, large 5% （基本は1打、たまに連打）
+        // レベルに応じたサイズ確率調整
+        let smallThreshold, mediumThreshold;
+        
+        if (this.level >= 21) {
+            // レベル21以上: small 85%, medium 13%, large 2%
+            smallThreshold = 0.85;
+            mediumThreshold = 0.98;
+        } else if (this.level >= 11) {
+            // レベル11-20: small 80%, medium 16%, large 4%
+            smallThreshold = 0.80;
+            mediumThreshold = 0.96;
+        } else {
+            // レベル1-10: small 75%, medium 20%, large 5% （従来通り）
+            smallThreshold = 0.75;
+            mediumThreshold = 0.95;
+        }
+        
+        // サイズ選択：レベルに応じた確率調整
         const sizeRandom = Math.random();
         let randomSize;
-        if (sizeRandom < 0.75) {
+        if (sizeRandom < smallThreshold) {
             randomSize = 'small';   // 基本の1打文字
-        } else if (sizeRandom < 0.95) {
+        } else if (sizeRandom < mediumThreshold) {
             randomSize = 'medium';  // たまに出る2打文字
         } else {
             randomSize = 'large';   // 稀に出る3打文字（連打要求）
