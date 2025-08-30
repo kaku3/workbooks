@@ -295,3 +295,7 @@ ruby rt {
     align-items: center;
     justify-content: center;
 }
+
+#game-modal .game-modal-content #game-keyboard-container {
+    transform: scale(1) translate(0, 0);
+}

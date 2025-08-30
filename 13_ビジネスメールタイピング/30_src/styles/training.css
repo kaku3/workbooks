@@ -1,0 +1,211 @@
+/* トレーニング共通スタイル */
+.training-modal {
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100vw; 
+    height: 100vh;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.training-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10001;
+    font-size: 2.5em;
+    background: rgba(0,0,0,0.7);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s, background 0.2s;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.training-close:hover {
+    opacity: 1;
+    background: rgba(255,0,0,0.6);
+    border-color: rgba(255,255,255,0.6);
+}
+
+.training-content {
+    background: #000;
+    color: #fff;
+    border-radius: 12px;
+    width: 90vw; 
+    height: 90vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+#training-container {
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.screen {
+    display: none;
+    width: 100%; 
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 8bitゲーム風デザイン */
+.game-title {
+    font-family: 'Courier New', monospace;
+    font-size: 4em;
+    color: #00ff00;
+    text-shadow: 
+        2px 2px 0px #008800,
+        0 0 10px #00ff00,
+        0 0 20px #00ff00;
+    animation: pulse 2s infinite;
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.high-score {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2em;
+    color: #ffff00;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 0px #888800;
+}
+
+#score-graph {
+    border: 2px solid #333;
+    margin-bottom: 30px;
+    background: #111;
+    display: none; /* デフォルトは非表示、履歴がある場合のみ表示 */
+}
+
+.start-message {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em;
+    color: #ffffff;
+    animation: blink 1.5s infinite;
+    text-shadow: 1px 1px 0px #666;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+/* ゲーム画面UI */
+.ui-panel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.time-display, .score-display {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5em;
+    color: #00ffff;
+    text-shadow: 
+        1px 1px 0px #006666,
+        0 0 5px #00ffff;
+    padding: 10px 20px;
+    background: rgba(0,20,20,0.8);
+    border: 2px solid #006666;
+    border-radius: 8px;
+}
+
+#game-keyboard-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+}
+
+/* ゲームオーバー画面 */
+.final-score {
+    font-family: 'Courier New', monospace;
+    font-size: 2.5em;
+    color: #ff6666;
+    text-shadow: 
+        2px 2px 0px #660000,
+        0 0 10px #ff6666;
+    margin-bottom: 40px;
+}
+
+.gameover-actions {
+    display: flex;
+    gap: 30px;
+}
+
+.gameover-actions button {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    background: #333;
+    color: #fff;
+    border: 2px solid #666;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-shadow: 1px 1px 0px #000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.gameover-actions button:hover {
+    background: #555;
+    border-color: #888;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.gameover-actions button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1280px) {
+    .game-title {
+        font-size: 3em;
+    }
+    
+    .ui-panel {
+        font-size: 0.9em;
+    }
+    
+    .final-score {
+        font-size: 2em;
+    }
+}

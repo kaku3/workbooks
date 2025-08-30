@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REACTOR - トレーニング</title>
+    <!-- 既存CSSを流用 -->
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/util.css">
+    <link rel="stylesheet" href="styles/training.css">
+    <link rel="stylesheet" href="styles/training-reactor.css">
+</head>
+<body tabindex="0" style="outline: none;">
+    <div id="training-container">
+        <!-- タイトル画面 -->
+        <div id="title-screen" class="screen active">
+            <div class="game-title">REACTOR</div>
+            <div class="high-score">HIGH SCORE: <span id="high-score">0</span></div>
+            <canvas id="score-graph" width="400" height="100"></canvas>
+            <div class="start-message">PUSH SPACE KEY TO START<br><span style="font-size: 0.7em; color: #888;">タイマーは最初のキー押下後に開始</span></div>
+        </div>
+        
+        <!-- ゲーム画面 -->
+        <div id="game-screen" class="screen">
+            <div class="ui-panel">
+                <div class="time-display">TIME: <span id="time-left">30</span></div>
+                <div class="score-display">SCORE: <span id="current-score">0</span></div>
+            </div>
+            <div id="game-keyboard-container"></div>
+        </div>
+        
+        <!-- ゲームオーバー画面 -->
+        <div id="gameover-screen" class="screen">
+            <div class="final-score">SCORE: <span id="final-score">0</span></div>
+            <div class="gameover-actions">
+                <button id="title-btn">TITLE</button>
+                <button id="retry-btn">TRY AGAIN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 既存スクリプトを流用 -->
+    <script src="scripts/sound-manager.js"></script>
+    <script src="scripts/game-keyboard.js"></script>
+    <script src="scripts/training-common.js"></script>
+    <script src="scripts/training-reactor.js"></script>
+    
+    <script>
+    // iframe内でのキー入力を確実に処理するための追加コード
+    document.addEventListener('DOMContentLoaded', function() {
+        // bodyにフォーカスを設定
+        document.body.focus();
+        
+        // キー入力イベントの追加登録
+        document.addEventListener('keydown', function(e) {
+            // イベントの重複防止
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (window.reactorGame) {
+                window.reactorGame.handleGlobalKeyDown(e);
+            }
+        });
+        
+        // クリック時にフォーカスを確保
+        document.addEventListener('click', function() {
+            document.body.focus();
+        });
+        
+        // ページロード時にフォーカス確保
+        setTimeout(() => {
+            document.body.focus();
+        }, 100);
+    });
+    </script>
+</body>
+</html>
