@@ -205,7 +205,7 @@ class CharacterGame extends TrainingGameBase {
             if (despairTop) {
                 // コンテナ幅に対する相対位置として計算
                 const relativeX = (characterCenterX / this.dropContainer.offsetWidth) * 100;
-                despairTop.style.left = relativeX + '%';
+                despairTop.style.setProperty('left', relativeX + '%', 'important');
                 despairTop.style.transform = 'translateX(-50%)'; // 中央揃え
             }
             
