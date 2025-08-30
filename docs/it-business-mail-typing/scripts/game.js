@@ -109,6 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.soundManager.load(name, 'sounds/' + name + '.mp3');
             }
         });
+        
+        // 保存された音量設定を適用
+        const volumeSettings = JSON.parse(localStorage.getItem('typingGameVolumeSettings') || '{"bgm":30,"se":80}');
+        window.soundManager.setBgmVolume(volumeSettings.bgm / 100);
+        window.soundManager.setSeVolume(volumeSettings.se / 100);
     }
 
     // 初回ログイン判定
@@ -1008,8 +1013,11 @@ function hideTimecardModal() {
     if (modal) {
         modal.style.display = 'none';
     }
-    // BGMを再生
+    // BGMを再生（音量設定を再確認してから再生）
     if (window.soundManager) {
+        const volumeSettings = JSON.parse(localStorage.getItem('typingGameVolumeSettings') || '{"bgm":30,"se":80}');
+        window.soundManager.setBgmVolume(volumeSettings.bgm / 100);
+        window.soundManager.setSeVolume(volumeSettings.se / 100);
         window.soundManager.play('bgm-main');
     }
 }
