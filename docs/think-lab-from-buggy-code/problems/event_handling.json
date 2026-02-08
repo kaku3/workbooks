@@ -1,0 +1,16 @@
+{
+  "id": "event_handling",
+  "level": "advanced",
+  "title": "イベントハンドラーの重複登録",
+  "description": "Buttonクラスはクリックカウンターボタンをシミュレートするクラスです。\n\n【仕様】\n- メソッド setup(): ボタンにクリックハンドラーを登録\n- メソッド click(): ボタンをクリック（カウント+1）\n- メソッド getCount(): 現在のカウントを返す\n- **重要**: setup()は何度呼ばれても正しく動作する必要がある（冪等性）\n\n【期待される動作】\nボタンを3回クリック → count = 3（setup()を何回呼んでも同じ）\n\n【現在の問題】\nsetup()を複数回呼ぶと、ハンドラーが重複登録され、1回のクリックで複数回カウントが増えてしまいます。\n例: setup()を2回呼んだ後、click()を1回実行 → count = 2（本来は1のはず）\n\n※ testButton関数は変更しないでください。setup()メソッドを修正してください。",
+  "initialCode": "class Button {\n  constructor() {\n    this.count = 0;\n    this.handlers = [];\n  }\n  \n  setup() {\n    // クリックハンドラーを登録\n    const handler = () => {\n      this.count++;\n    };\n    this.handlers.push(handler);\n  }\n  \n  click() {\n    // すべてのハンドラーを実行\n    this.handlers.forEach(h => h());\n  }\n  \n  getCount() {\n    return this.count;\n  }\n}\n\nfunction testButton() {\n  const btn = new Button();\n  btn.setup();\n  btn.setup(); // 何らかの理由で2回呼ばれている（これは変更しない）\n  btn.click();\n  btn.click();\n  btn.click();\n  return btn.getCount();\n}",
+  "hint": "setup()が複数回呼ばれると、handlers配列に新しいハンドラーが追加され続けます。setup()の中で、既存のハンドラーをクリアしてから新しいハンドラーを追加するようにしてください。",
+  "explanation": "この問題は、setup()メソッドが呼ばれるたびに新しいハンドラーがhandlers配列に追加され続けることが原因です。\n\n現在の実装では、setup()を2回呼ぶと2つのハンドラーが登録されます。click()を呼ぶと両方のハンドラーが実行され、countが2増えてしまいます。3回クリックすると、2×3 = 6になってしまいます（期待値は3）。\n\n【修正方法】\nsetup()の最初で既存のハンドラーをクリア：\n```javascript\nsetup() {\n  this.handlers = []; // 既存をクリア\n  const handler = () => {\n    this.count++;\n  };\n  this.handlers.push(handler);\n}\n```\n\n【実践的な教訓】\n初期化メソッドは「何度呼ばれても正しく動作する（冪等性）」ように設計すべきです。実際の開発では、コンポーネントの再レンダリングや、間違った実装で初期化が複数回呼ばれる可能性があります。DOM要素でも、removeEventListenerで既存のリスナーを削除してから追加するか、フラグで二重登録を防ぐ処理が必要です。",
+  "testCases": [
+    {
+      "input": [],
+      "expectedOutput": 3,
+      "description": "3回クリック → count = 3"
+    }
+  ]
+}

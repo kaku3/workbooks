@@ -1,0 +1,21 @@
+{
+    "id": "chained_errors",
+    "level": "advanced",
+    "title": "連鎖するエラー",
+    "description": "calculateDifferences関数は、数値オブジェクトの配列を受け取り、連続する要素間の差分を計算して返す関数です。\n\n【仕様】\n- 入力: オブジェクトの配列 [{value: number}, ...]\n- 処理: 各要素と次の要素の差分（現在 - 次）を計算\n- 最後の要素: 次の要素がないため、差分は0とする\n- 出力: 差分の配列\n\n例: [{value:10}, {value:7}, {value:5}]\n     10-7=3, 7-5=2, 最後は0\n     → [3, 2, 0]\n\n複数のバグが連鎖しています。エラーメッセージをよく読んで、一つずつ修正してください。",
+    "initialCode": "function calculateDifferences(data) {\n  const result = [];\n  for (let i = 0; i <= data.length; i++) {\n    const current = data[i];\n    const next = data[i + 1];\n    const diff = current.value - next.value;\n    result.push(diff);\n  }\n  return result;\n}\n\nfunction testCalculateDifferences(data) {\n  return calculateDifferences(data);\n}",
+    "testCases": [
+        {
+            "input": [[{"value": 10}, {"value": 7}, {"value": 5}]],
+            "expectedOutput": [3, 2, 0],
+            "description": "10-7=3, 7-5=2, 最後=0"
+        },
+        {
+            "input": [[{"value": 20}, {"value": 15}]],
+            "expectedOutput": [5, 0],
+            "description": "20-15=5, 最後=0"
+        }
+    ],
+    "hint": "エラーメッセージを順番に確認してください。1つ目のエラーを直しても、2つ目のエラーが残ります。配列の範囲と、最後の要素の処理に注目。",
+    "explanation": "このコードには2つのバグがあり、どちらも修正が必要です：\n\n1. **範囲外アクセス**: `i <= data.length` が原因で、data[data.length]にアクセスしようとします。配列のインデックスは0からlength-1なので、`i < data.length` に修正します。\n\n2. **最後の要素の処理**: 最後の要素では `next` が undefined になり、`next.value` でエラーが発生します。仕様では「最後の要素は差分0」なので、nextの存在チェックが必要です：`const diff = next ? current.value - next.value : 0;`\n\n【連鎖するエラーの教訓】\n最初のエラー（範囲外アクセス）を直しても、2つ目のエラー（undefined参照）が残ります。両方とも独立したバグであり、それぞれ修正が必要です。エラーを1つ直したら「これで終わり」と思わず、再度テストして他のエラーがないか確認することが重要です。"
+}

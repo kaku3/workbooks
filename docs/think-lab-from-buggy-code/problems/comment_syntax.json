@@ -1,0 +1,19 @@
+{
+    "id": "comment_syntax",
+    "level": "beginner",
+    "title": "コメントのタイポ",
+    "description": "コメントアウトの記号が間違っています。JavaScriptの正しいコメント記法に修正してください。",
+    "initialCode": "function add(a, b) {\n  # これは足し算の関数です\n  return a + b;\n}\n\nfunction testAdd(a, b) {\n  return add(a, b);\n}",
+    "testCases": [
+        {
+            "input": [5, 3],
+            "expectedOutput": 8
+        },
+        {
+            "input": [10, 20],
+            "expectedOutput": 30
+        }
+    ],
+    "hint": "JavaScriptのコメントは # ではなく // または /* */ を使います。",
+    "explanation": "# はPythonなどの言語のコメント記号です。JavaScriptでは // (一行コメント) または /* */ (複数行コメント) を使います。"
+}

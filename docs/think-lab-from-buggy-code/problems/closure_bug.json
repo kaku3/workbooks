@@ -1,0 +1,26 @@
+{
+  "id": "closure_bug",
+  "level": "intermediate",
+  "title": "クロージャの変数キャプチャ",
+  "description": "createMultipliers関数は、3つの関数を持つ配列を返します。各関数は引数を1倍、2倍、3倍する機能を持つべきです。\n\n【期待される動作】\n- 1番目の関数: 引数 × 1を返す\n- 2番目の関数: 引数 × 2を返す\n- 3番目の関数: 引数 × 3を返す\n\n例: createMultipliers()[0](10) → 10\n例: createMultipliers()[1](10) → 20\n\n現在、すべての関数が同じ値を返してしまいます。",
+  "initialCode": "function createMultipliers() {\n  const multipliers = [];\n  for (var i = 1; i <= 3; i++) {\n    multipliers.push(function(x) {\n      return x * i;\n    });\n  }\n  return multipliers;\n}\n\nfunction testCreateMultipliers() {\n  return createMultipliers();\n}",
+  "hint": "varで宣言された変数iは関数スコープを持ちます。letやconstを使うとブロックスコープになります。",
+  "explanation": "varで宣言された変数iは関数スコープを持つため、すべてのクロージャが同じ変数iを参照します。ループ終了後、iは4になっているため、すべての関数が4倍を返してしまいます。letを使うことで、各ループイテレーションごとに新しいブロックスコープが作られ、それぞれの関数が異なる値をキャプチャします。",
+  "testCases": [
+    {
+      "input": "(() => { return testCreateMultipliers()[0](10); })()",
+      "expectedOutput": 10,
+      "description": "1番目の関数は1倍を返す"
+    },
+    {
+      "input": "(() => { return testCreateMultipliers()[1](10); })()",
+      "expectedOutput": 20,
+      "description": "2番目の関数は2倍を返す"
+    },
+    {
+      "input": "(() => { return createMultipliers()[2](10); })()",
+      "expectedOutput": 30,
+      "description": "3番目の関数は3倍を返す"
+    }
+  ]
+}

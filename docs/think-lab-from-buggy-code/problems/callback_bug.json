@@ -1,0 +1,21 @@
+{
+    "id": "callback_bug",
+    "level": "intermediate",
+    "title": "コールバック関数のバグ",
+    "description": "sumEvenNumbers関数は、数値配列を受け取り、各要素を2倍にした後、偶数のみを合計して返す関数です。\n\n【処理フロー】\n1. 配列の各要素を2倍にする（processNumbers関数を使用）\n2. 2倍にした値の中から偶数のみを抽出\n3. 偶数を合計して返す\n\n例: [1,2,3,4,5] → [2,4,6,8,10] → 2+4+6+8+10 = 30\n\n現在、正しく動作しません。どこに問題があるか特定してください。",
+    "initialCode": "function processNumbers(numbers) {\n  const doubled = [];\n  numbers.forEach(function(num) {\n    doubled.push(num * 2);\n  });\n  return doubled;\n}\n\nfunction sumEvenNumbers(numbers) {\n  let sum = 0;\n  processNumbers(numbers).forEach(function(num) {\n    if (num % 2 = 0) {\n      sum += num;\n    }\n  });\n  return sum;\n}\n\nfunction testSumEvenNumbers(numbers) {\n  return sumEvenNumbers(numbers);\n}",
+    "testCases": [
+        {
+            "input": [[1, 2, 3, 4, 5]],
+            "expectedOutput": 30,
+            "description": "2倍後: [2,4,6,8,10] → 全て偶数 → 2+4+6+8+10 = 30"
+        },
+        {
+            "input": [[10, 11, 12]],
+            "expectedOutput": 66,
+            "description": "2倍後: [20,22,24] → 全て偶数 → 20+22+24 = 66"
+        }
+    ],
+    "hint": "sumEvenNumbers関数の中の条件式に注目してください。比較演算子を確認しましょう。",
+    "explanation": "if (num % 2 = 0) の部分で、= が使われていますが、これは代入演算子です。比較には === を使う必要があります。正しくは if (num % 2 === 0) です。"
+}

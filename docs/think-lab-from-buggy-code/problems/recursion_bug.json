@@ -1,0 +1,26 @@
+{
+  "id": "recursion_bug",
+  "level": "advanced",
+  "title": "再帰関数の終了条件",
+  "description": "sumArray関数は、数値配列を受け取り、すべての要素の合計を再帰的に計算して返す関数です。\n\n【仕様】\n- 入力: 数値の配列\n- 処理: 再帰的に要素を合計\n- 出力: 合計値（空配列の場合は0）\n\n例: [1,2,3] → 6\n例: [5] → 5\n例: [] → 0\n\n現在、特定の入力でスタックオーバーフローが発生します。",
+  "initialCode": "function sumArray(arr, index = 0) {\n  if (index === arr.length - 1) {\n    return arr[index];\n  }\n  return arr[index] + sumArray(arr, index + 1);\n}\n\nfunction testSumArray(arr) {\n  return sumArray(arr);\n}",
+  "hint": "配列の長さが0の場合を考慮してください。終了条件が不完全で、空配列で無限再帰になります。",
+  "explanation": "終了条件が `index === arr.length - 1` となっているため、空配列で正しく動作しません。\n\n【問題点】\n空配列の場合:\n- arr.length = 0、index = 0\n- index === arr.length - 1 → 0 === -1 → false\n- arr[0]にアクセス → undefined\n- undefined + sumArray(arr, 1) で無限再帰\n\n要素が1つの配列の場合は正常に動作しますが、空配列でスタックオーバーフローになります。\n\n【修正方法】\n終了条件を `index >= arr.length` に変更し、配列の範囲外に達したら0を返す：\n```javascript\nfunction sumArray(arr, index = 0) {\n  if (index >= arr.length) {\n    return 0;\n  }\n  return arr[index] + sumArray(arr, index + 1);\n}\n```\n\nこれで空配列の場合も正しく0が返ります。",
+  "testCases": [
+    {
+      "input": [[1, 2, 3]],
+      "expectedOutput": 6,
+      "description": "通常の配列"
+    },
+    {
+      "input": [[5]],
+      "expectedOutput": 5,
+      "description": "要素が1つの配列"
+    },
+    {
+      "input": [[]],
+      "expectedOutput": 0,
+      "description": "空配列"
+    }
+  ]
+}

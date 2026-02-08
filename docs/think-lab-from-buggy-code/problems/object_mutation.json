@@ -1,0 +1,21 @@
+{
+  "id": "object_mutation",
+  "level": "intermediate",
+  "title": "オブジェクトの意図しない変更",
+  "description": "updateUserAge関数は、ユーザーオブジェクトと新しい年齢を受け取り、年齢を更新した新しいオブジェクトを返す関数です。\n\n【仕様】\n- 入力: userオブジェクト {name: string, age: number}、newAge (number)\n- 処理: 新しいオブジェクトを作成し、年齢を更新\n- 出力: 更新された新しいオブジェクト\n- 重要: 元のオブジェクトは変更されてはいけない\n\n現在、元のオブジェクトまで変更されてしまいます。",
+  "initialCode": "function updateUserAge(user, newAge) {\n  const updatedUser = user;\n  updatedUser.age = newAge;\n  return updatedUser;\n}\n\nfunction testUpdateUserAge(user, newAge) {\n  return updateUserAge(user, newAge);\n}",
+  "hint": "JavaScriptのオブジェクトは参照型です。代入だけではコピーになりません。",
+  "explanation": "オブジェクトの代入は参照のコピーであり、値のコピーではありません。updatedUserとuserは同じオブジェクトを指しているため、updatedUserを変更すると元のuserも変更されます。スプレッド構文({...user})やObject.assign()を使って新しいオブジェクトを作成する必要があります。",
+  "testCases": [
+    {
+      "input": "(() => { const user = {name: 'Alice', age: 20}; const updated = testUpdateUserAge(user, 21); return user.age; })()",
+      "expectedOutput": 20,
+      "description": "元のオブジェクトは変更されない"
+    },
+    {
+      "input": "testUpdateUserAge({name: 'Bob', age: 30}, 31).age",
+      "expectedOutput": 31,
+      "description": "新しいオブジェクトは正しく更新される"
+    }
+  ]
+}

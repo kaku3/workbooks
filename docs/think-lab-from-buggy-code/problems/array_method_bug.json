@@ -1,0 +1,21 @@
+{
+  "id": "array_method_bug",
+  "level": "intermediate",
+  "title": "配列メソッドの誤用",
+  "description": "getExpensiveProductNames関数は、商品オブジェクトの配列を受け取り、高額商品の名前を大文字で返す関数です。\n\n【仕様】\n- 入力: 商品オブジェクトの配列 [{name: string, price: number}, ...]\n- 処理: 価格が1000円以上の商品を抽出し、その名前を大文字に変換\n- 出力: 大文字の商品名の配列\n\n例: [{name:'apple', price:500}, {name:'banana', price:1500}] → ['BANANA']\n\n現在、正しく動作しません。",
+  "initialCode": "function getExpensiveProductNames(products) {\n  return products\n    .map(p => p.name.toUpperCase())\n    .filter(p => p.price >= 1000);\n}\n\nfunction testGetExpensiveProductNames(products) {\n  return getExpensiveProductNames(products);\n}",
+  "hint": "filterとmapの順序を確認してください。データを絞り込んでから変換するのと、変換してから絞り込むのでは結果が異なります。",
+  "explanation": "配列メソッドの処理順序が逆になっています。filterで価格が1000円以上のものを絞り込んでから、mapで名前を大文字に変換する必要があります。mapを先に実行すると、文字列に対してpriceプロパティにアクセスしようとしてエラーになります。",
+  "testCases": [
+    {
+      "input": [[{"name": "apple", "price": 500}, {"name": "banana", "price": 1500}]],
+      "expectedOutput": ["BANANA"],
+      "description": "価格が1000円以上の商品名を大文字で返す"
+    },
+    {
+      "input": [[{"name": "pen", "price": 2000}, {"name": "eraser", "price": 100}, {"name": "notebook", "price": 1200}]],
+      "expectedOutput": ["PEN", "NOTEBOOK"],
+      "description": "複数の高額商品がある場合"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+    "id": "greeting_message",
+    "level": "beginner",
+    "title": "出力メッセージ修正",
+    "description": "期待される挨拶の形式と異なります。正しい挨拶文に修正してください。",
+    "initialCode": "function greetUser(name) {\n  const greeting = \"Hi, \" + name;\n  console.log(greeting);\n  return greeting;\n}\n\nfunction testGreetUser(name) {\n  return greetUser(name);\n}",
+    "testCases": [
+        {
+            "input": ["Taro"],
+            "expectedOutput": "Hello, Taro",
+            "expectedConsoleOutput": "Hello, Taro"
+        },
+        {
+            "input": ["Bob"],
+            "expectedOutput": "Hello, Bob",
+            "expectedConsoleOutput": "Hello, Bob"
+        }
+    ],
+    "hint": "挨拶の言葉を確認してください。「Hi」ではなく「Hello」を使う仕様です。",
+    "explanation": "挨拶文の定数が「Hi, 」になっていましたが、仕様では「Hello, 」を使う必要がありました。変数に格納している値を修正すれば、console.logと戻り値の両方が自動的に修正されます。"
+}
