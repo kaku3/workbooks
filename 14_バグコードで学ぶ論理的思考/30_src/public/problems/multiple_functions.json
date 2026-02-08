@@ -1,0 +1,21 @@
+{
+    "id": "multiple_functions",
+    "level": "intermediate",
+    "title": "複数関数のバグ特定",
+    "description": "calculatePrice関数は、商品価格に対して割引を適用し、その後に税金（10%）を加算して最終価格を計算する関数です。割引は1000円を超える商品に対して20%適用されます。\n\n【処理フロー】\n1. 割引額を計算（1000円超なら20%割引）\n2. 基本価格から割引を引く\n3. 割引後の価格に10%の税金を加算\n\n現在、正しい結果を返しません。複数の関数を確認してバグを見つけてください。",
+    "initialCode": "function calculateTax(price) {\n  return price * 0.1;\n}\n\nfunction calculateDiscount(price) {\n  if (price > 1000) {\n    return price * 0.2;\n  }\n  return 0;\n}\n\nfunction calculatePrice(basePrice) {\n  const discount = calculateDiscount(basePrice);\n  const priceAfterDiscount = basePrice + discount;\n  const tax = calculateTax(priceAfterDiscount);\n  return priceAfterDiscount + tax;\n}\n\nfunction testCalculatePrice(basePrice) {\n  return calculatePrice(basePrice);\n}",
+    "testCases": [
+        {
+            "input": [1500],
+            "expectedOutput": 1320,
+            "description": "1500円の商品: 300円割引 → 1200円 → 税120円 → 1320円"
+        },
+        {
+            "input": [500],
+            "expectedOutput": 550,
+            "description": "500円の商品: 割引なし → 500円 → 税50円 → 550円"
+        }
+    ],
+    "hint": "discountは価格から引くべきものです。calculatePrice関数の中で割引の適用方法を確認してください。",
+    "explanation": "basePrice + discount ではなく basePrice - discount とすべきでした。割引は価格から引くものですが、足し算になっていました。複数の関数がある場合、どの関数にバグがあるかを特定する必要があります。"
+}

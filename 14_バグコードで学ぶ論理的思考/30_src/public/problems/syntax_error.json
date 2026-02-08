@@ -1,0 +1,25 @@
+{
+    "id": "syntax_error",
+    "level": "beginner",
+    "title": "構文エラー",
+    "description": "単純なSyntaxErrorです。エラーメッセージを読んで、どこが間違っているか特定してください。",
+    "initialCode": "function greet(name) {\n  console.log(\"Hello, \" + name;\n}\n\nfunction testGreet(name) {\n  return greet(name);\n}",
+    "testCases": [
+        {
+            "input": [
+                "Taro"
+            ],
+            "expectedOutput": null,
+            "expectedConsoleOutput": "Hello, Taro"
+        },
+        {
+            "input": [
+                "Alice"
+            ],
+            "expectedOutput": null,
+            "expectedConsoleOutput": "Hello, Alice"
+        }
+    ],
+    "hint": "括弧の対応を確認してください。",
+    "explanation": "console.logの閉じ括弧が抜けていました。"
+}

@@ -1,0 +1,19 @@
+{
+    "id": "off_by_one",
+    "level": "beginner",
+    "title": "範囲外アクセス",
+    "description": "配列の最後の要素が取得できていません。for文の範囲を確認してください。",
+    "initialCode": "function sumArray(arr) {\n  let sum = 0;\n  for (let i = 0; i < arr.length - 1; i++) {\n    sum += arr[i];\n  }\n  return sum;\n}\n\nfunction testSumArray(arr) {\n  return sumArray(arr);\n}",
+    "testCases": [
+        {
+            "input": [[1, 2, 3, 4, 5]],
+            "expectedOutput": 15
+        },
+        {
+            "input": [[10, 20, 30]],
+            "expectedOutput": 60
+        }
+    ],
+    "hint": "配列のインデックスは 0 から length-1 まであります。最後の要素まで処理できていますか？",
+    "explanation": "i < arr.length - 1 の条件では、最後の要素がループに含まれません。正しくは i < arr.length とするか、i <= arr.length - 1 とします。これは「オフバイワン（Off-by-one）エラー」と呼ばれる典型的なバグです。"
+}

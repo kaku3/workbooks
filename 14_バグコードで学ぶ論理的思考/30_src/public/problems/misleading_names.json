@@ -1,0 +1,26 @@
+{
+  "id": "misleading_names",
+  "level": "advanced",
+  "title": "誤解を招く命名",
+  "description": "calculateShippingCost関数は、商品の重量（kg）と距離（km）から配送料を計算する関数です。\n\n【仕様】\n- 基本料金: 500円\n- 重量料金: 重量 × 100円/kg\n- 距離料金: 距離 × 50円/km\n- 合計 = 基本料金 + 重量料金 + 距離料金\n\n例: 重量3kg、距離10km\n     500 + (3×100) + (10×50) = 500 + 300 + 500 = 1300円\n\n現在、計算結果が仕様と合いません。関数名や変数名をよく読んで、実装との不一致を見つけてください。",
+  "initialCode": "function calculateShippingCost(weight, distance) {\n  const baseFee = 500;\n  const perKg = 100;\n  const perKm = 50;\n  \n  const weightFee = calculateAverage(weight, perKg);\n  const distanceFee = calculateAverage(distance, perKm);\n  \n  return baseFee + weightFee + distanceFee;\n}\n\nfunction calculateAverage(value1, value2) {\n  // 2つの値の平均を計算\n  return (value1 + value2) / 2;\n}\n\nfunction testCalculateShippingCost(weight, distance) {\n  return calculateShippingCost(weight, distance);\n}",
+  "hint": "calculateAverage関数は本当に「平均」を計算していますが、呼び出し側は平均を求めたいのでしょうか？重量料金は「重量 × 単価」のはずでは？",
+  "explanation": "この問題の教訓は**「命名と実装の不一致がバグを生む」**ことです。\n\n【バグの内容】\ncalculateAverage関数は名前の通り「平均」を計算していますが、実際に必要な処理は「掛け算」です：\n- 重量料金 = 重量 × 単価（3kg × 100円 = 300円）が必要\n- しかし平均を計算してしまっている（(3 + 100) / 2 = 51.5円）\n\n【なぜこうなったのか】\n1. 既存のcalculateAverage関数があった\n2. 「2つの数値を受け取って1つの数値を返す」という形が似ている\n3. 深く考えずに流用してしまった\n4. 関数名を見て「平均を求める関数」と分かっていたはずなのに、「計算する」というあいまいな理解で使ってしまった\n\n【正しい修正】\n```javascript\nfunction calculateShippingCost(weight, distance) {\n  const baseFee = 500;\n  const perKg = 100;\n  const perKm = 50;\n  \n  const weightFee = weight * perKg;  // 平均ではなく掛け算\n  const distanceFee = distance * perKm;\n  \n  return baseFee + weightFee + distanceFee;\n}\n```\n\nあるいは、正しい命名の関数を使う：\n```javascript\nfunction multiply(a, b) {\n  return a * b;\n}\n```\n\n【実践での教訓】\n1. **関数名を信じる** - calculateAverageなら平均を計算する、それ以外には使わない\n2. **「何となく使える」は危険** - 引数の数が合っているからといって流用しない\n3. **明確な命名** - multiplyやcalculateFeeなど、用途が明確な名前をつける\n4. **コードレビュー** - 関数名と使い方が合っているか確認する",
+  "testCases": [
+    {
+      "input": [3, 10],
+      "expectedOutput": 1300,
+      "description": "3kg、10km: 500 + 300 + 500 = 1300円"
+    },
+    {
+      "input": [5, 20],
+      "expectedOutput": 2000,
+      "description": "5kg、20km: 500 + 500 + 1000 = 2000円"
+    },
+    {
+      "input": [1, 5],
+      "expectedOutput": 850,
+      "description": "1kg、5km: 500 + 100 + 250 = 850円"
+    }
+  ]
+}

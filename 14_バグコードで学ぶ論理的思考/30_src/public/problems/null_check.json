@@ -1,0 +1,23 @@
+{
+    "id": "null_check",
+    "level": "beginner",
+    "title": "nullチェック漏れ",
+    "description": "引数がnullの場合にエラーが発生します。null/undefinedをチェックする処理を追加してください。",
+    "initialCode": "function getLength(str) {\n  return str.length;\n}\n\nfunction testGetLength(str) {\n  return getLength(str);\n}",
+    "testCases": [
+        {
+            "input": ["Hello"],
+            "expectedOutput": 5
+        },
+        {
+            "input": [null],
+            "expectedOutput": 0
+        },
+        {
+            "input": [""],
+            "expectedOutput": 0
+        }
+    ],
+    "hint": "nullやundefinedが渡された場合の処理を追加しましょう。if文で条件分岐できます。",
+    "explanation": "nullやundefinedに対してプロパティアクセス（.length）を行うとエラーになります。引数をチェックして、nullやundefinedの場合は0を返すなどのガード処理を追加する必要があります。例: if (!str) return 0;"
+}

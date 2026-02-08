@@ -1,0 +1,21 @@
+{
+  "id": "scope_bug",
+  "level": "intermediate",
+  "title": "スコープの誤解",
+  "description": "getMessage関数は、ログイン状態（真偽値）を受け取り、適切なメッセージを返す関数です。\n\n【期待される動作】\n- isLoggedIn が true: 'Welcome back!' を返す\n- isLoggedIn が false: 'Please log in' を返す\n\n現在、変数のスコープの問題でエラーが発生します。",
+  "initialCode": "function getMessage(isLoggedIn) {\n  if (isLoggedIn) {\n    let message = 'Welcome back!';\n  } else {\n    let message = 'Please log in';\n  }\n  return message;\n}\n\nfunction testGetMessage(isLoggedIn) {\n  return getMessage(isLoggedIn);\n}",
+  "hint": "letとconstはブロックスコープを持ちます。if文のブロック外からはアクセスできません。",
+  "explanation": "letとconstで宣言された変数はブロックスコープを持つため、if文のブロック内でのみ有効です。return文がある位置からはmessageにアクセスできません。変数を関数スコープで宣言するか、if-else文内でreturnするように修正する必要があります。",
+  "testCases": [
+    {
+      "input": [true],
+      "expectedOutput": "Welcome back!",
+      "description": "ログイン済みの場合"
+    },
+    {
+      "input": [false],
+      "expectedOutput": "Please log in",
+      "description": "未ログインの場合"
+    }
+  ]
+}

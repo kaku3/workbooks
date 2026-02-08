@@ -1,0 +1,26 @@
+{
+  "id": "overcomplicated_logic",
+  "level": "advanced",
+  "title": "過剰に複雑化された実装",
+  "description": "calculateDiscount関数は、商品の合計金額を受け取り、割引後の価格を返す関数です。\n\n【仕様】\n- 入力: 合計金額（number）\n- 処理: 10000円以上の場合、10%割引を適用\n- 出力: 割引後の価格（number）\n\n例: 15000円 → 13500円（10%割引）\n例: 8000円 → 8000円（割引なし）\n\nこの単純な仕様に対して、なぜか過剰に複雑な実装がされています。\nコードをよく読んで、論理的なバグを見つけてください。",
+  "initialCode": "function calculateDiscount(total) {\n  // 割引ルールを配列で管理（将来の拡張を見越して...）\n  const rules = [\n    { threshold: 10000, rate: 0.1 },\n    { threshold: 5000, rate: 0.05 },\n    { threshold: 0, rate: 0 }\n  ];\n  \n  let applicableRule = null;\n  \n  // ルールを順番にチェック\n  for (let i = 0; i < rules.length; i++) {\n    if (total > rules[i].threshold) {\n      applicableRule = rules[i];\n      break;\n    }\n  }\n  \n  if (applicableRule) {\n    // 割引額を計算\n    const discountAmount = total * applicableRule.rate;\n    return discountAmount;\n  }\n  \n  return total;\n}\n\nfunction testCalculateDiscount(total) {\n  return calculateDiscount(total);\n}",
+  "hint": "1. 仕様では10%割引しかないのに、なぜ5%割引のルールがあるのでしょうか？ 2. 関数は何を返すべきですか？割引額ですか？割引後の価格ですか？ 3. threshold の判定条件は正しいですか？",
+  "explanation": "この問題には複数のバグがあります：\n\n1. **不要な複雑性**: 仕様は「10000円以上で10%割引」だけなのに、配列とループで管理している。将来の拡張を見越した設計は良いですが、現時点では不要で、逆にバグを生みやすい。\n\n2. **仕様にないルール**: 5000円の5%割引ルールは仕様にありません。これが最大のバグで、8000円の入力に対して5%割引が適用され、400円が返ります（正しくは8000円）。\n\n3. **境界値の判定ミス**: `total > rules[i].threshold` は「より大きい」なので、10000円ちょうどの場合に10%割引が適用されません（仕様では「10000円以上」）。正しくは `>=` です。\n\n4. **戻り値の間違い**: 割引額（discountAmount）を返していますが、仕様では割引後の価格を返すべきです。正しくは `total - discountAmount` です。\n\nシンプルな実装なら: `return total >= 10000 ? total * 0.9 : total;`",
+  "testCases": [
+    {
+      "input": [15000],
+      "expectedOutput": 13500,
+      "description": "15000円 → 10%割引 → 13500円"
+    },
+    {
+      "input": [10000],
+      "expectedOutput": 9000,
+      "description": "10000円ちょうど → 10%割引 → 9000円"
+    },
+    {
+      "input": [8000],
+      "expectedOutput": 8000,
+      "description": "8000円 → 割引なし → 8000円"
+    }
+  ]
+}

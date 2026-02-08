@@ -1,0 +1,23 @@
+{
+    "id": "comparison_operator",
+    "level": "beginner",
+    "title": "比較演算子ミス",
+    "description": "パスワードチェック機能が正しく動作しません。条件式を修正してください。",
+    "initialCode": "function checkPassword(password) {\n  if (password = \"secret123\") {\n    return \"Access Granted\";\n  }\n  return \"Access Denied\";\n}\n\nfunction testCheckPassword(password) {\n  return checkPassword(password);\n}",
+    "testCases": [
+        {
+            "input": ["secret123"],
+            "expectedOutput": "Access Granted"
+        },
+        {
+            "input": ["wrong"],
+            "expectedOutput": "Access Denied"
+        },
+        {
+            "input": [""],
+            "expectedOutput": "Access Denied"
+        }
+    ],
+    "hint": "= と === の違いを確認しましょう。条件式で使うべきなのは？代入と比較は別の演算子です。",
+    "explanation": "= は代入演算子で、=== が厳密等価比較演算子です。if文の条件式では値を比較するため、=== を使う必要があります。= を使うとpassword変数に\"secret123\"が代入されてしまい、常にtrueになってしまいます。"
+}

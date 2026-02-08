@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+#root {
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  height: 100vh;
+}
+
+.test-result-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.test-result-item > div {
+  margin: 2px 0;
+}
+
+button {
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+button:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+button:active {
+  opacity: 0.6;
+  transform: translateY(0);
+}
+
+/* コードエディタのスタイル */
+.code-editor-textarea {
+  outline: none !important;
+}
+
+/* 難易度タブボタン */
+.level-tab {
+  padding: 8px 16px;
+  border: 1px solid #2c3e50;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #fff;
+  color: #333;
+  font-weight: normal;
+}
+
+.level-tab.active {
+  background: #2c3e50;
+  color: #fff;
+  font-weight: bold;
+}
+
+.level-tab:hover {
+  opacity: 0.8;
+}
+
+/* 問題選択ボタン */
+.problem-button {
+  margin-right: 3px;
+  min-width: 40px;
+  height: 30px;
+  padding: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ddd;
+  color: #333;
+  border: 1px solid #999;
+  font-weight: normal;
+  vertical-align: top;
+  font-size: 13px;
+}
+
+.problem-button.active {
+  background: #2c3e50;
+  color: #fff;
+  border: 2px solid #2c3e50;
+  font-weight: bold;
+}
+
+.problem-button.cleared {
+  background: #90EE90;
+}
+
+.problem-button.active.cleared {
+  background: #2c3e50;
+}
+
+.problem-button .check-mark {
+  width: 12px;
+  display: inline-block;
+  text-align: center;
+  font-size: 11px;
+}
+
+.problem-button:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.problem-button:active {
+  opacity: 0.6;
+  transform: translateY(0);
+}
+
+/* スクロールバーのカスタマイズ */
+div[style*="overflow: auto"]::-webkit-scrollbar,
+pre::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+div[style*="overflow: auto"]::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+div[style*="overflow: auto"]::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.4);
+  border-radius: 4px;
+}
+
+div[style*="overflow: auto"]::-webkit-scrollbar-thumb:hover,
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.6);
+}
+
+.w-tc-editor-text::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.w-tc-editor-text::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
+}
+
+.w-tc-editor-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.7);
+}
+

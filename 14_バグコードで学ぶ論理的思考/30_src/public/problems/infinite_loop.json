@@ -1,0 +1,21 @@
+{
+    "id": "infinite_loop",
+    "level": "beginner",
+    "title": "無限ループ",
+    "description": "カウンタが止まりません。for文の条件式を確認してください。",
+    "initialCode": "function countUp(n) {\n  let result = [];\n  for (let i = 0; i < n; i--) {\n    result.push(i);\n    if (result.length > 10) break; // 安全装置\n  }\n  return result;\n}\n\nfunction testCountUp(n) {\n  return countUp(n);\n}",
+    "testCases": [
+        {
+            "input": [
+                3
+            ],
+            "expectedOutput": [
+                0,
+                1,
+                2
+            ]
+        }
+    ],
+    "hint": "iの変化（増減）に注目してください。",
+    "explanation": "i-- になっていたため、iが永遠に減り続け、条件 i < n を満たし続けていました。"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "this_binding",
+  "level": "intermediate",
+  "title": "thisの束縛問題",
+  "description": "processCounter関数は、counterオブジェクトのgetValueメソッドをコールバック関数として受け取り、実行して結果を返します。\n\n【counterオブジェクトの仕様】\n- count: カウンター値（初期値0）\n- increment: countを1増やす\n- getValue: 現在のcountを返す\n\n【processCounter関数の仕様】\n- callback: コールバック関数\n- 処理: callbackを実行して、その結果を返す\n\n【期待される動作】\ngetValueメソッドをコールバックとして渡すと、現在のcountの値が返る\n\n現在、thisの束縛の問題でエラーが発生します。",
+  "initialCode": "const counter = {\n  count: 0,\n  increment: function() {\n    this.count++;\n  },\n  getValue: function() {\n    return this.count;\n  }\n};\n\nfunction processCounter(callback) {\n  return callback();\n}\n\nfunction testCounter() {\n  counter.count = 5;\n  return processCounter(counter.getValue);\n}",
+  "hint": "メソッドを変数やコールバックとして渡すと、thisの束縛が失われます。コールバック呼び出し時にアロー関数でラップするか、bindメソッドで束縛する必要があります。",
+  "explanation": "オブジェクトのメソッドを変数に代入したり、コールバックとして渡すと、thisの束縛が失われます。counter.getValueを渡すと、関数だけが渡され、counterオブジェクトとの関連が失われます。修正方法は2つ：(1) 呼び出し時にアロー関数でラップ: processCounter(() => counter.getValue()) (2) bindで束縛: processCounter(counter.getValue.bind(counter))。注意：オブジェクトのメソッド定義自体をアロー関数にしても解決しません（アロー関数は親スコープのthisを継承するため）。",
+  "testCases": [
+    {
+      "input": [],
+      "expectedOutput": 5,
+      "description": "count=5の状態でgetValueを呼ぶと5が返る"
+    }
+  ]
+}

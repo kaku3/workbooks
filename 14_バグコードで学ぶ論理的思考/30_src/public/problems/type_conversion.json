@@ -1,0 +1,19 @@
+{
+    "id": "type_conversion",
+    "level": "beginner",
+    "title": "型変換ミス",
+    "description": "足し算の結果が予想と違います。文字列連結ではなく数値の加算にしてください。",
+    "initialCode": "function addNumbers(a, b) {\n  // 文字列として受け取った数値を足す\n  return a + b;\n}\n\nfunction testAddNumbers(a, b) {\n  return addNumbers(a, b);\n}",
+    "testCases": [
+        {
+            "input": ["10", "20"],
+            "expectedOutput": 30
+        },
+        {
+            "input": ["5", "15"],
+            "expectedOutput": 20
+        }
+    ],
+    "hint": "文字列の + 演算は連結になります。数値に変換してから足し算しましょう。Number()やparseInt()が使えます。",
+    "explanation": "JavaScriptでは文字列同士の + 演算は連結になります。'10' + '20' は '1020' という文字列になってしまいます。Number(a) + Number(b) のように数値に変換してから演算する必要があります。"
+}
