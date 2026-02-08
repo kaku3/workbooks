@@ -352,3 +352,117 @@
   border-radius: var(--radius-md);
   white-space: pre-line;
 }
+
+/* ========================================
+   Splash Screen
+   ======================================== */
+
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.splash-screen-content {
+  position: relative;
+  text-align: center;
+}
+
+.splash-screen-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+}
+
+.splash-screen-ring {
+  position: absolute;
+  border: 8px solid transparent;
+  border-radius: 50%;
+}
+
+.splash-screen-ring:nth-child(1) {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top-color: #3498db;
+  border-right-color: #3498db;
+  animation: rotate 2s linear infinite;
+}
+
+.splash-screen-ring:nth-child(2) {
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  border-top-color: #2ecc71;
+  border-right-color: #2ecc71;
+  animation: rotate-reverse 1.5s linear infinite;
+}
+
+.splash-screen-ring:nth-child(3) {
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  border-top-color: #f39c12;
+  border-right-color: #f39c12;
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotate-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.splash-screen-logo {
+  position: relative;
+  z-index: 2;
+}
+
+.splash-screen-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #2ecc71;
+  margin: 0;
+  text-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+  letter-spacing: 0.05em;
+}
+
+.splash-screen-subtitle {
+  font-size: 1.2rem;
+  color: #95a5a6;
+  margin: 0.5rem 0 0 0;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+.splash-screen-message {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-top: 1rem;
+  font-weight: 300;
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#2c3e50"/>
+  
+  <!-- Bug body -->
+  <ellipse cx="32" cy="32" rx="12" ry="16" fill="#2ecc71"/>
+  
+  <!-- Bug head -->
+  <circle cx="32" cy="22" r="8" fill="#27ae60"/>
+  
+  <!-- Eyes (X pattern for "bug" effect) -->
+  <g stroke="#e74c3c" stroke-width="1.5" stroke-linecap="round">
+    <line x1="28" y1="20" x2="30" y2="22"/>
+    <line x1="30" y1="20" x2="28" y2="22"/>
+    <line x1="34" y1="20" x2="36" y2="22"/>
+    <line x1="36" y1="20" x2="34" y2="22"/>
+  </g>
+  
+  <!-- Antennae -->
+  <line x1="28" y1="14" x2="26" y2="10" stroke="#27ae60" stroke-width="1.5"/>
+  <line x1="36" y1="14" x2="38" y2="10" stroke="#27ae60" stroke-width="1.5"/>
+  <circle cx="26" cy="10" r="1.5" fill="#f39c12"/>
+  <circle cx="38" cy="10" r="1.5" fill="#f39c12"/>
+  
+  <!-- Legs -->
+  <g stroke="#27ae60" stroke-width="1.5">
+    <line x1="20" y1="28" x2="14" y2="26"/>
+    <line x1="20" y1="32" x2="14" y2="32"/>
+    <line x1="20" y1="36" x2="14" y2="38"/>
+    <line x1="44" y1="28" x2="50" y2="26"/>
+    <line x1="44" y1="32" x2="50" y2="32"/>
+    <line x1="44" y1="36" x2="50" y2="38"/>
+  </g>
+  
+  <!-- Light bulb idea symbol -->
+  <g transform="translate(44, 44)" opacity="0.9">
+    <circle cx="0" cy="0" r="6" fill="#f39c12"/>
+    <path d="M -2 2 L -2 5 L 2 5 L 2 2" fill="#e67e22"/>
+    <circle cx="0" cy="-2" r="3.5" fill="#fff" opacity="0.3"/>
+  </g>
+</svg>

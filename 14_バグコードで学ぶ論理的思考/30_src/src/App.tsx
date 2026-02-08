@@ -17,6 +17,7 @@ import { TestResults } from './components/TestResults';
 import { ExecutionLog } from './components/ExecutionLog';
 import { HintSection } from './components/HintSection';
 import { LearningStats } from './components/LearningStats';
+import { SplashScreen } from './components/SplashScreen';
 
 function App() {
   // カスタムフック
@@ -114,8 +115,8 @@ function App() {
   const currentProblem = problems[currentProblemIndex];
   const allTestsPassed = results.length > 0 && results.every(r => r.passed);
 
-  if (loading) return <div>Loading...</div>;
-  if (!currentProblem) return <div>No problems found...</div>;
+  if (loading) return <SplashScreen message="問題を読み込んでいます..." />;
+  if (!currentProblem) return <SplashScreen message="問題が見つかりませんでした" />;
 
   return (
     <div className="app-container">
