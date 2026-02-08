@@ -29,16 +29,56 @@ function GameKeyboard(containerId) {
   this._activeEffects = 0;
   this._lastRippleAt = 0;
   
+  // ホームポジションの指に応じた色設定
+  this.fingerColors = {
+    'leftPinky':   { fill: '#FFE6F0', stroke: '#FFB3D9' },   // 左小指: 薄いピンク
+    'leftRing':    { fill: '#E6F0FF', stroke: '#B3D9FF' },   // 左薬指: 薄い青
+    'leftMiddle':  { fill: '#E6FFE6', stroke: '#B3FFB3' },   // 左中指: 薄い緑
+    'leftIndex':   { fill: '#FFFDE6', stroke: '#FFF9B3' },   // 左人差し指: 薄い黄色
+    'rightIndex':  { fill: '#FFE6CC', stroke: '#FFB380' },   // 右人差し指: 薄いオレンジ
+    'rightMiddle': { fill: '#E6FFFF', stroke: '#B3FFFF' },   // 右中指: 薄い水色
+    'rightRing':   { fill: '#E6FFE6', stroke: '#B3FFB3' },   // 右薬指: 薄い緑
+    'rightPinky':  { fill: '#FFE6F0', stroke: '#FFB3D9' },   // 右小指: 薄いピンク
+    'thumb':       { fill: '#F0F0F0', stroke: '#D0D0D0' },   // 親指: グレー
+    'none':        { fill: '#ecf0f1', stroke: '#bdc3c7' }    // その他
+  };
+  
+  // キーと指の対応マップ
+  this.keyToFinger = {
+    // ESCキー
+    'Esc': 'leftPinky',
+    // 数字行
+    '1': 'leftPinky', '2': 'leftRing', '3': 'leftMiddle', '4': 'leftIndex', '5': 'leftIndex',
+    '6': 'rightIndex', '7': 'rightIndex', '8': 'rightMiddle', '9': 'rightRing', '0': 'rightPinky',
+    '-': 'rightPinky', '^': 'rightPinky', '\\': 'rightPinky', 'Backspace': 'rightPinky',
+    // 第2行 (QWERTY行)
+    'Q': 'leftPinky', 'W': 'leftRing', 'E': 'leftMiddle', 'R': 'leftIndex', 'T': 'leftIndex',
+    'Y': 'rightIndex', 'U': 'rightIndex', 'I': 'rightMiddle', 'O': 'rightRing', 'P': 'rightPinky',
+    '@': 'rightPinky', '[': 'rightPinky',
+    // 第3行 (ホームポジション行)
+    'A': 'leftPinky', 'S': 'leftRing', 'D': 'leftMiddle', 'F': 'leftIndex', 'G': 'leftIndex',
+    'H': 'rightIndex', 'J': 'rightIndex', 'K': 'rightMiddle', 'L': 'rightRing', ';': 'rightPinky',
+    ':': 'rightPinky', ']': 'rightPinky',
+    // 第4行 (ZXCV行)
+    'Z': 'leftPinky', 'X': 'leftRing', 'C': 'leftMiddle', 'V': 'leftIndex', 'B': 'leftIndex',
+    'N': 'rightIndex', 'M': 'rightIndex', ',': 'rightMiddle', '.': 'rightRing', '/': 'rightPinky',
+    '_': 'rightPinky',
+    // スペースバー・その他
+    'Space': 'thumb',
+    '無変換': 'thumb', '変換': 'thumb', 'ひら': 'thumb'
+  };
+  
   // キーボードレイアウト定義（日本語キーボード）
   this.keyLayout = [
     [
-      {key: '1', x: 0, y: 0, width: 40}, {key: '2', x: 45, y: 0, width: 40}, 
-      {key: '3', x: 90, y: 0, width: 40}, {key: '4', x: 135, y: 0, width: 40}, 
-      {key: '5', x: 180, y: 0, width: 40}, {key: '6', x: 225, y: 0, width: 40}, 
-      {key: '7', x: 270, y: 0, width: 40}, {key: '8', x: 315, y: 0, width: 40}, 
-      {key: '9', x: 360, y: 0, width: 40}, {key: '0', x: 405, y: 0, width: 40},
-      {key: '-', x: 450, y: 0, width: 40}, {key: '^', x: 495, y: 0, width: 40},
-      {key: '\\', x: 540, y: 0, width: 40}, {key: 'Backspace', x: 585, y: 0, width: 65}
+      {key: 'Esc', x: 0, y: 0, width: 40}, 
+      {key: '1', x: 45, y: 0, width: 40}, {key: '2', x: 90, y: 0, width: 40}, 
+      {key: '3', x: 135, y: 0, width: 40}, {key: '4', x: 180, y: 0, width: 40}, 
+      {key: '5', x: 225, y: 0, width: 40}, {key: '6', x: 270, y: 0, width: 40}, 
+      {key: '7', x: 315, y: 0, width: 40}, {key: '8', x: 360, y: 0, width: 40}, 
+      {key: '9', x: 405, y: 0, width: 40}, {key: '0', x: 450, y: 0, width: 40},
+      {key: '-', x: 495, y: 0, width: 40}, {key: '^', x: 540, y: 0, width: 40},
+      {key: '\\', x: 585, y: 0, width: 40}, {key: 'Backspace', x: 630, y: 0, width: 70}
     ],
     [
       {key: 'Tab', x: 0, y: 45, width: 65}, {key: 'Q', x: 70, y: 45, width: 40}, 
@@ -47,7 +87,7 @@ function GameKeyboard(containerId) {
       {key: 'Y', x: 295, y: 45, width: 40}, {key: 'U', x: 340, y: 45, width: 40}, 
       {key: 'I', x: 385, y: 45, width: 40}, {key: 'O', x: 430, y: 45, width: 40},
       {key: 'P', x: 475, y: 45, width: 40}, {key: '@', x: 520, y: 45, width: 40},
-      {key: '[', x: 565, y: 45, width: 40}, {key: 'Enter', x: 610, y: 45, width: 40, height: 85}
+      {key: '[', x: 565, y: 45, width: 40}, {key: 'Enter', x: 610, y: 45, width: 90, height: 85}
     ],
     [
       {key: 'Caps', x: 0, y: 90, width: 75}, {key: 'A', x: 80, y: 90, width: 40}, 
@@ -65,14 +105,14 @@ function GameKeyboard(containerId) {
       {key: 'N', x: 320, y: 135, width: 40}, {key: 'M', x: 365, y: 135, width: 40}, 
       {key: ',', x: 410, y: 135, width: 40}, {key: '.', x: 455, y: 135, width: 40},
       {key: '/', x: 500, y: 135, width: 40}, {key: '_', x: 545, y: 135, width: 40},
-      {key: 'Shift', x: 590, y: 135, width: 60}
+      {key: 'Shift', x: 590, y: 135, width: 110}
     ],
     [
       {key: 'Ctrl', x: 0, y: 180, width: 60}, {key: 'Win', x: 65, y: 180, width: 50}, 
       {key: 'Alt', x: 120, y: 180, width: 50}, {key: '無変換', x: 175, y: 180, width: 60},
       {key: 'Space', x: 240, y: 180, width: 180}, {key: '変換', x: 425, y: 180, width: 60},
       {key: 'ひら', x: 490, y: 180, width: 50}, {key: 'Alt', x: 545, y: 180, width: 50},
-      {key: 'Ctrl', x: 600, y: 180, width: 50}
+      {key: 'Ctrl', x: 600, y: 180, width: 100}
     ]
   ];
   
@@ -83,18 +123,18 @@ GameKeyboard.prototype.init = function () {
 
   // SVG要素を作成
   this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  this.svg.setAttribute('width', '670');
+  this.svg.setAttribute('width', '715');
   this.svg.setAttribute('height', '240');
-  this.svg.setAttribute('viewBox', '0 0 670 240');
+  this.svg.setAttribute('viewBox', '0 0 715 240');
   this.svg.style.width = '100%';
   this.svg.style.height = 'auto';
-  this.svg.style.maxWidth = '670px';
+  this.svg.style.maxWidth = '715px';
   this.svg.style.display = 'block';
   this.svg.style.margin = '0 auto';
 
   // 背景
   const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  bg.setAttribute('width', '670');
+  bg.setAttribute('width', '715');
   bg.setAttribute('height', '240');
   bg.setAttribute('fill', '#2c3e50');
   bg.setAttribute('rx', '8');
@@ -170,6 +210,10 @@ GameKeyboard.prototype.createKey = function (keyData) {
   const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   group.setAttribute('class', 'key-group');
 
+  // 指に応じた色を取得
+  const finger = this.keyToFinger[keyData.key] || 'none';
+  const colors = this.fingerColors[finger];
+
   // キーの背景（中央寄せのため10pxオフセット + 垂直位置調整10px）
   const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
   rect.setAttribute('x', keyData.x + 12);
@@ -177,9 +221,9 @@ GameKeyboard.prototype.createKey = function (keyData) {
   rect.setAttribute('width', keyData.width - 4);
   rect.setAttribute('height', (keyData.height || 40) - 4);
   rect.setAttribute('rx', '4');
-  rect.setAttribute('fill', '#ecf0f1');
-  rect.setAttribute('stroke', '#bdc3c7');
-  rect.setAttribute('stroke-width', '1');
+  rect.setAttribute('fill', colors.fill);
+  rect.setAttribute('stroke', colors.stroke);
+  rect.setAttribute('stroke-width', '2');
   rect.setAttribute('class', 'key-bg');
 
   // キーのテキスト（中央寄せのため10pxオフセット + 垂直位置調整10px）
@@ -201,13 +245,15 @@ GameKeyboard.prototype.createKey = function (keyData) {
   this.keyElements[keyData.key] = {
     rect,
     text,
-    group
+    group,
+    defaultColors: colors  // デフォルト色を保存
   };
   if (keyData.key.match(/^[A-Z]$/)) {
     this.keyElements[keyData.key.toLowerCase()] = {
       rect,
       text,
-      group
+      group,
+      defaultColors: colors  // デフォルト色を保存
     };
   }
 };
@@ -226,10 +272,11 @@ GameKeyboard.prototype.showKeyPress = function (key) {
   rect.setAttribute('fill', '#3498db');
   rect.setAttribute('stroke', '#2980b9');
 
-  // 少し遅れて元に戻す
+  // 少し遅れて元に戻す（デフォルト色を使用）
   keyElement.resetTimer = setTimeout(() => {
-    rect.setAttribute('fill', '#ecf0f1');
-    rect.setAttribute('stroke', '#bdc3c7');
+    const colors = keyElement.defaultColors || this.fingerColors.none;
+    rect.setAttribute('fill', colors.fill);
+    rect.setAttribute('stroke', colors.stroke);
     keyElement.resetTimer = null;
   }, 150);
   // 通常タイピング時も中立色のリップルを発火（IME入力でも毎回出るように）
@@ -246,7 +293,7 @@ GameKeyboard.prototype.createRippleEffect = function (keyElement, opts) {
 
   // SVGの大きさ（viewBox優先）
   const vb = this.svg.viewBox && this.svg.viewBox.baseVal ? this.svg.viewBox.baseVal : null;
-  const svgW = vb && vb.width ? vb.width : (parseFloat(this.svg.getAttribute('width')) || 670);
+  const svgW = vb && vb.width ? vb.width : (parseFloat(this.svg.getAttribute('width')) || 715);
   const svgH = vb && vb.height ? vb.height : (parseFloat(this.svg.getAttribute('height')) || 240);
 
   // 最遠コーナーまで届く半径
@@ -528,7 +575,7 @@ GameKeyboard.prototype.createHintRippleInward = function (keyElement) {
   const cy = parseFloat(rect.getAttribute('y')) + parseFloat(rect.getAttribute('height')) / 2;
 
   const vb = this.svg.viewBox && this.svg.viewBox.baseVal ? this.svg.viewBox.baseVal : null;
-  const svgW = vb && vb.width ? vb.width : (parseFloat(this.svg.getAttribute('width')) || 670);
+  const svgW = vb && vb.width ? vb.width : (parseFloat(this.svg.getAttribute('width')) || 715);
   const svgH = vb && vb.height ? vb.height : (parseFloat(this.svg.getAttribute('height')) || 240);
 
   const d1 = Math.hypot(cx - 0,    cy - 0);
@@ -614,6 +661,7 @@ GameKeyboard.prototype.showNextKeySuggestion = function (key) {
   // サジェスト用のハイライト効果
   rect.setAttribute('fill', '#f39c12');
   rect.setAttribute('stroke', '#e67e22');
+  rect.setAttribute('stroke-width', '3');
   rect.style.filter = 'drop-shadow(0 0 8px rgba(243, 156, 18, 0.6))';
 
   // パルス効果用のアニメーション
@@ -630,9 +678,12 @@ GameKeyboard.prototype.showNextKeySuggestion = function (key) {
 // 次キーサジェストをクリア
 GameKeyboard.prototype.clearNextKeySuggestion = function () {
   if (this.nextKey && this.keyElements[this.nextKey]) {
-    const rect = this.keyElements[this.nextKey].rect;
-    rect.setAttribute('fill', '#ecf0f1');
-    rect.setAttribute('stroke', '#bdc3c7');
+    const keyElement = this.keyElements[this.nextKey];
+    const rect = keyElement.rect;
+    const colors = keyElement.defaultColors || this.fingerColors.none;
+    rect.setAttribute('fill', colors.fill);
+    rect.setAttribute('stroke', colors.stroke);
+    rect.setAttribute('stroke-width', '2');
     rect.style.filter = '';
 
     // パルスアニメーションを削除
@@ -659,8 +710,9 @@ GameKeyboard.prototype.showCorrectKeyEffect = function (key) {
   rect.setAttribute('stroke', '#1F6FD6');
 
   keyElement.resetTimer = setTimeout(() => {
-    rect.setAttribute('fill', '#ecf0f1');
-    rect.setAttribute('stroke', '#bdc3c7');
+    const colors = keyElement.defaultColors || this.fingerColors.none;
+    rect.setAttribute('fill', colors.fill);
+    rect.setAttribute('stroke', colors.stroke);
     keyElement.resetTimer = null;
   }, 200);
 
@@ -735,8 +787,9 @@ GameKeyboard.prototype.showErrorKeyEffect = function (key) {
   keyElement.group.appendChild(shake);
 
   keyElement.resetTimer = setTimeout(() => {
-    rect.setAttribute('fill', '#ecf0f1');
-    rect.setAttribute('stroke', '#bdc3c7');
+    const colors = keyElement.defaultColors || this.fingerColors.none;
+    rect.setAttribute('fill', colors.fill);
+    rect.setAttribute('stroke', colors.stroke);
     keyElement.resetTimer = null;
     if (shake.parentNode) {
       shake.parentNode.removeChild(shake);
@@ -761,9 +814,11 @@ GameKeyboard.prototype.reset = function () {
         keyElement.resetTimer = null;
       }
       
-      // キーの外観をリセット
-      keyElement.rect.setAttribute('fill', '#ecf0f1');
-      keyElement.rect.setAttribute('stroke', '#bdc3c7');
+      // キーの外観をリセット（デフォルト色を使用）
+      const colors = keyElement.defaultColors || this.fingerColors.none;
+      keyElement.rect.setAttribute('fill', colors.fill);
+      keyElement.rect.setAttribute('stroke', colors.stroke);
+      keyElement.rect.setAttribute('stroke-width', '2');
       keyElement.rect.style.filter = '';
     }
   });
@@ -780,9 +835,11 @@ GameKeyboard.prototype.clearKeyEffect = function (key) {
     keyElement.resetTimer = null;
   }
   
-  // キーの外観をリセット
-  keyElement.rect.setAttribute('fill', '#ecf0f1');
-  keyElement.rect.setAttribute('stroke', '#bdc3c7');
+  // キーの外観をリセット（デフォルト色を使用）
+  const colors = keyElement.defaultColors || this.fingerColors.none;
+  keyElement.rect.setAttribute('fill', colors.fill);
+  keyElement.rect.setAttribute('stroke', colors.stroke);
+  keyElement.rect.setAttribute('stroke-width', '2');
   keyElement.rect.style.filter = '';
   
   // グループ内の全てのアニメーション要素を削除
