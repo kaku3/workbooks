@@ -1,111 +1,18 @@
 /* ========================================
-   CSS変数とデザイントークン
+   Problem Selector
    ======================================== */
-:root {
-  /* Colors */
-  --color-primary: #4CAF50;
-  --color-secondary: #2196F3;
-  --color-warning: #FFC107;
-  --color-danger: #F44336;
-  --color-purple: #9C27B0;
-  --color-dark: #2c3e50;
-  --color-success: #dff0d8;
-  --color-success-text: #3c763d;
-  --color-info: #E3F2FD;
-  --color-hint: #FFF9C4;
-  
-  /* Background Colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --bg-light: #f5f5f5;
-  --bg-code: #fffacd;
-  --bg-pass: #e8f5e9;
-  --bg-fail: #ffebee;
-  --bg-cleared: #90EE90;
-  
-  /* Text Colors */
-  --text-primary: #333;
-  --text-secondary: #555;
-  --text-muted: #666;
-  --text-light: #bdc3c7;
-  
-  /* Borders */
-  --border-color: #dee2e6;
-  --border-dark: #ccc;
-  --border-gold: #ffd700;
-  
-  /* Spacing */
-  --spacing-xs: 2px;
-  --spacing-sm: 6px;
-  --spacing-md: 10px;
-  --spacing-lg: 15px;
-  --spacing-xl: 20px;
-  
-  /* Border Radius */
-  --radius-sm: 3px;
-  --radius-md: 4px;
-  
-  /* Font Sizes */
-  --font-xs: 11px;
-  --font-sm: 12px;
-  --font-md: 13px;
-  --font-base: 14px;
-  --font-lg: 16px;
-  --font-xl: 20px;
-  
-  /* Fonts */
-  --font-mono: ui-monospace, SFMono-Regular, SF Mono, Consolas, Liberation Mono, Menlo, monospace;
+.problem-selector {
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden;
-}
-
-#root {
-  max-width: 100vw;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  height: 100vh;
-}
-
-.test-result-item {
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  border-radius: 4px;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.test-result-item > div {
-  margin: 2px 0;
-}
-
-button {
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-button:hover {
-  opacity: 0.8;
-  transform: translateY(-1px);
-}
-
-button:active {
-  opacity: 0.6;
-  transform: translateY(0);
-}
-
-/* コードエディタのスタイル */
-.code-editor-textarea {
-  outline: none !important;
+.selector-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--border-dark);
 }
 
 /* 難易度タブボタン */
@@ -178,130 +85,6 @@ button:active {
 .problem-button:active {
   opacity: 0.6;
   transform: translateY(0);
-}
-
-/* スクロールバーのカスタマイズ */
-div[style*="overflow: auto"]::-webkit-scrollbar,
-pre::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-div[style*="overflow: auto"]::-webkit-scrollbar-track,
-pre::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-div[style*="overflow: auto"]::-webkit-scrollbar-thumb,
-pre::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.4);
-  border-radius: 4px;
-}
-
-div[style*="overflow: auto"]::-webkit-scrollbar-thumb:hover,
-pre::-webkit-scrollbar-thumb:hover {
-  background: rgba(128, 128, 128, 0.6);
-}
-
-.w-tc-editor-text::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.w-tc-editor-text::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.5);
-  border-radius: 4px;
-}
-
-.w-tc-editor-text::-webkit-scrollbar-thumb:hover {
-  background: rgba(128, 128, 128, 0.7);
-}
-
-/* ========================================
-   レイアウトコンポーネント
-   ======================================== */
-.app-container {
-  display: flex;
-  height: 100vh;
-  flex-direction: column;
-  background: var(--bg-primary);
-}
-
-.main-content {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-.left-pane {
-  flex: 1;
-  padding: var(--spacing-xl);
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-}
-
-.right-pane {
-  flex: 1;
-  padding: var(--spacing-xl);
-  overflow-y: auto;
-  background: var(--bg-secondary);
-}
-
-/* ========================================
-   Header
-   ======================================== */
-.header {
-  padding: 8px var(--spacing-xl);
-  background: var(--color-dark);
-  color: var(--bg-primary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-title {
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-md);
-}
-
-.header h1 {
-  margin: 0;
-  font-size: var(--font-xl);
-  font-weight: bold;
-}
-
-.header-subtitle {
-  font-size: var(--font-md);
-  color: var(--text-light);
-}
-
-.export-button {
-  padding: 8px 16px;
-  background: var(--color-purple);
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: var(--radius-md);
-  font-size: var(--font-base);
-}
-
-/* ========================================
-   Problem Selector
-   ======================================== */
-.problem-selector {
-  margin-bottom: var(--spacing-md);
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.selector-divider {
-  width: 1px;
-  height: 30px;
-  background: var(--border-dark);
 }
 
 /* ========================================
@@ -452,6 +235,18 @@ pre::-webkit-scrollbar-thumb:hover {
   margin-bottom: var(--spacing-md);
 }
 
+.test-result-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.test-result-item > div {
+  margin: 2px 0;
+}
+
 /* ========================================
    Execution Log
    ======================================== */
@@ -557,4 +352,3 @@ pre::-webkit-scrollbar-thumb:hover {
   border-radius: var(--radius-md);
   white-space: pre-line;
 }
-

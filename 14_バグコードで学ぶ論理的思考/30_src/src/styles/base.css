@@ -1,0 +1,84 @@
+/* ========================================
+   基本スタイル・リセット
+   ======================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+#root {
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  height: 100vh;
+}
+
+/* ========================================
+   共通要素
+   ======================================== */
+button {
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+button:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+button:active {
+  opacity: 0.6;
+  transform: translateY(0);
+}
+
+/* ========================================
+   コードエディタのスタイル
+   ======================================== */
+.code-editor-textarea {
+  outline: none !important;
+}
+
+/* ========================================
+   スクロールバーのカスタマイズ
+   ======================================== */
+div[style*="overflow: auto"]::-webkit-scrollbar,
+pre::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+div[style*="overflow: auto"]::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+div[style*="overflow: auto"]::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.4);
+  border-radius: 4px;
+}
+
+div[style*="overflow: auto"]::-webkit-scrollbar-thumb:hover,
+pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.6);
+}
+
+.w-tc-editor-text::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.w-tc-editor-text::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
+}
+
+.w-tc-editor-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.7);
+}

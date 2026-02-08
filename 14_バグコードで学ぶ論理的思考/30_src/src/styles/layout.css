@@ -1,0 +1,70 @@
+/* ========================================
+   レイアウトコンポーネント
+   ======================================== */
+.app-container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.left-pane {
+  flex: 1;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.right-pane {
+  flex: 1;
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+  background: var(--bg-secondary);
+}
+
+/* ========================================
+   Header
+   ======================================== */
+.header {
+  padding: 8px var(--spacing-xl);
+  background: var(--color-dark);
+  color: var(--bg-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: var(--font-xl);
+  font-weight: bold;
+}
+
+.header-subtitle {
+  font-size: var(--font-md);
+  color: var(--text-light);
+}
+
+.export-button {
+  padding: 8px 16px;
+  background: var(--color-purple);
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
+}
