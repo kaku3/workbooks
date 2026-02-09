@@ -125,6 +125,7 @@
   background: var(--editor-bg);
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 /* 右ペイン: テスト結果（比率 3） */
