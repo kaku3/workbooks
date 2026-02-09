@@ -15,7 +15,6 @@ import { ProblemDescription } from './components/ProblemDescription';
 import { CodeEditor } from './components/CodeEditor';
 import { TestResults } from './components/TestResults';
 import { ExecutionLog } from './components/ExecutionLog';
-import { HintSection } from './components/HintSection';
 import { LearningStats } from './components/LearningStats';
 import { SplashScreen } from './components/SplashScreen';
 
@@ -28,9 +27,8 @@ function App() {
   // ローカルステート
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [code, setCode] = useState('');
-  const [showHint, setShowHint] = useState(false);
-  const [showExplanation, setShowExplanation] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<Level>('beginner');
+  const [activeCodeTab, setActiveCodeTab] = useState<'code' | 'hint' | 'explanation'>('code');
 
   // 初期表示で最初の問題を自動実行
   useEffect(() => {
@@ -51,7 +49,7 @@ function App() {
     const currentLog = learningLog[problem.id] || {
       problemId: problem.id,
       attempts: 0,
-      hintUsed: showHint,
+      hintUsed: false,
       cleared: false,
       startTime: Date.now(),
       lastAttemptTime: Date.now()
@@ -60,7 +58,6 @@ function App() {
     const updatedLog = {
       ...currentLog,
       attempts: currentLog.attempts + 1,
-      hintUsed: currentLog.hintUsed || showHint,
       lastAttemptTime: Date.now()
     };
 
@@ -70,7 +67,7 @@ function App() {
       updatedLog.cleared = true;
       if (!currentLog.cleared) {
         updatedLog.clearTime = Date.now();
-        setShowExplanation(true); // 初クリア時は解説を自動表示
+        setActiveCodeTab('explanation'); // 初クリア時は解説タブを自動表示
       }
     });
 
@@ -83,8 +80,7 @@ function App() {
     setCurrentProblemIndex(index);
     setCode(problems[index].initialCode);
     resetResults();
-    setShowHint(false);
-    setShowExplanation(false);
+    setActiveCodeTab('code');
     initProblemLog(problems[index].id);
     setTimeout(() => {
       document.querySelector<HTMLButtonElement>('[data-run-button]')?.click();
@@ -123,8 +119,8 @@ function App() {
       <Header onExportLog={exportLog} />
 
       <div className="main-content">
-        {/* 左ペイン: 問題記述とエディタ */}
-        <div className="left-pane">
+        {/* 左サイドバー: 問題選択ツリービュー */}
+        <div className="sidebar-pane">
           <ProblemSelector
             problems={problems}
             currentProblemIndex={currentProblemIndex}
@@ -133,19 +129,88 @@ function App() {
             onSelectLevel={handleSelectLevel}
             onSelectProblem={handleSelectProblem}
           />
+        </div>
 
-          <h2 className="problem-header">
-            {currentProblem.title}
-          </h2>
+        {/* 中央ペイン: 問題記述とエディタ */}
+        <div className="center-pane">
+          {/* 上部ヘッダー: 問題タイトルと実行ボタン */}
+          <div className="center-header">
+            <h2 className="problem-header">
+              {currentProblem.title}
+            </h2>
+            <div className="header-buttons">
+              <button onClick={handleRun} data-run-button className="run-button">
+                実行 & テスト
+              </button>
+              {allTestsPassed && currentProblemIndex < problems.length - 1 && (
+                <button onClick={goToNextProblem} className="next-button">
+                  次へ &gt;
+                </button>
+              )}
+            </div>
+          </div>
 
-          <ProblemDescription problem={currentProblem} />
+          <div className="center-divider"></div>
 
-          <CodeEditor value={code} onChange={setCode} />
+          <div className="center-split">
+            {/* 左側: 問題説明/テストケース */}
+            <div className="center-left">
+              <ProblemDescription problem={currentProblem} />
+            </div>
 
-          <div className="run-button-container">
-            <button onClick={handleRun} data-run-button className="run-button">
-              実行 & テスト
-            </button>
+            {/* 右側: コードエディタ */}
+            <div className="center-right">
+              <div className="code-editor-wrapper">
+                {/* タブヘッダー */}
+                <div className="code-tabs">
+                  <button
+                    onClick={() => setActiveCodeTab('code')}
+                    className={`code-tab ${activeCodeTab === 'code' ? 'active' : ''}`}
+                  >
+                    📝 コード
+                  </button>
+                  <button
+                    onClick={() => setActiveCodeTab('hint')}
+                    className={`code-tab ${activeCodeTab === 'hint' ? 'active' : ''}`}
+                  >
+                    💡 ヒント
+                  </button>
+                  <button
+                    onClick={() => setActiveCodeTab('explanation')}
+                    className={`code-tab ${activeCodeTab === 'explanation' ? 'active' : ''}`}
+                  >
+                    📖 解説
+                  </button>
+                </div>
+
+                {/* タブコンテンツ */}
+                <div className="code-tab-content">
+                  {activeCodeTab === 'code' && (
+                    <CodeEditor value={code} onChange={setCode} />
+                  )}
+                  
+                  {activeCodeTab === 'hint' && (
+                    <div className="hint-content">
+                      <strong>💡 ヒント:</strong>
+                      <p>{currentProblem.hint}</p>
+                      {syntaxHint && (
+                        <div className="syntax-hint-detail">
+                          <strong>🔍 構文エラーの詳細:</strong>
+                          <pre className="syntax-hint-code">{syntaxHint}</pre>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {activeCodeTab === 'explanation' && (
+                    <div className="explanation-content">
+                      <strong>📖 解説:</strong>
+                      <p>{currentProblem.explanation}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           <LearningStats log={learningLog[currentProblem.id]} />
@@ -157,18 +222,6 @@ function App() {
           <TestResults results={results} />
 
           <ExecutionLog output={output} />
-
-          <HintSection
-            problem={currentProblem}
-            showHint={showHint}
-            showExplanation={showExplanation}
-            syntaxHint={syntaxHint}
-            allTestsPassed={allTestsPassed}
-            hasMoreProblems={currentProblemIndex < problems.length - 1}
-            onToggleHint={() => setShowHint(!showHint)}
-            onToggleExplanation={() => setShowExplanation(!showExplanation)}
-            onNextProblem={goToNextProblem}
-          />
         </div>
       </div>
     </div>

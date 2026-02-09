@@ -10,6 +10,7 @@
   --color-purple: #9C27B0;
   --color-dark: #2c3e50;
   --color-success: #dff0d8;
+  --color-success-bg: #d4edda;
   --color-success-text: #3c763d;
   --color-info: #E3F2FD;
   --color-hint: #FFF9C4;
@@ -22,6 +23,12 @@
   --bg-pass: #e8f5e9;
   --bg-fail: #ffebee;
   --bg-cleared: #90EE90;
+  
+  /* Editor Colors (Quiet Light theme) */
+  --editor-bg: #f5f5f5;
+  --editor-line-number-bg: #e8e8e8;
+  --editor-line-number-color: #237893;
+  --editor-line-number-border: #d0d0d0;
   
   /* Text Colors */
   --text-primary: #333;

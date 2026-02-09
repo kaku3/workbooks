@@ -1,142 +1,186 @@
 /* ========================================
-   Problem Selector
+   Problem Selector - ツリービュー形式
    ======================================== */
-.problem-selector {
-  margin-bottom: var(--spacing-md);
+.problem-selector-tree {
   display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
 }
 
-.selector-divider {
-  width: 1px;
-  height: 30px;
-  background: var(--border-dark);
+/* 難易度グループ */
+.tree-level-group {
+  margin-bottom: var(--spacing-xs);
 }
 
-/* 難易度タブボタン */
-.level-tab {
-  padding: 8px 16px;
-  border: 1px solid #2c3e50;
+/* 難易度ヘッダー */
+.tree-level-header {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  background: #fff;
-  color: #333;
+  background: var(--bg-light);
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.tree-level-header:hover {
+  background: #e0e0e0;
+}
+
+.tree-level-header.expanded {
+  background: #e8e8e8;
+}
+
+.tree-expand-icon {
+  width: 16px;
+  display: inline-block;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.tree-level-label {
+  flex: 1;
+}
+
+.tree-level-progress {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
   font-weight: normal;
 }
 
-.level-tab.active {
-  background: #2c3e50;
-  color: #fff;
-  font-weight: bold;
+/* 問題リスト */
+.tree-problem-list {
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
-.level-tab:hover {
-  opacity: 0.8;
-}
-
-/* 問題選択ボタン */
-.problem-button {
-  margin-right: 3px;
-  min-width: 40px;
-  height: 30px;
-  padding: 0;
-  border-radius: 4px;
+/* 問題アイテム */
+.tree-problem-item {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 32px;
+  border: none;
+  border-radius: 3px;
   cursor: pointer;
-  display: inline-flex;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--font-base);
+  display: flex;
   align-items: center;
-  justify-content: center;
-  background: #ddd;
-  color: #333;
-  border: 1px solid #999;
-  font-weight: normal;
-  vertical-align: top;
-  font-size: 13px;
+  gap: var(--spacing-sm);
+  text-align: left;
+  transition: background 0.15s;
 }
 
-.problem-button.active {
-  background: #2c3e50;
-  color: #fff;
-  border: 2px solid #2c3e50;
+.tree-problem-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.tree-problem-item.active {
+  background: #d6d6d6;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
-.problem-button.cleared {
-  background: #90EE90;
+.tree-problem-item.cleared .tree-problem-check {
+  color: #4CAF50;
+  font-weight: bold;
 }
 
-.problem-button.active.cleared {
-  background: #2c3e50;
+.tree-problem-item.active.cleared {
+  background: #d6d6d6;
 }
 
-.problem-button .check-mark {
-  width: 12px;
+.tree-problem-check {
+  width: 16px;
   display: inline-block;
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
-.problem-button:hover {
-  opacity: 0.8;
-  transform: translateY(-1px);
-}
-
-.problem-button:active {
-  opacity: 0.6;
-  transform: translateY(0);
+.tree-problem-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ========================================
-   Problem Description
+   Problem Description - タブ形式
    ======================================== */
 .problem-header {
-  color: var(--text-primary);
-  margin-top: 0;
-  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: var(--font-xl);
+  font-weight: normal;
 }
 
-.problem-details {
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--bg-primary);
+.problem-details-tabbed {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--editor-bg);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+  overflow: hidden;
 }
 
-.problem-details summary {
-  cursor: pointer;
-  font-weight: bold;
-  color: var(--text-primary);
-}
-
-.problem-content {
+.problem-tabs {
   display: flex;
-  gap: var(--spacing-lg);
-  margin-top: var(--spacing-md);
+  background: var(--bg-light);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.problem-tab {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  font-weight: normal;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.problem-tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.problem-tab.active {
+  color: var(--color-primary);
+  font-weight: bold;
+  border-bottom-color: var(--color-primary);
+  background: var(--editor-bg);
+}
+
+.problem-tab-content {
+  flex: 1;
+  padding: var(--spacing-md);
+  overflow-y: auto;
+  background: var(--editor-bg);
 }
 
 .problem-description,
 .test-cases {
-  flex: 1;
-}
-
-.section-title {
-  font-weight: bold;
-  color: var(--text-primary);
-  margin-bottom: 8px;
+  height: 100%;
 }
 
 .description-text {
   color: var(--text-secondary);
   white-space: pre-line;
   font-size: var(--font-base);
-}
-
-.content-divider {
-  width: 1px;
-  background: var(--border-color);
-  flex-shrink: 0;
+  line-height: 1.6;
 }
 
 .test-case-item {
@@ -175,33 +219,66 @@
    ======================================== */
 .code-editor-container {
   flex: 1;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
   overflow: auto;
-  background: var(--bg-primary);
+  background: var(--editor-bg);
+  display: flex;
+}
+
+.line-numbers {
+  background: var(--editor-line-number-bg);
+  color: var(--editor-line-number-color);
+  padding: 10px 8px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  user-select: none;
+  border-right: 1px solid var(--editor-line-number-border);
+  min-width: 45px;
+}
+
+.line-number {
+  height: 21px;
+}
+
+.editor-wrapper {
+  flex: 1;
+  overflow: auto;
 }
 
 .code-editor {
   font-family: var(--font-mono);
-  font-size: var(--font-lg);
+  font-size: 14px;
   min-height: 100%;
-  background: var(--bg-primary);
+  background: var(--editor-bg);
 }
 
-.run-button-container {
-  margin-top: var(--spacing-md);
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.code-editor-textarea {
+  outline: none !important;
 }
 
 .run-button {
   padding: var(--spacing-md) var(--spacing-xl);
-  font-size: var(--font-lg);
+  font-size: var(--font-base);
   background: var(--color-primary);
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: var(--radius-md);
+  font-weight: bold;
+  transition: background 0.2s;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.run-button:hover {
+  opacity: 0.8;
+}
+
+.run-button:active {
+  opacity: 0.6;
 }
 
 /* ========================================
@@ -221,7 +298,8 @@
    Test Results
    ======================================== */
 .test-results-title {
-  color: var(--text-primary);
+  color: var(--text-secondary);
+  font-weight: normal;
 }
 
 .test-results-empty {
@@ -251,7 +329,8 @@
    Execution Log
    ======================================== */
 .execution-log-title {
-  color: var(--text-primary);
+  color: var(--text-secondary);
+  font-weight: normal;
   margin-top: var(--spacing-xl);
 }
 
@@ -278,79 +357,78 @@
 }
 
 /* ========================================
-   Hint Section
+   Hint & Explanation Content
    ======================================== */
-.hint-controls {
-  margin-top: var(--spacing-lg);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.hint-buttons {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.hint-button,
-.explanation-button {
+.hint-content,
+.explanation-content {
   padding: var(--spacing-md);
-  border: none;
-  cursor: pointer;
-  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+  background: var(--editor-bg);
+  height: 100%;
+  overflow-y: auto;
 }
 
-.hint-button {
-  background: var(--color-warning);
-}
-
-.explanation-button {
-  background: var(--color-secondary);
-  color: white;
-}
-
-.next-button {
-  padding: 12px 24px;
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: var(--radius-md);
-  font-size: var(--font-lg);
-  font-weight: bold;
-}
-
-.hint-content {
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-lg);
-  background: var(--color-hint);
-  border: 2px solid var(--color-warning);
-  border-radius: var(--radius-md);
+.hint-content p,
+.explanation-content p {
+  margin-top: var(--spacing-md);
+  margin-bottom: 0;
   white-space: pre-line;
 }
 
 .syntax-hint-detail {
   margin-top: var(--spacing-lg);
   padding: var(--spacing-md);
-  background: var(--bg-primary);
+  background: var(--bg-light);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-warning);
+  border: 1px solid var(--border-color);
 }
 
 .syntax-hint-code {
-  margin-top: var(--spacing-md);
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-size: var(--font-md);
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-code);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-sm);
 }
 
-.explanation-content {
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-lg);
-  background: var(--color-info);
-  border: 2px solid var(--color-secondary);
+.next-button {
+  padding: var(--spacing-md) var(--spacing-xl);
+  background: linear-gradient(180deg, #ffffff 0%, #e9ecef 100%);
+  color: var(--text-primary);
+  border: 1px solid #adb5bd;
+  cursor: pointer;
   border-radius: var(--radius-md);
-  white-space: pre-line;
+  font-size: var(--font-base);
+  font-weight: bold;
+  transition: all 0.2s;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.next-button:hover {
+  opacity: 0.8;
+}
+
+.next-button:active {
+  opacity: 0.6;
+}
+
+/* ========================================
+   Learning Stats
+   ======================================== */
+.learning-stats {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-base);
+  color: var(--text-primary);
+  border: 1px solid #ddd;
 }
 
 /* ========================================

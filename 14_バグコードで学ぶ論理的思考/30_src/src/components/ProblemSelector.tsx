@@ -25,11 +25,9 @@ export function ProblemSelector({
     advanced: problems.filter(p => p.level === 'advanced')
   };
 
-  const currentLevelProblems = problemsByLevel[selectedLevel];
-
   return (
-    <div className="problem-selector">
-      {/* 難易度タブ */}
+    <div className="problem-selector-tree">
+      {/* ツリービュー: 難易度ごとにグループ化 */}
       {Object.entries(LEVEL_LABELS).map(([level, label]) => {
         const levelProblems = problemsByLevel[level as Level];
         if (levelProblems.length === 0) return null;
@@ -38,35 +36,44 @@ export function ProblemSelector({
         const clearedCount = levelProblems.filter(p => learningLog[p.id]?.cleared).length;
         const totalCount = levelProblems.length;
         const progressRate = Math.round((clearedCount / totalCount) * 100);
+        const isLevelExpanded = selectedLevel === level;
 
         return (
-          <button
-            key={level}
-            onClick={() => onSelectLevel(level as Level)}
-            className={`level-tab ${selectedLevel === level ? 'active' : ''}`}
-          >
-            {label} ({progressRate === 100 ? '★' : `${progressRate}%`})
-          </button>
-        );
-      })}
+          <div key={level} className="tree-level-group">
+            {/* 難易度ヘッダー */}
+            <button
+              onClick={() => onSelectLevel(level as Level)}
+              className={`tree-level-header ${isLevelExpanded ? 'expanded' : ''}`}
+            >
+              <span className="tree-expand-icon">{isLevelExpanded ? '˅' : '›'}</span>
+              <span className="tree-level-label">{label}</span>
+              <span className="tree-level-progress">
+                {progressRate === 100 ? '★' : `${progressRate}%`}
+              </span>
+            </button>
 
-      {/* 区切り線 */}
-      <div className="selector-divider"></div>
-
-      {/* 問題番号ボタン */}
-      {currentLevelProblems.map((p, idx) => {
-        const globalIdx = problems.indexOf(p);
-        const isActive = globalIdx === currentProblemIndex;
-        const isCleared = learningLog[p.id]?.cleared;
-        return (
-          <button
-            key={p.id}
-            onClick={() => onSelectProblem(globalIdx)}
-            className={`problem-button ${isActive ? 'active' : ''} ${isCleared ? 'cleared' : ''}`}
-          >
-            <span className="check-mark">{isCleared ? '✓' : ''}</span>
-            <span>{idx + 1}</span>
-          </button>
+            {/* 問題リスト（展開時のみ表示） */}
+            {isLevelExpanded && (
+              <div className="tree-problem-list">
+                {levelProblems.map((p) => {
+                  const globalIdx = problems.indexOf(p);
+                  const isActive = globalIdx === currentProblemIndex;
+                  const isCleared = learningLog[p.id]?.cleared;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => onSelectProblem(globalIdx)}
+                      className={`tree-problem-item ${isActive ? 'active' : ''} ${isCleared ? 'cleared' : ''}`}
+                      title={p.title}
+                    >
+                      <span className="tree-problem-check">{isCleared ? '✓' : '○'}</span>
+                      <span className="tree-problem-title">{p.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         );
       })}
     </div>

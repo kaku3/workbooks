@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Problem } from '../types';
 
 interface ProblemDescriptionProps {
@@ -5,27 +6,38 @@ interface ProblemDescriptionProps {
 }
 
 export function ProblemDescription({ problem }: ProblemDescriptionProps) {
+  const [activeTab, setActiveTab] = useState<'description' | 'testcases'>('description');
+
   return (
-    <details open className="problem-details">
-      <summary>
-        📝 問題説明 / 📋 テストケース
-      </summary>
-      <div className="problem-content">
-        {/* 問題説明 */}
-        <div className="problem-description">
-          <div className="section-title">📝 問題説明</div>
-          <div className="description-text">
-            {problem.description}
+    <div className="problem-details-tabbed">
+      {/* タブヘッダー */}
+      <div className="problem-tabs">
+        <button
+          onClick={() => setActiveTab('description')}
+          className={`problem-tab ${activeTab === 'description' ? 'active' : ''}`}
+        >
+          📝 問題
+        </button>
+        <button
+          onClick={() => setActiveTab('testcases')}
+          className={`problem-tab ${activeTab === 'testcases' ? 'active' : ''}`}
+        >
+          📋 テストケース
+        </button>
+      </div>
+
+      {/* タブコンテンツ */}
+      <div className="problem-tab-content">
+        {activeTab === 'description' && (
+          <div className="problem-description">
+            <div className="description-text">
+              {problem.description}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* 縦の区切り線 */}
-        <div className="content-divider"></div>
-
-        {/* テストケース */}
-        <div className="test-cases">
-          <div className="section-title">📋 テストケース</div>
-          <div>
+        {activeTab === 'testcases' && (
+          <div className="test-cases">
             {problem.testCases.map((testCase, idx) => (
               <div key={idx} className="test-case-item">
                 <strong>Case {idx + 1}:</strong>
@@ -50,8 +62,8 @@ export function ProblemDescription({ problem }: ProblemDescriptionProps) {
               </div>
             ))}
           </div>
-        </div>
+        )}
       </div>
-    </details>
+    </div>
   );
 }

@@ -9,23 +9,124 @@
 }
 
 .main-content {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2fr 7fr 3fr;
   flex: 1;
   overflow: hidden;
 }
 
-.left-pane {
-  flex: 1;
-  padding: var(--spacing-xl);
+/* 左サイドバー: 問題選択ツリービュー（比率 2） */
+.sidebar-pane {
+  padding: var(--spacing-md);
+  border-right: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  overflow-y: auto;
+}
+
+/* 中央ペイン: 問題記述とエディタ（比率 7） */
+.center-pane {
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-color);
   background: var(--bg-secondary);
+  overflow: hidden;
 }
 
-.right-pane {
+/* 中央ペインのヘッダー */
+.center-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  min-height: 40px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.center-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0 calc(var(--spacing-md) * -1);
+  margin-bottom: var(--spacing-md);
+}
+
+/* 中央ペインの左右分割 */
+.center-split {
+  display: flex;
+  gap: var(--spacing-md);
   flex: 1;
-  padding: var(--spacing-xl);
+  overflow: hidden;
+}
+
+.center-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.center-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.code-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--editor-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.code-tabs {
+  display: flex;
+  background: var(--bg-light);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.code-tab {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  font-weight: normal;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.code-tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.code-tab.active {
+  color: var(--color-primary);
+  font-weight: bold;
+  border-bottom-color: var(--color-primary);
+  background: var(--editor-bg);
+}
+
+.code-tab-content {
+  flex: 1;
+  overflow: hidden;
+  background: var(--editor-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 右ペイン: テスト結果（比率 3） */
+.right-pane {
+  padding: 0.5rem;
   overflow-y: auto;
   background: var(--bg-secondary);
 }
