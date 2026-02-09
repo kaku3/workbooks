@@ -21,6 +21,9 @@
   border-right: 1px solid var(--border-color);
   background: var(--bg-secondary);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
 }
 
 /* 中央ペイン: 問題記述とエディタ（比率 7） */

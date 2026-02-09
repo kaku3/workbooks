@@ -17,12 +17,14 @@ import { TestResults } from './components/TestResults';
 import { ExecutionLog } from './components/ExecutionLog';
 import { LearningStats } from './components/LearningStats';
 import { SplashScreen } from './components/SplashScreen';
+import { HowToPlay, useHowToPlay } from './components/HowToPlay';
 
 function App() {
   // カスタムフック
   const { problems, loading } = useProblems();
   const { learningLog, initProblemLog, updateLog, exportLog } = useLearningLog();
   const { output, results, syntaxHint, runCode, resetResults } = useCodeRunner();
+  const { isOpen: isHowToPlayOpen, open: openHowToPlay, close: closeHowToPlay } = useHowToPlay();
 
   // ローカルステート
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
@@ -129,6 +131,11 @@ function App() {
             onSelectLevel={handleSelectLevel}
             onSelectProblem={handleSelectProblem}
           />
+          
+          {/* プレイ方法ボタン */}
+          <button className="how-to-play-button" onClick={openHowToPlay}>
+            ❓ プレイ方法
+          </button>
         </div>
 
         {/* 中央ペイン: 問題記述とエディタ */}
@@ -224,6 +231,9 @@ function App() {
           <ExecutionLog output={output} />
         </div>
       </div>
+
+      {/* プレイ方法モーダル */}
+      <HowToPlay isOpen={isHowToPlayOpen} onClose={closeHowToPlay} />
     </div>
   );
 }
