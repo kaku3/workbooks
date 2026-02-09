@@ -20,7 +20,7 @@ export function HowToPlay({ isOpen, onClose }: HowToPlayProps) {
         </div>
 
         <div className="modal-image">
-          <img src="/og-image.png" alt="ThinkLab from Buggy Code" />
+          <img src={`${import.meta.env.BASE_URL}og-image.png`} alt="ThinkLab from Buggy Code" />
         </div>
 
         <div className="modal-body">
