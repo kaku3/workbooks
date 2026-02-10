@@ -46,11 +46,22 @@ export function ProblemSelector({
               className={`tree-level-header ${isLevelExpanded ? 'expanded' : ''}`}
             >
               <span className="tree-expand-icon">{isLevelExpanded ? '˅' : '›'}</span>
-              <span className="tree-level-label">{label}</span>
+              <span className="tree-level-label">
+                {label}
+                {progressRate === 100 && <span className="tree-level-star">★</span>}
+              </span>
               <span className="tree-level-progress">
-                {progressRate === 100 ? '★' : `${progressRate}%`}
+                {clearedCount}/{totalCount}
               </span>
             </button>
+            
+            {/* 進捗バー */}
+            <div className="tree-level-progress-bar">
+              <div 
+                className="tree-level-progress-fill" 
+                style={{ width: `${progressRate}%` }}
+              />
+            </div>
 
             {/* 問題リスト（展開時のみ表示） */}
             {isLevelExpanded && (

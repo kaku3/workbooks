@@ -21,7 +21,7 @@ export function TestResults({ results }: TestResultsProps) {
       {results.map((res, idx) => (
         <div
           key={idx}
-          className="test-result-item"
+          className={`test-result-item ${res.passed ? 'test-result-pass' : 'test-result-fail'}`}
           style={{
             borderLeft: `5px solid ${res.passed ? '#4CAF50' : '#F44336'}`,
             background: res.passed ? '#e8f5e9' : '#ffebee',

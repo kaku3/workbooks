@@ -6,17 +6,27 @@ interface HowToPlayProps {
 }
 
 export function HowToPlay({ isOpen, onClose }: HowToPlayProps) {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 300); // アニメーション時間と同期
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className={`modal-overlay ${isClosing ? 'closing' : ''}`} onClick={handleClose}>
+      <div className={`modal-content ${isClosing ? 'closing' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-header-title">
             <h2>ThinkLab from Buggy Code</h2>
             <span className="modal-header-subtitle">バグコードで学ぶ論理的思考</span>
           </div>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button className="modal-close" onClick={handleClose}>×</button>
         </div>
 
         <div className="modal-image">
@@ -100,7 +110,7 @@ export function HowToPlay({ isOpen, onClose }: HowToPlayProps) {
         </div>
 
         <div className="modal-footer">
-          <button className="modal-button-primary" onClick={onClose}>
+          <button className="modal-button-primary" onClick={handleClose}>
             はじめる
           </button>
         </div>
@@ -116,8 +126,12 @@ export function useHowToPlay() {
     // 初回アクセスチェック
     const hasVisited = localStorage.getItem('thinklab-visited');
     if (!hasVisited) {
-      setIsOpen(true);
-      localStorage.setItem('thinklab-visited', 'true');
+      // スプラッシュアニメーション完了後に表示
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+        localStorage.setItem('thinklab-visited', 'true');
+      }, 1200); // スプラッシュの800ms + 余裕400ms
+      return () => clearTimeout(timer);
     }
   }, []);
 

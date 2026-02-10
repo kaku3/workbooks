@@ -18,6 +18,8 @@ import { ExecutionLog } from './components/ExecutionLog';
 import { LearningStats } from './components/LearningStats';
 import { SplashScreen } from './components/SplashScreen';
 import { HowToPlay, useHowToPlay } from './components/HowToPlay';
+import { Confetti } from './components/Confetti';
+import { TypewriterText } from './components/TypewriterText';
 
 function App() {
   // カスタムフック
@@ -28,9 +30,34 @@ function App() {
 
   // ローカルステート
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+  const [isLoadingExiting, setIsLoadingExiting] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const [code, setCode] = useState('');
   const [selectedLevel, setSelectedLevel] = useState<Level>('beginner');
   const [activeCodeTab, setActiveCodeTab] = useState<'code' | 'hint' | 'explanation'>('code');
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // 画面幅の監視
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // ローディング終了時のフェードアウトアニメーション
+  useEffect(() => {
+    if (!loading && showSplash && problems.length > 0) {
+      setIsLoadingExiting(true);
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+      }, 800); // アニメーション時間と同期
+      return () => clearTimeout(timer);
+    }
+  }, [loading, showSplash, problems.length]);
 
   // 初期表示で最初の問題を自動実行
   useEffect(() => {
@@ -84,6 +111,13 @@ function App() {
     resetResults();
     setActiveCodeTab('code');
     initProblemLog(problems[index].id);
+    
+    // 問題のレベルに合わせてアコーディオンを更新
+    const problemLevel = problems[index].level;
+    if (problemLevel !== selectedLevel) {
+      setSelectedLevel(problemLevel);
+    }
+    
     setTimeout(() => {
       document.querySelector<HTMLButtonElement>('[data-run-button]')?.click();
     }, 50);
@@ -113,25 +147,40 @@ function App() {
   const currentProblem = problems[currentProblemIndex];
   const allTestsPassed = results.length > 0 && results.every(r => r.passed);
 
-  if (loading) return <SplashScreen message="問題を読み込んでいます..." />;
-  if (!currentProblem) return <SplashScreen message="問題が見つかりませんでした" />;
+  // 正解時の紙吹雪エフェクト
+  useEffect(() => {
+    if (allTestsPassed && results.length > 0) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [allTestsPassed, results.length]);
+
+  // 画面幅チェック（これだけは早期return）
+  if (screenWidth < 1280) return <SplashScreen message="" />;
+
+  // 問題が読み込まれていない場合はスプラッシュのみ表示
+  if (!currentProblem) {
+    return <SplashScreen message="Loading..." />;
+  }
 
   return (
-    <div className="app-container">
-      <Header onExportLog={exportLog} />
+    <>
+      <div className="app-container">
+        <Header onExportLog={exportLog} />
 
-      <div className="main-content">
-        {/* 左サイドバー: 問題選択ツリービュー */}
-        <div className="sidebar-pane">
-          <ProblemSelector
-            problems={problems}
-            currentProblemIndex={currentProblemIndex}
-            selectedLevel={selectedLevel}
-            learningLog={learningLog}
+        <div className="main-content">
+          {/* 左サイドバー: 問題選択ツリービュー */}
+          <div className="sidebar-pane">
+            <ProblemSelector
+              problems={problems}
+              currentProblemIndex={currentProblemIndex}
+              selectedLevel={selectedLevel}
+              learningLog={learningLog}
             onSelectLevel={handleSelectLevel}
             onSelectProblem={handleSelectProblem}
           />
-          
+
           {/* プレイ方法ボタン */}
           <button className="how-to-play-button" onClick={openHowToPlay}>
             ❓ プレイ方法
@@ -146,11 +195,13 @@ function App() {
               {currentProblem.title}
             </h2>
             <div className="header-buttons">
-              <button onClick={handleRun} data-run-button className="run-button">
-                実行 & テスト
-              </button>
+              {!allTestsPassed && (
+                <button onClick={handleRun} data-run-button className="run-button">
+                  実行 & テスト
+                </button>
+              )}
               {allTestsPassed && currentProblemIndex < problems.length - 1 && (
-                <button onClick={goToNextProblem} className="next-button">
+                <button onClick={goToNextProblem} className="next-button next-button-highlighted">
                   次へ &gt;
                 </button>
               )}
@@ -195,7 +246,7 @@ function App() {
                   {activeCodeTab === 'code' && (
                     <CodeEditor value={code} onChange={setCode} />
                   )}
-                  
+
                   {activeCodeTab === 'hint' && (
                     <div className="hint-content">
                       <strong>💡 ヒント:</strong>
@@ -208,11 +259,16 @@ function App() {
                       )}
                     </div>
                   )}
-                  
+
                   {activeCodeTab === 'explanation' && (
                     <div className="explanation-content">
                       <strong>📖 解説:</strong>
-                      <p>{currentProblem.explanation}</p>
+                      <p>
+                        <TypewriterText 
+                          text={currentProblem.explanation}
+                          key={`${currentProblem.id}-explanation`}
+                        />
+                      </p>
                     </div>
                   )}
                 </div>
@@ -225,7 +281,7 @@ function App() {
 
         {/* 右ペイン: 実行結果 */}
         <div className="right-pane">
-          <h3 className="test-results-title">テスト結果</h3>
+          <h3 className="test-results-title">✅ テスト結果</h3>
           <TestResults results={results} />
 
           <ExecutionLog output={output} />
@@ -234,7 +290,19 @@ function App() {
 
       {/* プレイ方法モーダル */}
       <HowToPlay isOpen={isHowToPlayOpen} onClose={closeHowToPlay} />
+
+      {/* 紙吹雪エフェクト */}
+      <Confetti active={showConfetti} />
     </div>
+
+    {/* スプラッシュスクリーン（オーバーレイ） */}
+    {(loading || showSplash) && (
+      <SplashScreen 
+        message="Loading..." 
+        isExiting={isLoadingExiting} 
+      />
+    )}
+  </>
   );
 }
 

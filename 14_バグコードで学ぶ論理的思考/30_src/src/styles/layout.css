@@ -19,7 +19,7 @@
 .sidebar-pane {
   padding: var(--spacing-md);
   border-right: 1px solid var(--border-color);
-  background: var(--bg-secondary);
+  background: #eef1f3;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@
 
 /* 中央ペイン: 問題記述とエディタ（比率 7） */
 .center-pane {
-  padding: 0.5rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-color);
@@ -41,7 +41,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-xs) 0;
+  padding: 0.5rem;
   min-height: 40px;
 }
 
@@ -55,13 +55,13 @@
   height: 1px;
   background: var(--border-color);
   margin: 0 calc(var(--spacing-md) * -1);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 0;
 }
 
 /* 中央ペインの左右分割 */
 .center-split {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 0;
   flex: 1;
   overflow: hidden;
 }
@@ -92,30 +92,27 @@
 
 .code-tabs {
   display: flex;
-  background: var(--bg-light);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--editor-bg);
 }
 
 .code-tab {
   padding: var(--spacing-sm) var(--spacing-lg);
   border: none;
-  background: transparent;
+  background: #ececec;
   cursor: pointer;
   font-size: var(--font-base);
   color: var(--text-secondary);
   font-weight: normal;
-  border-bottom: 2px solid transparent;
   transition: all 0.2s;
 }
 
 .code-tab:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: #e8e8e8;
 }
 
 .code-tab.active {
   color: var(--color-primary);
   font-weight: bold;
-  border-bottom-color: var(--color-primary);
   background: var(--editor-bg);
 }
 
@@ -132,7 +129,7 @@
 .right-pane {
   padding: 0.5rem;
   overflow-y: auto;
-  background: var(--bg-secondary);
+  background: #f0f3f5;
 }
 
 /* ========================================

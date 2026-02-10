@@ -48,12 +48,37 @@
 
 .tree-level-label {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tree-level-star {
+  color: #FF9800;
+  font-size: 14px;
+  margin-left: 2px;
 }
 
 .tree-level-progress {
   font-size: var(--font-sm);
   color: var(--text-secondary);
   font-weight: normal;
+}
+
+/* 進捗バー */
+.tree-level-progress-bar {
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 4px 8px 0 8px;
+}
+
+.tree-level-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #66BB6A);
+  border-radius: 2px;
+  transition: width 0.3s ease;
 }
 
 /* 問題リスト */
@@ -137,30 +162,27 @@
 
 .problem-tabs {
   display: flex;
-  background: var(--bg-light);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--editor-bg);
 }
 
 .problem-tab {
   padding: var(--spacing-sm) var(--spacing-lg);
   border: none;
-  background: transparent;
+  background: #ececec;
   cursor: pointer;
   font-size: var(--font-base);
   color: var(--text-secondary);
   font-weight: normal;
-  border-bottom: 2px solid transparent;
   transition: all 0.2s;
 }
 
 .problem-tab:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: #e8e8e8;
 }
 
 .problem-tab.active {
   color: var(--color-primary);
   font-weight: bold;
-  border-bottom-color: var(--color-primary);
   background: var(--editor-bg);
 }
 
@@ -303,9 +325,14 @@
 /* ========================================
    Test Results
    ======================================== */
-.test-results-title {
-  color: var(--text-secondary);
-  font-weight: normal;
+.right-pane .test-results-title {
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: var(--spacing-md);
+  margin-top: 0;
 }
 
 .test-results-empty {
@@ -325,19 +352,55 @@
   border-radius: 4px;
   font-size: 14px;
   line-height: 1.4;
+  position: relative;
+  overflow: hidden;
+}
+
+.test-result-item::after {
+  content: '';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  text-align: center;
+  font-size: 5rem;
+  font-weight: bold;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.test-result-pass::after {
+  content: '○';
+  color: #4CAF50;
+  -webkit-text-stroke: 3px #4CAF50;
+  text-stroke: 3px #4CAF50;
+}
+
+.test-result-fail::after {
+  content: '×';
+  color: #F44336;
+  -webkit-text-stroke: 2px #F44336;
+  text-stroke: 2px #F44336;
 }
 
 .test-result-item > div {
   margin: 2px 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* ========================================
    Execution Log
    ======================================== */
-.execution-log-title {
-  color: var(--text-secondary);
-  font-weight: normal;
-  margin-top: var(--spacing-xl);
+.right-pane .execution-log-title {
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  margin-top: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .execution-log {
@@ -401,7 +464,7 @@
 }
 
 .next-button {
-  padding: var(--spacing-md) var(--spacing-xl);
+  padding: 0.75rem 1.5rem;
   background: linear-gradient(180deg, #ffffff 0%, #e9ecef 100%);
   color: var(--text-primary);
   border: 1px solid #adb5bd;
@@ -410,18 +473,32 @@
   font-size: var(--font-base);
   font-weight: bold;
   transition: all 0.2s;
-  height: 36px;
+  height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-.next-button:hover {
-  opacity: 0.8;
+.next-button-highlighted {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  height: 48px;
+  animation: successPulse 1.5s ease-in-out infinite;
 }
 
-.next-button:active {
-  opacity: 0.6;
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(76, 175, 80, 0.6);
+  }
 }
 
 /* ========================================
@@ -449,14 +526,32 @@
   height: 100vh;
   background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   z-index: 9999;
+  padding: 2rem 1rem;
+  transition: opacity 0.8s ease-out;
+}
+
+.splash-screen.exiting {
+  opacity: 0;
 }
 
 .splash-screen-content {
   position: relative;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.splash-screen.exiting .splash-screen-content {
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
 }
 
 .splash-screen-loader {
@@ -464,13 +559,20 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 280px;
-  height: 280px;
+  width: 210px;
+  height: 210px;
+  opacity: 0.5;
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease-out;
+}
+
+.splash-screen-loader.exiting {
+  transform: translate(-50%, -50%) scale(6);
+  opacity: 0;
 }
 
 .splash-screen-ring {
   position: absolute;
-  border: 8px solid transparent;
+  border: 6px solid transparent;
   border-radius: 50%;
 }
 
@@ -485,20 +587,20 @@
 }
 
 .splash-screen-ring:nth-child(2) {
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
   border-top-color: #2ecc71;
   border-right-color: #2ecc71;
   animation: rotate-reverse 1.5s linear infinite;
 }
 
 .splash-screen-ring:nth-child(3) {
-  top: 40px;
-  left: 40px;
-  right: 40px;
-  bottom: 40px;
+  top: 30px;
+  left: 30px;
+  right: 30px;
+  bottom: 30px;
   border-top-color: #f39c12;
   border-right-color: #f39c12;
   animation: rotate 1s linear infinite;
@@ -525,6 +627,7 @@
 .splash-screen-logo {
   position: relative;
   z-index: 2;
+  align-self: center;
 }
 
 .splash-screen-title {
@@ -544,12 +647,85 @@
   letter-spacing: 0.1em;
 }
 
+.splash-screen-main-title {
+  font-size: 2rem;
+  color: #3498db;
+  margin: 1.5rem 0 0 0;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+}
+
 .splash-screen-message {
   font-size: 0.9rem;
   color: #7f8c8d;
   margin-top: 1rem;
   font-weight: 300;
 }
+
+.splash-screen-warning {
+  padding: 1.5rem;
+  background: rgba(255, 193, 7, 0.1);
+  border: 2px solid #ffc107;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-self: center;
+}
+
+.warning-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.warning-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.warning-header h3 {
+  margin: 0;
+  color: #ffc107;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-content p {
+  margin: 0.5rem 0;
+  color: #ecf0f1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.warning-detail {
+  margin-top: 1rem !important;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.warning-detail strong {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.warning-suggestion {
+  margin-top: 1rem !important;
+  font-style: italic;
+  color: #bdc3c7;
+}
+
 
 /* ========================================
    How To Play Button
@@ -592,6 +768,11 @@
   justify-content: center;
   z-index: 10000;
   padding: var(--spacing-lg);
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.modal-overlay.closing {
+  animation: fadeOut 0.3s ease-out forwards;
 }
 
 .modal-content {
@@ -603,6 +784,51 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+.modal-content.closing {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
 }
 
 .modal-header {
@@ -805,4 +1031,68 @@
 
 .modal-button-primary:hover {
   opacity: 0.8;
+}
+
+/* ========================================
+   Confetti Effect
+   ======================================== */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+}
+
+.confetti-particle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  opacity: 1;
+}
+
+/* 上から降ってくるアニメーション */
+.confetti-fall {
+  top: -10px;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(var(--rotation));
+    opacity: 0;
+  }
+}
+
+/* 下から弾けるアニメーション */
+.confetti-particle.confetti-burst {
+  bottom: 0;
+}
+
+.confetti-burst {
+  animation: confetti-parabola cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes confetti-parabola {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  35% {
+    /* 頂点: 大きく上に飛ぶ */
+    transform: translate(calc(var(--translate-x) * 0.6), calc(var(--initial-velocity) * -1.2)) rotate(calc(var(--rotation) * 0.35));
+    opacity: 1;
+  }
+  100% {
+    /* ゆっくり少しだけ落ちながらフェードアウト */
+    transform: translate(var(--translate-x), calc(var(--initial-velocity) * -1.2 + 40px)) rotate(var(--rotation));
+    opacity: 0;
+  }
 }
