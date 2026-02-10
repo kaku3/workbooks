@@ -631,6 +631,7 @@
 }
 
 .splash-screen-title {
+  font-family: 'Orbitron', sans-serif;
   font-size: 3.5rem;
   font-weight: 700;
   color: #2ecc71;
@@ -654,6 +655,20 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   text-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+  white-space: nowrap;
+}
+
+/* 画面幅が狭い時はフォントサイズを小さく */
+@media (max-width: 1400px) {
+  .splash-screen-main-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 1300px) {
+  .splash-screen-main-title {
+    font-size: 1.4rem;
+  }
 }
 
 .splash-screen-message {
@@ -851,6 +866,7 @@
   font-size: var(--font-xl);
   color: white;
   font-weight: bold;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .modal-header-subtitle {

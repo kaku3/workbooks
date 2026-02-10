@@ -154,6 +154,7 @@
   margin: 0;
   font-size: var(--font-xl);
   font-weight: bold;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .header-subtitle {

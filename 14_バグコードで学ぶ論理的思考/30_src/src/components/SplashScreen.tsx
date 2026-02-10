@@ -21,11 +21,13 @@ export function SplashScreen({ message = 'Loading...', isExiting = false }: Spla
 
   return (
     <div className={`splash-screen ${isExiting ? 'exiting' : ''}`}>
-      <div className={`splash-screen-loader ${isExiting ? 'exiting' : ''}`}>
-        <div className="splash-screen-ring"></div>
-        <div className="splash-screen-ring"></div>
-        <div className="splash-screen-ring"></div>
-      </div>
+      {!isWidthInsufficient && (
+        <div className={`splash-screen-loader ${isExiting ? 'exiting' : ''}`}>
+          <div className="splash-screen-ring"></div>
+          <div className="splash-screen-ring"></div>
+          <div className="splash-screen-ring"></div>
+        </div>
+      )}
       <div className="splash-screen-content">
         <div className="splash-screen-logo">
           <h1 className="splash-screen-title">ThinkLab</h1>
