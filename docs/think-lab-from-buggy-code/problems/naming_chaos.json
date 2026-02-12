@@ -1,0 +1,31 @@
+{
+  "id": "naming_chaos",
+  "level": "advanced",
+  "title": "命名カオス",
+  "description": "以下はユーザー情報を取得する関数群です。似たような名前の関数が4つ存在し、それぞれ微妙に異なるデータを返します。\n\n【各関数の実際の戻り値】\n- getUser(userId): { id }\n- getUserData(userId): { id, name }\n- getUsersData(userId): { id, name, email }（名前は複数形だが単数を返す！）\n- getUserInfo(userId): { id, age }\n\nこの状態で、ユーザープロフィール画面を表示する関数を実装しましたが、undefined が表示されてしまいます。\n\n【期待される動作】\n入力: userId = 1\n出力: { name: 'User', age: 25, email: 'user@example.com' }\nすべてのプロパティが正しく取得されること。",
+  "initialCode": "function getUser(userId) {\n  return { id: userId };\n}\n\nfunction getUserData(userId) {\n  return { id: userId, name: 'User' };\n}\n\nfunction getUsersData(userId) {\n  return { id: userId, name: 'User', email: 'user@example.com' };\n}\n\nfunction getUserInfo(userId) {\n  return { id: userId, age: 25 };\n}\n\n// プロフィール画面の表示\nfunction displayUserProfile(userId) {\n  const user = getUser(userId);\n  const userInfo = getUserInfo(userId);\n  \n  const name = user.name;\n  const email = userInfo.email;\n  const age = userInfo.age;\n  \n  return {\n    name: name,\n    age: age,\n    email: email\n  };\n}\n\nfunction testDisplayProfile(testCase) {\n  const profile = displayUserProfile(1);\n  \n  if (!testCase) testCase = 'all_properties';\n  \n  if (testCase === 'name_exists') {\n    return profile.name !== undefined && profile.name === 'User';\n  } else if (testCase === 'email_exists') {\n    return profile.email !== undefined && profile.email === 'user@example.com';\n  } else if (testCase === 'age_exists') {\n    return profile.age !== undefined && profile.age === 25;\n  } else if (testCase === 'all_properties') {\n    return profile.name !== undefined && \n           profile.age !== undefined && \n           profile.email !== undefined;\n  }\n  \n  return false;\n}",
+  "hint": "1. 各関数がどのプロパティを返すか、もう一度確認してください。 2. displayUserProfile関数で使っている getUser() と getUserInfo() は、必要なプロパティ（name, email）を返していますか？ 3. getUsersData() は何を返していますか？名前と実装が一致していますか？",
+  "explanation": "この問題は **「曖昧な命名による混乱」** と **「関数名と実装の不一致」** を示しています。\n\n**バグの内容**:\n1. `getUser()` は `{ id }` のみを返すため、`user.name` は undefined\n2. `getUserInfo()` は `{ id, age }` を返すため、`userInfo.email` は undefined\n3. 必要なデータを返す `getUsersData()` があるのに使われていない\n\n**命名の問題**:\n1. **曖昧な命名**: `getUser`, `getUserData`, `getUserInfo` の違いが分からない\n2. **名前と実装の不一致**: `getUsersData` は複数形なのに単数データを返す（混乱の元）\n3. **一貫性の欠如**: どの関数がどのプロパティを返すか、命名から推測できない\n\n**なぜこのコードが生まれたか**:\n1. 最初は `getUser()` だけだった\n2. email が必要になり、`getUserData()` を追加（既存関数の修正を避けた）\n3. さらに age が必要になり、`getUserInfo()` を追加\n4. 後から「全部入り」として `getUsersData()` を追加（名前のミス）\n5. 結果、4つの関数が乱立し、どれを使うべきか分からない状態に\n\n**実践での教訓**:\n1. **明確な命名規則** - 何を返すかが名前から分かるように\n   - 例: `getUserBasic()`, `getUserWithEmail()`, `getUserComplete()`\n2. **関数の統合** - 複数の似た関数があるなら、オプション引数で統合する\n3. **一貫性の維持** - 単数形/複数形、動詞の使い方を統一\n4. **リファクタリング** - 新しい関数を追加する前に、既存関数の修正を検討\n5. **ドキュメント** - JSDocで戻り値の型を明示\n\n**推奨される修正**:\n```javascript\n// オプション引数で必要なデータだけ取得\nfunction getUser(userId, options = { includeEmail: false, includeAge: false }) {\n  const user = { id: userId, name: 'User' };\n  \n  if (options.includeEmail) {\n    user.email = 'user@example.com';\n  }\n  \n  if (options.includeAge) {\n    user.age = 25;\n  }\n  \n  return user;\n}\n\nfunction displayUserProfile(userId) {\n  return getUser(userId, { includeEmail: true, includeAge: true });\n}\n```\n\nまたは、すべてのデータを返す単一の関数にして、呼び出し側で必要なプロパティだけを使う方法もあります。",
+  "testCases": [
+    {
+      "input": ["name_exists"],
+      "expectedOutput": true,
+      "description": "name: getUser()からnameが取得できる"
+    },
+    {
+      "input": ["email_exists"],
+      "expectedOutput": true,
+      "description": "email: getUserInfo()からemailが取得できる"
+    },
+    {
+      "input": ["age_exists"],
+      "expectedOutput": true,
+      "description": "age: getUserInfo()からageが取得できる"
+    },
+    {
+      "input": ["all_properties"],
+      "expectedOutput": true,
+      "description": "全プロパティ: name, age, email すべて取得できる"
+    }
+  ]
+}

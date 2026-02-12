@@ -27,7 +27,13 @@ export const SAMPLE_PROBLEMS = [
   'problems/misleading_names.json',
   'problems/copy_paste_bug.json',
   'problems/unnecessary_conversion.json',
-  'problems/flag_hell.json'
+  'problems/flag_hell.json',
+  'problems/version_hell.json',
+  'problems/parameter_creep.json',
+  'problems/incomplete_refactoring.json',
+  'problems/naming_chaos.json',
+  'problems/implicit_dependencies.json',
+  'problems/swiss_army_function.json'
 ];
 
 // ローカルストレージのキー

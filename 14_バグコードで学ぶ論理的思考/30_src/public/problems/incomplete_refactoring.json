@@ -1,0 +1,31 @@
+{
+  "id": "incomplete_refactoring",
+  "level": "advanced",
+  "title": "不完全なリファクタリング",
+  "description": "以下はショッピングカートのチェックアウト処理です。最近、「税抜き表示から税込み表示へ」の仕様変更があり、リファクタリング途中です。\n\n【仕様】\n- すべての価格は税込み（10%）で計算・表示する\n- 税計算は小数点以下切り捨て（Math.floor を使用）\n- 配送料も税込み（500円 → 550円）\n- 合計 = 商品合計（税込）+ 配送料（税込）\n\n現在、新旧のコードが混在しており、計算結果が正しくありません。\n\n【期待される動作】\n入力: 商品2個（各1000円、計2000円）\n計算: 2000円 × 1.1（税込）+ 550円（配送料・税込）= 2750円",
+  "initialCode": "function calculateTotal(items) {\n  let total = 0;\n  for (let i = 0; i < items.length; i++) {\n    total += items[i].price * items[i].quantity;\n  }\n  return total;\n}\n\n// 税込み計算\nfunction calculateTotalNew(items) {\n  let total = 0;\n  items.forEach(item => {\n    total += item.price * item.quantity;\n  });\n  return Math.floor(total * 1.1);  // 税込み（小数点切り捨て）\n}\n\n// FIX-ME: なぜか合計金額が合わない\nfunction checkout(cart) {\n  const subtotal = calculateTotal(cart.items);\n  \n  // 配送料は税込み想定で計算\n  const shipping = 500 * 1.1;  // 550円\n  \n  const total = subtotal + shipping;\n  \n  return total;\n}\n\nfunction testCheckout(testCase) {\n  return checkout(testCase.cart);\n}",
+  "hint": "1. checkout関数は calculateTotal と calculateTotalNew のどちらを呼んでいますか？ 2. subtotal は税抜きですか？税込みですか？ 3. shipping は税抜きですか？税込みですか？ 4. 税抜きと税込みが混在していませんか？",
+  "explanation": "この問題は **「リファクタリング途中での新旧コード混在」** と **「税込み/税抜きの不統一」** を示しています。\n\n**バグの内容**:\ncheckout関数が `calculateTotal` を呼んでいるため、subtotalは税抜き価格（2000円）です。一方、配送料は `500 * 1.1 = 550` で税込み計算しています。結果、`2000 + 550 = 2550円` となり、期待値の2750円より200円少なくなります。\n\n**正しい計算**:\n- 商品合計（税込）: 2000 × 1.1 = 2200円\n- 配送料（税込）: 550円\n- 合計: 2200 + 550 = 2750円\n\n**なぜこのバグが発生したか**:\n1. リファクタリングを段階的に進めている途中\n2. 新しい関数 `calculateTotalNew` を作ったが、呼び出し側の更新を忘れた\n3. 旧関数 `calculateTotal` を削除していないため、気づきにくい\n4. 税込み/税抜きの状態が変数名から判断できない\n\n**実践での教訓**:\n1. **リファクタリングは一気に完了させる** - 中途半端な状態でコミットしない\n2. **旧関数は即座に削除** - `@deprecated` マークをつけるか、削除する\n3. **型や変数名で明示** - `subtotalWithTax` や `subtotalExcludingTax` など\n4. **テストを先に書く** - リファクタリング前後で同じテストが通ることを確認\n5. **IDEの検索機能を活用** - 旧関数の呼び出し箇所を全検索して一括置換\n\n**推奨される修正**:\n```javascript\nfunction calculateTotalNew(items) {\n  let total = 0;\n  items.forEach(item => {\n    total += item.price * item.quantity;\n  });\n  return Math.floor(total * 1.1);\n}\n\nfunction checkout(cart) {\n  const subtotal = calculateTotalNew(cart.items);  // 新関数を使用\n  const shipping = 550;  // 税込み配送料（定数化推奨）\n  return subtotal + shipping;\n}\n```\n\ncalculateTotal は削除します。",
+  "testCases": [
+    {
+      "input": [{ "cart": { "items": [{ "price": 1000, "quantity": 2 }] } }],
+      "expectedOutput": 2750,
+      "description": "商品2個: 1000円×2個（税込2200円）+ 配送料550円 = 2750円"
+    },
+    {
+      "input": [{ "cart": { "items": [{ "price": 1000, "quantity": 1 }] } }],
+      "expectedOutput": 1650,
+      "description": "商品1個: 1000円×1個（税込1100円）+ 配送料550円 = 1650円"
+    },
+    {
+      "input": [{ "cart": { "items": [{ "price": 500, "quantity": 4 }] } }],
+      "expectedOutput": 2750,
+      "description": "安い商品4個: 500円×4個（税込2200円）+ 配送料550円 = 2750円"
+    },
+    {
+      "input": [{ "cart": { "items": [{ "price": 5000, "quantity": 1 }, { "price": 3000, "quantity": 2 }] } }],
+      "expectedOutput": 12650,
+      "description": "複数商品: 5000円+3000円×2個（税込12100円）+ 配送料550円 = 12650円"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "parameter_creep",
+  "level": "advanced",
+  "title": "継ぎ接ぎパラメータ症候群",
+  "description": "以下は通知を送信する関数です。当初はシンプルな実装でしたが、機能追加を繰り返した結果、オプション引数が9個に増えてしまいました。\n\n【仕様】\n- 基本: ユーザーにメッセージを送信\n- オプション: メール/SMS/プッシュ通知、タイムスタンプ、テンプレート、優先度\n- 優先度が'urgent'の場合、SMSも強制的に送信される\n\n現在、以下の問題が発生しています：\n1. テンプレート使用時、メッセージが重複する\n2. SMSには整形前のメッセージが送られる\n3. 優先度設定が一部無視される",
+  "initialCode": "// メッセージをキャプチャするモックサービス\nconst emailService = {\n  lastMessage: null,\n  send: function(id, msg) {\n    this.lastMessage = msg;\n  }\n};\nconst smsService = {\n  lastMessage: null,\n  send: function(id, msg) {\n    this.lastMessage = msg;\n  }\n};\nconst pushService = {\n  lastMessage: null,\n  send: function(id, msg) {\n    this.lastMessage = msg;\n  }\n};\n\nfunction sendNotification(\n  userId, \n  message, \n  priority = 'normal',\n  sendEmail = true,\n  sendSMS = false,\n  sendPush = false,\n  includeTimestamp = true,\n  useTemplate = false,\n  templateId = null\n) {\n  let finalMessage = message;\n  \n  if (includeTimestamp) {\n    finalMessage = `[${new Date().toISOString()}] ${message}`;\n  }\n  \n  if (useTemplate && templateId) {\n    finalMessage = getTemplate(templateId) + finalMessage;\n  }\n  \n  if (sendEmail) {\n    emailService.send(userId, finalMessage);\n  }\n  \n  if (sendSMS) {\n    smsService.send(userId, message);\n  }\n  \n  if (sendPush) {\n    pushService.send(userId, finalMessage);\n  }\n  \n  return true;\n}\n\nfunction getTemplate(templateId) {\n  const templates = {\n    'welcome': 'ようこそ！',\n    'urgent': '【緊急】'\n  };\n  return templates[templateId] || '';\n}\n\nfunction testNotification(testCase) {\n  emailService.lastMessage = null;\n  smsService.lastMessage = null;\n  pushService.lastMessage = null;\n  \n  if (!testCase) testCase = 'urgent_with_template';\n  \n  if (testCase === 'urgent_with_template') {\n    sendNotification(123, 'システムメンテナンス', 'urgent', true, false, false, false, true, 'urgent');\n    const emailOk = emailService.lastMessage && emailService.lastMessage.includes('【緊急】') && emailService.lastMessage.includes('システムメンテナンス');\n    const smsOk = smsService.lastMessage && smsService.lastMessage.includes('【緊急】') && smsService.lastMessage.includes('システムメンテナンス');\n    return emailOk && smsOk;\n  } else if (testCase === 'no_timestamp') {\n    sendNotification(123, 'テスト', 'normal', true, false, false, false, false, null);\n    return emailService.lastMessage && emailService.lastMessage === 'テスト';\n  } else if (testCase === 'sms_only') {\n    sendNotification(123, 'SMS通知', 'normal', false, true, false, false, false, null);\n    return smsService.lastMessage && smsService.lastMessage === 'SMS通知' && !emailService.lastMessage;\n  } else if (testCase === 'urgent_forces_sms') {\n    sendNotification(123, '緊急', 'urgent', true, false, false, false, false, null);\n    return emailService.lastMessage && smsService.lastMessage && smsService.lastMessage.includes('緊急');\n  }\n  \n  return false;\n}",
+  "hint": "1. テンプレート使用時、元のメッセージと連結するのは正しいですか？ 2. SMSは何を送信していますか？finalMessageを使うべきでは？ 3. priority='urgent'の時、SMSを強制送信する処理はどこにありますか？",
+  "explanation": "この問題は **「パラメータの継ぎ接ぎによる複雑化」** と **「制御フローの見落とし」** を示しています。\n\n**バグ1: テンプレートの誤連結**\n`finalMessage = getTemplate(templateId) + finalMessage` は、テンプレートと元のメッセージを連結しています。しかし、タイムスタンプが既に含まれている場合、「【緊急】[2026-02-12T...]システムメンテナンス」となり不自然です。テンプレートはメッセージの装飾なので、タイムスタンプの前に挿入するか、メッセージ本体だけと連結すべきです。\n\n**バグ2: SMSの変数ミス**\n`smsService.send(userId, message)` は元の `message` を送っていますが、タイムスタンプやテンプレートが適用された `finalMessage` を送るべきです。\n\n**バグ3: 優先度による強制SMS送信の未実装**\n仕様では「priority='urgent'の場合、SMSも強制送信」とありますが、その処理がありません。\n\n**根本的な問題: 引数が多すぎる**\n9個の引数は明らかに多すぎます。これにより、(1)呼び出し側が間違えやすい（順序ミス、true/falseの混同）、(2)関数内のロジックが複雑になりバグが混入しやすい、(3)テストケースが爆発的に増える（組み合わせの数）。\n\n**改善案**:\n```javascript\nfunction sendNotification(userId, options = {}) {\n  const {\n    message,\n    priority = 'normal',\n    channels = { email: true, sms: false, push: false },\n    includeTimestamp = true,\n    template = null\n  } = options;\n  \n  let finalMessage = template ? getTemplate(template) : '';\n  finalMessage += message;\n  \n  if (includeTimestamp) {\n    finalMessage = `[${new Date().toISOString()}] ${finalMessage}`;\n  }\n  \n  // urgentの場合はSMSも送信\n  const shouldSendSMS = channels.sms || priority === 'urgent';\n  \n  if (channels.email) emailService.send(userId, finalMessage);\n  if (shouldSendSMS) smsService.send(userId, finalMessage);\n  if (channels.push) pushService.send(userId, finalMessage);\n}\n```\n\nオブジェクト引数にすることで、呼び出し側が明示的になり、デフォルト値も分かりやすくなります。",
+  "testCases": [
+    {
+      "input": ["urgent_with_template"],
+      "expectedOutput": true,
+      "description": "緊急+テンプレート: メールとSMS両方に正しいメッセージ"
+    },
+    {
+      "input": ["no_timestamp"],
+      "expectedOutput": true,
+      "description": "タイムスタンプなし: メッセージに時刻が含まれない"
+    },
+    {
+      "input": ["sms_only"],
+      "expectedOutput": true,
+      "description": "SMS単独: SMSのみ送信され、正しいメッセージ"
+    },
+    {
+      "input": ["urgent_forces_sms"],
+      "expectedOutput": true,
+      "description": "urgent優先度: sendSMS=falseでもSMSが強制送信される"
+    }
+  ]
+}

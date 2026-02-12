@@ -1,0 +1,16 @@
+{
+  "id": "implicit_dependencies",
+  "level": "advanced",
+  "title": "暗黙の依存地獄",
+  "description": "以下はアプリケーション初期化時にユーザーデータをロードする処理です。3つの関数（loadUserData, loadPermissions, loadSettings）がグローバル変数を使って連携しています。\n\n【仕様】\n1. loadUserData: ユーザー基本情報を取得してキャッシュ\n2. loadPermissions: ユーザー情報を元に権限情報を取得\n3. loadSettings: 権限情報を元に設定を取得\n\n現在、initializeApp関数を実行するとエラーが発生します。\n\n【期待される動作】\n入力: userId = 1\n出力: { theme: 'admin' }（管理者用の設定が返る）",
+  "initialCode": "let userCache = null;\nlet permissionsCache = null;\nlet settingsCache = null;\n\nfunction loadUserData(userId) {\n  userCache = { \n    id: userId, \n    name: 'User' + userId \n  };\n  console.log('ユーザーデータをロードしました');\n}\n\nfunction loadPermissions() {\n  permissionsCache = {\n    userId: userCache.id,\n    canEdit: userCache.id === 1\n  };\n  console.log('権限情報をロードしました');\n}\n\nfunction loadSettings() {\n  settingsCache = {\n    theme: permissionsCache.canEdit ? 'admin' : 'user'\n  };\n  console.log('設定情報をロードしました');\n}\n\nfunction initializeApp(userId) {\n  loadUserData(userId);\n  loadSettings();\n  loadPermissions();\n  \n  return settingsCache;\n}\n\nfunction testInitializeApp() {\n  return initializeApp(1);\n}",
+  "hint": "1. loadSettings()はどの変数を参照していますか？その変数はいつ設定されますか？ 2. loadPermissions()はどの変数を参照していますか？その変数はいつ設定されますか？ 3. 正しい実行順序は何でしょうか？",
+  "explanation": "この問題は **「グローバル変数による暗黙の依存関係」** と **「実行順序の依存性」** を示しています。\n\n**バグの内容**:\ninitializeApp関数で、以下の順序で実行されています：(1)loadUserData(userId)でuserCacheが設定される、(2)loadSettings()でpermissionsCacheを参照しnullのためエラー、(3)loadPermissions()でuserCacheを参照（この時点で設定されるが遅い）。\n\n正しい順序は：(1)loadUserData、(2)loadPermissions（userCacheに依存）、(3)loadSettings（permissionsCacheに依存）。\n\n**なぜこのバグが見つけにくいか**: (1)暗黙の依存（各関数のシグネチャを見ても何に依存しているか分からない）、(2)グローバル変数（どこからでもアクセスできるため依存関係が見えにくい）、(3)実行時エラー（コンパイル時では検出できない）、(4)関数名からの推測（関数名だけでは実行順序が分からない）。\n\n**実践での教訓**: (1)引数で明示（依存するデータは引数として受け取る）、(2)戻り値で連携（グローバル変数ではなく戻り値を次の関数に渡す）、(3)エラーハンドリング（nullチェックを必ず行う）、(4)関数の独立性（各関数が独立してテスト可能にする）。\n\n**推奨される修正**:\n```javascript\nfunction loadUserData(userId) {\n  return { id: userId, name: 'User' + userId };\n}\n\nfunction loadPermissions(user) {\n  if (!user) {\n    throw new Error('ユーザーデータが必要です');\n  }\n  return {\n    userId: user.id,\n    canEdit: user.id === 1\n  };\n}\n\nfunction loadSettings(permissions) {\n  if (!permissions) {\n    throw new Error('権限情報が必要です');\n  }\n  return {\n    theme: permissions.canEdit ? 'admin' : 'user'\n  };\n}\n\nfunction initializeApp(userId) {\n  const user = loadUserData(userId);\n  const permissions = loadPermissions(user);\n  const settings = loadSettings(permissions);\n  return settings;\n}\n```",
+  "testCases": [
+    {
+      "input": [],
+      "expectedOutput": { "theme": "admin" },
+      "description": "userId=1の場合、管理者用設定が返る"
+    }
+  ]
+}

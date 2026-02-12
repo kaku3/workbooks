@@ -1,0 +1,31 @@
+{
+  "id": "swiss_army_function",
+  "level": "advanced",
+  "title": "スイスアーミーナイフ関数",
+  "description": "以下は「何でもできる便利な関数」として作られた processData 関数です。データの検証、変換、フィルタリング、ソート、集計を1つの関数で行います。\n\n【仕様】\n- 入力: ユーザーの配列\n- 処理: 18歳以上をフィルタ → 名前を大文字に変換 → 年齢でソート → 平均年齢を計算\n- 出力: { users: [...], averageAge: number }\n\n現在、何かがおかしく、結果が期待と異なります。しかし、この関数は複雑すぎて、どこに問題があるのか分かりません。\n\n【期待される動作】\n入力: [{ name: 'alice', age: 20 }, { name: 'bob', age: 17 }, { name: 'carol', age: 25 }, { name: 'dave', age: 18 }]\n出力: { users: [{ name: 'DAVE', age: 18 }, { name: 'ALICE', age: 20 }, { name: 'CAROL', age: 25 }], averageAge: 21 }",
+  "initialCode": "function processData(data, options = {}) {\n  const {\n    minAge = 18,\n    convertNameToUpperCase = true,\n    sortByAge = true,\n    calculateAverage = true,\n    includeStatistics = true\n  } = options;\n  \n  let result = [];\n  let total = 0;\n  let count = 0;\n  \n  // ステップ1: 年齢フィルタリング\n  for (let i = 0; i < data.length; i++) {\n    if (data[i].age > minAge) {\n      result.push(data[i]);\n    }\n  }\n  \n  // ステップ2: 名前を大文字に変換\n  if (convertNameToUpperCase) {\n    for (let i = 0; i < result.length; i++) {\n      result[i].name = result[i].name.toUpperCase();\n    }\n  }\n  \n  // ステップ3: 年齢でソート\n  if (sortByAge) {\n    result.sort((a, b) => b.age - a.age);\n  }\n  \n  // ステップ4: 平均年齢を計算\n  if (calculateAverage) {\n    for (let i = 0; i < result.length; i++) {\n      total += result[i].age;\n      count++;\n    }\n  }\n  \n  // ステップ5: 統計情報を追加\n  let stats = null;\n  if (includeStatistics) {\n    const avg = total / count;\n    stats = {\n      averageAge: avg,\n      totalUsers: count,\n      maxAge: result.length > 0 ? result[0].age : 0,\n      minAge: result.length > 0 ? result[result.length - 1].age : 0\n    };\n  }\n  \n  return includeStatistics ? { users: result, ...stats } : result;\n}\n\nfunction testProcessData(options) {\n  const users = [\n    { name: 'alice', age: 20 },\n    { name: 'bob', age: 17 },\n    { name: 'carol', age: 25 },\n    { name: 'dave', age: 18 }\n  ];\n  \n  const result = processData(users, options || {});\n  \n  // optionsに応じた検証\n  if (!options || Object.keys(options).length === 0) {\n    // デフォルト: usersの長さ、averageAge、ソート順を検証\n    return result.users && result.users.length === 3 && result.averageAge === 21 && result.users[0].name === 'DAVE' && result.users[2].name === 'CAROL';\n  } else if (options.includeStatistics === false) {\n    // 統計なし: 配列が返る\n    return Array.isArray(result) && result.length === 3;\n  } else if (options.convertNameToUpperCase === false) {\n    // 名前変換なし\n    return result.users && result.users[0].name === 'dave' && result.users.length === 3;\n  } else if (options.sortByAge === false) {\n    // ソートなし\n    return result.users && result.users[0].name === 'ALICE' && result.users[1].name === 'CAROL';\n  }\n  \n  return false;\n}",
+  "hint": "1. minAge=18の場合、18歳は含まれるべきですか？フィルタ条件を確認してください。 2. この関数は何をしているか、一度に理解できますか？ 3. 各処理をステップごとに分けて、それぞれの結果を確認してみてください。",
+  "explanation": "この問題は **「1つの関数に詰め込みすぎ」** という設計上の問題を示しています。\n\n**バグの内容**:\n`if (data[i].age > minAge)` は「より大きい」なので、18歳ちょうどの人が除外されます。仕様では「18歳以上」なので `>=` が正しいです。\n\nしかし、より深刻な問題は「この関数が複雑すぎて、バグを見つけるのが困難」ということです。\n\n**この関数の問題点**: (1)単一責任原則の違反（1つの関数が5つの処理を行っている）、(2)可読性の低下（何をしているか理解するのに時間がかかる）、(3)テストの困難（各処理が正しいか個別にテストできない）、(4)保守性の低下（1箇所修正すると他の箇所に影響が出る可能性）、(5)再利用性の欠如（「フィルタだけ」「ソートだけ」使いたい場合に対応できない）。\n\n**実務でよくある言い訳**:\n- 「便利関数だから1つにまとめた」\n- 「同じデータを何度もループするのは無駄」\n- 「オプションで制御できるから柔軟」\n\nしかし、これらは短期的な効率を優先して長期的な保守性を犠牲にしています。\n\n**推奨される改善**:\n各処理を独立した関数に分割します：\n\n```javascript\nfunction filterByAge(users, minAge) {\n  return users.filter(user => user.age >= minAge);\n}\n\nfunction convertNamesToUpperCase(users) {\n  return users.map(user => ({\n    ...user,\n    name: user.name.toUpperCase()\n  }));\n}\n\nfunction sortByAge(users) {\n  return [...users].sort((a, b) => a.age - b.age);\n}\n\nfunction calculateAverageAge(users) {\n  if (users.length === 0) return 0;\n  const total = users.reduce((sum, user) => sum + user.age, 0);\n  return total / users.length;\n}\n\nfunction processData(data) {\n  const filtered = filterByAge(data, 18);\n  const converted = convertNamesToUpperCase(filtered);\n  const sorted = sortByAge(converted);\n  const averageAge = calculateAverageAge(sorted);\n  \n  return {\n    users: sorted,\n    averageAge\n  };\n}\n```\n\n**改善の効果**: (1)各関数が1つの責任だけを持つ（単一責任原則）、(2)関数名から何をするか明確に分かる、(3)各処理を個別にテストできる、(4)必要な処理だけを組み合わせて使える、(5)バグの発見と修正が容易。\n\n**実践での教訓**:\n「便利すぎる関数」は「複雑すぎる関数」になりがちです。小さく、シンプルで、テスト可能な関数を組み合わせる方が、長期的には効率的です。",
+  "testCases": [
+    {
+      "input": [{}],
+      "expectedOutput": true,
+      "description": "デフォルト（全機能有効）: 18歳以上3人、平均21歳"
+    },
+    {
+      "input": [{ "includeStatistics": false }],
+      "expectedOutput": true,
+      "description": "統計なし: 配列のみ返す"
+    },
+    {
+      "input": [{ "convertNameToUpperCase": false }],
+      "expectedOutput": true,
+      "description": "名前変換なし: 小文字のまま"
+    },
+    {
+      "input": [{ "sortByAge": false }],
+      "expectedOutput": true,
+      "description": "ソートなし: 元の順序を維持"
+    }
+  ]
+}

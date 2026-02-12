@@ -1,0 +1,31 @@
+{
+  "id": "version_hell",
+  "level": "advanced",
+  "title": "バージョン地獄",
+  "description": "以下は商品価格を計算する関数群です。過去の仕様変更により、calculatePrice、calculatePriceLatest、calculatePriceNew の3つが存在します。\n\n【各関数の仕様】\n- calculatePrice: 税込価格を返す（価格 × 1.1）\n- calculatePriceLatest: 税込価格 + 送料を返す\n- calculatePriceNew: 税込価格 + 送料 - 割引額を返す\n\n現在、チェックアウト処理で合計金額を計算していますが、結果が正しくありません。\n\n【期待される動作】\n入力: [{ price: 1000, quantity: 2, hasShipping: true, discount: 100 }]\n送料は一律500円、商品価格は税込み計算する。\n計算: (1000 × 2) × 1.1 + 500 - 100 = 2200 + 500 - 100 = 2600",
+  "initialCode": "function calculatePrice(price) {\n  return price * 1.1;\n}\n\n// 送料対応版\nfunction calculatePriceLatest(price, shipping) {\n  return price + shipping * 1.1;\n}\n\n// 割引機能追加版\nfunction calculatePriceNew(price, shipping, discount) {\n  const subtotal = price + shipping;\n  const afterDiscount = subtotal - discount;\n  return afterDiscount * 1.1;\n}\n\nfunction checkout(items) {\n  let total = 0;\n  \n  items.forEach(item => {\n    const itemPrice = item.price * item.quantity;\n    \n    if (item.hasShipping && item.discount) {\n      total += calculatePriceLatest(itemPrice, 500);\n    } else if (item.hasShipping) {\n      total += calculatePriceLatest(itemPrice, 500);\n    } else {\n      total += calculatePrice(itemPrice);\n    }\n  });\n  \n  return total;\n}\n\nfunction testCheckout(testCase) {\n  return checkout(testCase.items);\n}",
+  "hint": "1. calculatePriceLatestの税計算式を確認してください。税は何にかかるべきですか？ 2. checkoutの中で、割引がある場合にどの関数を呼んでいますか？calculatePriceNewを使うべきではないでしょうか？ 3. そもそもLatestとNewの違いは何ですか？どちらが本当に最新なのでしょうか？",
+  "explanation": "この問題には複数のバグと設計上の問題があります。\n\n**バグ1: calculatePriceLatestの税計算ミス**\n`price + shipping * 1.1` は送料だけに税をかけています。正しくは `(price + shipping) * 1.1` で、合計金額に税をかけるべきです。\n\n**バグ2: 割引処理の関数選択ミス**\ncheckout関数で、割引がある場合に `calculatePriceLatest` を呼んでいますが、これは割引に対応していません。`calculatePriceNew` を呼ぶべきです。さらに、割引額を引数として渡していません。\n\n**設計上の問題: 曖昧な命名によるバージョンの乱立**\n「Latest（最新）」と「New（新しい）」という名前は、どちらが本当に最新なのか全く分かりません。そもそも関数名に「New」「Latest」「V2」といったバージョンを示す言葉を使うこと自体が問題です。これらは機能を表していないため、(1)どの関数を使うべきか判断できない、(2)古い関数にバグがあっても放置される、(3)新しい関数を追加するたびに呼び出し側の修正が必要、(4)命名規則の崩壊（次はcalculatePriceNewest? calculatePriceNewer?）。\n\n**解決策1: 1つの関数に統合**\n```javascript\nfunction calculatePrice(price, shipping = 0, discount = 0) {\n  const subtotal = price + shipping - discount;\n  return subtotal * 1.1;\n}\n```\n古いバージョンは削除し、オプション引数で対応します。最もシンプルですが、既存コードの修正が必要です。\n\n**解決策2: 互換性を維持しながら段階的に移行**\n```javascript\n// 最新の完全な実装\nfunction calculatePrice(price, shipping = 0, discount = 0) {\n  const subtotal = price + shipping - discount;\n  return subtotal * 1.1;\n}\n\n/**\n * @deprecated calculatePrice を使用してください\n */\nfunction calculatePriceLatest(price, shipping) {\n  return calculatePrice(price, shipping, 0);\n}\n\n/**\n * @deprecated calculatePrice を使用してください\n */\nfunction calculatePriceNew(price, shipping, discount) {\n  return calculatePrice(price, shipping, discount);\n}\n```\n古い関数を最新関数のラッパーとして実装し、@deprecatedマークで非推奨を明示します。これにより、(1)既存コードはそのまま動く、(2)ロジックの重複がない、(3)段階的に移行できる。\n\n**解決策3: 機能を明示的に表す名前にする**\n```javascript\nfunction calculatePriceWithTax(price) {\n  return price * 1.1;\n}\n\nfunction calculatePriceWithShipping(price, shipping) {\n  return (price + shipping) * 1.1;\n}\n\nfunction calculatePriceWithDiscountAndShipping(price, shipping, discount) {\n  const subtotal = price + shipping - discount;\n  return subtotal * 1.1;\n}\n```\n各関数が「何をするのか」が名前から明確です。ただし、関数が増えすぎる場合は解決策1の方が適切です。\n\n**実践での教訓**: (1)関数名にバージョン番号や曖昧な名前（Latest/New/V2）を絶対につけない、(2)関数名は機能を表す（calculatePriceWithDiscount など）、(3)仕様変更時は既存関数を修正するか明確な理由がある場合のみ新関数を作る、(4)古い関数は非推奨マークをつけて削除計画を立てる、(5)互換性が必要ならラッパー関数で対応する。",
+  "testCases": [
+    {
+      "input": [{ "items": [{ "price": 1000, "quantity": 2, "hasShipping": true, "discount": 100 }] }],
+      "expectedOutput": 2600,
+      "description": "送料あり・割引あり: 商品2000円（税込2200円）+ 送料500円 - 割引100円 = 2600円"
+    },
+    {
+      "input": [{ "items": [{ "price": 1000, "quantity": 2, "hasShipping": true, "discount": 0 }] }],
+      "expectedOutput": 2700,
+      "description": "送料あり・割引なし: 商品2000円（税込2200円）+ 送料500円 = 2700円"
+    },
+    {
+      "input": [{ "items": [{ "price": 1000, "quantity": 2, "hasShipping": false, "discount": 0 }] }],
+      "expectedOutput": 2200,
+      "description": "送料なし・割引なし: 商品2000円（税込2200円）= 2200円"
+    },
+    {
+      "input": [{ "items": [{ "price": 1000, "quantity": 1, "hasShipping": true, "discount": 50 }, { "price": 500, "quantity": 2, "hasShipping": false, "discount": 0 }] }],
+      "expectedOutput": 2650,
+      "description": "複数商品混在: 商品1（税込1100円+送料500円-割引50円=1550円）+ 商品2（税込1100円）= 2650円"
+    }
+  ]
+}
