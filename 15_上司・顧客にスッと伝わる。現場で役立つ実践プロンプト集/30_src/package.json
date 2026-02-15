@@ -1,0 +1,169 @@
+{
+  "name": "mentor-ai-prompt-collection",
+  "displayName": "Mentor AI - プロンプト集",
+  "description": "上司・顧客にスッと伝わる。現場で役立つ実践プロンプト集",
+  "version": "0.1.0",
+  "publisher": "mentor-ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kaku3/workbooks"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "prompt",
+    "ai",
+    "コミュニケーション",
+    "報告書",
+    "メール"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "mentor-ai-sidebar",
+          "title": "🎯 プロンプト集",
+          "icon": "$(book)"
+        }
+      ]
+    },
+    "views": {
+      "mentor-ai-sidebar": [
+        {
+          "id": "mentor-ai-prompts",
+          "name": "プロンプト一覧"
+        },
+        {
+          "id": "mentor-ai-dashboard",
+          "name": "ダッシュボード"
+        },
+        {
+          "id": "mentor-ai-history",
+          "name": "履歴"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "mentor-ai.copyPrompt",
+        "title": "プロンプトをコピー",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "mentor-ai.insertPrompt",
+        "title": "プロンプトを挿入",
+        "icon": "$(insert)"
+      },
+      {
+        "command": "mentor-ai.openDashboard",
+        "title": "ダッシュボードを開く",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "mentor-ai.refreshPrompts",
+        "title": "プロンプト一覧を更新",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "mentor-ai.toggleFavorite",
+        "title": "お気に入りに追加/削除",
+        "icon": "$(star)"
+      },
+      {
+        "command": "mentor-ai.initializeWorkspace",
+        "title": "Mentor AI: ワークスペースをセットアップ",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "mentor-ai.updateTemplates",
+        "title": "Mentor AI: テンプレートを更新",
+        "icon": "$(sync)"
+      }
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "mentor-ai.copyPrompt",
+          "when": "view == mentor-ai-prompts && viewItem == prompt",
+          "group": "inline@1"
+        },
+        {
+          "command": "mentor-ai.insertPrompt",
+          "when": "view == mentor-ai-prompts && viewItem == prompt",
+          "group": "inline@2"
+        },
+        {
+          "command": "mentor-ai.toggleFavorite",
+          "when": "view == mentor-ai-prompts && viewItem == prompt",
+          "group": "inline@3"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "mentor-ai.refreshPrompts",
+          "when": "view == mentor-ai-prompts",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Mentor AI Prompt Collection",
+      "properties": {
+        "mentorAi.historyPath": {
+          "type": "string",
+          "default": ".mentor-ai/history",
+          "description": "履歴を保存するパス"
+        },
+        "mentorAi.enableNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "通知を有効にする"
+        },
+        "mentorAi.dailyGoal": {
+          "type": "number",
+          "default": 3,
+          "description": "1日の目標使用回数"
+        },
+        "mentorAi.weeklyGoal": {
+          "type": "number",
+          "default": 15,
+          "description": "1週間の目標使用回数"
+        },
+        "mentorAi.showBadges": {
+          "type": "boolean",
+          "default": true,
+          "description": "バッジを表示する"
+        },
+        "mentorAi.autoSaveSession": {
+          "type": "boolean",
+          "default": true,
+          "description": "セッションを自動保存する"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}
