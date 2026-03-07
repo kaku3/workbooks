@@ -6,16 +6,30 @@
     "initialCode": "function processNumbers(numbers) {\n  const doubled = [];\n  numbers.forEach(function(num) {\n    doubled.push(num * 2);\n  });\n  return doubled;\n}\n\nfunction sumEvenNumbers(numbers) {\n  let sum = 0;\n  processNumbers(numbers).forEach(function(num) {\n    if (num % 2 = 0) {\n      sum += num;\n    }\n  });\n  return sum;\n}\n\nfunction testSumEvenNumbers(numbers) {\n  return sumEvenNumbers(numbers);\n}",
     "testCases": [
         {
-            "input": [[1, 2, 3, 4, 5]],
+            "input": [
+                [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ]
+            ],
             "expectedOutput": 30,
             "description": "2倍後: [2,4,6,8,10] → 全て偶数 → 2+4+6+8+10 = 30"
         },
         {
-            "input": [[10, 11, 12]],
+            "input": [
+                [
+                    10,
+                    11,
+                    12
+                ]
+            ],
             "expectedOutput": 66,
             "description": "2倍後: [20,22,24] → 全て偶数 → 20+22+24 = 66"
         }
     ],
     "hint": "sumEvenNumbers関数の中の条件式に注目してください。比較演算子を確認しましょう。",
-    "explanation": "if (num % 2 = 0) の部分で、= が使われていますが、これは代入演算子です。比較には === を使う必要があります。正しくは if (num % 2 === 0) です。"
+    "explanation": "if (num % 2 = 0) の部分で、= が使われていますが、これは代入演算子です。比較には === を使う必要があります。\n\n正しくは if (num % 2 === 0) です。"
 }

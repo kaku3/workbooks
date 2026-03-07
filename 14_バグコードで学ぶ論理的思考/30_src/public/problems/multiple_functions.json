@@ -6,16 +6,20 @@
     "initialCode": "function calculateTax(price) {\n  return price * 0.1;\n}\n\nfunction calculateDiscount(price) {\n  if (price > 1000) {\n    return price * 0.2;\n  }\n  return 0;\n}\n\nfunction calculatePrice(basePrice) {\n  const discount = calculateDiscount(basePrice);\n  const priceAfterDiscount = basePrice + discount;\n  const tax = calculateTax(priceAfterDiscount);\n  return priceAfterDiscount + tax;\n}\n\nfunction testCalculatePrice(basePrice) {\n  return calculatePrice(basePrice);\n}",
     "testCases": [
         {
-            "input": [1500],
+            "input": [
+                1500
+            ],
             "expectedOutput": 1320,
             "description": "1500円の商品: 300円割引 → 1200円 → 税120円 → 1320円"
         },
         {
-            "input": [500],
+            "input": [
+                500
+            ],
             "expectedOutput": 550,
             "description": "500円の商品: 割引なし → 500円 → 税50円 → 550円"
         }
     ],
     "hint": "discountは価格から引くべきものです。calculatePrice関数の中で割引の適用方法を確認してください。",
-    "explanation": "basePrice + discount ではなく basePrice - discount とすべきでした。割引は価格から引くものですが、足し算になっていました。複数の関数がある場合、どの関数にバグがあるかを特定する必要があります。"
+    "explanation": "basePrice + discount ではなく basePrice - discount とすべきでした。割引は価格から引くものですが、足し算になっていました。\n\n複数の関数がある場合、 **どの関数にバグがあるかを特定する** 必要があります。"
 }
