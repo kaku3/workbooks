@@ -21,7 +21,7 @@ export function CodeEditor({ value, onChange }: CodeEditorProps) {
           </div>
         ))}
       </div>
-      
+
       {/* エディタ本体 */}
       <div className="editor-wrapper">
         <Editor

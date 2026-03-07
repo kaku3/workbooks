@@ -13,12 +13,12 @@ export function TypewriterText({ text, speed }: TypewriterTextProps) {
   // 文字数に応じて速度を自動計算
   const calculatedSpeed = speed || (() => {
     const length = text.length;
-    if (length < 50) return 30;        // 短い: ゆっくり
-    if (length < 100) return 20;       // 中くらい: 標準
-    if (length < 200) return 15;       // 長い: 速め
-    if (length < 500) return 10;       // かなり長い: 速い
-    if (length < 1000) return 5;       // とても長い: とても速い
-    return 3;                          // 超長文: 超高速
+    if (length < 50) return 20;        // 短い: ゆっくり
+    if (length < 100) return 15;       // 中くらい: 標準
+    if (length < 200) return 10;       // 長い: 速め
+    if (length < 500) return 3;       // かなり長い: 速い
+    if (length < 1000) return 2;       // とても長い: とても速い
+    return 1;                          // 超長文: 超高速
   })();
 
   useEffect(() => {

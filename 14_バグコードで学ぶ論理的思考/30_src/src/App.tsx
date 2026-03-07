@@ -111,13 +111,13 @@ function App() {
     resetResults();
     setActiveCodeTab('code');
     initProblemLog(problems[index].id);
-    
+
     // 問題のレベルに合わせてアコーディオンを更新
     const problemLevel = problems[index].level;
     if (problemLevel !== selectedLevel) {
       setSelectedLevel(problemLevel);
     }
-    
+
     setTimeout(() => {
       document.querySelector<HTMLButtonElement>('[data-run-button]')?.click();
     }, 50);
@@ -146,6 +146,17 @@ function App() {
 
   const currentProblem = problems[currentProblemIndex];
   const allTestsPassed = results.length > 0 && results.every(r => r.passed);
+
+  // タブ切り替えハンドラー（ヒント使用を記録）
+  const handleTabChange = (tab: 'code' | 'hint' | 'explanation') => {
+    setActiveCodeTab(tab);
+    if (tab === 'hint' && currentProblem) {
+      const currentLog = learningLog[currentProblem.id];
+      if (currentLog && !currentLog.hintUsed) {
+        updateLog(currentProblem.id, { hintUsed: true });
+      }
+    }
+  };
 
   // 正解時の紙吹雪エフェクト
   useEffect(() => {
@@ -177,132 +188,132 @@ function App() {
               currentProblemIndex={currentProblemIndex}
               selectedLevel={selectedLevel}
               learningLog={learningLog}
-            onSelectLevel={handleSelectLevel}
-            onSelectProblem={handleSelectProblem}
-          />
+              onSelectLevel={handleSelectLevel}
+              onSelectProblem={handleSelectProblem}
+            />
 
-          {/* プレイ方法ボタン */}
-          <button className="how-to-play-button" onClick={openHowToPlay}>
-            ❓ プレイ方法
-          </button>
-        </div>
-
-        {/* 中央ペイン: 問題記述とエディタ */}
-        <div className="center-pane">
-          {/* 上部ヘッダー: 問題タイトルと実行ボタン */}
-          <div className="center-header">
-            <h2 className="problem-header">
-              {currentProblem.title}
-            </h2>
-            <div className="header-buttons">
-              {!allTestsPassed && (
-                <button onClick={handleRun} data-run-button className="run-button">
-                  実行 & テスト
-                </button>
-              )}
-              {allTestsPassed && currentProblemIndex < problems.length - 1 && (
-                <button onClick={goToNextProblem} className="next-button next-button-highlighted">
-                  次へ &gt;
-                </button>
-              )}
-            </div>
+            {/* プレイ方法ボタン */}
+            <button className="how-to-play-button" onClick={openHowToPlay}>
+              ❓ プレイ方法
+            </button>
           </div>
 
-          <div className="center-divider"></div>
-
-          <div className="center-split">
-            {/* 左側: 問題説明/テストケース */}
-            <div className="center-left">
-              <ProblemDescription problem={currentProblem} />
+          {/* 中央ペイン: 問題記述とエディタ */}
+          <div className="center-pane">
+            {/* 上部ヘッダー: 問題タイトルと実行ボタン */}
+            <div className="center-header">
+              <h2 className="problem-header">
+                {currentProblem.title}
+              </h2>
+              <div className="header-buttons">
+                {!allTestsPassed && (
+                  <button onClick={handleRun} data-run-button className="run-button">
+                    実行 & テスト
+                  </button>
+                )}
+                {allTestsPassed && currentProblemIndex < problems.length - 1 && (
+                  <button onClick={goToNextProblem} className="next-button next-button-highlighted">
+                    次へ &gt;
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* 右側: コードエディタ */}
-            <div className="center-right">
-              <div className="code-editor-wrapper">
-                {/* タブヘッダー */}
-                <div className="code-tabs">
-                  <button
-                    onClick={() => setActiveCodeTab('code')}
-                    className={`code-tab ${activeCodeTab === 'code' ? 'active' : ''}`}
-                  >
-                    📝 コード
-                  </button>
-                  <button
-                    onClick={() => setActiveCodeTab('hint')}
-                    className={`code-tab ${activeCodeTab === 'hint' ? 'active' : ''}`}
-                  >
-                    💡 ヒント
-                  </button>
-                  <button
-                    onClick={() => setActiveCodeTab('explanation')}
-                    className={`code-tab ${activeCodeTab === 'explanation' ? 'active' : ''}`}
-                  >
-                    📖 解説
-                  </button>
-                </div>
+            <div className="center-divider"></div>
 
-                {/* タブコンテンツ */}
-                <div className="code-tab-content">
-                  {activeCodeTab === 'code' && (
-                    <CodeEditor value={code} onChange={setCode} />
-                  )}
+            <div className="center-split">
+              {/* 左側: 問題説明/テストケース */}
+              <div className="center-left">
+                <ProblemDescription problem={currentProblem} />
+              </div>
 
-                  {activeCodeTab === 'hint' && (
-                    <div className="hint-content">
-                      <strong>💡 ヒント:</strong>
-                      <p>{currentProblem.hint}</p>
-                      {syntaxHint && (
-                        <div className="syntax-hint-detail">
-                          <strong>🔍 構文エラーの詳細:</strong>
-                          <pre className="syntax-hint-code">{syntaxHint}</pre>
+              {/* 右側: コードエディタ */}
+              <div className="center-right">
+                <div className="code-editor-wrapper">
+                  {/* タブヘッダー */}
+                  <div className="code-tabs">
+                    <button
+                      onClick={() => handleTabChange('code')}
+                      className={`code-tab ${activeCodeTab === 'code' ? 'active' : ''}`}
+                    >
+                      📝 コード
+                    </button>
+                    <button
+                      onClick={() => handleTabChange('hint')}
+                      className={`code-tab ${activeCodeTab === 'hint' ? 'active' : ''}`}
+                    >
+                      💡 ヒント
+                    </button>
+                    <button
+                      onClick={() => handleTabChange('explanation')}
+                      className={`code-tab ${activeCodeTab === 'explanation' ? 'active' : ''}`}
+                    >
+                      📖 解説
+                    </button>
+                  </div>
+
+                  {/* タブコンテンツ */}
+                  <div className="code-tab-content">
+                    {activeCodeTab === 'code' && (
+                      <CodeEditor value={code} onChange={setCode} />
+                    )}
+
+                    {activeCodeTab === 'hint' && (
+                      <div className="hint-content">
+                        <strong>💡 ヒント:</strong>
+                        <p>{currentProblem.hint}</p>
+                        {syntaxHint && (
+                          <div className="syntax-hint-detail">
+                            <strong>🔍 構文エラーの詳細:</strong>
+                            <pre className="syntax-hint-code">{syntaxHint}</pre>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {activeCodeTab === 'explanation' && (
+                      <div className="explanation-content">
+                        <strong>📖 解説:</strong>
+                        <div className="explanation-body">
+                          <TypewriterText
+                            text={currentProblem.explanation}
+                            key={`${currentProblem.id}-explanation`}
+                          />
                         </div>
-                      )}
-                    </div>
-                  )}
-
-                  {activeCodeTab === 'explanation' && (
-                    <div className="explanation-content">
-                      <strong>📖 解説:</strong>
-                      <p>
-                        <TypewriterText 
-                          text={currentProblem.explanation}
-                          key={`${currentProblem.id}-explanation`}
-                        />
-                      </p>
-                    </div>
-                  )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
+
+            <LearningStats log={learningLog[currentProblem.id]} />
           </div>
 
-          <LearningStats log={learningLog[currentProblem.id]} />
+          {/* 右ペイン: 実行結果 */}
+          <div className="right-pane">
+            <h3 className="test-results-title">✅ テスト結果</h3>
+            <TestResults results={results} />
+
+            <ExecutionLog output={output} />
+          </div>
         </div>
 
-        {/* 右ペイン: 実行結果 */}
-        <div className="right-pane">
-          <h3 className="test-results-title">✅ テスト結果</h3>
-          <TestResults results={results} />
+        {/* プレイ方法モーダル */}
+        <HowToPlay isOpen={isHowToPlayOpen} onClose={closeHowToPlay} />
 
-          <ExecutionLog output={output} />
-        </div>
+        {/* 紙吹雪エフェクト */}
+        <Confetti active={showConfetti} />
       </div>
 
-      {/* プレイ方法モーダル */}
-      <HowToPlay isOpen={isHowToPlayOpen} onClose={closeHowToPlay} />
-
-      {/* 紙吹雪エフェクト */}
-      <Confetti active={showConfetti} />
-    </div>
-
-    {/* スプラッシュスクリーン（オーバーレイ） */}
-    {(loading || showSplash) && (
-      <SplashScreen 
-        message="Loading..." 
-        isExiting={isLoadingExiting} 
-      />
-    )}
-  </>
+      {/* スプラッシュスクリーン（オーバーレイ） */}
+      {(loading || showSplash) && (
+        <SplashScreen
+          message="Loading..."
+          isExiting={isLoadingExiting}
+        />
+      )}
+    </>
   );
 }
 
