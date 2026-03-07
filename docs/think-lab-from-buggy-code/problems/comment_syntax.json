@@ -6,14 +6,20 @@
     "initialCode": "function add(a, b) {\n  # これは足し算の関数です\n  return a + b;\n}\n\nfunction testAdd(a, b) {\n  return add(a, b);\n}",
     "testCases": [
         {
-            "input": [5, 3],
+            "input": [
+                5,
+                3
+            ],
             "expectedOutput": 8
         },
         {
-            "input": [10, 20],
+            "input": [
+                10,
+                20
+            ],
             "expectedOutput": 30
         }
     ],
     "hint": "JavaScriptのコメントは `#` ではなく `//` または `/* */` を使います。",
-    "explanation": "`#` はPythonなどの言語のコメント記号です。JavaScriptでは `//` (一行コメント) または `/* */` (複数行コメント) を使います。"
+    "explanation": "`#` はPythonなどの言語のコメント記号です。\nJavaScriptでは `//` (一行コメント) または `/* */` (複数行コメント) を使います。"
 }

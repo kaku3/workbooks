@@ -6,16 +6,20 @@
     "initialCode": "function greetUser(name) {\n  const greeting = \"Hi, \" + name;\n  console.log(greeting);\n  return greeting;\n}\n\nfunction testGreetUser(name) {\n  return greetUser(name);\n}",
     "testCases": [
         {
-            "input": ["Taro"],
+            "input": [
+                "Taro"
+            ],
             "expectedOutput": "Hello, Taro",
             "expectedConsoleOutput": "Hello, Taro"
         },
         {
-            "input": ["Bob"],
+            "input": [
+                "Bob"
+            ],
             "expectedOutput": "Hello, Bob",
             "expectedConsoleOutput": "Hello, Bob"
         }
     ],
     "hint": "挨拶の言葉を確認してください。「Hi」ではなく「Hello」を使う仕様です。",
-    "explanation": "挨拶文の定数が「Hi, 」になっていましたが、仕様では「Hello, 」を使う必要がありました。変数に格納している値を修正すれば、console.logと戻り値の両方が自動的に修正されます。"
+    "explanation": "挨拶文の定数が「Hi, 」になっていましたが、仕様では「Hello, 」を使う必要がありました。\n\n変数に格納している値を修正すれば、console.logと戻り値の両方が自動的に修正されます。"
 }

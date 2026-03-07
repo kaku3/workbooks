@@ -6,14 +6,20 @@
     "initialCode": "function calculateTotal(price, quantity) {\n  const total = price * quanity;\n  return total;\n}\n\nfunction testCalculateTotal(price, quantity) {\n  return calculateTotal(price, quantity);\n}",
     "testCases": [
         {
-            "input": [100, 3],
+            "input": [
+                100,
+                3
+            ],
             "expectedOutput": 300
         },
         {
-            "input": [50, 5],
+            "input": [
+                50,
+                5
+            ],
             "expectedOutput": 250
         }
     ],
     "hint": "変数名のスペルを確認してください。quantity のスペルは？",
-    "explanation": "quanity ではなく quantity が正しいスペルです。変数名のタイプミスは見つけづらいですが、エラーメッセージに undefined と出ることがヒントになります。"
+    "explanation": "quanity ではなく quantity が正しいスペルです。\n変数名のタイプミスは見つけづらいですが、**エラーメッセージに undefined と出る** ことがヒントになります。"
 }
