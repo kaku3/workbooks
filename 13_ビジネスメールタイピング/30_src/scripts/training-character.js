@@ -4,13 +4,13 @@ class CharacterGame extends TrainingGameBase {
         super('character');
         this.level = 1;
         this.difficulty = 'easy'; // easy, normal, hard
-        this.dropSpeed = 1; // 基本落下速度 (px per frame)
+        this.dropSpeed = 60; // 基本落下速度 (px per 秒)
         this.gameArea = null;
         this.dropContainer = null;
         this.characters = []; // 落下中の文字配列
         this.animationId = null;
         this.spawnTimer = 0;
-        this.spawnInterval = 80; // フレーム数を短縮（より多くの文字）
+        this.spawnInterval = 1333; // スポーン間隔 (ms) ※80フレーム@60fps相当
         this.keyTypedCount = 0; // タイプしたキー数
         this.gameHeight = 500;
         this.groundHeight = 50;
@@ -46,7 +46,7 @@ class CharacterGame extends TrainingGameBase {
         this.score = 0;
         this.level = 1;
         this.keyTypedCount = 0;
-        this.dropSpeed = 1;
+        this.dropSpeed = 60;
         this.characters = [];
         this.spawnTimer = 0;
         this.isPlaying = true;
@@ -65,18 +65,24 @@ class CharacterGame extends TrainingGameBase {
     }
     
     startGameLoop() {
-        const gameLoop = () => {
+        let lastTimestamp = null;
+        const gameLoop = (timestamp) => {
             if (!this.isPlaying) return;
-            
-            this.updateGame();
+
+            if (lastTimestamp === null) lastTimestamp = timestamp;
+            // 異常に大きなdelta（タブ非アクティブ復帰など）は上限を設ける
+            const delta = Math.min(timestamp - lastTimestamp, 100);
+            lastTimestamp = timestamp;
+
+            this.updateGame(delta);
             this.animationId = requestAnimationFrame(gameLoop);
         };
-        gameLoop();
+        requestAnimationFrame(gameLoop);
     }
     
-    updateGame() {
-        // 新しい文字をスポーン
-        this.spawnTimer++;
+    updateGame(delta) {
+        // 新しい文字をスポーン (spawnTimer は ms 単位)
+        this.spawnTimer += delta;
         if (this.spawnTimer >= this.spawnInterval) {
             this.spawnCharacter();
             this.spawnCount++; // スポーン回数をカウント
@@ -101,7 +107,7 @@ class CharacterGame extends TrainingGameBase {
         }
         
         // 文字の位置更新
-        this.updateCharacters();
+        this.updateCharacters(delta);
         
         // 地面に到達した文字をチェック
         this.checkGameOver();
@@ -204,9 +210,10 @@ class CharacterGame extends TrainingGameBase {
         return element;
     }
     
-    updateCharacters() {
+    updateCharacters(delta) {
+        const dt = delta / 1000; // ms → 秒
         this.characters = this.characters.filter(character => {
-            character.y += this.dropSpeed;
+            character.y += this.dropSpeed * dt; // px/秒 × 秒 = px
             character.element.style.top = character.y + 'px';
             
             // 画面外に出た文字を削除
@@ -441,18 +448,18 @@ class CharacterGame extends TrainingGameBase {
     }
     
     updateDropSpeed() {
-        // 基本速度を4%増加（レベル25で頭打ち）
+        // 基本速度を3%/レベル増加（レベル25で頭打ち）px/秒
         const effectiveLevel = Math.min(this.level, 25);
-        this.dropSpeed = 1 + (effectiveLevel - 1) * 0.03;
+        this.dropSpeed = 60 * (1 + (effectiveLevel - 1) * 0.03);
         
         // レベルが4の倍数の時、10%減速
         if (this.level % 4 === 0) {
             this.dropSpeed *= 0.92;
         }
         
-        // スポーン間隔を太鼓の達人風に調整（より多くの文字を画面に）
-        // 基本60フレーム間隔から開始し、レベルアップで短縮
-        this.spawnInterval = Math.max(30, 80 - this.level * 2);
+        // スポーン間隔を ms 単位で計算（80フレーム@60fps = 1333ms を基準に短縮）
+        const frameInterval = Math.max(30, 80 - this.level * 2);
+        this.spawnInterval = Math.round(frameInterval * 1000 / 60);
     }
     
     updateDisplay() {
