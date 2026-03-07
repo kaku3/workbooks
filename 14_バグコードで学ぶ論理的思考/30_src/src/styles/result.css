@@ -1,0 +1,17 @@
+/* ========================================
+   Test Results
+   ======================================== */
+.test-results-title {
+    color: var(--text-primary);
+}
+
+.test-results-empty {
+    color: var(--text-secondary);
+}
+
+.test-results-success {
+    padding: var(--spacing-md);
+    background: var(--color-success);
+    color: var(--color-success-text);
+    margin-bottom: var(--spacing-md);
+}

@@ -1,0 +1,29 @@
+/* ========================================
+   Execution Log
+   ======================================== */
+.execution-log-title {
+    color: var(--text-primary);
+    margin-top: var(--spacing-xl);
+}
+
+.execution-log {
+    background: var(--bg-code);
+    color: var(--text-primary);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-gold);
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: var(--font-base);
+    font-family: Consolas, Monaco, monospace;
+}
+
+.execution-log-empty {
+    background: var(--bg-light);
+    color: var(--text-muted);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    font-size: var(--font-base);
+}
