@@ -1,0 +1,66 @@
+/* ============================================================
+   base.css  リセット・変数・共通スタイル
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1a2e;
+  --bg2: #16213e;
+  --panel: #0f3460;
+  --accent: #e94560;
+  --accent2: #f5a623;
+  --green: #2ecc71;
+  --text: #eaeaea;
+  --text-dim: #aaa;
+  --border: #2a4a7f;
+  --card-move: #2c5f8a;
+  --card-action: #5a3080;
+  --card-item: #7a4000;
+  --card-item-bomb: #8b0000;
+  --card-item-kit: #004d40;
+  --radius: 10px;
+  --shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'M PLUS Rounded 1c', 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1rem; color: var(--text-dim); margin-bottom: 8px; }
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: filter 0.15s, transform 0.1s;
+}
+button:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary   { background: var(--accent);  color: #fff; }
+.btn-secondary { background: var(--panel);   color: var(--text); border: 1px solid var(--border); }
+.btn-success   { background: var(--green);   color: #fff; }
+.btn-danger    { background: #c0392b;        color: #fff; }
+.btn-cancel    { background: #555; color: #fff; margin-top: 12px; width: 100%; }
+.btn-small     { padding: 3px 8px; font-size: 0.75rem; background: var(--panel); color: var(--text); }
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}

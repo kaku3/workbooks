@@ -1,0 +1,40 @@
+/* ============================================================
+   card.css  カードコンポーネント
+   ============================================================ */
+
+.card {
+  width: 80px;
+  min-height: 110px;
+  border-radius: 8px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+.card.playable {
+  cursor: pointer;
+  border-color: var(--accent2);
+}
+.card.playable:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+
+.card-move   { background: var(--card-move); }
+.card-action { background: var(--card-action); }
+.card-item   { background: var(--card-item); border: 2px dashed #aaa; }
+.hidden-card {
+  background: var(--bg2);
+  color: var(--text-dim);
+  font-size: 1.8rem;
+  font-weight: bold;
+  justify-content: center;
+}
+
+.card-label { font-size: 1.1rem; font-weight: bold; }
+.card-desc  { font-size: 0.65rem; color: rgba(255,255,255,0.75); line-height: 1.3; }

@@ -1,0 +1,181 @@
+/* ============================================================
+   lobby.css  ロビー画面
+   ============================================================ */
+
+.lobby-screen {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 32px 12px 56px;
+  min-height: 100vh;
+  background: #f0ebff;
+}
+
+.lobby-container {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lobby-container h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #7c3aed;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 12px rgba(124,58,237,0.18);
+  margin-bottom: 0;
+}
+.subtitle { text-align: center; color: #6b7280; line-height: 1.6; font-size: 0.92rem; }
+.lobby-thumbnail {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(124,58,237,0.18);
+}
+
+/* チーム紹介 */
+.team-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.team-card {
+  flex: 1;
+  border-radius: 14px;
+  padding: 18px 12px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+}
+.team-bomber {
+  background: linear-gradient(145deg, #fee2e2, #fecaca);
+  border: 2px solid #fca5a5;
+}
+.team-defuser {
+  background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+  border: 2px solid #93c5fd;
+}
+.team-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #9ca3af;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.team-icon { font-size: 2.6rem; margin-bottom: 6px; }
+.team-name { font-weight: 800; font-size: 0.92rem; margin-bottom: 6px; color: #374151; }
+.team-goal { font-size: 0.78rem; color: #6b7280; line-height: 1.6; }
+
+/* 入力・ボタンカード */
+.card-panel {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  border: 1.5px solid rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card-panel h2 { font-size: 1rem; color: #7c3aed; margin-bottom: 0; }
+.card-panel p  { color: #6b7280; font-size: 0.85rem; }
+.card-panel label { font-size: 0.85rem; color: #374151; font-weight: 600; }
+
+/* ロビー内の input を明るい色に */
+.lobby-screen input[type="text"] {
+  background: #f9fafb;
+  color: #111827;
+  border: 1.5px solid #d1d5db;
+}
+.lobby-screen input[type="text"]::placeholder { color: #9ca3af; }
+
+/* パネル内ボタン */
+.lobby-screen .btn-primary   { background: #7c3aed; }
+.lobby-screen .btn-secondary { background: #ffffff; color: #374151; border: 1.5px solid #d1d5db; }
+.lobby-screen .btn-success   { background: #16a34a; }
+.lobby-screen .btn-small     { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+
+/* 参加者一覧 */
+#player-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+#player-list li {
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+/* ステータスメッセージ */
+.status-msg {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.85rem;
+  padding: 8px;
+  background: rgba(255,255,255,0.75);
+  border-radius: 8px;
+}
+.status-room {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  background: #fff;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+.status-room strong { font-family: monospace; color: #374151; word-break: break-all; }
+
+/* ルールサマリー */
+.rule-summary-section {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  border: 1.5px solid rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rule-summary-section > h2 { font-size: 1rem; color: #374151; margin-bottom: 0; }
+.rule-step-list { display: flex; flex-direction: column; gap: 8px; }
+.rule-step {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 0.88rem;
+  color: #374151;
+  line-height: 1.5;
+}
+.step-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.rule-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #92400e;
+  background: #fef3c7;
+  border-radius: 8px;
+  padding: 8px 12px;
+  border-left: 3px solid #f59e0b;
+  line-height: 1.5;
+}

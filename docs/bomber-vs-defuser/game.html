@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>爆弾魔 vs 解除班</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="game-page">
+
+  <!-- ヘッダー -->
+  <header class="game-header">
+    <h1>爆弾魔 vs 解除班</h1>
+    <div id="phase-label" class="phase-label">ゲーム読み込み中...</div>
+    <div id="my-role-badge" class="role-badge"></div>
+  </header>
+
+  <main class="game-main">
+
+    <!-- 他プレイヤーパネル (上段) -->
+    <section class="panel" id="other-players-section">
+      <h2>プレイヤー</h2>
+      <div id="other-players"></div>
+    </section>
+
+    <!-- ボード (中央) -->
+    <section class="panel board-panel">
+      <h2>マップ</h2>
+      <div id="board" class="board-grid"></div>
+    </section>
+
+    <!-- 自分の手札 (下段) -->
+    <section class="panel hand-panel">
+      <h2>あなたの手札
+        <span id="my-role-indicator" class="role-indicator"></span>
+      </h2>
+      <div id="my-hand" class="hand-area"></div>
+      <div class="hand-controls">
+        <button id="btn-draw" class="btn-primary" style="display:none">📩 カードを引く</button>
+        <button id="btn-arrest" class="btn-danger" style="display:none">🚨 確保宣言！</button>
+      </div>
+    </section>
+
+    <!-- ゲームログ -->
+    <section class="panel log-panel">
+      <h2>ログ</h2>
+      <div id="game-log" class="game-log"></div>
+    </section>
+
+  </main>
+
+  <!-- モーダルオーバーレイ（ターゲット選択・ロケーション効果） -->
+  <div id="modal-overlay" class="modal-overlay" style="display:none">
+    <div id="modal-content" class="modal-content"></div>
+  </div>
+
+  <!-- ゲームオーバーオーバーレイ -->
+  <div id="gameover-overlay" class="gameover-overlay" style="display:none">
+    <div class="gameover-box">
+      <div id="gameover-msg" class="gameover-msg"></div>
+      <button class="btn-primary" onclick="window.location.href='index.html'">ロビーに戻る</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
