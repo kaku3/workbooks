@@ -103,3 +103,13 @@
   border-color: #fff;
   box-shadow: 0 0 8px rgba(255,255,255,0.9);
 }
+
+@keyframes pawnPulse {
+  0%, 100% { transform: scale(1);    box-shadow: 0 1px 4px rgba(0,0,0,0.35), 0 0 0   0   rgba(255,230,50,0.7); }
+  50%       { transform: scale(1.35); box-shadow: 0 2px 8px rgba(0,0,0,0.5),  0 0 0 6px rgba(255,230,50,0); }
+}
+.pawn-active {
+  animation: pawnPulse 1.1s ease-in-out infinite;
+  z-index: 3;
+  position: relative;
+}

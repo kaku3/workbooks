@@ -163,11 +163,13 @@ function renderBoard(state, myId) {
 }
 
 function pawnHtml(player, state, myId) {
-  const col   = getColor(state, player.id);
-  const isMe  = player.id === myId;
-  const name  = isMe ? 'あなた' : player.id.slice(0, 4);
-  const ring  = isMe ? ' pawn-me' : '';
-  return `<span class="pawn${ring}" style="background:${col.bg};color:${col.text}" title="${name}"></span>`;
+  const col           = getColor(state, player.id);
+  const isMe          = player.id === myId;
+  const isActiveTurn  = player.id === getCurrentPlayer(state)?.id;
+  const name          = isMe ? 'あなた' : player.id.slice(0, 4);
+  const ring          = isMe ? ' pawn-me' : '';
+  const activeCls     = isActiveTurn ? ' pawn-active' : '';
+  return `<span class="pawn${ring}${activeCls}" style="background:${col.bg};color:${col.text}" title="${name}"></span>`;
 }
 
 // ---- プレイヤー一覧（自分を先頭に、ターン順） ----

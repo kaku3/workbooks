@@ -54,8 +54,8 @@ export const CARD_DEFINITIONS = [
   { id: 'act_whisper_a', type: CARD_TYPES.ACTION, action: 'whisper', label: '密談',     desc: '相手と手札を1枚ずつ見せ合う（自分だけ確認）' },
 
   // --- アクションカード: 妨害 ---
-  { id: 'act_skip_a',  type: CARD_TYPES.ACTION, action: 'skip',  label: '足止め',   desc: '次のプレイヤーの手番を飛ばす' },
-  { id: 'act_skip_b',  type: CARD_TYPES.ACTION, action: 'skip',  label: '足止め',   desc: '次のプレイヤーの手番を飛ばす' },
+  { id: 'act_skip_a',  type: CARD_TYPES.ACTION, action: 'skip',  label: '足止め',   desc: '任意のプレイヤーの手番を1回飛ばす' },
+  { id: 'act_skip_b',  type: CARD_TYPES.ACTION, action: 'skip',  label: '足止め',   desc: '任意のプレイヤーの手番を1回飛ばす' },
   { id: 'act_block_a', type: CARD_TYPES.ACTION, action: 'block', label: '通行止め', desc: '指定したロケーションを次のターン使用不可にする' },
 
 ];

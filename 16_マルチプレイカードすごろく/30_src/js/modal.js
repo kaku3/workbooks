@@ -100,18 +100,29 @@ export function showMyCardSelector(card, targetId, localState, myId) {
 
   content.innerHTML = '';
   const title = document.createElement('h3');
-  title.textContent = '渡すカードを選んでください';
+  title.textContent = '🤝 取引：渡すカードを選んでください';
   content.appendChild(title);
 
-  me.hand.forEach(c => {
-    const btn = document.createElement('button');
-    btn.textContent = c.label;
-    btn.onclick = () => {
-      closeModal();
-      sendPlayCard(card.id, targetId, c.id);
-    };
-    content.appendChild(btn);
-  });
+  const sub = document.createElement('p');
+  sub.textContent = '選んだカードを相手に渡します';
+  sub.style.fontSize = '0.85rem';
+  sub.style.color = 'var(--text-dim, #aaa)';
+  content.appendChild(sub);
+
+  me.hand
+    .filter(c => c.id !== card.id)  // 使った取引カード自身を除外
+    .forEach(c => {
+      const btn = document.createElement('button');
+      btn.innerHTML = `<strong>${c.label}</strong><br><small>${c.desc ?? ''}</small>`;
+      btn.style.display = 'block';
+      btn.style.width = '100%';
+      btn.style.marginBottom = '6px';
+      btn.onclick = () => {
+        closeModal();
+        sendPlayCard(card.id, targetId, c.id);
+      };
+      content.appendChild(btn);
+    });
 
   const cancelBtn = document.createElement('button');
   cancelBtn.textContent = 'キャンセル';
@@ -250,6 +261,46 @@ export function showLocationPrompt(loc, state, myId, nameMap = {}) {
  * @param {object}   nameMap  - { peerId: displayName }
  * @param {Function} onChoose - (cardId: string) => void
  */
+/**
+ * 取引で相手が渡すカードを選ぶモーダル
+ */
+export function showTradeTargetSelector(localState, myId, onChoose) {
+  const { content } = getModal();
+  if (!content) return;
+  const me = localState.players.find(p => p.id === myId);
+  if (!me || me.hand.length === 0) return;
+
+  const attacker = localState.players.find(p =>
+    localState.pendingAction?.waitingFor === myId &&
+    localState.currentTurnIndex !== undefined &&
+    localState.players[localState.currentTurnIndex]?.id !== myId
+  ) || null;
+
+  content.innerHTML = '';
+  const title = document.createElement('h3');
+  title.textContent = '🤝 取引：渡すカードを選んでください';
+  content.appendChild(title);
+
+  const sub = document.createElement('p');
+  sub.textContent = '相手から取引を求められています。渡すカードを選んでください';
+  sub.style.fontSize = '0.85rem';
+  sub.style.color = 'var(--text-dim, #aaa)';
+  content.appendChild(sub);
+
+  me.hand.forEach(c => {
+    if (c.hidden) return;
+    const btn = document.createElement('button');
+    btn.innerHTML = `<strong>${c.label}</strong><br><small>${c.desc}</small>`;
+    btn.style.display = 'block';
+    btn.style.width = '100%';
+    btn.style.marginBottom = '6px';
+    btn.onclick = () => { closeModal(); onChoose(c.id); };
+    content.appendChild(btn);
+  });
+
+  openModal();
+}
+
 export function showPassCardSelector(state, myId, nameMap = {}, onChoose) {
   const { content } = getModal();
   if (!content) return;

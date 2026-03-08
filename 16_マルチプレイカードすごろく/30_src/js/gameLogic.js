@@ -124,6 +124,7 @@ function nextTurn(state) {
   state.currentTurnIndex = next;
   state.turnCount++;
   state.phase = 'draw';
+  state.pendingAction = null; // 前ターンの保留アクションをクリア
 
   // 通行止め解除チェック
   if (state.blockedLocation !== null && state.turnCount >= state.blockedUntilTurn) {
@@ -217,17 +218,13 @@ function resolveAction(state, player, card, targetId, chosenCardId, targetLocati
 function actionTrade(state, player, targetId, myCardId) {
   const target = getPlayerById(state, targetId);
   if (!target || target.hand.length === 0) return {};
-  // 自分のカードを渡す
   const myIdx = player.hand.findIndex(c => c.id === myCardId);
   if (myIdx === -1) return { needsInput: 'choose_my_card_for_trade', pendingAction: { action: 'trade', with: targetId } };
-  const myCard = player.hand.splice(myIdx, 1)[0];
-  // 相手からランダムに引く
-  const theirIdx = randomInt(target.hand.length);
-  const theirCard = target.hand.splice(theirIdx, 1)[0];
-  player.hand.push(theirCard);
-  target.hand.push(myCard);
-  addLog(state, `${pName(state, player.id)} と ${pName(state, targetId)} が手札を1枚交換`);
-  return {};
+  // 自分のカードを他確定 → 相手のカード選択待ち
+  return {
+    needsInput: 'wait_trade_target',
+    pendingAction: { action: 'trade', with: targetId, myCard: myCardId, waitingFor: targetId }
+  };
 }
 
 function actionSteal(state, player, targetId, myCardId) {
@@ -348,13 +345,13 @@ function actionScan(state, player, targetId) {
   const roll = Math.random();
   let hint, hintLabel;
   if (isBomber) {
-    if (roll < 0.70)      { hint = 'suspicious_high'; hintLabel = '怎しい（★★★）'; }
-    else if (roll < 0.90) { hint = 'suspicious_mid';  hintLabel = 'やや怎しい（★★）'; }
+    if (roll < 0.70)      { hint = 'suspicious_high'; hintLabel = '怪しい（★★★）'; }
+    else if (roll < 0.90) { hint = 'suspicious_mid';  hintLabel = 'やや怪しい（★★）'; }
     else                  { hint = 'clean';            hintLabel = '問題なし（★）'; }
   } else {
     if (roll < 0.70)      { hint = 'clean';            hintLabel = '問題なし（★）'; }
-    else if (roll < 0.90) { hint = 'suspicious_mid';  hintLabel = 'やや怎しい（★★）'; }
-    else                  { hint = 'suspicious_high'; hintLabel = '怎しい（★★★）'; }
+    else if (roll < 0.90) { hint = 'suspicious_mid';  hintLabel = 'やや怪しい（★★）'; }
+    else                  { hint = 'suspicious_high'; hintLabel = '怪しい（★★★）'; }
   }
   addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} をスキャン（本人のみ通知）`);
   return { privateReveal: { to: player.id, hint, hintLabel } };
@@ -434,19 +431,56 @@ export function resolveLocation(state, chosenCardId = null) {
 /** resolveLocation の実体（同期版）*/
 export function resolveLocationSync(state, locType, chosenCardId = null) {
   const player = getCurrentPlayer(state);
-  let sideEffect = {};
 
   // 通行止め中チェック
   if (state.blockedLocation === player.position) {
     addLog(state, `マス ${player.position} は通行止め中のため効果なし`);
-  } else {
-    sideEffect = processLocationByType(state, player, player.position, chosenCardId, locType) || {};
+    state.pendingAction = null;
+    checkWinCondition(state);
+    if (!state.winner) nextTurn(state);
+    return { state, wasBlocked: true };
   }
 
+  const sideEffect = processLocationByType(state, player, player.position, chosenCardId, locType) || {};
   state.pendingAction = null;
   checkWinCondition(state);
   if (!state.winner) nextTurn(state);
   return { state, ...sideEffect };
+}
+
+/**
+ * 取引の相手カード選択を解決する
+ */
+export function resolveTradeChoice(state, fromPlayerId, cardId) {
+  if (!state.pendingAction || state.pendingAction.action !== 'trade')
+    return { error: '取引待機中ではありません' };
+  if (state.pendingAction.waitingFor !== fromPlayerId)
+    return { error: '取引の対象プレイヤーではありません' };
+
+  const attacker = getCurrentPlayer(state);
+  const target   = getPlayerById(state, fromPlayerId);
+  if (!attacker || !target) return { error: 'プレイヤーが見つかりません' };
+
+  const myCardId = state.pendingAction.myCard;
+  const myIdx    = attacker.hand.findIndex(c => c.id === myCardId);
+  if (myIdx === -1) {
+    // アタッカーのカードが消えた場合はキャンセル
+    state.pendingAction = null;
+    if (!state.winner) nextTurn(state);
+    return { state };
+  }
+  const theirIdx = target.hand.findIndex(c => c.id === cardId);
+  if (theirIdx === -1) return { error: '選択されたカードが手札にありません' };
+
+  const myCard    = attacker.hand.splice(myIdx, 1)[0];
+  const theirCard = target.hand.splice(theirIdx, 1)[0];
+  attacker.hand.push(theirCard);
+  target.hand.push(myCard);
+  addLog(state, `${pName(state, attacker.id)} と ${pName(state, fromPlayerId)} が手札を1枚交換`);
+  state.pendingAction = null;
+  checkWinCondition(state);
+  if (!state.winner) nextTurn(state);
+  return { state };
 }
 
 function processLocationByType(state, player, locIdx, chosenCardId, locType) {

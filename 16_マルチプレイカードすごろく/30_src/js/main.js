@@ -5,14 +5,14 @@
 import {
   getMyId, setMessageHandler,
   broadcastState, broadcastPublic, broadcastGameOver, sendPrivate,
-  sendPlayCard, sendDeclareArrest, sendPassChoice,
+  sendPlayCard, sendDeclareArrest, sendPassChoice, sendTradeTargetChoice,
   MSG
 } from './peer.js';
 
 import {
   createInitialState,
   doDrawPhase, playCard, resolveLocationSync, declareArrest,
-  getCurrentPlayer, resolvePassChoice,
+  getCurrentPlayer, resolvePassChoice, resolveTradeChoice,
 } from './gameLogic.js';
 
 import { CARD_TYPES, LOCATIONS } from './constants.js';
@@ -24,7 +24,7 @@ import {
   showPrivateReveal, showPublicReveal,
   showEffectOverlay,
   showGameOver, showToast, showError,
-  showPassCardSelector,
+  showPassCardSelector, showTradeTargetSelector,
 } from './modal.js';
 
 // ============================================================
@@ -94,10 +94,24 @@ function onMessage(msg) {
           });
         }
       }
+      // 取引相手選択モーダル
+      if (msg.state.phase === 'action_targeting' && msg.state.pendingAction?.action === 'trade' &&
+          msg.state.pendingAction?.waitingFor === myId) {
+        const modalOpen = document.getElementById('modal-overlay')?.style.display === 'flex';
+        if (!modalOpen) {
+          showTradeTargetSelector(msg.state, myId, (cardId) => {
+            sendTradeTargetChoice(cardId);
+          });
+        }
+      }
       break;
 
     case MSG.PASS_CHOICE:
       if (isHost) handlePassChoice(msg.from, msg.cardId);
+      break;
+
+    case MSG.TRADE_TARGET_CHOICE:
+      if (isHost) handleTradeTargetChoice(msg.from, msg.cardId);
       break;
 
     case MSG.PLAY_CARD:
@@ -260,14 +274,16 @@ function handleResolveLoc(fromId, locType, chosenCardId) {
   const result = resolveLocationSync(gameState, locType, chosenCardId);
   gameState = result.state;
 
-  if (result.privateReveal) {
-    const revs = Array.isArray(result.privateReveal) ? result.privateReveal : [result.privateReveal];
-    revs.forEach(r => sendPrivate(r.to, r));
+  if (!result.wasBlocked) {
+    if (result.privateReveal) {
+      const revs = Array.isArray(result.privateReveal) ? result.privateReveal : [result.privateReveal];
+      revs.forEach(r => sendPrivate(r.to, r));
+    }
+    if (result.publicReveal) broadcastPublic(result.publicReveal);
   }
-  if (result.publicReveal) broadcastPublic(result.publicReveal);
 
-  // ロケーション効果オーバーレイイベントを構築
-  const events = buildLocationEvents(fromId, loc, locType, chosenCardId, result);
+  // 通行止め中の場合はイベントを表示しない
+  const events = result.wasBlocked ? {} : buildLocationEvents(fromId, loc, locType, chosenCardId, result);
 
   broadcastState(gameState, events);
   if (gameState.winner) broadcastGameOver(gameState.winner);
@@ -349,6 +365,17 @@ function handleDeclareArrest(fromId) {
   broadcastGameOver(gameState.winner);
 }
 
+function handleTradeTargetChoice(fromId, cardId) {
+  const attackerName = n(getCurrentPlayer(gameState)?.id);
+  const targetName   = n(fromId);
+  const result = resolveTradeChoice(gameState, fromId, cardId);
+  if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
+  gameState = result.state;
+  const events = { all: { icon: '🤝', title: '取引完了！', body: `${attackerName} と ${targetName} が手札を1枚交換した` } };
+  broadcastState(gameState, events);
+  if (gameState.winner) broadcastGameOver(gameState.winner);
+}
+
 function handlePassChoice(fromId, cardId) {
   const result = resolvePassChoice(gameState, fromId, cardId);
   if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
@@ -370,10 +397,25 @@ function sendErrorToPlayer(toId, message) {
 // ============================================================
 function onCardClick(card) {
   if (!localState) return;
-  if (localState.phase === 'draw') {
+
+  // フェーズチェック: 'main' 以外はカードをプレイできない
+  const phase = localState.phase;
+  if (phase === 'draw') {
     showToast('まず「カードを引く」ボタンを押してください');
     return;
   }
+  if (phase === 'location') {
+    showToast('ロケーション効果を先に解決してください');
+    return;
+  }
+  if (phase === 'action_targeting') {
+    showToast('横流しのカードを先に選んでください');
+    return;
+  }
+  if (phase !== 'main') return;
+
+  // 自分のターン確認
+  if (getCurrentPlayer(localState)?.id !== myId) return;
 
   if (card.type === CARD_TYPES.MOVE) {
     sendPlayCard(card.id);

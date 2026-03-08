@@ -22,6 +22,7 @@ export const MSG = {
   DECLARE_ARREST:  'declare_arrest', // 確保宣言
   CHOOSE_CARD:     'choose_card',    // 闇市/タワーでカードを選択
   PASS_CHOICE:     'pass_choice',    // 横流し：渡すカードを選択
+  TRADE_TARGET_CHOICE: 'trade_target_choice', // 取引：相手のカード選択
 
   // ホスト→全員
   STATE_UPDATE:    'state_update',   // ゲーム状態を全員へ配信
@@ -217,6 +218,12 @@ export function sendDeclareArrest() {
 
 export function sendPassChoice(cardId) {
   const msg = { type: MSG.PASS_CHOICE, cardId };
+  if (isHost) onMessageCallback({ from: myId, ...msg });
+  else sendToHost(msg);
+}
+
+export function sendTradeTargetChoice(cardId) {
+  const msg = { type: MSG.TRADE_TARGET_CHOICE, cardId };
   if (isHost) onMessageCallback({ from: myId, ...msg });
   else sendToHost(msg);
 }
