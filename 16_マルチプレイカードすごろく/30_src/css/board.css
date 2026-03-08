@@ -1,0 +1,105 @@
+/* ============================================================
+   board.css  すごろく盤・コマ
+   ============================================================ */
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 4px;
+  height: 100%;
+  min-height: 280px;
+}
+
+.board-center {
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 8px;
+}
+.board-center-icon  { font-size: 2.4rem; }
+.board-center-title { font-weight: bold; color: var(--accent); font-size: 0.85rem; letter-spacing: 0.05em; }
+
+.location-cell {
+  position: relative;
+  border-radius: 10px;
+  border: 3px solid rgba(0,0,0,0.18);
+  cursor: default;
+  transition: border-color 0.2s;
+  min-height: 80px;
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* 名前 / 絵文字背景 / コマ */
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+.location-cell:hover { border-color: var(--accent2); }
+.location-cell.blocked { opacity: 0.4; border-color: #c0392b; }
+.location-cell.pawn-landing {
+  box-shadow: inset 0 0 0 3px rgba(245, 200, 40, 0.9);
+  transition: box-shadow 0.1s;
+}
+
+/* ロケーション名（上部） */
+.loc-name {
+  grid-row: 1;
+  position: relative;
+  z-index: 2;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(0,0,0,0.72);
+  text-align: center;
+  padding: 3px 4px 2px;
+  background: rgba(255,255,255,0.72);
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+/* 絵文字（背景として中央に大きく） */
+.loc-bg-emoji {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* コマ（下部 - 絵文字と分離した帯） */
+.loc-pawns {
+  grid-row: 3;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 3px 3px 4px;
+  min-height: 26px;
+  background: rgba(255,255,255,0.55);
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.pawn {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+}
+.pawn-me {
+  border-color: #fff;
+  box-shadow: 0 0 8px rgba(255,255,255,0.9);
+}

@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>爆弾魔 vs 解除班</title>
+  <meta property="og:title" content="爆弾魔 vs 解除班" />
+  <meta property="og:description" content="ババ抜き × すごろく × 人狼——4人で遊ぶパーティゲーム" />
+  <meta property="og:image" content="assets/thumbnail.png" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/lobby.css" />
+  <link rel="stylesheet" href="css/game.css" />
+  <link rel="stylesheet" href="css/board.css" />
+  <link rel="stylesheet" href="css/card.css" />
+  <link rel="stylesheet" href="css/overlay.css" />
+</head>
+<body>
+
+  <!-- ======= ロビー画面 ======= -->
+  <div id="lobby-screen" class="lobby-screen">
+    <div class="lobby-container">
+      <h1> 爆弾魔 vs 解除班</h1>
+      <img src="assets/thumbnail.png" class="lobby-thumbnail" alt="爆弾魔 vs 解除班" />
+      <p class="subtitle">ババ抜き × すごろく × 人狼<br>4人で遊ぶパーティゲーム</p>
+      <!-- チーム紹介 -->
+      <div class="team-row">
+        <div class="team-card team-bomber">
+          <div class="team-icon">💣</div>
+          <div class="team-name">爆弾魔チーム</div>
+          <div class="team-goal">パーツ A・B・C を揃えて<br>タワーで起爆！</div>
+        </div>
+        <div class="team-vs">VS</div>
+        <div class="team-card team-defuser">
+          <div class="team-icon">🛡️</div>
+          <div class="team-name">解除班チーム</div>
+          <div class="team-goal">キット X・Y・Z を揃えて<br>爆弾魔を確保！</div>
+        </div>
+      </div>
+      <div class="card-panel">
+        <label for="player-name">あなたの名前</label>
+        <input type="text" id="player-name" placeholder="プレイヤー名" maxlength="12" />
+      </div>
+
+      <div class="card-panel" id="panel-create">
+        <button id="btn-create" class="btn-primary">ルームを作成する</button>
+      </div>
+
+      <div class="card-panel" id="panel-join">
+        <input type="text" id="room-id-input" placeholder="ホストのルームIDを入力" />
+        <button id="btn-join" class="btn-secondary">参加する</button>
+      </div>
+
+      <div class="card-panel" id="panel-players" style="display:none">
+        <h2>参加者一覧</h2>
+        <ul id="player-list"></ul>
+        <button id="btn-start" class="btn-success" disabled style="display:none">ゲーム開始（0/4人）</button>
+      </div>
+
+      <p id="status" class="status-msg">ルームを作成するか、ホストのルームIDを入力して参加してください</p>
+      <p id="status-room" class="status-room" style="display:none">ルームID: <strong id="my-id">—</strong> <button id="btn-copy" class="btn-small">コピー</button></p>
+
+      <!-- ルールサマリー -->
+      <div class="rule-summary-section">
+        <h2>🎮 遊び方</h2>
+        <div class="rule-step-list">
+          <div class="rule-step">
+            <span class="step-circle">1</span>
+            <span>毎ターン、山札から <strong>カードを 1枚ドロー</strong></span>
+          </div>
+          <div class="rule-step">
+            <span class="step-circle">2</span>
+            <span>手札から <strong>1枚プレイ</strong></span>
+          </div>
+          <div class="rule-step">
+            <span class="step-circle">3</span>
+            <span><strong>移動カード</strong>：数値分コマを進めてロケーション効果発動</span>
+          </div>
+          <div class="rule-step">
+            <span class="step-circle">4</span>
+            <span><strong>アクションカード</strong>：他プレイヤーの手札に干渉</span>
+          </div>
+          <div class="rule-step">
+            <span class="step-circle">5</span>
+            <span>アイテムカード（パーツ・キット）は<strong>手に持つだけ</strong>で効果発動 → 山札屙が尽きたら捨て札から再利用</span>
+          </div>
+        </div>
+        <div class="rule-hint">
+          <span>⚠️</span>
+          <span>誰が爆弾魔かは秘密！アイテムカードを集めるプレイヤーを監視せよ。詳細ルールはゲーム画面の <strong>📋 ルール</strong> ボタンでいつでも確認できます。</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= ゲーム画面 ======= -->
+  <div id="game-screen" class="game-screen" style="display:none">
+    <header class="game-header">
+      <h1>💣 爆弾魔 vs 解除班</h1>      <button id="btn-rules" class="btn-small">📋 ルール</button>      <div id="phase-label" class="phase-label">ゲーム読み込み中...</div>
+      <div id="my-role-badge" class="role-badge"></div>
+    </header>
+
+    <main class="game-main">
+      <section class="panel" id="player-list-section">
+        <h2>プレイヤー</h2>
+        <div id="player-list-inner"></div>
+      </section>
+
+      <section class="panel board-panel">
+        <h2>マップ</h2>
+        <div id="board" class="board-grid"></div>
+      </section>
+
+      <section class="panel hand-panel">
+        <h2>あなたの手札
+          <span id="my-role-indicator" class="role-indicator"></span>
+        </h2>
+        <div id="my-hand" class="hand-area"></div>
+        <div class="hand-controls">
+          <button id="btn-arrest" class="btn-danger" style="display:none">🚨 確保宣言！</button>
+        </div>
+      </section>
+
+      <section class="panel log-panel">
+        <h2>ログ</h2>
+        <div id="game-log" class="game-log"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- モーダルオーバーレイ（ターゲット選択・ロケーション効果） -->
+  <div id="modal-overlay" class="modal-overlay" style="display:none">
+    <div id="modal-content" class="modal-content"></div>
+  </div>
+
+  <!-- ゲームオーバーオーバーレイ -->
+  <div id="gameover-overlay" class="gameover-overlay" style="display:none">
+    <div class="gameover-box">
+      <div id="gameover-msg" class="gameover-msg"></div>
+      <button class="btn-primary" id="btn-back-lobby">ロビーに戻る</button>
+    </div>
+  </div>
+
+  <!-- ターン開始オーバーレイ -->
+  <div id="turn-start-overlay" style="display:none"></div>
+
+  <!-- 効果結果オーバーレイ -->
+  <div id="effect-overlay" style="display:none">
+    <div class="effect-box">
+      <div id="effect-icon" class="effect-icon"></div>
+      <h3 id="effect-title" class="effect-title"></h3>
+      <p id="effect-body" class="effect-body"></p>
+      <button id="effect-close-btn" class="btn-primary effect-close-btn">OK</button>
+    </div>
+  </div>
+
+  <!-- ルール詳細オーバーレイ -->
+  <div id="rules-overlay" style="display:none">
+    <div class="rules-box">
+      <div class="rules-header">
+        <h2>📋 ルール詳細</h2>
+        <button id="rules-close-btn" class="btn-small">✕ 閉じる</button>
+      </div>
+      <div class="rules-content">
+        <section class="rules-section">
+          <h3>🎯 勝利条件</h3>
+          <div class="rules-win-cards">
+            <div class="rules-win-card bomber">
+              <b>💣 爆弾魒チーム</b>
+              <p>爆弾パーツ A・B・C をすべて揃えた状態でタワーに止まり起爆！</p>
+            </div>
+            <div class="rules-win-card defuser">
+              <b>🛡️ 解除班チーム</b>
+              <p>解除キット X・Y・Z をすべて揃えた状態で爆弾魔と同じマスで確保宣言！</p>
+            </div>
+          </div>
+        </section>
+        <section class="rules-section">
+          <h3>🃏 カード種別</h3>
+          <table class="rules-table">
+            <tr><td>🔢 移動カード</td><td>数値分コマを進める → ロケーション効果発動</td></tr>
+            <tr><td>⚡ アクションカード</td><td>取引・強奪・尋問・スキャンなど</td></tr>
+            <tr><td>📦 アイテムカード</td><td>爆弾パーツ / 解除キット / ダミー（手に持つだけ）</td></tr>
+          </table>
+        </section>
+        <section class="rules-section">
+          <h3>⚔️ 主なアクションカード</h3>
+          <table class="rules-table">
+            <tr><td>🤝 取引</td><td>指名プレイヤーと手札を 1枚交換</td></tr>
+            <tr><td>👊 強奪</td><td>相手からランダムに 1枚奔い、不要カードを押し付ける</td></tr>
+            <tr><td>👥 横流し</td><td>全員が手札を 1枚ずつ左鈲に渡す</td></tr>
+            <tr><td>🗑️ ポイ捗て</td><td>相手の手札をランダムに 1枚捨てさせる</td></tr>
+            <tr><td>🔍 尋問</td><td>相手の手札を 1枚こっそり確認（本人のみ）</td></tr>
+            <tr><td>📡 スキャン</td><td>相手の陣営（爆弾魔/解除班）を確認（本人のみ）</td></tr>
+            <tr><td>📰 公開捰査</td><td>相手の手札を 1枚全員に公開</td></tr>
+            <tr><td>🤛 密談</td><td>相手と手札を 1枚見せ合う（味方確認）</td></tr>
+            <tr><td>⏸️ 足止め</td><td>相手の次のターンをスキップ</td></tr>
+            <tr><td>🚧 通行止め</td><td>指定ロケーションを 1ターン封鎖</td></tr>
+          </table>
+        </section>
+        <section class="rules-section">
+          <h3>🗺️ ロケーション効果</h3>
+          <table class="rules-table">
+            <tr><td>🔩 ジャンク屋</td><td>山札から 1枚ドロー（引いたカードを本人に通知）</td></tr>
+            <tr><td>🏭 パーツ工場</td><td>アイテムカードを優先ドロー</td></tr>
+            <tr><td>🕵️ 探偵事務所</td><td>相手の手札を 1枚こっそり確認（本人のみ）</td></tr>
+            <tr><td>🗷️ 闇市</td><td>捨て札から好きな 1枚を引き取る</td></tr>
+            <tr><td>🗇 タワー</td><td>山札をサーチして 1枚入手 / 爆弾魔がパーツ揃いで起爆</td></tr>
+            <tr><td>🚔 警察本部</td><td>相手の役職をこっそり確認（本人のみ）</td></tr>
+            <tr><td>🎺 酒場</td><td>ランダムな相手と手札をランダムに 1枚強制交換</td></tr>
+            <tr><td>🚚 交番</td><td>相手の手札を 1枚捘収</td></tr>
+            <tr><td>📺 放送局</td><td>手札を 1枚全員公開 → 1枚ドロー</td></tr>
+            <tr><td>🎰 カジノ</td><td>ダイス偶数→ 2枚ドロー / 奇数→ 1枚捕収</td></tr>
+            <tr><td>🚦 スクランブル</td><td>全員の手札が 1枚ずつ左鈲へ</td></tr>
+            <tr><td>🏥 病院</td><td>手札全捨て → 5枚引き直し</td></tr>
+            <tr><td>🚧 工事現場</td><td>1回休み</td></tr>
+          </table>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script type="module" src="js/lobby.js"></script>
+</body>
+</html>

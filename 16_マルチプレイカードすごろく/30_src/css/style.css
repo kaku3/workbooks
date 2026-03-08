@@ -1,0 +1,352 @@
+/* ============================================================
+   style.css  泥酔・爆発都市
+   ============================================================ */
+
+/* ---------- リセット・ベース ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1a1a2e;
+  --bg2: #16213e;
+  --panel: #0f3460;
+  --accent: #e94560;
+  --accent2: #f5a623;
+  --green: #2ecc71;
+  --text: #eaeaea;
+  --text-dim: #aaa;
+  --border: #2a4a7f;
+  --card-move: #2c5f8a;
+  --card-action: #5a3080;
+  --card-item: #7a4000;
+  --card-item-bomb: #8b0000;
+  --card-item-kit: #004d40;
+  --radius: 10px;
+  --shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1rem; color: var(--text-dim); margin-bottom: 8px; }
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: filter 0.15s, transform 0.1s;
+}
+button:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-primary   { background: var(--accent);  color: #fff; }
+.btn-secondary { background: var(--panel);   color: var(--text); border: 1px solid var(--border); }
+.btn-success   { background: var(--green);   color: #fff; }
+.btn-danger    { background: #c0392b;        color: #fff; }
+.btn-cancel    { background: #555; color: #fff; margin-top: 12px; width: 100%; }
+.btn-small     { padding: 3px 8px; font-size: 0.75rem; background: var(--panel); color: var(--text); }
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+/* ============================================================
+   ロビー画面
+   ============================================================ */
+.lobby-screen { display: flex; justify-content: center; align-items: flex-start; padding: 32px 12px; min-height: 100vh; }
+
+.lobby-container {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lobby-container h1 { text-align: center; color: var(--accent); }
+.subtitle { text-align: center; color: var(--text-dim); line-height: 1.6; }
+
+.card-panel {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-panel h2 { font-size: 1rem; color: var(--accent2); margin-bottom: 0; }
+.card-panel p { color: var(--text-dim); font-size: 0.85rem; }
+.card-panel strong { color: var(--text); font-family: monospace; }
+
+#player-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+#player-list li {
+  background: var(--bg2);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+
+.status-msg {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  padding: 8px;
+  background: var(--bg2);
+  border-radius: 6px;
+}
+
+/* ============================================================
+   ゲーム画面
+   ============================================================ */
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.game-header h1 { font-size: 1.2rem; color: var(--accent); }
+.phase-label { color: var(--accent2); font-weight: bold; flex: 1; }
+.role-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  background: var(--panel);
+}
+
+.game-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 200px 1fr 220px;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.panel {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 12px;
+  overflow-y: auto;
+}
+
+/* 他プレイヤー */
+#other-players-section { grid-column: 1; grid-row: 1 / 3; }
+#other-players { display: flex; flex-direction: column; gap: 8px; }
+.other-player {
+  background: var(--bg2);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 0.85rem;
+  border-left: 3px solid var(--accent2);
+}
+.other-player .player-name { font-weight: bold; margin-bottom: 4px; }
+.other-player .player-hand-count, .other-player .player-pos { color: var(--text-dim); font-size: 0.8rem; }
+
+/* ボード */
+.board-panel { grid-column: 2; grid-row: 1 / 3; }
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.location-cell {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 8px 6px;
+  text-align: center;
+  border: 1px solid var(--border);
+  cursor: default;
+  transition: border-color 0.2s;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+}
+.location-cell:hover { border-color: var(--accent2); }
+.location-cell.blocked { opacity: 0.4; border-color: #c0392b; }
+.loc-emoji { font-size: 1.5rem; }
+.loc-name { font-size: 0.7rem; color: var(--text-dim); }
+.loc-pawns { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; }
+.pawn { font-size: 1rem; }
+.pawn.me { filter: drop-shadow(0 0 4px gold); }
+
+/* 手札 */
+.hand-panel { grid-column: 1 / 3; grid-row: 3; }
+.hand-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 80px;
+}
+.hand-controls { display: flex; gap: 8px; margin-top: 10px; }
+.role-indicator { font-size: 0.85rem; color: var(--accent2); margin-left: 8px; }
+
+/* ログ */
+.log-panel { grid-column: 3; grid-row: 1 / 4; font-size: 0.8rem; }
+.game-log p { color: var(--text-dim); padding: 4px 0; border-bottom: 1px solid var(--border); line-height: 1.4; }
+
+/* ============================================================
+   カード
+   ============================================================ */
+.card {
+  width: 80px;
+  min-height: 110px;
+  border-radius: 8px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+.card.playable {
+  cursor: pointer;
+  border-color: var(--accent2);
+}
+.card.playable:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+.card-move   { background: var(--card-move); }
+.card-action { background: var(--card-action); }
+.card-item   { background: var(--card-item); border: 2px dashed #aaa; }
+.hidden-card {
+  background: var(--bg2);
+  color: var(--text-dim);
+  font-size: 1.8rem;
+  font-weight: bold;
+  justify-content: center;
+}
+.card-label { font-size: 1.1rem; font-weight: bold; }
+.card-desc  { font-size: 0.65rem; color: rgba(255,255,255,0.75); line-height: 1.3; }
+
+/* ============================================================
+   モーダル
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal-content {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+.modal-content h3 { color: var(--accent2); }
+.modal-content button { width: 100%; }
+
+/* ============================================================
+   ゲームオーバー
+   ============================================================ */
+.gameover-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.gameover-box {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.gameover-msg {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* ============================================================
+   トースト通知
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(30,30,50,0.95);
+  color: var(--text);
+  border: 1px solid var(--accent2);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 300;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 90vw;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   レスポンシブ（スマホ縦向き）
+   ============================================================ */
+@media (max-width: 700px) {
+  .game-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    overflow-y: auto;
+    height: auto;
+  }
+  #other-players-section { grid-column: 1; grid-row: 1; }
+  .board-panel           { grid-column: 1; grid-row: 2; }
+  .hand-panel            { grid-column: 1; grid-row: 3; }
+  .log-panel             { grid-column: 1; grid-row: 4; }
+  .board-grid { grid-template-columns: repeat(3, 1fr); }
+}

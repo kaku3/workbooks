@@ -1,0 +1,215 @@
+/* ============================================================
+   overlay.css  モーダル・ゲームオーバー・トースト
+   ============================================================ */
+
+/* ---------- 汎用モーダル ---------- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal-content {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow);
+}
+.modal-content h3 { color: var(--accent2); }
+.modal-content button { width: 100%; }
+
+/* ---------- ゲームオーバー ---------- */
+.gameover-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.gameover-box {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.gameover-msg {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* ---------- トースト通知 ---------- */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(30,30,50,0.95);
+  color: var(--text);
+  border: 1px solid var(--accent2);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 300;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 90vw;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- ターン開始オーバーレイ ---------- */
+#turn-start-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.78);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  gap: 32px;
+}
+.turn-start-name {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: bold;
+  color: var(--text);
+  text-align: center;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.9);
+  letter-spacing: 0.04em;
+}
+.turn-start-draw-btn {
+  font-size: 1.2rem;
+  padding: 14px 40px;
+}
+
+/* ---------- モーダルフェードイン ---------- */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+#modal-overlay.modal-open {
+  animation: modalFadeIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* ---------- 効果結果オーバーレイ ---------- */
+#effect-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 160;
+  animation: modalFadeIn 0.25s ease forwards;
+}
+.effect-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px 24px;
+  max-width: 420px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.effect-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+.effect-title {
+  color: var(--accent2);
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 0;
+}
+.effect-body {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin: 0;
+}
+.effect-close-btn {
+  margin-top: 8px;
+  min-width: 120px;
+  font-size: 1rem;
+}
+
+/* ---------- ルール詳細オーバーレイ ---------- */
+#rules-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.78);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 250;
+  padding: 16px;
+  overflow-y: auto;
+}
+.rules-box {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 580px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: auto;
+  color: #111827;
+}
+.rules-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.rules-header h2 { font-size: 1.1rem; color: #7c3aed; margin-bottom: 0; }
+.rules-header .btn-small {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+}
+.rules-content { display: flex; flex-direction: column; gap: 14px; }
+.rules-section h3 {
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 8px;
+  border-bottom: 2px solid #f3f4f6;
+  padding-bottom: 4px;
+}
+.rules-win-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rules-win-card {
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #374151;
+}
+.rules-win-card.bomber { background: #fee2e2; border: 1.5px solid #fca5a5; }
+.rules-win-card.defuser { background: #dbeafe; border: 1.5px solid #93c5fd; }
+.rules-win-card b { display: block; margin-bottom: 4px; font-size: 0.88rem; }
+.rules-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.rules-table tr:nth-child(odd) td { background: #f9fafb; }
+.rules-table td { padding: 5px 8px; color: #374151; }
+.rules-table td:first-child { white-space: nowrap; font-weight: 600; width: 10em; }
+
