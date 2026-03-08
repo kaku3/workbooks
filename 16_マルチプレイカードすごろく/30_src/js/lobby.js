@@ -2,7 +2,7 @@
 // lobby.js  ロビー画面のUI処理
 // ============================================================
 
-import { initPeer, getMyId, createRoom, joinRoom, broadcastPlayerList, broadcastGameStart, sendToHost, MSG, getGuestIds } from './peer.js';
+import { initPeer, getMyId, createRoom, joinRoom, broadcastPlayerList, broadcastGameStart, sendToHost, MSG, getGuestIds, setMessageHandler } from './peer.js';
 import { initGameScreen } from './main.js';
 
 const MAX_PLAYERS = 4;
@@ -109,6 +109,29 @@ function resetLobby() {
   elStatus.style.display = 'block';
 }
 
+function returnToLobbyKeepRoom() {
+  const myIdVal   = getMyId();
+  const isHostVal = players[0]?.id === myIdVal;
+
+  // メッセージハンドラをロビー用に戻す
+  setMessageHandler(isHostVal ? onHostMessage : onGuestMessage);
+
+  // UIをロビースタイルに戻す（接続・プレイヤーリストはそのまま）
+  document.getElementById('panel-create').style.display = 'none';
+  document.getElementById('panel-join').style.display   = 'none';
+  if (elStatusRoom) elStatusRoom.style.display = 'block';
+  elStatus.style.display = 'none';
+
+  // プレイヤーリストを再描画
+  renderPlayerList(players);
+
+  if (isHostVal) {
+    // ホストのみスタートボタンを再表示し、全員にプレイヤーリストを再配信
+    if (elStartBtn) elStartBtn.style.display = 'block';
+    broadcastPlayerList(players);
+  }
+}
+
 function startGame(playerIds, playerNames) {
   const myIdVal   = getMyId();
   const isHostVal = playerIds[0] === myIdVal;
@@ -116,7 +139,7 @@ function startGame(playerIds, playerNames) {
   document.getElementById('lobby-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
 
-  initGameScreen(playerIds, playerNames, myIdVal, isHostVal, resetLobby);
+  initGameScreen(playerIds, playerNames, myIdVal, isHostVal, returnToLobbyKeepRoom);
 }
 
 // -------- ボタンイベント --------

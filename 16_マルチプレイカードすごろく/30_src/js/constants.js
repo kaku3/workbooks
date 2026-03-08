@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // constants.js  ゲーム定数・カード・ロケーション定義
 // ============================================================
 
@@ -70,27 +70,27 @@ export const CARD_DEFINITIONS = [
 // 各パーツ・キットは2枚ずつ（計16枚）。family フィールドで種類を判定
 export const ITEM_DEFINITIONS = [
   // 爆弾パーツ：各2枚
-  { id: 'item_bomb_a',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_a', label: '💣 パーツA', desc: '爆弾パーツA' },
-  { id: 'item_bomb_a2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_a', label: '💣 パーツA', desc: '爆弾パーツA' },
-  { id: 'item_bomb_b',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_b', label: '💣 パーツB', desc: '爆弾パーツB' },
-  { id: 'item_bomb_b2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_b', label: '💣 パーツB', desc: '爆弾パーツB' },
-  { id: 'item_bomb_c',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_c', label: '💣 パーツC', desc: '爆弾パーツC' },
-  { id: 'item_bomb_c2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_c', label: '💣 パーツC', desc: '爆弾パーツC' },
+  { id: 'item_bomb_a',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_a', emoji: '💣', label: 'パーツA', desc: '爆弾パーツA' },
+  { id: 'item_bomb_a2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_a', emoji: '💣', label: 'パーツA', desc: '爆弾パーツA' },
+  { id: 'item_bomb_b',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_b', emoji: '💣', label: 'パーツB', desc: '爆弾パーツB' },
+  { id: 'item_bomb_b2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_b', emoji: '💣', label: 'パーツB', desc: '爆弾パーツB' },
+  { id: 'item_bomb_c',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_c', emoji: '💣', label: 'パーツC', desc: '爆弾パーツC' },
+  { id: 'item_bomb_c2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_c', emoji: '💣', label: 'パーツC', desc: '爆弾パーツC' },
   // 解除キット：各3枚
-  { id: 'item_kit_x',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', label: '🔧 キットX', desc: '解除キットX' },
-  { id: 'item_kit_x2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', label: '🔧 キットX', desc: '解除キットX' },
-  { id: 'item_kit_x3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', label: '🔧 キットX', desc: '解除キットX' },
-  { id: 'item_kit_y',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', label: '🔧 キットY', desc: '解除キットY' },
-  { id: 'item_kit_y2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', label: '🔧 キットY', desc: '解除キットY' },
-  { id: 'item_kit_y3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', label: '🔧 キットY', desc: '解除キットY' },
-  { id: 'item_kit_z',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', label: '🔧 キットZ', desc: '解除キットZ' },
-  { id: 'item_kit_z2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', label: '🔧 キットZ', desc: '解除キットZ' },
-  { id: 'item_kit_z3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', label: '🔧 キットZ', desc: '解除キットZ' },
+  { id: 'item_kit_x',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', emoji: '🔧', label: 'キットX', desc: '解除キットX' },
+  { id: 'item_kit_x2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', emoji: '🔧', label: 'キットX', desc: '解除キットX' },
+  { id: 'item_kit_x3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', emoji: '🔧', label: 'キットX', desc: '解除キットX' },
+  { id: 'item_kit_y',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', emoji: '🔧', label: 'キットY', desc: '解除キットY' },
+  { id: 'item_kit_y2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', emoji: '🔧', label: 'キットY', desc: '解除キットY' },
+  { id: 'item_kit_y3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', emoji: '🔧', label: 'キットY', desc: '解除キットY' },
+  { id: 'item_kit_z',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', emoji: '🔧', label: 'キットZ', desc: '解除キットZ' },
+  { id: 'item_kit_z2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', emoji: '🔧', label: 'キットZ', desc: '解除キットZ' },
+  { id: 'item_kit_z3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', emoji: '🔧', label: 'キットZ', desc: '解除キットZ' },
   // ダミー
-  { id: 'item_dummy_a', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, label: '❓ ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
-  { id: 'item_dummy_b', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, label: '❓ ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
-  { id: 'item_dummy_c', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, label: '❓ ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
-  { id: 'item_dummy_d', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, label: '❓ ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
+  { id: 'item_dummy_a', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
+  { id: 'item_dummy_b', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
+  { id: 'item_dummy_c', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
+  { id: 'item_dummy_d', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
 ];
 
 // 爆弾パーツ揃い判定用

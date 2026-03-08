@@ -6,7 +6,7 @@ import {
   getMyId, setMessageHandler,
   broadcastState, broadcastPublic, broadcastGameOver, sendPrivate,
   sendPlayCard, sendDeclareArrest, sendPassChoice, sendTradeTargetChoice,
-  MSG, destroyPeer
+  MSG
 } from './peer.js';
 
 import {
@@ -69,8 +69,7 @@ export function initGameScreen(playerIds, playerNames, currentMyId, isHostParam,
     document.getElementById('gameover-overlay').style.display = 'none';
     document.getElementById('game-screen').style.display      = 'none';
     document.getElementById('lobby-screen').style.display     = 'flex';
-    // Peer接続を全破棄しロビーをリセット
-    destroyPeer();
+    // 接続は維持してロビーをリセット
     onReturnToLobby?.();
   }
 

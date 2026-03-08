@@ -31,9 +31,10 @@
 .card-item   { background: var(--card-item); border: 2px dashed #aaa; position: relative; overflow: hidden; }
 .card-item-bg-emoji {
   position: absolute;
-  bottom: -4px;
-  right: 1px;
-  font-size: 2.8rem;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.2rem;
   line-height: 1;
   opacity: 0.18;
   pointer-events: none;
