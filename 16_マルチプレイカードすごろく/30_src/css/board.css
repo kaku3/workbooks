@@ -25,6 +25,7 @@
 }
 .board-center-icon  { font-size: 2.4rem; }
 .board-center-title { font-weight: bold; color: var(--accent); font-size: 0.85rem; letter-spacing: 0.05em; }
+.board-center-turn  { font-size: 0.78rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; white-space: nowrap; max-width: 90%; overflow: hidden; text-overflow: ellipsis; }
 
 .location-cell {
   position: relative;

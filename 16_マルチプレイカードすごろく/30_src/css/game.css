@@ -68,7 +68,9 @@
   flex-shrink: 0;
   transition: border-color 0.2s, background 0.2s;
 }
-.player-item.current-turn { outline: 1px solid rgba(255,255,255,0.25); }
+.player-item.current-turn {
+  /* background/color はJS側で #fef9c3 / #1a1a1a をインラインで設定 */
+}
 .player-item-name {
   font-weight: bold;
   margin-bottom: 3px;
@@ -91,6 +93,7 @@
   grid-column: 1;
   grid-row: 2;
   overflow: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding: 8px;
@@ -138,6 +141,7 @@
 .hand-panel h2,
 .log-panel h2 { color: rgba(255,255,255,0.65); }
 #player-list-section .player-item-sub { color: rgba(255,255,255,0.72); }
+#player-list-section .player-item.current-turn .player-item-sub { color: #555; opacity: 1; }
 
 /* ============================================================
    レスポンシブ（スマホ縦向き）
@@ -176,11 +180,10 @@
   }
   .player-item-sub { font-size: 0.72rem; }
 
-  /* カード: スマホ幅に合わせて伸縮（4枚/行） */
+  /* カード: 最小幅固定 */
   .card {
-    flex: 1 1 76px;
-    min-width: 72px;
-    max-width: 90px;
+    flex: 0 0 76px;
+    min-width: 76px;
     min-height: 90px;
     padding: 4px;
   }

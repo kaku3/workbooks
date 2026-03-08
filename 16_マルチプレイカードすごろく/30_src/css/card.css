@@ -5,6 +5,7 @@
 .card {
   width: 80px;
   min-height: 110px;
+  flex-shrink: 0;
   border-radius: 8px;
   padding: 6px;
   display: flex;
@@ -27,7 +28,17 @@
 
 .card-move   { background: var(--card-move); }
 .card-action { background: var(--card-action); }
-.card-item   { background: var(--card-item); border: 2px dashed #aaa; }
+.card-item   { background: var(--card-item); border: 2px dashed #aaa; position: relative; overflow: hidden; }
+.card-item-bg-emoji {
+  position: absolute;
+  bottom: -4px;
+  right: 1px;
+  font-size: 2.8rem;
+  line-height: 1;
+  opacity: 0.18;
+  pointer-events: none;
+  user-select: none;
+}
 .hidden-card {
   background: var(--bg2);
   color: var(--text-dim);

@@ -90,6 +90,25 @@ function onGuestMessage(msg) {
   }
 }
 
+function resetLobby() {
+  players = [];
+  elNameInput.disabled = false;
+  elNameInput.value    = '';
+  elRoomInput.value    = '';
+  document.getElementById('panel-create').style.display  = 'block';
+  document.getElementById('panel-join').style.display    = 'block';
+  const panelPlayers = document.getElementById('panel-players');
+  if (panelPlayers) panelPlayers.style.display = 'none';
+  elPlayerList.innerHTML = '';
+  if (elStatusRoom) elStatusRoom.style.display = 'none';
+  elMyId.textContent = '—';
+  elCreateBtn.disabled = false;
+  elJoinBtn.disabled   = true;
+  if (elStartBtn) elStartBtn.style.display = 'none';
+  setStatus('ルームを作成するか、ホストのルームIDを入力して参加してください');
+  elStatus.style.display = 'block';
+}
+
 function startGame(playerIds, playerNames) {
   const myIdVal   = getMyId();
   const isHostVal = playerIds[0] === myIdVal;
@@ -97,7 +116,7 @@ function startGame(playerIds, playerNames) {
   document.getElementById('lobby-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
 
-  initGameScreen(playerIds, playerNames, myIdVal, isHostVal);
+  initGameScreen(playerIds, playerNames, myIdVal, isHostVal, resetLobby);
 }
 
 // -------- ボタンイベント --------

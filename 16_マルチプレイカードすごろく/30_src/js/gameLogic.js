@@ -236,14 +236,10 @@ function actionTrade(state, player, targetId, myCardId) {
 function actionSteal(state, player, targetId, myCardId) {
   const target = getPlayerById(state, targetId);
   if (!target || target.hand.length === 0) return {};
-  const myIdx = player.hand.findIndex(c => c.id === myCardId);
-  if (myIdx === -1) return { needsInput: 'choose_my_card_for_steal', pendingAction: { action: 'steal', with: targetId } };
-  const myCard = player.hand.splice(myIdx, 1)[0];
   const theirIdx = randomInt(target.hand.length);
   const theirCard = target.hand.splice(theirIdx, 1)[0];
   player.hand.push(theirCard);
-  target.hand.push(myCard);
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} から強奪（ランダム）`);
+  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} から強奪`);
   return {};
 }
 
@@ -307,14 +303,14 @@ export function resolvePassChoice(state, playerId, cardId) {
       if (idx !== -1) passedCards[p.id] = p.hand.splice(idx, 1)[0];
     });
 
-    // 左隣（次インデックス）へ渡す
+    // 次インデックスへ渡す
     const n = state.players.length;
     state.players.forEach((p, i) => {
       const card = passedCards[p.id];
       if (card) state.players[(i + 1) % n].hand.push(card);
     });
 
-    addLog(state, '横流し：各自が選んだカードが左隣に渡った');
+    addLog(state, '横流し：各自が選んだカードが次のプレイヤーに渡った');
     checkWinCondition(state);
     if (!state.winner) nextTurn(state);
     return { state, done: true };
@@ -557,7 +553,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       break;
     }
     case 'crossing': {
-      // 全員が手札を1枚ずつ左隣に
+      // 全員が手札を1枚ずつ次インデックスに
       const given = state.players.map(p => {
         if (p.hand.length === 0) return null;
         return p.hand.splice(randomInt(p.hand.length), 1)[0];
@@ -565,7 +561,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       given.forEach((card, i) => {
         if (card) state.players[(i + 1) % state.players.length].hand.push(card);
       });
-      addLog(state, 'スクランブル交差点：全員の手札が1枚ずつ左隣に回った');
+      addLog(state, 'スクランブル交差点：全員の手札が1枚ずつ次プレイヤーに回った');
       break;
     }
     case 'police_box': {

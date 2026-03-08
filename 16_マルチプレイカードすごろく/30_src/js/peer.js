@@ -130,8 +130,8 @@ export function broadcastPublic(payload) {
 /**
  * ゲーム終了通知
  */
-export function broadcastGameOver(winner) {
-  const msg = { type: MSG.GAME_OVER, winner };
+export function broadcastGameOver(winner, players = []) {
+  const msg = { type: MSG.GAME_OVER, winner, players };
   onMessageCallback({ ...msg, _local: true });
   Object.keys(guestConns).forEach(pid => sendToGuest(pid, msg));
 }
@@ -167,6 +167,20 @@ export function getGuestIds() {
  */
 export function setMessageHandler(callback) {
   onMessageCallback = callback;
+}
+
+/**
+ * Peer接続を全て破棄しモジュールの状態をリセットする
+ * ロビーに戻る前に呼び出すこと
+ */
+export function destroyPeer() {
+  Object.values(guestConns).forEach(c => { try { c.close(); } catch (_) {} });
+  guestConns = {};
+  if (hostConn) { try { hostConn.close(); } catch (_) {} hostConn = null; }
+  if (peer)     { try { peer.destroy(); } catch (_) {} peer = null; }
+  myId = null;
+  isHost = false;
+  onMessageCallback = null;
 }
 
 // --------------- ゲスト ---------------

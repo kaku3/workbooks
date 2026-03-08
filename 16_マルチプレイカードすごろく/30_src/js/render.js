@@ -142,7 +142,13 @@ function renderBoard(state, myId) {
   center.className = 'board-center';
   center.style.gridRow    = '2 / 5';
   center.style.gridColumn = '2 / 5';
-  center.innerHTML = '<div class="board-center-icon"></div><div class="board-center-title">爆弾魔 vs 解除班</div>';
+  const cur = getCurrentPlayer(state);
+  const curName = cur ? (cur.id === myId ? 'あなた' : (cur.name ?? cur.id.slice(0, 6))) : '';
+  const curCol = cur ? getColor(state, cur.id) : null;
+  const turnHtml = cur
+    ? `<div class="board-center-turn" style="background:${curCol.bg};color:${curCol.text}">▶ ${curName}</div>`
+    : '';
+  center.innerHTML = `<div class="board-center-icon"></div><div class="board-center-title">爆弾魔 vs 解除班</div>${turnHtml}`;
   board.appendChild(center);
 
   LOCATIONS.forEach((loc, idx) => {
@@ -211,10 +217,13 @@ function renderPlayerList(state, myId, nameMap) {
       : `${col.bg}18`;  // subtle tint always
 
     const name   = nameMap?.[p.id] ?? (isMe ? 'あなた' : p.id.slice(0, 6));
-    const prefix = isCurrent ? '▶ ' : '';
     const dot    = `<span class="player-dot" style="background:${col.bg};color:${col.text}"></span>`;
+    if (isCurrent) {
+      div.style.background = '#fef9c3';
+      div.style.color = '#1a1a1a';
+    }
     div.innerHTML = `
-      <div class="player-item-name">${dot}${prefix}${name}${isMe ? ' 👤' : ''}</div>
+      <div class="player-item-name">${dot}${name}${isMe ? ' 👤' : ''}</div>
       <div class="player-item-sub">手札 ${p.hand.length}枚</div>
       <div class="player-item-sub">${LOCATIONS[p.position]?.emoji} ${LOCATIONS[p.position]?.name}</div>
     `;
@@ -295,7 +304,10 @@ export function createCardElement(card, playable, onClickCb) {
                   : card.type === CARD_TYPES.ITEM   ? 'card-item'
                   : 'card-action';
   div.classList.add(typeClass);
+  const bgEmoji = card.type === CARD_TYPES.ITEM && card.emoji
+    ? `<div class="card-item-bg-emoji">${card.emoji}</div>` : '';
   div.innerHTML = `
+    ${bgEmoji}
     <div class="card-label">${card.label}</div>
     <div class="card-desc">${card.desc}</div>
   `;
@@ -319,18 +331,6 @@ function renderLog(state) {
 // ---- フェーズ別コントロール ----
 function renderPhaseControls(state, myId, nameMap, onLocationPrompt) {
   const isMyturn = getCurrentPlayer(state)?.id === myId;
-  const phaseEl  = document.getElementById('phase-label');
-
-  if (phaseEl) {
-    const cur     = getCurrentPlayer(state);
-    const curName = cur?.id === myId
-      ? 'あなた'
-      : (nameMap?.[cur?.id] ?? cur?.id?.slice(0, 6) ?? '?');
-    phaseEl.textContent = isMyturn
-      ? `あなたの番 (フェーズ: ${state.phase})`
-      : `${curName} の番…`;
-  }
-
   // ロケーション効果が保留中  解決 UIを表示（モーダルが既に開いている場合はスキップ）
   if (isMyturn && !state.winner && state.phase === 'location' && state.pendingAction?.locationIndex != null) {
     const modal = document.getElementById('modal-overlay');

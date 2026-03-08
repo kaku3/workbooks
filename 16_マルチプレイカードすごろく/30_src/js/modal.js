@@ -20,11 +20,13 @@ function openModal() {
   overlay.classList.remove('modal-open');
   void overlay.offsetWidth; // reflow でアニメーション再起動
   overlay.classList.add('modal-open');
+  document.body.classList.add('modal-scroll-lock');
 }
 
 function closeModal() {
   const { overlay } = getModal();
   if (overlay) overlay.style.display = 'none';
+  document.body.classList.remove('modal-scroll-lock');
 }
 
 // ============================================================
@@ -67,7 +69,7 @@ export function showTargetSelector(card, localState, myId, nameMap = {}, getDisp
       btn.textContent = nameMap[p.id] ?? p.id.slice(0, 8);
       btn.onclick = () => {
         closeModal();
-        if (['trade', 'steal'].includes(card.action)) {
+        if (card.action === 'trade') {
           showMyCardSelector(card, p.id, localState, myId, getDisplayHand);
         } else {
           sendPlayCard(card.id, p.id);
@@ -329,7 +331,7 @@ export function showPassCardSelector(state, myId, nameMap = {}, onChoose, getDis
   content.appendChild(title);
 
   const sub = document.createElement('p');
-  sub.textContent = '選んだカードは左隣のプレイヤーへ渡ります';
+  sub.textContent = '選んだカードは次のプレイヤーへ渡ります';
   sub.style.fontSize = '0.85rem';
   sub.style.color = 'var(--text2, #aaa)';
   content.appendChild(sub);
@@ -403,11 +405,32 @@ export function showEffectOverlay(event) {
 // ============================================================
 // ゲームオーバー
 // ============================================================
-export function showGameOver(winner) {
+export function showGameOver(winner, players = [], nameMap = {}) {
   const overlay = document.getElementById('gameover-overlay');
-  const msg     = document.getElementById('gameover-msg');
-  if (!overlay || !msg) return;
-  msg.textContent = winner === 'bomber' ? '💥 爆弾魔チームの勝利！！' : '🔧 解除班チームの勝利！！';
+  const msgEl   = document.getElementById('gameover-msg');
+  if (!overlay || !msgEl) return;
+
+  const isBomber = winner === 'bomber';
+  const titleText = isBomber ? '💥 爆弾魔チームの勝利！！' : '🔧 解除班チームの勝利！！';
+  let html = `<div class="gameover-title">${titleText}</div>`;
+
+  if (players.length > 0) {
+    const bombers  = players.filter(p => p.role === 'bomber');
+    const defusers = players.filter(p => p.role === 'defuser');
+    const nm = p => nameMap[p.id] ?? p.name ?? p.id.slice(0, 6);
+    html += `<div class="gameover-teams">`;
+    html += `<div class="gameover-team${isBomber ? ' winner' : ''}">`;
+    html += `<div class="gameover-team-name">💣 爆弾魔チーム</div>`;
+    bombers.forEach(p => { html += `<div class="gameover-member"> ${nm(p)}</div>`; });
+    html += `</div>`;
+    html += `<div class="gameover-team${!isBomber ? ' winner' : ''}">`;
+    html += `<div class="gameover-team-name">🛡️ 解除班チーム</div>`;
+    defusers.forEach(p => { html += `<div class="gameover-member"> ${nm(p)}</div>`; });
+    html += `</div>`;
+    html += `</div>`;
+  }
+
+  msgEl.innerHTML = html;
   overlay.style.display = 'flex';
 }
 
