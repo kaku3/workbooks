@@ -133,6 +133,52 @@
 }
 .status-room strong { font-family: monospace; color: #374151; word-break: break-all; }
 
+/* ルール詳細（折りたたみ） */
+.rule-detail-section {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  border: 1.5px solid rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+.rule-detail-section > summary {
+  cursor: pointer;
+  padding: 16px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  list-style: none;
+  user-select: none;
+}
+.rule-detail-section > summary::-webkit-details-marker { display: none; }
+.rule-detail-section[open] > summary { border-bottom: 1px solid rgba(0,0,0,0.08); }
+.rule-detail-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+}
+.rule-detail-card {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+}
+.rule-detail-card h3 { font-size: 0.88rem; color: #374151; margin-bottom: 10px; }
+.rule-dt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.82rem;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  line-height: 1.4;
+}
+.rule-dt-row:last-child { border-bottom: none; }
+.rule-dt-icon  { flex-shrink: 0; width: 22px; text-align: center; }
+.rule-dt-label { font-weight: 600; color: #374151; flex-shrink: 0; min-width: 62px; }
+.rule-dt-desc  { color: #6b7280; }
+
 /* ルールサマリー */
 .rule-summary-section {
   background: #ffffff;

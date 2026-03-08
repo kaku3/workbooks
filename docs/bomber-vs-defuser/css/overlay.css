@@ -1,7 +1,8 @@
 /* ============================================================
    overlay.css  モーダル・ゲームオーバー・トースト
    ============================================================ */
-
+/* モーダル表示中はバックグラウンドのスクロールを禁止 */
+body.modal-scroll-lock { overflow: hidden; }
 /* ---------- 汎用モーダル ---------- */
 .modal-overlay {
   position: fixed; inset: 0;
@@ -51,6 +52,23 @@
   font-weight: bold;
   color: var(--accent);
 }
+
+.gameover-title { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
+.gameover-teams { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+.gameover-team {
+  background: var(--bg2);
+  border-radius: 10px;
+  padding: 14px 18px;
+  min-width: 110px;
+  text-align: left;
+}
+.gameover-team.winner {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px solid #fbbf24;
+  color: #92400e;
+}
+.gameover-team-name { font-size: 0.92rem; font-weight: bold; margin-bottom: 8px; }
+.gameover-member { font-size: 0.88rem; padding: 2px 0; }
 
 /* ---------- トースト通知 ---------- */
 .toast {

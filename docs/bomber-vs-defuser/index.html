@@ -94,13 +94,49 @@
           <span>誰が爆弾魔かは秘密！アイテムカードを集めるプレイヤーを監視せよ。詳細ルールはゲーム画面の <strong>📋 ルール</strong> ボタンでいつでも確認できます。</span>
         </div>
       </div>
+
+      <!-- ルール詳細カード（ロビー） -->
+      <details class="rule-detail-section">
+        <summary>📖 カード・ロケーション詳細を見る</summary>
+        <div class="rule-detail-inner">
+          <div class="rule-detail-card">
+            <h3>⚔️ アクションカード</h3>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🤝</span><span class="rule-dt-label">取引</span><span class="rule-dt-desc">指名プレイヤーと手札を1枚交換</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">👊</span><span class="rule-dt-label">強奪</span><span class="rule-dt-desc">相手の手札からランダムに1枚奔う</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">👥</span><span class="rule-dt-label">横流し</span><span class="rule-dt-desc">全員が手札を1枚ずつ次のプレイヤーへ渡す</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🗑️</span><span class="rule-dt-label">ポイ捨て</span><span class="rule-dt-desc">相手の手札をランダムに1枚捨て</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🔍</span><span class="rule-dt-label">尋問</span><span class="rule-dt-desc">相手の手札を1枚こっそり確認（本人のみ）</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">📰</span><span class="rule-dt-label">公開捜査</span><span class="rule-dt-desc">相手の手札を1枚全員に公開</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🤫</span><span class="rule-dt-label">密談</span><span class="rule-dt-desc">相手と手札を1枚見せ合う</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">⏸️</span><span class="rule-dt-label">足止め</span><span class="rule-dt-desc">相手の次のターンをスキップ</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🚧</span><span class="rule-dt-label">通行止め</span><span class="rule-dt-desc">指定ロケーションを1ターン封鎖</span></div>
+          </div>
+          <div class="rule-detail-card">
+            <h3>🗺️ ロケーション効果</h3>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🔩</span><span class="rule-dt-label">ジャンク屋</span><span class="rule-dt-desc">山札から1枚ドロー</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🏭</span><span class="rule-dt-label">パーツ工場</span><span class="rule-dt-desc">アイテムパイルから最大5枚の中から1枚選ぶ</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🕵️</span><span class="rule-dt-label">探偵事務所</span><span class="rule-dt-desc">相手の手札を1枚こっそり確認</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🌃</span><span class="rule-dt-label">闇市</span><span class="rule-dt-desc">捨て札から最大5枚の中から1枚引き取る</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🗼</span><span class="rule-dt-label">タワー</span><span class="rule-dt-desc">山札をサーチして1枚入手 / 爆弾魔がパーツ3種揃いで勝利</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🚔</span><span class="rule-dt-label">警察本部</span><span class="rule-dt-desc">相手の役職を確認（本人のみ）</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🍺</span><span class="rule-dt-label">酒場</span><span class="rule-dt-desc">ランダムな相手と手札1枚強制交換</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🚔</span><span class="rule-dt-label">交番</span><span class="rule-dt-desc">相手の手札を1枚没収</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">📺</span><span class="rule-dt-label">放送局</span><span class="rule-dt-desc">手札を1枚全員公開 → 1枚ドロー</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🎰</span><span class="rule-dt-label">カジノ</span><span class="rule-dt-desc">ダイス偶数→2枚ドロー / 奇数→1枚没収</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🚦</span><span class="rule-dt-label">交差点</span><span class="rule-dt-desc">全員の手札が1枚ずつ次のプレイヤーへ</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🏥</span><span class="rule-dt-label">病院</span><span class="rule-dt-desc">手札全捨て → 5枚引き直し</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🚧</span><span class="rule-dt-label">工事現場</span><span class="rule-dt-desc">1回休み</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon">🗑️</span><span class="rule-dt-label">廃材置き場</span><span class="rule-dt-desc">アイテムパイルから1枚入手</span></div>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
 
   <!-- ======= ゲーム画面 ======= -->
   <div id="game-screen" class="game-screen" style="display:none">
     <header class="game-header">
-      <h1>💣 爆弾魔 vs 解除班</h1>      <button id="btn-rules" class="btn-small">📋 ルール</button>      <div id="phase-label" class="phase-label">ゲーム読み込み中...</div>
+      <h1>💣 爆弾魔 vs 解除班</h1>      <button id="btn-rules" class="btn-small">📋 ルール</button>      <div id="phase-label" class="phase-label"></div>
       <div id="my-role-badge" class="role-badge"></div>
     </header>
 
@@ -192,7 +228,7 @@
           <h3>⚔️ 主なアクションカード</h3>
           <table class="rules-table">
             <tr><td>🤝 取引</td><td>指名プレイヤーと手札を 1枚交換</td></tr>
-            <tr><td>👊 強奪</td><td>相手からランダムに 1枚奔い、不要カードを押し付ける</td></tr>
+            <tr><td>👊 強奪</td><td>相手の手札からランダムに 1枚奔う</td></tr>
             <tr><td>👥 横流し</td><td>全員が手札を 1枚ずつ左鈲に渡す</td></tr>
             <tr><td>🗑️ ポイ捗て</td><td>相手の手札をランダムに 1枚捨てさせる</td></tr>
             <tr><td>🔍 尋問</td><td>相手の手札を 1枚こっそり確認（本人のみ）</td></tr>

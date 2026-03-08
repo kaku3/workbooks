@@ -39,7 +39,7 @@ let nameMap   = {}; // { peerId: display名前 }
 // ============================================================
 // 初期化（lobby.js から呼び出される）
 // ============================================================
-export function initGameScreen(playerIds, playerNames, currentMyId, isHostParam) {
+export function initGameScreen(playerIds, playerNames, currentMyId, isHostParam, onReturnToLobby) {
   myId   = currentMyId;
   isHost = isHostParam;
 
@@ -50,23 +50,33 @@ export function initGameScreen(playerIds, playerNames, currentMyId, isHostParam)
   // ゲームメッセージハンドラを切り替え
   setMessageHandler(onMessage);
 
-  // ボタンのイベントを登録（この時点でDOMは確実に存在する）
-  document.getElementById('btn-arrest')?.addEventListener('click', () => {
-    sendDeclareArrest();
-  });
+  // ボタンのイベントを登録（重複登録されないよう AbortController で管理）
+  const arrestBtn    = document.getElementById('btn-arrest');
+  const rulesBtn     = document.getElementById('btn-rules');
+  const rulesClose   = document.getElementById('rules-close-btn');
+  const backLobbyBtn = document.getElementById('btn-back-lobby');
 
-  document.getElementById('btn-rules')?.addEventListener('click', () => {
-    document.getElementById('rules-overlay').style.display = 'flex';
-  });
-  document.getElementById('rules-close-btn')?.addEventListener('click', () => {
-    document.getElementById('rules-overlay').style.display = 'none';
-  });
-
-  document.getElementById('btn-back-lobby')?.addEventListener('click', () => {
+  function onArrest()     { sendDeclareArrest(); }
+  function onRulesOpen()  { document.getElementById('rules-overlay').style.display = 'flex'; }
+  function onRulesClose() { document.getElementById('rules-overlay').style.display = 'none'; }
+  function onBackLobby()  {
+    // イベント解除
+    arrestBtn?.removeEventListener('click', onArrest);
+    rulesBtn?.removeEventListener('click', onRulesOpen);
+    rulesClose?.removeEventListener('click', onRulesClose);
+    backLobbyBtn?.removeEventListener('click', onBackLobby);
+    // 画面切り替え
     document.getElementById('gameover-overlay').style.display = 'none';
     document.getElementById('game-screen').style.display      = 'none';
     document.getElementById('lobby-screen').style.display     = 'flex';
-  });
+    // 接続は維持してロビーをリセット
+    onReturnToLobby?.();
+  }
+
+  arrestBtn?.addEventListener('click', onArrest);
+  rulesBtn?.addEventListener('click', onRulesOpen);
+  rulesClose?.addEventListener('click', onRulesClose);
+  backLobbyBtn?.addEventListener('click', onBackLobby);
 
   if (isHost) {
     gameState = createInitialState(playerIds, playerIds.map(id => nameMap[id]));
@@ -135,7 +145,7 @@ function onMessage(msg) {
       break;
 
     case MSG.GAME_OVER:
-      showGameOver(msg.winner);
+      showGameOver(msg.winner, msg.players ?? [], nameMap);
       break;
 
     case MSG.ERROR:
@@ -201,7 +211,7 @@ function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLoca
     const revs = Array.isArray(result.privateReveal) ? result.privateReveal : [result.privateReveal];
     revs.forEach(r => sendPrivate(r.to, r));
   }
-  if (gameState.winner) broadcastGameOver(gameState.winner);
+  if (gameState.winner) broadcastWin();
 }
 
 // 名前山を返すヘルパー
@@ -220,7 +230,7 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       events.all = { icon: '🤝', title: '取引！', body: `${from} が ${targ} と手札を１枚交換した` };
       break;
     case 'steal':
-      events.all = { icon: '💸', title: '強奪！', body: `${from} が ${targ} の手札を１枚奔った` };
+      events.all = { icon: '💸', title: '強奪！', body: `${from} が ${targ} の手札を１枚奪った` };
       break;
     case 'pass':
       events.all = { icon: '🔀', title: '横流し！', body: '全員がカードを選んでいます…' };
@@ -276,7 +286,7 @@ function handleResolveLoc(fromId, locType, chosenCardId) {
   const events = result.wasBlocked ? {} : buildLocationEvents(fromId, loc, locType, chosenCardId, result);
 
   broadcastState(gameState, events);
-  if (gameState.winner) broadcastGameOver(gameState.winner);
+  if (gameState.winner) broadcastWin();
 }
 
 // ロケーション効果のイベントオブジェクトを構築
@@ -318,7 +328,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       events.all = { icon: loc.emoji, title: 'タワー', body: `${from} が山札からカードをサーチして入手した` };
       break;
     case 'crossing':
-      events.all = { icon: loc.emoji, title: 'スクランブル交差点', body: '全員の手札が１枚ずつ左隣に回った！' };
+      events.all = { icon: loc.emoji, title: 'スクランブル交差点', body: '全員の手札が1枚ずつ次のプレイヤーに回った！' };
       break;
     case 'police_box':
       events.all = { icon: loc.emoji, title: '交番', body: `${from} が ${targ ?? '?'} の手札を１枚没収した` };
@@ -364,7 +374,7 @@ function handleDeclareArrest(fromId) {
   if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
   gameState = result.state;
   broadcastState(gameState);
-  broadcastGameOver(gameState.winner);
+  broadcastWin();
 }
 
 function handleTradeTargetChoice(fromId, cardId) {
@@ -375,7 +385,7 @@ function handleTradeTargetChoice(fromId, cardId) {
   gameState = result.state;
   const events = { all: { icon: '🤝', title: '取引完了！', body: `${attackerName} と ${targetName} が手札を1枚交換した` } };
   broadcastState(gameState, events);
-  if (gameState.winner) broadcastGameOver(gameState.winner);
+  if (gameState.winner) broadcastWin();
 }
 
 function handlePassChoice(fromId, cardId) {
@@ -383,10 +393,15 @@ function handlePassChoice(fromId, cardId) {
   if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
   gameState = result.state;
   const events = result.done
-    ? { all: { icon: '🔀', title: '横流し完了！', body: '各自が選んだカードが左隣に渡った' } }
+    ? { all: { icon: '🔀', title: '横流し完了！', body: '各自が選んだカードが次のプレイヤーに渡った' } }
     : {};
   broadcastState(gameState, events);
-  if (gameState.winner) broadcastGameOver(gameState.winner);
+  if (gameState.winner) broadcastWin();
+}
+
+// ゲーム終了通知（役職情報を含む）
+function broadcastWin() {
+  broadcastGameOver(gameState.winner, gameState.players.map(p => ({ id: p.id, role: p.role, name: p.name })));
 }
 
 function sendErrorToPlayer(toId, message) {
