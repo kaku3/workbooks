@@ -36,7 +36,7 @@ function closeModal() {
  * @param {object}   localState  - 自分視点のゲーム状態
  * @param {string}   myId        - 自分の PeerJS ID
  */
-export function showTargetSelector(card, localState, myId, nameMap = {}) {
+export function showTargetSelector(card, localState, myId, nameMap = {}, getDisplayHand = null) {
   const { content } = getModal();
   if (!content) return;
 
@@ -68,7 +68,7 @@ export function showTargetSelector(card, localState, myId, nameMap = {}) {
       btn.onclick = () => {
         closeModal();
         if (['trade', 'steal'].includes(card.action)) {
-          showMyCardSelector(card, p.id, localState, myId);
+          showMyCardSelector(card, p.id, localState, myId, getDisplayHand);
         } else {
           sendPlayCard(card.id, p.id);
         }
@@ -92,11 +92,12 @@ export function showTargetSelector(card, localState, myId, nameMap = {}) {
 /**
  * trade/steal で自分の手札から渡すカードを選ぶモーダルを表示する。
  */
-export function showMyCardSelector(card, targetId, localState, myId) {
+export function showMyCardSelector(card, targetId, localState, myId, getDisplayHand = null) {
   const { content } = getModal();
   if (!content) return;
 
   const me = localState.players.find(p => p.id === myId);
+  const displayHand = getDisplayHand ? getDisplayHand(me.hand) : me.hand;
 
   content.innerHTML = '';
   const title = document.createElement('h3');
@@ -109,7 +110,7 @@ export function showMyCardSelector(card, targetId, localState, myId) {
   sub.style.color = 'var(--text-dim, #aaa)';
   content.appendChild(sub);
 
-  me.hand
+  displayHand
     .filter(c => c.id !== card.id)  // 使った取引カード自身を除外
     .forEach(c => {
       const btn = document.createElement('button');
@@ -201,12 +202,22 @@ export function showLocationPrompt(loc, state, myId, nameMap = {}) {
     }
     case 'tower': {
       const deckPreview = state.pendingAction?.deck || [];
-      deckPreview.forEach(c => {
-        const btn = document.createElement('button');
-        btn.textContent = c.label;
-        btn.onclick = () => { closeModal(); sendResolveLoc(loc.type, c.id); };
-        content.appendChild(btn);
-      });
+      if (deckPreview.length === 0) {
+        const info = document.createElement('p');
+        info.textContent = '山札が空のため効果なし。';
+        content.appendChild(info);
+        const ok = document.createElement('button');
+        ok.textContent = 'OK';
+        ok.onclick = () => { closeModal(); sendResolveLoc(loc.type); };
+        content.appendChild(ok);
+      } else {
+        deckPreview.forEach(c => {
+          const btn = document.createElement('button');
+          btn.textContent = c.label;
+          btn.onclick = () => { closeModal(); sendResolveLoc(loc.type, c.id); };
+          content.appendChild(btn);
+        });
+      }
       break;
     }
     case 'black_mkt': {
@@ -264,11 +275,13 @@ export function showLocationPrompt(loc, state, myId, nameMap = {}) {
 /**
  * 取引で相手が渡すカードを選ぶモーダル
  */
-export function showTradeTargetSelector(localState, myId, onChoose) {
+export function showTradeTargetSelector(localState, myId, onChoose, getDisplayHand = null) {
   const { content } = getModal();
   if (!content) return;
   const me = localState.players.find(p => p.id === myId);
   if (!me || me.hand.length === 0) return;
+
+  const displayHand = getDisplayHand ? getDisplayHand(me.hand) : me.hand;
 
   const attacker = localState.players.find(p =>
     localState.pendingAction?.waitingFor === myId &&
@@ -287,7 +300,7 @@ export function showTradeTargetSelector(localState, myId, onChoose) {
   sub.style.color = 'var(--text-dim, #aaa)';
   content.appendChild(sub);
 
-  me.hand.forEach(c => {
+  displayHand.forEach(c => {
     if (c.hidden) return;
     const btn = document.createElement('button');
     btn.innerHTML = `<strong>${c.label}</strong><br><small>${c.desc}</small>`;
@@ -301,12 +314,14 @@ export function showTradeTargetSelector(localState, myId, onChoose) {
   openModal();
 }
 
-export function showPassCardSelector(state, myId, nameMap = {}, onChoose) {
+export function showPassCardSelector(state, myId, nameMap = {}, onChoose, getDisplayHand = null) {
   const { content } = getModal();
   if (!content) return;
 
   const me = state.players.find(p => p.id === myId);
   if (!me || me.hand.length === 0) return;
+
+  const displayHand = getDisplayHand ? getDisplayHand(me.hand) : me.hand;
 
   content.innerHTML = '';
   const title = document.createElement('h3');
@@ -326,7 +341,7 @@ export function showPassCardSelector(state, myId, nameMap = {}, onChoose) {
   progress.style.fontSize = '0.8rem';
   content.appendChild(progress);
 
-  me.hand.forEach(c => {
+  displayHand.forEach(c => {
     const btn = document.createElement('button');
     btn.innerHTML = `<strong>${c.label}</strong><br><small>${c.desc}</small>`;
     btn.style.display = 'block';
@@ -359,7 +374,7 @@ export function showPrivateReveal(msg) {
 }
 
 export function showPublicReveal(msg) {
-  if (msg.card) showToast(`【全員公開】${msg.owner?.slice(0, 6)} の手札: ${msg.card.label}`, 4000);
+  if (msg.card) showToast(`【全員公開】${msg.ownerName ?? msg.owner?.slice(0, 6)} の手札: ${msg.card.label}`, 4000);
 }
 
 // ============================================================

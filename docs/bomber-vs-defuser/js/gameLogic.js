@@ -169,7 +169,14 @@ export function playCard(state, cardId, targetPlayerId = null, chosenCardId = nu
     state.phase = 'location';
     const locType = LOCATIONS[newPos]?.type;
     const pendingData = { locationIndex: newPos };
-    if (locType === 'tower')     pendingData.deck     = state.deck.map(c => ({ ...c }));
+    if (locType === 'tower') {
+      if (state.deck.length === 0 && state.discard.length > 0) {
+        state.deck = shuffle([...state.discard]);
+        state.discard = [];
+        addLog(state, '山札が尽きました。捨て札をシャッフルして再利用します。');
+      }
+      pendingData.deck = state.deck.map(c => ({ ...c }));
+    }
     if (locType === 'factory')   pendingData.itemPile = state.itemPile.map(c => ({ ...c }));
     if (locType === 'black_mkt') pendingData.discard  = state.discard.map(c => ({ ...c }));
     state.pendingAction = pendingData;
@@ -205,7 +212,6 @@ function resolveAction(state, player, card, targetId, chosenCardId, targetLocati
     case 'pass':    return actionPass(state);
     case 'dump':    return actionDump(state, player, targetId);
     case 'peek':    return actionPeek(state, player, targetId);
-    case 'scan':    return actionScan(state, player, targetId);
     case 'expose':  return actionExpose(state, player, targetId);
     case 'whisper': return actionWhisper(state, player, targetId);
     case 'skip':    return actionSkip(state, targetId);
@@ -335,25 +341,6 @@ function actionPeek(state, player, targetId) {
   const peeked = target.hand[idx];
   addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札を1枚のぞき見（本人のみ通知）`);
   return { privateReveal: { to: player.id, card: peeked, revealTitle: `${pName(state, targetId)} の手札` } };
-}
-
-function actionScan(state, player, targetId) {
-  const target = getPlayerById(state, targetId);
-  if (!target) return {};
-  const isBomber = target.role === ROLES.BOMBER;
-  const roll = Math.random();
-  let hint, hintLabel;
-  if (isBomber) {
-    if (roll < 0.70)      { hint = 'suspicious_high'; hintLabel = '怪しい（★★★）'; }
-    else if (roll < 0.90) { hint = 'suspicious_mid';  hintLabel = 'やや怪しい（★★）'; }
-    else                  { hint = 'clean';            hintLabel = '問題なし（★）'; }
-  } else {
-    if (roll < 0.70)      { hint = 'clean';            hintLabel = '問題なし（★）'; }
-    else if (roll < 0.90) { hint = 'suspicious_mid';  hintLabel = 'やや怪しい（★★）'; }
-    else                  { hint = 'suspicious_high'; hintLabel = '怪しい（★★★）'; }
-  }
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} をスキャン（本人のみ通知）`);
-  return { privateReveal: { to: player.id, hint, hintLabel } };
 }
 
 function actionExpose(state, player, targetId) {
@@ -492,7 +479,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
         addLog(state, `${pName(state, player.id)}：ジャンク屋でアイテム入手: ${c.label}`);
         return { privateReveal: { to: player.id, card: c } };
       } else {
-        addLog(state, `${pName(state, player.id)}：ジャンク屋（アイテムパイル枕渇）→効枚なし`);
+        addLog(state, `${pName(state, player.id)}：ジャンク屋（アイテム置き場が空）→効果なし`);
       }
       break;
     }
@@ -532,10 +519,10 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
           addLog(state, `${pName(state, player.id)}：パーツ工場でアイテムを入手した`);
         }
       } else if (state.itemPile.length > 0) {
-        addLog(state, `${pName(state, player.id)}：パーツ工場に到達（アイテムパイルから1枚選んでください）`);
+        addLog(state, `${pName(state, player.id)}：パーツ工場に到達（アイテム置き場から1枚選んでください）`);
         state.pendingAction = { locEffect: 'factory_search', itemPile: state.itemPile.map(c => ({ ...c })) };
       } else {
-        addLog(state, `${pName(state, player.id)}：パーツ工場（アイテムパイル枕渇）→効枚なし`);
+        addLog(state, `${pName(state, player.id)}：パーツ工場（アイテム置き場が空）→効果なし`);
       }
       break;
     }
@@ -565,8 +552,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
           addLog(state, `${pName(state, player.id)}：タワーでカードをサーチして入手`);
         }
       } else {
-        addLog(state, `${pName(state, player.id)}：タワーに到達（山札からカードを1枚選んでください）`);
-        state.pendingAction = { locEffect: 'tower', deck: [...state.deck] };
+        addLog(state, `${pName(state, player.id)}：タワー（山札が空）→ 効果なし`);
       }
       break;
     }
@@ -680,10 +666,10 @@ export function declareArrest(state, declarerId) {
   const declarer = getPlayerById(state, declarerId);
   if (!declarer || declarer.role !== ROLES.DEFUSER) return { state, error: '解除班のみ宣言できます' };
 
-  // 解除キットが3種以上揃っているか（4種中3種以上）
-  const kitIds = declarer.hand.map(c => c.id);
-  const kitCount = DEFUSE_KIT_IDS.filter(id => kitIds.includes(id)).length;
-  if (kitCount < 3) return { state, error: `解除キットが3種以上必要です（現在 ${kitCount} 種）` };
+  // 解除キット X/Y/Z が全種類揃っているか（3種類以上）
+  const kitFamilies = declarer.hand.map(c => c.family).filter(Boolean);
+  const kitCount = ['kit_x', 'kit_y', 'kit_z'].filter(f => kitFamilies.includes(f)).length;
+  if (kitCount < 3) return { state, error: `解除キット X・Y・Z がすべて必要です（現在 ${kitCount} 種）` };
 
   // 自分と同じマスに爆弾魔がいるか
   const bombersHere = state.players.filter(
@@ -699,12 +685,12 @@ export function declareArrest(state, declarerId) {
 
 // --------------- 勝利判定 ---------------
 function checkWinCondition(state) {
-  // 爆弾魔の勝利: タワー(id=6)で爆弾パーツを全て持っている
+  // 爆弾魔の勝利: タワー(id=6)で爆弾パーツA/B/Cを全種類持っている
   for (const p of state.players) {
     if (p.role !== ROLES.BOMBER) continue;
     if (p.position !== 6) continue; // タワーのマスインデックス
-    const cardIds = p.hand.map(c => c.id);
-    const hasAll = BOMB_PART_IDS.every(id => cardIds.includes(id));
+    const families = p.hand.map(c => c.family).filter(Boolean);
+    const hasAll = ['bomb_a', 'bomb_b', 'bomb_c'].every(f => families.includes(f));
     if (hasAll) {
       state.winner = 'bomber';
       addLog(state, `${pName(state, p.id)} がタワーで爆発！爆弾魔チームの勝利！`);

@@ -17,7 +17,7 @@ import {
 
 import { CARD_TYPES, LOCATIONS } from './constants.js';
 
-import { renderGame } from './render.js';
+import { renderGame, getDisplayHand } from './render.js';
 
 import {
   showTargetSelector, showLocationPrompt,
@@ -91,7 +91,7 @@ function onMessage(msg) {
         if (!alreadySubmitted && !modalOpen) {
           showPassCardSelector(msg.state, myId, nameMap, (cardId) => {
             sendPassChoice(cardId);
-          });
+          }, getDisplayHand);
         }
       }
       // 取引相手選択モーダル
@@ -101,7 +101,7 @@ function onMessage(msg) {
         if (!modalOpen) {
           showTradeTargetSelector(msg.state, myId, (cardId) => {
             sendTradeTargetChoice(cardId);
-          });
+          }, getDisplayHand);
         }
       }
       break;
@@ -195,7 +195,7 @@ function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLoca
     events = buildActionEvents(fromId, card, targetPlayerId, targetLocation, result);
   }
 
-  if (result.publicReveal) broadcastPublic(result.publicReveal);
+  if (result.publicReveal) broadcastPublic({ ...result.publicReveal, ownerName: n(result.publicReveal.owner) });
   broadcastState(gameState, events);
   if (result.privateReveal) {
     const revs = Array.isArray(result.privateReveal) ? result.privateReveal : [result.privateReveal];
@@ -269,7 +269,7 @@ function handleResolveLoc(fromId, locType, chosenCardId) {
       const revs = Array.isArray(result.privateReveal) ? result.privateReveal : [result.privateReveal];
       revs.forEach(r => sendPrivate(r.to, r));
     }
-    if (result.publicReveal) broadcastPublic(result.publicReveal);
+    if (result.publicReveal) broadcastPublic({ ...result.publicReveal, ownerName: n(result.publicReveal.owner) });
   }
 
   // 通行止め中の場合はイベントを表示しない
@@ -324,7 +324,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       events.all = { icon: loc.emoji, title: '交番', body: `${from} が ${targ ?? '?'} の手札を１枚没収した` };
       break;
     case 'black_mkt':
-      events.all = { icon: loc.emoji, title: '闇市', body: `${from} が捧て札からカードを入手した` };
+      events.all = { icon: loc.emoji, title: '闇市', body: `${from} が捨て札からカードを入手した` };
       break;
     case 'broadcast':
       events.all = { icon: loc.emoji, title: '放送局！', body: `${from} の手札が全員に公開された！ → １枚ドロー` };
@@ -424,7 +424,7 @@ function onCardClick(card) {
   } else if (card.type === CARD_TYPES.ACTION) {
     const needsTarget = ['trade','steal','dump','peek','scan','expose','whisper','skip','block'].includes(card.action);
     if (needsTarget) {
-      showTargetSelector(card, localState, myId, nameMap);
+      showTargetSelector(card, localState, myId, nameMap, getDisplayHand);
     } else {
       sendPlayCard(card.id);
     }

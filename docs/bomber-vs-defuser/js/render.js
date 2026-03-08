@@ -97,7 +97,7 @@ export function renderGame(state, myId, nameMap, onCardClick, onLocationPrompt, 
           renderBoard(state, myId); // 確定位置で再描画
           const modal = document.getElementById('modal-overlay');
           const isMyturnNow = getCurrentPlayer(state)?.id === myId;
-          if (isMyturnNow &&
+          if (isMyturnNow && !state.winner &&
               (!modal || modal.style.display !== 'flex') &&
               state.pendingAction?.locationIndex != null) {
             onLocationPrompt?.(LOCATIONS[state.pendingAction.locationIndex], state);
@@ -236,6 +236,11 @@ function getSortedHand(hand) {
   });
 }
 
+/** 現在のソート設定を適用した表示用手札を返す（modal.jsに渡す用） */
+export function getDisplayHand(hand) {
+  return handSorted ? getSortedHand(hand) : hand;
+}
+
 function renderMyHand(state, myId, onCardClick) {
   const handEl = document.getElementById('my-hand');
   if (!handEl) return;
@@ -264,11 +269,12 @@ function renderMyHand(state, myId, onCardClick) {
     };
   }
 
-  // 確保宣言ボタン（解除班が爆弾魔と同マスにいるとき表示）
+  // 確保宣言ボタン（解除班がキット3種揃えて誰かと同マスにいるとき表示）
   const arrestBtn = document.getElementById('btn-arrest');
   if (arrestBtn) {
-    const sameSpot = state.players.some(p => p.role === ROLES.BOMBER && p.position === me.position);
-    arrestBtn.style.display = (me.role === ROLES.DEFUSER && sameSpot) ? 'inline-block' : 'none';
+    const hasAllKits = ['kit_x', 'kit_y', 'kit_z'].every(f => me.hand.some(c => c.family === f));
+    const othersHere = state.players.some(p => p.id !== myId && p.position === me.position);
+    arrestBtn.style.display = (me.role === ROLES.DEFUSER && hasAllKits && othersHere) ? 'inline-block' : 'none';
   }
 }
 
@@ -326,7 +332,7 @@ function renderPhaseControls(state, myId, nameMap, onLocationPrompt) {
   }
 
   // ロケーション効果が保留中  解決 UIを表示（モーダルが既に開いている場合はスキップ）
-  if (isMyturn && state.phase === 'location' && state.pendingAction?.locationIndex != null) {
+  if (isMyturn && !state.winner && state.phase === 'location' && state.pendingAction?.locationIndex != null) {
     const modal = document.getElementById('modal-overlay');
     if (!modal || modal.style.display !== 'flex') {
       const loc = LOCATIONS[state.pendingAction.locationIndex];

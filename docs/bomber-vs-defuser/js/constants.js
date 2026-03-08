@@ -32,8 +32,16 @@ export const CARD_DEFINITIONS = [
   { id: 'm3b', type: CARD_TYPES.MOVE, value: 3, label: '3', desc: '3マス進む' },
   { id: 'm4a', type: CARD_TYPES.MOVE, value: 4, label: '4', desc: '4マス進む' },
   { id: 'm4b', type: CARD_TYPES.MOVE, value: 4, label: '4', desc: '4マス進む' },
-  { id: 'm5a', type: CARD_TYPES.MOVE, value: 5, label: '5', desc: '5マス進む' },
-  { id: 'm6a', type: CARD_TYPES.MOVE, value: 6, label: '6', desc: '6マス進む' },
+  { id: 'm5a', type: CARD_TYPES.MOVE, value: 5,  label: '5',  desc: '5マス進む' },
+  { id: 'm5b', type: CARD_TYPES.MOVE, value: 5,  label: '5',  desc: '5マス進む' },
+  { id: 'm6a', type: CARD_TYPES.MOVE, value: 6,  label: '6',  desc: '6マス進む' },
+  { id: 'm6b', type: CARD_TYPES.MOVE, value: 6,  label: '6',  desc: '6マス進む' },
+  { id: 'm7a', type: CARD_TYPES.MOVE, value: 7,  label: '7',  desc: '7マス進む' },
+  { id: 'm8a', type: CARD_TYPES.MOVE, value: 8,  label: '8',  desc: '8マス進む' },
+  { id: 'm9a', type: CARD_TYPES.MOVE, value: 9,  label: '9',  desc: '9マス進む' },
+  { id: 'm10a', type: CARD_TYPES.MOVE, value: 10, label: '10', desc: '10マス進む' },
+  { id: 'm11a', type: CARD_TYPES.MOVE, value: 11, label: '11', desc: '11マス進む' },
+  { id: 'm12a', type: CARD_TYPES.MOVE, value: 12, label: '12', desc: '12マス進む' },
 
   // --- アクションカード: 手札操作・撹乱 ---
   { id: 'act_trade_a', type: CARD_TYPES.ACTION, action: 'trade',   label: '取引',       desc: '相手を指名して手札を1枚ずつ交換する' },
@@ -48,8 +56,6 @@ export const CARD_DEFINITIONS = [
   // --- アクションカード: 情報収集・推理 ---
   { id: 'act_peek_a',    type: CARD_TYPES.ACTION, action: 'peek',    label: '尋問',     desc: '相手の手札を1枚だけこっそり見る' },
   { id: 'act_peek_b',    type: CARD_TYPES.ACTION, action: 'peek',    label: '尋問',     desc: '相手の手札を1枚だけこっそり見る' },
-  { id: 'act_scan_a',    type: CARD_TYPES.ACTION, action: 'scan',    label: 'スキャン', desc: '相手の危険度をスキャンする（結果には誤差あり）' },
-  { id: 'act_scan_b',    type: CARD_TYPES.ACTION, action: 'scan',    label: 'スキャン', desc: '相手の危険度をスキャンする（結果には誤差あり）' },
   { id: 'act_expose_a',  type: CARD_TYPES.ACTION, action: 'expose',  label: '公開捜査', desc: '相手の手札を1枚全員に公開させる' },
   { id: 'act_whisper_a', type: CARD_TYPES.ACTION, action: 'whisper', label: '密談',     desc: '相手と手札を1枚ずつ見せ合う（自分だけ確認）' },
 
@@ -61,14 +67,26 @@ export const CARD_DEFINITIONS = [
 ];
 
 // アイテムパイル定義（通常デッキとは別に管理。工場・ジャンク屋でのみ取得可能）
+// 各パーツ・キットは2枚ずつ（計16枚）。family フィールドで種類を判定
 export const ITEM_DEFINITIONS = [
-  { id: 'item_bomb_a',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  label: '💣 パーツA', desc: '爆弾パーツA' },
-  { id: 'item_bomb_b',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  label: '💣 パーツB', desc: '爆弾パーツB' },
-  { id: 'item_bomb_c',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  label: '💣 パーツC', desc: '爆弾パーツC' },
-  { id: 'item_kit_w',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, label: '🔧 キットW', desc: '解除キットW' },
-  { id: 'item_kit_x',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, label: '🔧 キットX', desc: '解除キットX' },
-  { id: 'item_kit_y',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, label: '🔧 キットY', desc: '解除キットY' },
-  { id: 'item_kit_z',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, label: '🔧 キットZ', desc: '解除キットZ' },
+  // 爆弾パーツ：各2枚
+  { id: 'item_bomb_a',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_a', label: '💣 パーツA', desc: '爆弾パーツA' },
+  { id: 'item_bomb_a2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_a', label: '💣 パーツA', desc: '爆弾パーツA' },
+  { id: 'item_bomb_b',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_b', label: '💣 パーツB', desc: '爆弾パーツB' },
+  { id: 'item_bomb_b2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_b', label: '💣 パーツB', desc: '爆弾パーツB' },
+  { id: 'item_bomb_c',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_c', label: '💣 パーツC', desc: '爆弾パーツC' },
+  { id: 'item_bomb_c2', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.BOMB_PART,  family: 'bomb_c', label: '💣 パーツC', desc: '爆弾パーツC' },
+  // 解除キット：各3枚
+  { id: 'item_kit_x',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', label: '🔧 キットX', desc: '解除キットX' },
+  { id: 'item_kit_x2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', label: '🔧 キットX', desc: '解除キットX' },
+  { id: 'item_kit_x3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_x', label: '🔧 キットX', desc: '解除キットX' },
+  { id: 'item_kit_y',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', label: '🔧 キットY', desc: '解除キットY' },
+  { id: 'item_kit_y2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', label: '🔧 キットY', desc: '解除キットY' },
+  { id: 'item_kit_y3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_y', label: '🔧 キットY', desc: '解除キットY' },
+  { id: 'item_kit_z',   type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', label: '🔧 キットZ', desc: '解除キットZ' },
+  { id: 'item_kit_z2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', label: '🔧 キットZ', desc: '解除キットZ' },
+  { id: 'item_kit_z3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', label: '🔧 キットZ', desc: '解除キットZ' },
+  // ダミー
   { id: 'item_dummy_a', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, label: '❓ ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
   { id: 'item_dummy_b', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, label: '❓ ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
   { id: 'item_dummy_c', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, label: '❓ ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
@@ -77,7 +95,7 @@ export const ITEM_DEFINITIONS = [
 
 // 爆弾パーツ揃い判定用
 export const BOMB_PART_IDS     = ['item_bomb_a', 'item_bomb_b', 'item_bomb_c'];
-export const DEFUSE_KIT_IDS    = ['item_kit_w', 'item_kit_x',  'item_kit_y',  'item_kit_z'];
+export const DEFUSE_KIT_IDS    = ['item_kit_x', 'item_kit_y', 'item_kit_z'];
 
 // ============================================================
 // ロケーション定義  (14マス: インデックス0〜13)
@@ -98,7 +116,7 @@ export const LOCATIONS = [
   { id: 12, name: '廃材置き場',         type: 'salvage',    emoji: '🪨', desc: 'アイテムパイルからランダムに1枚引く' },
   { id: 13, name: '病院',               type: 'hospital',   emoji: '🏥', desc: '手札を全て捨て、山札から5枚引き直す' },
   { id: 14, name: '警察本部',           type: 'police_hq',  emoji: '🚓', desc: '誰かの陣営（爆弾魔/解除班）をこっそり知る' },
-  { id: 15, name: '倉庫',               type: 'warehouse',  emoji: '🏚️', desc: '山札から1枚ドローする' },
+  { id: 15, name: '裏路地',             type: 'black_mkt',  emoji: '🌃', desc: '捨て札から好きなカードを1枚拾う' },
 ];
 
 export const TOTAL_LOCATIONS = LOCATIONS.length; // 16
