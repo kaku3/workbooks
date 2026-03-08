@@ -177,8 +177,8 @@ export function playCard(state, cardId, targetPlayerId = null, chosenCardId = nu
       }
       pendingData.deck = state.deck.map(c => ({ ...c }));
     }
-    if (locType === 'factory')   pendingData.itemPile = state.itemPile.map(c => ({ ...c }));
-    if (locType === 'black_mkt') pendingData.discard  = state.discard.map(c => ({ ...c }));
+    if (locType === 'factory')   pendingData.itemPile = shuffle([...state.itemPile]).slice(0, 5).map(c => ({ ...c }));
+    if (locType === 'black_mkt') pendingData.discard  = shuffle([...state.discard]).slice(0, 5).map(c => ({ ...c }));
     state.pendingAction = pendingData;
   } else if (card.type === CARD_TYPES.ACTION) {
     discardCard(state, card);
