@@ -236,6 +236,7 @@ function getSortedHand(hand) {
   });
 }
 
+function renderMyHand(state, myId, onCardClick) {
   const handEl = document.getElementById('my-hand');
   if (!handEl) return;
   handEl.innerHTML = '';
