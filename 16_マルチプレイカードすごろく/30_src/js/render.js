@@ -4,23 +4,26 @@
 
 import { LOCATIONS, CARD_TYPES, ROLES } from './constants.js';
 import { getCurrentPlayer } from './gameLogic.js';
+import { showEffectOverlay } from './modal.js';
 
-// Monopoly型ペリメター配置: [row, col] (5列4行グリッド)
+// Monopoly型ペリメター配置: [row, col] (5列5行グリッド)
 const BOARD_POSITIONS = [
-  [4, 1], // 0: スタート
-  [4, 2], // 1: ジャンク屋
-  [4, 3], // 2: 酒場
-  [4, 4], // 3: 探偵事務所
-  [4, 5], // 4: パーツ工場
-  [3, 5], // 5: カジノ
-  [2, 5], // 6: タワー
-  [1, 5], // 7: スクランブル交差点
-  [1, 4], // 8: 交番
-  [1, 3], // 9: 闇市
-  [1, 2], // 10: 放送局
-  [1, 1], // 11: 工事現場
-  [2, 1], // 12: 病院
-  [3, 1], // 13: 警察本部
+  [5, 1], // 0: スタート
+  [5, 2], // 1: ジャンク屋
+  [5, 3], // 2: 酒場
+  [5, 4], // 3: 探偵事務所
+  [5, 5], // 4: パーツ工場
+  [4, 5], // 5: カジノ
+  [3, 5], // 6: タワー
+  [2, 5], // 7: スクランブル交差点
+  [1, 5], // 8: 交番
+  [1, 4], // 9: 闇市
+  [1, 3], // 10: 放送局
+  [1, 2], // 11: 工事現場
+  [1, 1], // 12: 廃材置き場
+  [2, 1], // 13: 病院
+  [3, 1], // 14: 警察本部
+  [4, 1], // 15: 倉庫
 ];
 
 // ターン開始オーバーレイの表示制御
@@ -39,7 +42,7 @@ const PLAYER_COLORS = [
   { bg: '#b7950b', text: '#111', name: '黄' }, // 3: 黄
 ];
 
-// ロケーションごとのパステル背景色（14マス分）
+// ロケーションごとのパステル背景色（16マス分）
 const LOCATION_COLORS = [
   '#ffe0a0', // 0 スタート（温かい黄）
   '#b2dfdb', // 1 ジャンク屋（ミントグリーン）
@@ -53,8 +56,10 @@ const LOCATION_COLORS = [
   '#d7ccc8', // 9 闇市（ベージュグレー）
   '#f8bbd0', // 10 放送局（パールピンク）
   '#ffe0b2', // 11 工事現場（オレンジ）
-  '#dcedc8', // 12 病院（ライムグリーン）
-  '#cfd8dc', // 13 警察本部（スチールブルー）
+  '#d1c4e9', // 12 廃材置き場（ラベンダーパープル）
+  '#dcedc8', // 13 病院（ライムグリーン）
+  '#cfd8dc', // 14 警察本部（スチールブルー）
+  '#ffe082', // 15 倉庫（アンバーイエロー）
 ];
 function getColor(state, playerId) {
   const idx = state.players.findIndex(p => p.id === playerId);
@@ -135,7 +140,7 @@ function renderBoard(state, myId) {
   // 中央装飾エリア
   const center = document.createElement('div');
   center.className = 'board-center';
-  center.style.gridRow    = '2 / 4';
+  center.style.gridRow    = '2 / 5';
   center.style.gridColumn = '2 / 5';
   center.innerHTML = '<div class="board-center-icon"></div><div class="board-center-title">爆弾魔 vs 解除班</div>';
   board.appendChild(center);
@@ -158,6 +163,14 @@ function renderBoard(state, myId) {
       <div class="loc-pawns">${here.map(p => pawnHtml(p, state, myId)).join('')}</div>
     `;
     cell.title = loc.desc + (state.blockedLocation === idx ? '  通行止め中' : '');
+    cell.addEventListener('click', () => {
+      const blocked = state.blockedLocation === idx;
+      showEffectOverlay({
+        icon:  loc.emoji,
+        title: loc.name,
+        body:  loc.desc + (blocked ? '\n🚧 現在通行止め中！' : ''),
+      });
+    });
     board.appendChild(cell);
   });
 }
@@ -210,7 +223,19 @@ function renderPlayerList(state, myId, nameMap) {
 }
 
 // ---- 自分の手札 ----
-function renderMyHand(state, myId, onCardClick) {
+// 手札ソート状態の保持
+let handSorted = false;
+
+function getSortedHand(hand) {
+  // 移動 → アクション → アイテムの順、各カテゴリ内は id 順
+  const typeOrder = { [CARD_TYPES.MOVE]: 0, [CARD_TYPES.ACTION]: 1, [CARD_TYPES.ITEM]: 2 };
+  return [...hand].sort((a, b) => {
+    const td = (typeOrder[a.type] ?? 9) - (typeOrder[b.type] ?? 9);
+    if (td !== 0) return td;
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  });
+}
+
   const handEl = document.getElementById('my-hand');
   if (!handEl) return;
   handEl.innerHTML = '';
@@ -223,9 +248,20 @@ function renderMyHand(state, myId, onCardClick) {
   // 手札パネルのハイライト（自分のターンのみ明るく）
   document.querySelector('.hand-panel')?.classList.toggle('my-turn', isMyturn);
 
-  me.hand.forEach(card => {
+  const displayHand = handSorted ? getSortedHand(me.hand) : me.hand;
+  displayHand.forEach(card => {
     handEl.appendChild(createCardElement(card, isMyturn, onCardClick));
   });
+
+  // ソートボタン
+  const sortBtn = document.getElementById('btn-sort');
+  if (sortBtn) {
+    sortBtn.textContent = handSorted ? '↓ ソート中' : '🔀 ソート';
+    sortBtn.onclick = () => {
+      handSorted = !handSorted;
+      renderMyHand(state, myId, onCardClick);
+    };
+  }
 
   // 確保宣言ボタン（解除班が爆弾魔と同マスにいるとき表示）
   const arrestBtn = document.getElementById('btn-arrest');

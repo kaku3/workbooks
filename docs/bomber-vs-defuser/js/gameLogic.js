@@ -165,7 +165,7 @@ export function playCard(state, cardId, targetPlayerId = null, chosenCardId = nu
     const newPos = (player.position + card.value) % TOTAL_LOCATIONS;
     player.position = newPos;
     discardCard(state, card);
-    addLog(state, `${pName(state, player.id)} が ${card.value} 進んでマス ${newPos} へ移動`);
+    addLog(state, `${pName(state, player.id)} が ${card.value} 進んで「${LOCATIONS[newPos]?.name ?? `マス${newPos}`}」へ移動`);
     state.phase = 'location';
     const locType = LOCATIONS[newPos]?.type;
     const pendingData = { locationIndex: newPos };
@@ -334,8 +334,7 @@ function actionPeek(state, player, targetId) {
   const idx = randomInt(target.hand.length);
   const peeked = target.hand[idx];
   addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札を1枚のぞき見（本人のみ通知）`);
-  // peekedカード情報はクライアント側でプレイヤー本人のみ受け取る
-  return { privateReveal: { to: player.id, card: peeked } };
+  return { privateReveal: { to: player.id, card: peeked, revealTitle: `${pName(state, targetId)} の手札` } };
 }
 
 function actionScan(state, player, targetId) {
@@ -369,17 +368,16 @@ function actionExpose(state, player, targetId) {
 function actionWhisper(state, player, targetId) {
   const target = getPlayerById(state, targetId);
   if (!target || target.hand.length === 0) return {};
-  const myIdx   = randomInt(player.hand.length);
-  const theirIdx = randomInt(target.hand.length);
-  const myCard    = player.hand[myIdx];
-  const theirCard = target.hand[theirIdx];
+  const theirCard = target.hand[randomInt(target.hand.length)];
+  const reveals = [
+    { to: player.id, card: theirCard, revealTitle: `${pName(state, targetId)} の手札` },
+  ];
+  if (player.hand.length > 0) {
+    const myCard = player.hand[randomInt(player.hand.length)];
+    reveals.push({ to: targetId, card: myCard, revealTitle: `${pName(state, player.id)} の手札` });
+  }
   addLog(state, `${pName(state, player.id)} と ${pName(state, targetId)} が密談（互いに1枚見せ合い）`);
-  return {
-    privateReveal: [
-      { to: player.id, card: theirCard },
-      { to: targetId,  card: myCard },
-    ],
-  };
+  return { privateReveal: reveals };
 }
 
 // --- 妨害 ---
@@ -413,7 +411,7 @@ export function resolveLocation(state, chosenCardId = null) {
 
   // 通行止め中チェック
   if (state.blockedLocation === locIdx) {
-    addLog(state, `マス ${locIdx} は通行止め中のため効果なし`);
+    addLog(state, `「${LOCATIONS[locIdx]?.name ?? `マス${locIdx}`}」は通行止め中のため効果なし`);
     state.phase = 'main';
     checkWinCondition(state);
     if (!state.winner) nextTurn(state);
@@ -434,7 +432,7 @@ export function resolveLocationSync(state, locType, chosenCardId = null) {
 
   // 通行止め中チェック
   if (state.blockedLocation === player.position) {
-    addLog(state, `マス ${player.position} は通行止め中のため効果なし`);
+    addLog(state, `「${LOCATIONS[player.position]?.name ?? `マス${player.position}`}」は通行止め中のため効果なし`);
     state.pendingAction = null;
     checkWinCondition(state);
     if (!state.winner) nextTurn(state);
@@ -531,7 +529,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
         if (idx !== -1) {
           const c = state.itemPile.splice(idx, 1)[0];
           player.hand.push(c);
-          addLog(state, `${pName(state, player.id)}：パーツ工場でアイテムをサーチ入手: ${c.label}`);
+          addLog(state, `${pName(state, player.id)}：パーツ工場でアイテムを入手した`);
         }
       } else if (state.itemPile.length > 0) {
         addLog(state, `${pName(state, player.id)}：パーツ工場に到達（アイテムパイルから1枚選んでください）`);
@@ -604,7 +602,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
         if (idx !== -1) {
           const c = state.discard.splice(idx, 1)[0];
           player.hand.push(c);
-          addLog(state, `${pName(state, player.id)}：闇市で捨て札から入手: ${c.label}`);
+          addLog(state, `${pName(state, player.id)}：闇市でカードを入手した`);
         }
       } else {
         addLog(state, `${pName(state, player.id)}：闇市に到達（捨て札からカードを1枚選んでください）`);
@@ -626,6 +624,17 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       addLog(state, `${pName(state, player.id)}：工事現場で1回休み`);
       break;
     }
+    case 'salvage': {
+      if (state.itemPile.length > 0) {
+        const c = state.itemPile.splice(randomInt(state.itemPile.length), 1)[0];
+        player.hand.push(c);
+        addLog(state, `${pName(state, player.id)}：廃材置き場でアイテムを1枚入手した`);
+        return { privateReveal: { to: player.id, card: c, revealTitle: '廃材置き場で入手' } };
+      } else {
+        addLog(state, `${pName(state, player.id)}：廃材置き場（アイテムパイル枯渇）→効果なし`);
+      }
+      break;
+    }
     case 'hospital': {
       const count = player.hand.length || 5;
       state.discard.push(...player.hand);
@@ -634,6 +643,15 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
         const c = drawFromDeck(state); if (c) player.hand.push(c);
       }
       addLog(state, `${pName(state, player.id)}：病院で手札リセット → 5枚引き直し`);
+      break;
+    }
+    case 'warehouse': {
+      const c = drawFromDeck(state);
+      if (c) {
+        player.hand.push(c);
+        addLog(state, `${pName(state, player.id)}：倉庫から1枚ドロー`);
+        return { privateReveal: { to: player.id, card: c, revealTitle: '倉庫でドロー' } };
+      }
       break;
     }
     case 'police_hq': {

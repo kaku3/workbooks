@@ -346,9 +346,16 @@ export function showPassCardSelector(state, myId, nameMap = {}, onChoose) {
 // 情報開示通知
 // ============================================================
 export function showPrivateReveal(msg) {
-  if (msg.card)      showToast(`こっそり確認: ${msg.card.label} (${msg.card.desc})`);
-  if (msg.hintLabel) showToast(`スキャン品: ${msg.hintLabel}`);
-  else if (msg.role) showToast(`捜査結果: ${msg.roleLabel}`);
+  if (msg.card) {
+    showEffectOverlay({
+      icon:  '🃏',
+      title: msg.revealTitle ?? 'カード確認（本人のみ）',
+      body:  `「${msg.card.label}」\n${msg.card.desc ?? ''}`,
+    });
+    return;
+  }
+  if (msg.hintLabel) showToast(`スキャン結果: ${msg.hintLabel}`);
+  else if (msg.role)  showToast(`捜査結果: ${msg.roleLabel}`);
 }
 
 export function showPublicReveal(msg) {

@@ -195,13 +195,12 @@ function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLoca
     events = buildActionEvents(fromId, card, targetPlayerId, targetLocation, result);
   }
 
+  if (result.publicReveal) broadcastPublic(result.publicReveal);
+  broadcastState(gameState, events);
   if (result.privateReveal) {
     const revs = Array.isArray(result.privateReveal) ? result.privateReveal : [result.privateReveal];
     revs.forEach(r => sendPrivate(r.to, r));
   }
-  if (result.publicReveal) broadcastPublic(result.publicReveal);
-
-  broadcastState(gameState, events);
   if (gameState.winner) broadcastGameOver(gameState.winner);
 }
 
@@ -231,9 +230,6 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       break;
     case 'peek':
       events.all = { icon: '🔍', title: '尋問', body: `${from} が ${targ} の手札を１枚こっそり確認した` };
-      if (rev && !Array.isArray(rev)) {
-        events[rev.to] = { icon: '🔍', title: `尋問の結果（本人のみ）`, body: `${targ} の手札に\n「${rev.card?.label}」\n${rev.card?.desc}` };
-      }
       break;
     case 'scan':
       events.all = { icon: '📡', title: 'スキャン', body: `${from} が ${targ} をスキャンした` };
@@ -246,12 +242,6 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       break;
     case 'whisper':
       events.all = { icon: '🤫', title: '密談', body: `${from} と ${targ} が手札を１枚見せ合った` };
-      if (Array.isArray(rev)) {
-        rev.forEach(r => {
-          const other = r.to === fromId ? targ : from;
-          events[r.to] = { icon: '🤫', title: '密談の結果（本人のみ）', body: `${other} の手札に\n「${r.card?.label}」\n${r.card?.desc}` };
-        });
-      }
       break;
     case 'skip':
       events.all = { icon: '⏭️', title: '足止め！', body: `${targ} は次のターンをスキップされた` };
@@ -342,8 +332,20 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
     case 'construct':
       events.all = { icon: loc.emoji, title: '工事現場', body: `${from} は工事現場で１回休みになった` };
       break;
+    case 'salvage':
+      events.all = { icon: loc.emoji, title: '廃材置き場', body: `${from} が廃材からアイテムを入手した` };
+      if (rev && !Array.isArray(rev)) {
+        events[fromId] = { icon: loc.emoji, title: '廃材置き場で入手（本人のみ）', body: `「${rev.card?.label}」\n${rev.card?.desc ?? ''}` };
+      }
+      break;
     case 'hospital':
       events.all = { icon: loc.emoji, title: '病院', body: `${from} の手札がリセットされた → ５枚引き直し` };
+      break;
+    case 'warehouse':
+      events.all = { icon: loc.emoji, title: '倉庫', body: `${from} が倉庫から１枚ドローした` };
+      if (rev && !Array.isArray(rev)) {
+        events[fromId] = { icon: loc.emoji, title: '倉庫でドロー（本人のみ）', body: `「${rev.card?.label}」\n${rev.card?.desc ?? ''}` };
+      }
       break;
     case 'police_hq':
       // ログは全員 → オーバーレイは本人のみ

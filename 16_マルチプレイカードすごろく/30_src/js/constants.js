@@ -95,8 +95,10 @@ export const LOCATIONS = [
   { id: 9,  name: '闇市',               type: 'black_mkt',  emoji: '🥷', desc: '捨て札から好きなカードを1枚拾う' },
   { id: 10, name: '放送局',             type: 'broadcast',  emoji: '📺', desc: '自分の手札1枚を全員に公開し、その後1枚引く' },
   { id: 11, name: '工事現場',           type: 'construct',  emoji: '🚧', desc: '1回休み（次のターン移動できない）' },
-  { id: 12, name: '病院',               type: 'hospital',   emoji: '🏥', desc: '手札を全て捨て、山札から5枚引き直す' },
-  { id: 13, name: '警察本部',           type: 'police_hq',  emoji: '🚓', desc: '誰かの陣営（爆弾魔/解除班）をこっそり知る' },
+  { id: 12, name: '廃材置き場',         type: 'salvage',    emoji: '🪨', desc: 'アイテムパイルからランダムに1枚引く' },
+  { id: 13, name: '病院',               type: 'hospital',   emoji: '🏥', desc: '手札を全て捨て、山札から5枚引き直す' },
+  { id: 14, name: '警察本部',           type: 'police_hq',  emoji: '🚓', desc: '誰かの陣営（爆弾魔/解除班）をこっそり知る' },
+  { id: 15, name: '倉庫',               type: 'warehouse',  emoji: '🏚️', desc: '山札から1枚ドローする' },
 ];
 
-export const TOTAL_LOCATIONS = LOCATIONS.length; // 14
+export const TOTAL_LOCATIONS = LOCATIONS.length; // 16

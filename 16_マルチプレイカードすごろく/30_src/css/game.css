@@ -175,11 +175,11 @@
   }
   .player-item-sub { font-size: 0.72rem; }
 
-  /* カード: スマホ幅に合わせて伸縮 */
+  /* カード: スマホ幅に合わせて伸縮（4枚/行） */
   .card {
-    flex: 1 1 56px;
-    min-width: 56px;
-    max-width: 80px;
+    flex: 1 1 76px;
+    min-width: 72px;
+    max-width: 90px;
     min-height: 90px;
     padding: 4px;
   }
