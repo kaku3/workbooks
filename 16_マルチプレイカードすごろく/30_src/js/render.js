@@ -306,11 +306,11 @@ export function createCardElement(card, playable, onClickCb) {
                   : card.type === CARD_TYPES.ITEM   ? 'card-item'
                   : 'card-action';
   div.classList.add(typeClass);
-  const bgEmoji = card.type === CARD_TYPES.ITEM && card.emoji
-    ? `<div class="card-item-bg-emoji">${card.emoji}</div>` : '';
+  const bgEmoji = card.emoji ? `<div class="card-item-bg-emoji">${card.emoji}</div>` : '';
+  const displayLabel = card.label;
   div.innerHTML = `
     ${bgEmoji}
-    <div class="card-label">${card.label}</div>
+    <div class="card-label">${displayLabel}</div>
     <div class="card-desc">${card.desc}</div>
   `;
 

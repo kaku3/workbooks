@@ -26,7 +26,7 @@
   box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
-.card-move   { background: var(--card-move); }
+.card-move   { background: var(--card-move);   position: relative; overflow: hidden; }
 .card-action { background: var(--card-action); }
 .card-item   { background: var(--card-item); border: 2px dashed #aaa; position: relative; overflow: hidden; }
 .card-item-bg-emoji {
