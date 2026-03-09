@@ -29,10 +29,17 @@ function randomInt(max) {
  * @returns {GameState}
  */
 export function createInitialState(playerIds, playerNames = []) {
-  if (playerIds.length !== 4) throw new Error('4人必要です');
+  const n = playerIds.length;
+  if (n < 3 || n > 6) throw new Error('3〜6人必要です');
 
-  // 役割をシャッフルして配布 (爆弾魔×2, 解除班×2)
-  const roles = shuffle([ROLES.BOMBER, ROLES.BOMBER, ROLES.DEFUSER, ROLES.DEFUSER]);
+  // 人数に応じた役職配布
+  // 3人: 爆弾魔1/解除班2  4人: 爆弾魔2/解除班2  5人: 爆弾魔2/解除班3  6人: 爆弾魔2/解除班4
+  const bomberCount = n === 3 ? 1 : 2;
+  const defuserCount = n - bomberCount;
+  const roles = shuffle([
+    ...Array(bomberCount).fill(ROLES.BOMBER),
+    ...Array(defuserCount).fill(ROLES.DEFUSER),
+  ]);
 
   // 通常デッキ（移動＋アクション）とアイテムパイルを別々に作成
   const deck = shuffle(CARD_DEFINITIONS.map(c => ({ ...c })));
@@ -178,7 +185,8 @@ export function playCard(state, cardId, targetPlayerId = null, chosenCardId = nu
       pendingData.deck = state.deck.map(c => ({ ...c }));
     }
     if (locType === 'factory')   pendingData.itemPile = shuffle([...state.itemPile]).slice(0, 5).map(c => ({ ...c }));
-    if (locType === 'black_mkt') pendingData.discard  = shuffle([...state.discard]).slice(0, 5).map(c => ({ ...c }));
+    if (locType === 'black_mkt') pendingData.discard  = shuffle([...state.discard]).slice(0, 6).map(c => ({ ...c }));
+    if (locType === 'alley')     pendingData.discard  = shuffle([...state.discard]).slice(0, 3).map(c => ({ ...c }));
     state.pendingAction = pendingData;
   } else if (card.type === CARD_TYPES.ACTION) {
     discardCard(state, card);
@@ -216,6 +224,9 @@ function resolveAction(state, player, card, targetId, chosenCardId, targetLocati
     case 'whisper': return actionWhisper(state, player, targetId);
     case 'skip':    return actionSkip(state, targetId);
     case 'block':   return actionBlock(state, targetLocation);
+    case 'detect':  return actionDetect(state, player, targetId);
+    case 'dash':    return actionDash(state, player);
+    case 'smoke':   return actionSmoke(state, player, targetId);
     default:        return {};
   }
 }
@@ -379,6 +390,110 @@ function actionBlock(state, locationIndex) {
   state.blockedUntilTurn = state.turnCount + state.players.length;
   const locName = LOCATIONS[locationIndex]?.name ?? `マス${locationIndex}`;
   addLog(state, `「${locName}」が通行止めになった（全員が1巡するまで）`);
+  return {};
+}
+
+// --- 探知機 ---
+function actionDetect(state, player, targetId) {
+  const target = getPlayerById(state, targetId);
+  if (!target) return {};
+
+  // 精度式: パーツ枚数 ÷ (3 + キット枚数 + ダミー枚数×2)
+  const partsInPile   = state.itemPile.filter(c => c.subtype === ITEM_SUBTYPES.BOMB_PART).length;
+  const kitsInPile    = state.itemPile.filter(c => c.subtype === ITEM_SUBTYPES.DEFUSE_KIT).length;
+  const dummiesInPile = state.itemPile.filter(c => c.subtype === ITEM_SUBTYPES.DUMMY).length;
+  const denominator   = 3 + kitsInPile + dummiesInPile * 2;
+  const accuracy      = Math.min(partsInPile / denominator, 1);
+
+  // accuracy の確率で正解のヒント、それ以外は逆のヒントを返す
+  const isCorrect = Math.random() < accuracy;
+  const hintRole  = isCorrect ? target.role : (target.role === ROLES.BOMBER ? ROLES.DEFUSER : ROLES.BOMBER);
+  const roleLabel = hintRole === ROLES.BOMBER ? '爆弾魔' : '解除班';
+  const pct       = Math.round(accuracy * 100);
+
+  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} を探知機でスキャン（精度 ${pct}%）`);
+  return { privateReveal: { to: player.id, role: hintRole, roleLabel, accuracy: pct, targetName: pName(state, targetId) } };
+}
+
+// --- ダッシュ ---
+function actionDash(state, player) {
+  const moveCards = player.hand.filter(c => c.type === CARD_TYPES.MOVE);
+  if (moveCards.length === 0) {
+    addLog(state, `${pName(state, player.id)} がダッシュを使ったが、移動カードがなかった（効果なし）`);
+    return {};
+  }
+  return { needsInput: 'dash_select_move', pendingAction: { action: 'dash' } };
+}
+
+/**
+ * ダッシュカード選択を解決する
+ * @param {GameState} state
+ * @param {string} playerId - 選択したプレイヤーID
+ * @param {string} moveCardId - 選択した移動カードID
+ */
+export function resolveDashChoice(state, playerId, moveCardId) {
+  if (!state.pendingAction || state.pendingAction.action !== 'dash')
+    return { error: 'ダッシュ待機中ではありません' };
+
+  const player = getPlayerById(state, playerId);
+  if (!player) return { error: 'プレイヤーが見つかりません' };
+
+  const cardIdx = player.hand.findIndex(c => c.id === moveCardId);
+  if (cardIdx === -1) return { error: '選択された移動カードが手札にありません' };
+
+  const moveCard = player.hand[cardIdx];
+  if (moveCard.type !== CARD_TYPES.MOVE) return { error: '移動カードを選んでください' };
+
+  // 移動カードを手札から取り除いて捨て札へ（元の数字のまま）
+  player.hand.splice(cardIdx, 1);
+  discardCard(state, moveCard);
+
+  // 移動量+2で移動
+  const distance = moveCard.value + 2;
+  const newPos = (player.position + distance) % TOTAL_LOCATIONS;
+  player.position = newPos;
+  const locName = LOCATIONS[newPos]?.name ?? `マス${newPos}`;
+  addLog(state, `${pName(state, player.id)} がダッシュ！${moveCard.value}+2=${distance}マス移動して「${locName}」へ`);
+
+  // ロケーション効果フェーズへ
+  state.phase = 'location';
+  const locType = LOCATIONS[newPos]?.type;
+  const pendingData = { locationIndex: newPos };
+  if (locType === 'tower') {
+    if (state.deck.length === 0 && state.discard.length > 0) {
+      state.deck = shuffle([...state.discard]);
+      state.discard = [];
+      addLog(state, '山札が尽きました。捨て札をシャッフルして再利用します。');
+    }
+    pendingData.deck = state.deck.map(c => ({ ...c }));
+  }
+  if (locType === 'factory')   pendingData.itemPile = shuffle([...state.itemPile]).slice(0, 5).map(c => ({ ...c }));
+  if (locType === 'black_mkt') pendingData.discard  = shuffle([...state.discard]).slice(0, 6).map(c => ({ ...c }));
+  if (locType === 'alley')     pendingData.discard  = shuffle([...state.discard]).slice(0, 3).map(c => ({ ...c }));
+  state.pendingAction = pendingData;
+
+  checkWinCondition(state);
+  return { state };
+}
+
+// --- 煙幕 ---
+function actionSmoke(state, player, targetId) {
+  const target = getPlayerById(state, targetId);
+  if (!target) return {};
+
+  const moveCards = target.hand.filter(c => c.type === CARD_TYPES.MOVE);
+  if (moveCards.length === 0) {
+    addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} に煙幕を使ったが、移動カードがなかった`);
+    return {};
+  }
+
+  const chosen = moveCards[randomInt(moveCards.length)];
+  const idx = target.hand.findIndex(c => c.id === chosen.id);
+  if (idx !== -1) {
+    target.hand.splice(idx, 1);
+    discardCard(state, chosen);
+    addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} に煙幕！「${chosen.label}」を破棄`);
+  }
   return {};
 }
 
@@ -578,7 +693,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       break;
     }
     case 'black_mkt': {
-      // 捨て札から1枚選ぶ → UI側に委ねる
+      // 捨て札から6枚ランダムに絞り、1枚選ぶ → UI側に委ねる
       if (chosenCardId) {
         const idx = state.discard.findIndex(c => c.id === chosenCardId);
         if (idx !== -1) {
@@ -588,7 +703,22 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
         }
       } else {
         addLog(state, `${pName(state, player.id)}：闇市に到達（捨て札からカードを1枚選んでください）`);
-        state.pendingAction = { locEffect: 'black_mkt', discard: [...state.discard] };
+        state.pendingAction = { locEffect: 'black_mkt', discard: shuffle([...state.discard]).slice(0, 6) };
+      }
+      break;
+    }
+    case 'alley': {
+      // 捨て札から3枚ランダムに絞り、1枚選ぶ → UI側に委ねる
+      if (chosenCardId) {
+        const idx = state.discard.findIndex(c => c.id === chosenCardId);
+        if (idx !== -1) {
+          const c = state.discard.splice(idx, 1)[0];
+          player.hand.push(c);
+          addLog(state, `${pName(state, player.id)}：裏路地でカードを入手した`);
+        }
+      } else {
+        addLog(state, `${pName(state, player.id)}：裏路地に到達（捨て札からカードを1枚選んでください）`);
+        state.pendingAction = { locEffect: 'alley', discard: shuffle([...state.discard]).slice(0, 3) };
       }
       break;
     }

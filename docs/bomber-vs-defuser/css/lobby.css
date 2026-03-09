@@ -100,6 +100,39 @@
 .lobby-screen .btn-success   { background: #16a34a; }
 .lobby-screen .btn-small     { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
 
+/* 人数選択ラジオボタン */
+.count-select-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #374151;
+}
+.count-radios {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.count-radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 2px solid #d1d5db;
+  background: #f9fafb;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #374151;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.count-radio-label:has(input:checked) {
+  border-color: #7c3aed;
+  background: #ede9fe;
+  color: #7c3aed;
+}
+.count-radio-label input[type="radio"] {
+  display: none;
+}
+
 /* 参加者一覧 */
 #player-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 #player-list li {

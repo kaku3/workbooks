@@ -5,14 +5,14 @@
 import {
   getMyId, setMessageHandler,
   broadcastState, broadcastPublic, broadcastGameOver, sendPrivate,
-  sendPlayCard, sendDeclareArrest, sendPassChoice, sendTradeTargetChoice,
+  sendPlayCard, sendDeclareArrest, sendPassChoice, sendTradeTargetChoice, sendDashChoice,
   MSG
 } from './peer.js';
 
 import {
   createInitialState,
   doDrawPhase, playCard, resolveLocationSync, declareArrest,
-  getCurrentPlayer, resolvePassChoice, resolveTradeChoice,
+  getCurrentPlayer, resolvePassChoice, resolveTradeChoice, resolveDashChoice,
 } from './gameLogic.js';
 
 import { CARD_TYPES, LOCATIONS } from './constants.js';
@@ -24,7 +24,7 @@ import {
   showPrivateReveal, showPublicReveal,
   showEffectOverlay,
   showGameOver, showToast, showError,
-  showPassCardSelector, showTradeTargetSelector,
+  showPassCardSelector, showTradeTargetSelector, showDashCardSelector,
 } from './modal.js';
 
 // ============================================================
@@ -39,7 +39,7 @@ let nameMap   = {}; // { peerId: display名前 }
 // ============================================================
 // 初期化（lobby.js から呼び出される）
 // ============================================================
-export function initGameScreen(playerIds, playerNames, currentMyId, isHostParam, onReturnToLobby) {
+export function initGameScreen(playerIds, playerNames, currentMyId, isHostParam, onReturnToLobby, maxPlayers = 4) {
   myId   = currentMyId;
   isHost = isHostParam;
 
@@ -94,6 +94,16 @@ function onMessage(msg) {
       if (msg.event) showEffectOverlay(msg.event);
       renderGame(msg.state, myId, nameMap, onCardClick, onLocationPrompt, () => sendPlayCard(null));
       if (isHost) gameState = msg.state._full ?? gameState; // ホストはフル状態を維持
+      // ダッシュ移動カード選択モーダル
+      if (msg.state.phase === 'action_targeting' && msg.state.pendingAction?.action === 'dash') {
+        const isMyTurn  = msg.state.players[msg.state.currentTurnIndex]?.id === myId;
+        const modalOpen = document.getElementById('modal-overlay')?.style.display === 'flex';
+        if (isMyTurn && !modalOpen) {
+          showDashCardSelector(msg.state, myId, (cardId) => {
+            sendDashChoice(cardId);
+          }, getDisplayHand);
+        }
+      }
       // 横流し選択モーダル（未提出かつモーダル未表示の場合のみ）
       if (msg.state.phase === 'action_targeting' && msg.state.pendingAction?.action === 'pass') {
         const alreadySubmitted = msg.state.pendingAction.submitted?.includes(myId);
@@ -122,6 +132,10 @@ function onMessage(msg) {
 
     case MSG.TRADE_TARGET_CHOICE:
       if (isHost) handleTradeTargetChoice(msg.from, msg.cardId);
+      break;
+
+    case MSG.DASH_CHOICE:
+      if (isHost) handleDashChoice(msg.from, msg.cardId);
       break;
 
     case MSG.PLAY_CARD:
@@ -261,6 +275,15 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       events.all = { icon: '🚧', title: '通行止め！', body: `${from} が「${locName}」を次のターンまで通行止めにした` };
       break;
     }
+    case 'detect':
+      events.all = { icon: '📡', title: '探知機！', body: `${from} が ${targ} をスキャンした（結果は本人のみ）` };
+      break;
+    case 'dash':
+      events.all = { icon: '💨', title: 'ダッシュ！', body: `${from} が移動カードを選んでいます…` };
+      break;
+    case 'smoke':
+      events.all = { icon: '🌫️', title: '煙幕！', body: `${from} が ${targ} の移動カード1枚を破棄した` };
+      break;
     default: break;
   }
   return events;
@@ -399,6 +422,19 @@ function handlePassChoice(fromId, cardId) {
   if (gameState.winner) broadcastWin();
 }
 
+function handleDashChoice(fromId, cardId) {
+  const current = getCurrentPlayer(gameState);
+  if (current.id !== fromId) return;
+  const result = resolveDashChoice(gameState, fromId, cardId);
+  if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
+  gameState = result.state;
+  const player = gameState.players.find(p => p.id === fromId);
+  const loc = LOCATIONS[player?.position];
+  const events = { all: { icon: '💨', title: 'ダッシュ！', body: `${n(fromId)} が猛ダッシュで「${loc?.name ?? '?'}」へ移動！` } };
+  broadcastState(gameState, events);
+  if (gameState.winner) broadcastWin();
+}
+
 // ゲーム終了通知（役職情報を含む）
 function broadcastWin() {
   broadcastGameOver(gameState.winner, gameState.players.map(p => ({ id: p.id, role: p.role, name: p.name })));
@@ -426,7 +462,7 @@ function onCardClick(card) {
     return;
   }
   if (phase === 'action_targeting') {
-    showToast('横流しのカードを先に選んでください');
+    showToast('前のアクションを先に解決してください');
     return;
   }
   if (phase !== 'main') return;
@@ -437,10 +473,11 @@ function onCardClick(card) {
   if (card.type === CARD_TYPES.MOVE) {
     sendPlayCard(card.id);
   } else if (card.type === CARD_TYPES.ACTION) {
-    const needsTarget = ['trade','steal','dump','peek','scan','expose','whisper','skip','block'].includes(card.action);
+    const needsTarget = ['trade','steal','dump','peek','scan','expose','whisper','skip','block','detect','smoke'].includes(card.action);
     if (needsTarget) {
       showTargetSelector(card, localState, myId, nameMap, getDisplayHand);
     } else {
+      // ダッシュはまずプレイしてに待機状態へ移行（モーダルは STATE_UPDATE 受信後に自動表示）
       sendPlayCard(card.id);
     }
   }

@@ -5,7 +5,9 @@
 import { initPeer, getMyId, createRoom, joinRoom, broadcastPlayerList, broadcastGameStart, sendToHost, MSG, getGuestIds, setMessageHandler } from './peer.js';
 import { initGameScreen } from './main.js';
 
-const MAX_PLAYERS = 4;
+const MAX_PLAYERS_MIN = 3;
+const MAX_PLAYERS_MAX = 6;
+let maxPlayers = 4; // ラジオボタンで変更される
 let players = []; // { id, name }
 let gameState = null;
 
@@ -42,9 +44,9 @@ function renderPlayerList(list) {
     elPlayerList.appendChild(li);
   });
   if (elStartBtn) {
-    elStartBtn.disabled = list.length < MAX_PLAYERS;
-    elStartBtn.textContent = list.length < MAX_PLAYERS
-      ? `ゲーム開始（${list.length}/${MAX_PLAYERS}人）`
+    elStartBtn.disabled = list.length < maxPlayers;
+    elStartBtn.textContent = list.length < maxPlayers
+      ? `ゲーム開始（${list.length}/${maxPlayers}人）`
       : 'ゲーム開始！';
   }
 }
@@ -65,7 +67,7 @@ function onHostMessage(msg) {
     return;
   }
   if (msg.type === MSG.GAME_START && msg._local) {
-    startGame(msg.playerIds, msg.playerNames);
+    startGame(msg.playerIds, msg.playerNames, msg.maxPlayers ?? maxPlayers);
   }
 }
 
@@ -83,7 +85,7 @@ function onGuestMessage(msg) {
     return;
   }
   if (msg.type === MSG.GAME_START) {
-    startGame(msg.playerIds, msg.playerNames);
+    startGame(msg.playerIds, msg.playerNames, msg.maxPlayers ?? 4);
   }
   if (msg.type === MSG.ERROR) {
     setStatus('エラー: ' + msg.message);
@@ -132,14 +134,14 @@ function returnToLobbyKeepRoom() {
   }
 }
 
-function startGame(playerIds, playerNames) {
+function startGame(playerIds, playerNames, maxP = 4) {
   const myIdVal   = getMyId();
   const isHostVal = playerIds[0] === myIdVal;
 
   document.getElementById('lobby-screen').style.display = 'none';
   document.getElementById('game-screen').style.display  = 'flex';
 
-  initGameScreen(playerIds, playerNames, myIdVal, isHostVal, returnToLobbyKeepRoom);
+  initGameScreen(playerIds, playerNames, myIdVal, isHostVal, returnToLobbyKeepRoom, maxP);
 }
 
 // -------- ボタンイベント --------
@@ -192,9 +194,17 @@ if (elCopyBtn) {
 
 if (elStartBtn) {
   elStartBtn.addEventListener('click', () => {
-    if (players.length < MAX_PLAYERS) return;
+    if (players.length < maxPlayers) return;
     const ids   = players.map(p => p.id);
     const names = players.map(p => p.name);
-    broadcastGameStart(ids, names);
+    broadcastGameStart(ids, names, maxPlayers);
   });
 }
+
+// 人数ラジオボタンの変更を監視（ホスト側のみ有効）
+document.querySelectorAll('input[name="player-count"]').forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    maxPlayers = parseInt(e.target.value, 10);
+    renderPlayerList(players);
+  });
+});

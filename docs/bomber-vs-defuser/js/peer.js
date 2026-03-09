@@ -23,6 +23,7 @@ export const MSG = {
   CHOOSE_CARD:     'choose_card',    // 闇市/タワーでカードを選択
   PASS_CHOICE:     'pass_choice',    // 横流し：渡すカードを選択
   TRADE_TARGET_CHOICE: 'trade_target_choice', // 取引：相手のカード選択
+  DASH_CHOICE:     'dash_choice',    // ダッシュ：移動カード選択
 
   // ホスト→全員
   STATE_UPDATE:    'state_update',   // ゲーム状態を全員へ配信
@@ -150,8 +151,8 @@ export function broadcastPlayerList(players) {
  * 注意: ゲストへの GAME_START は必ず STATE_UPDATE より先に届く必要があるため、
  *       WebRTC 送信（ゲスト宛）を先に行い、ローカル処理（ホスト）を後に実行する。
  */
-export function broadcastGameStart(playerIds, playerNames = []) {
-  const msg = { type: MSG.GAME_START, playerIds, playerNames };
+export function broadcastGameStart(playerIds, playerNames = [], maxPlayers = 4) {
+  const msg = { type: MSG.GAME_START, playerIds, playerNames, maxPlayers };
   // 1) ゲストへ先に送信（WebRTC キューに積む）
   Object.keys(guestConns).forEach(pid => sendToGuest(pid, msg));
   // 2) ホスト自身はローカル処理（この中で broadcastState が呼ばれ STATE_UPDATE が送られる）
@@ -238,6 +239,12 @@ export function sendPassChoice(cardId) {
 
 export function sendTradeTargetChoice(cardId) {
   const msg = { type: MSG.TRADE_TARGET_CHOICE, cardId };
+  if (isHost) onMessageCallback({ from: myId, ...msg });
+  else sendToHost(msg);
+}
+
+export function sendDashChoice(cardId) {
+  const msg = { type: MSG.DASH_CHOICE, cardId };
   if (isHost) onMessageCallback({ from: myId, ...msg });
   else sendToHost(msg);
 }

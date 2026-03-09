@@ -64,6 +64,14 @@ export const CARD_DEFINITIONS = [
   { id: 'act_skip_b',  type: CARD_TYPES.ACTION, action: 'skip',  label: '足止め',   desc: '任意のプレイヤーの手番を1回飛ばす' },
   { id: 'act_block_a', type: CARD_TYPES.ACTION, action: 'block', label: '通行止め', desc: '指定したロケーションを次のターン使用不可にする' },
 
+  // --- 追加カード ---
+  { id: 'act_detect_a', type: CARD_TYPES.ACTION, action: 'detect', label: '探知機', desc: '爆弾を探知する' },
+  { id: 'act_detect_b', type: CARD_TYPES.ACTION, action: 'detect', label: '探知機', desc: '爆弾を探知する' },
+  { id: 'act_dash_a',   type: CARD_TYPES.ACTION, action: 'dash',   label: 'ダッシュ', desc: '手持ちの移動カードを選んで移動量+2で移動' },
+  { id: 'act_dash_b',   type: CARD_TYPES.ACTION, action: 'dash',   label: 'ダッシュ', desc: '手持ちの移動カードを選んで移動量+2で移動' },
+  { id: 'act_smoke_a',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダムに破棄' },
+  { id: 'act_smoke_b',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダムに破棄' },
+
 ];
 
 // アイテムパイル定義（通常デッキとは別に管理。工場・ジャンク屋でのみ取得可能）
@@ -87,10 +95,10 @@ export const ITEM_DEFINITIONS = [
   { id: 'item_kit_z2',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', emoji: '🔧', label: 'キットZ', desc: '解除キットZ' },
   { id: 'item_kit_z3',  type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DEFUSE_KIT, family: 'kit_z', emoji: '🔧', label: 'キットZ', desc: '解除キットZ' },
   // ダミー
-  { id: 'item_dummy_a', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
-  { id: 'item_dummy_b', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
-  { id: 'item_dummy_c', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
-  { id: 'item_dummy_d', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: 'ダミー：勝利条件に関係しない偽の部品' },
+  { id: 'item_dummy_a', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: '探知機の精度を下げる' },
+  { id: 'item_dummy_b', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: '探知機の精度を下げる' },
+  { id: 'item_dummy_c', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: '探知機の精度を下げる' },
+  { id: 'item_dummy_d', type: CARD_TYPES.ITEM, subtype: ITEM_SUBTYPES.DUMMY, emoji: '❓', label: 'ダミー', desc: '探知機の精度を下げる' },
 ];
 
 // 爆弾パーツ揃い判定用
@@ -116,7 +124,7 @@ export const LOCATIONS = [
   { id: 12, name: '廃材置き場',         type: 'salvage',    emoji: '🪨', desc: 'アイテムパイルからランダムに1枚引く' },
   { id: 13, name: '病院',               type: 'hospital',   emoji: '🏥', desc: '手札を全て捨て、山札から5枚引き直す' },
   { id: 14, name: '警察本部',           type: 'police_hq',  emoji: '🚓', desc: '誰かの陣営（爆弾魔/解除班）をこっそり知る' },
-  { id: 15, name: '裏路地',             type: 'black_mkt',  emoji: '🌃', desc: '捨て札から好きなカードを1枚拾う' },
+  { id: 15, name: '裏路地',             type: 'alley',      emoji: '🌃', desc: '捨て札3枚からランダムに1枚選んで拾う' },
 ];
 
 export const TOTAL_LOCATIONS = LOCATIONS.length; // 16

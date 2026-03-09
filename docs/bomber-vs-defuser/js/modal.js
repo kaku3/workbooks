@@ -222,6 +222,7 @@ export function showLocationPrompt(loc, state, myId, nameMap = {}) {
       }
       break;
     }
+    case 'alley':
     case 'black_mkt': {
       const discardPreview = state.pendingAction?.discard || [];
       if (discardPreview.length === 0) {
@@ -360,6 +361,43 @@ export function showPassCardSelector(state, myId, nameMap = {}, onChoose, getDis
 }
 
 // ============================================================
+// ダッシュ: 移動カード選択
+// ============================================================
+export function showDashCardSelector(state, myId, onChoose, getDisplayHand = null) {
+  const { content } = getModal();
+  if (!content) return;
+
+  const me = state.players.find(p => p.id === myId);
+  if (!me) return;
+
+  const displayHand = getDisplayHand ? getDisplayHand(me.hand) : me.hand;
+  const moveCards   = displayHand.filter(c => c.type === CARD_TYPES.MOVE);
+
+  content.innerHTML = '';
+  const title = document.createElement('h3');
+  title.textContent = 'ダッシュ：移動カードを選んでください';
+  content.appendChild(title);
+
+  const sub = document.createElement('p');
+  sub.textContent = '選んだカードの移動量+2で移動します';
+  sub.style.fontSize = '0.85rem';
+  sub.style.color = 'var(--text2, #aaa)';
+  content.appendChild(sub);
+
+  moveCards.forEach(c => {
+    const btn = document.createElement('button');
+    btn.innerHTML = `<strong>${c.label} + 2 = ${c.value + 2}マス</strong><br><small>${c.desc ?? ''}</small>`;
+    btn.style.display      = 'block';
+    btn.style.width        = '100%';
+    btn.style.marginBottom = '6px';
+    btn.onclick = () => { closeModal(); onChoose(c.id); };
+    content.appendChild(btn);
+  });
+
+  openModal();
+}
+
+// ============================================================
 // 情報開示通知
 // ============================================================
 export function showPrivateReveal(msg) {
@@ -371,8 +409,18 @@ export function showPrivateReveal(msg) {
     });
     return;
   }
+  // 探知機のヒント結果
+  if (msg.roleLabel && msg.targetName !== undefined) {
+    const pct = msg.accuracy !== undefined ? `（精度 ${msg.accuracy}%）` : '';
+    showEffectOverlay({
+      icon:  '📡',
+      title: `探知機スキャン結果${pct}`,
+      body:  `${msg.targetName} は「${msg.roleLabel}」らしい\n\n（精度が低い場合は誤検の可能性あり）`,
+    });
+    return;
+  }
   if (msg.hintLabel) showToast(`スキャン結果: ${msg.hintLabel}`);
-  else if (msg.role)  showToast(`捜査結果: ${msg.roleLabel}`);
+  else if (msg.role)  showEffectOverlay({ icon: '📽️', title: '搼査結果（本人のみ）', body: `${msg.targetName ?? msg.roleLabel} は「${msg.roleLabel}」だ！` });
 }
 
 export function showPublicReveal(msg) {

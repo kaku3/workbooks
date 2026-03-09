@@ -40,6 +40,8 @@ const PLAYER_COLORS = [
   { bg: '#2471a3', text: '#fff', name: '青' }, // 1: 青
   { bg: '#1e8449', text: '#fff', name: '緑' }, // 2: 緑
   { bg: '#b7950b', text: '#111', name: '黄' }, // 3: 黄
+  { bg: '#7d3c98', text: '#fff', name: '紫' }, // 4: 紫
+  { bg: '#117a65', text: '#fff', name: '青緑' }, // 5: 青緑
 ];
 
 // ロケーションごとのパステル背景色（16マス分）
