@@ -214,6 +214,8 @@ if (elCopyUrlBtn) {
   if (roomParam) {
     elRoomInput.value = roomParam;
     elRoomInput.dispatchEvent(new Event('input'));
+    // ルーム作成パネルを非表示にして参加パネルだけ見せる
+    document.getElementById('panel-create').style.display = 'none';
   }
 })();
 
