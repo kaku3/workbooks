@@ -8,7 +8,13 @@
   align-items: flex-start;
   padding: 32px 12px 56px;
   min-height: 100vh;
-  background: #f0ebff;
+  background-color: #f0ebff;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+    url('../assets/map.png');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: auto 100%;
 }
 
 .lobby-container {
@@ -27,7 +33,13 @@
   text-shadow: 0 2px 12px rgba(124,58,237,0.18);
   margin-bottom: 0;
 }
-.subtitle { text-align: center; color: #6b7280; line-height: 1.6; font-size: 0.92rem; }
+.subtitle {
+  text-align: center;
+  color: #6b7280;
+  line-height: 1.6;
+  font-size: 0.92rem;
+  font-weight: bold;
+}
 .lobby-thumbnail {
   display: block;
   width: 100%;

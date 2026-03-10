@@ -97,6 +97,8 @@ function resetLobby() {
   elNameInput.disabled = false;
   elNameInput.value    = '';
   elRoomInput.value    = '';
+  // URL から ?room= を除去
+  history.replaceState(null, '', window.location.pathname);
   document.getElementById('panel-create').style.display  = 'block';
   document.getElementById('panel-join').style.display    = 'block';
   const panelPlayers = document.getElementById('panel-players');
@@ -155,6 +157,10 @@ elCreateBtn.addEventListener('click', async () => {
   try {
     const id = await initPeer();
     elMyId.textContent = id;
+    // URL に ?room=<id> を付与して共有しやすくする
+    const roomUrl = new URL(window.location.href);
+    roomUrl.searchParams.set('room', id);
+    history.replaceState(null, '', roomUrl.toString());
     if (elStatusRoom) elStatusRoom.style.display = 'block';
     players = [{ id, name }];
     createRoom(onHostMessage);
@@ -188,9 +194,28 @@ if (elCopyBtn) {
   elCopyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(elMyId.textContent);
     elCopyBtn.textContent = 'コピーしました！';
-    setTimeout(() => { elCopyBtn.textContent = 'コピー'; }, 2000);
+    setTimeout(() => { elCopyBtn.textContent = 'IDコピー'; }, 2000);
   });
 }
+
+const elCopyUrlBtn = document.getElementById('btn-copy-url');
+if (elCopyUrlBtn) {
+  elCopyUrlBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href);
+    elCopyUrlBtn.textContent = 'コピーしました！';
+    setTimeout(() => { elCopyUrlBtn.textContent = '🔗 URLコピー'; }, 2000);
+  });
+}
+
+// ページ読み込み時: ?room=<id> があれば入力欄に自動セット
+(function applyRoomFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const roomParam = params.get('room');
+  if (roomParam) {
+    elRoomInput.value = roomParam;
+    elRoomInput.dispatchEvent(new Event('input'));
+  }
+})();
 
 if (elStartBtn) {
   elStartBtn.addEventListener('click', () => {

@@ -1,5 +1,43 @@
 # design
 
+## bg
+
+### 用途
+- ロビー画面の全面背景
+- ゲーム画面のマップ領域
+
+### 仕様メモ
+
+| 項目 | 値 |
+|------|----|
+| 形式 | 1枚絵（タイル不要） |
+| 推奨サイズ | 1920 × 1080 px（横長）または 1024 × 1024 px |
+| アートスタイル | 手描き風アート地図・トップダウン・ボードゲームマップ風 |
+| 濃淡 | 薄め（前景テキスト・UIが視認しやすいよう低コントラスト） |
+| カラーパレット | アイボリー・クリーム・淡いグリーン・薄いグレー。ウォームトーン |
+
+### 画像生成プロンプト（英語）
+
+```
+An artistic top-down city map illustration for a board game background, inspired by Scotland Yard board game aesthetics.
+Strictly overhead view, no perspective angle, no isometric tilt.
+Organic, hand-drawn-feeling city layout with gently curving roads and winding streets — not a rigid grid.
+Mix of large open city blocks and tight narrow alleys, a few small parks or plazas, simple building footprint shapes.
+Warm, light color palette: soft ivory and cream for roads, pale sage green for parks, light warm gray for building blocks, gentle stone beige for open areas.
+Very low contrast — washed-out pastel tones throughout — so overlaid UI text and game elements stay clearly legible.
+Slightly loose hand-illustrated line quality, like an artistic board game map. Subtle paper texture warmth.
+No characters, no vehicles, no text labels, no compass rose, no numbered nodes.
+Style: illustrative board-game map art, soft vintage warmth, painterly but clean.
+1920x1080px.
+```
+
+### 使い方メモ
+
+- CSS: `background-image: url('bg_city_map.png'); background-size: cover; background-position: center;`
+- 透過レイヤーを重ねて濃淡を調整する場合: `rgba(255,255,255,0.3)` のホワイトオーバーレイを推奨（明るさキープ）
+
+---
+
 ## card
 
 ### カードサイズ
@@ -22,9 +60,9 @@
 | アートスタイル | ポップ・都市クライム風・フラットイラスト風（ボードゲームカード向け） |
 | カラーパレット | ネオン＋パステル混合。夜の都市、薄暗い路地、カラフルなアクセント |
 
-width: 340px
-height: 378px
-gap: 16px
+width: 80px
+height: 96px
+gap: 0
 
 ---
 
