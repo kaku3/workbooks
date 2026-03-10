@@ -69,8 +69,8 @@ export const CARD_DEFINITIONS = [
   { id: 'act_detect_b', type: CARD_TYPES.ACTION, action: 'detect', label: '探知機', desc: '爆弾を探知する' },
   { id: 'act_dash_a',   type: CARD_TYPES.ACTION, action: 'dash',   label: 'ダッシュ', desc: '手持ちの移動カードを選んで移動量+2で移動' },
   { id: 'act_dash_b',   type: CARD_TYPES.ACTION, action: 'dash',   label: 'ダッシュ', desc: '手持ちの移動カードを選んで移動量+2で移動' },
-  { id: 'act_smoke_a',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダムに破棄' },
-  { id: 'act_smoke_b',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダムに破棄' },
+  { id: 'act_smoke_a',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダム破棄' },
+  { id: 'act_smoke_b',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダム破棄' },
 
 ];
 

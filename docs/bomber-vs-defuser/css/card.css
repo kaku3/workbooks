@@ -7,15 +7,17 @@
   min-height: 110px;
   flex-shrink: 0;
   border-radius: 8px;
-  padding: 6px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
   text-align: center;
   border: 2px solid transparent;
   transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
   user-select: none;
+  position: relative;
+  overflow: hidden;
 }
 .card.playable {
   cursor: pointer;
@@ -26,9 +28,73 @@
   box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
-.card-move   { background: var(--card-move);   position: relative; overflow: hidden; }
-.card-action { background: var(--card-action); }
-.card-item   { background: var(--card-item); border: 2px dashed #aaa; position: relative; overflow: hidden; }
+.card-move   { background-color: var(--card-move); }
+.card-action { background-color: var(--card-action); }
+.card-item   { background-color: var(--card-item); border: 2px dashed #aaa; }
+
+/* ---- スプライト画像 (assets/cards.png, 8列×4行, タイル80×96px) ---- */
+/* カード画像領域を .card-art に限定し、overflow:hidden で下の行のスプライトをクリップ */
+.card-art {
+  display: block;
+  width: 80px;
+  height: 96px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  background-image: url('../assets/cards.png');
+  background-repeat: no-repeat;
+}
+
+/* ---- テキストレイアウト ---- */
+
+/* 移動カード: 左上に数字 */
+.card-label--corner {
+  position: absolute;
+  top: 5px;
+  left: 2px;
+  z-index: 1;
+  font-size: 1.3rem;
+  font-weight: bold;
+  line-height: 1;
+  background: rgba(0, 0, 0, 0.52);
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* アクション/アイテムカード: 上全幅ラベル (card-art 内にオーバーレイ) */
+.card-label--top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  font-size: 0.72rem;
+  font-weight: bold;
+  line-height: 1.2;
+  padding: 4px 4px;
+  background: rgba(0, 0, 0, 0.52);
+  color: #fff;
+  text-align: center;
+}
+
+/* 説明バー: 下全幅・白半透明・黒文字・artに少しかぶさる */
+.card-desc--bar {
+  display: block;
+  width: 100%;
+  font-size: 0.62rem;
+  line-height: 1.35;
+  padding: 3px 5px;
+  background: rgba(255, 255, 255, 0.65);
+  color: #111;
+  text-align: center;
+  margin-top: -8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 旧 .card-overlay 互換性用・不使用 */
+.card-overlay { display: none; }
 .card-item-bg-emoji {
   position: absolute;
   bottom: 6px;
@@ -48,5 +114,5 @@
   justify-content: center;
 }
 
-.card-label { font-size: 1.1rem; font-weight: bold; }
-.card-desc  { font-size: 0.65rem; color: rgba(255,255,255,0.75); line-height: 1.3; }
+.card-label { font-size: 1rem; font-weight: bold; }
+.card-desc  { font-size: 0.62rem; line-height: 1.3; }

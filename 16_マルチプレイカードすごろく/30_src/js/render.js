@@ -289,6 +289,50 @@ function renderMyHand(state, myId, onCardClick) {
   }
 }
 
+// assets/cards.png スプライトタイルマップ（8列×4行）
+// key → [col, row]  col:0-7, row:0-3
+// テーマは constants.js の card.theme で上書き可能 ('dark' | 'light')
+// デフォルト 'dark'（暗い下地＋白文字）。明るい画像のカードは 'light' を指定。
+
+// スプライトシート内忍島定数 (cards.png)
+// タイル 1枚の元サイズとギャップから、カード表示サイズに合わせた
+const SPRITE = (() => {
+  const TILE_W = 80, TILE_H = 96, GAP = 0, COLS = 8, ROWS = 4;
+  const CARD_H = 110;
+  // X方向: タイル幅 = カード幅なのでスケール不要
+  // Y方向: タイルをカード上下中央に配置するオフセット
+  const offsetY = (CARD_H - TILE_H) / 2; // = 7px
+  return {
+    BG_W:    (COLS * TILE_W) + 'px',  // 640px
+    BG_H:    (ROWS * TILE_H) + 'px',  // 384px
+    STEP_X:  TILE_W,                   // 80px
+    STEP_Y:  TILE_H,                   // 96px
+    OFFSET_Y: offsetY,                 // 7px
+  };
+})();
+
+const CARD_TILE_MAP = {
+  // 移動カード（移動量別）
+  move_1:  [0,0], move_2:  [1,0], move_3:  [2,0], move_4:  [3,0],
+  move_5:  [4,0], move_6:  [5,0], move_7:  [6,0], move_8:  [7,0],
+  move_9:  [0,1], move_10: [1,1], move_11: [2,1], move_12: [3,1],
+  // アクションカード（action 名別）
+  trade:   [4,1], steal:   [5,1], pass:    [6,1], dump:    [7,1],
+  peek:    [0,2], expose:  [1,2], whisper: [2,2], skip:    [3,2],
+  block:   [4,2], detect:  [5,2], dash:    [6,2], smoke:   [7,2],
+  // アイテムカード（family 別）
+  bomb_a:  [0,3], bomb_b:  [1,3], bomb_c:  [2,3],
+  kit_x:   [3,3], kit_y:   [4,3], kit_z:   [5,3],
+  dummy:   [6,3],
+};
+
+function getCardTile(card) {
+  if (card.type === CARD_TYPES.MOVE)   return CARD_TILE_MAP[`move_${card.value}`] ?? null;
+  if (card.type === CARD_TYPES.ACTION) return CARD_TILE_MAP[card.action]           ?? null;
+  if (card.type === CARD_TYPES.ITEM)   return CARD_TILE_MAP[card.family]           ?? CARD_TILE_MAP['dummy'];
+  return null;
+}
+
 /**
  * カード要素を生成して返す。
  */
@@ -306,13 +350,33 @@ export function createCardElement(card, playable, onClickCb) {
                   : card.type === CARD_TYPES.ITEM   ? 'card-item'
                   : 'card-action';
   div.classList.add(typeClass);
-  const bgEmoji = card.emoji ? `<div class="card-item-bg-emoji">${card.emoji}</div>` : '';
-  const displayLabel = card.label;
-  div.innerHTML = `
-    ${bgEmoji}
-    <div class="card-label">${displayLabel}</div>
-    <div class="card-desc">${card.desc}</div>
-  `;
+
+  // スプライト画像を .card-art 子要素に設定（height:96px で下の行をクリップ）
+  const tile = getCardTile(card);
+  const artDiv = document.createElement('div');
+  artDiv.className = 'card-art';
+  if (tile) {
+    const [col, row] = tile;
+    artDiv.style.backgroundSize     = `${SPRITE.BG_W} ${SPRITE.BG_H}`;
+    artDiv.style.backgroundPosition = `${-(col * SPRITE.STEP_X)}px ${-(row * SPRITE.STEP_Y)}px`;
+  }
+
+  // テーマ: dark=暗い下地＋白文字 / light=明るい下地＋黒文字
+  // constants.js の card.theme プロパティで個別上書き可能
+  div.dataset.theme = card.theme ?? 'dark';
+
+  // カード種別に応じたレイアウト
+  if (card.type === CARD_TYPES.MOVE) {
+    // 移動カード: 左上数字ラベルを card-art の中にオーバーレイ
+    artDiv.insertAdjacentHTML('beforeend', `<div class="card-label card-label--corner">${card.label}</div>`);
+    div.appendChild(artDiv);
+    div.insertAdjacentHTML('beforeend', `<div class="card-desc card-desc--bar">${card.desc}</div>`);
+  } else {
+    // アクション/アイテムカード: 上全幅ラベルを card-art の中にオーバーレイ
+    artDiv.insertAdjacentHTML('beforeend', `<div class="card-label card-label--top">${card.label}</div>`);
+    div.appendChild(artDiv);
+    div.insertAdjacentHTML('beforeend', `<div class="card-desc card-desc--bar">${card.desc}</div>`);
+  }
 
   if (playable && card.type !== CARD_TYPES.ITEM && onClickCb) {
     div.classList.add('playable');
