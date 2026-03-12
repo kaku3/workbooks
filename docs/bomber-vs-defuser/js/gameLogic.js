@@ -41,18 +41,19 @@ export function createInitialState(playerIds, playerNames = []) {
     ...Array(defuserCount).fill(ROLES.DEFUSER),
   ]);
 
-  // 通常デッキ（移動＋アクション）とアイテムパイルを別々に作成
-  const deck = shuffle(CARD_DEFINITIONS.map(c => ({ ...c })));
+  // 移動山・アクション山を別々に作成
+  const moveDeck   = shuffle(CARD_DEFINITIONS.filter(c => c.type === CARD_TYPES.MOVE).map(c => ({ ...c })));
+  const actionDeck = shuffle(CARD_DEFINITIONS.filter(c => c.type === CARD_TYPES.ACTION).map(c => ({ ...c })));
   const itemPile = shuffle(ITEM_DEFINITIONS.map(c => ({ ...c })));
 
-  // 各プレイヤーに5枚配る（通常デッキのみ。アイテムは初期手から除外）
+  // 各プレイヤーに移動3枚＋アクション2枚を配る（二山ドロー初期配布）
   const hands = {};
   playerIds.forEach(id => { hands[id] = []; });
-  const initialHandSize = 5;
-  for (let i = 0; i < initialHandSize; i++) {
-    playerIds.forEach(id => {
-      if (deck.length > 0) hands[id].push(deck.pop());
-    });
+  for (let i = 0; i < 3; i++) {
+    playerIds.forEach(id => { if (moveDeck.length   > 0) hands[id].push(moveDeck.pop());   });
+  }
+  for (let i = 0; i < 2; i++) {
+    playerIds.forEach(id => { if (actionDeck.length > 0) hands[id].push(actionDeck.pop()); });
   }
 
   const players = playerIds.map((id, idx) => ({
@@ -66,9 +67,10 @@ export function createInitialState(playerIds, playerNames = []) {
 
   return {
     players,             // プレイヤー配列
-    deck,                // 山札（移動＋アクションのみ）
+    moveDeck,            // 移動カード山
+    actionDeck,          // アクションカード山
     itemPile,            // アイテムパイル（爆弾パーツ・解除キット・ダミー）
-    discard: [],         // 捨て札
+    discard: [],         // 捨て札（移動・アクション共通）
     blockedLocation: null, // 通行止め中のロケーション
     blockedUntilTurn: -1,
     currentTurnIndex: 0, // 現在の手番プレイヤーindex
@@ -81,14 +83,22 @@ export function createInitialState(playerIds, playerNames = []) {
 }
 
 // --------------- 山札管理 ---------------
-function drawFromDeck(state) {
-  if (state.deck.length === 0) {
-    // 捨て札をシャッフルして山札に
-    state.deck = shuffle(state.discard);
-    state.discard = [];
-    addLog(state, '山札が尽きました。捨て札をシャッフルして再利用します。');
+/**
+ * @param {GameState} state
+ * @param {'move'|'action'} deckType - どちらの山から引くか
+ */
+function drawFromDeck(state, deckType = 'move') {
+  const deckKey    = deckType === 'action' ? 'actionDeck' : 'moveDeck';
+  const targetType = deckType === 'action' ? CARD_TYPES.ACTION : CARD_TYPES.MOVE;
+  if (state[deckKey].length === 0) {
+    // 捨て札から同種カードを取り出してシャッフルし補充
+    const refill = state.discard.filter(c => c.type === targetType);
+    state.discard = state.discard.filter(c => c.type !== targetType);
+    state[deckKey] = shuffle(refill);
+    if (state[deckKey].length > 0)
+      addLog(state, `${deckType === 'action' ? 'アクション' : '移動'}山が尽きました。捨て札をシャッフルして再利用します。`);
   }
-  return state.deck.length > 0 ? state.deck.pop() : null;
+  return state[deckKey].length > 0 ? state[deckKey].pop() : null;
 }
 
 function discardCard(state, card) {
@@ -140,12 +150,16 @@ function nextTurn(state) {
 }
 
 // --------------- ドローフェーズ ---------------
-export function doDrawPhase(state) {
+/**
+ * @param {GameState} state
+ * @param {'move'|'action'} deckType - 引く山を選択（二山ドロー）
+ */
+export function doDrawPhase(state, deckType = 'move') {
   const player = getCurrentPlayer(state);
-  const card = drawFromDeck(state);
+  const card = drawFromDeck(state, deckType);
   if (card) {
     player.hand.push(card);
-    addLog(state, `${pName(state, player.id)} がカードを1枚引きました`);
+    addLog(state, `${pName(state, player.id)} が${deckType === 'action' ? 'アクション' : '移動'}山から1枚引きました`);
   }
   state.phase = 'main';
   return { state, drawnCard: card };
@@ -177,12 +191,10 @@ export function playCard(state, cardId, targetPlayerId = null, chosenCardId = nu
     const locType = LOCATIONS[newPos]?.type;
     const pendingData = { locationIndex: newPos };
     if (locType === 'tower') {
-      if (state.deck.length === 0 && state.discard.length > 0) {
-        state.deck = shuffle([...state.discard]);
-        state.discard = [];
-        addLog(state, '山札が尽きました。捨て札をシャッフルして再利用します。');
-      }
-      pendingData.deck = state.deck.map(c => ({ ...c }));
+      pendingData.deck = [
+        ...state.moveDeck.slice(0, 5),
+        ...state.actionDeck.slice(0, 5),
+      ].map(c => ({ ...c }));
     }
     if (locType === 'factory')   pendingData.itemPile = shuffle([...state.itemPile]).slice(0, 5).map(c => ({ ...c }));
     if (locType === 'black_mkt') pendingData.discard  = shuffle([...state.discard]).slice(0, 6).map(c => ({ ...c }));
@@ -251,7 +263,7 @@ function actionSteal(state, player, targetId, myCardId) {
   const theirCard = target.hand.splice(theirIdx, 1)[0];
   player.hand.push(theirCard);
   addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} から強奪`);
-  return {};
+  return { gainCard: { to: player.id, card: theirCard } };
 }
 
 function actionPass(state) {
@@ -337,7 +349,7 @@ function actionDump(state, player, targetId) {
   const dumped = target.hand.splice(idx, 1)[0];
   discardCard(state, dumped);
   addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札を1枚ポイ捨て`);
-  return {};
+  return { lostCard: { to: target.id, card: dumped } };
 }
 
 // --- 情報収集 ---
@@ -460,12 +472,10 @@ export function resolveDashChoice(state, playerId, moveCardId) {
   const locType = LOCATIONS[newPos]?.type;
   const pendingData = { locationIndex: newPos };
   if (locType === 'tower') {
-    if (state.deck.length === 0 && state.discard.length > 0) {
-      state.deck = shuffle([...state.discard]);
-      state.discard = [];
-      addLog(state, '山札が尽きました。捨て札をシャッフルして再利用します。');
-    }
-    pendingData.deck = state.deck.map(c => ({ ...c }));
+    pendingData.deck = [
+      ...state.moveDeck.slice(0, 5),
+      ...state.actionDeck.slice(0, 5),
+    ].map(c => ({ ...c }));
   }
   if (locType === 'factory')   pendingData.itemPile = shuffle([...state.itemPile]).slice(0, 5).map(c => ({ ...c }));
   if (locType === 'black_mkt') pendingData.discard  = shuffle([...state.discard]).slice(0, 6).map(c => ({ ...c }));
@@ -493,6 +503,7 @@ function actionSmoke(state, player, targetId) {
     target.hand.splice(idx, 1);
     discardCard(state, chosen);
     addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} に煙幕！「${chosen.label}」を破棄`);
+    return { lostCard: { to: target.id, card: chosen } };
   }
   return {};
 }
@@ -576,7 +587,7 @@ export function resolveTradeChoice(state, fromPlayerId, cardId) {
   state.pendingAction = null;
   checkWinCondition(state);
   if (!state.winner) nextTurn(state);
-  return { state };
+  return { state, gainCards: [{ to: attacker.id, card: theirCard }, { to: target.id, card: myCard }] };
 }
 
 function processLocationByType(state, player, locIdx, chosenCardId, locType) {
@@ -628,6 +639,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
           const c = state.itemPile.splice(idx, 1)[0];
           player.hand.push(c);
           addLog(state, `${pName(state, player.id)}：パーツ工場でアイテムを入手した`);
+          return { gainCard: { to: player.id, card: c } };
         }
       } else if (state.itemPile.length > 0) {
         addLog(state, `${pName(state, player.id)}：パーツ工場に到達（アイテム置き場から1枚選んでください）`);
@@ -656,11 +668,18 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       // 山札をUIで見て1枚選ぶ → pendingAction でUI側に委ねる
       // ホストが chosenCardId を受け取ったら実際にドロー
       if (chosenCardId) {
-        const idx = state.deck.findIndex(c => c.id === chosenCardId);
-        if (idx !== -1) {
-          const c = state.deck.splice(idx, 1)[0];
-          player.hand.push(c);
+        let found = null;
+        const mIdx = state.moveDeck.findIndex(c => c.id === chosenCardId);
+        if (mIdx !== -1) {
+          found = state.moveDeck.splice(mIdx, 1)[0];
+        } else {
+          const aIdx = state.actionDeck.findIndex(c => c.id === chosenCardId);
+          if (aIdx !== -1) found = state.actionDeck.splice(aIdx, 1)[0];
+        }
+        if (found) {
+          player.hand.push(found);
           addLog(state, `${pName(state, player.id)}：タワーでカードをサーチして入手`);
+          return { gainCard: { to: player.id, card: found } };
         }
       } else {
         addLog(state, `${pName(state, player.id)}：タワー（山札が空）→ 効果なし`);
@@ -700,6 +719,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
           const c = state.discard.splice(idx, 1)[0];
           player.hand.push(c);
           addLog(state, `${pName(state, player.id)}：闇市でカードを入手した`);
+          return { gainCard: { to: player.id, card: c } };
         }
       } else {
         addLog(state, `${pName(state, player.id)}：闇市に到達（捨て札からカードを1枚選んでください）`);
@@ -715,6 +735,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
           const c = state.discard.splice(idx, 1)[0];
           player.hand.push(c);
           addLog(state, `${pName(state, player.id)}：裏路地でカードを入手した`);
+          return { gainCard: { to: player.id, card: c } };
         }
       } else {
         addLog(state, `${pName(state, player.id)}：裏路地に到達（捨て札からカードを1枚選んでください）`);
@@ -748,17 +769,15 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       break;
     }
     case 'hospital': {
-      const count = player.hand.length || 5;
       state.discard.push(...player.hand);
       player.hand = [];
-      for (let i = 0; i < 5; i++) {
-        const c = drawFromDeck(state); if (c) player.hand.push(c);
-      }
-      addLog(state, `${pName(state, player.id)}：病院で手札リセット → 5枚引き直し`);
+      for (let i = 0; i < 3; i++) { const c = drawFromDeck(state, 'move');   if (c) player.hand.push(c); }
+      for (let i = 0; i < 2; i++) { const c = drawFromDeck(state, 'action'); if (c) player.hand.push(c); }
+      addLog(state, `${pName(state, player.id)}：病院で手札リセット → 移動3枚＋アクション2枚引き直し`);
       break;
     }
     case 'warehouse': {
-      const c = drawFromDeck(state);
+      const c = drawFromDeck(state, 'move');
       if (c) {
         player.hand.push(c);
         addLog(state, `${pName(state, player.id)}：倉庫から1枚ドロー`);
@@ -845,7 +864,8 @@ export function sanitizeStateForPlayer(state, viewerId) {
   if (sanitized.pendingAction?.choices) {
     delete sanitized.pendingAction.choices;
   }
-  sanitized.deck = sanitized.deck.map(() => ({ hidden: true }));
-  sanitized.itemPile = sanitized.itemPile.map(() => ({ hidden: true }));
+  sanitized.moveDeck   = sanitized.moveDeck.map(()   => ({ hidden: true }));
+  sanitized.actionDeck = sanitized.actionDeck.map(() => ({ hidden: true }));
+  sanitized.itemPile   = sanitized.itemPile.map(()   => ({ hidden: true }));
   return sanitized;
 }

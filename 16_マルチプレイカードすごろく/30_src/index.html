@@ -196,6 +196,22 @@
   <!-- ターン開始オーバーレイ -->
   <div id="turn-start-overlay" style="display:none"></div>
 
+  <!-- カードドロー演出オーバーレイ -->
+  <div id="draw-card-overlay" style="display:none">
+    <div class="drcard-scene">
+      <div class="drcard-card" id="drcard">
+        <div class="drcard-back">🂠</div>
+        <div class="drcard-front" id="drcard-front">
+          <div class="drcard-name" id="drcard-label"></div>
+          <div class="drcard-art" id="drcard-art">
+            <div class="drcard-desc" id="drcard-desc"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="drcard-hint" id="drcard-hint">タップして続ける</p>
+  </div>
+
   <!-- 効果結果オーバーレイ -->
   <div id="effect-overlay" style="display:none">
     <div class="effect-box">

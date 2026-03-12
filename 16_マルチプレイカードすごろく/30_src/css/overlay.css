@@ -113,9 +113,285 @@ body.modal-scroll-lock { overflow: hidden; }
   text-shadow: 0 2px 16px rgba(0,0,0,0.9);
   letter-spacing: 0.04em;
 }
+.turn-suffix {
+  font-size: 0.48em;
+  font-weight: normal;
+  opacity: 0.75;
+  vertical-align: middle;
+}
+.turn-start-draw-btns {
+  display: flex;
+  gap: 24px;
+  perspective: 900px;
+  align-items: flex-start;
+}
+
+/* --- カード型ドローボタン ラッパー --- */
+.draw-btn-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --- カード裏面型ボタン基本 --- */
 .turn-start-draw-btn {
-  font-size: 1.2rem;
-  padding: 14px 40px;
+  width: 120px;
+  height: 176px;
+  padding: 0;
+  position: relative;
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  will-change: transform;
+  overflow: hidden;
+}
+/* 内側フレーム */
+.turn-start-draw-btn::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+/* 中央のカードバック模様 */
+.turn-start-draw-btn::before {
+  content: '🂠';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -54%);
+  font-size: 5.5rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* 移動カード裏面: ネイビーブルー */
+.card-draw-move {
+  background: linear-gradient(145deg, #0a1a40 0%, #152d6e 50%, #0a1a40 100%);
+  border: 2px solid rgba(80,140,255,0.35);
+}
+.card-draw-move::after  { border: 1.5px solid rgba(80,140,255,0.28); }
+.card-draw-move::before { color: rgba(80,160,255,0.22); }
+
+/* アクションカード裏面: ダークパープル */
+.card-draw-action {
+  background: linear-gradient(145deg, #1a0a38 0%, #35146e 50%, #1a0a38 100%);
+  border: 2px solid rgba(160,100,255,0.35);
+}
+.card-draw-action::after  { border: 1.5px solid rgba(160,100,255,0.28); }
+.card-draw-action::before { color: rgba(160,100,255,0.22); }
+
+/* カード下のタイプラベル */
+.draw-btn-type-label {
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.88);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+}
+
+.turn-start-draw-btn:hover:not(:disabled) {
+  transform: perspective(900px) translateY(-10px) scale(1.05);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.18);
+  filter: brightness(1.3);
+}
+.turn-start-draw-btn:active:not(:disabled) {
+  transform: perspective(900px) translateY(-4px) scale(1.02);
+}
+
+/* --- めくり → スライドフェードアウト アニメーション --- */
+@keyframes draw-card-pick {
+  0%   { transform: perspective(900px) rotateY(0deg)   translateY(0px)  scale(1.0);  opacity: 1; }
+  30%  { transform: perspective(900px) rotateY(60deg)  translateY(-16px) scale(1.1); opacity: 1; }
+  55%  { transform: perspective(900px) rotateY(88deg)  translateY(-10px) scale(1.08); opacity: 0.9; }
+  70%  { transform: perspective(900px) rotateY(88deg)  translateY(20px)  scale(1.0);  opacity: 0.6; }
+  100% { transform: perspective(900px) rotateY(88deg)  translateY(70px)  scale(0.88); opacity: 0; }
+}
+.draw-card-picked {
+  animation: draw-card-pick 0.62s cubic-bezier(0.4, 0, 0.8, 0.6) forwards;
+  pointer-events: none;
+}
+
+/* --- 非選択ボタンのフェードアウト --- */
+.draw-card-dimout {
+  transition: opacity 0.25s ease, transform 0.25s ease !important;
+  opacity: 0.18 !important;
+  transform: scale(0.9) !important;
+  pointer-events: none;
+}
+
+/* ============================================================
+   カードドロー演出オーバーレイ
+   ============================================================ */
+#draw-card-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  z-index: 170;
+  cursor: pointer;
+}
+
+.drcard-scene {
+  perspective: 1000px;
+  position: relative;
+}
+
+/* グロー放射エフェクト（擬似要素） */
+.drcard-scene::after {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,210,60,0.45) 0%, transparent 68%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.drcard-scene.drcard-glow::after {
+  animation: drcard-glow-burst 0.7s ease-out forwards;
+}
+@keyframes drcard-glow-burst {
+  0%   { opacity: 0.9; transform: scale(0.2); }
+  100% { opacity: 0;   transform: scale(2.0); }
+}
+
+/* カード本体（3D ラッパー） */
+.drcard-card {
+  width: 150px;
+  height: 210px;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+/* 表・裏 共通 */
+.drcard-back,
+.drcard-front {
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 10px;
+}
+
+/* 裏面 */
+.drcard-back {
+  transform: rotateY(0deg);
+  background: linear-gradient(145deg, #0d1b3e 0%, #1a2f6e 50%, #0d1b3e 100%);
+  font-size: 5rem;
+  border: 2px solid rgba(100,150,255,0.3);
+  letter-spacing: 0;
+}
+
+/* 表面 */
+.drcard-front {
+  transform: rotateY(180deg);
+  border: 2px solid rgba(255,255,255,0.2);
+  padding: 0;
+  gap: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;
+}
+.drcard-front.type-move   { background: linear-gradient(155deg, #1a5276 0%, #2c5f8a 60%, #1a3a52 100%); }
+.drcard-front.type-action { background: linear-gradient(155deg, #3d1a6e 0%, #5a3080 60%, #2a0e4e 100%); }
+.drcard-front.type-item   { background: linear-gradient(155deg, #7a4000 0%, #a05a00 60%, #5a3000 100%); }
+
+/* カード名（上部バー） */
+.drcard-name {
+  flex-shrink: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 1.2;
+  padding: 8px 8px 6px;
+  background: rgba(0, 0, 0, 0.50);
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* アート領域（スプライト画像） */
+.drcard-art {
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+  background-image: url('../assets/cards.png');
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 説明（art 下部にオーバーレイ・最大3行） */
+.drcard-desc {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0, 0, 0, 0.68);
+  color: #fff;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  padding: 5px 10px;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.drcard-front.type-action .drcard-desc {
+  text-align: left;
+}
+
+/* ---- アニメーション ---- */
+
+/* 1. 落下→バウンス（裏向きで登場） */
+@keyframes drcard-appear {
+  0%   { transform: rotateY(0deg) translateY(-180px) scale(0.5) rotate(-10deg); opacity: 0; }
+  55%  { transform: rotateY(0deg) translateY(14px)   scale(1.07) rotate(1.5deg); opacity: 1; }
+  75%  { transform: rotateY(0deg) translateY(-5px)   scale(0.97) rotate(0deg); }
+  100% { transform: rotateY(0deg) translateY(0px)    scale(1.0)  rotate(0deg); opacity: 1; }
+}
+.drcard-appear {
+  animation: drcard-appear 0.52s cubic-bezier(0.22, 1.0, 0.36, 1) forwards;
+}
+
+/* 2. フリップ（裏→表） */
+@keyframes drcard-flip {
+  0%   { transform: rotateY(0deg); }
+  100% { transform: rotateY(180deg); }
+}
+.drcard-flip {
+  animation: drcard-flip 0.5s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+}
+
+/* フリップ完了後の固定スタイル */
+.drcard-revealed {
+  transform: rotateY(180deg);
+}
+
+/* 3. タップヒント */
+.drcard-hint {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.06em;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+}
+.drcard-hint.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ---------- モーダルフェードイン ---------- */

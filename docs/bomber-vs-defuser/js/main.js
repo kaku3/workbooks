@@ -23,6 +23,7 @@ import {
   showTargetSelector, showLocationPrompt,
   showPrivateReveal, showPublicReveal,
   showEffectOverlay,
+  showDrawCardOverlay,
   showGameOver, showToast, showError,
   showPassCardSelector, showTradeTargetSelector, showDashCardSelector,
 } from './modal.js';
@@ -91,8 +92,11 @@ function onMessage(msg) {
   switch (msg.type) {
     case MSG.STATE_UPDATE:
       localState = msg.state;
-      if (msg.event) showEffectOverlay(msg.event);
-      renderGame(msg.state, myId, nameMap, onCardClick, onLocationPrompt, () => sendPlayCard(null));
+      if (msg.event) {
+        if (msg.event.isDraw) showDrawCardOverlay(msg.event);
+        else                  showEffectOverlay(msg.event);
+      }
+      renderGame(msg.state, myId, nameMap, onCardClick, onLocationPrompt, (deckType) => sendPlayCard(null, null, null, null, deckType));
       if (isHost) gameState = msg.state._full ?? gameState; // ホストはフル状態を維持
       // ダッシュ移動カード選択モーダル
       if (msg.state.phase === 'action_targeting' && msg.state.pendingAction?.action === 'dash') {
@@ -139,7 +143,7 @@ function onMessage(msg) {
       break;
 
     case MSG.PLAY_CARD:
-      if (isHost) handlePlayCard(msg.from, msg.cardId, msg.targetPlayerId, msg.chosenCardId, msg.targetLocation);
+      if (isHost) handlePlayCard(msg.from, msg.cardId, msg.targetPlayerId, msg.chosenCardId, msg.targetLocation, msg.deckType);
       break;
 
     case MSG.RESOLVE_LOC:
@@ -171,12 +175,12 @@ function onMessage(msg) {
 // ============================================================
 // ホスト側: ゲームロジック呼び出し
 // ============================================================
-function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLocation) {
+function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLocation, deckType) {
   const current = getCurrentPlayer(gameState);
   if (current.id !== fromId) return;
 
   if (gameState.phase === 'draw') {
-    const drawResult = doDrawPhase(gameState);
+    const drawResult = doDrawPhase(gameState, deckType ?? 'move');
     gameState = drawResult.state;
     const events = {};
     if (drawResult.drawnCard) {
@@ -185,7 +189,12 @@ function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLoca
                  : c.type === CARD_TYPES.MOVE  ? '🏃'
                  : '⚡';
       events[fromId] = {
+        isDraw:    true,
         icon,
+        card:      c,
+        cardLabel: c.label,
+        cardDesc:  c.desc,
+        cardType:  c.type,
         title: 'カードをドロー！',
         body:  `「${c.label}」\n${c.desc}`,
       };
@@ -231,6 +240,12 @@ function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLoca
 // 名前山を返すヘルパー
 function n(id) { return nameMap[id] ?? id?.slice(0, 6) ?? '?'; }
 
+// カードドロー演出イベントを作るヘルパー
+function makeCardDrawEvent(card, title, body, icon) {
+  const autoIcon = card.type === CARD_TYPES.ITEM ? '🎁' : card.type === CARD_TYPES.MOVE ? '🏃' : '⚡';
+  return { isDraw: true, card, cardLabel: card.label, cardDesc: card.desc, cardType: card.type, icon: icon ?? autoIcon, title, body };
+}
+
 // アクションカードのイベントオブジェクトを構築
 function buildActionEvents(fromId, card, targetId, targetLocation, result) {
   const events = {};
@@ -245,12 +260,14 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       break;
     case 'steal':
       events.all = { icon: '💸', title: '強奪！', body: `${from} が ${targ} の手札を１枚奪った` };
+      if (result?.gainCard) events[result.gainCard.to] = makeCardDrawEvent(result.gainCard.card, '強奪！', `${targ} から手札を奪った`, '💸');
       break;
     case 'pass':
       events.all = { icon: '🔀', title: '横流し！', body: '全員がカードを選んでいます…' };
       break;
     case 'dump':
       events.all = { icon: '🗑️', title: 'ポイ捨て！', body: `${from} が ${targ} の手札を１枚捨てさせた` };
+      if (result?.lostCard) events[result.lostCard.to] = makeCardDrawEvent(result.lostCard.card, 'ポイ捨て！', `${from} にカードを捨てさせられた`, '🗑️');
       break;
     case 'peek':
       events.all = { icon: '🔍', title: '尋問', body: `${from} が ${targ} の手札を１枚こっそり確認した` };
@@ -283,6 +300,7 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       break;
     case 'smoke':
       events.all = { icon: '🌫️', title: '煙幕！', body: `${from} が ${targ} の移動カード1枚を破棄した` };
+      if (result?.lostCard) events[result.lostCard.to] = makeCardDrawEvent(result.lostCard.card, '煙幕！', `${from} に移動カードを破棄された`, '🌫️');
       break;
     default: break;
   }
@@ -326,7 +344,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
     case 'junk':
       events.all = { icon: loc.emoji, title: 'ジャンク屋', body: `${from} が山札から１枚ドローした` };
       if (rev && !Array.isArray(rev)) {
-        events[rev.to] = { icon: loc.emoji, title: 'ジャンク屋でドロー（本人のみ）', body: `引いたカード：\n「${rev.card?.label}」\n${rev.card?.desc ?? ''}` };
+        events[rev.to] = makeCardDrawEvent(rev.card, 'ジャンク屋でドロー！', `引いたカード：「${rev.card?.label}」\n${rev.card?.desc ?? ''}`, loc.emoji);
       }
       break;
     case 'pub':
@@ -341,6 +359,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       break;
     case 'factory':
       events.all = { icon: loc.emoji, title: 'パーツ工場', body: `${from} がアイテムカードを入手した` };
+      if (result?.gainCard) events[fromId] = makeCardDrawEvent(result.gainCard.card, 'パーツ工場で入手！', `「${result.gainCard.card.label}」\n${result.gainCard.card.desc ?? ''}`, loc.emoji);
       break;
     case 'casino': {
       const lastMsg = gameState.log[gameState.log.length - 1]?.message ?? '';
@@ -349,6 +368,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
     }
     case 'tower':
       events.all = { icon: loc.emoji, title: 'タワー', body: `${from} が山札からカードをサーチして入手した` };
+      if (result?.gainCard) events[fromId] = makeCardDrawEvent(result.gainCard.card, 'タワーで入手！', `「${result.gainCard.card.label}」\n${result.gainCard.card.desc ?? ''}`, loc.emoji);
       break;
     case 'crossing':
       events.all = { icon: loc.emoji, title: 'スクランブル交差点', body: '全員の手札が1枚ずつ次のプレイヤーに回った！' };
@@ -358,6 +378,11 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       break;
     case 'black_mkt':
       events.all = { icon: loc.emoji, title: '闇市', body: `${from} が捨て札からカードを入手した` };
+      if (result?.gainCard) events[fromId] = makeCardDrawEvent(result.gainCard.card, '闇市で入手！', `「${result.gainCard.card.label}」\n${result.gainCard.card.desc ?? ''}`, loc.emoji);
+      break;
+    case 'alley':
+      events.all = { icon: loc.emoji, title: '裏路地', body: `${from} が捨て札からカードを入手した` };
+      if (result?.gainCard) events[fromId] = makeCardDrawEvent(result.gainCard.card, '裏路地で入手！', `「${result.gainCard.card.label}」\n${result.gainCard.card.desc ?? ''}`, loc.emoji);
       break;
     case 'broadcast':
       events.all = { icon: loc.emoji, title: '放送局！', body: `${from} の手札が全員に公開された！ → １枚ドロー` };
@@ -368,7 +393,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
     case 'salvage':
       events.all = { icon: loc.emoji, title: '廃材置き場', body: `${from} が廃材からアイテムを入手した` };
       if (rev && !Array.isArray(rev)) {
-        events[fromId] = { icon: loc.emoji, title: '廃材置き場で入手（本人のみ）', body: `「${rev.card?.label}」\n${rev.card?.desc ?? ''}` };
+        events[fromId] = makeCardDrawEvent(rev.card, '廃材置き場で入手！', `「${rev.card?.label}」\n${rev.card?.desc ?? ''}`, loc.emoji);
       }
       break;
     case 'hospital':
@@ -377,7 +402,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
     case 'warehouse':
       events.all = { icon: loc.emoji, title: '倉庫', body: `${from} が倉庫から１枚ドローした` };
       if (rev && !Array.isArray(rev)) {
-        events[fromId] = { icon: loc.emoji, title: '倉庫でドロー（本人のみ）', body: `「${rev.card?.label}」\n${rev.card?.desc ?? ''}` };
+        events[fromId] = makeCardDrawEvent(rev.card, '倉庫でドロー！', `「${rev.card?.label}」\n${rev.card?.desc ?? ''}`, loc.emoji);
       }
       break;
     case 'police_hq':
@@ -407,6 +432,9 @@ function handleTradeTargetChoice(fromId, cardId) {
   if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
   gameState = result.state;
   const events = { all: { icon: '🤝', title: '取引完了！', body: `${attackerName} と ${targetName} が手札を1枚交換した` } };
+  (result.gainCards ?? []).forEach(gc => {
+    events[gc.to] = makeCardDrawEvent(gc.card, '取引で入手！', `「${gc.card.label}」を交換で入手した`, '🤝');
+  });
   broadcastState(gameState, events);
   if (gameState.winner) broadcastWin();
 }

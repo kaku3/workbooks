@@ -75,7 +75,7 @@ function getColor(state, playerId) {
  * @param {object}   nameMap          - { peerId: displayName } のマップ
  * @param {function} onCardClick      - カードクリック時コールバック (card) => void
  * @param {function} onLocationPrompt - ロケーション効果解決UI表示コールバック (loc, state) => void
- * @param {function} onDraw           - カードドロー実行コールバック () => void
+ * @param {function} onDraw           - カードドロー実行コールバック (deckType: 'move'|'action') => void
  */
 export function renderGame(state, myId, nameMap, onCardClick, onLocationPrompt, onDraw) {
   // ---- 移動アニメーション検出 ----
@@ -326,7 +326,7 @@ const CARD_TILE_MAP = {
   dummy:   [6,3],
 };
 
-function getCardTile(card) {
+export function getCardTile(card) {
   if (card.type === CARD_TYPES.MOVE)   return CARD_TILE_MAP[`move_${card.value}`] ?? null;
   if (card.type === CARD_TYPES.ACTION) return CARD_TILE_MAP[card.action]           ?? null;
   if (card.type === CARD_TYPES.ITEM)   return CARD_TILE_MAP[card.family]           ?? CARD_TILE_MAP['dummy'];
@@ -361,22 +361,17 @@ export function createCardElement(card, playable, onClickCb) {
     artDiv.style.backgroundPosition = `${-(col * SPRITE.STEP_X)}px ${-(row * SPRITE.STEP_Y)}px`;
   }
 
-  // テーマ: dark=暗い下地＋白文字 / light=明るい下地＋黒文字
-  // constants.js の card.theme プロパティで個別上書き可能
   div.dataset.theme = card.theme ?? 'dark';
 
-  // カード種別に応じたレイアウト
-  if (card.type === CARD_TYPES.MOVE) {
-    // 移動カード: 左上数字ラベルを card-art の中にオーバーレイ
-    artDiv.insertAdjacentHTML('beforeend', `<div class="card-label card-label--corner">${card.label}</div>`);
-    div.appendChild(artDiv);
-    div.insertAdjacentHTML('beforeend', `<div class="card-desc card-desc--bar">${card.desc}</div>`);
-  } else {
-    // アクション/アイテムカード: 上全幅ラベルを card-art の中にオーバーレイ
-    artDiv.insertAdjacentHTML('beforeend', `<div class="card-label card-label--top">${card.label}</div>`);
-    div.appendChild(artDiv);
-    div.insertAdjacentHTML('beforeend', `<div class="card-desc card-desc--bar">${card.desc}</div>`);
-  }
+  // ① カード名（上部バー）
+  const nameDiv = document.createElement('div');
+  nameDiv.className = 'card-name';
+  nameDiv.textContent = card.label;
+  div.appendChild(nameDiv);
+
+  // ② art + 説明オーバーレイ（art 下部にかぶせる）
+  artDiv.insertAdjacentHTML('beforeend', `<div class="card-desc--overlay">${card.desc}</div>`);
+  div.appendChild(artDiv);
 
   if (playable && card.type !== CARD_TYPES.ITEM && onClickCb) {
     div.classList.add('playable');
@@ -452,17 +447,40 @@ function showTurnStartIfNeeded(state, myId, nameMap, onDraw) {
 
   if (turnAutoTimer) { clearTimeout(turnAutoTimer); turnAutoTimer = null; }
 
-  overlay.innerHTML = `<div class="turn-start-name">${name} のターン</div>`;
+  overlay.innerHTML = `<div class="turn-start-name">${name}<span class="turn-suffix"> のターン</span></div>`;
 
   if (isMyTurn) {
-    const btn = document.createElement('button');
-    btn.className = 'btn-primary turn-start-draw-btn';
-    btn.textContent = ' カードをドロー';
-    btn.onclick = () => {
-      overlay.style.display = 'none';
-      if (onDraw) onDraw();
-    };
-    overlay.appendChild(btn);
+    const btnWrap = document.createElement('div');
+    btnWrap.className = 'turn-start-draw-btns';
+    [
+      ['move',   '移動',      'card-draw-move'],
+      ['action', 'アクション', 'card-draw-action'],
+    ].forEach(([deckType, label, colorCls]) => {
+      const item = document.createElement('div');
+      item.className = 'draw-btn-item';
+      const btn = document.createElement('button');
+      btn.className = `turn-start-draw-btn ${colorCls}`;
+      const typeLbl = document.createElement('span');
+      typeLbl.className = 'draw-btn-type-label';
+      typeLbl.textContent = label;
+      item.appendChild(btn);
+      item.appendChild(typeLbl);
+      btn.onclick = () => {
+        // 両ボタン無効化 + 非選択側をフェードアウト
+        btnWrap.querySelectorAll('.draw-btn-item').forEach(it => {
+          it.querySelector('button').disabled = true;
+          if (it !== item) it.classList.add('draw-card-dimout');
+        });
+        // めくり → スライドフェードアウト アニメーション
+        item.classList.add('draw-card-picked');
+        item.addEventListener('animationend', () => {
+          overlay.style.display = 'none';
+          if (onDraw) onDraw(deckType);
+        }, { once: true });
+      };
+      btnWrap.appendChild(item);
+    });
+    overlay.appendChild(btnWrap);
   } else {
     turnAutoTimer = setTimeout(() => {
       overlay.style.display = 'none';

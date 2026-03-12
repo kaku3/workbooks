@@ -4,6 +4,7 @@
 
 import { LOCATIONS, CARD_TYPES } from './constants.js';
 import { sendPlayCard, sendResolveLoc } from './peer.js';
+import { getCardTile } from './render.js';
 
 // ---- 内部ヘルパー ----
 function getModal() {
@@ -447,6 +448,92 @@ export function showEffectOverlay(event) {
   overlay.style.animation = '';
   document.getElementById('effect-close-btn').onclick = () => {
     overlay.style.display = 'none';
+  };
+}
+
+// ============================================================
+// カードドロー演出オーバーレイ
+// ============================================================
+/**
+ * ドローしたカードをフリップアニメで見せる専用オーバーレイ。
+ * @param {{ icon, cardLabel, cardDesc, cardType }} event
+ */
+export function showDrawCardOverlay(event) {
+  const overlay = document.getElementById('draw-card-overlay');
+  // 専用オーバーレイが存在しない場合は汎用に fallback
+  if (!overlay) { showEffectOverlay(event); return; }
+
+  const card  = document.getElementById('drcard');
+  const front = document.getElementById('drcard-front');
+  const scene = overlay.querySelector('.drcard-scene');
+  const hint  = document.getElementById('drcard-hint');
+
+  // 内容をセット
+  document.getElementById('drcard-label').textContent = event.cardLabel ?? '';
+  document.getElementById('drcard-desc').textContent  = event.cardDesc  ?? '';
+
+  // アート（スプライト画像）をドローカードオーバーレイ用のスケールで適用
+  // drcard-art は幅150px。スプライトタイルを 80px → 150px にスケール (×1.875)
+  const artEl = document.getElementById('drcard-art');
+  if (artEl) {
+    const SCALE   = 150 / 80;                       // 1.875
+    const BG_W    = Math.round(640 * SCALE) + 'px'; // 1200px
+    const BG_H    = Math.round(384 * SCALE) + 'px'; // 720px
+    const STEP_X  = Math.round(80  * SCALE);         // 150px
+    const STEP_Y  = Math.round(96  * SCALE);         // 180px
+    const tile = event.card ? getCardTile(event.card) : null;
+    if (tile) {
+      const [col, row] = tile;
+      artEl.style.backgroundSize     = `${BG_W} ${BG_H}`;
+      artEl.style.backgroundPosition = `${-(col * STEP_X)}px ${-(row * STEP_Y)}px`;
+    } else {
+      artEl.style.backgroundSize     = '';
+      artEl.style.backgroundPosition = '';
+    }
+  }
+
+  // フロント面の色クラスをリセット
+  front.className = 'drcard-front';
+  if      (event.cardType === 'move')   front.classList.add('type-move');
+  else if (event.cardType === 'action') front.classList.add('type-action');
+  else                                   front.classList.add('type-item');
+
+  // 状態リセット
+  card.className = 'drcard-card';
+  scene.classList.remove('drcard-glow');
+  hint.classList.remove('visible');
+
+  overlay.style.display = 'flex';
+
+  // ① 落下バウンス（裏向き）
+  requestAnimationFrame(() => {
+    card.classList.add('drcard-appear');
+    card.addEventListener('animationend', function onAppear(e) {
+      if (e.target !== card) return;
+      card.removeEventListener('animationend', onAppear);
+      card.classList.remove('drcard-appear');
+
+      // ② フリップ（裏→表）
+      requestAnimationFrame(() => {
+        card.classList.add('drcard-flip');
+        card.addEventListener('animationend', function onFlip(e) {
+          if (e.target !== card) return;
+          card.removeEventListener('animationend', onFlip);
+          card.classList.remove('drcard-flip');
+          card.classList.add('drcard-revealed');
+
+          // ③ グロー放射 + ヒント表示
+          scene.classList.add('drcard-glow');
+          hint.classList.add('visible');
+        });
+      });
+    });
+  });
+
+  // タップで閉じる
+  overlay.onclick = () => {
+    overlay.style.display = 'none';
+    overlay.onclick = null;
   };
 }
 

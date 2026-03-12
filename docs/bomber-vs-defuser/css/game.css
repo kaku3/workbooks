@@ -61,13 +61,16 @@
 #player-list-inner { display: flex; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
 .player-item {
   border-radius: 6px;
-  padding: 8px;
+  padding: .25rem;
   font-size: 0.85rem;
   border-left: 4px solid transparent;
   min-width: 130px;
   flex-shrink: 0;
   transition: border-color 0.2s, background 0.2s;
 }
+.player-item:not(.current-turn) {
+  background-color: rgba(0,0,0,0.35)!important;
+} 
 .player-item.current-turn {
   /* background/color はJS側で #fef9c3 / #1a1a1a をインラインで設定 */
 }
@@ -79,6 +82,7 @@
   gap: 5px;
 }
 .player-item-sub  { color: var(--text-dim); font-size: 0.78rem; }
+.player-item-sub + .player-item-sub { font-weight: bold; }
 .player-dot {
   display: inline-block;
   width: 12px;

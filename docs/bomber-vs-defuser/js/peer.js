@@ -213,8 +213,8 @@ export function sendToHost(msg) {
 }
 
 // --------------- 共通アクション送信 ---------------
-export function sendPlayCard(cardId, targetPlayerId = null, chosenCardId = null, targetLocation = null) {
-  const msg = { type: MSG.PLAY_CARD, cardId, targetPlayerId, chosenCardId, targetLocation };
+export function sendPlayCard(cardId, targetPlayerId = null, chosenCardId = null, targetLocation = null, deckType = null) {
+  const msg = { type: MSG.PLAY_CARD, cardId, targetPlayerId, chosenCardId, targetLocation, deckType };
   if (isHost) onMessageCallback({ from: myId, ...msg });
   else sendToHost(msg);
 }
