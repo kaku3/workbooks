@@ -207,15 +207,34 @@ if (elCopyUrlBtn) {
   });
 }
 
-// ページ読み込み時: ?room=<id> があれば入力欄に自動セット
+// ページ読み込み時: ?room=<id> があれば入力欄に自動セット（編集不可に）
 (function applyRoomFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
+  const elResetBtn = document.getElementById('btn-reset-room');
   if (roomParam) {
-    elRoomInput.value = roomParam;
+    elRoomInput.value    = roomParam;
+    elRoomInput.disabled = true;          // 編集不可
+    if (elResetBtn) elResetBtn.style.display = '';
     elRoomInput.dispatchEvent(new Event('input'));
-    // ルーム作成パネルを非表示にして参加パネルだけ見せる
+    // ルーム作成パネルを非表示
     document.getElementById('panel-create').style.display = 'none';
+
+    if (elResetBtn) {
+      elResetBtn.addEventListener('click', () => {
+        // ?room を削除して全部リセット
+        history.replaceState(null, '', window.location.pathname);
+        elRoomInput.value    = '';
+        elRoomInput.disabled = false;
+        elResetBtn.style.display = 'none';
+        // ルーム作成パネルを再表示
+        document.getElementById('panel-create').style.display = 'block';
+        document.getElementById('panel-join').style.display   = 'block';
+        elCreateBtn.disabled = false;
+        elJoinBtn.disabled   = true;
+        elRoomInput.dispatchEvent(new Event('input'));
+      }, { once: true });
+    }
   }
 })();
 

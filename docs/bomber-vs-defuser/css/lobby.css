@@ -83,6 +83,33 @@
 .team-name { font-weight: 800; font-size: 0.92rem; margin-bottom: 6px; color: #374151; }
 .team-goal { font-size: 0.78rem; color: #6b7280; line-height: 1.6; }
 
+/* ルームID入力行（input + リセットボタン横並び） */
+.room-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.room-input-row input[type="text"] {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.room-input-row input[type="text"]:disabled {
+  background: #f0f0f0;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+.btn-reset-room {
+  flex-shrink: 0;
+  white-space: nowrap;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1.5px solid #fca5a5;
+  font-weight: 600;
+}
+.btn-reset-room:hover {
+  background: #fca5a5;
+}
+
 /* 入力・ボタンカード */
 .card-panel {
   background: #ffffff;
@@ -111,6 +138,8 @@
 .lobby-screen .btn-secondary { background: #ffffff; color: #374151; border: 1.5px solid #d1d5db; }
 .lobby-screen .btn-success   { background: #16a34a; }
 .lobby-screen .btn-small     { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+/* card-panel直下のボタンは必ず横幅いっぱい */
+.card-panel > button { width: 100%; }
 
 /* 人数選択ラジオボタン */
 .count-select-label {

@@ -29,6 +29,11 @@ function randomInt(max) {
  * @returns {GameState}
  */
 export function createInitialState(playerIds, playerNames = []) {
+  // プレイ順をランダムに決定
+  const order = shuffle([...Array(playerIds.length).keys()]);
+  playerIds   = order.map(i => playerIds[i]);
+  playerNames = order.map(i => playerNames[i] ?? '');
+
   const n = playerIds.length;
   if (n < 3 || n > 6) throw new Error('3〜6人必要です');
 
