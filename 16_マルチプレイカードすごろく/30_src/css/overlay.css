@@ -237,6 +237,17 @@ body.modal-scroll-lock { overflow: hidden; }
   cursor: pointer;
 }
 
+.drcard-title {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+  margin: 0;
+  min-height: 1.5em;
+  letter-spacing: 0.04em;
+}
+
 .drcard-scene {
   perspective: 1000px;
   position: relative;
@@ -392,6 +403,39 @@ body.modal-scroll-lock { overflow: hidden; }
 .drcard-hint.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ---- ロスト演出アニメーション ---- */
+
+/* 下から表向きで登場 */
+@keyframes drcard-lost-enter {
+  0%   { transform: rotateY(180deg) translateY(80px) scale(0.85); opacity: 0; }
+  60%  { transform: rotateY(180deg) translateY(-6px) scale(1.03); opacity: 1; }
+  100% { transform: rotateY(180deg) translateY(0px)  scale(1.0);  opacity: 1; }
+}
+.drcard-lost-enter {
+  animation: drcard-lost-enter 0.45s cubic-bezier(0.22, 1.0, 0.36, 1) forwards;
+}
+
+/* 上へ飛び去る */
+@keyframes drcard-lost-fly {
+  0%   { transform: rotateY(180deg) translateY(0px)    scale(1.0);  opacity: 1; }
+  25%  { transform: rotateY(180deg) translateY(-16px)  scale(1.04); opacity: 1; }
+  100% { transform: rotateY(180deg) translateY(-320px) scale(0.65); opacity: 0; }
+}
+.drcard-lost-fly {
+  animation: drcard-lost-fly 0.68s cubic-bezier(0.4, 0, 0.8, 0) forwards;
+}
+
+/* ロスト用赤グロー */
+.drcard-scene.drcard-lost-glow::after {
+  background: radial-gradient(circle, rgba(220, 50, 50, 0.55) 0%, transparent 68%);
+  animation: drcard-glow-burst 0.6s ease-out forwards;
+}
+
+/* ロストモード：背景を赤みに */
+#draw-card-overlay.drcard-mode-lost {
+  background: rgba(40, 5, 5, 0.88);
 }
 
 /* ---------- モーダルフェードイン ---------- */

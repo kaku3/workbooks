@@ -6,6 +6,25 @@ import { LOCATIONS, CARD_TYPES } from './constants.js';
 import { sendPlayCard, sendResolveLoc } from './peer.js';
 import { getCardTile } from './render.js';
 
+// ============================================================
+// カードオーバーレイ キュー（複数枚順番表示）
+// ============================================================
+const _overlayQueue = [];
+let _overlayPlaying = false;
+
+export function enqueueCardOverlay(event) {
+  _overlayQueue.push(event);
+  if (!_overlayPlaying) _flushOverlayQueue();
+}
+
+function _flushOverlayQueue() {
+  if (_overlayQueue.length === 0) { _overlayPlaying = false; return; }
+  _overlayPlaying = true;
+  const ev = _overlayQueue.shift();
+  if (ev.isLost) showLostCardOverlay(ev, _flushOverlayQueue);
+  else            showDrawCardOverlay(ev, _flushOverlayQueue);
+}
+
 // ---- 内部ヘルパー ----
 function getModal() {
   return {
@@ -435,7 +454,7 @@ export function showPublicReveal(msg) {
  * アクション / ロケーション / ドロー効果の結果を全画面オーバーレイで表示する。
  * @param {{ icon: string, title: string, body: string }} event
  */
-export function showEffectOverlay(event) {
+export function showEffectOverlay(event, onClose = null) {
   const overlay = document.getElementById('effect-overlay');
   if (!overlay) return;
   document.getElementById('effect-icon').textContent  = event.icon  ?? '';
@@ -448,6 +467,7 @@ export function showEffectOverlay(event) {
   overlay.style.animation = '';
   document.getElementById('effect-close-btn').onclick = () => {
     overlay.style.display = 'none';
+    onClose?.();
   };
 }
 
@@ -458,7 +478,7 @@ export function showEffectOverlay(event) {
  * ドローしたカードをフリップアニメで見せる専用オーバーレイ。
  * @param {{ icon, cardLabel, cardDesc, cardType }} event
  */
-export function showDrawCardOverlay(event) {
+export function showDrawCardOverlay(event, onClose = null) {
   const overlay = document.getElementById('draw-card-overlay');
   // 専用オーバーレイが存在しない場合は汎用に fallback
   if (!overlay) { showEffectOverlay(event); return; }
@@ -471,6 +491,8 @@ export function showDrawCardOverlay(event) {
   // 内容をセット
   document.getElementById('drcard-label').textContent = event.cardLabel ?? '';
   document.getElementById('drcard-desc').textContent  = event.cardDesc  ?? '';
+  const titleEl = document.getElementById('drcard-title');
+  if (titleEl) titleEl.textContent = event.title ?? '';
 
   // アート（スプライト画像）をドローカードオーバーレイ用のスケールで適用
   // drcard-art は幅150px。スプライトタイルを 80px → 150px にスケール (×1.875)
@@ -500,9 +522,9 @@ export function showDrawCardOverlay(event) {
 
   // 状態リセット
   card.className = 'drcard-card';
-  scene.classList.remove('drcard-glow');
+  scene.classList.remove('drcard-glow', 'drcard-lost-glow');
   hint.classList.remove('visible');
-
+  overlay.classList.remove('drcard-mode-lost');
   overlay.style.display = 'flex';
 
   // ① 落下バウンス（裏向き）
@@ -534,7 +556,105 @@ export function showDrawCardOverlay(event) {
   overlay.onclick = () => {
     overlay.style.display = 'none';
     overlay.onclick = null;
+    overlay.classList.remove('drcard-mode-lost');
+    onClose?.();
   };
+}
+
+// ============================================================
+// カードロスト演出オーバーレイ
+// ============================================================
+/**
+ * 没収・ロストしたカードを表向きで下から上に飛び去らせる演出。
+ * @param {{ isLost, card, cardLabel, cardDesc, cardType, title }} event
+ * @param {Function} [onClose]
+ */
+export function showLostCardOverlay(event, onClose = null) {
+  const overlay = document.getElementById('draw-card-overlay');
+  if (!overlay) { showEffectOverlay(event); onClose?.(); return; }
+
+  const card  = document.getElementById('drcard');
+  const front = document.getElementById('drcard-front');
+  const scene = overlay.querySelector('.drcard-scene');
+  const hint  = document.getElementById('drcard-hint');
+
+  // コンテンツをセット
+  document.getElementById('drcard-label').textContent = event.cardLabel ?? '';
+  document.getElementById('drcard-desc').textContent  = event.cardDesc  ?? '';
+  const titleEl = document.getElementById('drcard-title');
+  if (titleEl) titleEl.textContent = event.title ?? '';
+
+  // アート
+  const artEl = document.getElementById('drcard-art');
+  if (artEl) {
+    const SCALE  = 150 / 80;
+    const BG_W   = Math.round(640 * SCALE) + 'px';
+    const BG_H   = Math.round(384 * SCALE) + 'px';
+    const STEP_X = Math.round(80  * SCALE);
+    const STEP_Y = Math.round(96  * SCALE);
+    const tile = event.card ? getCardTile(event.card) : null;
+    if (tile) {
+      const [col, row] = tile;
+      artEl.style.backgroundSize     = `${BG_W} ${BG_H}`;
+      artEl.style.backgroundPosition = `${-(col * STEP_X)}px ${-(row * STEP_Y)}px`;
+    } else {
+      artEl.style.backgroundSize     = '';
+      artEl.style.backgroundPosition = '';
+    }
+  }
+
+  // 表面の色クラス
+  front.className = 'drcard-front';
+  if      (event.cardType === 'move')   front.classList.add('type-move');
+  else if (event.cardType === 'action') front.classList.add('type-action');
+  else                                   front.classList.add('type-item');
+
+  // 状態リセット：最初から表向き
+  card.className = 'drcard-card';
+  scene.classList.remove('drcard-glow', 'drcard-lost-glow');
+  hint.classList.remove('visible');
+  overlay.classList.add('drcard-mode-lost');
+  overlay.style.display = 'flex';
+
+  let cancelled = false;
+  let flyTimer  = null;
+
+  function doClose() {
+    if (cancelled) return;
+    cancelled = true;
+    if (flyTimer) { clearTimeout(flyTimer); flyTimer = null; }
+    overlay.style.display = 'none';
+    overlay.onclick = null;
+    overlay.classList.remove('drcard-mode-lost');
+    onClose?.();
+  }
+
+  // ① 下から表向きで登場
+  requestAnimationFrame(() => {
+    card.classList.add('drcard-lost-enter');
+    card.addEventListener('animationend', function onEnter(e) {
+      if (e.target !== card) return;
+      card.removeEventListener('animationend', onEnter);
+      if (cancelled) return;
+      card.classList.remove('drcard-lost-enter');
+      card.classList.add('drcard-revealed');
+      // 赤グロー
+      scene.classList.add('drcard-lost-glow');
+      // ② 短い間見せてから上へ飛び去る
+      flyTimer = setTimeout(() => {
+        if (cancelled) return;
+        card.classList.add('drcard-lost-fly');
+        card.addEventListener('animationend', function onFly(e) {
+          if (e.target !== card) return;
+          card.removeEventListener('animationend', onFly);
+          doClose();
+        });
+      }, 700);
+    });
+  });
+
+  // タップで早送り
+  overlay.onclick = () => doClose();
 }
 
 // ============================================================

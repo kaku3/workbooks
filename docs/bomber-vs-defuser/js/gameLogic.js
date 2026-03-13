@@ -263,7 +263,7 @@ function actionSteal(state, player, targetId, myCardId) {
   const theirCard = target.hand.splice(theirIdx, 1)[0];
   player.hand.push(theirCard);
   addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} から強奪`);
-  return { gainCard: { to: player.id, card: theirCard } };
+  return { gainCard: { to: player.id, card: theirCard }, lostCard: { to: targetId, card: theirCard } };
 }
 
 function actionPass(state) {
@@ -610,12 +610,17 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       const others = state.players.filter(p => p.id !== player.id && p.hand.length > 0);
       if (others.length > 0 && player.hand.length > 0) {
         const target = others[randomInt(others.length)];
-        const myIdx = randomInt(player.hand.length);
+        const myIdx    = randomInt(player.hand.length);
         const theirIdx = randomInt(target.hand.length);
-        const tmp = player.hand.splice(myIdx, 1)[0];
-        player.hand.push(target.hand.splice(theirIdx, 1)[0]);
-        target.hand.push(tmp);
+        const myCard    = player.hand.splice(myIdx, 1)[0];
+        const theirCard = target.hand.splice(theirIdx, 1)[0];
+        player.hand.push(theirCard);
+        target.hand.push(myCard);
         addLog(state, `${pName(state, player.id)}：酒場で ${pName(state, target.id)} と手札1枚交換（ランダム）`);
+        return {
+          gainCards: [{ to: player.id, card: theirCard }, { to: target.id, card: myCard }],
+          lostCards: [{ to: player.id, card: myCard },    { to: target.id, card: theirCard }],
+        };
       }
       break;
     }
@@ -650,16 +655,23 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       break;
     }
     case 'casino': {
+      const DICE_EMOJI = ['⚀','⚁','⚂','⚃','⚄','⚅'];
       const roll = randomInt(6) + 1;
+      const diceEmoji = DICE_EMOJI[roll - 1];
       if (roll % 2 === 0) {
         const c1 = drawFromDeck(state); if (c1) player.hand.push(c1);
         const c2 = drawFromDeck(state); if (c2) player.hand.push(c2);
-        addLog(state, `${pName(state, player.id)}：カジノ ダイス${roll}（偶数）→2枚ドロー！`);
+        addLog(state, `${pName(state, player.id)}：カジノ ${diceEmoji}（偶数）→2枚ドロー！`);
+        const gained = [c1, c2].filter(Boolean);
+        if (gained.length > 0) return { gainCards: gained.map(c => ({ to: player.id, card: c })) };
       } else {
         if (player.hand.length > 0) {
           const lost = player.hand.splice(randomInt(player.hand.length), 1)[0];
           discardCard(state, lost);
-          addLog(state, `${pName(state, player.id)}：カジノ ダイス${roll}（奇数）→1枚没収`);
+          addLog(state, `${pName(state, player.id)}：カジノ ${diceEmoji}（奇数）→1枚没収`);
+          return { lostCard: { to: player.id, card: lost } };
+        } else {
+          addLog(state, `${pName(state, player.id)}：カジノ ${diceEmoji}（奇数）→没収するカードなし`);
         }
       }
       break;
@@ -688,14 +700,18 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
     }
     case 'crossing': {
       // 全員が手札を1枚ずつ次インデックスに
+      const pLen = state.players.length;
       const given = state.players.map(p => {
         if (p.hand.length === 0) return null;
         return p.hand.splice(randomInt(p.hand.length), 1)[0];
       });
       given.forEach((card, i) => {
-        if (card) state.players[(i + 1) % state.players.length].hand.push(card);
+        if (card) state.players[(i + 1) % pLen].hand.push(card);
       });
       addLog(state, 'スクランブル交差点：全員の手札が1枚ずつ次プレイヤーに回った');
+      const gainCards = given.map((c, i) => c ? { to: state.players[(i + 1) % pLen].id, card: c } : null).filter(Boolean);
+      const lostCards = given.map((c, i) => c ? { to: state.players[i].id,              card: c } : null).filter(Boolean);
+      if (gainCards.length > 0) return { gainCards, lostCards };
       break;
     }
     case 'police_box': {
@@ -705,6 +721,7 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
           const lost = target.hand.splice(randomInt(target.hand.length), 1)[0];
           discardCard(state, lost);
           addLog(state, `${pName(state, player.id)}：交番で ${pName(state, chosenCardId)} の手札を1枚没収: ${lost.label}`);
+          return { lostCard: { to: chosenCardId, card: lost } };
         }
       } else {
         addLog(state, `${pName(state, player.id)}：交番（対象なし）`);
@@ -747,8 +764,8 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       if (player.hand.length > 0) {
         const exposed = player.hand[randomInt(player.hand.length)];
         addLog(state, `${pName(state, player.id)}：放送局で ${exposed.label} を全員に公開 → 1枚ドロー`);
-        const c = drawFromDeck(state); if (c) player.hand.push(c);
-        return { publicReveal: { card: exposed, owner: player.id } };
+        const drawn = drawFromDeck(state); if (drawn) player.hand.push(drawn);
+        return { publicReveal: { card: exposed, owner: player.id }, gainCard: drawn ? { to: player.id, card: drawn } : null };
       }
       break;
     }
@@ -771,9 +788,11 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
     case 'hospital': {
       state.discard.push(...player.hand);
       player.hand = [];
-      for (let i = 0; i < 3; i++) { const c = drawFromDeck(state, 'move');   if (c) player.hand.push(c); }
-      for (let i = 0; i < 2; i++) { const c = drawFromDeck(state, 'action'); if (c) player.hand.push(c); }
+      const drawnH = [];
+      for (let i = 0; i < 3; i++) { const c = drawFromDeck(state, 'move');   if (c) { player.hand.push(c); drawnH.push(c); } }
+      for (let i = 0; i < 2; i++) { const c = drawFromDeck(state, 'action'); if (c) { player.hand.push(c); drawnH.push(c); } }
       addLog(state, `${pName(state, player.id)}：病院で手札リセット → 移動3枚＋アクション2枚引き直し`);
+      if (drawnH.length > 0) return { gainCards: drawnH.map(c => ({ to: player.id, card: c })) };
       break;
     }
     case 'warehouse': {

@@ -23,7 +23,8 @@ import {
   showTargetSelector, showLocationPrompt,
   showPrivateReveal, showPublicReveal,
   showEffectOverlay,
-  showDrawCardOverlay,
+  showDrawCardOverlay, showLostCardOverlay,
+  enqueueCardOverlay,
   showGameOver, showToast, showError,
   showPassCardSelector, showTradeTargetSelector, showDashCardSelector,
 } from './modal.js';
@@ -93,8 +94,20 @@ function onMessage(msg) {
     case MSG.STATE_UPDATE:
       localState = msg.state;
       if (msg.event) {
-        if (msg.event.isDraw) showDrawCardOverlay(msg.event);
-        else                  showEffectOverlay(msg.event);
+        const ev = msg.event;
+        if (ev.preEffect) {
+          // まずテキストエフェクトを表示し、OK後にカード演出へ
+          showEffectOverlay(ev.preEffect, () => {
+            if (ev.multiCards) ev.multiCards.forEach(e => enqueueCardOverlay(e));
+            else enqueueCardOverlay(ev);
+          });
+        } else if (ev.multiCards) {
+          ev.multiCards.forEach(e => enqueueCardOverlay(e));
+        } else if (ev.isDraw || ev.isLost) {
+          enqueueCardOverlay(ev);
+        } else {
+          showEffectOverlay(ev);
+        }
       }
       renderGame(msg.state, myId, nameMap, onCardClick, onLocationPrompt, (deckType) => sendPlayCard(null, null, null, null, deckType));
       if (isHost) gameState = msg.state._full ?? gameState; // ホストはフル状態を維持
@@ -246,6 +259,11 @@ function makeCardDrawEvent(card, title, body, icon) {
   return { isDraw: true, card, cardLabel: card.label, cardDesc: card.desc, cardType: card.type, icon: icon ?? autoIcon, title, body };
 }
 
+function makeCardLostEvent(card, title, icon) {
+  const autoIcon = card.type === CARD_TYPES.ITEM ? '🎁' : card.type === CARD_TYPES.MOVE ? '🏃' : '⚡';
+  return { isLost: true, card, cardLabel: card.label, cardDesc: card.desc, cardType: card.type, icon: icon ?? autoIcon, title };
+}
+
 // アクションカードのイベントオブジェクトを構築
 function buildActionEvents(fromId, card, targetId, targetLocation, result) {
   const events = {};
@@ -260,14 +278,15 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       break;
     case 'steal':
       events.all = { icon: '💸', title: '強奪！', body: `${from} が ${targ} の手札を１枚奪った` };
-      if (result?.gainCard) events[result.gainCard.to] = makeCardDrawEvent(result.gainCard.card, '強奪！', `${targ} から手札を奪った`, '💸');
+      if (result?.gainCard) events[result.gainCard.to] = makeCardDrawEvent(result.gainCard.card, `💸 強奪！`, `${targ} から手札を奔った`, '💸');
+      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `💸 強奪！${from} に奔われた`, '💸');
       break;
     case 'pass':
       events.all = { icon: '🔀', title: '横流し！', body: '全員がカードを選んでいます…' };
       break;
     case 'dump':
       events.all = { icon: '🗑️', title: 'ポイ捨て！', body: `${from} が ${targ} の手札を１枚捨てさせた` };
-      if (result?.lostCard) events[result.lostCard.to] = makeCardDrawEvent(result.lostCard.card, 'ポイ捨て！', `${from} にカードを捨てさせられた`, '🗑️');
+      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `🗑️ ポイ捨て！${from} に捨てさせられた`, '🗑️');
       break;
     case 'peek':
       events.all = { icon: '🔍', title: '尋問', body: `${from} が ${targ} の手札を１枚こっそり確認した` };
@@ -300,7 +319,7 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
       break;
     case 'smoke':
       events.all = { icon: '🌫️', title: '煙幕！', body: `${from} が ${targ} の移動カード1枚を破棄した` };
-      if (result?.lostCard) events[result.lostCard.to] = makeCardDrawEvent(result.lostCard.card, '煙幕！', `${from} に移動カードを破棄された`, '🌫️');
+      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `🌫️ 煙幕！${from} に破棄された`, '🌫️');
       break;
     default: break;
   }
@@ -347,9 +366,21 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
         events[rev.to] = makeCardDrawEvent(rev.card, 'ジャンク屋でドロー！', `引いたカード：「${rev.card?.label}」\n${rev.card?.desc ?? ''}`, loc.emoji);
       }
       break;
-    case 'pub':
+    case 'pub': {
       events.all = { icon: loc.emoji, title: '酒場', body: `${from} が強制的に誰かと手札１枚交換した（泥酔）` };
+      if (result?.gainCards || result?.lostCards) {
+        const gainMap = {}; (result.gainCards ?? []).forEach(gc => { gainMap[gc.to] = gc.card; });
+        const lostMap = {}; (result.lostCards ?? []).forEach(lc => { lostMap[lc.to] = lc.card; });
+        [...new Set([...Object.keys(gainMap), ...Object.keys(lostMap)])].forEach(pid => {
+          const cards = [];
+          if (lostMap[pid]) cards.push(makeCardLostEvent(lostMap[pid], `🍺 酒場：渡したカード`, loc.emoji));
+          if (gainMap[pid]) cards.push(makeCardDrawEvent(gainMap[pid], `🍺 酒場：受け取ったカード！`, `「${gainMap[pid].label}」\n${gainMap[pid].desc ?? ''}`, loc.emoji));
+          if      (cards.length === 1) events[pid] = cards[0];
+          else if (cards.length  > 1) events[pid] = { multiCards: cards };
+        });
+      }
       break;
+    }
     case 'detective':
       // ログは全員 → オーバーレイは本人のみ（investigator）
       events[fromId] = { icon: loc.emoji, title: '探偵事務所', body: `${targ ?? '?'} の手札をこっそり調査した` };
@@ -363,19 +394,45 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       break;
     case 'casino': {
       const lastMsg = gameState.log[gameState.log.length - 1]?.message ?? '';
-      events.all = { icon: loc.emoji, title: 'カジノ', body: lastMsg };
+      // 「名前：カジノ ⚀（奇数）→1枚没収」を改行+【】付きで整形
+      const body = lastMsg
+        .replace('：カジノ ', '：\nカジノ ')
+        .replace('→', '\n→【')
+        .replace(/(\n→【.+)$/, '$1】');
+      const diceEvent = { icon: loc.emoji, title: 'カジノ', body };
+      events.all = diceEvent;
+      if (result?.gainCards?.length > 0) {
+        const gc = result.gainCards;
+        const cardEv = gc.length > 1
+          ? { multiCards: gc.map((c, i) => makeCardDrawEvent(c.card, `🎰 カジノ ${i + 1}枚目ドロー！`, `「${c.card.label}」を獲得！\n${c.card.desc ?? ''}`, loc.emoji)) }
+          : makeCardDrawEvent(gc[0].card, '🎰 カジノ：ドロー！', `「${gc[0].card.label}」を獲得！\n${gc[0].card.desc ?? ''}`, loc.emoji);
+        events[gc[0].to] = { ...cardEv, preEffect: diceEvent };
+      } else if (result?.lostCard) {
+        events[result.lostCard.to] = { ...makeCardLostEvent(result.lostCard.card, '🎰 カジノ：没収…', '😢'), preEffect: diceEvent };
+      }
       break;
     }
     case 'tower':
       events.all = { icon: loc.emoji, title: 'タワー', body: `${from} が山札からカードをサーチして入手した` };
       if (result?.gainCard) events[fromId] = makeCardDrawEvent(result.gainCard.card, 'タワーで入手！', `「${result.gainCard.card.label}」\n${result.gainCard.card.desc ?? ''}`, loc.emoji);
       break;
-    case 'crossing':
+    case 'crossing': {
       events.all = { icon: loc.emoji, title: 'スクランブル交差点', body: '全員の手札が1枚ずつ次のプレイヤーに回った！' };
+      if (result?.gainCards || result?.lostCards) {
+        const gainMap = {}; (result.gainCards ?? []).forEach(gc => { gainMap[gc.to] = gc.card; });
+        const lostMap = {}; (result.lostCards ?? []).forEach(lc => { lostMap[lc.to] = lc.card; });
+        [...new Set([...Object.keys(gainMap), ...Object.keys(lostMap)])].forEach(pid => {
+          const cards = [];
+          if (lostMap[pid]) cards.push(makeCardLostEvent(lostMap[pid], `🚦 交差点：渡したカード`, loc.emoji));
+          if (gainMap[pid]) cards.push(makeCardDrawEvent(gainMap[pid], `🚦 交差点：受け取ったカード！`, `「${gainMap[pid].label}」\n${gainMap[pid].desc ?? ''}`, loc.emoji));
+          if      (cards.length === 1) events[pid] = cards[0];
+          else if (cards.length  > 1) events[pid] = { multiCards: cards };
+        });
+      }
       break;
+    }
     case 'police_box':
-      events.all = { icon: loc.emoji, title: '交番', body: `${from} が ${targ ?? '?'} の手札を１枚没収した` };
-      break;
+      events.all = { icon: loc.emoji, title: '交番', body: `${from} が ${targ ?? '?'} の手札を１枚没収した` };      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `🚔 交番：没収されました`, loc.emoji);      break;
     case 'black_mkt':
       events.all = { icon: loc.emoji, title: '闇市', body: `${from} が捨て札からカードを入手した` };
       if (result?.gainCard) events[fromId] = makeCardDrawEvent(result.gainCard.card, '闇市で入手！', `「${result.gainCard.card.label}」\n${result.gainCard.card.desc ?? ''}`, loc.emoji);
@@ -386,6 +443,7 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       break;
     case 'broadcast':
       events.all = { icon: loc.emoji, title: '放送局！', body: `${from} の手札が全員に公開された！ → １枚ドロー` };
+      if (result?.gainCard) events[fromId] = makeCardDrawEvent(result.gainCard.card, `📺 放送局：ドロー！`, `「${result.gainCard.card.label}」\n${result.gainCard.card.desc ?? ''}`, loc.emoji);
       break;
     case 'construct':
       events.all = { icon: loc.emoji, title: '工事現場', body: `${from} は工事現場で１回休みになった` };
@@ -398,6 +456,11 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       break;
     case 'hospital':
       events.all = { icon: loc.emoji, title: '病院', body: `${from} の手札がリセットされた → ５枚引き直し` };
+      if (result?.gainCards?.length > 0) {
+        events[fromId] = { multiCards: result.gainCards.map((gc, i) =>
+          makeCardDrawEvent(gc.card, `🏥 病院 ${i + 1}/${result.gainCards.length}枚目`, `「${gc.card.label}」\n${gc.card.desc ?? ''}`, loc.emoji)
+        )};
+      }
       break;
     case 'warehouse':
       events.all = { icon: loc.emoji, title: '倉庫', body: `${from} が倉庫から１枚ドローした` };
