@@ -78,6 +78,10 @@ export const CARD_DEFINITIONS = [
   { id: 'act_smoke_a',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダム破棄' },
   { id: 'act_smoke_b',  type: CARD_TYPES.ACTION, action: 'smoke',  label: '煙幕',    desc: '相手の手札から移動カード1枚をランダム破棄' },
 
+  // --- ブースターカード ---
+  { id: 'act_glove_a',  type: CARD_TYPES.ACTION, action: 'glove',  label: '手袋',    desc: '強奪・ポイ捨て・煙幕と同時使用で効果+1（消費型）' },
+  { id: 'act_glove_b',  type: CARD_TYPES.ACTION, action: 'glove',  label: '手袋',    desc: '強奪・ポイ捨て・煙幕と同時使用で効果+1（消費型）' },
+
 ];
 
 // アイテムパイル定義（通常デッキとは別に管理。工場・ジャンク屋でのみ取得可能）
@@ -115,7 +119,7 @@ export const DEFUSE_KIT_IDS    = ['item_kit_x', 'item_kit_y', 'item_kit_z'];
 // ロケーション定義  (14マス: インデックス0〜13)
 // ============================================================
 export const LOCATIONS = [
-  { id: 0,  name: 'スタート',           type: 'start',      emoji: '🏁', desc: 'スタート地点' },
+  { id: 0,  name: 'スタート',           type: 'start',      emoji: '🏁', desc: '手札2枚捨て→相手指定→ランダム4枚から1枚奪取' },
   { id: 1,  name: 'ジャンク屋',         type: 'junk',       emoji: '🔩', desc: 'アイテムパイルからランダムに1枚引く' },
   { id: 2,  name: '酒場',               type: 'pub',        emoji: '🍺', desc: '強制的に誰かと手札1枚交換（ランダム）' },
   { id: 3,  name: '探偵事務所',         type: 'detective',  emoji: '🕵️', desc: '誰かの手札を1枚こっそり見る' },
@@ -129,7 +133,7 @@ export const LOCATIONS = [
   { id: 11, name: '工事現場',           type: 'construct',  emoji: '🚧', desc: '1回休み（次のターン移動できない）' },
   { id: 12, name: '廃材置き場',         type: 'salvage',    emoji: '🪨', desc: 'アイテムパイルからランダムに1枚引く' },
   { id: 13, name: '病院',               type: 'hospital',   emoji: '🏥', desc: '手札を全て捨て、山札から5枚引き直す' },
-  { id: 14, name: '警察本部',           type: 'police_hq',  emoji: '🚓', desc: '誰かの陣営（爆弾魔/解除班）をこっそり知る' },
+  { id: 14, name: '警察本部',           type: 'police_hq',  emoji: '🚓', desc: '陣営カード>ダミーなら陣営特定、それ以外は捜査失敗' },
   { id: 15, name: '裏路地',             type: 'alley',      emoji: '🌃', desc: '捨て札3枚からランダムに1枚選んで拾う' },
 ];
 

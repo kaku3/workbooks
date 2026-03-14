@@ -178,8 +178,9 @@ export function doDrawPhase(state, deckType = 'move') {
  * @param {string|null} targetPlayerId - アクション対象プレイヤーID（必要な場合）
  * @param {string|null} chosenCardId   - 交換等で選ぶカードのID（必要な場合）
  * @param {number|null} targetLocation - 通行止め等のロケーションindex
+ * @param {string|null} gloveCardId    - 手袋カードID（コンボ時）
  */
-export function playCard(state, cardId, targetPlayerId = null, chosenCardId = null, targetLocation = null) {
+export function playCard(state, cardId, targetPlayerId = null, chosenCardId = null, targetLocation = null, gloveCardId = null) {
   const player = getCurrentPlayer(state);
   const cardIdx = player.hand.findIndex(c => c.id === cardId);
   if (cardIdx === -1) return { state, error: 'カードが手札にありません' };
@@ -206,8 +207,26 @@ export function playCard(state, cardId, targetPlayerId = null, chosenCardId = nu
     if (locType === 'alley')     pendingData.discard  = shuffle([...state.discard]).slice(0, 3).map(c => ({ ...c }));
     state.pendingAction = pendingData;
   } else if (card.type === CARD_TYPES.ACTION) {
+    // 手袋カードは単体プレイ不可
+    if (card.action === 'glove') {
+      player.hand.push(card);
+      return { state, error: '手袋は単体でプレイできません（強奪・ポイ捨て・煙幕と同時使用してください）' };
+    }
+
+    // 手袋コンボ処理
+    let boosted = false;
+    if (gloveCardId && ['steal', 'dump', 'smoke'].includes(card.action)) {
+      const gloveIdx = player.hand.findIndex(c => c.id === gloveCardId);
+      if (gloveIdx !== -1 && player.hand[gloveIdx].action === 'glove') {
+        const gloveCard = player.hand.splice(gloveIdx, 1)[0];
+        discardCard(state, gloveCard);
+        boosted = true;
+        addLog(state, `${pName(state, player.id)} が手袋を併用！`);
+      }
+    }
+
     discardCard(state, card);
-    const actionResult = resolveAction(state, player, card, targetPlayerId, chosenCardId, targetLocation);
+    const actionResult = resolveAction(state, player, card, targetPlayerId, chosenCardId, targetLocation, boosted);
     if (actionResult.needsInput) {
       // クライアントへ追加入力を要求
       state.pendingAction = actionResult.pendingAction;
@@ -230,12 +249,12 @@ export function playCard(state, cardId, targetPlayerId = null, chosenCardId = nu
 }
 
 // --------------- アクション解決 ---------------
-function resolveAction(state, player, card, targetId, chosenCardId, targetLocation) {
+function resolveAction(state, player, card, targetId, chosenCardId, targetLocation, boosted = false) {
   switch (card.action) {
     case 'trade':   return actionTrade(state, player, targetId, chosenCardId);
-    case 'steal':   return actionSteal(state, player, targetId, chosenCardId);
+    case 'steal':   return actionSteal(state, player, targetId, chosenCardId, boosted);
     case 'pass':    return actionPass(state);
-    case 'dump':    return actionDump(state, player, targetId);
+    case 'dump':    return actionDump(state, player, targetId, boosted);
     case 'peek':    return actionPeek(state, player, targetId);
     case 'expose':  return actionExpose(state, player, targetId);
     case 'whisper': return actionWhisper(state, player, targetId);
@@ -243,7 +262,7 @@ function resolveAction(state, player, card, targetId, chosenCardId, targetLocati
     case 'block':   return actionBlock(state, targetLocation);
     case 'detect':  return actionDetect(state, player, targetId);
     case 'dash':    return actionDash(state, player);
-    case 'smoke':   return actionSmoke(state, player, targetId);
+    case 'smoke':   return actionSmoke(state, player, targetId, boosted);
     default:        return {};
   }
 }
@@ -261,14 +280,28 @@ function actionTrade(state, player, targetId, myCardId) {
   };
 }
 
-function actionSteal(state, player, targetId, myCardId) {
+function actionSteal(state, player, targetId, myCardId, boosted = false) {
   const target = getPlayerById(state, targetId);
   if (!target || target.hand.length === 0) return {};
-  const theirIdx = randomInt(target.hand.length);
-  const theirCard = target.hand.splice(theirIdx, 1)[0];
-  player.hand.push(theirCard);
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} から強奪`);
-  return { gainCard: { to: player.id, card: theirCard }, lostCard: { to: targetId, card: theirCard } };
+  const count = boosted ? Math.min(2, target.hand.length) : 1;
+  const stolen = [];
+  for (let i = 0; i < count; i++) {
+    if (target.hand.length === 0) break;
+    const idx = randomInt(target.hand.length);
+    const card = target.hand.splice(idx, 1)[0];
+    player.hand.push(card);
+    stolen.push(card);
+  }
+  const suffix = boosted ? '（手袋+2枚）' : '';
+  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} から強奪${suffix}`);
+  if (stolen.length === 1) {
+    return { gainCard: { to: player.id, card: stolen[0] }, lostCard: { to: targetId, card: stolen[0] }, boosted };
+  }
+  return {
+    gainCards: stolen.map(c => ({ to: player.id, card: c })),
+    lostCards: stolen.map(c => ({ to: targetId, card: c })),
+    boosted,
+  };
 }
 
 function actionPass(state) {
@@ -347,14 +380,24 @@ export function resolvePassChoice(state, playerId, cardId) {
   return { state };
 }
 
-function actionDump(state, player, targetId) {
+function actionDump(state, player, targetId, boosted = false) {
   const target = getPlayerById(state, targetId);
   if (!target || target.hand.length === 0) return {};
-  const idx = randomInt(target.hand.length);
-  const dumped = target.hand.splice(idx, 1)[0];
-  discardCard(state, dumped);
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札を1枚ポイ捨て`);
-  return { lostCard: { to: target.id, card: dumped } };
+  const count = boosted ? Math.min(2, target.hand.length) : 1;
+  const dumped = [];
+  for (let i = 0; i < count; i++) {
+    if (target.hand.length === 0) break;
+    const idx = randomInt(target.hand.length);
+    const card = target.hand.splice(idx, 1)[0];
+    discardCard(state, card);
+    dumped.push(card);
+  }
+  const suffix = boosted ? `（手袋+${dumped.length}枚）` : '';
+  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札をポイ捨て${suffix}`);
+  if (dumped.length === 1) {
+    return { lostCard: { to: target.id, card: dumped[0] }, boosted };
+  }
+  return { lostCards: dumped.map(c => ({ to: target.id, card: c })), boosted };
 }
 
 // --- 情報収集 ---
@@ -492,7 +535,7 @@ export function resolveDashChoice(state, playerId, moveCardId) {
 }
 
 // --- 煙幕 ---
-function actionSmoke(state, player, targetId) {
+function actionSmoke(state, player, targetId, boosted = false) {
   const target = getPlayerById(state, targetId);
   if (!target) return {};
 
@@ -502,15 +545,27 @@ function actionSmoke(state, player, targetId) {
     return {};
   }
 
-  const chosen = moveCards[randomInt(moveCards.length)];
-  const idx = target.hand.findIndex(c => c.id === chosen.id);
-  if (idx !== -1) {
-    target.hand.splice(idx, 1);
-    discardCard(state, chosen);
-    addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} に煙幕！「${chosen.label}」を破棄`);
-    return { lostCard: { to: target.id, card: chosen } };
+  const count = boosted ? Math.min(2, moveCards.length) : 1;
+  const destroyed = [];
+  for (let i = 0; i < count; i++) {
+    const remaining = target.hand.filter(c => c.type === CARD_TYPES.MOVE);
+    if (remaining.length === 0) break;
+    const chosen = remaining[randomInt(remaining.length)];
+    const idx = target.hand.findIndex(c => c.id === chosen.id);
+    if (idx !== -1) {
+      target.hand.splice(idx, 1);
+      discardCard(state, chosen);
+      destroyed.push(chosen);
+    }
   }
-  return {};
+  if (destroyed.length === 0) return {};
+  const labels = destroyed.map(c => `「${c.label}」`).join('・');
+  const suffix = boosted ? '（手袋）' : '';
+  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} に煙幕${suffix}！${labels}を破棄`);
+  if (destroyed.length === 1) {
+    return { lostCard: { to: target.id, card: destroyed[0] }, boosted };
+  }
+  return { lostCards: destroyed.map(c => ({ to: target.id, card: c })), boosted };
 }
 
 // --------------- ロケーション効果 ---------------
@@ -595,8 +650,66 @@ export function resolveTradeChoice(state, fromPlayerId, cardId) {
   return { state, gainCards: [{ to: attacker.id, card: theirCard }, { to: target.id, card: myCard }] };
 }
 
+/**
+ * スタート地点効果 Step1: 手札2枚を捨て、対象を指定 → ランダム4枚プレビュー
+ */
+export function resolveStartStep(state, playerId, discardIds, targetId) {
+  const player = getPlayerById(state, playerId);
+  if (!player) return { error: 'プレイヤーが見つかりません' };
+  if (state.phase !== 'location') return { error: 'ロケーション効果フェーズではありません' };
+
+  // 手札から2枚捨てる
+  if (!Array.isArray(discardIds) || discardIds.length !== 2)
+    return { error: '捨てるカードを2枚選んでください' };
+
+  const discarded = [];
+  for (const did of discardIds) {
+    const idx = player.hand.findIndex(c => c.id === did);
+    if (idx === -1) return { error: '選択されたカードが手札にありません' };
+    discarded.push(player.hand.splice(idx, 1)[0]);
+  }
+  discarded.forEach(c => discardCard(state, c));
+
+  const target = getPlayerById(state, targetId);
+  if (!target || target.hand.length === 0) {
+    addLog(state, `${pName(state, player.id)}：スタート地点（対象の手札なし）`);
+    state.pendingAction = null;
+    checkWinCondition(state);
+    if (!state.winner) nextTurn(state);
+    return { state };
+  }
+
+  // ランダム4枚をプレビュー（4枚未満なら全表示）
+  const preview = shuffle([...target.hand]).slice(0, 4).map(c => ({ ...c }));
+  addLog(state, `${pName(state, player.id)}：スタート地点で ${pName(state, targetId)} の手札を捜索中…`);
+
+  state.pendingAction = { locationIndex: 0, locEffect: 'start_pick', previewCards: preview, startTargetId: targetId };
+  // phase は 'location' のまま → クライアントが pick UI を表示
+  return { state, startPreview: { to: player.id, cards: preview, targetId } };
+}
+
 function processLocationByType(state, player, locIdx, chosenCardId, locType) {
   switch (locType) {
+    case 'start': {
+      // スタート地点：手札2枚捨て→相手指定→ランダム4枚から1枚奪取
+      if (chosenCardId) {
+        // Step 2: 4枚のプレビューから1枚選んで奪取
+        const targetId = state.pendingAction?.startTargetId;
+        const target = getPlayerById(state, targetId);
+        if (target) {
+          const idx = target.hand.findIndex(c => c.id === chosenCardId);
+          if (idx !== -1) {
+            const stolen = target.hand.splice(idx, 1)[0];
+            player.hand.push(stolen);
+            addLog(state, `${pName(state, player.id)}：スタート地点で ${pName(state, targetId)} から「${stolen.label}」を奪取`);
+            return { gainCard: { to: player.id, card: stolen }, lostCard: { to: targetId, card: stolen } };
+          }
+        }
+        addLog(state, `${pName(state, player.id)}：スタート地点（奪取失敗）`);
+      }
+      // Step 0: 効果なし（スキップ or 手札不足）
+      break;
+    }
     case 'junk': {
       // アイテムパイルからランダムに1枚取得
       if (state.itemPile.length > 0) {
@@ -813,9 +926,22 @@ function processLocationByType(state, player, locIdx, chosenCardId, locType) {
       if (chosenCardId) {  // chosenCardId = 対象プレイヤーID
         const target = getPlayerById(state, chosenCardId);
         if (target) {
-          const roleLabel = target.role === ROLES.BOMBER ? '爆弾魔' : '解除班';
-          addLog(state, `${pName(state, player.id)}：警察本部で ${pName(state, chosenCardId)} の陣営を調査`);
-          return { privateReveal: { to: player.id, role: target.role, roleLabel } };
+          // 弱体化: 陣営カード(パーツ/キット) > ダミー のときのみ特定成功
+          const factionCount = target.hand.filter(
+            c => c.subtype === ITEM_SUBTYPES.BOMB_PART || c.subtype === ITEM_SUBTYPES.DEFUSE_KIT
+          ).length;
+          const dummyCount = target.hand.filter(
+            c => c.subtype === ITEM_SUBTYPES.DUMMY
+          ).length;
+
+          if (factionCount > dummyCount) {
+            const roleLabel = target.role === ROLES.BOMBER ? '爆弾魔' : '解除班';
+            addLog(state, `${pName(state, player.id)}：警察本部で ${pName(state, chosenCardId)} の陣営を特定！`);
+            return { privateReveal: { to: player.id, role: target.role, roleLabel } };
+          } else {
+            addLog(state, `${pName(state, player.id)}：警察本部で ${pName(state, chosenCardId)} を捜査したが…捜査失敗`);
+            return { privateReveal: { to: player.id, investigationFailed: true, targetName: pName(state, chosenCardId) } };
+          }
         }
       }
       addLog(state, `${pName(state, player.id)}：警察本部（対象なし）`);
@@ -887,6 +1013,13 @@ export function sanitizeStateForPlayer(state, viewerId) {
   // 横流し選択中: 実際のカードIDは隠蔽し、提出済みリストのみ公開
   if (sanitized.pendingAction?.choices) {
     delete sanitized.pendingAction.choices;
+  }
+  // スタート地点プレビュー: 手番プレイヤー以外にはカードを隠す
+  if (sanitized.pendingAction?.locEffect === 'start_pick') {
+    const currentId = sanitized.players[sanitized.currentTurnIndex]?.id;
+    if (viewerId !== currentId) {
+      delete sanitized.pendingAction.previewCards;
+    }
   }
   sanitized.moveDeck   = sanitized.moveDeck.map(()   => ({ hidden: true }));
   sanitized.actionDeck = sanitized.actionDeck.map(() => ({ hidden: true }));

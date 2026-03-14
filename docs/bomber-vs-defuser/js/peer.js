@@ -24,6 +24,7 @@ export const MSG = {
   PASS_CHOICE:     'pass_choice',    // 横流し：渡すカードを選択
   TRADE_TARGET_CHOICE: 'trade_target_choice', // 取引：相手のカード選択
   DASH_CHOICE:     'dash_choice',    // ダッシュ：移動カード選択
+  START_STEP:      'start_step',     // スタート地点：手札2枚捨て＋対象指定
 
   // ホスト→全員
   STATE_UPDATE:    'state_update',   // ゲーム状態を全員へ配信
@@ -213,14 +214,20 @@ export function sendToHost(msg) {
 }
 
 // --------------- 共通アクション送信 ---------------
-export function sendPlayCard(cardId, targetPlayerId = null, chosenCardId = null, targetLocation = null, deckType = null) {
-  const msg = { type: MSG.PLAY_CARD, cardId, targetPlayerId, chosenCardId, targetLocation, deckType };
+export function sendPlayCard(cardId, targetPlayerId = null, chosenCardId = null, targetLocation = null, deckType = null, gloveCardId = null) {
+  const msg = { type: MSG.PLAY_CARD, cardId, targetPlayerId, chosenCardId, targetLocation, deckType, gloveCardId };
   if (isHost) onMessageCallback({ from: myId, ...msg });
   else sendToHost(msg);
 }
 
 export function sendResolveLoc(locType, chosenCardId = null) {
   const msg = { type: MSG.RESOLVE_LOC, locType, chosenCardId };
+  if (isHost) onMessageCallback({ from: myId, ...msg });
+  else sendToHost(msg);
+}
+
+export function sendStartStep(discardIds, targetId) {
+  const msg = { type: MSG.START_STEP, discardIds, targetId };
   if (isHost) onMessageCallback({ from: myId, ...msg });
   else sendToHost(msg);
 }
