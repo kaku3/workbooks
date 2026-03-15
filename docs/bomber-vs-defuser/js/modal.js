@@ -3,7 +3,7 @@
 // ============================================================
 
 import { LOCATIONS, CARD_TYPES } from './constants.js';
-import { sendPlayCard, sendResolveLoc } from './peer.js';
+import { sendPlayCard, sendResolveLoc, sendStartStep } from './peer.js';
 import { getCardTile } from './render.js';
 
 // ============================================================
@@ -84,6 +84,11 @@ export function showTargetSelector(card, localState, myId, nameMap = {}, getDisp
       content.appendChild(btn);
     });
   } else {
+    // 手袋コンボ対象かチェック
+    const canGlove = ['steal', 'dump', 'smoke'].includes(card.action);
+    const me = localState.players.find(p => p.id === myId);
+    const gloveCard = canGlove ? me?.hand?.find(c => c.action === 'glove' && c.id !== card.id) : null;
+
     otherPlayers.forEach(p => {
       const btn = document.createElement('button');
       btn.textContent = nameMap[p.id] ?? p.id.slice(0, 8);
@@ -91,6 +96,8 @@ export function showTargetSelector(card, localState, myId, nameMap = {}, getDisp
         closeModal();
         if (card.action === 'trade') {
           showMyCardSelector(card, p.id, localState, myId, getDisplayHand);
+        } else if (gloveCard) {
+          showGloveConfirm(card, p.id, gloveCard);
         } else {
           sendPlayCard(card.id, p.id);
         }
@@ -98,6 +105,42 @@ export function showTargetSelector(card, localState, myId, nameMap = {}, getDisp
       content.appendChild(btn);
     });
   }
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'キャンセル';
+  cancelBtn.className = 'btn-cancel';
+  cancelBtn.onclick = closeModal;
+  content.appendChild(cancelBtn);
+
+  openModal();
+}
+
+/**
+ * 手袋コンボ確認モーダル
+ */
+function showGloveConfirm(card, targetId, gloveCard) {
+  const { content } = getModal();
+  if (!content) return;
+  content.innerHTML = '';
+
+  const title = document.createElement('h3');
+  title.textContent = '🧤 手袋を使う？';
+  content.appendChild(title);
+
+  const info = document.createElement('p');
+  info.textContent = `手袋を同時使用すると「${card.label}」の効果が+1になります（手袋は消費されます）`;
+  info.style.fontSize = '0.85rem';
+  content.appendChild(info);
+
+  const useBtn = document.createElement('button');
+  useBtn.textContent = `🧤 手袋を使う（${card.label}+1）`;
+  useBtn.onclick = () => { closeModal(); sendPlayCard(card.id, targetId, null, null, null, gloveCard.id); };
+  content.appendChild(useBtn);
+
+  const noBtn = document.createElement('button');
+  noBtn.textContent = `手袋なしで使う`;
+  noBtn.onclick = () => { closeModal(); sendPlayCard(card.id, targetId); };
+  content.appendChild(noBtn);
 
   const cancelBtn = document.createElement('button');
   cancelBtn.textContent = 'キャンセル';
@@ -195,6 +238,100 @@ export function showLocationPrompt(loc, state, myId, nameMap = {}) {
   content.appendChild(desc);
 
   switch (loc.type) {
+    case 'start': {
+      // スタート地点: start_pick 状態ならカード選択UI
+      if (state.pendingAction?.locEffect === 'start_pick') {
+        const preview = state.pendingAction.previewCards || [];
+        const info = document.createElement('p');
+        info.textContent = '奪取するカードを1枚選んでください：';
+        info.style.fontSize = '0.85rem';
+        content.appendChild(info);
+        preview.forEach(c => {
+          const btn = document.createElement('button');
+          btn.innerHTML = `<strong>${c.label}</strong><br><small>${c.desc ?? ''}</small>`;
+          btn.style.display = 'block';
+          btn.style.width = '100%';
+          btn.style.marginBottom = '6px';
+          btn.onclick = () => { closeModal(); sendResolveLoc(loc.type, c.id); };
+          content.appendChild(btn);
+        });
+        break;
+      }
+      // 初回: 手札2枚捨て + 相手指定
+      const me = state.players.find(p => p.id === myId);
+      const myHand = me?.hand ?? [];
+      if (myHand.length < 2) {
+        const info = document.createElement('p');
+        info.textContent = '手札が2枚未満のため効果を発動できません。';
+        content.appendChild(info);
+        const ok = document.createElement('button');
+        ok.textContent = '次のターンへ';
+        ok.onclick = () => { closeModal(); sendResolveLoc(loc.type); };
+        content.appendChild(ok);
+      } else {
+        const info = document.createElement('p');
+        info.textContent = '手札から2枚選んで捨て、相手を指定して手札を奪取します。';
+        info.style.fontSize = '0.85rem';
+        content.appendChild(info);
+
+        const selectedIds = [];
+        const cardContainer = document.createElement('div');
+        cardContainer.style.marginBottom = '8px';
+        const cardButtons = [];
+
+        myHand.forEach(c => {
+          const btn = document.createElement('button');
+          btn.innerHTML = `<strong>${c.label}</strong><br><small>${c.desc ?? ''}</small>`;
+          btn.style.display = 'block';
+          btn.style.width = '100%';
+          btn.style.marginBottom = '4px';
+          btn.style.opacity = '1';
+          btn.dataset.cardId = c.id;
+          btn.onclick = () => {
+            const idx = selectedIds.indexOf(c.id);
+            if (idx !== -1) {
+              selectedIds.splice(idx, 1);
+              btn.style.opacity = '1';
+              btn.style.border = '';
+            } else if (selectedIds.length < 2) {
+              selectedIds.push(c.id);
+              btn.style.opacity = '0.5';
+              btn.style.border = '2px solid #e74c3c';
+            }
+            targetSection.style.display = selectedIds.length === 2 ? 'block' : 'none';
+          };
+          cardButtons.push(btn);
+          cardContainer.appendChild(btn);
+        });
+        content.appendChild(cardContainer);
+
+        const targetSection = document.createElement('div');
+        targetSection.style.display = 'none';
+        const targetLabel = document.createElement('p');
+        targetLabel.textContent = '奪取対象を選んでください：';
+        targetLabel.style.fontSize = '0.85rem';
+        targetSection.appendChild(targetLabel);
+
+        state.players.filter(p => p.id !== myId).forEach(p => {
+          const btn = document.createElement('button');
+          btn.textContent = nameMap[p.id] ?? p.id.slice(0, 8);
+          btn.onclick = () => {
+            if (selectedIds.length !== 2) return;
+            closeModal();
+            sendStartStep(selectedIds, p.id);
+          };
+          targetSection.appendChild(btn);
+        });
+        content.appendChild(targetSection);
+
+        const skipBtn = document.createElement('button');
+        skipBtn.textContent = 'スキップ（効果なし）';
+        skipBtn.className = 'btn-cancel';
+        skipBtn.onclick = () => { closeModal(); sendResolveLoc(loc.type); };
+        content.appendChild(skipBtn);
+      }
+      break;
+    }
     case 'factory': {
       const pile = state.pendingAction?.itemPile || [];
       if (pile.length === 0) {
@@ -440,6 +577,7 @@ export function showPrivateReveal(msg) {
     return;
   }
   if (msg.hintLabel) showToast(`スキャン結果: ${msg.hintLabel}`);
+  else if (msg.investigationFailed) showEffectOverlay({ icon: '🚓', title: '捜査失敗', body: `${msg.targetName ?? '?'} の陣営を特定できなかった…\n（対象のダミーが多い可能性）` });
   else if (msg.role)  showEffectOverlay({ icon: '📽️', title: '搼査結果（本人のみ）', body: `${msg.targetName ?? msg.roleLabel} は「${msg.roleLabel}」だ！` });
 }
 

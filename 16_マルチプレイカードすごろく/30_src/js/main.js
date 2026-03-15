@@ -13,6 +13,7 @@ import {
   createInitialState,
   doDrawPhase, playCard, resolveLocationSync, declareArrest,
   getCurrentPlayer, resolvePassChoice, resolveTradeChoice, resolveDashChoice,
+  resolveStartStep,
 } from './gameLogic.js';
 
 import { CARD_TYPES, LOCATIONS } from './constants.js';
@@ -156,11 +157,15 @@ function onMessage(msg) {
       break;
 
     case MSG.PLAY_CARD:
-      if (isHost) handlePlayCard(msg.from, msg.cardId, msg.targetPlayerId, msg.chosenCardId, msg.targetLocation, msg.deckType);
+      if (isHost) handlePlayCard(msg.from, msg.cardId, msg.targetPlayerId, msg.chosenCardId, msg.targetLocation, msg.deckType, msg.gloveCardId);
       break;
 
     case MSG.RESOLVE_LOC:
       if (isHost) handleResolveLoc(msg.from, msg.locType, msg.chosenCardId);
+      break;
+
+    case MSG.START_STEP:
+      if (isHost) handleStartStep(msg.from, msg.discardIds, msg.targetId);
       break;
 
     case MSG.DECLARE_ARREST:
@@ -188,7 +193,7 @@ function onMessage(msg) {
 // ============================================================
 // ホスト側: ゲームロジック呼び出し
 // ============================================================
-function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLocation, deckType) {
+function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLocation, deckType, gloveCardId) {
   const current = getCurrentPlayer(gameState);
   if (current.id !== fromId) return;
 
@@ -221,7 +226,7 @@ function handlePlayCard(fromId, cardId, targetPlayerId, chosenCardId, targetLoca
   // カード情報をプレイ前に取得
   const card = current.hand.find(c => c.id === cardId);
 
-  const result = playCard(gameState, cardId, targetPlayerId, chosenCardId, targetLocation);
+  const result = playCard(gameState, cardId, targetPlayerId, chosenCardId, targetLocation, gloveCardId);
   if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
 
   gameState = result.state;
@@ -276,18 +281,40 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
     case 'trade':
       events.all = { icon: '🤝', title: '取引！', body: `${from} が ${targ} と手札を１枚交換した` };
       break;
-    case 'steal':
-      events.all = { icon: '💸', title: '強奪！', body: `${from} が ${targ} の手札を１枚奪った` };
-      if (result?.gainCard) events[result.gainCard.to] = makeCardDrawEvent(result.gainCard.card, `💸 強奪！`, `${targ} から手札を奔った`, '💸');
-      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `💸 強奪！${from} に奔われた`, '💸');
+    case 'steal': {
+      const cnt = result?.boosted ? '２枚' : '１枚';
+      const gloveIcon = result?.boosted ? '🧤💸' : '💸';
+      events.all = { icon: gloveIcon, title: result?.boosted ? '手袋+強奪！' : '強奪！', body: `${from} が ${targ} の手札を${cnt}奪った` };
+      if (result?.gainCard) events[result.gainCard.to] = makeCardDrawEvent(result.gainCard.card, `${gloveIcon} 強奪！`, `${targ} から手札を奔った`, gloveIcon);
+      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `${gloveIcon} 強奪！${from} に奔われた`, gloveIcon);
+      // boosted: multi-card
+      if (result?.gainCards) {
+        events[result.gainCards[0].to] = { multiCards: result.gainCards.map((gc, i) =>
+          makeCardDrawEvent(gc.card, `${gloveIcon} 強奪 ${i+1}/${result.gainCards.length}枚目`, `${targ} から手札を奔った`, gloveIcon)
+        )};
+      }
+      if (result?.lostCards) {
+        events[result.lostCards[0].to] = { multiCards: result.lostCards.map((lc, i) =>
+          makeCardLostEvent(lc.card, `${gloveIcon} 強奪！${from} に奔われた ${i+1}/${result.lostCards.length}枚目`, gloveIcon)
+        )};
+      }
       break;
+    }
     case 'pass':
       events.all = { icon: '🔀', title: '横流し！', body: '全員がカードを選んでいます…' };
       break;
-    case 'dump':
-      events.all = { icon: '🗑️', title: 'ポイ捨て！', body: `${from} が ${targ} の手札を１枚捨てさせた` };
-      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `🗑️ ポイ捨て！${from} に捨てさせられた`, '🗑️');
+    case 'dump': {
+      const dumpCnt = result?.boosted ? '２枚' : '１枚';
+      const dumpIcon = result?.boosted ? '🧤🗑️' : '🗑️';
+      events.all = { icon: dumpIcon, title: result?.boosted ? '手袋+ポイ捨て！' : 'ポイ捨て！', body: `${from} が ${targ} の手札を${dumpCnt}捨てさせた` };
+      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `${dumpIcon} ポイ捨て！${from} に捨てさせられた`, dumpIcon);
+      if (result?.lostCards) {
+        events[result.lostCards[0].to] = { multiCards: result.lostCards.map((lc, i) =>
+          makeCardLostEvent(lc.card, `${dumpIcon} ポイ捨て！${from} に捨てさせられた ${i+1}/${result.lostCards.length}枚目`, dumpIcon)
+        )};
+      }
       break;
+    }
     case 'peek':
       events.all = { icon: '🔍', title: '尋問', body: `${from} が ${targ} の手札を１枚こっそり確認した` };
       break;
@@ -317,10 +344,18 @@ function buildActionEvents(fromId, card, targetId, targetLocation, result) {
     case 'dash':
       events.all = { icon: '💨', title: 'ダッシュ！', body: `${from} が移動カードを選んでいます…` };
       break;
-    case 'smoke':
-      events.all = { icon: '🌫️', title: '煙幕！', body: `${from} が ${targ} の移動カード1枚を破棄した` };
-      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `🌫️ 煙幕！${from} に破棄された`, '🌫️');
+    case 'smoke': {
+      const smokeCnt = result?.boosted ? '2枚' : '1枚';
+      const smokeIcon = result?.boosted ? '🧤🌫️' : '🌫️';
+      events.all = { icon: smokeIcon, title: result?.boosted ? '手袋+煙幕！' : '煙幕！', body: `${from} が ${targ} の移動カード${smokeCnt}を破棄した` };
+      if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `${smokeIcon} 煙幕！${from} に破棄された`, smokeIcon);
+      if (result?.lostCards) {
+        events[result.lostCards[0].to] = { multiCards: result.lostCards.map((lc, i) =>
+          makeCardLostEvent(lc.card, `${smokeIcon} 煙幕！${from} に破棄された ${i+1}/${result.lostCards.length}枚目`, smokeIcon)
+        )};
+      }
       break;
+    }
     default: break;
   }
   return events;
@@ -359,7 +394,12 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
 
   switch (locType) {
     case 'start':
-      break; // 効果なし
+      if (result?.gainCard) {
+        events.all = { icon: loc.emoji, title: 'スタート地点', body: `${from} が手札を奪取した！` };
+        events[fromId] = makeCardDrawEvent(result.gainCard.card, '🏁 スタート地点で奪取！', `「${result.gainCard.card.label}」を奪取した`, loc.emoji);
+        if (result?.lostCard) events[result.lostCard.to] = makeCardLostEvent(result.lostCard.card, `🏁 スタート地点で ${from} に奪われた`, loc.emoji);
+      }
+      break;
     case 'junk':
       events.all = { icon: loc.emoji, title: 'ジャンク屋', body: `${from} が山札から１枚ドローした` };
       if (rev && !Array.isArray(rev)) {
@@ -472,7 +512,11 @@ function buildLocationEvents(fromId, loc, locType, chosenCardId, result) {
       // ログは全員 → オーバーレイは本人のみ
       events[fromId] = { icon: loc.emoji, title: '警察本部', body: `${targ ?? '?'} の陣営を調査した` };
       if (rev && !Array.isArray(rev)) {
-        events[rev.to] = { icon: loc.emoji, title: '捜査結果（本人のみ）', body: `${targ ?? '?'} は「${rev.roleLabel}」だ！` };
+        if (rev.investigationFailed) {
+          events[rev.to] = { icon: loc.emoji, title: '捜査結果（本人のみ）', body: `${rev.targetName ?? targ ?? '?'} の捜査は失敗した…（陣営不明）` };
+        } else {
+          events[rev.to] = { icon: loc.emoji, title: '捜査結果（本人のみ）', body: `${targ ?? '?'} は「${rev.roleLabel}」だ！` };
+        }
       }
       break;
     default: break;
@@ -526,6 +570,17 @@ function handleDashChoice(fromId, cardId) {
   if (gameState.winner) broadcastWin();
 }
 
+function handleStartStep(fromId, discardIds, targetId) {
+  const current = getCurrentPlayer(gameState);
+  if (current.id !== fromId) return;
+  const result = resolveStartStep(gameState, fromId, discardIds, targetId);
+  if (result.error) { sendErrorToPlayer(fromId, result.error); return; }
+  gameState = result.state;
+  const events = { all: { icon: '🏁', title: 'スタート地点', body: `${n(fromId)} が手札2枚を捨てて ${n(targetId)} の手札を捜索中…` } };
+  broadcastState(gameState, events);
+  if (gameState.winner) broadcastWin();
+}
+
 // ゲーム終了通知（役職情報を含む）
 function broadcastWin() {
   broadcastGameOver(gameState.winner, gameState.players.map(p => ({ id: p.id, role: p.role, name: p.name })));
@@ -564,6 +619,10 @@ function onCardClick(card) {
   if (card.type === CARD_TYPES.MOVE) {
     sendPlayCard(card.id);
   } else if (card.type === CARD_TYPES.ACTION) {
+    if (card.action === 'glove') {
+      showToast('手袋は単体で使えません。強奪・ポイ捨て・煙幕を使う際に併用できます');
+      return;
+    }
     const needsTarget = ['trade','steal','dump','peek','scan','expose','whisper','skip','block','detect','smoke'].includes(card.action);
     if (needsTarget) {
       showTargetSelector(card, localState, myId, nameMap, getDisplayHand);

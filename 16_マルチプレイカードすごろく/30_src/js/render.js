@@ -320,10 +320,12 @@ const CARD_TILE_MAP = {
   trade:   [4,1], steal:   [5,1], pass:    [6,1], dump:    [7,1],
   peek:    [0,2], expose:  [1,2], whisper: [2,2], skip:    [3,2],
   block:   [4,2], detect:  [5,2], dash:    [6,2], smoke:   [7,2],
+  // ブースター
+  glove:   [0,3],
   // アイテムカード（family 別）
-  bomb_a:  [0,3], bomb_b:  [1,3], bomb_c:  [2,3],
-  kit_x:   [3,3], kit_y:   [4,3], kit_z:   [5,3],
-  dummy:   [6,3],
+  bomb_a:  [1,3], bomb_b:  [2,3], bomb_c:  [3,3],
+  kit_x:   [4,3], kit_y:   [5,3], kit_z:   [6,3],
+  dummy:   [7,3],
 };
 
 export function getCardTile(card) {
