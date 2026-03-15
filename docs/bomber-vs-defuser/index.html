@@ -105,6 +105,20 @@
         </div>
       </div>
 
+      <!-- SNSシェア -->
+      <div class="share-section">
+        <p class="share-label">📣 友だちに教える</p>
+        <div class="share-buttons">
+          <a class="share-btn share-x"
+            href="https://twitter.com/intent/tweet?text=%E7%88%86%E5%BC%BE%E9%AD%94%20vs%20%E8%A7%A3%E9%99%A4%E7%8F%AD%20%E2%80%94%20%E3%83%9E%E3%83%AB%E3%83%81%E3%83%97%E3%83%AC%E3%82%A4%E3%82%AB%E3%83%BC%E3%83%89%E3%81%99%E3%81%94%E3%82%8D%E3%81%8F%EF%BC%813%EF%BD%9E6%E4%BA%BA%E3%81%A7%E9%81%8A%E3%82%93%E3%81%A7%E3%81%BF%E3%82%88%EF%BC%81&url=https%3A%2F%2Fkaku3.github.io%2Fworkbooks%2Fbomber-vs-defuser%2Findex.html"
+            target="_blank" rel="noopener noreferrer">𝕏 でシェア</a>
+          <a class="share-btn share-line"
+            href="https://social-plugins.line.me/lineit/share?url=https%3A%2F%2Fkaku3.github.io%2Fworkbooks%2Fbomber-vs-defuser%2Findex.html"
+            target="_blank" rel="noopener noreferrer">LINE でシェア</a>
+          <a class="share-btn share-copy" id="btn-share-copy" href="#">🔗 URLコピー</a>
+        </div>
+      </div>
+
       <!-- ルール詳細カード（ロビー） -->
       <details class="rule-detail-section">
         <summary>📖 カード・ロケーション詳細を見る</summary>
@@ -146,6 +160,11 @@
           </div>
         </div>
       </details>
+
+      <!-- フッター -->
+      <footer class="lobby-footer">
+        <a href="https://github.com/kaku3/workbooks" target="_blank" rel="noopener noreferrer">📚 エンジニアのためのお仕事問題集</a>
+      </footer>
     </div>
   </div>
 
@@ -303,5 +322,17 @@
 
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <script type="module" src="js/lobby.js"></script>
+  <script>
+    document.getElementById('btn-share-copy').addEventListener('click', function(e) {
+      e.preventDefault();
+      navigator.clipboard.writeText('https://kaku3.github.io/workbooks/bomber-vs-defuser/index.html')
+        .then(function() {
+          var btn = document.getElementById('btn-share-copy');
+          var orig = btn.textContent;
+          btn.textContent = '✅ コピー済み';
+          setTimeout(function() { btn.textContent = orig; }, 2000);
+        });
+    });
+  </script>
 </body>
 </html>
