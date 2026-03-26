@@ -40,7 +40,10 @@ function renderPlayerList(list) {
   elPlayerList.innerHTML = '';
   list.forEach((p, i) => {
     const li = document.createElement('li');
-    li.textContent = `${i + 1}. ${p.name || p.id} ${i === 0 ? '👑ホスト' : ''}`;
+    const hostBadge = i === 0
+      ? ' <span class="material-symbols-rounded" style="font-size:1rem;vertical-align:middle;color:#f5c842">star_rate</span><span style="font-size:0.75rem;color:#f5c842;font-weight:700">ホスト</span>'
+      : '';
+    li.innerHTML = `${i + 1}. ${p.name || p.id}${hostBadge}`;
     elPlayerList.appendChild(li);
   });
   if (elStartBtn) {

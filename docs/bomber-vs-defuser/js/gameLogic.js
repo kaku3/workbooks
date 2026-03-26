@@ -293,7 +293,7 @@ function actionSteal(state, player, targetId, myCardId, boosted = false) {
     stolen.push(card);
   }
   const suffix = boosted ? '（手袋+2枚）' : '';
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} から強奪${suffix}`);
+  addLog(state, `【強奪】${pName(state, player.id)} が ${pName(state, targetId)} のポケットからカードを引っこ抜いた${suffix}`);
   if (stolen.length === 1) {
     return { gainCard: { to: player.id, card: stolen[0] }, lostCard: { to: targetId, card: stolen[0] }, boosted };
   }
@@ -371,7 +371,7 @@ export function resolvePassChoice(state, playerId, cardId) {
       if (card) state.players[(i + 1) % n].hand.push(card);
     });
 
-    addLog(state, '横流し：各自が選んだカードが次のプレイヤーに渡った');
+    addLog(state, '【横流し】各自のカードが次のプレイヤーへと渡った');
     checkWinCondition(state);
     if (!state.winner) nextTurn(state);
     return { state, done: true };
@@ -393,7 +393,7 @@ function actionDump(state, player, targetId, boosted = false) {
     dumped.push(card);
   }
   const suffix = boosted ? `（手袋+${dumped.length}枚）` : '';
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札をポイ捨て${suffix}`);
+  addLog(state, `【廃棄】${pName(state, player.id)} が ${pName(state, targetId)} の手札を容赦なく捨て札にした${suffix}`);
   if (dumped.length === 1) {
     return { lostCard: { to: target.id, card: dumped[0] }, boosted };
   }
@@ -406,7 +406,7 @@ function actionPeek(state, player, targetId) {
   if (!target || target.hand.length === 0) return {};
   const idx = randomInt(target.hand.length);
   const peeked = target.hand[idx];
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札を1枚のぞき見（本人のみ通知）`);
+  addLog(state, `【尋問】${pName(state, player.id)} がそっと ${pName(state, targetId)} に近づき、手札を1枚のぞき見した`);
   return { privateReveal: { to: player.id, card: peeked, revealTitle: `${pName(state, targetId)} の手札` } };
 }
 
@@ -415,7 +415,7 @@ function actionExpose(state, player, targetId) {
   if (!target || target.hand.length === 0) return {};
   const idx = randomInt(target.hand.length);
   const exposed = target.hand[idx];
-  addLog(state, `${pName(state, player.id)} が ${pName(state, targetId)} の手札1枚を全員に公開: ${exposed.label}`);
+  addLog(state, `【公開捕査】${pName(state, player.id)} が ${pName(state, targetId)} の手札を全員の前に晁した → ${exposed.label}`);
   return { publicReveal: { card: exposed, owner: targetId } };
 }
 
@@ -430,7 +430,7 @@ function actionWhisper(state, player, targetId) {
     const myCard = player.hand[randomInt(player.hand.length)];
     reveals.push({ to: targetId, card: myCard, revealTitle: `${pName(state, player.id)} の手札` });
   }
-  addLog(state, `${pName(state, player.id)} と ${pName(state, targetId)} が密談（互いに1枚見せ合い）`);
+  addLog(state, `【密談】${pName(state, player.id)} と ${pName(state, targetId)} が路地裏で手札を見せ合った`);
   return { privateReveal: reveals };
 }
 
@@ -439,7 +439,7 @@ function actionSkip(state, targetId) {
   const target = getPlayerById(state, targetId);
   if (!target) return {};
   target.skipped = true;
-  addLog(state, `${pName(state, targetId)} が足止めされた（次のターンスキップ）`);
+  addLog(state, `【足止め】${pName(state, targetId)} は次のターンを棒に振った`);
   return {};
 }
 
@@ -449,7 +449,7 @@ function actionBlock(state, locationIndex) {
   // 全員が1回ずつターンを終えるまで（プレイヤー数分）通行止め
   state.blockedUntilTurn = state.turnCount + state.players.length;
   const locName = LOCATIONS[locationIndex]?.name ?? `マス${locationIndex}`;
-  addLog(state, `「${locName}」が通行止めになった（全員が1巡するまで）`);
+  addLog(state, `【封鎖】「${locName}」が封鎖された——全員が1巡するまで通れない`);
   return {};
 }
 
@@ -973,7 +973,7 @@ export function declareArrest(state, declarerId) {
   if (bombersHere.length === 0) return { state, error: '同じマスに爆弾魔がいません' };
 
   state.winner = 'defuser';
-  addLog(state, `${pName(state, declarerId)} が爆弾魔を確保！解除班の勝利！`);
+  addLog(state, `【確保】${pName(state, declarerId)} が爆弾魔をその場で取り押さえた！解除班の勝利！`);
   state.phase = 'end';
   return { state };
 }
@@ -988,7 +988,7 @@ function checkWinCondition(state) {
     const hasAll = ['bomb_a', 'bomb_b', 'bomb_c'].every(f => families.includes(f));
     if (hasAll) {
       state.winner = 'bomber';
-      addLog(state, `${pName(state, p.id)} がタワーで爆発！爆弾魔チームの勝利！`);
+      addLog(state, `【爆発】${pName(state, p.id)} がタワーを爆破した！闇夜に辟音が響き渡る——爆弾魔チームの勝利！`);
       state.phase = 'end';
       return;
     }

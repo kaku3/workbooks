@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>爆弾魔 vs 解除班</title>
   <meta property="og:title" content="爆弾魔 vs 解除班" />
-  <meta property="og:description" content="ババ抜き × すごろく × 人狼——4人で遊ぶパーティゲーム" />
+  <meta property="og:description" content="疑え。笑え。そして爆破しろ。スマホで始まる5分間の心理戦。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kaku3.github.io/workbooks/bomber-vs-defuser/index.html" />
   <meta property="og:image" content="https://kaku3.github.io/workbooks/bomber-vs-defuser/assets/thumbnail.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,300,0,0" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/lobby.css" />
   <link rel="stylesheet" href="css/game.css" />
@@ -25,18 +26,19 @@
   <div id="lobby-screen" class="lobby-screen">
     <div class="lobby-container">
       <h1> 爆弾魔 vs 解除班</h1>
+      <p class="flavor-text">深夜の都市——誰がパーツを隠し持っているのか、誰にもわからない。</p>
       <img src="assets/thumbnail.png" class="lobby-thumbnail" alt="爆弾魔 vs 解除班" />
-      <p class="subtitle">ババ拜き × すごろく × 人狼<br>3〜6人で遊ぶパーティゲーム</p>
+      <p class="subtitle">疑え。笑え。そして爆破しろ。スマホで始まる5分間の心理戦。</p>
       <!-- チーム紹介 -->
       <div class="team-row">
         <div class="team-card team-bomber">
-          <div class="team-icon">💣</div>
+          <div class="team-icon"><span class="material-symbols-rounded">crisis_alert</span></div>
           <div class="team-name">爆弾魔チーム</div>
           <div class="team-goal">パーツ A・B・C を揃えて<br>タワーで起爆！</div>
         </div>
         <div class="team-vs">VS</div>
         <div class="team-card team-defuser">
-          <div class="team-icon">🛡️</div>
+          <div class="team-icon"><span class="material-symbols-rounded">shield</span></div>
           <div class="team-name">解除班チーム</div>
           <div class="team-goal">キット X・Y・Z を揃えて<br>爆弾魔を確保！</div>
         </div>
@@ -47,7 +49,7 @@
       </div>
 
       <div class="card-panel" id="panel-create">
-        <label class="count-select-label">👤 プレイ人数</label>
+        <label class="count-select-label"><span class="material-symbols-rounded">person</span> プレイ人数</label>
         <div class="count-radios">
           <label class="count-radio-label"><input type="radio" name="player-count" value="3"> 3人</label>
           <label class="count-radio-label"><input type="radio" name="player-count" value="4" checked> 4人</label>
@@ -72,11 +74,11 @@
       </div>
 
       <p id="status" class="status-msg">ルームを作成するか、ホストのルームIDを入力して参加してください</p>
-      <p id="status-room" class="status-room" style="display:none">ルームID: <strong id="my-id">—</strong> <button id="btn-copy" class="btn-small">IDコピー</button> <button id="btn-copy-url" class="btn-small btn-url">🔗 URLコピー</button></p>
+      <p id="status-room" class="status-room" style="display:none">ルームID: <strong id="my-id">—</strong> <button id="btn-copy" class="btn-small">IDコピー</button> <button id="btn-copy-url" class="btn-small btn-url"><span class="material-symbols-rounded">link</span> URLコピー</button></p>
 
       <!-- ルールサマリー -->
       <div class="rule-summary-section">
-        <h2>🎮 遊び方</h2>
+        <h2><span class="material-symbols-rounded">sports_esports</span> 遊び方</h2>
         <div class="rule-step-list">
           <div class="rule-step">
             <span class="step-circle">1</span>
@@ -100,14 +102,14 @@
           </div>
         </div>
         <div class="rule-hint">
-          <span>⚠️</span>
-          <span>誰が爆弾魔かは秘密！アイテムカードを集めるプレイヤーを監視せよ。詳細ルールはゲーム画面の <strong>📋 ルール</strong> ボタンでいつでも確認できます。</span>
+          <span class="material-symbols-rounded">warning</span>
+          <span>誰が爆弾魔かは秘密！アイテムカードを集めるプレイヤーを監視せよ。詳細ルールはゲーム画面の <strong>ルール</strong> ボタンでいつでも確認できます。</span>
         </div>
       </div>
 
       <!-- SNSシェア -->
       <div class="share-section">
-        <p class="share-label">📣 友だちに教える</p>
+        <p class="share-label"><span class="material-symbols-rounded">campaign</span> 友だちに教える</p>
         <div class="share-buttons">
           <a class="share-btn share-x"
             href="https://twitter.com/intent/tweet?text=%E7%88%86%E5%BC%BE%E9%AD%94%20vs%20%E8%A7%A3%E9%99%A4%E7%8F%AD%20%E2%80%94%20%E3%83%9E%E3%83%AB%E3%83%81%E3%83%97%E3%83%AC%E3%82%A4%E3%82%AB%E3%83%BC%E3%83%89%E3%81%99%E3%81%94%E3%82%8D%E3%81%8F%EF%BC%813%EF%BD%9E6%E4%BA%BA%E3%81%A7%E9%81%8A%E3%82%93%E3%81%A7%E3%81%BF%E3%82%88%EF%BC%81&url=https%3A%2F%2Fkaku3.github.io%2Fworkbooks%2Fbomber-vs-defuser%2Findex.html"
@@ -115,55 +117,55 @@
           <a class="share-btn share-line"
             href="https://social-plugins.line.me/lineit/share?url=https%3A%2F%2Fkaku3.github.io%2Fworkbooks%2Fbomber-vs-defuser%2Findex.html"
             target="_blank" rel="noopener noreferrer">LINE でシェア</a>
-          <a class="share-btn share-copy" id="btn-share-copy" href="#">🔗 URLコピー</a>
+          <a class="share-btn share-copy" id="btn-share-copy" href="#"><span class="material-symbols-rounded">link</span> URLコピー</a>
         </div>
       </div>
 
       <!-- ルール詳細カード（ロビー） -->
       <details class="rule-detail-section">
-        <summary>📖 カード・ロケーション詳細を見る</summary>
+        <summary><span class="material-symbols-rounded">menu_book</span> カード・ロケーション詳細を見る</summary>
         <div class="rule-detail-inner">
           <div class="rule-detail-card">
-            <h3>⚔️ アクションカード</h3>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🤝</span><span class="rule-dt-label">取引</span><span class="rule-dt-desc">指名プレイヤーと手札を1枚交換</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">👊</span><span class="rule-dt-label">強奪</span><span class="rule-dt-desc">相手の手札からランダムに1枚奔う</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">👥</span><span class="rule-dt-label">横流し</span><span class="rule-dt-desc">全員が手札を1枚ずつ次のプレイヤーへ渡す</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🗑️</span><span class="rule-dt-label">ポイ捨て</span><span class="rule-dt-desc">相手の手札をランダムに1枚捨て</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🔍</span><span class="rule-dt-label">尋問</span><span class="rule-dt-desc">相手の手札を1枚こっそり確認（本人のみ）</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">📰</span><span class="rule-dt-label">公開捜査</span><span class="rule-dt-desc">相手の手札を1枚全員に公開</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🤫</span><span class="rule-dt-label">密談</span><span class="rule-dt-desc">相手と手札を1枚見せ合う</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">⏸️</span><span class="rule-dt-label">足止め</span><span class="rule-dt-desc">相手の次のターンをスキップ</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🚧</span><span class="rule-dt-label">通行止め</span><span class="rule-dt-desc">指定ロケーションを1ターン封鎖</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">📡</span><span class="rule-dt-label">探知機</span><span class="rule-dt-desc">爆弾を探知する</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">💨</span><span class="rule-dt-label">ダッシュ</span><span class="rule-dt-desc">手持ちの移動カードを選んで移動量+2で移動</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🌫️</span><span class="rule-dt-label">煙幕</span><span class="rule-dt-desc">相手の手札から移動カード1枚をランダムに破棄</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🧤</span><span class="rule-dt-label">手袋</span><span class="rule-dt-desc">強奪・ポイ捨て・煙幕と同時使用で効果+1（消費型）</span></div>
+            <h3><span class="material-symbols-rounded">bolt</span> アクションカード</h3>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">sync_alt</span><span class="rule-dt-label">取引</span><span class="rule-dt-desc">指名プレイヤーと手札を1枚交換</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">front_hand</span><span class="rule-dt-label">強奪</span><span class="rule-dt-desc">相手の手札からランダムに1枚奔う</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">people</span><span class="rule-dt-label">横流し</span><span class="rule-dt-desc">全員が手札を1枚ずつ次のプレイヤーへ渡す</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">delete</span><span class="rule-dt-label">ポイ捨て</span><span class="rule-dt-desc">相手の手札をランダムに1枚捨て</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">manage_search</span><span class="rule-dt-label">尋問</span><span class="rule-dt-desc">相手の手札を1枚こっそり確認（本人のみ）</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">article</span><span class="rule-dt-label">公開捜査</span><span class="rule-dt-desc">相手の手札を1枚全員に公開</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">comment</span><span class="rule-dt-label">密談</span><span class="rule-dt-desc">相手と手札を1枚見せ合う</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">pause_circle</span><span class="rule-dt-label">足止め</span><span class="rule-dt-desc">相手の次のターンをスキップ</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">block</span><span class="rule-dt-label">通行止め</span><span class="rule-dt-desc">指定ロケーションを1ターン封鎖</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">radar</span><span class="rule-dt-label">探知機</span><span class="rule-dt-desc">爆弾を探知する</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">speed</span><span class="rule-dt-label">ダッシュ</span><span class="rule-dt-desc">手持ちの移動カードを選んで移動量+2で移動</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">blur_on</span><span class="rule-dt-label">煙幕</span><span class="rule-dt-desc">相手の手札から移動カード1枚をランダムに破棄</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">back_hand</span><span class="rule-dt-label">手袋</span><span class="rule-dt-desc">強奪・ポイ捨て・煙幕と同時使用で効果+1（消費型）</span></div>
           </div>
           <div class="rule-detail-card">
-            <h3>🗺️ ロケーション効果</h3>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🏁</span><span class="rule-dt-label">スタート</span><span class="rule-dt-desc">手札2枚捨て→相手指定→ランダム4枚から1枚奪取</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🔩</span><span class="rule-dt-label">ジャンク屋</span><span class="rule-dt-desc">山札から1枚ドロー</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🏭</span><span class="rule-dt-label">パーツ工場</span><span class="rule-dt-desc">アイテムパイルから最大5枚の中から1枚選ぶ</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🕵️</span><span class="rule-dt-label">探偵事務所</span><span class="rule-dt-desc">相手の手札を1枚こっそり確認</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🌃</span><span class="rule-dt-label">闇市</span><span class="rule-dt-desc">捨て札から最大6枚の中から1枚引き取る</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🌃</span><span class="rule-dt-label">裏路地</span><span class="rule-dt-desc">捨て札から最大3枚の中から1枚引き取る</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🗼</span><span class="rule-dt-label">タワー</span><span class="rule-dt-desc">山札をサーチして1枚入手 / 爆弾魔がパーツ3種揃いで勝利</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🚔</span><span class="rule-dt-label">警察本部</span><span class="rule-dt-desc">陣営カード＞ダミーなら陣営特定、それ以外は捜査失敗</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🍺</span><span class="rule-dt-label">酒場</span><span class="rule-dt-desc">ランダムな相手と手札1枚強制交換</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🚔</span><span class="rule-dt-label">交番</span><span class="rule-dt-desc">相手の手札を1枚没収</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">📺</span><span class="rule-dt-label">放送局</span><span class="rule-dt-desc">手札を1枚全員公開 → 1枚ドロー</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🎰</span><span class="rule-dt-label">カジノ</span><span class="rule-dt-desc">ダイス偶数→2枚ドロー / 奇数→1枚没収</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🚦</span><span class="rule-dt-label">交差点</span><span class="rule-dt-desc">全員の手札が1枚ずつ次のプレイヤーへ</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🏥</span><span class="rule-dt-label">病院</span><span class="rule-dt-desc">手札全捨て → 5枚引き直し</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🚧</span><span class="rule-dt-label">工事現場</span><span class="rule-dt-desc">1回休み</span></div>
-            <div class="rule-dt-row"><span class="rule-dt-icon">🗑️</span><span class="rule-dt-label">廃材置き場</span><span class="rule-dt-desc">アイテムパイルから1枚入手</span></div>
+            <h3><span class="material-symbols-rounded">map</span> ロケーション効果</h3>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">flag</span><span class="rule-dt-label">スタート</span><span class="rule-dt-desc">手札2枚捨て→相手指定→ランダム4枚から1枚奪取</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">construction</span><span class="rule-dt-label">ジャンク屋</span><span class="rule-dt-desc">山札から1枚ドロー</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">factory</span><span class="rule-dt-label">パーツ工場</span><span class="rule-dt-desc">アイテムパイルから最大5枚の中から1枚選ぶ</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">manage_search</span><span class="rule-dt-label">探偵事務所</span><span class="rule-dt-desc">相手の手札を1枚こっそり確認</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">storefront</span><span class="rule-dt-label">闇市</span><span class="rule-dt-desc">捨て札から最大6枚の中から1枚引き取る</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">signpost</span><span class="rule-dt-label">裏路地</span><span class="rule-dt-desc">捨て札から最大3枚の中から1枚引き取る</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">apartment</span><span class="rule-dt-label">タワー</span><span class="rule-dt-desc">山札をサーチして1枚入手 / 爆弾魔がパーツ3種揃いで勝利</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">local_police</span><span class="rule-dt-label">警察本部</span><span class="rule-dt-desc">陣営カード＞ダミーなら陣営特定、それ以外は捜査失敗</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">local_bar</span><span class="rule-dt-label">酒場</span><span class="rule-dt-desc">ランダムな相手と手札1枚強制交換</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">local_police</span><span class="rule-dt-label">交番</span><span class="rule-dt-desc">相手の手札を1枚没収</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">tv</span><span class="rule-dt-label">放送局</span><span class="rule-dt-desc">手札を1枚全員公開 → 1枚ドロー</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">casino</span><span class="rule-dt-label">カジノ</span><span class="rule-dt-desc">ダイス偶数→2枚ドロー / 奇数→1枚没収</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">traffic</span><span class="rule-dt-label">交差点</span><span class="rule-dt-desc">全員の手札が1枚ずつ次のプレイヤーへ</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">local_hospital</span><span class="rule-dt-label">病院</span><span class="rule-dt-desc">手札全捨て → 5枚引き直し</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">engineering</span><span class="rule-dt-label">工事現場</span><span class="rule-dt-desc">1回休み</span></div>
+            <div class="rule-dt-row"><span class="rule-dt-icon material-symbols-rounded">delete_sweep</span><span class="rule-dt-label">廃材置き場</span><span class="rule-dt-desc">アイテムパイルから1枚入手</span></div>
           </div>
         </div>
       </details>
 
       <!-- フッター -->
       <footer class="lobby-footer">
-        <a href="https://github.com/kaku3/workbooks" target="_blank" rel="noopener noreferrer">📚 エンジニアのためのお仕事問題集</a>
+        <a href="https://github.com/kaku3/workbooks" target="_blank" rel="noopener noreferrer"><span class="material-symbols-rounded" style="font-size:1rem;vertical-align:middle">menu_book</span> エンジニアのためのお仕事問題集</a>
       </footer>
     </div>
   </div>
@@ -171,7 +173,7 @@
   <!-- ======= ゲーム画面 ======= -->
   <div id="game-screen" class="game-screen" style="display:none">
     <header class="game-header">
-      <h1>💣 爆弾魔 vs 解除班</h1>      <button id="btn-rules" class="btn-small">📋 ルール</button>      <div id="phase-label" class="phase-label"></div>
+      <h1>爆弾魔 vs 解除班</h1>      <button id="btn-rules" class="btn-small"><span class="material-symbols-rounded">menu_book</span> ルール</button>      <div id="phase-label" class="phase-label"></div>
       <div id="my-role-badge" class="role-badge"></div>
     </header>
 
@@ -251,69 +253,69 @@
   <div id="rules-overlay" style="display:none">
     <div class="rules-box">
       <div class="rules-header">
-        <h2>📋 ルール詳細</h2>
+        <h2><span class="material-symbols-rounded">menu_book</span> ルール詳細</h2>
         <button id="rules-close-btn" class="btn-small">✕ 閉じる</button>
       </div>
       <div class="rules-content">
         <section class="rules-section">
-          <h3>🎯 勝利条件</h3>
+          <h3><span class="material-symbols-rounded">emoji_events</span> 勝利条件</h3>
           <div class="rules-win-cards">
             <div class="rules-win-card bomber">
-              <b>💣 爆弾魔チーム</b>
+              <b><span class="material-symbols-rounded">crisis_alert</span> 爆弾魔チーム</b>
               <p>爆弾パーツ A・B・C をすべて揃えた状態でタワーに止まり起爆！</p>
             </div>
             <div class="rules-win-card defuser">
-              <b>🛡️ 解除班チーム</b>
+              <b><span class="material-symbols-rounded">shield</span> 解除班チーム</b>
               <p>解除キット X・Y・Z をすべて揃えた状態で爆弾魔と同じマスで確保宣言！</p>
             </div>
           </div>
         </section>
         <section class="rules-section">
-          <h3>🃏 カード種別</h3>
+          <h3><span class="material-symbols-rounded">style</span> カード種別</h3>
           <table class="rules-table">
-            <tr><td>🔢 移動カード</td><td>数値分コマを進める → ロケーション効果発動</td></tr>
-            <tr><td>⚡ アクションカード</td><td>取引・強奪・尋問・スキャンなど</td></tr>
-            <tr><td>📦 アイテムカード</td><td>爆弾パーツ / 解除キット / ダミー（手に持つだけ）</td></tr>
+            <tr><td><span class="material-symbols-rounded">directions_run</span> 移動カード</td><td>数値分コマを進める → ロケーション効果発動</td></tr>
+            <tr><td><span class="material-symbols-rounded">bolt</span> アクションカード</td><td>取引・強奪・尋問・スキャンなど</td></tr>
+            <tr><td><span class="material-symbols-rounded">inventory_2</span> アイテムカード</td><td>爆弾パーツ / 解除キット / ダミー（手に持つだけ）</td></tr>
           </table>
         </section>
         <section class="rules-section">
-          <h3>⚔️ 主なアクションカード</h3>
+          <h3><span class="material-symbols-rounded">bolt</span> 主なアクションカード</h3>
           <table class="rules-table">
-            <tr><td>🤝 取引</td><td>指名プレイヤーと手札を 1枚交換</td></tr>
-            <tr><td>👊 強奪</td><td>相手の手札からランダムに 1枚奔う</td></tr>
-            <tr><td>👥 横流し</td><td>全員が手札を 1枚ずつ左鈲に渡す</td></tr>
+            <tr><td><span class="material-symbols-rounded">sync_alt</span> 取引</td><td>指名プレイヤーと手札を 1枚交換</td></tr>
+            <tr><td><span class="material-symbols-rounded">front_hand</span> 強奪</td><td>相手の手札からランダムに 1枚奔う</td></tr>
+            <tr><td><span class="material-symbols-rounded">people</span> 横流し</td><td>全員が手札を 1枚ずつ左鈲に渡す</td></tr>
             <tr><td>🗑️ ポイ捗て</td><td>相手の手札をランダムに 1枚捨てさせる</td></tr>
-            <tr><td>🔍 尋問</td><td>相手の手札を 1枚こっそり確認（本人のみ）</td></tr>
+            <tr><td><span class="material-symbols-rounded">manage_search</span> 尋問</td><td>相手の手札を 1枚こっそり確認（本人のみ）</td></tr>
             <tr><td>� 公開捜査</td><td>相手の手札を 1枚全員に公開</td></tr>
-            <tr><td>🤫 密談</td><td>相手と手札を 1枚見せ合う（味方確認）</td></tr>
-            <tr><td>⏸️ 足止め</td><td>相手の次のターンをスキップ</td></tr>
-            <tr><td>🚧 通行止め</td><td>指定ロケーションを 1ターン封鎖</td></tr>
-            <tr><td>📡 探知機</td><td>爆弾を探知する</td></tr>
-            <tr><td>💨 ダッシュ</td><td>手持ちの移動カードを選んで移動量+2で移動</td></tr>
-            <tr><td>🌫️ 煙幕</td><td>相手の手札から移動カード 1枚をランダムに破棄</td></tr>
-            <tr><td>🧤 手袋</td><td>強奪・ポイ捨て・煙幕と同時使用で効果+1（消費型）</td></tr>
+            <tr><td><span class="material-symbols-rounded">comment</span> 密談</td><td>相手と手札を 1枚見せ合う（味方確認）</td></tr>
+            <tr><td><span class="material-symbols-rounded">pause_circle</span> 足止め</td><td>相手の次のターンをスキップ</td></tr>
+            <tr><td><span class="material-symbols-rounded">block</span> 通行止め</td><td>指定ロケーションを 1ターン封鎖</td></tr>
+            <tr><td><span class="material-symbols-rounded">radar</span> 探知機</td><td>爆弾を探知する</td></tr>
+            <tr><td><span class="material-symbols-rounded">speed</span> ダッシュ</td><td>手持ちの移動カードを選んで移動量+2で移動</td></tr>
+            <tr><td><span class="material-symbols-rounded">blur_on</span> 煙幕</td><td>相手の手札から移動カード 1枚をランダムに破棄</td></tr>
+            <tr><td><span class="material-symbols-rounded">back_hand</span> 手袋</td><td>強奪・ポイ捨て・煙幕と同時使用で効果+1（消費型）</td></tr>
           </table>
         </section>
         <section class="rules-section">
-          <h3>🗺️ ロケーション効果</h3>
+          <h3><span class="material-symbols-rounded">map</span> ロケーション効果</h3>
           <table class="rules-table">
-            <tr><td>🏁 スタート</td><td>手札2枚捨て→相手指定→ランダム4枚から1枚奪取</td></tr>
-            <tr><td>🔩 ジャンク屋</td><td>山札から 1枚ドロー（引いたカードを本人に通知）</td></tr>
-            <tr><td>🏭 パーツ工場</td><td>アイテムカードを優先ドロー</td></tr>
-            <tr><td>🕵️ 探偵事務所</td><td>相手の手札を 1枚こっそり確認（本人のみ）</td></tr>
-            <tr><td>🌃 闇市</td><td>捨て札から最夆6枚の中から1枚引き取る</td></tr>
-            <tr><td>🌃 裏路地</td><td>捨て札から最夆3枚の中から1枚引き取る</td></tr>
-            <tr><td>🗇 タワー</td><td>山札をサーチして 1枚入手 / 爆弾魔がパーツ揃いで起爆</td></tr>
-            <tr><td>🚔 警察本部</td><td>陣営カード＞ダミーなら陣営特定、それ以外は捜査失敗</td></tr>
-            <tr><td>🎺 酒場</td><td>ランダムな相手と手札をランダムに 1枚強制交換</td></tr>
-            <tr><td>🚚 交番</td><td>相手の手札を 1枚捘収</td></tr>
-            <tr><td>📺 放送局</td><td>手札を 1枚全員公開 → 1枚ドロー</td></tr>
-            <tr><td>🎰 カジノ</td><td>ダイス偶数→ 2枚ドロー / 奇数→ 1枚捕収</td></tr>
-            <tr><td>🚦 スクランブル</td><td>全員の手札が 1枚ずつ左鈲へ</td></tr>
-            <tr><td>🏥 病院</td><td>手札全捨て → 5枚引き直し</td></tr>
-            <tr><td>🚧 工事現場</td><td>1回休み</td></tr>
-            <tr><td>🪨 廃材置き場</td><td>アイテムパイルからランダムに 1枚引く</td></tr>
-            <tr><td>🌃 裏路地</td><td>捨て札からランダム 3枚のうち 1枚拾う</td></tr>
+            <tr><td><span class="material-symbols-rounded">flag</span> スタート</td><td>手札2枚捨て→相手指定→ランダム4枚から1枚奪取</td></tr>
+            <tr><td><span class="material-symbols-rounded">construction</span> ジャンク屋</td><td>山札から 1枚ドロー（引いたカードを本人に通知）</td></tr>
+            <tr><td><span class="material-symbols-rounded">factory</span> パーツ工場</td><td>アイテムカードを優先ドロー</td></tr>
+            <tr><td><span class="material-symbols-rounded">manage_search</span> 探偵事務所</td><td>相手の手札を 1枚こっそり確認（本人のみ）</td></tr>
+            <tr><td><span class="material-symbols-rounded">storefront</span> 闇市</td><td>捨て札から最夆6枚の中から1枚引き取る</td></tr>
+            <tr><td><span class="material-symbols-rounded">signpost</span> 裏路地</td><td>捨て札から最夆3枚の中から1枚引き取る</td></tr>
+            <tr><td><span class="material-symbols-rounded">apartment</span> タワー</td><td>山札をサーチして 1枚入手 / 爆弾魔がパーツ揃いで起爆</td></tr>
+            <tr><td><span class="material-symbols-rounded">local_police</span> 警察本部</td><td>陣営カード＞ダミーなら陣営特定、それ以外は捜査失敗</td></tr>
+            <tr><td><span class="material-symbols-rounded">local_bar</span> 酒場</td><td>ランダムな相手と手札をランダムに 1枚強制交換</td></tr>
+            <tr><td><span class="material-symbols-rounded">local_police</span> 交番</td><td>相手の手札を 1枚捘収</td></tr>
+            <tr><td><span class="material-symbols-rounded">tv</span> 放送局</td><td>手札を 1枚全員公開 → 1枚ドロー</td></tr>
+            <tr><td><span class="material-symbols-rounded">casino</span> カジノ</td><td>ダイス偶数→ 2枚ドロー / 奇数→ 1枚捕収</td></tr>
+            <tr><td><span class="material-symbols-rounded">traffic</span> スクランブル</td><td>全員の手札が 1枚ずつ左鈲へ</td></tr>
+            <tr><td><span class="material-symbols-rounded">local_hospital</span> 病院</td><td>手札全捨て → 5枚引き直し</td></tr>
+            <tr><td><span class="material-symbols-rounded">engineering</span> 工事現場</td><td>1回休み</td></tr>
+            <tr><td><span class="material-symbols-rounded">delete_sweep</span> 廃材置き場</td><td>アイテムパイルからランダムに 1枚引く</td></tr>
+            <tr><td><span class="material-symbols-rounded">signpost</span> 裏路地（捨て札）</td><td>捨て札からランダム 3枚のうち 1枚拾う</td></tr>
           </table>
         </section>
       </div>

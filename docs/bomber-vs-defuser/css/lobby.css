@@ -8,9 +8,9 @@
   align-items: flex-start;
   padding: 32px 12px 56px;
   min-height: 100vh;
-  background-color: #f0ebff;
+  background-color: #0d0f14;
   background-image:
-    linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+    linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.82)),
     url('../assets/map.png');
   background-repeat: no-repeat;
   background-position: center top;
@@ -28,24 +28,36 @@
 .lobby-container h1 {
   text-align: center;
   font-size: 2rem;
-  color: #7c3aed;
-  letter-spacing: 0.02em;
-  text-shadow: 0 2px 12px rgba(124,58,237,0.18);
+  color: #f5c842;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 24px rgba(245,200,66,0.35), 0 2px 8px rgba(0,0,0,0.8);
   margin-bottom: 0;
+}
+.flavor-text {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
 }
 .subtitle {
   text-align: center;
-  color: #6b7280;
+  color: #e2e8f0;
   line-height: 1.6;
-  font-size: 0.92rem;
-  font-weight: bold;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-top: 1px solid rgba(245,200,66,0.15);
+  border-bottom: 1px solid rgba(245,200,66,0.15);
+  letter-spacing: 0.03em;
 }
 .lobby-thumbnail {
   display: block;
   width: 100%;
   object-fit: cover;
   border-radius: 14px;
-  box-shadow: 0 4px 18px rgba(124,58,237,0.18);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
 }
 
 /* チーム紹介 */
@@ -62,12 +74,12 @@
   box-shadow: 0 4px 14px rgba(0,0,0,0.09);
 }
 .team-bomber {
-  background: linear-gradient(145deg, #fee2e2, #fecaca);
-  border: 2px solid #fca5a5;
+  background: linear-gradient(145deg, #2a1212, #3d1818);
+  border: 2px solid #7f2020;
 }
 .team-defuser {
-  background: linear-gradient(145deg, #dbeafe, #bfdbfe);
-  border: 2px solid #93c5fd;
+  background: linear-gradient(145deg, #0b1927, #0f2540);
+  border: 2px solid #1e4a7a;
 }
 .team-vs {
   display: flex;
@@ -75,13 +87,13 @@
   justify-content: center;
   font-size: 1.4rem;
   font-weight: 900;
-  color: #9ca3af;
+  color: #4b5563;
   padding: 0 4px;
   flex-shrink: 0;
 }
 .team-icon { font-size: 2.6rem; margin-bottom: 6px; }
-.team-name { font-weight: 800; font-size: 0.92rem; margin-bottom: 6px; color: #374151; }
-.team-goal { font-size: 0.78rem; color: #6b7280; line-height: 1.6; }
+.team-name { font-weight: 800; font-size: 0.92rem; margin-bottom: 6px; color: #e2e8f0; }
+.team-goal { font-size: 0.78rem; color: #94a3b8; line-height: 1.6; }
 
 /* ルームID入力行（input + リセットボタン横並び） */
 .room-input-row {
@@ -94,58 +106,58 @@
   min-width: 0;
 }
 .room-input-row input[type="text"]:disabled {
-  background: #f0f0f0;
-  color: #6b7280;
+  background: #252932;
+  color: #4b5563;
   cursor: not-allowed;
 }
 .btn-reset-room {
   flex-shrink: 0;
   white-space: nowrap;
-  background: #fee2e2;
-  color: #b91c1c;
-  border: 1.5px solid #fca5a5;
+  background: #2a1212;
+  color: #f87171;
+  border: 1.5px solid #7f2020;
   font-weight: 600;
 }
 .btn-reset-room:hover {
-  background: #fca5a5;
+  background: #3d1818;
 }
 
 /* 入力・ボタンカード */
 .card-panel {
-  background: #ffffff;
+  background: #1a1d24;
   border-radius: 14px;
   padding: 18px 20px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-  border: 1.5px solid rgba(0,0,0,0.07);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+  border: 1.5px solid rgba(255,255,255,0.06);
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-.card-panel h2 { font-size: 1rem; color: #7c3aed; margin-bottom: 0; }
-.card-panel p  { color: #6b7280; font-size: 0.85rem; }
-.card-panel label { font-size: 0.85rem; color: #374151; font-weight: 600; }
+.card-panel h2 { font-size: 1rem; color: #7ba7bc; margin-bottom: 0; }
+.card-panel p  { color: #94a3b8; font-size: 0.85rem; }
+.card-panel label { font-size: 0.85rem; color: #cbd5e1; font-weight: 600; }
 
-/* ロビー内の input を明るい色に */
+/* ロビー内の input を暗い色に */
 .lobby-screen input[type="text"] {
-  background: #f9fafb;
-  color: #111827;
-  border: 1.5px solid #d1d5db;
+  background: #0d0f14;
+  color: #e0e0e0;
+  border: 1.5px solid #2a3a4f;
 }
-.lobby-screen input[type="text"]::placeholder { color: #9ca3af; }
+.lobby-screen input[type="text"]::placeholder { color: #4b5563; }
 
 /* パネル内ボタン */
-.lobby-screen .btn-primary   { background: #7c3aed; }
-.lobby-screen .btn-secondary { background: #ffffff; color: #374151; border: 1.5px solid #d1d5db; }
+.lobby-screen .btn-primary   { background: #c0392b; }
+.lobby-screen .btn-secondary { background: #1a1d24; color: #cbd5e1; border: 1.5px solid #2a3a4f; }
 .lobby-screen .btn-success   { background: #16a34a; }
-.lobby-screen .btn-small     { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
-/* card-panel直下のボタンは必ず横幅いっぱい */
+.lobby-screen .btn-small     { background: #252932; color: #94a3b8; border: 1px solid #2a3a4f; }
+/* パネル内ボタンは必ず横幅いっぱい */
 .card-panel > button { width: 100%; }
 
 /* 人数選択ラジオボタン */
 .count-select-label {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #374151;
+  color: #cbd5e1;
 }
 .count-radios {
   display: flex;
@@ -158,17 +170,17 @@
   cursor: pointer;
   padding: 6px 16px;
   border-radius: 20px;
-  border: 2px solid #d1d5db;
-  background: #f9fafb;
+  border: 2px solid #2a3a4f;
+  background: #0d0f14;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #374151;
+  color: #94a3b8;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
 .count-radio-label:has(input:checked) {
-  border-color: #7c3aed;
-  background: #ede9fe;
-  color: #7c3aed;
+  border-color: #e94560;
+  background: #2d1515;
+  color: #e94560;
 }
 .count-radio-label input[type="radio"] {
   display: none;
@@ -177,20 +189,20 @@
 /* 参加者一覧 */
 #player-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
 #player-list li {
-  background: #f3f4f6;
+  background: #252932;
   border-radius: 8px;
   padding: 6px 12px;
   font-size: 0.9rem;
-  color: #374151;
+  color: #e0e0e0;
 }
 
 /* ステータスメッセージ */
 .status-msg {
   text-align: center;
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.85rem;
   padding: 8px;
-  background: rgba(255,255,255,0.75);
+  background: rgba(0,0,0,0.4);
   border-radius: 8px;
 }
 .status-room {
@@ -199,20 +211,20 @@
   gap: 10px;
   flex-wrap: wrap;
   padding: 10px 14px;
-  background: #fff;
+  background: #1a1d24;
   border-radius: 10px;
   font-size: 0.85rem;
-  color: #6b7280;
-  border: 1px solid #e5e7eb;
+  color: #94a3b8;
+  border: 1px solid #2a3a4f;
 }
-.status-room strong { font-family: monospace; color: #374151; word-break: break-all; }
+.status-room strong { font-family: monospace; color: #e0e0e0; word-break: break-all; }
 
 /* ルール詳細（折りたたみ） */
 .rule-detail-section {
-  background: #ffffff;
+  background: #1a1d24;
   border-radius: 14px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-  border: 1.5px solid rgba(0,0,0,0.07);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+  border: 1.5px solid rgba(255,255,255,0.06);
   overflow: hidden;
 }
 .rule-detail-section > summary {
@@ -220,12 +232,12 @@
   padding: 16px 20px;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #374151;
+  color: #cbd5e1;
   list-style: none;
   user-select: none;
 }
 .rule-detail-section > summary::-webkit-details-marker { display: none; }
-.rule-detail-section[open] > summary { border-bottom: 1px solid rgba(0,0,0,0.08); }
+.rule-detail-section[open] > summary { border-bottom: 1px solid rgba(255,255,255,0.06); }
 .rule-detail-inner {
   display: flex;
   flex-direction: column;
@@ -233,52 +245,52 @@
   padding: 16px 20px;
 }
 .rule-detail-card {
-  background: #f9fafb;
+  background: #252932;
   border-radius: 10px;
   padding: 14px 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #2a3a4f;
 }
-.rule-detail-card h3 { font-size: 0.88rem; color: #374151; margin-bottom: 10px; }
+.rule-detail-card h3 { font-size: 0.88rem; color: #cbd5e1; margin-bottom: 10px; }
 .rule-dt-row {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   font-size: 0.82rem;
   padding: 4px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   line-height: 1.4;
 }
 .rule-dt-row:last-child { border-bottom: none; }
-.rule-dt-icon  { flex-shrink: 0; width: 22px; text-align: center; }
-.rule-dt-label { font-weight: 600; color: #374151; flex-shrink: 0; min-width: 62px; }
-.rule-dt-desc  { color: #6b7280; }
+.rule-dt-icon  { flex-shrink: 0; width: 22px; text-align: center; font-size: 1rem; line-height: 1; }
+.rule-dt-label { font-weight: 600; color: #e2e8f0; flex-shrink: 0; min-width: 62px; }
+.rule-dt-desc  { color: #94a3b8; }
 
 /* ルールサマリー */
 .rule-summary-section {
-  background: #ffffff;
+  background: #1a1d24;
   border-radius: 14px;
   padding: 18px 20px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-  border: 1.5px solid rgba(0,0,0,0.07);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+  border: 1.5px solid rgba(255,255,255,0.06);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-.rule-summary-section > h2 { font-size: 1rem; color: #374151; margin-bottom: 0; }
+.rule-summary-section > h2 { font-size: 1rem; color: #cbd5e1; margin-bottom: 0; }
 .rule-step-list { display: flex; flex-direction: column; gap: 8px; }
 .rule-step {
   display: flex;
   align-items: center;
   gap: 11px;
   font-size: 0.88rem;
-  color: #374151;
+  color: #e0e0e0;
   line-height: 1.5;
 }
 .step-circle {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  background: linear-gradient(135deg, #c0392b, #7f2020);
   color: #fff;
   font-weight: 700;
   font-size: 0.82rem;
@@ -292,8 +304,8 @@
   align-items: flex-start;
   gap: 8px;
   font-size: 0.82rem;
-  color: #92400e;
-  background: #fef3c7;
+  color: #f0c060;
+  background: #251f00;
   border-radius: 8px;
   padding: 8px 12px;
   border-left: 3px solid #f59e0b;
@@ -308,9 +320,13 @@
   gap: 10px;
 }
 .share-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #6b7280;
+  color: #4b5563;
   margin: 0;
 }
 .share-buttons {
@@ -332,20 +348,20 @@
   white-space: nowrap;
 }
 .share-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-.share-x    { background: #000; color: #fff; }
+.share-x    { background: #111318; color: #e2e8f0; border: 1.5px solid #374151; }
 .share-line { background: #06c755; color: #fff; }
-.share-copy { background: #f3f4f6; color: #374151; border: 1.5px solid #d1d5db; }
+.share-copy { background: #1a1d24; color: #cbd5e1; border: 1.5px solid #374151; }
 
 /* フッター */
 .lobby-footer {
   text-align: center;
   padding: 16px 0 4px;
   font-size: 0.82rem;
-  border-top: 1px solid #e5e7eb;
-  color: #9ca3af;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  color: #4b5563;
 }
 .lobby-footer a {
-  color: #7c3aed;
+  color: #7c6aef;
   text-decoration: none;
   font-weight: 600;
 }
