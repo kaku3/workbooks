@@ -257,3 +257,17 @@ document.querySelectorAll('input[name="player-count"]').forEach(radio => {
     renderPlayerList(players);
   });
 });
+
+// ヒーロー: サムネイル 3 秒表示 → 動画フェードイン
+(function initHeroTransition() {
+  const thumb = document.getElementById('hero-thumb');
+  const video = document.getElementById('hero-video');
+  if (!thumb || !video) return;
+  const startFade = () => setTimeout(() => thumb.classList.add('fade-out'), 3000);
+  if (video.readyState >= 3) {
+    startFade();
+  } else {
+    video.addEventListener('canplaythrough', startFade, { once: true });
+    // 動画が読み込めない場合でも 3 秒後にサムネイルは消えないよう保持
+  }
+})();

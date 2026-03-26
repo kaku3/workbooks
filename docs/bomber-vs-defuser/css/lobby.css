@@ -52,12 +52,33 @@
   border-bottom: 1px solid rgba(245,200,66,0.15);
   letter-spacing: 0.03em;
 }
-.lobby-thumbnail {
+/* ヒーローラッパー（動画 + サムネイルオーバーレイ） */
+.hero-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  aspect-ratio: 16 / 9;
+}
+.lobby-hero-video {
   display: block;
   width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+}
+.hero-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  transition: opacity 1.2s ease;
+}
+.hero-thumb-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* チーム紹介 */
