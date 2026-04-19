@@ -1,0 +1,189 @@
+/* ============================================================
+   overlay.css  モーダル・オーバーレイ・通知
+   ============================================================ */
+
+/* ─── 汎用オーバーレイ ─── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,13,26,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50;
+}
+.overlay-content {
+  background: var(--bg-mid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 480px; width: 90%;
+  text-align: center;
+}
+
+/* ─── フェーズバナー ─── */
+.phase-banner {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 30px rgba(0,229,255,0.5);
+  padding: 16px 32px;
+  background: rgba(5,13,26,0.9);
+  border: 2px solid var(--accent-cyan);
+  border-radius: var(--radius);
+  z-index: 60;
+  animation: bannerIn 0.4s ease-out;
+  pointer-events: none;
+}
+@keyframes bannerIn {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ─── 通知トースト ─── */
+.toast-container {
+  position: fixed; bottom: 120px; right: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+  z-index: 40; pointer-events: none;
+}
+.toast {
+  padding: 10px 18px;
+  background: var(--bg-mid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--text-primary);
+  animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.7s forwards;
+  pointer-events: auto;
+}
+.toast.toast-danger { border-color: var(--danger); color: var(--danger); }
+.toast.toast-success { border-color: var(--success); color: var(--success); }
+.toast.toast-warning { border-color: var(--accent-amber); color: var(--accent-amber); }
+
+@keyframes toastIn {
+  0%   { opacity: 0; transform: translateX(40px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  0%   { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* ─── 収縮警告フラッシュ (Canvas 外の枠) ─── */
+.shrink-warning {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  animation: shrinkFlash 2s infinite;
+  border-radius: var(--radius);
+}
+@keyframes shrinkFlash {
+  0%, 100% { box-shadow: inset 0 0 0px rgba(255,30,30,0); }
+  50%      { box-shadow: inset 0 0 40px rgba(255,30,30,0.3); }
+}
+
+/* ─── 前方警戒パルス ─── */
+.warning-pulse {
+  animation: warningPulse 1s infinite;
+}
+@keyframes warningPulse {
+  0%, 100% { background-color: rgba(255,160,0,0); }
+  50%      { background-color: rgba(255,160,0,0.25); }
+}
+
+/* ─── バフ発動エフェクト ─── */
+.buff-flow {
+  animation: buffFlow 0.6s ease-out;
+}
+@keyframes buffFlow {
+  0%   { box-shadow: 0 0 0px var(--accent-gold); }
+  50%  { box-shadow: 0 0 20px var(--accent-gold); }
+  100% { box-shadow: 0 0 0px var(--accent-gold); }
+}
+
+/* ─── カードターゲット選択モーダル ─── */
+.card-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,13,26,0.88);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200;
+}
+.card-modal-box {
+  background: var(--bg-mid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  min-width: 280px; max-width: 400px;
+  width: 92vw;
+  max-height: 90vh; overflow-y: auto;
+}
+.card-modal-title {
+  font-family: var(--font-display);
+  color: var(--accent-cyan);
+  font-size: 0.9rem; margin-bottom: 16px;
+  text-align: center; letter-spacing: 1px;
+}
+.card-modal-body { margin-bottom: 4px; }
+.card-modal-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+  border-top: 1px solid var(--border);
+  padding-top: 12px; margin-top: 12px;
+}
+
+/* コンパス */
+.modal-compass {
+  display: grid;
+  grid-template-columns: repeat(3, 52px);
+  gap: 6px; margin: 8px auto; width: fit-content;
+}
+.modal-compass-btn {
+  width: 52px; height: 52px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-compass-btn:hover { border-color: var(--accent-cyan); }
+.modal-compass-btn.active {
+  border-color: var(--accent-cyan);
+  background: rgba(0,229,255,0.15);
+  color: var(--accent-cyan);
+}
+.modal-compass-center {
+  display: flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px;
+  color: var(--text-muted); font-size: 1rem;
+}
+.modal-compass-empty { width: 52px; height: 52px; }
+
+/* 汎用ボタン行 */
+.modal-btn-row {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  justify-content: center; margin: 6px 0;
+}
+.modal-btn {
+  padding: 7px 14px;
+  background: var(--bg-surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-body); font-size: 13px;
+}
+.modal-btn:hover { border-color: var(--accent-cyan); }
+.modal-btn.active {
+  border-color: var(--accent-cyan);
+  background: rgba(0,229,255,0.12);
+  color: var(--accent-cyan);
+}
+.modal-btn.number-btn {
+  min-width: 30px; padding: 6px 2px;
+  text-align: center; font-family: var(--font-mono);
+}
+.modal-label {
+  font-size: 11px; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.8px;
+  margin: 10px 0 4px; text-align: center;
+}
+.modal-sep { height: 1px; background: var(--border); margin: 12px 0; }

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>深海潜水艦バトル</title>
+
+  <!-- PeerJS -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/lobby.css">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/board.css">
+  <link rel="stylesheet" href="css/card.css">
+  <link rel="stylesheet" href="css/overlay.css">
+</head>
+<body>
+
+<!-- ========== ロビー画面 ========== -->
+<div id="lobby-screen">
+  <h1 class="lobby-title">SUBMARINE BATTLE</h1>
+  <p class="lobby-subtitle">3〜6人で遊ぶ深海タクティカル海戦ストラテジー</p>
+
+  <div class="lobby-box">
+    <div class="lobby-field">
+      <label>プレイヤー名</label>
+      <input type="text" id="player-name" placeholder="名前を入力" maxlength="12">
+    </div>
+
+    <div class="lobby-field">
+      <label>最大人数</label>
+      <div class="player-count-select">
+        <label><input type="radio" name="max-players" value="3"><span>3</span></label>
+        <label><input type="radio" name="max-players" value="4"><span>4</span></label>
+        <label><input type="radio" name="max-players" value="5"><span>5</span></label>
+        <label><input type="radio" name="max-players" value="6" checked><span>6</span></label>
+      </div>
+    </div>
+
+    <div class="lobby-field">
+      <label>ルームID（参加時）</label>
+      <input type="text" id="room-id-input" placeholder="ホストのルームIDを入力">
+    </div>
+
+    <div class="lobby-actions">
+      <button class="btn btn-primary" id="create-room-btn">
+        <span class="material-symbols-outlined">add_circle</span>ルーム作成
+      </button>
+      <button class="btn" id="join-room-btn">
+        <span class="material-symbols-outlined">login</span>参加
+      </button>
+    </div>
+
+    <div id="room-url"></div>
+    <div id="lobby-players"></div>
+    <p id="lobby-status"></p>
+    <button class="btn btn-primary hidden" id="start-game-btn">
+      <span class="material-symbols-outlined">play_arrow</span>ゲーム開始
+    </button>
+  </div>
+</div>
+
+<!-- ========== ゲーム画面 ========== -->
+<div id="game-screen" class="hidden">
+
+  <!-- ヘッダー: フェーズ + タイマー -->
+  <header class="game-header">
+    <span id="phase-display">ターン 1 - ドローフェーズ</span>
+    <div class="game-header-right">
+      <div class="timer-box">
+        <span class="material-symbols-outlined">timer</span>
+        <span id="timer-display">--</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- プレイヤーストリップ (上部横並び) -->
+  <div class="player-strip">
+    <div id="player-list"></div>
+  </div>
+
+  <!-- 盤面（全幅・残り全高） -->
+  <main class="panel-center">
+    <div class="board-wrapper">
+      <canvas id="board-canvas" width="500" height="500"></canvas>
+      <div id="board-place-overlay" class="hidden"></div>
+      <div id="dogfight-banner" class="hidden"></div>
+      <!-- 行動フェーズ: 現在実行中アクション表示カード -->
+      <div id="action-event-card" class="hidden">
+        <span class="material-symbols-outlined" id="ae-icon">rocket_launch</span>
+        <div class="ae-body">
+          <div id="ae-label"></div>
+          <div id="ae-sub"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- フェーズ切り替えオーバーレイ -->
+  <div id="phase-overlay">
+    <div class="phase-overlay-title"></div>
+    <div class="phase-overlay-sub"></div>
+  </div>
+
+  <!-- フッター: HP + 燃料バー + 山札 + 手札 + ログ -->
+  <footer class="game-footer">
+
+    <!-- 行1: HP + 燃料バー(全幅) + コマンド確定(右) -->
+    <div class="footer-row-fuel">
+      <div class="fuel-bar-container fuel-wide">
+        <div class="fuel-fill" id="fuel-fill" style="width:100%"></div>
+        <span id="fuel-label">10 / 10</span>
+      </div>
+      <div id="command-area" class="hidden">
+        <button class="btn btn-primary" id="confirm-btn" disabled>
+          <span class="material-symbols-outlined">check_circle</span>コマンド確定
+        </button>
+        <div id="cmd-waiting" class="hidden"></div>
+      </div>
+    </div>
+
+    <!-- 行動フェーズ: 現在実行中アクション表示カード（ボード上に移動） -->
+
+    <!-- 行2: ドロー山札 (ドローフェーズのみ表示) -->
+    <div id="deck-row-wrap" class="hidden">
+      <div class="draw-counter">補充カードを<span id="draw-count-num">2</span>枚選択</div>
+      <div id="draw-area">
+        <button class="deck-btn" data-deck="move">
+          <span class="material-symbols-outlined">directions_boat</span>
+          移動<span class="deck-count">16</span>
+        </button>
+        <button class="deck-btn" data-deck="recon">
+          <span class="material-symbols-outlined">radar</span>
+          索敵<span class="deck-count">12</span>
+        </button>
+        <button class="deck-btn" data-deck="attack">
+          <span class="material-symbols-outlined">rocket_launch</span>
+          攻撃<span class="deck-count">11</span>
+        </button>
+        <button class="deck-btn" data-deck="special">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          特殊<span class="deck-count">13</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 補充待機インジケーター (自分の補充完了待ち) -->
+    <div id="draw-waiting" class="hidden"></div>
+
+    <!-- 固定コマンドボタン (←↑→ 左旋回・前進・右旋回) -->
+    <div id="free-moves-row" class="hidden"></div>
+
+    <!-- 手札 (ドロー中はプレビューのみ・選択不可) -->
+    <div id="hand-area"></div>
+
+    <!-- ターンログ -->
+    <div id="turn-log"></div>
+
+  </footer>
+</div>
+
+<!-- カードターゲット選択モーダル -->
+<div id="card-modal" class="card-modal-overlay hidden">
+  <div class="card-modal-box">
+    <div class="card-modal-title" id="card-modal-title">カードを使用</div>
+    <div class="card-modal-body" id="card-modal-body"></div>
+    <div class="card-modal-actions">
+      <button class="btn" id="card-modal-cancel">キャンセル</button>
+      <button class="btn btn-primary" id="card-modal-ok" disabled>決定</button>
+    </div>
+  </div>
+</div>
+
+<!-- ゲームオーバーオーバーレイ -->
+<div id="game-over-overlay" class="hidden"></div>
+
+<!-- トーストコンテナ -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- エントリ -->
+<script type="module">
+  import { initLobby } from './js/lobby.js';
+  initLobby();
+</script>
+
+</body>
+</html>

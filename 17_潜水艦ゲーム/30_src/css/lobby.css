@@ -1,0 +1,78 @@
+/* ============================================================
+   lobby.css  ロビー画面
+   ============================================================ */
+#lobby-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100vh; gap: 24px;
+  background: radial-gradient(circle at 50% 80%, #0a2540 0%, var(--bg-deep) 70%);
+}
+
+.lobby-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 20px rgba(0,229,255,0.4);
+  letter-spacing: 2px;
+}
+.lobby-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: -16px;
+}
+
+.lobby-box {
+  background: var(--bg-mid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 100%; max-width: 420px;
+}
+
+.lobby-field { margin-bottom: 14px; }
+.lobby-field label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+
+.lobby-actions { display: flex; gap: 10px; margin-top: 8px; }
+.lobby-actions .btn { flex: 1; }
+
+/* 人数選択 */
+.player-count-select {
+  display: flex; gap: 8px; margin-top: 4px;
+}
+.player-count-select label {
+  display: flex; align-items: center; gap: 4px;
+  cursor: pointer; font-size: 13px; color: var(--text-muted);
+}
+.player-count-select input:checked + span { color: var(--accent-cyan); font-weight: 700; }
+
+/* プレイヤーリスト */
+#lobby-players {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-top: 14px; min-height: 40px;
+}
+.lobby-player {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.lobby-player.is-me { border-left: 3px solid var(--accent-cyan); }
+.lobby-player-icon { font-size: 16px; }
+
+#lobby-status {
+  font-size: 12px; color: var(--text-muted); text-align: center;
+}
+
+#room-url {
+  text-align: center; margin-top: 8px;
+  font-size: 12px; color: var(--text-muted);
+}
+#room-url code {
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  background: var(--bg-surface);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+#start-game-btn { margin-top: 12px; width: 100%; }

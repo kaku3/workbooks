@@ -1,0 +1,62 @@
+/* ============================================================
+   board.css  Canvas & ボード周辺
+   ============================================================ */
+.board-wrapper {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+}
+
+#board-canvas {
+  border: 1px solid var(--border);
+  background: #050d1a;
+}
+
+/* ソナー波紋 CSS (Canvas外の追加演出) */
+.sonar-ring {
+  position: absolute;
+  border: 2px solid var(--accent-cyan);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sonarPulse 1.2s ease-out forwards;
+}
+@keyframes sonarPulse {
+  0%   { transform: scale(0.1); opacity: 0.8; }
+  100% { transform: scale(4);   opacity: 0; }
+}
+
+/* 爆発 CSS エフェクト */
+.explosion-flash {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #ff6600 40%, transparent 70%);
+  pointer-events: none;
+  animation: explode 0.6s ease-out forwards;
+}
+@keyframes explode {
+  0%   { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* ドッグファイトエフェクト */
+.dogfight-flash {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  animation: dogfightEntry 0.5s ease-out forwards;
+}
+@keyframes dogfightEntry {
+  0%   { background: transparent; }
+  30%  { background: rgba(255,0,80,0.3); }
+  100% { background: transparent; }
+}
+
+/* ダメージシェイク */
+.shake {
+  animation: damageShake 0.3s ease-in-out;
+}
+@keyframes damageShake {
+  0%, 100% { transform: translateX(0); }
+  25%  { transform: translateX(-8px) rotate(-1deg); }
+  75%  { transform: translateX(8px) rotate(1deg); }
+}

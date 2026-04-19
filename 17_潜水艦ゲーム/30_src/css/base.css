@@ -1,0 +1,82 @@
+/* ============================================================
+   base.css  深海テーマ基盤
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Share+Tech+Mono&family=Orbitron:wght@600&display=swap');
+
+:root {
+  /* 深海パレット */
+  --bg-deep:      #050d1a;
+  --bg-mid:       #0a1929;
+  --bg-surface:   #112240;
+  --bg-card:      #1a2e4a;
+  --accent-cyan:  #00e5ff;
+  --accent-amber: #ff6600;
+  --accent-gold:  #ffe066;
+  --text-primary: #e0f0ff;
+  --text-muted:   #6b8db5;
+  --danger:       #ff3344;
+  --success:      #00cc88;
+  --border:       rgba(0,229,255,0.15);
+  /* フォント */
+  --font-body:    'Noto Sans JP', sans-serif;
+  --font-mono:    'Share Tech Mono', monospace;
+  --font-display: 'Orbitron', sans-serif;
+  /* レイアウト */
+  --radius:       8px;
+  --radius-sm:    4px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%; width: 100%;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+
+a { color: var(--accent-cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.hidden { display: none !important; }
+
+/* ─── ボタン ─── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:hover:not(:disabled) { background: var(--bg-card); border-color: var(--accent-cyan); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-primary { background: var(--accent-cyan); color: var(--bg-deep); font-weight: 700; border-color: var(--accent-cyan); }
+.btn-primary:hover:not(:disabled) { background: #33eeff; }
+.btn-danger  { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ─── 入力 ─── */
+input[type="text"], input[type="number"] {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  width: 100%;
+}
+input:focus { outline: none; border-color: var(--accent-cyan); }
+
+/* ─── スクロールバー ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 3px; }
