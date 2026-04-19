@@ -12,6 +12,7 @@ export { setCommandPreview, clearCommandPreview,
 let canvas, ctx;
 let cellSize = 50;
 let boardOffset = { x: 0, y: 0 };
+let _latestView = null; // ResizeObserver 再描画用
 
 // 色定数
 const C = {
@@ -40,6 +41,8 @@ export function initRenderer(canvasEl) {
   ctx = canvas.getContext('2d');
   resize();
   window.addEventListener('resize', resize);
+  // コンテナサイズ変化（パネル表示切替等）でも再描画
+  new ResizeObserver(() => { resize(); renderState(_latestView); }).observe(canvas.parentElement);
   // アニメーション・プレビューモジュールに canvas コンテキストを渡す
   initAnim(ctx, () => cellSize, () => boardOffset, renderState);
 }
@@ -57,6 +60,7 @@ function resize() {
 export function renderState(view) {
   if (!ctx) return;
   setRenderedView(view);
+  _latestView = view;
   const w = canvas.width, h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
@@ -271,14 +275,13 @@ function drawSonarResults(view) {
     const s = cellSize * 0.15;
     ctx.beginPath(); ctx.moveTo(px - s, py - s); ctx.lineTo(px + s, py + s); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(px + s, py - s); ctx.lineTo(px - s, py + s); ctx.stroke();
-    // 検知プレイヤー名
-    const detected = sr.playerId ? view.players[sr.playerId] : null;
-    if (detected?.name) {
+    // 検知プレイヤー名の代わりに「機影発見」と表示
+    if (sr.playerId || sr.fake) {
       ctx.fillStyle = sr.fake ? '#ff4444' : '#00ff88';
       ctx.font = `bold ${Math.max(9, cellSize * 0.2)}px sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
       ctx.globalAlpha = 0.85;
-      ctx.fillText(detected.name, px, py - cellSize * 0.32 - 2);
+      ctx.fillText(sr.fake ? '欺瞞波' : '機影', px, py - cellSize * 0.32 - 2);
       ctx.globalAlpha = 1;
     }
   }

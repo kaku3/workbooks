@@ -74,5 +74,12 @@
   padding: 2px 8px;
   border-radius: var(--radius-sm);
 }
+.room-url-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
 #start-game-btn { margin-top: 12px; width: 100%; }

@@ -4,12 +4,12 @@
 import { MSG, getMyId, getIsHost, setMessageHandler,
          broadcastState, sendPrivate, broadcastPublic,
          broadcastGameOver, sendToGuest } from './peer.js';
-import { createInitialState, handleDraw, handleCommand,
+import { createInitialState, handleCommand,
          forceConfirmAll, advanceToNextTurn,
-         sanitizeStateForPlayer, calcFuelCost } from './gameLogic.js';
+         sanitizeStateForPlayer, calcTimeCost } from './gameLogic.js';
 import { COMMAND_TIME_LIMIT } from './constants.js';
 import { initRenderer, renderState, startActionAnimation, clearActionAnimation } from './render.js';
-import { initUI, updateUI, showPhase, showPhaseOverlay, showActionEvents,
+import { initUI, updateUI, showPhase, showPhaseOverlay, showActionEvents, getSelectedOps,
          showGameOver, enableDraw, enableCommand, showTurnSummary, showCurrentAction } from './ui.js';
 
 let gameState = null;   // ホストのみ保持
@@ -32,9 +32,8 @@ export function initGameScreen(playerIds, playerNames) {
     syncStateToAll();
   }
   initUI({
-    onDraw: handleDrawLocal,
     onConfirm: handleConfirmLocal,
-    calcFuelCost,
+    calcTimeCost,
   });
 }
 
@@ -44,20 +43,9 @@ export function initGameScreen(playerIds, playerNames) {
 function onHostMessage(msg) {
   const from = msg.from || getMyId();
   switch (msg.type) {
-    case MSG.DRAW_CHOICE: {
-      const card = handleDraw(gameState, from, msg.deckType);
-      if (card) {
-        // そのプレイヤーに引いたカードを通知
-        sendPrivate(from, { drawnCard: card });
-      }
-      syncStateToAll();
-      break;
-    }
     case MSG.COMMAND_CONFIRM: {
       handleCommand(gameState, from, msg.cardUids, msg.targets);
       syncStateToAll();
-      // アクションフェーズになったらタイマーを停止
-      // 次ターンへの遷移はアニメ完了コールバック (advanceAfterAnimation) で行う
       if (gameState.phase === 'action') {
         stopCommandTimer();
       }
@@ -147,6 +135,12 @@ function startCommandTimer() {
     if (remaining <= 0) {
       clearInterval(commandTimer);
       commandTimer = null;
+      // 時間切れ: ローカルプレイヤーがまだ確定していなければ、入力中のコマンドをそのまま確定送信
+      const myId = getMyId();
+      if (gameState.players[myId] && !gameState.players[myId].commandConfirmed) {
+        const { opIds, targets } = getSelectedOps();
+        handleConfirmLocal(opIds, targets);
+      }
       forceConfirmAll(gameState);
       syncStateToAll();
       // 次ターンへの遷移はアニメ完了コールバックで行う
@@ -171,21 +165,15 @@ function onLocalStateUpdate(event) {
 
   const isNewPhase = (phase !== _lastPhase);
   if (isNewPhase) {
-    if (phase === 'draw')    showPhaseOverlay('戦術フェーズ', 'カードを２枚補充し戦術を決める');
-    else if (phase === 'command') showPhaseOverlay('戦術フェーズ', 'コマンドを選択して確定してください');
-    else if (phase === 'action')  showPhaseOverlay('行動フェーズ', '戦術に沿った行動をとる');
+    if (phase === 'command') showPhaseOverlay('コマンド入力', '操作パネルからコマンドを選択して確定してください');
+    else if (phase === 'action')  showPhaseOverlay('行動フェーズ', '作戦実行中…');
     _lastPhase = phase;
   }
 
-  if (phase === 'draw') {
-    if (_animStartTimeoutId) { clearTimeout(_animStartTimeoutId); _animStartTimeoutId = null; }
-    clearActionAnimation();   // アクションアニメが残っていた場合即座にクリア
-    stopCommandTimer();
-    enableDraw(localView);
-  } else if (phase === 'command') {
+  if (phase === 'command') {
     if (_animStartTimeoutId) { clearTimeout(_animStartTimeoutId); _animStartTimeoutId = null; }
     clearActionAnimation();
-    enableCommand(localView, isNewPhase);  // isNewPhase=false の場合は選択状態を保持
+    enableCommand(localView, isNewPhase);
   } else if (phase === 'action') {
     showActionEvents(localView.actionEvents, localView);
     // isNewPhase のときのみアニメを開始（再送信等による多重起動を防ぐ）
@@ -228,19 +216,11 @@ function onPublicEvent(msg) {
 /* ============================================================
    ローカル操作 → メッセージ送信
    ============================================================ */
-function handleDrawLocal(deckType) {
+function handleConfirmLocal(opIds, targets) {
   if (getIsHost()) {
-    onHostMessage({ type: MSG.DRAW_CHOICE, from: getMyId(), deckType });
+    onHostMessage({ type: MSG.COMMAND_CONFIRM, from: getMyId(), cardUids: opIds, targets });
   } else {
-    import('./peer.js').then(m => m.sendDrawChoice(deckType));
-  }
-}
-
-function handleConfirmLocal(cardUids, targets) {
-  if (getIsHost()) {
-    onHostMessage({ type: MSG.COMMAND_CONFIRM, from: getMyId(), cardUids, targets });
-  } else {
-    import('./peer.js').then(m => m.sendCommandConfirm(cardUids, targets));
+    import('./peer.js').then(m => m.sendCommandConfirm(opIds, targets));
   }
 }
 

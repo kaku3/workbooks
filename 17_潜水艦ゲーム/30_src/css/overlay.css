@@ -187,3 +187,39 @@
   margin: 10px 0 4px; text-align: center;
 }
 .modal-sep { height: 1px; background: var(--border); margin: 12px 0; }
+
+/* ─── 行動フェーズ: 現在実行中アクション表示カード ─── */
+#action-event-card {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(5, 13, 26, 0.88);
+  border: 1px solid var(--accent-cyan, #00e5ff);
+  border-radius: var(--radius, 8px);
+  padding: 10px 16px;
+  pointer-events: none;
+  z-index: 20;
+  min-width: 120px;
+}
+#action-event-card .material-symbols-outlined {
+  font-size: 28px;
+  color: var(--accent-cyan, #00e5ff);
+}
+.ae-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+#ae-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #e0e0e0);
+}
+#ae-sub {
+  font-size: 11px;
+  color: var(--text-muted, #7a8a9a);
+}

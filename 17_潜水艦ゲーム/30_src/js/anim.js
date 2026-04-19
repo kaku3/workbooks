@@ -5,6 +5,17 @@
 // Layer 9 以降の描画と状態管理をすべて担当する。
 // ============================================================
 
+import { GRID_SIZE } from './constants.js';
+
+/** v5.0 操作ID → 日本語ラベル */
+const OP_LABELS = {
+  forward: '前進', turn_left: '←旋回', turn_right: '旋回→',
+  strafe_l: '←横移', strafe_r: '横移→',
+  sonar: 'ソナー', torpedo: '魚雷', guided: '追尾魚雷',
+  shotgun: '散弾', decoy: 'デコイ', mine: '機雷',
+  chaff: 'チャフ', armor: '装甲板',
+};
+
 let _ctx = null;
 let _getCellSize   = () => 50;
 let _getOffset     = () => ({ x: 0, y: 0 });
@@ -101,13 +112,29 @@ export function applyPreviewLayer() {
         break;
       }
       case 'sonar': {
+        const r = step.r ?? 1;
         const cx = bo.x + step.x * cellSize + cellSize / 2;
         const cy = bo.y + step.y * cellSize + cellSize / 2;
-        ctx.strokeStyle = 'rgba(0,255,136,0.45)';
+        const scanPx = (r + 0.5) * cellSize; // 3マス直径円形
+
+        // ① 円形エリア塗り
+        ctx.fillStyle = 'rgba(0,255,136,0.12)';
+        ctx.beginPath(); ctx.arc(cx, cy, scanPx, 0, Math.PI * 2); ctx.fill();
+
+        // ② 円形境界線（点線）
+        ctx.strokeStyle = 'rgba(0,255,136,0.55)';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([4, 4]);
-        ctx.beginPath(); ctx.arc(cx, cy, step.r * cellSize, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, scanPx, 0, Math.PI * 2); ctx.stroke();
         ctx.setLineDash([]);
+
+        // ③ 中心クロスヘア
+        const cr = cellSize * 0.28;
+        ctx.strokeStyle = 'rgba(0,255,136,0.90)';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(cx - cr, cy); ctx.lineTo(cx + cr, cy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx, cy - cr); ctx.lineTo(cx, cy + cr); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, cellSize * 0.22, 0, Math.PI * 2); ctx.stroke();
         break;
       }
       case 'attack': {
@@ -135,25 +162,69 @@ export function applyPreviewLayer() {
         break;
       }
       case 'turn': {
-        // 旋回プレビュー: セル中央に円弧矢印を描画（右回転=CW / 左回転=CCW）
+        const dirAngles = { N: -Math.PI/2, E: 0, S: Math.PI/2, W: Math.PI };
         const cx = bo.x + step.x * cellSize + cellSize / 2;
         const cy = bo.y + step.y * cellSize + cellSize / 2;
         const r = cellSize * 0.35;
         const isRight = step.dir === 'R';
-        const startAngle = -Math.PI / 2;         // 12時方向から開始
-        const endAngle   = isRight ? 0 : -Math.PI; // CW→3時 / CCW→9時
+        const startAngle = dirAngles[step.facing ?? 'N'];
+        const endAngle   = startAngle + (isRight ? Math.PI/2 : -Math.PI/2);
         ctx.strokeStyle = 'rgba(80,200,255,0.90)';
         ctx.lineWidth = 2.5;
         ctx.setLineDash([]);
         ctx.beginPath();
         ctx.arc(cx, cy, r, startAngle, endAngle, !isRight);
         ctx.stroke();
-        // 弧の終端に矢頭
         const ex = cx + r * Math.cos(endAngle);
         const ey = cy + r * Math.sin(endAngle);
         const tanX = isRight ? -Math.sin(endAngle) : Math.sin(endAngle);
         const tanY = isRight ? Math.cos(endAngle) : -Math.cos(endAngle);
         _arrowHead(ex, ey, tanX, tanY, 'rgba(80,200,255,0.95)');
+        break;
+      }
+      case 'guided_preview': {
+        const tx = bo.x + step.x * cellSize;
+        const ty = bo.y + step.y * cellSize;
+        const m = 4;
+        ctx.strokeStyle = 'rgba(255,200,0,0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(tx + m, ty + m); ctx.lineTo(tx + cellSize - m, ty + cellSize - m); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(tx + cellSize - m, ty + m); ctx.lineTo(tx + m, ty + cellSize - m); ctx.stroke();
+        ctx.beginPath(); ctx.arc(tx + cellSize/2, ty + cellSize/2, cellSize * 0.38, 0, Math.PI * 2); ctx.stroke();
+        break;
+      }
+      case 'decoy_preview': {
+        // 発射ライン
+        const dx0 = bo.x + step.x0 * cellSize + cellSize/2;
+        const dy0 = bo.y + step.y0 * cellSize + cellSize/2;
+        const dx1 = bo.x + step.x1 * cellSize + cellSize/2;
+        const dy1 = bo.y + step.y1 * cellSize + cellSize/2;
+        ctx.strokeStyle = 'rgba(255,255,100,0.55)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 5]);
+        ctx.beginPath(); ctx.moveTo(dx0, dy0); ctx.lineTo(dx1, dy1); ctx.stroke();
+        ctx.setLineDash([]);
+        // 配置位置：デコイアイコン（黄円 + D文字）
+        ctx.strokeStyle = 'rgba(255,255,100,0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(dx1, dy1, cellSize * 0.3, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,100,0.9)';
+        ctx.font = `bold ${Math.max(11, cellSize * 0.3)}px sans-serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('D', dx1, dy1);
+        break;
+      }
+      case 'mine_preview': {
+        const mx = bo.x + step.x * cellSize + cellSize/2;
+        const my = bo.y + step.y * cellSize + cellSize/2;
+        // 機雷アイコン（赤円 + M文字）
+        ctx.strokeStyle = 'rgba(255,80,80,0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(mx, my, cellSize * 0.3, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,80,80,0.9)';
+        ctx.font = `bold ${Math.max(11, cellSize * 0.3)}px sans-serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('M', mx, my);
         break;
       }
     }
@@ -204,9 +275,10 @@ function _eventDelay(ev) {
     case 'eliminated':   return 4000;
     case 'damage':       return 3000;
     case 'torpedo_fire': return 3000;
-    case 'attack_leak':  return ev.card === 'depth_charge' ? 3000 : 400;
+    case 'guided_fire':  return 2500;
+    case 'attack_leak':  return (ev.op === 'guided') ? 2000 : ev.card === 'depth_charge' ? 3000 : 400;
     case 'explosion':    return 2800;
-    case 'sonar':        return 2500;
+    case 'sonar':        return 3000;
     case 'move': {
       const simple = ['free_forward', 'free_turn_left', 'free_turn_right'];
       return simple.includes(ev.card) ? 1200 : 2500;
@@ -239,6 +311,14 @@ export function startActionAnimation(events, view, onDone, onEachEvent) {
     }
   }
 
+  // ソナー結果をアニメ開始時はクリア→ソナーイベント発火時に復元
+  if (_animView.players[view.myId]) {
+    _animView.players[view.myId].sonarResults = [];
+  }
+
+  // 左巻きした初期状態を即座に描画（終了位置の一瞬表示を防ぐ）
+  if (_renderState && _animView) _renderState(_animView);
+
   _nextActionStep();
 }
 
@@ -252,6 +332,14 @@ function _applyEventToAnimView(ev) {
     case 'damage': p.hp = ev.hp; break;
     case 'repair': p.hp = ev.hp; break;
     case 'eliminated': p.alive = false; break;
+    case 'sonar': {
+      // ソナーヒットをイベント発火時に復元（アニメ開始時はクリアしてある）
+      if (ev.pid === _animView.myId && ev.hits) {
+        if (!p.sonarResults) p.sonarResults = [];
+        ev.hits.forEach(h => p.sonarResults.push(h));
+      }
+      break;
+    }
   }
 }
 
@@ -318,19 +406,56 @@ function _drawEventAnnotation(ev) {
       ctx.strokeStyle = 'rgba(0,229,255,0.9)';
       ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(px, py, cs * 0.46, 0, Math.PI * 2); ctx.stroke();
-      _eventLabel(EVENT_CARD_LABEL[ev.card] || ev.card, ev.x, ev.y, '#00e5ff');
+      const opKey = ev.op ?? ev.card;
+      const label = OP_LABELS[opKey] || EVENT_CARD_LABEL[opKey] || '';
+      if (label) _eventLabel(label, ev.x, ev.y, '#00e5ff');
       break;
     }
     case 'sonar': {
       if (ev.cx == null) break;
       const sx = bo.x + ev.cx * cs + cs / 2;
       const sy = bo.y + ev.cy * cs + cs / 2;
-      ctx.strokeStyle = 'rgba(0,255,136,0.7)';
+      const scanR = ((ev.r ?? 1) + 0.5) * cs; // 3マス直径円形内接円
+
+      // ① 円形エリア塗り
+      ctx.fillStyle = 'rgba(0,255,136,0.12)';
+      ctx.beginPath(); ctx.arc(sx, sy, scanR, 0, Math.PI * 2); ctx.fill();
+
+      // ② 圆形境界線（点線）
+      ctx.strokeStyle = 'rgba(0,255,136,0.75)';
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 3]);
-      ctx.beginPath(); ctx.arc(sx, sy, ev.r * cs, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(sx, sy, scanR, 0, Math.PI * 2); ctx.stroke();
       ctx.setLineDash([]);
-      _eventLabel(EVENT_CARD_LABEL[ev.card] || 'ソナー', ev.cx, ev.cy, '#00ff88');
+
+      // ③ 中心クロスヘア
+      const cr = cs * 0.25;
+      ctx.strokeStyle = 'rgba(0,255,136,0.9)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(sx - cr, sy); ctx.lineTo(sx + cr, sy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(sx, sy - cr); ctx.lineTo(sx, sy + cr); ctx.stroke();
+      ctx.beginPath(); ctx.arc(sx, sy, cs * 0.2, 0, Math.PI * 2); ctx.stroke();
+
+      // ④ 検知位置に「機影」ラベル + ×マーカー
+      (ev.hits || []).forEach(h => {
+        const hx = bo.x + h.x * cs + cs / 2;
+        const hy = bo.y + h.y * cs + cs / 2;
+        const hs = cs * 0.22;
+        ctx.strokeStyle = '#00ff88';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(hx - hs, hy - hs); ctx.lineTo(hx + hs, hy + hs); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(hx + hs, hy - hs); ctx.lineTo(hx - hs, hy + hs); ctx.stroke();
+        ctx.beginPath(); ctx.arc(hx, hy, cs * 0.32, 0, Math.PI * 2); ctx.stroke();
+        // 「機影」ラベル
+        ctx.fillStyle = '#00ff88';
+        ctx.font = `bold ${Math.max(10, cs * 0.22)}px sans-serif`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.globalAlpha = 0.9;
+        ctx.fillText('機影', hx, hy - cs * 0.35);
+        ctx.globalAlpha = 1;
+      });
+
+      _eventLabel('ソナー', ev.cx, ev.cy, '#00ff88');
       break;
     }
     case 'damage': {
@@ -382,8 +507,36 @@ function _drawEventAnnotation(ev) {
       _eventLabel(EVENT_CARD_LABEL[ev.card] || '魚雷', ev.sx, ev.sy, '#ffaa00');
       break;
     }
+    case 'guided_fire': {
+      // 追尾魚雷 発射軌跡（発射者のみ表示）
+      const gx1 = bo.x + ev.sx * cs + cs / 2;
+      const gy1 = bo.y + ev.sy * cs + cs / 2;
+      const gx2 = bo.x + ev.tx * cs + cs / 2;
+      const gy2 = bo.y + ev.ty * cs + cs / 2;
+      ctx.strokeStyle = '#00e5ff';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(gx1, gy1); ctx.lineTo(gx2, gy2); ctx.stroke();
+      ctx.setLineDash([]);
+      _arrowHead(gx2, gy2, gx2 - gx1, gy2 - gy1, '#00e5ff');
+      _eventLabel('追尾魚雷', ev.sx, ev.sy, '#00e5ff');
+      break;
+    }
     case 'attack_leak':
-      if (ev.card === 'depth_charge' && ev.cx != null) {
+      if (ev.op === 'guided' && ev.cx != null) {
+        // 追尾魚雷 着弾エリア（全員公開）
+        const gcx = bo.x + ev.cx * cs + cs / 2;
+        const gcy = bo.y + ev.cy * cs + cs / 2;
+        const gr  = (ev.r ?? 2) * cs;
+        ctx.fillStyle = 'rgba(0,229,255,0.12)';
+        ctx.beginPath(); ctx.arc(gcx, gcy, gr, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(0,229,255,0.7)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]);
+        ctx.beginPath(); ctx.arc(gcx, gcy, gr, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]);
+        _eventLabel('追尾魚雷', ev.cx, ev.cy, '#00e5ff');
+      } else if (ev.card === 'depth_charge' && ev.cx != null) {
         const dcx = bo.x + ev.cx * cs + cs / 2;
         const dcy = bo.y + ev.cy * cs + cs / 2;
         const radius = (ev.r ?? 2) * cs;

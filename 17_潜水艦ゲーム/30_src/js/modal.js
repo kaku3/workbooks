@@ -1,46 +1,37 @@
 // ============================================================
-// modal.js  カードターゲット選択モーダル
+// modal.js  操作ターゲット選択モーダル (v5.0)
 //
-// ui.js からの抽出。DOM ベースのモーダルウィジェット一式。
-// 外部 API: promptTarget(card, me) => Promise<object|null>
+// 外部 API: promptTarget(op, me) => Promise<object|null>
 // ============================================================
 import { getBoardCellFromEvent, startPickHighlight, stopPickHighlight } from './render.js';
 import { DIR_DELTA, rotateDir, GRID_SIZE } from './constants.js';
 
 let _boardPickAbortFn = null;
 
-/** アクティブな盤面クリック待機をキャンセルする（外部兜出し） */
+/** アクティブな盤面クリック待機をキャンセルする（外部出し） */
 export function cancelBoardPick() {
   if (_boardPickAbortFn) { _boardPickAbortFn(); _boardPickAbortFn = null; }
 }
 
 /**
- * カードに応じたターゲット選択モーダルを表示する。
- * @param {object} card  手札カードオブジェクト
- * @param {object} me    自プレイヤー状態
+ * 操作に応じたターゲット選択を行う。
+ * @param {object} op  OPS エントリ (id, name, ...)
+ * @param {object} me  自プレイヤー状態
  * @returns {Promise<object|null>} target オブジェクト、またはキャンセル時 null
  */
-export async function promptTarget(card, me) {
-  // 仮想コマンドカードはターゲット不要
-  if (card.id === 'free_forward' || card.id === 'turbo_move' || card.id === 'high_output') return {};
-  if (card.id === 'strafe_left'  || card.id === 'strafe_right') return {};
-  if (card.id === 'free_turn_left')  return { turnDir: 'L' };
-  if (card.id === 'free_turn_right') return { turnDir: 'R' };
-  switch (card.id) {
-    case 'turn':          return _modalTurnDir();
-    case 'cruise':
-    case 'escape':        return _modalDir(card.name, me.dir);
-    case 'torpedo':       return {};   // 常に正面発射
-    case 'recon_torpedo': return _modalDir(card.name, me.dir);
-    case 'harpoon':       return _boardCoordPick(card.name, '射撃目標を盤面でクリック', _harpoonCells(me));
-    case 'guided_torpedo':return _modalGuidedPath(me.dir);
-    case 'depth_charge':  return _boardCoordPick(card.name, '爆発地点を盤面でクリック');
-    case 'mine':
-    case 'tracking_buoy': return _boardCoordPick(card.name);
-    case 'hydrophone':    return _boardCoordPick(card.name, '探知位置を盤面でクリック');
-    case 'decoy_signal':  return _modalDecoyCoord();
-    case 'resupply':      return _modalResupply(me);
-    default:              return {};
+export async function promptTarget(op, me) {
+  switch (op.id) {
+    case 'sonar':  return _boardCoordPick('ソナー', 'スキャン中心を盤面でクリック');
+    case 'guided': return _boardCoordPick('追尾魚雷', '標的座標を盤面でクリック');
+    case 'decoy': {
+      const cells = _forwardCells(me, 5, 2);
+      return _boardCoordPick('デコイ', '発射先を盤面でクリック（前方範囲）', cells);
+    }
+    case 'mine': {
+      const cells = _forwardCells(me, 2, 2);
+      return _boardCoordPick('機雷', '設置先を盤面でクリック（近傍）', cells);
+    }
+    default: return {};
   }
 }
 
@@ -73,6 +64,22 @@ function _boardCoordPick(cardName, hint = '設置箇所を盤面でクリック'
     };
     canvas?.addEventListener('click', handler);
   });
+}
+
+/* 前方から指定距離内のセル一覧（発射・設置系操作用） */
+function _forwardCells(me, fwdRange, latSpread) {
+  if (me.x == null || !me.dir) return null;
+  const d  = DIR_DELTA[me.dir];
+  const dL = DIR_DELTA[rotateDir(me.dir, -1)];
+  const cells = [];
+  for (let f = 1; f <= fwdRange; f++) {
+    for (let l = -latSpread; l <= latSpread; l++) {
+      const x = me.x + d.dx * f + dL.dx * l;
+      const y = me.y + d.dy * f + dL.dy * l;
+      if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) cells.push({ x, y });
+    }
+  }
+  return cells.length ? cells : null;
 }
 
 /* ハープーンの選択可能セル（左右方向の射程内セル）を返す */

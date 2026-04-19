@@ -1,0 +1,309 @@
+/* ============================================================
+   panel.css  v5.0 操作パネル・在庫・単位時間バー
+   ============================================================ */
+
+/* ── 単位時間バー ── */
+.footer-row-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 4px;
+}
+
+.time-bar-container {
+  position: relative;
+  height: 22px;
+  background: var(--bg-surface, #1a2233);
+  border: 1px solid var(--border, #2a3a55);
+  border-radius: 4px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.time-bar-container span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-primary, #e0e0e0);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.time-fill {
+  height: 100%;
+  background: var(--accent-cyan, #00e5ff);
+  transition: width 0.3s ease;
+}
+
+.time-fill.mid { background: #ffeb3b; }
+.time-fill.low { background: var(--danger, #ff4444); }
+
+/* ── 操作パネル全体 ── */
+.op-panel {
+  display: flex;
+  gap: 12px;
+  padding: 6px 12px 8px;
+  border-top: 1px solid var(--border, #2a3a55);
+}
+
+/* ── 左パネル: 移動・ソナー ── */
+.op-left {
+  flex-shrink: 0;
+}
+
+.op-section-label,
+.inv-section-label {
+  font-size: 10px;
+  color: var(--text-muted, #7a8a9a);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.crosspad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+/* ── 汎用操作ボタン ── */
+.op-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 60px;
+  min-height: 56px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  background: var(--bg-surface, #1a2233);
+  border: 1px solid var(--border, #2a3a55);
+  color: var(--text-primary, #e0e0e0);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+  position: relative;
+}
+
+.op-btn:hover:not(:disabled) {
+  background: var(--bg-hover, #223044);
+  border-color: var(--accent-cyan, #00e5ff);
+}
+
+.op-btn:active:not(:disabled) {
+  background: var(--bg-active, #1a3050);
+}
+
+.op-btn .material-symbols-outlined {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.op-btn .op-name {
+  font-size: 9px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.op-btn .op-cost {
+  font-size: 10px;
+  font-family: var(--font-mono, monospace);
+  color: var(--accent-cyan, #00e5ff);
+  font-weight: bold;
+}
+
+/* ── ソナーボタン (強調) ── */
+.sonar-btn {
+  background: rgba(0, 200, 120, 0.18);
+  border-color: rgba(0, 200, 120, 0.7);
+  color: #00e5a0;
+}
+
+.sonar-btn .op-cost {
+  color: #00e5a0;
+}
+
+.sonar-btn:hover:not(:disabled) {
+  background: rgba(0, 200, 120, 0.35);
+  border-color: #00e5a0;
+}
+
+/* ── 防御ボタン ── */
+.defense-btn {
+  background: rgba(255, 183, 77, 0.1);
+  border-color: rgba(255, 183, 77, 0.4);
+}
+
+.defense-btn:hover:not(:disabled) {
+  background: rgba(255, 183, 77, 0.25);
+}
+
+/* ── キュー追加済み状態 ── */
+.op-btn.queued {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--accent-cyan, #00e5ff);
+}
+
+/* ── 使用不可 ── */
+.op-btn:disabled,
+.op-btn.depleted {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.op-btn.cant-afford {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── 右パネル: 在庫 ── */
+.op-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 武器+防御を横並びにするグループ */
+.inv-row-group {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+.inv-row-group .inv-section {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* 設置は横全幅 */
+.inv-section-place {
+  width: 100%;
+}
+
+.inv-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.inv-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.inv-btn .inv-count {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  font-size: 10px;
+  font-family: var(--font-mono, monospace);
+  color: var(--accent-cyan, #00e5ff);
+  font-weight: bold;
+}
+
+/* ── アクションキュー ── */
+#action-queue {
+  padding: 0 12px 6px;
+  border-top: 1px solid var(--border, #2a3a55);
+}
+
+.queue-header {
+  font-size: 10px;
+  color: var(--text-muted, #7a8a9a);
+  padding: 4px 0 2px;
+}
+
+.queue-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-surface, #1a2233);
+  border: 1px solid var(--accent-cyan, #00e5ff);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 11px;
+}
+
+.queue-icon { font-size: 14px; }
+.queue-name { color: var(--text-primary, #e0e0e0); }
+.queue-cost {
+  color: var(--accent-cyan, #00e5ff);
+  font-family: var(--font-mono, monospace);
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.queue-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted, #7a8a9a);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 0 0 4px;
+  line-height: 1;
+}
+
+.queue-remove:hover { color: var(--danger, #ff4444); }
+
+/* ── ドッグファイトバナー ── */
+#dogfight-banner {
+  background: rgba(255, 68, 68, 0.2);
+  border: 1px solid var(--danger, #ff4444);
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin: 0 12px 4px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--danger, #ff4444);
+}
+
+/* ── モバイル縦積み対応 ── */
+@media (max-width: 640px) {
+  .op-panel {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .crosspad {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .op-btn {
+    min-width: 52px;
+    min-height: 60px;
+  }
+
+  .op-btn .material-symbols-outlined {
+    font-size: 22px;
+  }
+
+  .op-btn .op-name {
+    font-size: 8px;
+  }
+
+  .inv-row {
+    justify-content: flex-start;
+  }
+}
+
+/* ── タイマー表示 ── */
+#timer-display {
+  font-family: var(--font-mono, monospace);
+  font-size: 18px;
+  color: var(--accent-cyan, #00e5ff);
+  font-weight: bold;
+  min-width: 32px;
+  text-align: center;
+}

@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="css/lobby.css">
   <link rel="stylesheet" href="css/game.css">
   <link rel="stylesheet" href="css/board.css">
-  <link rel="stylesheet" href="css/card.css">
+  <link rel="stylesheet" href="css/panel.css">
   <link rel="stylesheet" href="css/overlay.css">
 </head>
 <body>
@@ -31,7 +31,7 @@
       <input type="text" id="player-name" placeholder="名前を入力" maxlength="12">
     </div>
 
-    <div class="lobby-field">
+    <div class="lobby-field" id="max-players-field">
       <label>最大人数</label>
       <div class="player-count-select">
         <label><input type="radio" name="max-players" value="3"><span>3</span></label>
@@ -41,12 +41,12 @@
       </div>
     </div>
 
-    <div class="lobby-field">
+    <div class="lobby-field" id="room-id-field">
       <label>ルームID（参加時）</label>
       <input type="text" id="room-id-input" placeholder="ホストのルームIDを入力">
     </div>
 
-    <div class="lobby-actions">
+    <div class="lobby-actions" id="lobby-actions">
       <button class="btn btn-primary" id="create-room-btn">
         <span class="material-symbols-outlined">add_circle</span>ルーム作成
       </button>
@@ -83,6 +83,9 @@
     <div id="player-list"></div>
   </div>
 
+  <!-- 盤面＋操作パネル包括ラッパー -->
+  <div class="game-body">
+
   <!-- 盤面（全幅・残り全高） -->
   <main class="panel-center">
     <div class="board-wrapper">
@@ -106,61 +109,135 @@
     <div class="phase-overlay-sub"></div>
   </div>
 
-  <!-- フッター: HP + 燃料バー + 山札 + 手札 + ログ -->
+  <!-- フッター: 単位時間バー + 操作パネル + キュー + ログ -->
   <footer class="game-footer">
 
-    <!-- 行1: HP + 燃料バー(全幅) + コマンド確定(右) -->
-    <div class="footer-row-fuel">
-      <div class="fuel-bar-container fuel-wide">
-        <div class="fuel-fill" id="fuel-fill" style="width:100%"></div>
-        <span id="fuel-label">10 / 10</span>
+    <!-- 行1: 単位時間バー + コマンド確定 -->
+    <div class="footer-row-time">
+      <div class="time-bar-container time-wide">
+        <div class="time-fill" id="time-fill" style="width:100%"></div>
+        <span id="time-label">10 / 10</span>
       </div>
       <div id="command-area" class="hidden">
         <button class="btn btn-primary" id="confirm-btn" disabled>
-          <span class="material-symbols-outlined">check_circle</span>コマンド確定
+          <span class="material-symbols-outlined">check_circle</span>確定
         </button>
         <div id="cmd-waiting" class="hidden"></div>
       </div>
     </div>
 
-    <!-- 行動フェーズ: 現在実行中アクション表示カード（ボード上に移動） -->
+    <!-- 操作パネル: 左=移動/索敵 十字キー | 右=武器/設置/防御 在庫 -->
+    <div class="op-panel hidden" id="op-panel">
 
-    <!-- 行2: ドロー山札 (ドローフェーズのみ表示) -->
-    <div id="deck-row-wrap" class="hidden">
-      <div class="draw-counter">補充カードを<span id="draw-count-num">2</span>枚選択</div>
-      <div id="draw-area">
-        <button class="deck-btn" data-deck="move">
-          <span class="material-symbols-outlined">directions_boat</span>
-          移動<span class="deck-count">16</span>
-        </button>
-        <button class="deck-btn" data-deck="recon">
-          <span class="material-symbols-outlined">radar</span>
-          索敵<span class="deck-count">12</span>
-        </button>
-        <button class="deck-btn" data-deck="attack">
-          <span class="material-symbols-outlined">rocket_launch</span>
-          攻撃<span class="deck-count">11</span>
-        </button>
-        <button class="deck-btn" data-deck="special">
-          <span class="material-symbols-outlined">auto_awesome</span>
-          特殊<span class="deck-count">13</span>
-        </button>
+      <!-- 左パネル: 移動・ソナー 十字キー配置 -->
+      <div class="op-left">
+        <div class="op-section-label">移動 / 索敵</div>
+        <div class="crosspad">
+          <button class="op-btn move-btn" data-op="turn_left">
+            <span class="material-symbols-outlined">turn_left</span>
+            <span class="op-name">←旋回</span>
+            <span class="op-cost">3</span>
+          </button>
+          <button class="op-btn move-btn" data-op="forward">
+            <span class="material-symbols-outlined">arrow_upward</span>
+            <span class="op-name">前進</span>
+            <span class="op-cost">1</span>
+          </button>
+          <button class="op-btn move-btn" data-op="turn_right">
+            <span class="material-symbols-outlined">turn_right</span>
+            <span class="op-name">旋回→</span>
+            <span class="op-cost">3</span>
+          </button>
+          <button class="op-btn move-btn" data-op="strafe_l">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="op-name">←横移</span>
+            <span class="op-cost">2</span>
+          </button>
+          <button class="op-btn sonar-btn" data-op="sonar">
+            <span class="material-symbols-outlined">radar</span>
+            <span class="op-name">ソナー</span>
+            <span class="op-cost">1</span>
+          </button>
+          <button class="op-btn move-btn" data-op="strafe_r">
+            <span class="material-symbols-outlined">arrow_forward</span>
+            <span class="op-name">横移→</span>
+            <span class="op-cost">2</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 右パネル: カテゴリ別在庫 -->
+      <div class="op-right">
+        <div class="inv-row-group">
+          <div class="inv-section">
+            <div class="inv-section-label">武器</div>
+            <div class="inv-row">
+              <button class="op-btn inv-btn" data-op="torpedo">
+                <span class="material-symbols-outlined">rocket_launch</span>
+                <span class="op-name">魚雷</span>
+                <span class="op-cost">1</span>
+                <span class="inv-count" id="inv-torpedo">×3</span>
+              </button>
+              <button class="op-btn inv-btn" data-op="guided">
+                <span class="material-symbols-outlined">assistant_navigation</span>
+                <span class="op-name">追尾魚雷</span>
+                <span class="op-cost">2</span>
+                <span class="inv-count" id="inv-guided">×2</span>
+              </button>
+              <button class="op-btn inv-btn" data-op="shotgun">
+                <span class="material-symbols-outlined">scatter_plot</span>
+                <span class="op-name">散弾</span>
+                <span class="op-cost">1</span>
+                <span class="inv-count" id="inv-shotgun">×2</span>
+              </button>
+            </div>
+          </div>
+          <div class="inv-section">
+            <div class="inv-section-label">防御</div>
+            <div class="inv-row">
+              <button class="op-btn inv-btn defense-btn" data-op="chaff">
+                <span class="material-symbols-outlined">blur_on</span>
+                <span class="op-name">チャフ</span>
+                <span class="op-cost">1</span>
+                <span class="inv-count" id="inv-chaff">×2</span>
+              </button>
+              <button class="op-btn inv-btn defense-btn" data-op="armor">
+                <span class="material-symbols-outlined">shield</span>
+                <span class="op-name">装甲板</span>
+                <span class="op-cost">2</span>
+                <span class="inv-count" id="inv-armor">×2</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="inv-section inv-section-place">
+          <div class="inv-section-label">設置</div>
+          <div class="inv-row">
+            <button class="op-btn inv-btn" data-op="decoy">
+              <span class="material-symbols-outlined">help_outline</span>
+              <span class="op-name">デコイ</span>
+              <span class="op-cost">1</span>
+              <span class="inv-count" id="inv-decoy">×2</span>
+            </button>
+            <button class="op-btn inv-btn" data-op="mine">
+              <span class="material-symbols-outlined">dangerous</span>
+              <span class="op-name">機雷</span>
+              <span class="op-cost">1</span>
+              <span class="inv-count" id="inv-mine">×2</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 補充待機インジケーター (自分の補充完了待ち) -->
-    <div id="draw-waiting" class="hidden"></div>
-
-    <!-- 固定コマンドボタン (←↑→ 左旋回・前進・右旋回) -->
-    <div id="free-moves-row" class="hidden"></div>
-
-    <!-- 手札 (ドロー中はプレビューのみ・選択不可) -->
-    <div id="hand-area"></div>
+    <!-- アクションキュー -->
+    <div id="action-queue"></div>
 
     <!-- ターンログ -->
     <div id="turn-log"></div>
 
   </footer>
+  </div><!-- /.game-body -->
 </div>
 
 <!-- カードターゲット選択モーダル -->

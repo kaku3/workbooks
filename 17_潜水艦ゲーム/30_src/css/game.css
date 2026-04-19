@@ -3,10 +3,27 @@
    ============================================================ */
 #game-screen {
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto auto 1fr;
   height: 100vh;
   overflow: hidden;
   background: var(--bg-deep);
+}
+
+/* モバイル: board + footer 縦積み */
+.game-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* モバイル: フッターはスクロール可能に */
+.game-footer {
+  background: var(--bg-mid);
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  /* max-height なし: コントロール部全体のスクロールを許可 */
 }
 
 /* ─── ヘッダー: フェーズ + タイマー ─── */
@@ -38,7 +55,13 @@
   border-bottom: 1px solid var(--border);
   padding: 4px 12px;
   overflow-x: auto;
+  /* スクロールバーを細く暗く → 単位時間バーと区別する */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+.player-strip::-webkit-scrollbar { height: 3px; }
+.player-strip::-webkit-scrollbar-track { background: transparent; }
+.player-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 #player-list {
   display: flex; gap: 8px; align-items: center;
   min-height: 30px;
@@ -63,8 +86,14 @@
 @keyframes playerHpBlink { 50% { opacity: 0.2; } }
 .player-chip-status { color: #4caf50; font-size: 11px; font-weight: 700; }
 
-/* ─── 盤面（全幅・残り全高） ─── */
+/* モバイル: 盤面はフッターによる㠯込みを許さない */
 .panel-center {
+  flex: 0 0 auto;
+  width: 100%;
+  /* 盤面はコンテナ幅にfitするcanvasが自動リサイズ */
+  aspect-ratio: 1 / 1;
+  max-height: 55vw;
+  min-height: 200px;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
   background: var(--bg-deep);
@@ -113,82 +142,12 @@
   50% { box-shadow: 0 0 20px rgba(255,30,30,0.6); }
 }
 
-/* ─── フッター ─── */
-.game-footer {
-  background: var(--bg-mid);
-  border-top: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  max-height: 44vh; overflow: hidden;
-}
-
 /* 行1: HP + 燃料バー(全幅) + コマンド確定(右) */
-.footer-row-fuel {
+.footer-row-time {
   display: flex; align-items: center; gap: 10px;
   padding: 6px 12px;
   flex-shrink: 0;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.fuel-bar-container {
-  background: var(--bg-surface);
-  border-radius: var(--radius-sm);
-  height: 14px; width: 120px;
-  position: relative; overflow: hidden;
-}
-.fuel-fill {
-  height: 100%; border-radius: var(--radius-sm);
-  background: var(--accent-cyan);
-  transition: width 0.3s;
-}
-.fuel-fill.mid { background: #ffeb3b; }
-.fuel-fill.low { background: var(--danger); }
-#fuel-label {
-  position: absolute; top: 0; left: 0; right: 0;
-  text-align: center; font-family: var(--font-mono); color: var(--text-primary);
-}
-.fuel-bar-container.fuel-wide {
-  flex: 1; width: auto; height: 18px;
-}
-#fuel-label { font-size: 11px; line-height: 18px; }
-
-/* 行2: ドロー山札 */
-#deck-row-wrap { flex-shrink: 0; }
-.draw-counter {
-  font-family: var(--font-display);
-  font-size: 1.05rem; color: var(--accent-cyan);
-  text-align: center;
-  padding: 6px 8px 2px;
-  letter-spacing: 1px;
-  animation: drawBlink 1.6s ease-in-out infinite;
-}
-@keyframes drawBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.12; }
-}
-#draw-area {
-  display: flex; align-items: center; gap: 8px;
-  padding: 4px 12px 8px;
-  overflow-x: auto;
-}
-
-#hand-area {
-  display: flex; flex-wrap: nowrap; gap: 6px;
-  padding: 8px 14px;
-  overflow-x: auto;
-  flex-shrink: 0;
-}
-
-/* 補充待ちインジケーター */
-#draw-waiting {
-  text-align: center;
-  padding: 8px 14px;
-  font-size: 12px;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
-  animation: waitingBlink 1.2s ease-in-out infinite;
-}
-@keyframes waitingBlink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.25; }
 }
 
 /* コマンド確定後の待機インジケーター */
@@ -199,6 +158,10 @@
   color: var(--accent-amber);
   letter-spacing: 0.5px;
   animation: waitingBlink 1.2s ease-in-out infinite;
+}
+@keyframes waitingBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
 }
 
 /* フェーズ切り替えオーバーレイ */
@@ -232,23 +195,6 @@
   color: var(--text-muted);
   letter-spacing: 1.5px;
 }
-
-/* 固定コマンドボタン行（←↑→）*/
-#free-moves-row {
-  display: flex; gap: 6px;
-  padding: 4px 14px 0;
-  flex-shrink: 0;
-}
-.free-move-card {
-  border-color: #00bcd4 !important;
-  background: rgba(0,188,212,0.08);
-  min-width: 52px;
-}
-.free-move-card.card-selected {
-  background: rgba(0,188,212,0.25);
-  border-color: #00e5ff !important;
-  box-shadow: 0 0 8px rgba(0,229,255,0.4);
-}
 #turn-log {
   flex: 1; overflow-y: auto;
   padding: 4px 14px 8px;
@@ -278,4 +224,103 @@
 }
 .winner-name {
   font-size: 1.3rem; color: var(--accent-gold); margin-bottom: 24px;
+}
+
+/* ─── PC レイアウト: プレイヤー列(左) + 盤面(中) + 操作パネル(右) ─── */
+@media (min-width: 900px) {
+  /* 2行×2列グリッド: header全幅 / players|main */
+  #game-screen {
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 140px 1fr;
+    grid-template-areas:
+      "header  header"
+      "players main";
+  }
+  .game-header {
+    grid-area: header;
+  }
+  /* プレイヤーストリップ → 左縦列 */
+  .player-strip {
+    grid-area: players;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+  }
+  #player-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .player-chip {
+    border-radius: 10px;
+  }
+  /* 盤面+操作パネル → 右エリア */
+  .game-body {
+    grid-area: main;
+    display: flex;
+    flex-direction: row;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .panel-center {
+    flex: 1 1 0;
+    min-width: 0;
+    aspect-ratio: unset;
+    max-height: none;
+    min-height: 0;
+  }
+  .game-footer {
+    width: 520px;
+    flex: 0 0 520px;
+    max-height: none;
+    border-top: none;
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  #turn-log {
+    max-height: none;
+  }
+  /* PC では op-panel を全部縦積み: 移動(2行)→武器→防御→設置 */
+  .op-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* crosspad は引き続き 3列 */
+  .op-left .crosspad {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* PC では武器+防御グループを縦積みに戻す */
+  .inv-row-group {
+    flex-direction: column;
+  }
+  /* PC: ラベルを上表示 (縦積み) */
+  .op-right .inv-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 6px;
+  }
+  .op-right .inv-section-label {
+    font-size: 10px;
+    writing-mode: initial;
+    white-space: nowrap;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .op-right .inv-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  /* PC ボタンを少し大きく */
+  .op-panel .op-btn {
+    min-width: 72px;
+    min-height: 62px;
+  }
 }
