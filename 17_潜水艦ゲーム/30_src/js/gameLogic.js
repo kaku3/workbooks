@@ -127,6 +127,7 @@ export function forceConfirmAll(state) {
    ============================================================ */
 export function resolveActions(state) {
   state.phase = 'action';
+  state.actionPhaseStartedAt = Date.now(); // アニメ同期用タイムスタンプ
   state.actionEvents = [];
   state.turnLog = [];
   const alive = alivePlayers(state);
@@ -139,46 +140,34 @@ export function resolveActions(state) {
     }
   });
 
-  // 1) 収縮ダメージ
-  alive.forEach(id => {
-    const p = state.players[id];
-    if (isInDanger(p.x, p.y, state.turn)) applyDamage(state, id, 1, 'shrink', null);
-  });
+  // 1) コマンドをインデックス順にラウンドロビン処理
+  //    インデックス i で全プレイヤーの cmd[i] を同時実行
+  //    → ソナーはキューの位置通りに発動（例: 移動→ソナー なら移動後に検知）
+  const maxCmds = alive.reduce((m, id) => Math.max(m, state.players[id].commandQueue.length), 0);
+  for (let i = 0; i < maxCmds; i++) {
+    alive.forEach(id => {
+      const cmd = state.players[id].commandQueue[i];
+      if (!cmd) return;
+      const cat = OPS[cmd.op]?.cat;
+      if      (cat === 'move')     resolveMove(state, id, cmd);
+      else if (cmd.op === 'sonar') resolveSonar(state, id, cmd);
+      else if (cat === 'weapon')   resolveWeapon(state, id, cmd);
+      else if (cmd.op === 'decoy') resolveDecoy(state, id, cmd);
+      else if (cmd.op === 'mine')  resolveMine(state, id, cmd);
+    });
+  }
 
-  // 2) 移動
-  alive.forEach(id => {
-    for (const cmd of state.players[id].commandQueue) {
-      if (OPS[cmd.op]?.cat === 'move') resolveMove(state, id, cmd);
-    }
-  });
+  // 2) 収縮ダメージ — 機能売りまたは定数変更で再有効化するまでコメントアウト
+  // alive.forEach(id => {
+  //   const p = state.players[id];
+  //   if (isInDanger(p.x, p.y, state.turn)) applyDamage(state, id, 1, 'shrink', null);
+  // });
 
-  // 3) 機雷チェック
+  // 3) 機雷チェック（全移動完了後）
   checkMines(state, alive);
 
-  // 4) 補給
+  // 4) 補給（全移動完了後）
   resolveSupply(state, alive);
-
-  // 5) ソナー
-  alive.forEach(id => {
-    for (const cmd of state.players[id].commandQueue) {
-      if (cmd.op === 'sonar') resolveSonar(state, id, cmd);
-    }
-  });
-
-  // 6) 武器
-  alive.forEach(id => {
-    for (const cmd of state.players[id].commandQueue) {
-      if (OPS[cmd.op]?.cat === 'weapon') resolveWeapon(state, id, cmd);
-    }
-  });
-
-  // 7) 設置 (在庫消費)
-  alive.forEach(id => {
-    for (const cmd of state.players[id].commandQueue) {
-      if (cmd.op === 'decoy') resolveDecoy(state, id, cmd);
-      if (cmd.op === 'mine')  resolveMine(state, id, cmd);
-    }
-  });
 
   // weapon/place 在庫消費 (chaff/armor は既に消費済み)
   alive.forEach(id => {
@@ -237,7 +226,9 @@ function prepareNextTurn(state) {
     p.forwardWarning = null;
     p.commandQueue = [];
     p.commandConfirmed = false;
-    p.dogfightWith = null;  // コマンドフェーズ開始時にリセット。移動後の行動フェーズで再判定する。
+    // dogfightWith はリセットしない。
+    // コマンドフェーズ中も相手座標・方向を公開するため、および
+    // resolveDogfight が「距離 > 4 なら解除」「設定済みなら再発火しない」を正しく処理するため。
   });
 }
 
@@ -274,7 +265,7 @@ function resolveSonar(state, pid, cmd) {
   const p = state.players[pid];
   const cx = cmd.target?.x ?? p.x;
   const cy = cmd.target?.y ?? p.y;
-  const r = 1;  // 直役3マス = Chebyshev距雦1
+  const r = 1;  // Chebyshev1（前ステップで移動より先に解決するため1で十分）
   const hits = [];
   findEnemiesInRadius(state, pid, cx, cy, r).forEach(ep => {
     const hasDecoy = state.decoys.some(d => d.ownerId === ep.id && d.x === ep.x && d.y === ep.y);
@@ -291,30 +282,52 @@ function resolveWeapon(state, pid, cmd) {
   const p = state.players[pid];
   switch (cmd.op) {
     case 'torpedo': {
-      const { endX, endY } = fireTorpedoLine(state, pid, p.x, p.y, p.dir, GRID_SIZE, 2);
-      pushEvent(state, { type: 'torpedo_fire', pid, op: 'torpedo', sx: p.x, sy: p.y, ex: endX, ey: endY, public: false, to: pid });
-      pushEvent(state, { type: 'attack_leak', pid, op: 'torpedo', dir: p.dir, public: true, line: true });
+      const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : null;
+      const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : null;
+      if (tx == null || ty == null) break;
+      // 前方45度扇形バリデーション
+      const td = DIR_DELTA[p.dir];
+      const tdx = tx - p.x, tdy = ty - p.y;
+      const tFwd = tdx * td.dx + tdy * td.dy;
+      const tCross = Math.abs(tdx * td.dy - tdy * td.dx);
+      if (tFwd <= 0 || tCross > tFwd) break; // 扇外は無効
+      const { endX, endY, didHit, hitX, hitY } = fireTorpedoToward(state, pid, p.x, p.y, tx, ty, 2);
+      pushEvent(state, { type: 'torpedo_fire', pid, op: 'torpedo', sx: p.x, sy: p.y, ex: endX, ey: endY, hit: didHit, hitX, hitY, public: false, to: pid });
+      pushEvent(state, { type: 'attack_leak', pid, op: 'torpedo', sx: p.x, sy: p.y, ex: endX, ey: endY, public: true });
       break;
     }
     case 'guided': {
-      const tx = cmd.target?.x ?? p.x;
-      const ty = cmd.target?.y ?? p.y;
-      // 発射者向けプライベートイベント（アニメーション用）
-      pushEvent(state, { type: 'guided_fire', pid, op: 'guided', sx: p.x, sy: p.y, tx, ty, public: false, to: pid });
+      const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : p.x;
+      const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : p.y;
+      // 前方45度扇形バリデーション（サーバー側）
+      const gd = DIR_DELTA[p.dir];
+      const dtx = tx - p.x, dty = ty - p.y;
+      const fwdDot = dtx * gd.dx + dty * gd.dy;
+      const crossMag = Math.abs(dtx * gd.dy - dty * gd.dx);
+      if (fwdDot <= 0 || crossMag > fwdDot) break;  // 扇外は無効
+      // 目標座標からチェビシェフ2以内の最近岐を先に判定（イベントに hit 情報を含めるため）
+      let nearestEnemy = null;
+      let nearestDist = Infinity;
       alivePlayers(state).forEach(eid => {
         if (eid === pid) return;
         const ep = state.players[eid];
-        if (ep.x === tx && ep.y === ty) {
-          if (ep.buffs.chaffActive) {
-            ep.buffs.chaffActive = false;
-            state.turnLog.push(`${ep.name} のチャフが追尾魚雷を無効化`);
-            pushEvent(state, { type: 'chaff_block', pid: eid, public: false, to: eid });
-          } else {
-            applyDamage(state, eid, 1, 'guided', pid);
-          }
-        }
+        const dist = chebyshev(ep.x, ep.y, tx, ty);
+        if (dist <= 2 && dist < nearestDist) { nearestEnemy = eid; nearestDist = dist; }
       });
-      pushEvent(state, { type: 'attack_leak', pid, op: 'guided', public: true, cx: tx, cy: ty, r: 2 });
+      const hitEp   = nearestEnemy ? state.players[nearestEnemy] : null;
+      const hitInfo = hitEp ? { hit: true, hitX: hitEp.x, hitY: hitEp.y } : {};
+      // 発射者向けプライベートイベント（アニメーション用）
+      pushEvent(state, { type: 'guided_fire', pid, op: 'guided', sx: p.x, sy: p.y, tx, ty, ...hitInfo, public: false, to: pid });
+      if (nearestEnemy) {
+        const ep = state.players[nearestEnemy];
+        if (ep.buffs.chaffActive) {
+          ep.buffs.chaffActive = false;
+          state.turnLog.push(`${ep.name} のチャフが追尾魚雷を無効化`);
+          pushEvent(state, { type: 'chaff_block', pid: nearestEnemy, public: false, to: nearestEnemy });
+        } else {
+          applyDamage(state, nearestEnemy, 1, 'guided', pid);
+        }
+      }
       break;
     }
     case 'shotgun': {
@@ -390,6 +403,27 @@ function fireTorpedoLine(state, pid, sx, sy, dir, range, damage) {
     if (hit) { applyDamage(state, hit, damage, 'torpedo', pid); break; }
   }
   return { endX, endY };
+}
+
+/** 指定座標方向へ直線発射（Bresenham近似）・GRID_SIZE 履分続行 */
+function fireTorpedoToward(state, pid, sx, sy, tx, ty, damage) {
+  const adx = tx - sx, ady = ty - sy;
+  if (adx === 0 && ady === 0) return { endX: sx, endY: sy, didHit: false, hitX: sx, hitY: sy };
+  const maxSteps = Math.max(Math.abs(adx), Math.abs(ady));
+  let endX = sx, endY = sy, didHit = false, hitX = sx, hitY = sy;
+  const seen = new Set([`${sx},${sy}`]);
+  for (let i = 1; i <= GRID_SIZE * 2; i++) {
+    const fx = Math.round(sx + adx * i / maxSteps);
+    const fy = Math.round(sy + ady * i / maxSteps);
+    if (fx < 0 || fx >= GRID_SIZE || fy < 0 || fy >= GRID_SIZE) break;
+    const key = `${fx},${fy}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    endX = fx; endY = fy;
+    const hit = alivePlayers(state).find(eid => eid !== pid && state.players[eid].x === fx && state.players[eid].y === fy);
+    if (hit) { applyDamage(state, hit, damage, 'torpedo', pid); didHit = true; hitX = fx; hitY = fy; break; }
+  }
+  return { endX, endY, didHit, hitX, hitY };
 }
 
 function resolveSupply(state, alive) {
@@ -507,6 +541,7 @@ export function sanitizeStateForPlayer(state, playerId) {
       };
       if (me && me.dogfightWith === id && o.alive) {
         revealed.x = o.x; revealed.y = o.y; revealed.dir = o.dir;
+        revealed.commandQueue = o.commandQueue;  // ドッグファイト中は相手コマンドを公開
       }
       if (!o.alive) revealed.hp = 0;
       players[id] = revealed;
@@ -517,11 +552,23 @@ export function sanitizeStateForPlayer(state, playerId) {
     players, playerOrder: state.playerOrder,
     supplyPoints: state.supplyPoints, safeZone,
     winner: state.winner, turnLog: state.turnLog,
+    actionPhaseStartedAt: state.actionPhaseStartedAt,
     actionEvents: state.actionEvents.filter(e =>
       e.public || e.to === playerId || (Array.isArray(e.pids) && e.pids.includes(playerId))
     ),
     myMines: state.mines.filter(m => m.ownerId === playerId),
     myDecoys: state.decoys.filter(d => d.ownerId === playerId),
+    // 自機からチェビシェフ3マス以内の敵機雷・敵デコイ・近接敵
+    nearbyMines: state.mines.filter(m => m.ownerId !== playerId && me && chebyshev(me.x, me.y, m.x, m.y) <= 3),
+    nearbyDecoys: state.decoys.filter(d => d.ownerId !== playerId && me && chebyshev(me.x, me.y, d.x, d.y) <= 3),
+    nearbyEnemies: (() => {
+      if (!me) return [];
+      return state.playerOrder
+        .filter(id => id !== playerId && state.players[id].alive)
+        .map(id => state.players[id])
+        .filter(ep => chebyshev(me.x, me.y, ep.x, ep.y) <= 3)
+        .map(ep => ({ id: ep.id, name: ep.name, x: ep.x, y: ep.y, dir: ep.dir }));
+    })(),
   };
 }
 
@@ -549,7 +596,8 @@ function applyDamage(state, pid, amount, source, attackerId) {
   if (!p.alive) return;
   p.hp -= amount;
   pushEvent(state, { type: 'damage', pid, dmg: amount, source, attackerId, hp: p.hp, public: source !== 'mine' });
-  state.turnLog.push(`${p.name} が ${source} で ${amount} ダメージ (HP:${p.hp})`);
+  const _sourceLabel = { torpedo: '魚雷', guided: '追尾魚雷', shotgun: '散弾', mine: '機雷', shrink: '収縮' };
+  state.turnLog.push(`${p.name} が ${_sourceLabel[source] || source} で ${amount} ダメージ (HP:${p.hp})`);
   if (p.hp <= 0 && attackerId && state.players[attackerId]) {
     state.players[attackerId].kills++;
     state.turnLog.push(`${state.players[attackerId].name} がキル (計${state.players[attackerId].kills}キル)`);

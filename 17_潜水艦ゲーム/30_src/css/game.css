@@ -85,6 +85,7 @@
 .player-chip-hp.hp-crit { color: #ff2222; animation: playerHpBlink 0.6s infinite; }
 @keyframes playerHpBlink { 50% { opacity: 0.2; } }
 .player-chip-status { color: #4caf50; font-size: 11px; font-weight: 700; }
+.player-chip-queue { font-size: 10px; color: #ffeb3b; opacity: 0.9; word-break: break-all; }
 
 /* モバイル: 盤面はフッターによる㠯込みを許さない */
 .panel-center {

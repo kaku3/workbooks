@@ -22,7 +22,14 @@ export function cancelBoardPick() {
 export async function promptTarget(op, me) {
   switch (op.id) {
     case 'sonar':  return _boardCoordPick('ソナー', 'スキャン中心を盤面でクリック');
-    case 'guided': return _boardCoordPick('追尾魚雷', '標的座標を盤面でクリック');
+    case 'torpedo': {
+      const cells = _forwardConeCells(me);
+      return _boardCoordPick('魚雷', '目標座標を盤面でクリック（前方45°）', cells);
+    }
+    case 'guided': {
+      const cells = _forwardConeCells(me);
+      return _boardCoordPick('追尾魚雷', '標的座標を盤面でクリック（前方45°）', cells);
+    }
     case 'decoy': {
       const cells = _forwardCells(me, 5, 2);
       return _boardCoordPick('デコイ', '発射先を盤面でクリック（前方範囲）', cells);
@@ -59,11 +66,32 @@ function _boardCoordPick(cardName, hint = '設置箇所を盤面でクリック'
     const handler = (e) => {
       const cell = getBoardCellFromEvent(e.clientX, e.clientY);
       if (!cell) return; // グリッド外クリックは無視
+      // ハイライト範囲が指定されている場合、範囲外クリックでキャンセル
+      if (highlightCells && !highlightCells.some(c => c.x === cell.x && c.y === cell.y)) {
+        cleanup(); resolve(null); return;
+      }
       cleanup();
       resolve({ x: cell.x, y: cell.y });
     };
     canvas?.addEventListener('click', handler);
   });
+}
+
+/* 前方45度扇形内のセル一覧（追尾魚雷用） */
+function _forwardConeCells(me) {
+  if (me.x == null || !me.dir) return null;
+  const d = DIR_DELTA[me.dir];
+  const cells = [];
+  for (let x = 0; x < GRID_SIZE; x++) {
+    for (let y = 0; y < GRID_SIZE; y++) {
+      if (x === me.x && y === me.y) continue;
+      const dtx = x - me.x, dty = y - me.y;
+      const fwdDot  = dtx * d.dx + dty * d.dy;
+      const crossMag = Math.abs(dtx * d.dy - dty * d.dx);
+      if (fwdDot > 0 && crossMag <= fwdDot) cells.push({ x, y });
+    }
+  }
+  return cells.length ? cells : null;
 }
 
 /* 前方から指定距離内のセル一覧（発射・設置系操作用） */

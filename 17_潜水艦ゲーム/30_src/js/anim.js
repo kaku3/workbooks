@@ -267,8 +267,91 @@ let _actionBaseView    = null;
 let _animView          = null;   // アニメーション中の可変ビュー（位置を逐次更新）
 let _actionOnDone      = null;
 let _actionOnEachEvent = null;
-let _animTimeoutId     = null;
+let _animTimeoutId     = null;let _torpedoRaf        = null;   // 追尾魚雷移動アニメ rAF ID
 
+/** 追尾魚雷アニメをキャンセル */
+function _cancelTorpedoAnim() {
+  if (_torpedoRaf) { cancelAnimationFrame(_torpedoRaf); _torpedoRaf = null; }
+}
+
+/**
+ * 追尾魚雷の移動アニメーションを rAF で実行する。
+ * durationMs 内に魚雷が発射地点→標的地点へ射動する。
+ */
+function _startTorpedoAnim(sx, sy, tx, ty, color, durationMs, onDone, label) {
+  _cancelTorpedoAnim();
+  const startTime = performance.now();
+  const loop = (now) => {
+    const t = Math.min((now - startTime) / durationMs, 1.0);
+    // ボードを再描画してから魚雷を重ねる
+    if (_renderState && _animView) _renderState(_animView);
+    _drawTorpedoFrame(sx, sy, tx, ty, t, color, label);
+    if (t < 1.0 && _torpedoRaf !== null) {
+      _torpedoRaf = requestAnimationFrame(loop);
+    } else {
+      _torpedoRaf = null;
+      if (onDone) onDone();
+    }
+  };
+  _torpedoRaf = requestAnimationFrame(loop);
+}
+
+/** 1フレーム分の魚雷位置描画 (t = 0→発射地 / 1→着弾地) */
+function _drawTorpedoFrame(sx, sy, tx, ty, t, color, label = '追尾魚雷') {
+  const ctx = _ctx;
+  if (!ctx) return;
+  const cs = _getCellSize();
+  const bo = _getOffset();
+  const x1 = bo.x + sx * cs + cs / 2;
+  const y1 = bo.y + sy * cs + cs / 2;
+  const x2 = bo.x + tx * cs + cs / 2;
+  const y2 = bo.y + ty * cs + cs / 2;
+  const cx = x1 + (x2 - x1) * t;
+  const cy = y1 + (y2 - y1) * t;
+  ctx.save();
+  // トレイル（発射地 → 現在位置）
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.globalAlpha = 0.4;
+  ctx.setLineDash([4, 6]);
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(cx, cy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.globalAlpha = 1.0;
+  // 魚雷本体（グロードット）
+  const r = cs * 0.13;
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 2.5);
+  grad.addColorStop(0, color);
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2); ctx.fill();
+  // ラベル（発射地付近）
+  _eventLabel(label, sx, sy, color);
+  ctx.restore();
+}
+
+/** 着弾爆発エフェクト（rAF アニメ終了時の onDone から呼ぶ） */
+function _drawExplosion(x, y, color = '#ff6600') {
+  const ctx = _ctx; if (!ctx) return;
+  const cs = _getCellSize();
+  const bo = _getOffset();
+  const px = bo.x + x * cs + cs / 2;
+  const py = bo.y + y * cs + cs / 2;
+  ctx.save();
+  const grad = ctx.createRadialGradient(px, py, 0, px, py, cs * 0.72);
+  grad.addColorStop(0,    'rgba(255,240,120,0.95)');
+  grad.addColorStop(0.35, 'rgba(255,140,0,0.85)');
+  grad.addColorStop(1,    'rgba(255,60,0,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(px, py, cs * 0.72, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.arc(px, py, cs * 0.52, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath(); ctx.arc(px, py, cs * 0.1, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
 /** イベント種別ごとの表示時間（ms） */
 function _eventDelay(ev) {
   switch (ev.type) {
@@ -360,6 +443,7 @@ function _nextActionStep() {
   }
 
   const ev = _actionQueue.shift();
+  _cancelTorpedoAnim();   // 前イベントの魚雷アニメを必ずキャンセル
   _applyEventToAnimView(ev);
   if (_renderState && _animView) _renderState(_animView);
   _drawEventAnnotation(ev);
@@ -369,6 +453,7 @@ function _nextActionStep() {
 
 /** ドローフェーズ開始時に呼び、初期化済みアニメタイマーをキャンセルする。 */
 export function clearActionAnimation() {
+  _cancelTorpedoAnim();
   if (_animTimeoutId) { clearTimeout(_animTimeoutId); _animTimeoutId = null; }
   const evCb         = _actionOnEachEvent;
   _animView          = null;
@@ -494,36 +579,73 @@ function _drawEventAnnotation(ev) {
       break;
     }
     case 'torpedo_fire': {
-      const x1 = bo.x + ev.sx * cs + cs / 2;
-      const y1 = bo.y + ev.sy * cs + cs / 2;
-      const x2 = bo.x + ev.ex * cs + cs / 2;
-      const y2 = bo.y + ev.ey * cs + cs / 2;
-      ctx.strokeStyle = '#ffaa00';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([5, 3]);
-      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-      ctx.setLineDash([]);
-      _arrowHead(x2, y2, x2 - x1, y2 - y1, '#ffaa00');
-      _eventLabel(EVENT_CARD_LABEL[ev.card] || '魚雷', ev.sx, ev.sy, '#ffaa00');
+      // rAF で弾を飛ばし、ヒット時は着弾点で爆発
+      const onDone = ev.hit ? () => _drawExplosion(ev.hitX ?? ev.ex, ev.hitY ?? ev.ey, '#ffaa00') : null;
+      _startTorpedoAnim(ev.sx, ev.sy, ev.ex, ev.ey, '#ffaa00', _eventDelay(ev) * 0.75, onDone, '魚雷');
       break;
     }
     case 'guided_fire': {
-      // 追尾魚雷 発射軌跡（発射者のみ表示）
-      const gx1 = bo.x + ev.sx * cs + cs / 2;
-      const gy1 = bo.y + ev.sy * cs + cs / 2;
-      const gx2 = bo.x + ev.tx * cs + cs / 2;
-      const gy2 = bo.y + ev.ty * cs + cs / 2;
-      ctx.strokeStyle = '#00e5ff';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath(); ctx.moveTo(gx1, gy1); ctx.lineTo(gx2, gy2); ctx.stroke();
-      ctx.setLineDash([]);
-      _arrowHead(gx2, gy2, gx2 - gx1, gy2 - gy1, '#00e5ff');
-      _eventLabel('追尾魚雷', ev.sx, ev.sy, '#00e5ff');
+      // 追尾魚雷：rAF アニメで移動、ヒット時は着弾点で爆発
+      const onDone = ev.hit ? () => _drawExplosion(ev.hitX ?? ev.tx, ev.hitY ?? ev.ty, '#00e5ff') : null;
+      _startTorpedoAnim(ev.sx, ev.sy, ev.tx, ev.ty, '#00e5ff', _eventDelay(ev) * 0.85, onDone, '追尾魚雷');
       break;
     }
     case 'attack_leak':
-      if (ev.op === 'guided' && ev.cx != null) {
+      if (ev.op === 'torpedo' && ev.sx != null && ev.ex != null) {
+        const x1 = bo.x + ev.sx * cs + cs / 2;
+        const y1 = bo.y + ev.sy * cs + cs / 2;
+        const x2 = bo.x + ev.ex * cs + cs / 2;
+        const y2 = bo.y + ev.ey * cs + cs / 2;
+        ctx.strokeStyle = 'rgba(255,170,0,0.55)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]);
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.setLineDash([]);
+        _arrowHead(x2, y2, x2 - x1, y2 - y1, 'rgba(255,170,0,0.7)');
+        _eventLabel('魚雷', ev.sx, ev.sy, '#ffaa00');
+      } else if (ev.op === 'shotgun') {
+        // 散弾: 発射者の位置 + 方向から扇形3セルを描画
+        const vp = baseView.players[ev.pid];
+        if (vp && vp.x != null && ev.dir) {
+          const DD = { N:{dx:0,dy:-1}, S:{dx:0,dy:1}, E:{dx:1,dy:0}, W:{dx:-1,dy:0} };
+          const RL = (dir, t) => { const l=['N','E','S','W']; return l[(l.indexOf(dir)+t+4)%4]; };
+          const ox = bo.x + vp.x * cs + cs / 2;
+          const oy = bo.y + vp.y * cs + cs / 2;
+          const fwd = DD[ev.dir];
+          const fanCells = [
+            { dx: fwd.dx,                              dy: fwd.dy                             },
+            { dx: DD[RL(ev.dir,-1)].dx + fwd.dx,      dy: DD[RL(ev.dir,-1)].dy + fwd.dy     },
+            { dx: DD[RL(ev.dir, 1)].dx + fwd.dx,      dy: DD[RL(ev.dir, 1)].dy + fwd.dy     },
+          ];
+          // セル塗り
+          ctx.fillStyle = 'rgba(255,160,0,0.22)';
+          fanCells.forEach(fc => {
+            const fx = bo.x + Math.max(0,Math.min(9,vp.x + fc.dx)) * cs;
+            const fy = bo.y + Math.max(0,Math.min(9,vp.y + fc.dy)) * cs;
+            ctx.fillRect(fx + 1, fy + 1, cs - 2, cs - 2);
+          });
+          // セル枠
+          ctx.strokeStyle = 'rgba(255,160,0,0.85)';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([4, 3]);
+          fanCells.forEach(fc => {
+            const fx = bo.x + Math.max(0,Math.min(9,vp.x + fc.dx)) * cs;
+            const fy = bo.y + Math.max(0,Math.min(9,vp.y + fc.dy)) * cs;
+            ctx.strokeRect(fx + 1, fy + 1, cs - 2, cs - 2);
+          });
+          ctx.setLineDash([]);
+          // 発射元→各セルへ矢印
+          fanCells.forEach(fc => {
+            const ex = bo.x + Math.max(0,Math.min(9,vp.x + fc.dx)) * cs + cs / 2;
+            const ey = bo.y + Math.max(0,Math.min(9,vp.y + fc.dy)) * cs + cs / 2;
+            ctx.strokeStyle = 'rgba(255,200,0,0.75)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ex, ey); ctx.stroke();
+            _arrowHead(ex, ey, ex - ox, ey - oy, 'rgba(255,200,0,0.9)');
+          });
+          _eventLabel('散弾', vp.x, vp.y, '#ffa000');
+        }
+      } else if (ev.op === 'guided' && ev.cx != null) {
         // 追尾魚雷 着弾エリア（全員公開）
         const gcx = bo.x + ev.cx * cs + cs / 2;
         const gcy = bo.y + ev.cy * cs + cs / 2;

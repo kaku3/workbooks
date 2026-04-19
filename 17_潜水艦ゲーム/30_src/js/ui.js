@@ -5,9 +5,11 @@ import { OPS, COMMAND_TIME_LIMIT, DIR_DELTA, rotateDir, GRID_SIZE } from './cons
 import { setCommandPreview, clearCommandPreview, renderState } from './render.js';
 import { promptTarget, cancelBoardPick } from './modal.js';
 
-let callbacks = {};   // { onConfirm, calcTimeCost }
-let selectedOps = []; // { op: string, target: {} }[]
+let callbacks = {};         // { onConfirm, calcTimeCost }
+let selectedOps = [];       // { op: string, target: {} }[]
+let _commandConfirmed = false; // 確定後〜アクション開始前: キュー表示をロック
 let latestView = null;
+let _sonarToggleActive = false; // ソナートグルモード中フラグ
 
 /* ============================================================
    初期化
@@ -18,12 +20,15 @@ export function initUI(cbs) {
   if (confirmBtn) {
     confirmBtn.addEventListener('click', () => {
       if (callbacks.onConfirm) {
+        _deactivateSonarToggle(); // ソナートグルを必ず解除
         callbacks.onConfirm(selectedOps.map(s => s.op), selectedOps.map(s => s.target));
-        // selectedOps は次のコマンドフェーズ開始（enableCommand isNewPhase=true）まで保持。
-        // ここで消すと updateUI で時間バーが滿タンに戻って見えてしまう。
+        // selectedOps はアクションフェーズ開始（enableCommand isNewPhase=true）まで保持。
+        // キャンバスプレビューも保持して、自分が確定した内容が見えるようにする。
+        _commandConfirmed = true;
         confirmBtn.disabled = true;
-        _renderQueue();
-        clearCommandPreview();
+        _showWaiting();
+        _renderQueue(); // ロックモードで再描画（✕ボタン非表示）
+        // clearCommandPreview() はここでは呼ばない → プレビューを維持
         if (latestView) renderState(latestView);
         updateUI(latestView);
       }
@@ -162,14 +167,9 @@ function _buildCommandPreview(ops, me) {
         break;
       }
       case 'torpedo': {
-        // 前方 6 マス直線
-        const d = DIR_DELTA[sdir];
-        steps.push({
-          type: 'attack',
-          x0: sx, y0: sy,
-          x1: clamp(sx + d.dx * 6, 0, GRID_SIZE - 1),
-          y1: clamp(sy + d.dy * 6, 0, GRID_SIZE - 1),
-        });
+        if (target && typeof target.x === 'number') {
+          steps.push({ type: 'attack', x0: sx, y0: sy, x1: target.x, y1: target.y });
+        }
         break;
       }
       case 'guided': {
@@ -230,19 +230,21 @@ function _renderQueue() {
     return;
   }
   const totalCost = selectedOps.reduce((s, o) => s + (OPS[o.op]?.cost ?? 0), 0);
+  const locked = _commandConfirmed;
   el.innerHTML = `
-    <div class="queue-header">コマンドキュー（合計 ${totalCost} 単位時間）</div>
+    <div class="queue-header">コマンドキュー（合計 ${totalCost} 単位時間）${locked ? ' 🔒' : ''}</div>
     <div class="queue-items">
       ${selectedOps.map((s, i) => `
-        <div class="queue-item" data-qi="${i}">
+        <div class="queue-item${locked ? ' confirmed' : ''}" data-qi="${i}">
           <span class="material-symbols-outlined queue-icon">${OPS[s.op]?.icon ?? 'help'}</span>
           <span class="queue-name">${OPS[s.op]?.name ?? s.op}</span>
           <span class="queue-cost">${OPS[s.op]?.cost ?? '?'}</span>
-          <button class="queue-remove" data-qi="${i}">✕</button>
+          ${locked ? '' : `<button class="queue-remove" data-qi="${i}">✕</button>`}
         </div>
       `).join('')}
     </div>
   `;
+  if (locked) return; // 確定後は削除ボタンなし
   el.querySelectorAll('.queue-remove').forEach(btn => {
     btn.addEventListener('click', () => {
       const i = parseInt(btn.dataset.qi);
@@ -264,6 +266,7 @@ function _renderPlayerList(view) {
   if (!el) return;
   el.innerHTML = '';
   const colors = ['#00e5ff','#ff4444','#ffeb3b','#4caf50','#ab47bc','#ff9800'];
+  const me = view.players[view.myId];
   view.playerOrder.forEach((id, i) => {
     const p = view.players[id];
     const div = document.createElement('div');
@@ -274,11 +277,17 @@ function _renderPlayerList(view) {
       : (view.phase === 'command' ? (p.commandConfirmed ? '✓' : '…') : '');
     const hp = p.hp ?? '?';
     const hpCrit = typeof p.hp === 'number' && p.hp <= 1;
+    // ドッグファイト相手の確定済みコマンドを表示
+    const isDogfightPartner = id !== view.myId && me?.dogfightWith === id;
+    const queueText = (isDogfightPartner && view.phase === 'command' && p.commandQueue?.length > 0)
+      ? p.commandQueue.map(c => OPS[c.op]?.name ?? c.op).join('→')
+      : '';
     div.innerHTML = `
       <span class="player-dot" style="background:${colors[i % colors.length]}"></span>
       <span class="player-chip-body">
         <span class="player-chip-name">${p.name}${id === view.myId ? '★' : ''}${statusIcon ? ' ' + statusIcon : ''}</span>
         <span class="player-chip-hp${hpCrit ? ' hp-crit' : ''}">HP ${hp}</span>
+        ${queueText ? `<span class="player-chip-queue">${queueText}</span>` : ''}
       </span>
     `;
     el.appendChild(div);
@@ -342,9 +351,12 @@ export function enableCommand(view, isNewPhase = false) {
   if (area) area.classList.remove('hidden');
 
   if (isNewPhase) {
-    cancelBoardPick();  // 時間切れ等で board pick が残っていたらキャンセル
+    _deactivateSonarToggle(); // ソナートグル解除（内部で cancelBoardPick も呼ぶ）
+    cancelBoardPick();        // 非ソナーの盤面ピックも念のため解除
+    _hideWaiting();
+    _commandConfirmed = false;
     selectedOps = [];
-    clearCommandPreview();
+    clearCommandPreview(); // アクション開始時にプレビューをクリア
     if (view) renderState(view);
     const timer = document.getElementById('timer-display');
     if (timer) timer.textContent = COMMAND_TIME_LIMIT;
@@ -392,11 +404,53 @@ function _simulatedPosition(me, ops) {
   return { ...me, x: sx, y: sy, dir: sdir };
 }
 
+/** ソナートグルを解除し盤面ピックをキャンセルする */
+function _deactivateSonarToggle() {
+  if (!_sonarToggleActive) return;
+  _sonarToggleActive = false;
+  cancelBoardPick();
+  const btn = document.querySelector('.op-btn[data-op="sonar"]');
+  if (btn) btn.classList.remove('toggle-active');
+}
+
+/** 待機メッセージ表示: バー・ボタン・パネルをまるごと置換 */
+function _showWaiting() {
+  const waiting    = document.getElementById('cmd-waiting');
+  const confirmBtn = document.getElementById('confirm-btn');
+  const timeBar    = document.querySelector('.time-bar-container');
+  const opPanel    = document.getElementById('op-panel');
+  if (confirmBtn) confirmBtn.classList.add('hidden');
+  if (timeBar)    timeBar.classList.add('hidden');
+  if (opPanel)    opPanel.classList.add('hidden');
+  if (waiting)    { waiting.textContent = '他のプレイヤーのコマンドを待っています…'; waiting.classList.remove('hidden'); }
+}
+function _hideWaiting() {
+  const waiting    = document.getElementById('cmd-waiting');
+  const confirmBtn = document.getElementById('confirm-btn');
+  const timeBar    = document.querySelector('.time-bar-container');
+  if (waiting)    waiting.classList.add('hidden');
+  if (confirmBtn) confirmBtn.classList.remove('hidden');
+  if (timeBar)    timeBar.classList.remove('hidden');
+}
+
 async function _onOpClick(opId, view) {
+  // ボードピック中なら必ずキャンセル（ハイライト情報も消える）
+  cancelBoardPick();
   const me = view?.players[view?.myId] || latestView?.players[latestView?.myId];
   if (!me || !me.alive) return;
   const opDef = OPS[opId];
   if (!opDef) return;
+
+  // ソナートグル中に再クリック → 解除して終了
+  if (opId === 'sonar' && _sonarToggleActive) {
+    _deactivateSonarToggle();
+    return;
+  }
+
+  // ソナー以外のコマンドが押されたらトグル解除
+  if (opId !== 'sonar') {
+    _deactivateSonarToggle();
+  }
 
   // コスト確認
   const used = selectedOps.reduce((sum, s) => sum + (OPS[s.op]?.cost ?? 0), 0);
@@ -409,7 +463,37 @@ async function _onOpClick(opId, view) {
     if (avail <= 0) return;
   }
 
-  // ターゲット入力（移動シミュレーション後の位置を使う）
+  // ──── ソナー: トグルモード（クリックするたびに追加し続ける） ────
+  if (opId === 'sonar') {
+    _sonarToggleActive = true;
+    const sonarBtn = document.querySelector('.op-btn[data-op="sonar"]');
+    if (sonarBtn) sonarBtn.classList.add('toggle-active');
+
+    while (_sonarToggleActive) {
+      // 毎ループで最新の残り時間・在庫を確認
+      const cur = latestView?.players[latestView?.myId];
+      if (!cur) { _deactivateSonarToggle(); break; }
+      const usedNow = selectedOps.reduce((sum, s) => sum + (OPS[s.op]?.cost ?? 0), 0);
+      if (opDef.cost > (cur.time ?? 10) - usedNow) { _deactivateSonarToggle(); break; }
+
+      const simMe = _simulatedPosition(cur, selectedOps);
+      const target = await promptTarget(opDef, simMe);
+      if (target === null || !_sonarToggleActive) {
+        _deactivateSonarToggle();
+        break;
+      }
+
+      selectedOps.push({ op: opId, target });
+      _renderQueue();
+      _updateCommandPreview();
+      updateUI(latestView);
+      const confirmBtn = document.getElementById('confirm-btn');
+      if (confirmBtn) confirmBtn.disabled = false;
+    }
+    return;
+  }
+
+  // ──── 通常コマンド ────
   const simMe = _simulatedPosition(me, selectedOps);
   const target = await promptTarget(opDef, simMe);
   if (target === null) return; // キャンセル

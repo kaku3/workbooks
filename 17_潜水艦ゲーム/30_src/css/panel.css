@@ -117,6 +117,40 @@
   font-weight: bold;
 }
 
+/* ── 待機メッセージ ── */
+#cmd-waiting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 6px;
+  color: rgba(0, 229, 255, 0.75);
+  font-size: 13px;
+  text-align: center;
+  animation: waiting-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes waiting-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1.0; }
+}
+
+/* ── ソナートグルアクティブ状態 ── */
+.op-btn.toggle-active {
+  background: rgba(0, 200, 120, 0.45);
+  border-color: #00e5a0;
+  box-shadow: 0 0 8px rgba(0, 200, 120, 0.6);
+  animation: sonar-toggle-pulse 1s ease-in-out infinite;
+}
+
+@keyframes sonar-toggle-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(0, 200, 120, 0.5); }
+  50%       { box-shadow: 0 0 16px rgba(0, 200, 120, 0.95); }
+}
+
 /* ── ソナーボタン (強調) ── */
 .sonar-btn {
   background: rgba(0, 200, 120, 0.18);

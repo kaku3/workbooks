@@ -51,13 +51,13 @@ export const OPS = {
 
 /** 初期在庫 */
 export const INITIAL_INVENTORY = {
-  torpedo: 3,
-  guided:  2,
-  shotgun: 2,
-  decoy:   2,
-  mine:    2,
-  chaff:   2,
-  armor:   2,
+  torpedo: 6,
+  guided:  3,
+  shotgun: 3,
+  decoy:   3,
+  mine:    3,
+  chaff:   3,
+  armor:   3,
 };
 
 // ============================================================

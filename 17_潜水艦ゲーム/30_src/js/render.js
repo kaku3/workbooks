@@ -66,14 +66,16 @@ export function renderState(view) {
 
   // Layer 0: 背景
   drawBackground(w, h);
-  // Layer 1: 収縮ゾーン
-  drawShrinkZone(view);
+  // Layer 1: 収縮ゾーン（収縮無効化のため非表示）
+  // drawShrinkZone(view);
   // Layer 2: グリッド
   drawGrid();
   // Layer 3: 補給ポイント
   drawSupplyPoints(view.supplyPoints);
-  // Layer 4: マーカー（機雷・ブイ）
+  // Layer 4: マーカー（機雷・デコイ）
   drawMarkers(view);
+  // Layer 4b: 近辺可視（敵機雷・敵デコイ・近接敵）
+  drawNearby(view);
   // Layer 5: 前方警戒
   drawForwardWarning(view);
   // Layer 6: 潜水艦
@@ -168,6 +170,20 @@ function drawMarkers(view) {
       ctx.fillText('💣', px, py);
     }
   }
+  // 自分のデコイ
+  if (view.myDecoys) {
+    for (const d of view.myDecoys) {
+      const px = boardOffset.x + d.x * cellSize + cellSize / 2;
+      const py = boardOffset.y + d.y * cellSize + cellSize / 2;
+      ctx.strokeStyle = 'rgba(255,255,100,0.85)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(px, py, cellSize * 0.3, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,100,0.9)';
+      ctx.font = `bold ${Math.max(10, cellSize * 0.28)}px sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('D', px, py);
+    }
+  }
   // 自分のブイ
   if (view.myBuoys) {
     ctx.fillStyle = '#00e5ff';
@@ -178,6 +194,56 @@ function drawMarkers(view) {
       ctx.strokeStyle = 'rgba(0,229,255,0.3)';
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.arc(px, py, cellSize * 0.8, 0, Math.PI * 2); ctx.stroke();
+    }
+  }
+}
+
+/* ─── Layer 4b: 近辺可視 ─── */
+function drawNearby(view) {
+  // 敵機雷（半透明）
+  if (view.nearbyMines) {
+    for (const m of view.nearbyMines) {
+      const px = boardOffset.x + m.x * cellSize + cellSize / 2;
+      const py = boardOffset.y + m.y * cellSize + cellSize / 2;
+      ctx.font = `${cellSize * 0.35}px serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.65;
+      ctx.fillText('💣', px, py);
+      ctx.globalAlpha = 1;
+    }
+  }
+  // 敵デコイ（赤縁）
+  if (view.nearbyDecoys) {
+    for (const d of view.nearbyDecoys) {
+      const px = boardOffset.x + d.x * cellSize + cellSize / 2;
+      const py = boardOffset.y + d.y * cellSize + cellSize / 2;
+      ctx.strokeStyle = 'rgba(255,100,100,0.8)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(px, py, cellSize * 0.3, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,100,100,0.9)';
+      ctx.font = `bold ${Math.max(10, cellSize * 0.28)}px sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('D', px, py);
+    }
+  }
+  // 近接敵（ドッグファイト以外で3マス以内）
+  if (view.nearbyEnemies) {
+    const colors = ['#00e5ff','#ff4444','#ffeb3b','#4caf50','#ab47bc','#ff9800'];
+    for (const ep of view.nearbyEnemies) {
+      const idx = view.playerOrder.indexOf(ep.id);
+      const color = colors[idx % colors.length];
+      const px = boardOffset.x + ep.x * cellSize + cellSize / 2;
+      const py = boardOffset.y + ep.y * cellSize + cellSize / 2;
+      const r = cellSize * 0.35;
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.55;
+      ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath(); ctx.arc(px, py, r * 1.6, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]);
     }
   }
 }

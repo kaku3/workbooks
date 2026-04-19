@@ -180,6 +180,9 @@ function onLocalStateUpdate(event) {
     // フェーズオーバーレイ（1800ms）が消えてからアニメ開始
     if (isNewPhase) {
       const capturedView = localView;
+      // actionPhaseStartedAt を使ってネットワーク遅延分だけ待機時間を短縮し同期を記る
+      const elapsed = capturedView.actionPhaseStartedAt ? Date.now() - capturedView.actionPhaseStartedAt : 0;
+      const delay = Math.max(0, 1800 - elapsed);
       _animStartTimeoutId = setTimeout(() => {
         _animStartTimeoutId = null;
         startActionAnimation(
@@ -192,7 +195,7 @@ function onLocalStateUpdate(event) {
           } : null,
           (ev) => showCurrentAction(ev, capturedView)
         );
-      }, 1800);
+      }, delay);
     }
   } else if (phase === 'ended') {
     stopCommandTimer();
