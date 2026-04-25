@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>サンプルECショップ</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">SampleEC</a>
+      <nav>
+        <a href="/cart.html" id="cart-link">カート(<span id="cart-count">0</span>)</a>
+        <span id="user-nav"></span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>商品一覧</h1>
+    <div id="category-filter">
+      <button onclick="filterCategory('')" class="active">すべて</button>
+      <button onclick="filterCategory('electronics')">電子機器</button>
+      <button onclick="filterCategory('accessories')">アクセサリー</button>
+    </div>
+    <div id="product-list"></div>
+  </main>
+
+  <script src="/common.js"></script>
+  <script>
+    // 商品データをAPIから取得して表示
+    let allProducts = []
+
+    async function loadProducts() {
+      const res = await fetch('/api/products')
+      allProducts = await res.json()
+      renderProducts(allProducts)
+      updateCartCount()
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll('#category-filter button').forEach(b => b.classList.remove('active'))
+      event.target.classList.add('active')
+      const filtered = cat ? allProducts.filter(p => p.category === cat) : allProducts
+      renderProducts(filtered)
+    }
+
+    function renderProducts(products) {
+      const list = document.getElementById('product-list')
+      list.innerHTML = products.map(p => `
+        <div class="product-card ${p.stock === 0 ? 'out-of-stock' : ''}">
+          <h2>${p.name}</h2>
+          <p class="price">${formatPrice(p.price)}<small>（税込 ${formatPrice(Math.round(p.price * 1.1))}）</small></p>
+          <p class="desc">${p.description}</p>
+          <p class="stock">${p.stock > 0 ? `在庫: ${p.stock}点` : '在庫なし'}</p>
+          <button onclick="addToCart(${p.id}, '${p.name}')" ${p.stock === 0 ? 'disabled' : ''}>
+            カートに入れる
+          </button>
+        </div>
+      `).join('')
+    }
+
+    async function addToCart(productId, name) {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        alert('ログインが必要です')
+        location.href = '/login.html'
+        return
+      }
+      const res = await fetch('/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ productId, quantity: 1 })
+      })
+      const data = await res.json()
+      alert(name + 'をカートに追加しました')
+      updateCartCount()
+    }
+
+    loadProducts()
+  </script>
+</body>
+</html>

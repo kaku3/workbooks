@@ -1,0 +1,12 @@
+{
+  "name": "sample-ec",
+  "version": "1.0.0",
+  "description": "シンプルなECサイト",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

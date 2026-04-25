@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ご注文完了 - SampleEC</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">SampleEC</a>
+    </div>
+  </header>
+  <main class="complete-page">
+    <div class="complete-box">
+      <h1>ご注文ありがとうございます</h1>
+      <p>注文番号: <strong id="order-id"></strong></p>
+      <p>ご注文内容の確認メールを送付いたします。</p>
+      <a href="/" class="btn-primary">ショッピングを続ける</a>
+      <a href="/mypage.html" class="btn-secondary">注文履歴を確認する</a>
+    </div>
+  </main>
+  <script>
+    const orderId = sessionStorage.getItem('lastOrderId')
+    document.getElementById('order-id').textContent = orderId || '-'
+    sessionStorage.removeItem('lastOrderId')
+    sessionStorage.removeItem('cartTotal')
+    sessionStorage.removeItem('cartSubtotal')
+  </script>
+</body>
+</html>

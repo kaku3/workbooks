@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ログイン - SampleEC</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">SampleEC</a>
+    </div>
+  </header>
+  <main>
+    <div class="auth-box">
+      <h1>ログイン</h1>
+      <div id="error-msg" class="error-msg" style="display:none"></div>
+      <form onsubmit="login(event)">
+        <div class="form-group">
+          <label>メールアドレス</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label>パスワード</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="btn-primary">ログイン</button>
+      </form>
+      <p><a href="/register.html">新規会員登録はこちら</a></p>
+    </div>
+  </main>
+  <script>
+    async function login(e) {
+      e.preventDefault()
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value
+        })
+      })
+      const data = await res.json()
+      if (res.ok) {
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('user', JSON.stringify(data.user))
+        location.href = '/'
+      } else {
+        const msg = document.getElementById('error-msg')
+        msg.textContent = data.message
+        msg.style.display = ''
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>マイページ - SampleEC</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">SampleEC</a>
+      <nav>
+        <a href="/cart.html">カート(<span id="cart-count">0</span>)</a>
+        <span id="user-nav"></span>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <h1>マイページ</h1>
+    <section id="profile-section">
+      <h2>アカウント情報</h2>
+      <div id="profile"></div>
+    </section>
+    <section>
+      <h2>注文履歴</h2>
+      <div id="order-list"></div>
+    </section>
+  </main>
+
+  <script src="/common.js"></script>
+  <script>
+    // ステータスラベル ※ utils.js にも同じ定義がある（サーバー側）
+    const STATUS_LABELS = {
+      pending: '注文受付',
+      confirmed: '確認済み',
+      shipped: '発送済み',
+      delivered: '配達完了',
+      cancelled: 'キャンセル'
+    }
+
+    async function loadMyPage() {
+      const token = localStorage.getItem('token')
+      if (!token) { location.href = '/login.html'; return }
+
+      const userRes = await fetch('/api/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      const user = await userRes.json()
+      document.getElementById('profile').innerHTML = `
+        <p>お名前: ${user.name}</p>
+        <p>メールアドレス: ${user.email}</p>
+        <p>会員種別: ${user.type === 'premium' || user.memberType === 'premium' ? 'プレミアム会員' : '一般会員'}</p>
+      `
+
+      const orderRes = await fetch('/api/orders', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      const orders = await orderRes.json()
+
+      if (orders.length === 0) {
+        document.getElementById('order-list').innerHTML = '<p>注文履歴はありません</p>'
+        return
+      }
+
+      document.getElementById('order-list').innerHTML = orders.map(order => `
+        <div class="order-card">
+          <div class="order-header">
+            <span>注文日: ${formatDate(order.createdAt)}</span>
+            <span>注文番号: ${order.id}</span>
+            <span class="status">${STATUS_LABELS[order.status] || order.status}</span>
+          </div>
+          <div class="order-items">
+            ${order.items.map(item => `
+              <div class="order-item">
+                <span>${item.name}</span>
+                <span>×${item.quantity}</span>
+                <span>${formatPrice(item.itemTotal)}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="order-total">合計: ${formatPrice(order.total)}</div>
+        </div>
+      `).join('')
+
+      updateCartCount()
+    }
+
+    loadMyPage()
+  </script>
+</body>
+</html>

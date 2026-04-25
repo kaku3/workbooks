@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カート - SampleEC</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">SampleEC</a>
+      <nav>
+        <a href="/cart.html">カート(<span id="cart-count">0</span>)</a>
+        <span id="user-nav"></span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>カート</h1>
+    <div id="cart-items"></div>
+    <div id="cart-summary" style="display:none">
+      <table class="summary-table">
+        <tr><td>小計</td><td id="subtotal-price"></td></tr>
+        <tr id="discount-row" style="display:none"><td>割引（プレミアム会員）</td><td id="discount-price"></td></tr>
+        <tr><td>消費税（10%）</td><td id="tax-price"></td></tr>
+        <tr><td>送料</td><td id="shipping-price"></td></tr>
+        <tr class="total-row"><td>合計</td><td id="total-price"></td></tr>
+      </table>
+      <a href="/checkout.html" class="btn-primary">レジへ進む</a>
+    </div>
+  </main>
+
+  <script src="/common.js"></script>
+  <script>
+    const TAX_RATE = 0.1
+
+    async function loadCart() {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        document.getElementById('cart-items').innerHTML = '<p><a href="/login.html">ログイン</a>してカートを確認してください</p>'
+        return
+      }
+
+      const res = await fetch('/api/cart', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      const items = await res.json()
+
+      if (items.length === 0) {
+        document.getElementById('cart-items').innerHTML = '<p>カートは空です</p>'
+        return
+      }
+
+      document.getElementById('cart-items').innerHTML = items.map(item => `
+        <div class="cart-item">
+          <div class="item-name">${item.product.name}</div>
+          <div class="item-price">${formatPrice(item.product.price)}</div>
+          <div class="item-qty">×${item.quantity}</div>
+          <div class="item-total">${formatPrice(item.product.price * item.quantity)}</div>
+          <button onclick="removeItem(${item.productId})">削除</button>
+        </div>
+      `).join('')
+
+      // 合計金額の計算
+      const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+
+      // プレミアム割引の判定
+      // ※ users.json の一部は type、一部は memberType でフィールドが違うが、
+      //    ここではローカルストレージに保存されたユーザー情報を使う
+      const user = JSON.parse(localStorage.getItem('user') || '{}')
+      let discounted = subtotal
+      if (user.type === 'premium') {
+        discounted = Math.floor(subtotal * 0.9)
+        document.getElementById('discount-row').style.display = ''
+        document.getElementById('discount-price').textContent = '-' + formatPrice(subtotal - discounted)
+      }
+
+      // 消費税（四捨五入） ※ app.js は切り捨て、checkout.js も別の計算
+      const tax = Math.round(discounted * TAX_RATE)
+      const shipping = (discounted + tax) >= 3000 ? 0 : 500
+      const total = discounted + tax + shipping
+
+      document.getElementById('subtotal-price').textContent = formatPrice(subtotal)
+      document.getElementById('tax-price').textContent = formatPrice(tax)
+      document.getElementById('shipping-price').textContent = shipping === 0 ? '無料' : formatPrice(shipping)
+      document.getElementById('total-price').textContent = formatPrice(total)
+      document.getElementById('cart-summary').style.display = ''
+
+      // チェックアウト画面に合計を引き渡す（sessionStorageを使用）
+      sessionStorage.setItem('cartTotal', total)
+      sessionStorage.setItem('cartSubtotal', subtotal)
+
+      updateCartCount()
+    }
+
+    async function removeItem(productId) {
+      const token = localStorage.getItem('token')
+      await fetch('/api/cart/' + productId, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      loadCart()
+    }
+
+    loadCart()
+  </script>
+</body>
+</html>

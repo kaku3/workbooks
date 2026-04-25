@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "ワイヤレスイヤホン Type-A",
+    "price": 4980,
+    "description": "高音質・ノイズキャンセリング対応のワイヤレスイヤホン。最大8時間再生。",
+    "stock": 23,
+    "category": "electronics"
+  },
+  {
+    "id": 2,
+    "name": "メカニカルキーボード TKL",
+    "price": 8800,
+    "description": "テンキーレスコンパクト設計。青軸採用。RGBバックライト付き。",
+    "stock": 8,
+    "category": "electronics"
+  },
+  {
+    "id": 3,
+    "name": "USBハブ 7ポート",
+    "price": 2480,
+    "description": "USB3.0対応7ポートハブ。バスパワー＆セルフパワー両対応。",
+    "stock": 41,
+    "category": "electronics"
+  },
+  {
+    "id": 4,
+    "name": "ノートPC スタンド アルミ製",
+    "price": 3200,
+    "description": "アルミ合金製の折りたたみ式PCスタンド。角度6段階調節可能。",
+    "stock": 15,
+    "category": "accessories"
+  },
+  {
+    "id": 5,
+    "name": "マウスパッド XLサイズ",
+    "price": 1580,
+    "description": "900×400mmのデスク全体をカバーするXLサイズ。滑り止め加工済み。",
+    "stock": 0,
+    "category": "accessories"
+  },
+  {
+    "id": 6,
+    "name": "Webカメラ 1080p",
+    "price": 5980,
+    "description": "フルHD対応Webカメラ。内蔵マイク付き。プラグアンドプレイ対応。",
+    "stock": 5,
+    "category": "electronics"
+  }
+]

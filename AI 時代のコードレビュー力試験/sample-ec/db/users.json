@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1001,
+    "name": "山田 太郎",
+    "email": "yamada@example.com",
+    "password": "password123",
+    "type": "normal",
+    "createdAt": "2024-01-15T09:00:00.000Z"
+  },
+  {
+    "id": 1002,
+    "name": "佐藤 花子",
+    "email": "sato@example.com",
+    "password": "hana2024",
+    "memberType": "premium",
+    "createdAt": "2024-03-22T14:30:00.000Z"
+  },
+  {
+    "id": 1003,
+    "name": "鈴木 一郎",
+    "email": "suzuki@example.com",
+    "password": "suzuki1234",
+    "type": "normal",
+    "createdAt": "2025-06-10T11:00:00.000Z"
+  }
+]

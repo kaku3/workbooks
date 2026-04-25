@@ -1,0 +1,75 @@
+/* style.css - 全ページ共通 */
+/* 最初はシンプルだったが、ページ追加のたびに末尾に足し続けた */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: sans-serif; color: #333; background: #f5f5f5; }
+
+/* ヘッダー */
+header { background: #1a1a2e; color: white; padding: 12px 0; }
+.header-inner { max-width: 1000px; margin: 0 auto; padding: 0 16px; display: flex; justify-content: space-between; align-items: center; }
+.logo { color: white; text-decoration: none; font-size: 1.4rem; font-weight: bold; }
+nav a { color: #ccc; text-decoration: none; margin-left: 16px; }
+nav a:hover { color: white; }
+nav span { color: #ccc; margin-left: 16px; font-size: 0.9rem; }
+
+/* メインコンテンツ */
+main { max-width: 1000px; margin: 32px auto; padding: 0 16px; }
+h1 { margin-bottom: 24px; font-size: 1.6rem; }
+h2 { margin-bottom: 16px; margin-top: 24px; font-size: 1.2rem; border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+
+/* ボタン */
+.btn-primary { display: inline-block; background: #e94560; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 1rem; }
+.btn-primary:hover { background: #c73652; }
+.btn-secondary { display: inline-block; background: white; color: #333; border: 1px solid #ddd; padding: 12px 24px; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 1rem; margin-left: 8px; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 商品カード */
+#product-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.product-card { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.product-card.out-of-stock { opacity: 0.6; }
+.product-card h2 { font-size: 1rem; margin-bottom: 8px; }
+.price { font-size: 1.2rem; font-weight: bold; color: #e94560; margin-bottom: 8px; }
+.price small { font-size: 0.75rem; color: #888; font-weight: normal; }
+.desc { font-size: 0.85rem; color: #666; margin-bottom: 12px; line-height: 1.5; }
+.stock { font-size: 0.8rem; color: #888; margin-bottom: 12px; }
+
+/* カテゴリフィルター */
+#category-filter { margin-bottom: 16px; }
+#category-filter button { background: white; border: 1px solid #ddd; padding: 6px 16px; border-radius: 20px; cursor: pointer; margin-right: 8px; }
+#category-filter button.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+
+/* カート */
+.cart-item { background: white; border-radius: 8px; padding: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 16px; }
+.item-name { flex: 1; }
+.item-total { font-weight: bold; min-width: 80px; text-align: right; }
+.summary-table { width: 100%; max-width: 400px; margin: 16px 0; border-collapse: collapse; }
+.summary-table td { padding: 8px; }
+.summary-table td:last-child { text-align: right; }
+.total-row td { font-weight: bold; font-size: 1.1rem; border-top: 1px solid #ddd; padding-top: 12px; }
+
+/* フォーム */
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; margin-bottom: 4px; font-weight: bold; font-size: 0.9rem; }
+.form-group input { width: 100%; max-width: 400px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
+.error-msg { background: #fff0f0; border: 1px solid #ffcccc; color: #cc0000; padding: 10px; border-radius: 4px; margin-bottom: 16px; }
+
+/* 認証ページ */
+.auth-box { max-width: 400px; background: white; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+/* 注文完了 */
+.complete-page { display: flex; justify-content: center; }
+.complete-box { background: white; padding: 48px; border-radius: 8px; text-align: center; max-width: 480px; }
+.complete-box h1 { color: #28a745; margin-bottom: 16px; }
+.complete-box p { margin-bottom: 12px; }
+.complete-box a { margin-top: 16px; display: inline-block; }
+
+/* マイページ */
+.order-card { background: white; border-radius: 8px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.order-header { display: flex; gap: 16px; margin-bottom: 12px; font-size: 0.9rem; color: #666; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
+.status { color: #1a1a2e; font-weight: bold; }
+.order-item { display: flex; gap: 16px; padding: 4px 0; }
+.order-item span:first-child { flex: 1; }
+.order-total { text-align: right; font-weight: bold; margin-top: 12px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
+
+/* プロフィールセクション */
+#profile p { margin-bottom: 8px; }

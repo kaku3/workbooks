@@ -1,0 +1,33 @@
+[
+  {
+    "id": 2001,
+    "userId": 1001,
+    "items": [
+      { "productId": 1, "name": "ワイヤレスイヤホン Type-A", "price": 4980, "quantity": 1, "itemTotal": 4980 },
+      { "productId": 3, "name": "USBハブ 7ポート", "price": 2480, "quantity": 2, "itemTotal": 4960 }
+    ],
+    "subtotal": 9940,
+    "discount": 0,
+    "tax": 994,
+    "shipping": 0,
+    "total": 10934,
+    "address": "東京都渋谷区1-2-3",
+    "status": "delivered",
+    "createdAt": "2025-11-03T10:20:00.000Z"
+  },
+  {
+    "id": 2002,
+    "userId": 1002,
+    "items": [
+      { "productId": 2, "name": "メカニカルキーボード TKL", "price": 8800, "quantity": 1, "itemTotal": 8800 }
+    ],
+    "subtotal": 8800,
+    "discount": 880,
+    "tax": 792,
+    "shipping": 0,
+    "total": 8712,
+    "address": "大阪府大阪市中央区4-5-6",
+    "status": "shipped",
+    "createdAt": "2026-01-18T15:45:00.000Z"
+  }
+]

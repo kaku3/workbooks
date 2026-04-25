@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>購入手続き - SampleEC</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">SampleEC</a>
+    </div>
+  </header>
+
+  <main>
+    <h1>購入手続き</h1>
+
+    <section>
+      <h2>お届け先</h2>
+      <form id="checkout-form">
+        <div class="form-group">
+          <label>郵便番号</label>
+          <input type="text" id="postal" placeholder="000-0000">
+        </div>
+        <div class="form-group">
+          <label>住所</label>
+          <input type="text" id="address" placeholder="都道府県から入力">
+        </div>
+        <div class="form-group">
+          <label>クーポンコード</label>
+          <input type="text" id="coupon-code" placeholder="お持ちの方は入力">
+          <button type="button" onclick="checkCoupon()">適用</button>
+          <span id="coupon-msg"></span>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>ご注文内容</h2>
+      <div id="order-summary"></div>
+    </section>
+
+    <button onclick="placeOrder()" class="btn-primary">注文を確定する</button>
+  </main>
+
+  <script src="/common.js"></script>
+  <script>
+    let couponDiscount = 0
+
+    // カート画面から引き継いだ合計（再計算はしていない）
+    const cartTotal = parseInt(sessionStorage.getItem('cartTotal') || '0')
+    const cartSubtotal = parseInt(sessionStorage.getItem('cartSubtotal') || '0')
+
+    // 消費税を再計算（cart.html と計算方法が異なる）
+    // cart.html: Math.round(discounted * 0.1)
+    // checkout.html: Math.floor(subtotal * 1.1) - subtotal  ← 異なる
+    const tax = Math.floor(cartSubtotal * 1.1) - cartSubtotal
+    const shipping = cartTotal >= 3000 ? 0 : 500
+
+    function renderSummary() {
+      const couponAmt = Math.floor(cartSubtotal * couponDiscount)
+      const finalTotal = cartSubtotal - couponAmt + tax + shipping
+
+      document.getElementById('order-summary').innerHTML = `
+        <table class="summary-table">
+          <tr><td>小計</td><td>${formatPrice(cartSubtotal)}</td></tr>
+          ${couponDiscount > 0 ? `<tr><td>クーポン割引</td><td>-${formatPrice(couponAmt)}</td></tr>` : ''}
+          <tr><td>消費税</td><td>${formatPrice(tax)}</td></tr>
+          <tr><td>送料</td><td>${shipping === 0 ? '無料' : formatPrice(shipping)}</td></tr>
+          <tr class="total-row"><td>合計</td><td>${formatPrice(finalTotal)}</td></tr>
+        </table>
+      `
+    }
+
+    async function checkCoupon() {
+      const code = document.getElementById('coupon-code').value
+      const res = await fetch('/api/coupon/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      })
+      const data = await res.json()
+      if (res.ok) {
+        couponDiscount = data.discount
+        document.getElementById('coupon-msg').textContent = `${data.discount * 100}%割引が適用されます`
+        document.getElementById('coupon-msg').style.color = 'green'
+      } else {
+        document.getElementById('coupon-msg').textContent = data.message
+        document.getElementById('coupon-msg').style.color = 'red'
+      }
+      renderSummary()
+    }
+
+    async function placeOrder() {
+      // 郵便番号のバリデーション（ここだけやっている、住所は未バリデーション）
+      const postal = document.getElementById('postal').value
+      if (!/^\d{3}-?\d{4}$/.test(postal)) {
+        alert('郵便番号の形式が正しくありません（例: 000-0000）')
+        return
+      }
+
+      const address = document.getElementById('postal').value + ' ' + document.getElementById('address').value
+      const token = localStorage.getItem('token')
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ address })
+        // クーポン割引はサーバーに送っていない（フロントだけで計算している）
+      })
+      const data = await res.json()
+      if (res.ok) {
+        sessionStorage.setItem('lastOrderId', data.orderId)
+        location.href = '/order-complete.html'
+      } else {
+        alert(data.message)
+      }
+    }
+
+    renderSummary()
+  </script>
+</body>
+</html>
