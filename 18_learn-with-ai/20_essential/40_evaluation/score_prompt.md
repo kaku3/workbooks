@@ -9,12 +9,12 @@ Copilot チャット（Agent モード推奨）で使うプロンプトです。
 
 ```
 {受験者名}/
-├── 30_answers/     ← 受験者の回答ファイルをここに配置（30_answers/ テンプレをコピー）
+├── 20_answers/     ← 受験者の回答ファイルをここに配置（20_essential/20_answers/ テンプレをコピー）
 ├── 31_reviews/     ← AI 採点結果をここに出力（最初は空）
 └── summary.md      ← 全設問の採点完了後に出力
 ```
 
-`10_samples/` にサンプルが入っています。採点の流れと出力イメージはそちらを参照してください。
+`40_evaluation/10_samples/` にサンプルが入っています。採点の流れと出力イメージはそちらを参照してください。
 
 ---
 
@@ -27,9 +27,9 @@ Copilot チャットに以下の「ステップ 1 プロンプト」を貼り付
 
 | 添付内容 | パス |
 |---------|------|
-| 受験者の回答 | `#file:{受験者名}/30_answers/` |
-| 模範解答 | `#file:40_reference-answers/` |
-| 問題文 | `#file:20_questions/` |
+| 受験者の回答 | `#file:{受験者名}/20_answers/` |
+| 模範解答 | `#file:20_essential/30_reference-answers/` |
+| 問題文 | `#file:20_essential/10_questions/` |
 | 参照コード | `#file:10_sample-ec/` |
 
 採点結果は設問ごとに `31_reviews/` に保存してください。
@@ -45,9 +45,9 @@ Copilot チャットに以下の「ステップ 1 プロンプト」を貼り付
 
 > Copilot チャットに貼り付けて、以下 4 つを `#file:` で添付してください。
 >
-> - `#file:{受験者名}/30_answers/`
-> - `#file:40_reference-answers/`
-> - `#file:20_questions/`
+> - `#file:{受験者名}/20_answers/`
+> - `#file:20_essential/30_reference-answers/`
+> - `#file:20_essential/10_questions/`
 > - `#file:10_sample-ec/`
 
 ---

@@ -81,16 +81,14 @@ repository/
 │       ├── checkout.html      # クーポン計算がフロントのみ
 │       ├── mypage.html
 │       └── ...
-├── 20_questions/              # 設問ファイル（難易度別）
-│   ├── 10_beginner.md
-│   ├── 20_intermediate.md
-│   └── 30_advanced.md
-├── 30_answers/                # 受験者が回答を書く場所（空テンプレート）
-│   ├── 10_beginner.md
-│   ├── 20_intermediate.md
-│   └── 30_advanced.md
-├── 40_reference-answers/      # 模範解答
-└── 50_evaluation/             # 採点用プロンプト集
+└── 20_essential/
+    ├── 10_questions/          # 設問ファイル（難易度別）
+    │   ├── 10_beginner.md
+    │   ├── 20_intermediate.md
+    │   └── 30_advanced.md
+    ├── 20_answers/            # 受験者が回答を書く場所（空テンプレート）
+    ├── 30_reference-answers/  # 模範解答
+    └── 40_evaluation/         # 採点用プロンプト集
 ```
 
 ---
@@ -153,7 +151,7 @@ repository/
 
 ## 5. 評価プロンプトの設計方針
 
-- `50_evaluation/score_prompt.md` に汎用採点プロンプトを用意
+- `20_essential/40_evaluation/score_prompt.md` に汎用採点プロンプトを用意
 - 受験者の回答 + `checklist.md` + 問題コードを AI に渡して採点
 - 出力形式：**指摘漏れ / 的外れな指摘 / 改善提案の質** を項目ごとに評価
 - 完全自動採点ではなく「AI がドラフト → 人がレビュー」の補助ツールとして位置づける

@@ -1,0 +1,20 @@
+[
+  {
+    "id": 3001,
+    "userId": 1003,
+    "productId": 4,
+    "quantity": 1
+  },
+  {
+    "id": 1777126506798,
+    "userId": 1001,
+    "productId": 1,
+    "quantity": 1
+  },
+  {
+    "id": 1777126509715,
+    "userId": 1001,
+    "productId": 2,
+    "quantity": 1
+  }
+]

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>メンター・採用担当者向け | AI 時代のコードレビュー力試験</title>
+  <meta name="description" content="エンジニアの設計判断力を、実務に近い形で測る教材。採用評価・チーム勉強会・メンタリングに使える採点プロンプト付き。" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<!-- ========== Header ========== -->
+<header>
+  <div class="container">
+    <a class="logo" href="index.html">learn<span>-with-ai</span></a>
+    <nav>
+      <a href="index.html">学習者向け</a>
+      <a href="series.html">シリーズ</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ========== Hero ========== -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">メンター・採用担当者向け</div>
+    <h1>メンバーの「<em>設計力</em>」、<br>どうやって測っていますか？</h1>
+    <p class="hero-sub">
+      AI 時代に必要な設計判断力を、実務に近い形で測る教材。<br>
+      採点プロンプト付きで、評価コストを最小化します。
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/" target="_blank" rel="noopener">GitHub でリポジトリを開く</a>
+      <a class="btn btn-secondary" href="index.html">学習者として使いたい方へ</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 従来の限界 ========== -->
+<section id="problem">
+  <div class="container">
+    <h2>従来の技術評価の限界</h2>
+    <p class="section-lead">「書けるか」を測るテストは、もはや AI で突破されます。</p>
+
+    <div class="cards cards-3">
+      <div class="card">
+        <div class="card-num" style="font-size:20px; color:var(--text-muted);">❌</div>
+        <h3>コーディングテスト</h3>
+        <p>「書ける」かどうかしか測れない。AI で補完できる力しか問えない。</p>
+      </div>
+      <div class="card">
+        <div class="card-num" style="font-size:20px; color:var(--text-muted);">❌</div>
+        <h3>スニペット問題</h3>
+        <p>孤立したコードを AI に貼り付ければそれなりの回答が出る。設問としての意味が薄れている。</p>
+      </div>
+      <div class="card">
+        <div class="card-num" style="font-size:20px; color:var(--accent-sub);">✓</div>
+        <h3>この教材の差別化</h3>
+        <p>プロジェクト全体のコンテキストが必要な問いは、AI に丸投げしても妥当な回答が得られない。「判断できるか」を問える。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 使い方 ========== -->
+<section id="usage">
+  <div class="container">
+    <h2>3 つの使い方</h2>
+
+    <div class="cards cards-3" style="margin-top:8px;">
+      <div class="card">
+        <div class="card-num">A</div>
+        <h3>採用評価として</h3>
+        <p>技術面接の前に受けてもらい、回答を議題にする。「なぜそう判断したか」が自分の言葉で書かれているかを確認できる。</p>
+      </div>
+      <div class="card">
+        <div class="card-num">B</div>
+        <h3>チーム勉強会として</h3>
+        <p>模範解答（<code>30_reference-answers/</code>）と比較しながらチームで議論する素材にする。「正解」が一つでない問いが多く、議論が深まる。</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C</div>
+        <h3>自己評価ツールとして</h3>
+        <p>メンバーが自分のレベルを把握するために使う。採点結果（◎○△×）が数値化されるため、成長の可視化にも使える。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 採点の仕組み ========== -->
+<section id="scoring">
+  <div class="container">
+    <h2>採点の仕組み</h2>
+    <p class="section-lead">採点プロンプトが付属しているため、評価コストを大幅に削減できます。</p>
+
+    <div class="cards cards-2">
+      <div class="card">
+        <h3 style="margin-bottom:12px;">ステップ 1：一括採点</h3>
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:16px;">Copilot（Agent モード）に以下を添付して送信するだけ：</p>
+        <div class="code-block" style="font-size:12px;">
+#file:{受験者名}/20_answers/<br>
+#file:20_essential/30_reference-answers/<br>
+#file:20_essential/10_questions/<br>
+#file:10_sample-ec/
+        </div>
+        <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">→ 全 9 問の採点結果が一括出力されます。</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:12px;">ステップ 2：人がレビュー</h3>
+        <p style="font-size:14px; color:var(--text-muted);">AI の採点はドラフトです。各設問の採点結果末尾にある「採点者メモ欄」で人が上書きして確定します。</p>
+        <br>
+        <h3 style="margin-bottom:12px;">採点軸（5 項目）</h3>
+        <p style="font-size:13px; color:var(--text-muted); line-height:1.9;">
+          A. 事実確認（コードを正しく読めているか）<br>
+          B. 問題の言語化（なぜおかしいかを説明できるか）<br>
+          C. 影響範囲の把握<br>
+          D. 改善提案の現実性<br>
+          E. 判断の根拠
+        </p>
+      </div>
+    </div>
+
+    <p style="margin-top:24px; font-size:14px; color:var(--text-muted);">
+      採点サンプル（薄い回答・良い回答それぞれの採点結果）が <code>20_essential/40_evaluation/10_samples/</code> に入っています。
+      採点の流れを事前に確認できます。
+    </p>
+  </div>
+</section>
+
+<!-- ========== 模範解答 ========== -->
+<section id="answers">
+  <div class="container">
+    <h2>模範解答付き</h2>
+    <p class="section-lead">全 9 問の模範解答（<code>20_essential/30_reference-answers/</code>）が付属しています。</p>
+
+    <div class="cards cards-2">
+      <div class="card">
+        <h3 style="margin-bottom:8px;">採点基準が明示されている</h3>
+        <p style="font-size:14px; color:var(--text-muted);">各設問の模範解答には「◎○△× の採点基準」が書かれており、評価の一貫性を保てます。</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:8px;">「正解が一つでない」問いも多い</h3>
+        <p style="font-size:14px; color:var(--text-muted);">上級問題はとくに「正解が一つでない」設計です。模範解答は一例として使い、議論の起点にしてください。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta-strip">
+  <div class="container">
+    <h2>まずリポジトリを確認してみてください</h2>
+    <p>採点プロンプト・模範解答・サンプルすべて含まれています。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/" target="_blank" rel="noopener">GitHub でリポジトリを開く</a>
+      <a class="btn btn-ghost" href="index.html">学習者向けページを見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== Footer ========== -->
+<footer>
+  <div class="container">
+    <p>learn-with-ai / <a href="series.html">シリーズ一覧</a> / <a href="index.html">学習者向け</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

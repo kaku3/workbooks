@@ -1,0 +1,183 @@
+/* ===================================================
+   AI 時代のコードレビュー力試験 — Landing Page CSS
+   =================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d1117;
+  --bg-card:   #161b22;
+  --bg-code:   #1c2128;
+  --border:    #30363d;
+  --text:      #e6edf3;
+  --text-muted:#8b949e;
+  --accent:    #58a6ff;
+  --accent-sub:#3fb950;
+  --warn:      #d29922;
+  --radius:    8px;
+  --max-w:     860px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* ---- Layout ---- */
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+section:last-of-type { border-bottom: none; }
+
+/* ---- Header nav ---- */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(13,17,23,.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
+header .container {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.logo { font-weight: 700; font-size: 15px; color: var(--text); text-decoration: none; }
+.logo span { color: var(--accent); }
+nav { display: flex; gap: 24px; }
+nav a { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+nav a:hover { color: var(--text); }
+
+/* ---- Hero ---- */
+#hero { padding: 100px 0 80px; border-bottom: 1px solid var(--border); }
+.hero-badge {
+  display: inline-block;
+  font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent-sub); background: rgba(63,185,80,.12);
+  border: 1px solid rgba(63,185,80,.3);
+  padding: 4px 12px; border-radius: 20px; margin-bottom: 24px;
+}
+h1 {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800; line-height: 1.2;
+  letter-spacing: -.02em;
+  margin-bottom: 20px;
+}
+h1 em { font-style: normal; color: var(--accent); }
+.hero-sub {
+  font-size: clamp(15px, 2.5vw, 18px);
+  color: var(--text-muted);
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px; border-radius: var(--radius);
+  font-size: 15px; font-weight: 600; text-decoration: none;
+  transition: opacity .2s, transform .15s;
+}
+.btn:hover { opacity: .85; transform: translateY(-1px); }
+.btn-primary { background: var(--accent); color: #000; }
+.btn-secondary {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+/* ---- Section headings ---- */
+h2 {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700; margin-bottom: 12px;
+}
+.section-lead { color: var(--text-muted); margin-bottom: 40px; max-width: 600px; }
+
+/* ---- Cards ---- */
+.cards { display: grid; gap: 16px; }
+.cards-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.cards-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.card-num {
+  font-size: 28px; font-weight: 800; color: var(--accent);
+  line-height: 1; margin-bottom: 12px;
+}
+.card h3 { font-size: 16px; margin-bottom: 8px; }
+.card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+/* ---- Difficulty table ---- */
+.diff-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.diff-table th, .diff-table td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.diff-table th { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+.diff-table tr:last-child td { border-bottom: none; }
+.badge {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 12px; font-weight: 600;
+}
+.badge-b { background: rgba(63,185,80,.15); color: var(--accent-sub); }
+.badge-m { background: rgba(88,166,255,.15); color: var(--accent); }
+.badge-a { background: rgba(210,153,34,.15); color: var(--warn); }
+
+/* ---- Code block ---- */
+.code-block {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 13px; line-height: 1.7;
+  overflow-x: auto;
+  color: #adbac7;
+}
+.code-block .dir { color: var(--accent); }
+.code-block .note { color: var(--text-muted); }
+
+/* ---- FAQ ---- */
+.faq-list { display: grid; gap: 16px; }
+.faq-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+}
+.faq-q { font-weight: 700; margin-bottom: 8px; }
+.faq-a { font-size: 14px; color: var(--text-muted); }
+
+/* ---- CTA strip ---- */
+.cta-strip {
+  text-align: center; padding: 80px 0;
+}
+.cta-strip h2 { margin-bottom: 12px; }
+.cta-strip p { color: var(--text-muted); margin-bottom: 32px; }
+.cta-strip .hero-cta { justify-content: center; }
+
+/* ---- Footer ---- */
+footer {
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  font-size: 13px; color: var(--text-muted);
+  text-align: center;
+}
+footer a { color: var(--text-muted); text-decoration: underline; }
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  header .container { flex-direction: column; align-items: flex-start; }
+  nav { gap: 16px; }
+  .hero-cta { flex-direction: column; }
+  .btn { justify-content: center; }
+}
