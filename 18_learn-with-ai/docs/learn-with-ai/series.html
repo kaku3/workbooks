@@ -1,17 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>シリーズ一覧 | learn-with-ai</title>
   <meta name="description" content="実在感のある EC サイトで設計力を段階的に鍛える学習教材シリーズ。Essential・UI 編・サイトフロー編。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="シリーズ一覧 | learn-with-ai" />
+  <meta property="og:description" content="実在感のある EC サイトで設計力を段階的に鍛える学習教材シリーズ。Essential・UI 編・サイトフロー編。" />
+  <meta property="og:image" content="assets/hero.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="assets/hero.png" />
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
 
-<!-- ========== Header ========== -->
 <header>
-  <div class="container">
+  <div class="hdr-inner">
     <a class="logo" href="index.html">learn<span>-with-ai</span></a>
     <nav>
       <a href="index.html">学習者向け</a>
@@ -20,143 +25,168 @@
   </div>
 </header>
 
-<!-- ========== Hero ========== -->
+<div class="page-wrapper">
+
+<aside class="sidebar">
+  <div class="sidebar-heading">シリーズ</div>
+  <a href="#hero">トップ</a>
+  <a href="#essential">Essential（公開中）</a>
+  <a href="#ui">UI 編（準備中）</a>
+  <a href="#siteflow">サイトフロー編（準備中）</a>
+  <a href="#structure">リポジトリ構成</a>
+  <div class="sidebar-heading" style="margin-top:20px;">移動</div>
+  <a href="index.html">学習者向け</a>
+  <a href="mentor.html">メンター向け</a>
+</aside>
+
+<div class="main-content">
+
 <section id="hero">
-  <div class="container">
-    <div class="hero-badge">シリーズ一覧</div>
-    <h1>実在感のある EC サイトで、<br><em>設計力を段階的に鍛える</em>。</h1>
-    <p class="hero-sub">
-      同じコードベースを舞台に、テーマを変えながら深く学べるシリーズ構成。<br>
-      どこからでも始められます。
-    </p>
-  </div>
-</section>
-
-<!-- ========== Series cards ========== -->
-<section id="series">
-  <div class="container">
-    <h2>共通のコードベース</h2>
-    <p class="section-lead">全シリーズで同じ <code>10_sample-ec</code> を使います。コードベースへの理解が深まるほど、後のシリーズが有利になります。</p>
-
-    <div style="display:grid; gap:24px; margin-top:8px;">
-
-      <!-- Essential -->
-      <div class="card" style="border-color: var(--accent); position:relative;">
-        <div style="position:absolute; top:16px; right:16px;">
-          <span class="badge badge-b" style="background:rgba(88,166,255,.15); color:var(--accent);">公開中</span>
-        </div>
-        <div style="display:flex; align-items:baseline; gap:12px; margin-bottom:16px;">
-          <span style="font-size:13px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:.08em;">Essential</span>
-          <h3 style="font-size:20px;">AI 時代のコードレビュー力試験 — Essential</h3>
-        </div>
-        <p style="color:var(--text-muted); margin-bottom:20px;">仕様書なしで育った EC サイトのコードを読み、設計上の問題を発見・説明・改善提案する。バックエンド・フロントエンドを問わず、エンジニアとして生存するための基礎力を問う 9 問。</p>
-
-        <div style="display:flex; gap:32px; margin-bottom:20px; flex-wrap:wrap;">
-          <div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">問数</div>
-            <div style="font-weight:700;">9問（初・中・上級 各 3 問）</div>
-          </div>
-          <div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">推奨対象</div>
-            <div style="font-weight:700;">実務経験 1〜3 年</div>
-          </div>
-          <div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">テーマ</div>
-            <div style="font-weight:700;">ファイル設計・バグトレース・セキュリティ・リファクタリング設計</div>
-          </div>
-        </div>
-
-        <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <a class="btn btn-primary" href="index.html">詳細を見る</a>
-          <a class="btn btn-secondary" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-        </div>
-      </div>
-
-      <!-- UI 編 -->
-      <div class="card" style="opacity:.7;">
-        <div style="display:flex; align-items:baseline; gap:12px; margin-bottom:16px;">
-          <span style="font-size:13px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:.08em;">UI 編</span>
-          <h3 style="font-size:20px;">（タイトル未定）</h3>
-          <span class="badge" style="background:var(--bg-code); color:var(--text-muted); margin-left:auto;">準備中</span>
-        </div>
-        <p style="color:var(--text-muted); margin-bottom:20px;">EC サイトの UI 改修依頼を題材に、フロントエンドの設計力を問う。コンポーネント設計・CSS 設計・レスポンシブ・アクセシビリティ・フォームバリデーションを扱う予定。</p>
-        <div style="display:flex; gap:32px; flex-wrap:wrap;">
-          <div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">推奨対象</div>
-            <div style="font-weight:700;">フロントエンド志向のエンジニア</div>
-          </div>
-          <div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">テーマ</div>
-            <div style="font-weight:700;">コンポーネント設計・レスポンシブ・アクセシビリティ</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- サイトフロー編 -->
-      <div class="card" style="opacity:.7;">
-        <div style="display:flex; align-items:baseline; gap:12px; margin-bottom:16px;">
-          <span style="font-size:13px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:.08em;">サイトフロー編</span>
-          <h3 style="font-size:20px;">（タイトル未定）</h3>
-          <span class="badge" style="background:var(--bg-code); color:var(--text-muted); margin-left:auto;">準備中</span>
-        </div>
-        <p style="color:var(--text-muted); margin-bottom:20px;">検索機能・カテゴリ機能・ページ遷移の追加依頼を題材に、より広いコンテキストでの設計力を問う。状態管理・ルーティング設計・API 設計・UX フローを扱う予定。</p>
-        <div style="display:flex; gap:32px; flex-wrap:wrap;">
-          <div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">推奨対象</div>
-            <div style="font-weight:700;">中級以上</div>
-          </div>
-          <div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">テーマ</div>
-            <div style="font-weight:700;">状態管理・ルーティング・API 設計・UX フロー</div>
-          </div>
-        </div>
-      </div>
-
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">シリーズ一覧</div>
+      <h1>実在感のある EC サイトで、<br><em>設計力を段階的に鍛える</em>。</h1>
+      <p class="hero-sub">
+        同じコードベースを舞台に、テーマを変えながら深く学べるシリーズ構成。どこからでも始められます。
+      </p>
     </div>
   </div>
 </section>
 
-<!-- ========== Folder structure ========== -->
+<section id="essential">
+  <div class="container">
+    <h2>共通のコードベース</h2>
+    <p class="section-lead">全シリーズで同じ <code style="background:var(--bg-code); padding:1px 6px; border-radius:4px; font-size:13px;">10_sample-ec</code> を使います。コードベースへの理解が深まるほど、後のシリーズが有利になります。</p>
+
+    <div style="border:2px solid var(--accent); border-radius:var(--radius-lg); padding:28px; background:var(--bg-card); box-shadow:var(--shadow-md); position:relative;">
+      <div style="position:absolute; top:20px; right:20px;">
+        <span class="badge" style="background:var(--accent-light); color:var(--accent);">公開中</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap;">
+        <span style="font-size:11px; color:var(--text-light); font-weight:700; text-transform:uppercase; letter-spacing:.08em;">Essential</span>
+        <h3 style="font-size:19px; font-weight:800; margin:0;">AI 時代のコードレビュー力試験 — Essential</h3>
+      </div>
+      <p style="color:var(--text-muted); margin-bottom:20px; font-size:14.5px;">仕様書なしで育った EC サイトのコードを読み、設計上の問題を発見・説明・改善提案する。バックエンド・フロントエンドを問わず、エンジニアとして生存するための基礎力を問う 9 問。</p>
+      <div style="display:flex; gap:32px; margin-bottom:20px; flex-wrap:wrap;">
+        <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">問数</div><div style="font-weight:700; font-size:14px;">9問（初・中・上級 各 3 問）</div></div>
+        <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">推奨対象</div><div style="font-weight:700; font-size:14px;">実務経験 1〜3 年</div></div>
+        <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">テーマ</div><div style="font-weight:700; font-size:14px;">ファイル設計・バグトレース・セキュリティ・リファクタリング</div></div>
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a class="btn btn-primary" href="index.html">詳細を見る</a>
+        <a class="btn btn-secondary" href="https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ui">
+  <div class="container">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+      <h2 style="margin-bottom:0;">UI 編</h2>
+      <span class="badge" style="background:var(--bg-code); color:var(--text-muted);">準備中</span>
+    </div>
+    <p class="section-lead">EC サイトの UI 改修依頼を題材に、フロントエンドの設計力を問う。コンポーネント設計・CSS 設計・レスポンシブ・アクセシビリティ・フォームバリデーションを扱う予定。</p>
+    <div class="cards cards-3">
+      <div class="card"><h3 style="margin-bottom:8px;">推奨対象</h3><p>フロントエンド志向のエンジニア</p></div>
+      <div class="card"><h3 style="margin-bottom:8px;">テーマ</h3><p>コンポーネント設計・レスポンシブ・アクセシビリティ</p></div>
+      <div class="card"><h3 style="margin-bottom:8px;">前提</h3><p>Essential を受けておくとコードベースの理解が早い</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="siteflow">
+  <div class="container">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+      <h2 style="margin-bottom:0;">サイトフロー編</h2>
+      <span class="badge" style="background:var(--bg-code); color:var(--text-muted);">準備中</span>
+    </div>
+    <p class="section-lead">検索機能・カテゴリ機能・ページ遷移の追加依頼を題材に、より広いコンテキストでの設計力を問う。状態管理・ルーティング設計・API 設計・UX フローを扱う予定。</p>
+    <div class="cards cards-3">
+      <div class="card"><h3 style="margin-bottom:8px;">推奨対象</h3><p>中級以上・フルスタック志向のエンジニア</p></div>
+      <div class="card"><h3 style="margin-bottom:8px;">テーマ</h3><p>状態管理・ルーティング・API 設計・UX フロー</p></div>
+      <div class="card"><h3 style="margin-bottom:8px;">前提</h3><p>Essential / UI 編の学習を推奨</p></div>
+    </div>
+  </div>
+</section>
+
 <section id="structure">
   <div class="container">
     <h2>リポジトリ構成</h2>
     <p class="section-lead">各シリーズは独立したフォルダに入っているため、やりたいものだけ取り組めます。</p>
-
-    <div class="code-block">
-<span class="dir">repository/</span>
+<div class="code-block"><span class="dir">repository/</span>
 ├── README.md
-├── <span class="dir">10_sample-ec/</span>       <span class="note"># 全シリーズ共通の EC サイト</span>
-├── <span class="dir">20_essential/</span>        <span class="note"># Essential（公開中）</span>
+├── <span class="dir">10_sample-ec/</span>           <span class="note"># 全シリーズ共通の EC サイト</span>
+├── <span class="dir">20_essential/</span>            <span class="note"># Essential（公開中）</span>
 │   ├── 10_questions/
 │   ├── 20_answers/
 │   ├── 30_reference-answers/
 │   └── 40_evaluation/
-├── <span class="dir">30_ui/</span>               <span class="note"># UI 編（準備中）</span>
-│   └── ...
-└── <span class="dir">40_site-flow/</span>        <span class="note"># サイトフロー編（準備中）</span>
-    └── ...
-    </div>
+├── <span class="dir">30_ui/</span>                   <span class="note"># UI 編（準備中）</span>
+└── <span class="dir">40_site-flow/</span>            <span class="note"># サイトフロー編（準備中）</span></div>
   </div>
 </section>
 
-<!-- ========== CTA ========== -->
 <section class="cta-strip">
   <div class="container">
     <h2>まず Essential から始めましょう</h2>
     <p>全シリーズの土台となる設計の基礎力を固める 9 問。</p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="index.html">Essential の詳細を見る</a>
-      <a class="btn btn-ghost" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-ghost" href="https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
 </section>
 
-<!-- ========== Footer ========== -->
 <footer>
   <div class="container">
     <p>learn-with-ai / <a href="index.html">学習者向け</a> / <a href="mentor.html">メンター向け</a></p>
   </div>
 </footer>
+
+</div>
+</div>
+
+<script>
+(function(){
+  const sLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  if (sLinks.length) {
+    const sEls = [...sLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const sObs = new IntersectionObserver(e => {
+      e.forEach(en => {
+        if (!en.isIntersecting) return;
+        sLinks.forEach(a => a.classList.remove('active'));
+        const l = document.querySelector('.sidebar a[href="#' + en.target.id + '"]');
+        if (l) l.classList.add('active');
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    sEls.forEach(s => sObs.observe(s));
+  }
+  document.querySelectorAll('section h2, .section-lead, .callout, .code-block, .diff-table, .q-section-heading').forEach(el => {
+    if (!el.closest('#hero')) el.classList.add('reveal');
+  });
+  ['.cards', '.cards-2', '.curriculum', '.faq-list'].forEach(sel => {
+    document.querySelectorAll(sel).forEach(parent => {
+      [...parent.children].forEach((child, i) => {
+        child.classList.add('reveal');
+        child.style.transitionDelay = Math.min(i * 0.1, 0.4) + 's';
+      });
+    });
+  });
+  document.querySelectorAll('.cta-strip > p, .cta-strip .hero-cta').forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.transitionDelay = (i * 0.15) + 's';
+  });
+  const rObs = new IntersectionObserver(e => {
+    e.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('is-visible');
+      rObs.unobserve(en.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => rObs.observe(el));
+})();
+</script>
 
 </body>
 </html>

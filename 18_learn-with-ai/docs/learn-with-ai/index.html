@@ -1,49 +1,86 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI 時代のコードレビュー力試験 | 実践型学習教材</title>
-  <meta name="description" content="仕様書なしで育った EC サイトを舞台に、AI 時代のコードレビュー力を試す実践型学習教材。「書ける」より「読める」が、これからの生存戦略。" />
-  <meta property="og:title" content="AI 時代のコードレビュー力試験" />
-  <meta property="og:description" content="仕様書なしで育った EC サイトを舞台に、AI 時代のコードレビュー力を試す実践型学習教材" />
+  <title>AI 時代のコードレビュー力試験 — Essential | learn-with-ai</title>
+  <meta name="description" content="仕様書なしで育った EC サイトを舞台に、AI 時代のコードレビュー力を試す実践型学習教材。" />
   <meta property="og:type" content="website" />
+  <meta property="og:title" content="AI 時代のコードレビュー力試験 — Essential | learn-with-ai" />
+  <meta property="og:description" content="仕様書なしで育った EC サイトを舞台に、AI 時代のコードレビュー力を試す実践型学習教材。" />
+  <meta property="og:image" content="assets/hero.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="assets/hero.png" />
   <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
 
 <!-- ========== Header ========== -->
 <header>
-  <div class="container">
+  <div class="hdr-inner">
     <a class="logo" href="index.html">learn<span>-with-ai</span></a>
     <nav>
       <a href="#why">なぜ必要か</a>
-      <a href="#skills">身につく力</a>
-      <a href="#questions">設問</a>
+      <a href="#curriculum">カリキュラム</a>
       <a href="#faq">FAQ</a>
       <a href="mentor.html">メンター向け</a>
+      <a href="series.html">シリーズ</a>
     </nav>
   </div>
 </header>
 
+<!-- ========== Page wrapper ========== -->
+<div class="page-wrapper">
+
+<!-- ========== Sidebar ========== -->
+<aside class="sidebar">
+  <a href="#hero">トップ</a>
+  <a href="#why">なぜ必要か</a>
+  <a href="#skills">身につく力</a>
+  <a href="#about">問題の舞台</a>
+  <a href="#curriculum">カリキュラム</a>
+  <a href="#faq">FAQ</a>
+
+  <div class="sidebar-heading" style="margin-top:20px;">初級 — Beginner</div>
+  <a href="#q-b01">B-01 <span class="badge-sb badge-sb-b">B</span></a>
+  <a href="#q-b02">B-02 <span class="badge-sb badge-sb-b">B</span></a>
+  <a href="#q-b03">B-03 <span class="badge-sb badge-sb-b">B</span></a>
+
+  <div class="sidebar-heading">中級 — Intermediate</div>
+  <a href="#q-m01">M-01 <span class="badge-sb badge-sb-m">M</span></a>
+  <a href="#q-m02">M-02 <span class="badge-sb badge-sb-m">M</span></a>
+  <a href="#q-m03">M-03 <span class="badge-sb badge-sb-m">M</span></a>
+
+  <div class="sidebar-heading">上級 — Advanced</div>
+  <a href="#q-a01">A-01 <span class="badge-sb badge-sb-a">A</span></a>
+  <a href="#q-a02">A-02 <span class="badge-sb badge-sb-a">A</span></a>
+  <a href="#q-a03">A-03 <span class="badge-sb badge-sb-a">A</span></a>
+
+  <div class="sidebar-heading" style="margin-top:20px;">その他</div>
+  <a href="mentor.html">メンター向け</a>
+  <a href="series.html">シリーズ一覧</a>
+</aside>
+
+<!-- ========== Main content ========== -->
+<div class="main-content">
+
 <!-- ========== Hero ========== -->
 <section id="hero">
-  <div class="container">
-    <div class="hero-badge">実践型学習教材 — Essential</div>
-    <h1>「書ける」より「<em>読める</em>」が、<br>これからの生存戦略。</h1>
-    <p class="hero-sub">
-      AI が書いたコードを、正しく判断できますか。<br>
-      仕様書なしで育った EC サイトを舞台に、コードレビュー力を鍛える全 9 問。
-    </p>
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="https://github.com/" target="_blank" rel="noopener">
-        <!-- GitHub icon SVG -->
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-        </svg>
-        GitHub で試してみる
-      </a>
-      <a class="btn btn-secondary" href="mentor.html">メンターとして使いたい方へ</a>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-badge">実践型学習教材 — Essential</div>
+      <h1>「書ける」より「<em>読める</em>」が、<br>これからの生存戦略。</h1>
+      <p class="hero-sub">
+        AI が書いたコードを、正しく判断できますか。<br>
+        仕様書なしで育った EC サイトを舞台に、コードレビュー力を鍛える全 9 問。
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub で試してみる
+        </a>
+        <a class="btn btn-secondary" href="mentor.html">メンターとして使いたい方へ</a>
+      </div>
     </div>
   </div>
 </section>
@@ -53,7 +90,6 @@
   <div class="container">
     <h2>なぜ今、この学習教材が必要か</h2>
     <p class="section-lead">AI ツールの普及で「コードを書く力」の価値は変わった。今、差がつくのは「AI の出力を判断する力」です。</p>
-
     <div class="cards cards-3">
       <div class="card">
         <div class="card-num">01</div>
@@ -71,13 +107,9 @@
         <p>AI は動くコードを生成するのは得意でも、規模・チーム・将来の変更頻度に合った設計を自律的に選ぶことは苦手。それを判断するのは人間。</p>
       </div>
     </div>
-
-    <div style="margin-top:32px; padding:24px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius);">
-      <p style="font-style:italic; color:var(--text-muted); font-size:15px; line-height:1.8;">
-        「このコードは動く。でも何かおかしい」——<br>
-        その感覚を持ち、根拠をもって説明できるか。<br>
-        この教材が測りたいのは、その力です。
-      </p>
+    <div class="callout">
+      「このコードは動く。でも何かおかしい」——その感覚を持ち、根拠をもって説明できるか。<br>
+      この教材が測りたいのは、その力です。
     </div>
   </div>
 </section>
@@ -87,20 +119,19 @@
   <div class="container">
     <h2>何が身につくか</h2>
     <p class="section-lead">教科書的な知識ではなく、実務で使える 3 つの力を鍛えます。</p>
-
     <div class="cards cards-3">
       <div class="card">
-        <div class="card-num" style="color:var(--accent-sub);">読む</div>
+        <div class="card-num" style="color:#16a34a;">読む</div>
         <h3>コードを読む力</h3>
-        <p>仕様書なしのコードから、問題を自力で発見する。関数名・ファイル名・依存関係を追って「何がおかしいか」に気づく。</p>
+        <p>仕様書なしのコードから問題を自力で発見する。関数名・ファイル名・依存関係を追って「何がおかしいか」に気づく。</p>
       </div>
       <div class="card">
-        <div class="card-num" style="color:var(--accent);">説明する</div>
+        <div class="card-num" style="color:#2563eb;">説明する</div>
         <h3>問題を言語化する力</h3>
         <p>「なんとなく嫌」を「〇〇の理由で△△という問題が起きる」と説明できる。AI の出力を素材に、自分の言葉で判断を重ねる。</p>
       </div>
       <div class="card">
-        <div class="card-num" style="color:var(--warn);">判断する</div>
+        <div class="card-num" style="color:#d97706;">判断する</div>
         <h3>現実的に提案する力</h3>
         <p>理想論ではなく、今あるコードに対して現実的な改善を提案する。コスト・リスク・優先度を含めて考える。</p>
       </div>
@@ -111,72 +142,171 @@
 <!-- ========== About EC site ========== -->
 <section id="about">
   <div class="container">
-    <h2>問題の舞台：<code style="font-size:.9em;">sample-ec</code></h2>
-    <p class="section-lead">複数人が仕様書なしで継ぎ足してきた EC サイト。バグや設計の問題が意図的に「埋め込まれて」います。</p>
-
-    <div class="code-block">
-<span class="dir">10_sample-ec/</span>
-├── app.js          <span class="note"># Express サーバー兼ビジネスロジック（意図的に肥大化）</span>
-├── utils.js        <span class="note"># 何でも屋ファイル（認証・DB・計算・フォーマットが混在）</span>
+    <h2>問題の舞台：<code style="font-size:.85em; background:var(--bg-code); padding:2px 8px; border-radius:6px;">sample-ec</code></h2>
+    <p class="section-lead">複数人が仕様書なしで継ぎ足してきた EC サイト。バグや設計の問題が意図的に埋め込まれています。</p>
+<div class="code-block"><span class="dir">10_sample-ec/</span>
+├── app.js           <span class="note"># Express サーバー兼ビジネスロジック（意図的に肥大化）</span>
+├── utils.js         <span class="note"># 何でも屋ファイル（認証・DB・計算・フォーマットが混在）</span>
 ├── db/
-│   ├── users.json  <span class="note"># type / memberType フィールド不一致</span>
+│   ├── users.json   <span class="note"># type / memberType フィールド不一致</span>
 │   ├── products.json
 │   └── orders.json
 └── public/
-    ├── common.js   <span class="note"># utils.js と関数が重複</span>
-    ├── cart.html   <span class="note"># 消費税計算が app.js と食い違い</span>
-    └── checkout.html <span class="note"># クーポン計算がフロントのみ</span>
-    </div>
-
-    <p style="margin-top:16px; font-size:14px; color:var(--text-muted);">
-      動かしてみることもできます：<code style="background:var(--bg-code); padding:2px 8px; border-radius:4px; font-size:13px;">cd 10_sample-ec &amp;&amp; npm install &amp;&amp; node app.js</code>
-      → <code style="background:var(--bg-code); padding:2px 8px; border-radius:4px; font-size:13px;">http://localhost:3000</code>
+    ├── common.js    <span class="note"># utils.js と関数が重複</span>
+    ├── cart.html    <span class="note"># 消費税計算が app.js と食い違い</span>
+    └── checkout.html <span class="note"># クーポン計算がフロントのみ</span></div>
+    <p style="margin-top:14px; font-size:13.5px; color:var(--text-muted);">
+      動かしてみることもできます：
+      <code style="background:var(--bg-code); padding:2px 8px; border-radius:5px; font-size:12.5px;">cd 10_sample-ec &amp;&amp; npm install &amp;&amp; node app.js</code>
+      → <code style="background:var(--bg-code); padding:2px 8px; border-radius:5px; font-size:12.5px;">http://localhost:3000</code>
     </p>
   </div>
 </section>
 
-<!-- ========== Questions ========== -->
-<section id="questions">
+<!-- ========== Curriculum ========== -->
+<section id="curriculum">
   <div class="container">
-    <h2>設問：全 9 問</h2>
-    <p class="section-lead">難易度は「問題の見つけやすさ」ではなく「判断に必要なコンテキストの広さ」で決めています。</p>
+    <h2>カリキュラム：全 9 問</h2>
+    <p class="section-lead">難易度は「問題の見つけやすさ」ではなく「判断に必要なコンテキストの広さ」で決めています。AI ツールの利用は自由です。</p>
 
-    <table class="diff-table">
-      <thead>
-        <tr>
-          <th>難易度</th>
-          <th>問いのイメージ</th>
-          <th>必要なコンテキスト</th>
-          <th>問数</th>
-        </tr>
-      </thead>
+    <!-- Overview table -->
+    <table class="diff-table" style="margin-bottom:40px;">
+      <thead><tr><th>難易度</th><th>問いのイメージ</th><th>必要なコンテキスト</th><th>問数</th></tr></thead>
       <tbody>
-        <tr>
-          <td><span class="badge badge-b">初級</span></td>
-          <td>この依頼を進める前に気になることはある？どう直す？</td>
-          <td>1〜2 ファイル</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td><span class="badge badge-m">中級</span></td>
-          <td>この不具合の原因はどこ？他に影響が出る箇所は？</td>
-          <td>複数ファイルにまたがる</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td><span class="badge badge-a">上級</span></td>
-          <td>リファクタリングの優先度と進め方を提案して。リスクも含めて</td>
-          <td>プロジェクト全体 ＋ ビジネス判断</td>
-          <td>3</td>
-        </tr>
+        <tr><td><span class="badge badge-b">初級</span></td><td>この依頼を進める前に気になることはある？どう直す？</td><td>1〜2 ファイル</td><td>3</td></tr>
+        <tr><td><span class="badge badge-m">中級</span></td><td>この不具合の原因はどこ？他に影響が出る箇所は？</td><td>複数ファイルにまたがる</td><td>3</td></tr>
+        <tr><td><span class="badge badge-a">上級</span></td><td>リファクタリングの優先度と進め方を提案して。リスクも含めて</td><td>プロジェクト全体＋ビジネス判断</td><td>3</td></tr>
       </tbody>
     </table>
 
-    <p style="margin-top:24px; font-size:14px; color:var(--text-muted);">
-      <strong style="color:var(--text);">AI ツールの利用は自由です。</strong>
-      ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。<br>
-      問いは「AI に丸投げしてもプロジェクト全体のコンテキストがないと答えられない」設計になっています。
-    </p>
+    <!-- Beginner -->
+    <div class="q-section-heading">
+      <span class="badge badge-b">初級 Beginner</span>
+      <div class="q-section-line"></div>
+      <h3>1〜2ファイルのコードを読んで判断する</h3>
+    </div>
+    <div class="curriculum">
+
+      <div class="q-card" id="q-b01">
+        <div class="q-num">B-01</div>
+        <div class="q-body">
+          <h4>リファクタリングすべきか、否か、それが問題だ</h4>
+          <p class="q-scenario">「メール送信処理を追加したい。共通処理は utils.js に置くルールだから、そこに書いておいて」</p>
+          <ul class="q-points">
+            <li>単一責任原則</li><li>ファイル設計</li><li>レビューコメントの伝え方</li><li>チームの習慣・文化</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="q-card" id="q-b02">
+        <div class="q-num">B-02</div>
+        <div class="q-body">
+          <h4>直らない金額表示</h4>
+          <p class="q-scenario">「金額表示を変えたい。¥ の前後にスペースを入れてほしい。utils.js あたりに実装してあると思うから探してみて」</p>
+          <ul class="q-points">
+            <li>関数の重複</li><li>修正漏れのリスク</li><li>DRY原則</li><li>重複が生まれる原因</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="q-card" id="q-b03">
+        <div class="q-num">B-03</div>
+        <div class="q-body">
+          <h4>3画面で税率がバラバラ</h4>
+          <p class="q-scenario">「カート画面・チェックアウト画面・注文確定後の金額が微妙にズレていると言われた。調べてほしい」</p>
+          <ul class="q-points">
+            <li>バグ特定</li><li>税率計算の不一致</li><li>仕様変更への耐性</li><li>数値計算の注意点</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Intermediate -->
+    <div class="q-section-heading">
+      <span class="badge badge-m">中級 Intermediate</span>
+      <div class="q-section-line"></div>
+      <h3>複数ファイルにまたがる原因調査と影響範囲の特定</h3>
+    </div>
+    <div class="curriculum">
+
+      <div class="q-card" id="q-m01">
+        <div class="q-num">M-01</div>
+        <div class="q-body">
+          <h4>プレミアム会員なのに、割引がゼロ</h4>
+          <p class="q-scenario">「佐藤花子さんからクレームが来た。プレミアム会員なのにカートで割引が表示されない」</p>
+          <ul class="q-points">
+            <li>DB スキーマの不整合</li><li>type / memberType 二重管理</li><li>影響範囲調査</li><li>最小影響の修正</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="q-card" id="q-m02">
+        <div class="q-num">M-02</div>
+        <div class="q-body">
+          <h4>ときどき返ってくる 401</h4>
+          <p class="q-scenario">「ログインしても一部の API で 401 が返ってくることがある。トークン周りを確認してほしい」</p>
+          <ul class="q-points">
+            <li>セッション vs JWT</li><li>認証の統一</li><li>技術的負債の原因</li><li>移行計画</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="q-card" id="q-m03">
+        <div class="q-num">M-03</div>
+        <div class="q-body">
+          <h4>注文成功なのに、在庫そのまま</h4>
+          <p class="q-scenario">「注文は通るのに在庫が減っていないと言われた。確認してほしい」</p>
+          <ul class="q-points">
+            <li>呼び出し漏れの特定</li><li>非同期処理の落とし穴</li><li>トランザクション設計</li><li>根本原因の言語化</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Advanced -->
+    <div class="q-section-heading">
+      <span class="badge badge-a">上級 Advanced</span>
+      <div class="q-section-line"></div>
+      <h3>プロジェクト全体＋ビジネス判断が必要な設計問題</h3>
+    </div>
+    <div class="curriculum">
+
+      <div class="q-card" id="q-a01">
+        <div class="q-num">A-01</div>
+        <div class="q-body">
+          <h4>その実装、進めていいですか？</h4>
+          <p class="q-scenario">「管理者向けに注文キャンセル機能を追加したい。GET /api/admin/orders を参考に実装してほしい」</p>
+          <ul class="q-points">
+            <li>セキュリティレポート</li><li>リスク評価</li><li>実装前の判断</li><li>優先度の説明</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="q-card" id="q-a02">
+        <div class="q-num">A-02</div>
+        <div class="q-body">
+          <h4>クーポンのバグを直したら、もっと大きな問題が見えてきた</h4>
+          <p class="q-scenario">「クーポン機能にバグがあると言われた。クーポンコードを入れても最終的な金額が変わっていないらしい」</p>
+          <ul class="q-points">
+            <li>フロント計算の危険性</li><li>サーバー側検証</li><li>設計方針の比較</li><li>影響ファイルの全列挙</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="q-card" id="q-a03">
+        <div class="q-num">A-03</div>
+        <div class="q-body">
+          <h4>機能を追加する前に、設計の話をしましょう</h4>
+          <p class="q-scenario">「注文キャンセル・ポイント・在庫アラート機能を追加したい。まず設計を整理してほしい」</p>
+          <ul class="q-points">
+            <li>ファイル分割設計</li><li>リファクタリング順序</li><li>無停止での移行</li><li>readDB/writeDB の整理方針</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -184,11 +314,10 @@
 <section id="faq">
   <div class="container">
     <h2>よくある質問</h2>
-
     <div class="faq-list">
       <div class="faq-item">
         <p class="faq-q">コードを動かせる環境がないと受けられませんか？</p>
-        <p class="faq-a">いいえ。コードを読むだけでも回答できる問いです。ただし動かして確認すると理解が深まります（Node.js があれば動きます）。</p>
+        <p class="faq-a">いいえ。コードを読むだけでも回答できます。ただし動かして確認すると理解が深まります（Node.js があれば動きます）。</p>
       </div>
       <div class="faq-item">
         <p class="faq-q">全問やらないといけませんか？</p>
@@ -196,7 +325,7 @@
       </div>
       <div class="faq-item">
         <p class="faq-q">採点はどうするのですか？</p>
-        <p class="faq-a">採点プロンプト（<code>20_essential/40_evaluation/</code>）が付属しています。Copilot に 4 フォルダを添付するだけで全設問を一括採点できます。採点結果はドラフトで、人がレビューして確定します。</p>
+        <p class="faq-a">採点プロンプト（<code style="background:var(--bg-code); padding:1px 6px; border-radius:4px; font-size:12px;">20_essential/40_evaluation/</code>）が付属しています。Copilot に 4 フォルダを添付するだけで全設問を一括採点できます。採点結果はドラフトで、人がレビューして確定します。</p>
       </div>
       <div class="faq-item">
         <p class="faq-q">AI を使っていいですか？</p>
@@ -214,9 +343,9 @@
 <section class="cta-strip">
   <div class="container">
     <h2>さあ、試してみましょう</h2>
-    <p>リポジトリを clone して、<code>10_sample-ec</code> を読むところから始めてください。</p>
+    <p>リポジトリを clone して、<code style="background:rgba(255,255,255,.7); padding:1px 8px; border-radius:5px; font-size:13px;">10_sample-ec</code> を読むところから始めてください。</p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="https://github.com/" target="_blank" rel="noopener">GitHub でリポジトリを開く</a>
+      <a class="btn btn-primary" href="https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai" target="_blank" rel="noopener">GitHub でリポジトリを開く</a>
       <a class="btn btn-ghost" href="mentor.html">メンター・採用担当者の方へ</a>
     </div>
   </div>
@@ -228,6 +357,53 @@
     <p>learn-with-ai / <a href="series.html">シリーズ一覧</a> / <a href="mentor.html">メンター向け</a></p>
   </div>
 </footer>
+
+</div><!-- .main-content -->
+</div><!-- .page-wrapper -->
+
+<script>
+(function(){
+  // Sidebar active
+  const sLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+  if (sLinks.length) {
+    const sEls = [...sLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const sObs = new IntersectionObserver(e => {
+      e.forEach(en => {
+        if (!en.isIntersecting) return;
+        sLinks.forEach(a => a.classList.remove('active'));
+        const l = document.querySelector('.sidebar a[href="#' + en.target.id + '"]');
+        if (l) l.classList.add('active');
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    sEls.forEach(s => sObs.observe(s));
+  }
+  // Scroll reveal – auto-tag
+  document.querySelectorAll('section h2, .section-lead, .callout, .code-block, .diff-table, .q-section-heading').forEach(el => {
+    if (!el.closest('#hero')) el.classList.add('reveal');
+  });
+  ['.cards', '.cards-2', '.curriculum', '.faq-list'].forEach(sel => {
+    document.querySelectorAll(sel).forEach(parent => {
+      [...parent.children].forEach((child, i) => {
+        child.classList.add('reveal');
+        child.style.transitionDelay = Math.min(i * 0.1, 0.4) + 's';
+      });
+    });
+  });
+  document.querySelectorAll('.cta-strip > p, .cta-strip .hero-cta').forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.transitionDelay = (i * 0.15) + 's';
+  });
+  // Scroll reveal – observe
+  const rObs = new IntersectionObserver(e => {
+    e.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('is-visible');
+      rObs.unobserve(en.target);
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => rObs.observe(el));
+})();
+</script>
 
 </body>
 </html>
