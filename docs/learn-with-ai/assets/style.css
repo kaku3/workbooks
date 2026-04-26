@@ -124,6 +124,18 @@ header .hdr-inner {
 nav { display: flex; gap: 20px; align-items: center; }
 nav a { color: var(--text-muted); text-decoration: none; font-size: 13.5px; font-weight: 500; transition: color .2s; }
 nav a:hover { color: var(--text); }
+.nav-toggle {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0;
+}
+.nav-toggle span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: transform .25s, opacity .25s;
+}
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ============================================================
    Hero
@@ -406,7 +418,16 @@ footer a:hover { color: var(--text); }
   .q-section-heading .badge { font-size: 32px; }
 }
 @media (max-width: 600px) {
-  nav { gap: 14px; }
+  .nav-toggle { display: flex; }
+  nav {
+    display: none; position: absolute; top: 60px; left: 0; right: 0;
+    background: rgba(255,255,255,.97); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column; gap: 0; padding: 8px 20px 12px;
+  }
+  nav.open { display: flex; }
+  nav a { padding: 11px 4px; border-bottom: 1px solid var(--border); font-size: 14px; width: 100%; }
+  nav a:last-child { border-bottom: none; }
   .hero-cta { flex-direction: column; }
   .btn { justify-content: center; }
   section { padding: 48px 0; }

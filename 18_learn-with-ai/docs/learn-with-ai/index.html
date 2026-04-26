@@ -20,13 +20,16 @@
 <header>
   <div class="hdr-inner">
     <a class="logo" href="index.html">learn<span>-with-ai</span></a>
-    <nav>
+    <nav id="hdr-nav">
       <a href="#why">なぜ必要か</a>
       <a href="#curriculum">カリキュラム</a>
       <a href="#faq">FAQ</a>
       <a href="mentor.html">メンター向け</a>
       <a href="series.html">シリーズ</a>
     </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="hdr-nav">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
 
@@ -354,7 +357,7 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
 <!-- ========== Footer ========== -->
 <footer>
   <div class="container">
-    <p>learn-with-ai / <a href="series.html">シリーズ一覧</a> / <a href="mentor.html">メンター向け</a></p>
+    <p>learn-with-ai / <a href="series.html">シリーズ一覧</a> / <a href="mentor.html">メンター向け</a> / <a href="https://kaku3.github.io/workbooks/think-lab-from-buggy-code/index.html" target="_blank" rel="noopener">ThinkLab</a></p>
   </div>
 </footer>
 
@@ -363,6 +366,23 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
 
 <script>
 (function(){
+  // Hamburger menu
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('hdr-nav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+    });
+    nav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        nav.classList.remove('open');
+        toggle.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
   // Sidebar active
   const sLinks = document.querySelectorAll('.sidebar a[href^="#"]');
   if (sLinks.length) {

@@ -19,10 +19,13 @@
 <header>
   <div class="hdr-inner">
     <a class="logo" href="index.html">learn<span>-with-ai</span></a>
-    <nav>
+    <nav id="hdr-nav">
       <a href="index.html">学習者向け</a>
       <a href="mentor.html">メンター向け</a>
     </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="hdr-nav">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
 
@@ -128,6 +131,27 @@
   </div>
 </section>
 
+<section id="related">
+  <div class="container">
+    <h2>関連教材</h2>
+    <p class="section-lead">同じ「考える力」を鍵に、別の切り口からアプローチする学習教材です。</p>
+    <div class="cards cards-2">
+      <div class="card">
+        <div class="card-num" style="color:var(--accent);">ThinkLab</div>
+        <h3>バグコードで学ぶ論理的思考</h3>
+        <p>バグを持つコードを読み、「なぜおかしいか」を自分の言葉で説明する学習教材。コードを最小単位に「読んで考える」演習に適しています。</p>
+        <div style="margin-top:16px;">
+          <a class="btn btn-secondary" href="https://kaku3.github.io/workbooks/think-lab-from-buggy-code/index.html" target="_blank" rel="noopener">教材を見る</a>
+        </div>
+      </div>
+      <div class="card" style="background:var(--bg); border-style:dashed; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:var(--text-muted); gap:8px; min-height:160px;">
+        <div style="font-size:28px; opacity:.3;">+</div>
+        <p style="font-size:13.5px; margin:0;">今後追加予定</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="cta-strip">
   <div class="container">
     <h2>まず Essential から始めましょう</h2>
@@ -141,7 +165,7 @@
 
 <footer>
   <div class="container">
-    <p>learn-with-ai / <a href="index.html">学習者向け</a> / <a href="mentor.html">メンター向け</a></p>
+    <p>learn-with-ai / <a href="index.html">学習者向け</a> / <a href="mentor.html">メンター向け</a> / <a href="https://kaku3.github.io/workbooks/think-lab-from-buggy-code/index.html" target="_blank" rel="noopener">ThinkLab</a></p>
   </div>
 </footer>
 
@@ -150,6 +174,23 @@
 
 <script>
 (function(){
+  // Hamburger menu
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('hdr-nav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+    });
+    nav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        nav.classList.remove('open');
+        toggle.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
   const sLinks = document.querySelectorAll('.sidebar a[href^="#"]');
   if (sLinks.length) {
     const sEls = [...sLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
