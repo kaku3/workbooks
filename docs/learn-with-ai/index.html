@@ -45,20 +45,26 @@
   <a href="#curriculum">カリキュラム</a>
   <a href="#faq">FAQ</a>
 
-  <div class="sidebar-heading" style="margin-top:20px;">初級 — Beginner</div>
-  <a href="#q-b01">B-01 <span class="badge-sb badge-sb-b">B</span></a>
-  <a href="#q-b02">B-02 <span class="badge-sb badge-sb-b">B</span></a>
-  <a href="#q-b03">B-03 <span class="badge-sb badge-sb-b">B</span></a>
+  <div class="sidebar-heading sb-g sb-g-essential" style="margin-top:20px;">初級 — Beginner</div>
+  <a href="#q-b01" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-b">B-01</span><span class="sb-text">リファクタリングすべきか</span></a>
+  <a href="#q-b02" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-b">B-02</span><span class="sb-text">直らない金額表示</span></a>
+  <a href="#q-b03" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-b">B-03</span><span class="sb-text">3画面で税率がバラバラ</span></a>
 
-  <div class="sidebar-heading">中級 — Intermediate</div>
-  <a href="#q-m01">M-01 <span class="badge-sb badge-sb-m">M</span></a>
-  <a href="#q-m02">M-02 <span class="badge-sb badge-sb-m">M</span></a>
-  <a href="#q-m03">M-03 <span class="badge-sb badge-sb-m">M</span></a>
+  <div class="sidebar-heading sb-g sb-g-essential">中級 — Intermediate</div>
+  <a href="#q-m01" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-m">M-01</span><span class="sb-text">プレミアム割引がゼロ</span></a>
+  <a href="#q-m02" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-m">M-02</span><span class="sb-text">ときどき返ってくる 401</span></a>
+  <a href="#q-m03" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-m">M-03</span><span class="sb-text">注文成功なのに在庫そのまま</span></a>
 
-  <div class="sidebar-heading">上級 — Advanced</div>
-  <a href="#q-a01">A-01 <span class="badge-sb badge-sb-a">A</span></a>
-  <a href="#q-a02">A-02 <span class="badge-sb badge-sb-a">A</span></a>
-  <a href="#q-a03">A-03 <span class="badge-sb badge-sb-a">A</span></a>
+  <div class="sidebar-heading sb-g sb-g-essential">上級 — Advanced</div>
+  <a href="#q-a01" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-a">A-01</span><span class="sb-text">その実装、進めていいですか？</span></a>
+  <a href="#q-a02" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-a">A-02</span><span class="sb-text">クーポンを直したら大問題が</span></a>
+  <a href="#q-a03" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-a">A-03</span><span class="sb-text">機能追加の前に設計の話を</span></a>
+
+  <div class="sidebar-heading sb-g sb-g-documentation" style="display:none">設計ドキュメント編</div>
+  <a href="#q-s01" class="sb-g sb-g-documentation" style="display:none"><span class="badge-sb badge-sb-d">S-01</span><span class="sb-text">AIに設計を伝えてみよう</span></a>
+  <a href="#q-s02" class="sb-g sb-g-documentation" style="display:none"><span class="badge-sb badge-sb-d">S-02</span><span class="sb-text">図を描いてみよう</span></a>
+  <a href="#q-s03" class="sb-g sb-g-documentation" style="display:none"><span class="badge-sb badge-sb-d">S-03</span><span class="sb-text">設計が変わったとき</span></a>
+  <a href="#q-s04" class="sb-g sb-g-documentation" style="display:none"><span class="badge-sb badge-sb-d">S-04</span><span class="sb-text">AIに設計の続きを頼む</span></a>
 
   <div class="sidebar-heading" style="margin-top:20px;">その他</div>
   <a href="mentor.html">メンター向け</a>
@@ -169,8 +175,15 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
 <!-- ========== Curriculum ========== -->
 <section id="curriculum">
   <div class="container">
-    <h2>カリキュラム：初級〜上級 全 9 問</h2>
-    <p class="section-lead">実際に AI を使いながら障害を調査・修正する問題を用意しています。<br>答えだけでなく「そのとき何を考えたか」を出題としています。</p>
+    <h2>カリキュラム</h2>
+    <p class="section-lead">AI を活用しながら取り組む問題を用意しています。<br>答えだけでなく「そのとき何を考えたか」を出題としています。</p>
+
+    <div class="series-tabs">
+      <button class="series-tab active" data-panel="essential">Essential <span class="badge badge-m" style="font-size:10px; vertical-align:middle; padding:1px 7px;">9問</span></button>
+      <button class="series-tab" data-panel="documentation">設計ドキュメント編 <span class="badge badge-d" style="font-size:10px; vertical-align:middle; padding:1px 7px;">4問</span></button>
+    </div>
+
+    <div class="series-panel" data-panel="essential">
 
     <!-- Overview table -->
     <table class="diff-table" style="margin-bottom:40px;">
@@ -310,6 +323,62 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
       </div>
 
     </div>
+    </div><!-- /series-panel essential -->
+
+    <div class="series-panel" data-panel="documentation" hidden>
+      <div class="q-section-heading">
+        <span class="badge badge-d">設計ドキュメント編</span>
+        <h3>AI と一緒に設計し、図で残し、引き継ぐ</h3>
+      </div>
+      <div class="curriculum">
+
+        <div class="q-card" id="q-s01">
+          <div class="q-num">S-01</div>
+          <div class="q-body">
+            <h4>AIに設計を伝えてみよう</h4>
+            <p class="q-scenario">「注文キャンセル機能を追加したい」——AI に頼みながら、設計を文章で説明する限界を体験する</p>
+            <ul class="q-points">
+              <li>設計の文章化</li><li>ビジネスルールの伝達</li><li>引き継ぎ資料の考え方</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="q-card" id="q-s02">
+          <div class="q-num">S-02</div>
+          <div class="q-body">
+            <h4>図を描いてみよう</h4>
+            <p class="q-scenario">PlantUML でシーケンス図を作り、AI が生成した図と実際のコードのズレを検証する</p>
+            <ul class="q-points">
+              <li>PlantUML</li><li>図とコードの照合</li><li>設計の可視化</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="q-card" id="q-s03">
+          <div class="q-num">S-03</div>
+          <div class="q-body">
+            <h4>設計が変わったとき、図はどうなるか</h4>
+            <p class="q-scenario">キャンセル履歴機能の追加要件を受けて、コードと図を同期させながら「設計ドキュメントの維持コスト」を実感する</p>
+            <ul class="q-points">
+              <li>図の更新</li><li>コードと図の同期</li><li>設計の矛盾の発見</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="q-card" id="q-s04">
+          <div class="q-num">S-04</div>
+          <div class="q-body">
+            <h4>設計をAIに渡して続きを頼んでみよう</h4>
+            <p class="q-scenario">S-03 で作った図とともにポイント機能追加を AI に依頼。「何を渡せば AI に伝わるか」を整理する</p>
+            <ul class="q-points">
+              <li>AI への引き継ぎ</li><li>図+コード+文章の役割</li><li>ドキュメントを残す意味</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /series-panel documentation -->
+
   </div>
 </section>
 
@@ -422,6 +491,37 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
     });
   }, { threshold: 0.08 });
   document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => rObs.observe(el));
+  // Series tab switching
+  const seriesTabs = document.querySelectorAll('.series-tab');
+  const seriesPanels = document.querySelectorAll('.series-panel');
+  function activateTab(targetPanel, updateHash) {
+    seriesTabs.forEach(t => t.classList.toggle('active', t.dataset.panel === targetPanel));
+    seriesPanels.forEach(p => {
+      p.hidden = p.dataset.panel !== targetPanel;
+      if (!p.hidden) {
+        p.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => el.classList.add('is-visible'));
+      }
+    });
+    document.querySelectorAll('.sb-g').forEach(el => {
+      el.style.display = el.classList.contains('sb-g-' + targetPanel) ? '' : 'none';
+    });
+    if (updateHash) {
+      const params = new URLSearchParams(window.location.search);
+      params.set('tab', targetPanel);
+      history.replaceState(null, '', '?' + params.toString() + '#curriculum');
+    }
+  }
+  if (seriesTabs.length) {
+    // Read tab from query string on load
+    const initPanel = new URLSearchParams(window.location.search).get('tab');
+    if (initPanel) activateTab(initPanel, false);
+    seriesTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        activateTab(tab.dataset.panel, true);
+        window.scrollTo({ top: document.getElementById('curriculum').offsetTop - 80, behavior: 'smooth' });
+      });
+    });
+  }
 })();
 </script>
 

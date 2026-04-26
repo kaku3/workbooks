@@ -19,10 +19,12 @@
   --accent-sub-light:#f0fdf4;
   --warn:            #d97706;
   --warn-light:      #fffbeb;
+  --accent-doc:      #7c3aed;
+  --accent-doc-light:#f5f3ff;
   --radius:          10px;
   --radius-lg:       16px;
   --max-w:           1100px;
-  --sidebar-w:       220px;
+  --sidebar-w:       270px;
   --shadow-sm:       0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
   --shadow-md:       0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
 }
@@ -75,12 +77,14 @@ body {
   background: var(--accent-light); font-weight: 600;
 }
 .badge-sb {
-  font-size: 10px; font-weight: 700; padding: 1px 6px;
-  border-radius: 8px; margin-left: auto; flex-shrink: 0;
+  font-size: 10px; font-weight: 700; padding: 2px 7px;
+  border-radius: 8px; flex-shrink: 0;
 }
+.sb-text { font-size: 11px; line-height: 1.3; flex: 1; }
 .badge-sb-b { background: var(--accent-sub-light); color: var(--accent-sub); }
 .badge-sb-m { background: var(--accent-light); color: var(--accent); }
 .badge-sb-a { background: var(--warn-light); color: var(--warn); }
+.badge-sb-d { background: var(--accent-doc-light); color: var(--accent-doc); }
 
 .main-content { flex: 1; margin-left: var(--sidebar-w); min-width: 0; }
 .container { max-width: 960px; margin: 0 auto; padding: 0 32px; }
@@ -320,6 +324,37 @@ section:not(.cta-strip) .container > h2::before {
 .badge-b { background: var(--accent-sub-light); color: var(--accent-sub); }
 .badge-m { background: var(--accent-light); color: var(--accent); }
 .badge-a { background: var(--warn-light); color: var(--warn); }
+.badge-d { background: var(--accent-doc-light); color: var(--accent-doc); }
+
+/* ============================================================
+   Documentation accent & series tabs
+   ============================================================ */
+.q-section-heading:has(.badge-d) {
+  background: linear-gradient(135deg, rgba(124,58,237,.08) 0%, rgba(124,58,237,.02) 65%);
+  border-color: rgba(124,58,237,.18);
+  border-left-color: var(--accent-doc);
+}
+.q-section-heading:has(.badge-d) .badge { color: var(--accent-doc); }
+.series-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--border);
+}
+.series-tab {
+  padding: 10px 20px;
+  font-size: 13.5px; font-weight: 600;
+  border: none; border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  background: none; color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: color .18s, border-color .18s;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.series-tab:hover { color: var(--text); background: var(--bg); }
+.series-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.series-panel[hidden] { display: none; }
 
 /* ============================================================
    Code block
