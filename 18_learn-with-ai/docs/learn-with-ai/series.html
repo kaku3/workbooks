@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>シリーズ一覧 | learn-with-ai</title>
-  <meta name="description" content="実在感のある EC サイトで設計力を段階的に鍛える学習教材シリーズ。Essential・UI 編・サイトフロー編。" />
+  <meta name="description" content="実在感のある EC サイトで設計力を段階的に鍛える学習教材シリーズ。Essential・ドキュメンテーション編・UI 編・サイトフロー編。" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="シリーズ一覧 | learn-with-ai" />
-  <meta property="og:description" content="実在感のある EC サイトで設計力を段階的に鍛える学習教材シリーズ。Essential・UI 編・サイトフロー編。" />
+  <meta property="og:description" content="実在感のある EC サイトで設計力を段階的に鍛える学習教材シリーズ。Essential・ドキュメンテーション編・UI 編・サイトフロー編。" />
   <meta property="og:image" content="https://kaku3.github.io/workbooks/learn-with-ai/assets/hero.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://kaku3.github.io/workbooks/learn-with-ai/assets/hero.png" />
@@ -35,8 +35,8 @@
   <div class="sidebar-heading">シリーズ</div>
   <a href="#hero">トップ</a>
   <a href="#essential">Essential（公開中）</a>
-  <a href="#ui">UI 編（準備中）</a>
-  <a href="#siteflow">サイトフロー編（準備中）</a>
+  <a href="#documentation">ドキュメンテーション編（公開中）</a>
+  <a href="#ui-siteflow">UI・サイトフロー編（更新予定）</a>
   <a href="#structure">リポジトリ構成</a>
   <div class="sidebar-heading" style="margin-top:20px;">移動</div>
   <a href="index.html">学習者向け</a>
@@ -70,7 +70,7 @@
         <span style="font-size:11px; color:var(--text-light); font-weight:700; text-transform:uppercase; letter-spacing:.08em;">Essential</span>
         <h3 style="font-size:19px; font-weight:800; margin:0;">AI 時代のコードレビュー力試験 — Essential</h3>
       </div>
-      <p style="color:var(--text-muted); margin-bottom:20px; font-size:14.5px;">仕様書なしで育った EC サイトのコードを読み、設計上の問題を発見・説明・改善提案する。バックエンド・フロントエンドを問わず、エンジニアとして生存するための基礎力を問う 9 問。</p>
+      <p style="color:var(--text-muted); margin-bottom:20px; font-size:14.5px;">AI が一瞬で作った問題だらけの EC サイトのコードを読み、設計上の問題を発見・説明・改善提案する。バックエンド・フロントエンドを問わず、エンジニアとして生存するための基礎力を問う 9 問。</p>
       <div style="display:flex; gap:32px; margin-bottom:20px; flex-wrap:wrap;">
         <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">問数</div><div style="font-weight:700; font-size:14px;">9問（初・中・上級 各 3 問）</div></div>
         <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">推奨対象</div><div style="font-weight:700; font-size:14px;">実務経験 1〜3 年</div></div>
@@ -78,38 +78,53 @@
       </div>
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
         <a class="btn btn-primary" href="index.html">詳細を見る</a>
-        <a class="btn btn-secondary" href="https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-secondary" href="https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai/20_essential" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="ui">
+<section id="documentation">
   <div class="container">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-      <h2 style="margin-bottom:0;">UI 編</h2>
-      <span class="badge" style="background:var(--bg-code); color:var(--text-muted);">準備中</span>
-    </div>
-    <p class="section-lead">EC サイトの UI 改修依頼を題材に、フロントエンドの設計力を問う。コンポーネント設計・CSS 設計・レスポンシブ・アクセシビリティ・フォームバリデーションを扱う予定。</p>
-    <div class="cards cards-3">
-      <div class="card"><h3 style="margin-bottom:8px;">推奨対象</h3><p>フロントエンド志向のエンジニア</p></div>
-      <div class="card"><h3 style="margin-bottom:8px;">テーマ</h3><p>コンポーネント設計・レスポンシブ・アクセシビリティ</p></div>
-      <div class="card"><h3 style="margin-bottom:8px;">前提</h3><p>Essential を受けておくとコードベースの理解が早い</p></div>
+    <div style="border:2px solid var(--accent); border-radius:var(--radius-lg); padding:28px; background:var(--bg-card); box-shadow:var(--shadow-md); position:relative;">
+      <div style="position:absolute; top:20px; right:20px;">
+        <span class="badge" style="background:var(--accent-light); color:var(--accent);">公開中</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap;">
+        <span style="font-size:11px; color:var(--text-light); font-weight:700; text-transform:uppercase; letter-spacing:.08em;">Documentation</span>
+        <h3 style="font-size:19px; font-weight:800; margin:0;">設計ドキュメント編</h3>
+      </div>
+      <p style="color:var(--text-muted); margin-bottom:20px; font-size:14.5px;">注文キャンセル機能の実装を通じて、AI との設計コミュニケーションを学ぶ。図を描いて設計を可視化し、変更・引き継ぎを経て「設計ドキュメントを残す意味」を体験する 4 問。</p>
+      <div style="display:flex; gap:32px; margin-bottom:20px; flex-wrap:wrap;">
+        <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">問数</div><div style="font-weight:700; font-size:14px;">4問（S-01〜S-04）</div></div>
+        <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">推奨対象</div><div style="font-weight:700; font-size:14px;">実務経験 1〜3 年</div></div>
+        <div><div style="font-size:11px; color:var(--text-light); margin-bottom:4px; text-transform:uppercase; letter-spacing:.06em;">テーマ</div><div style="font-weight:700; font-size:14px;">PlantUML・設計の可視化・AIへの引き継ぎ</div></div>
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a class="btn btn-secondary" href="https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai/30_documentation" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="siteflow">
+<section id="ui-siteflow">
   <div class="container">
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-      <h2 style="margin-bottom:0;">サイトフロー編</h2>
-      <span class="badge" style="background:var(--bg-code); color:var(--text-muted);">準備中</span>
+      <h2 style="margin-bottom:0;">UI 編・サイトフロー編</h2>
+      <span class="badge" style="background:var(--bg-code); color:var(--text-muted);">更新予定</span>
     </div>
-    <p class="section-lead">検索機能・カテゴリ機能・ページ遷移の追加依頼を題材に、より広いコンテキストでの設計力を問う。状態管理・ルーティング設計・API 設計・UX フローを扱う予定。</p>
-    <div class="cards cards-3">
-      <div class="card"><h3 style="margin-bottom:8px;">推奨対象</h3><p>中級以上・フルスタック志向のエンジニア</p></div>
-      <div class="card"><h3 style="margin-bottom:8px;">テーマ</h3><p>状態管理・ルーティング・API 設計・UX フロー</p></div>
-      <div class="card"><h3 style="margin-bottom:8px;">前提</h3><p>Essential / UI 編の学習を推奨</p></div>
+    <p class="section-lead">UI 編と サイトフロー編はセットで公開予定。EC サイトの UI 改修・ページ遷移・状態管理を題材に、フロントエンドからフルスタックまでの設計力を問う。</p>
+    <div class="cards cards-2">
+      <div class="card">
+        <h3 style="margin-bottom:8px;">UI 編（予定）</h3>
+        <p style="color:var(--text-muted); font-size:14px;">コンポーネント設計・CSS 設計・レスポンシブ・アクセシビリティ・フォームバリデーションを扱う予定。</p>
+        <div style="margin-top:12px; font-size:12px; color:var(--text-light);">推奨対象：フロントエンド志向のエンジニア</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:8px;">サイトフロー編（予定）</h3>
+        <p style="color:var(--text-muted); font-size:14px;">状態管理・ルーティング設計・API 設計・UX フローを扱う予定。</p>
+        <div style="margin-top:12px; font-size:12px; color:var(--text-light);">推奨対象：中級以上・フルスタック志向のエンジニア</div>
+      </div>
     </div>
   </div>
 </section>
@@ -126,8 +141,13 @@
 │   ├── 20_answers/
 │   ├── 30_reference-answers/
 │   └── 40_evaluation/
-├── <span class="dir">30_ui/</span>                   <span class="note"># UI 編（準備中）</span>
-└── <span class="dir">40_site-flow/</span>            <span class="note"># サイトフロー編（準備中）</span></div>
+├── <span class="dir">30_documentation/</span>        <span class="note"># ドキュメンテーション編（公開中）</span>
+│   ├── 10_questions/
+│   ├── 20_answers/
+│   ├── 30_reference-answers/
+│   └── 40_evaluation/
+├── <span class="dir">40_ui/</span>                   <span class="note"># UI 編（更新予定）</span>
+└── <span class="dir">50_site-flow/</span>            <span class="note"># サイトフロー編（更新予定）</span></div>
   </div>
 </section>
 
