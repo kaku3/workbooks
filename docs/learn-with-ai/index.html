@@ -94,8 +94,8 @@
     <div class="cards cards-3">
       <div class="card">
         <div class="card-num">01</div>
-        <h3>丸投げで何が起きるか</h3>
-        <p>AI はエラーを直せる。でも「なぜ起きたか」「何が変わるか」を理解しないまま進めると、同じ問題が形を変えて繰り返す。気づいたときには、誰も原因を追えないコードが積み重なっている。</p>
+        <h3>AI への丸投げには限界がある</h3>
+        <p>AI はコードを書けるしエラーも直せる。でも開発の規模が大きくなると「思った通り」に動かなくなる。AI は伝えていないことを察せない。前提・経緯・制約を渡せていなければ、期待通りの出力は返ってこない。</p>
       </div>
       <div class="card">
         <div class="card-num">02</div>
@@ -118,8 +118,8 @@
 <!-- ========== Skills ========== -->
 <section id="skills">
   <div class="container">
-    <h2>何が身につくか</h2>
-    <p class="section-lead">教科書的な知識ではなく、実務で使える 3 つの力を鍛えます。</p>
+    <h2>何を身につけるべきか</h2>
+    <p class="section-lead">文脈を守るとは、「コードの意図を読み取り、問題を言葉で説明し、現実的な判断を下す」ことだ。<br>これは一度やれば身につくものではなく、繰り返し考えることで磨かれる思考の型だ。<br>この教材が提供するのは、その基本となる考え方への「気づき」の機会です。</p>
     <div class="cards cards-3">
       <div class="card">
         <div class="card-num" style="color:#16a34a;">読む</div>
@@ -143,8 +143,8 @@
 <!-- ========== About EC site ========== -->
 <section id="about">
   <div class="container">
-    <h2>問題の舞台：<code style="font-size:.85em; background:var(--bg-code); padding:2px 8px; border-radius:6px;">sample-ec</code></h2>
-    <p class="section-lead">複数人が仕様書なしで継ぎ足してきた EC サイト。バグや設計の問題が意図的に埋め込まれています。</p>
+    <h2>問題の舞台：一見動く、バグだらけの EC サイト <code style="font-size:.75em; background:var(--bg-code); padding:2px 8px; border-radius:6px;">sample-ec</code></h2>
+    <p class="section-lead">AI が一瞬で作ったシンプルな EC サイト。<br>初期開発者が不在で、仕様書もなく動かし方も分からない——よくある案件を想像してほしい。<br>「なぜこうなっているのか」を読み解く力を鍛えるために、この舞台を用意しました。</p>
 <div class="code-block"><span class="dir">10_sample-ec/</span>
 ├── app.js           <span class="note"># Express サーバー兼ビジネスロジック（意図的に肥大化）</span>
 ├── utils.js         <span class="note"># 何でも屋ファイル（認証・DB・計算・フォーマットが混在）</span>
@@ -156,27 +156,26 @@
     ├── common.js    <span class="note"># utils.js と関数が重複</span>
     ├── cart.html    <span class="note"># 消費税計算が app.js と食い違い</span>
     └── checkout.html <span class="note"># クーポン計算がフロントのみ</span></div>
-    <p style="margin-top:14px; font-size:13.5px; color:var(--text-muted);">
-      動かしてみることもできます：
-      <code style="background:var(--bg-code); padding:2px 8px; border-radius:5px; font-size:12.5px;">cd 10_sample-ec &amp;&amp; npm install &amp;&amp; node app.js</code>
-      → <code style="background:var(--bg-code); padding:2px 8px; border-radius:5px; font-size:12.5px;">http://localhost:3000</code>
-    </p>
+    <p style="margin-top:14px; font-size:13.5px; color:var(--text-muted);">動かしてみることもできます（Node.js が必要）：</p>
+<div class="code-block" style="margin-top:8px; background:#0f172a; color:#cbd5e1; border-color:#334155;">cd 10_sample-ec
+npm install  <span style="color:#64748b;"># 初回のみ</span>
+node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></div>
   </div>
 </section>
 
 <!-- ========== Curriculum ========== -->
 <section id="curriculum">
   <div class="container">
-    <h2>カリキュラム：全 9 問</h2>
-    <p class="section-lead">難易度は「問題の見つけやすさ」ではなく「判断に必要なコンテキストの広さ」で決めています。<br>AI ツールの利用は自由です。</p>
+    <h2>カリキュラム：初級〜上級 全 9 問</h2>
+    <p class="section-lead">実際に AI を使いながら障害を調査・修正する問題を用意しています。<br>答えだけでなく「そのとき何を考えたか」を出題としています。</p>
 
     <!-- Overview table -->
     <table class="diff-table" style="margin-bottom:40px;">
-      <thead><tr><th>難易度</th><th>問いのイメージ</th><th>必要なコンテキスト</th><th>問数</th></tr></thead>
+      <thead><tr><th>難易度</th><th>問いのコンセプト</th></tr></thead>
       <tbody>
-        <tr><td><span class="badge badge-b">初級</span></td><td>この依頼を進める前に気になることはある？どう直す？</td><td>1〜2 ファイル</td><td>3</td></tr>
-        <tr><td><span class="badge badge-m">中級</span></td><td>この不具合の原因はどこ？他に影響が出る箇所は？</td><td>複数ファイルにまたがる</td><td>3</td></tr>
-        <tr><td><span class="badge badge-a">上級</span></td><td>リファクタリングの優先度と進め方を提案して。リスクも含めて</td><td>プロジェクト全体＋ビジネス判断</td><td>3</td></tr>
+        <tr><td><span class="badge badge-b">初級</span></td><td>コードを読んで「何がおかしいか」を見つけ、どう直すかを判断する</td></tr>
+        <tr><td><span class="badge badge-m">中級</span></td><td>複数ファイルにまたがる不具合の原因を調査し、影響範囲を特定する</td></tr>
+        <tr><td><span class="badge badge-a">上級</span></td><td>プロジェクト全体を見渡し、設計・リスク・優先度を含めて判断する</td></tr>
       </tbody>
     </table>
 
