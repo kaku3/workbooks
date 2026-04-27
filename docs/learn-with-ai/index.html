@@ -60,6 +60,12 @@
   <a href="#q-a02" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-a">A-02</span><span class="sb-text">クーポンを直したら大問題が</span></a>
   <a href="#q-a03" class="sb-g sb-g-essential"><span class="badge-sb badge-sb-a">A-03</span><span class="sb-text">機能追加の前に設計の話を</span></a>
 
+  <div class="sidebar-heading sb-g sb-g-tutorial" style="display:none">チュートリアル</div>
+  <a href="#q-t01" class="sb-g sb-g-tutorial" style="display:none"><span class="badge-sb badge-sb-t">T-01</span><span class="sb-text">サイトマップを書こう</span></a>
+  <a href="#q-t02" class="sb-g sb-g-tutorial" style="display:none"><span class="badge-sb badge-sb-t">T-02</span><span class="sb-text">機能仕様書をAIに書かせよう</span></a>
+  <a href="#q-t03" class="sb-g sb-g-tutorial" style="display:none"><span class="badge-sb badge-sb-t">T-03</span><span class="sb-text">データ設計図をAIに書かせよう</span></a>
+  <a href="#q-t04" class="sb-g sb-g-tutorial" style="display:none"><span class="badge-sb badge-sb-t">T-04</span><span class="sb-text">画面仕様書をAIに書かせよう</span></a>
+  <a href="#q-t05" class="sb-g sb-g-tutorial" style="display:none"><span class="badge-sb badge-sb-t">T-05</span><span class="sb-text">PlantUMLシーケンス図をAIに</span></a>
   <div class="sidebar-heading sb-g sb-g-documentation" style="display:none">設計ドキュメント編</div>
   <a href="#q-s01" class="sb-g sb-g-documentation" style="display:none"><span class="badge-sb badge-sb-d">S-01</span><span class="sb-text">AIに設計を伝えてみよう</span></a>
   <a href="#q-s02" class="sb-g sb-g-documentation" style="display:none"><span class="badge-sb badge-sb-d">S-02</span><span class="sb-text">図を描いてみよう</span></a>
@@ -180,7 +186,8 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
 
     <div class="series-tabs">
       <button class="series-tab active" data-panel="essential">Essential <span class="badge badge-m" style="font-size:10px; vertical-align:middle; padding:1px 7px;">9問</span></button>
-      <button class="series-tab" data-panel="documentation">設計ドキュメント編 <span class="badge badge-d" style="font-size:10px; vertical-align:middle; padding:1px 7px;">4問</span></button>
+      <button class="series-tab" data-panel="tutorial">チュートリアル <span class="badge badge-t" style="font-size:10px; vertical-align:middle; padding:1px 7px;">T×5</span></button>
+      <button class="series-tab" data-panel="documentation">設計ドキュメント編 <span class="badge badge-d" style="font-size:10px; vertical-align:middle; padding:1px 7px;">S×4</span></button>
     </div>
 
     <div class="series-panel" data-panel="essential">
@@ -325,9 +332,79 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
     </div>
     </div><!-- /series-panel essential -->
 
+    <div class="series-panel" data-panel="tutorial" hidden>
+
+      <!-- Tutorial section -->
+      <div class="q-section-heading">
+        <span class="badge badge-t">チュートリアル</span>
+        <div class="q-section-line"></div>
+        <h3>何も知らないプロジェクトへの入り方を体験する</h3>
+      </div>
+      <p style="margin-bottom:20px; font-size:14px; color:var(--text-muted);">Essential で何をしていいか分からない場合、またはプロジェクトへの入り方自体を学びたい場合は、こちらから始めてください。</p>
+      <div class="curriculum">
+
+        <div class="q-card" id="q-t01">
+          <div class="q-num">T-01</div>
+          <div class="q-body">
+            <h4>サイトマップを書こう</h4>
+            <p class="q-scenario">アサイン初日。実際に動かして全ページを把握し、チームで共有できるサイトマップを作る</p>
+            <ul class="q-points">
+              <li>全体像の把握</li><li>サイトマップ生成ツール</li><li>ドキュメントを共有資産にする意味</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="q-card" id="q-t02">
+          <div class="q-num">T-02</div>
+          <div class="q-body">
+            <h4>機能仕様書をAIに書かせよう</h4>
+            <p class="q-scenario">情報なし→サイトマップあり→ソースありの3段階で、AIへの情報提供量と出力精度の変化を比較する</p>
+            <ul class="q-points">
+              <li>機能仕様書のドラフト作成</li><li>AIへの情報提供の効果</li><li>仕様書の信頼性レビュー</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="q-card" id="q-t03">
+          <div class="q-num">T-03</div>
+          <div class="q-body">
+            <h4>データ設計図をAIに書かせよう</h4>
+            <p class="q-scenario">JSONデータファイルをAIに渡してER図を生成し、データ構造と機能の関係を理解する</p>
+            <ul class="q-points">
+              <li>ER図の生成</li><li>エンティティ間の関係</li><li>データ構造からシステムの制約を読む</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="q-card" id="q-t04">
+          <div class="q-num">T-04</div>
+          <div class="q-body">
+            <h4>画面仕様書をAIに書かせよう</h4>
+            <p class="q-scenario">HTMLのみ vs スクリーンショット+HTMLで、AIの画面仕様書の精度がどう変わるかを確かめる</p>
+            <ul class="q-points">
+              <li>画面仕様書の作成</li><li>表示条件の整理</li><li>コードで分からないことをスクリーンショットで補う</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="q-card" id="q-t05">
+          <div class="q-num">T-05</div>
+          <div class="q-body">
+            <h4>PlantUMLのシーケンス図をAIに書かせよう</h4>
+            <p class="q-scenario">ログイン処理から購入フロー全体まで処理の流れを可視化し、チュートリアル全体を振り返る</p>
+            <ul class="q-points">
+              <li>シーケンス図の生成</li><li>処理フローの可視化</li><li>ドキュメントセットを揃える意義</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /series-panel tutorial -->
+
     <div class="series-panel" data-panel="documentation" hidden>
       <div class="q-section-heading">
         <span class="badge badge-d">設計ドキュメント編</span>
+        <div class="q-section-line"></div>
         <h3>AI と一緒に設計し、図で残し、引き継ぐ</h3>
       </div>
       <div class="curriculum">
@@ -387,6 +464,10 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
   <div class="container">
     <h2>よくある質問</h2>
     <div class="faq-list">
+      <div class="faq-item">
+        <p class="faq-q">Essential、チュートリアル、設計ドキュメント編——どれから始めればいいですか？</p>
+        <p class="faq-a">コードレビューの問題に取り組みたいならば <strong>Essential</strong>（初級）から始めてください。ただし「何をしていいか分からない」「プロジェクトへの入り方を学びたい」という場合は、設計ドキュメント編の<strong>チュートリアル（T-01〜T-05）</strong>から始めることをおすすめします。チュートリアルは「何も知らないプロジェクトにアサインされたとき、どうやって全体像を把握するか」を体験する内容で、Essential の準備運動にもなります。</p>
+      </div>
       <div class="faq-item">
         <p class="faq-q">コードを動かせる環境がないと受けられませんか？</p>
         <p class="faq-a">いいえ。コードを読むだけでも回答できます。ただし動かして確認すると理解が深まります（Node.js があれば動きます）。</p>
