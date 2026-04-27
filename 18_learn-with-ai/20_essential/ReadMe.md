@@ -14,13 +14,43 @@
 
 ## 使い方
 
-1. `10_sample-ec` を clone してコードを把握する
-2. `10_questions/` の問題ファイルを読む
-3. `20_answers/` に自分の回答を書く（ファイルは設問ごとに分かれています）
-4. `30_reference-answers/` で模範解答を確認する
-5. `40_evaluation/score_prompt.md` のプロンプトを使って Copilot に採点させる
+1. リポジトリを clone してコードを把握する
+
+   ```bash
+   # SSH
+   git clone git@github.com:kaku3/workbooks.git
+   # または HTTPS
+   git clone https://github.com/kaku3/workbooks.git
+
+   cd workbooks/18_learn-with-ai
+   ```
+
+2. `10_sample-ec` を起動して動作を確認する（任意）
+
+   ```bash
+   cd 10_sample-ec
+   npm install
+   node app.js
+   # → http://localhost:3000
+   ```
+
+3. `20_essential/10_questions/` の問題ファイルを読む
+4. `20_essential/20_answers/` に自分の回答を書く（ファイルは設問ごとに分かれています）
+5. `20_essential/30_reference-answers/` で模範解答を確認する
+6. `20_essential/40_evaluation/score_prompt.md` のプロンプトを使って Copilot に採点させる
 
 > AI ツールの利用は自由です。ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+
+---
+
+## 他の教材
+
+| 教材 | 内容 |
+|------|------|
+| **チュートリアル**（`30_documentation/`） | 何も知らないプロジェクトへの入り方を体験する。Essential の前の準備運動にもなります |
+| **設計ドキュメント編**（`30_documentation/`） | AI と一緒に設計し、図で残し、引き継ぐ一連の流れを体験する |
+
+どこから始めるか迷ったら、まず `30_documentation/ReadMe.md` を読んでください。
 
 ---
 
