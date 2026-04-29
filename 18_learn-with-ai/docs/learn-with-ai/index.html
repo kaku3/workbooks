@@ -201,7 +201,8 @@
 <!-- ========== About EC site ========== -->
 <section id="about">
   <div class="container">
-    <h2>問題の舞台：一見動く、問題だらけの EC サイト <code style="font-size:.75em; background:var(--bg-code); padding:2px 8px; border-radius:6px;">sample-ec</code></h2>
+    <h2>問題の舞台：一見動く、問題だらけの EC サイト</h2>
+    <p style="margin:-12px 0 16px; font-size:12.5px; color:var(--text-muted);">舞台のリポジトリ：<code style="background:var(--bg-code); padding:2px 7px; border-radius:5px; font-size:12px;">sample-ec</code></p>
     <p class="section-lead">AI が一瞬で作ったシンプルな EC サイト。<br>初期開発者が不在で、仕様書もなく動かし方も分からない——よくある案件を想像してほしい。<br>「なぜこうなっているのか」を読み解く力を鍛えるために、この舞台を用意しました。</p>
 <div class="code-block"><span class="dir">10_sample-ec/</span>
 ├── app.js           <span class="note"># Express サーバー兼ビジネスロジック（意図的に肥大化）</span>
@@ -228,9 +229,18 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
     <p class="section-lead">AI を活用しながら取り組む問題を用意しています。<br>答えだけでなく「そのとき何を考えたか」を出題としています。</p>
 
     <div class="series-tabs">
-      <button class="series-tab active" data-panel="essential">Essential <span class="badge badge-m" style="font-size:10px; vertical-align:middle; padding:1px 7px;">9問</span></button>
-      <button class="series-tab" data-panel="tutorial">チュートリアル <span class="badge badge-t" style="font-size:10px; vertical-align:middle; padding:1px 7px;">T×5</span></button>
-      <button class="series-tab" data-panel="documentation">設計ドキュメント編 <span class="badge badge-d" style="font-size:10px; vertical-align:middle; padding:1px 7px;">S×4</span></button>
+      <button class="series-tab active" data-panel="essential">
+        <span class="seg-label">基礎</span>
+        <span class="seg-count">9問</span>
+      </button>
+      <button class="series-tab" data-panel="tutorial">
+        <span class="seg-label">チュートリアル</span>
+        <span class="seg-count">5問</span>
+      </button>
+      <button class="series-tab" data-panel="documentation">
+        <span class="seg-label">ドキュメント</span>
+        <span class="seg-count">4問</span>
+      </button>
     </div>
 
     <div class="series-panel" data-panel="essential">
