@@ -13,6 +13,49 @@
   <meta name="twitter:image" content="https://kaku3.github.io/workbooks/learn-with-ai/assets/hero.png" />
   <link rel="icon" href="assets/favicon.ico" />
   <link rel="stylesheet" href="assets/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+  /* ---- Question modal (ticket style) ---- */
+  .q-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;}
+  .q-modal[hidden]{display:none;}
+  .q-modal-overlay{position:absolute;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(4px);}
+  .q-modal-inner{position:relative;z-index:1;background:#f1f5f9;border-top:4px solid var(--q-accent,#2563eb);border-radius:12px;overflow:hidden;max-width:920px;width:calc(100% - 32px);height:92vh;display:flex;flex-direction:column;box-shadow:0 28px 80px rgba(0,0,0,.2),0 4px 20px rgba(0,0,0,.10);}
+  .q-modal-topbar{padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;border-bottom:1px solid #e2e8f0;background:#f1f5f9;}
+  .q-modal-ticket-meta{display:flex;align-items:center;gap:10px;}
+  .q-modal-cat-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.03em;}
+  .q-modal-cat-badge.badge-b{background:var(--accent-sub-light);color:var(--accent-sub);}
+  .q-modal-cat-badge.badge-m{background:var(--accent-light);color:var(--accent);}
+  .q-modal-cat-badge.badge-a{background:var(--warn-light);color:var(--warn);}
+  .q-modal-cat-badge.badge-t{background:#e0f2fe;color:#0891b2;}
+  .q-modal-cat-badge.badge-d{background:var(--accent-doc-light);color:var(--accent-doc);}
+  .q-modal-ticket-id{font-size:20px;font-weight:900;color:var(--text);letter-spacing:-.02em;line-height:1;}
+  .q-modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:0 2px;line-height:1;transition:color .15s;flex-shrink:0;}
+  .q-modal-close:hover{color:var(--text);}
+  .q-modal-body{padding:24px 28px 20px;overflow-y:auto;font-size:14.5px;line-height:1.9;color:#334155;flex:1;background:#ffffff;border-radius:0;}
+  .q-modal-body h1,.q-modal-body h2{font-size:17px;font-weight:700;margin:20px 0 8px;}
+  .q-modal-body h3{font-size:15px;margin:14px 0 6px;}
+  .q-modal-body p{margin:0 0 10px;}
+  .q-modal-body ul,.q-modal-body ol{padding-left:22px;margin:0 0 10px;}
+  .q-modal-body li{margin-bottom:4px;}
+  .q-modal-body code{background:var(--bg-code);padding:2px 5px;border-radius:4px;font-family:monospace;font-size:12.5px;}
+  .q-modal-body pre{background:var(--bg-code);border-radius:8px;padding:12px 14px;overflow-x:auto;margin:0 0 12px;}
+  .q-modal-body pre code{background:none;padding:0;}
+  .q-modal-body blockquote{border-left:3px solid var(--accent);padding-left:14px;margin:0 0 10px;color:var(--text-muted);}
+  .q-modal-body hr{border:none;border-top:1px solid var(--border);margin:20px 0;}
+  .q-modal-body strong{color:var(--text);}
+  .q-modal-gh-btn{display:inline-flex;align-items:center;gap:7px;margin-top:28px;padding:9px 18px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;font-size:13px;font-weight:600;color:#334155;text-decoration:none;transition:background .15s,border-color .15s;}
+  .q-modal-gh-btn:hover{background:#e2e8f0;border-color:#94a3b8;}
+  .q-modal-gh-btn svg{flex-shrink:0;opacity:.7;}
+  .q-modal-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid #e2e8f0;flex-shrink:0;gap:8px;background:#f1f5f9;}
+  .q-modal-nav-btn{background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:6px 0;transition:opacity .15s;white-space:nowrap;}
+  .q-modal-nav-btn:hover:not(:disabled){opacity:.65;}
+  .q-modal-nav-btn:disabled{opacity:.22;cursor:default;}
+  .q-modal-nav-btn.boundary{color:var(--text-muted);font-weight:500;}
+  .q-modal-nav-count{font-size:11.5px;color:var(--text-muted);background:var(--bg-code);padding:3px 12px;border-radius:20px;flex-shrink:0;}
+  .q-card[data-question]{cursor:pointer;}
+  .q-card[data-question]:hover{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.08);}
+  .q-card-expand{font-size:11.5px;color:var(--accent);margin-top:10px;text-align:right;grid-column:2;}
+  </style>
 </head>
 <body>
 
@@ -488,6 +531,10 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
         <p class="faq-q">回答はどのくらいの長さで書けばいいですか？</p>
         <p class="faq-a">長さは問いません。必要なことが書かれていれば短くても構いません。ファイル名・関数名の具体的な言及があると評価が上がります。</p>
       </div>
+      <div class="faq-item">
+        <p class="faq-q">sample-ec にログインするにはどうすればいいですか？</p>
+        <p class="faq-a">ログイン情報は仕様書がないため、ソースを読んで調べる必要があります。ヒント：<code style="background:var(--bg-code); padding:1px 6px; border-radius:4px; font-size:12px;">db/users.json</code> を見ると、登録されているユーザーのメールアドレスとパスワードが確認できます。——ドキュメントのないプロジェクトではよくあることです。</p>
+      </div>
     </div>
   </div>
 </section>
@@ -513,6 +560,457 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
 
 </div><!-- .main-content -->
 </div><!-- .page-wrapper -->
+
+<!-- ========== Question modal ========== -->
+<div class="q-modal" id="q-modal" hidden role="dialog" aria-modal="true">
+  <div class="q-modal-overlay" id="q-modal-overlay"></div>
+  <div class="q-modal-inner" id="q-modal-inner">
+    <div class="q-modal-topbar">
+      <div class="q-modal-ticket-meta">
+        <span class="q-modal-cat-badge" id="q-modal-cat-badge"></span>
+        <span class="q-modal-ticket-id" id="q-modal-label"></span>
+      </div>
+      <button class="q-modal-close" id="q-modal-close" aria-label="閉じる">✕</button>
+    </div>
+    <div class="q-modal-body" id="q-modal-body"></div>
+    <div class="q-modal-nav">
+      <button class="q-modal-nav-btn" id="q-modal-prev">← 前の設問</button>
+      <span class="q-modal-nav-count" id="q-modal-nav-count"></span>
+      <button class="q-modal-nav-btn" id="q-modal-next">次の設問 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Question markdown data -->
+<script type="text/x-markdown" id="md-q-b01">
+## B-01: リファクタリングすべきか、否か、それが問題だ
+
+**依頼内容**
+
+「メール送信処理を追加したい。共通処理は `utils.js` に置くルールだから、そこに書いておいて」
+
+**設問**
+
+1. このコードを確認して、依頼をそのまま進める前に「話し合いたい」と思う点があれば挙げてください
+2. 仮にこのまま追加した場合、将来どんな問題が起きますか
+3. レビュアーとして依頼者にフィードバックするとしたら、何をどう伝えますか（修正案も含めて）
+4. なぜ「`utils.js` が何でも屋になる」という現象が起きると思いますか。技術的な理由と、チームの習慣・文化の両面から考えてください
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-b02">
+## B-02: 直らない金額表示
+
+**依頼内容**
+
+「金額表示を変えたい。`¥` の前後にスペースを入れてほしい。たぶん `utils.js` あたりに実装してあると思うから、そこから探してみて」
+
+**設問**
+
+1. この変更を加えようとしたとき、コードを見て「先に確認したい」と思う点はありますか
+2. 仮に `utils.js` だけを修正してリリースした場合、何が起きますか
+3. この状態をどう整理しますか。依頼者へのフィードバックも含めて答えてください
+4. このような状態（同じ処理が複数箇所に分散する）はなぜ生まれると思いますか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-b03">
+## B-03: 3画面で税率がバラバラ
+
+**依頼内容**
+
+「カート画面・チェックアウト画面・注文確定後の金額が微妙にズレていると言われた。調べてほしい」
+
+**設問**
+
+1. 金額がズレる原因を特定してください
+2. 商品単価 `1,980円` の商品を1個購入した場合、各画面での税額はいくらになりますか。実際に計算して確認してください
+3. 「消費税率を 10% から 8% に変更する」という仕様変更が来た場合、このコードではどこを修正する必要がありますか
+4. なぜこのような状態になったと思いますか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-m01">
+## M-01: プレミアム会員なのに、割引がゼロ
+
+**依頼内容**
+
+「佐藤花子さんからクレームが来た。プレミアム会員なのにカートで割引が表示されない」
+
+**設問**
+
+1. 「佐藤花子さんの割引が効かない」原因を調査してください。コードを根拠に説明してください
+2. 修正するとしたら、どこをどう直しますか。影響が最小のアプローチを選んでください
+3. このバグはなぜ生まれたと思いますか。また、同様の不整合が他に潜んでいる可能性はありますか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-m02">
+## M-02: ときどき返ってくる 401
+
+**依頼内容**
+
+「ログインしても一部の API で 401 が返ってくることがある。トークン周りを確認してほしい」
+
+**設問**
+
+1. 「一部の API で 401 が返る」原因を調査してください
+2. この状況をどう整理しますか（どちらを残すか、どのように統一するか）
+3. このような「実装が 2 系統ある」状態はなぜ生まれると思いますか。また今後どう防ぎますか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-m03">
+## M-03: 注文成功なのに、在庫そのまま
+
+**依頼内容**
+
+「注文は通るのに在庫が減っていないと言われた。確認してほしい」
+
+**設問**
+
+1. 「注文は通るのに在庫が減らない」原因を調べてください
+2. 修正するとしたらどのようなアプローチを取りますか。修正前に確認・検討すべきことも述べてください
+3. この問題を設計の観点から振り返ると、何が根本原因だと思いますか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-a01">
+## A-01: その実装、進めていいですか？
+
+**依頼内容**
+
+「管理者向けに注文キャンセル機能を追加したい。`GET /api/admin/orders` を参考に実装してほしい」
+
+**設問**
+
+1. この依頼を進める前に、コードを見て気になる点はありますか
+2. 発見した問題をセキュリティリスクとしてレポートするとしたら、何を、どの優先度で報告しますか（リスクの大きさ・影響範囲・対処コストの観点で）
+3. 「注文キャンセル機能を追加してほしい」という依頼に対して、あなたはどう対応しますか（そのまま実装する / 先に報告する / 両方やる、など。理由も述べてください）
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-a02">
+## A-02: クーポンのバグを直したら、もっと大きな問題が見えてきた
+
+**依頼内容**
+
+「クーポン機能にバグがあると言われた。クーポンコードを入れても最終的な金額が変わっていないらしい」
+
+**設問**
+
+1. 「クーポンを入れても金額が変わらない」バグの原因を特定してください
+2. 現在の設計の問題点を説明してください。また、修正方針を考えてください（「フロントで計算してサーバーに金額を送る」方式と「クーポンコードをサーバーに送ってサーバー側で検証・計算する」方式、それぞれのメリット・デメリットと、どちらを選ぶかの判断を述べてください）
+3. この修正は `checkout.html` と `app.js` のどちらかだけを直せば済みますか。影響するファイルをすべて挙げてください
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-a03">
+## A-03: 機能を追加する前に、設計の話をしましょう
+
+**依頼内容**
+
+「機能が増えてきたので、注文キャンセル機能・ポイント機能・在庫アラート機能を追加したい。まず設計を整理してほしい」
+
+**設問**
+
+1. この依頼を受けてそのまま実装を始める前に、気になることはありますか。依頼者にどう伝えますか
+2. `app.js` をどのように分割しますか。新しいファイル構成（ディレクトリ・ファイル名）の案を示してください
+3. 分割作業をどの順序で進めますか。リファクタリング中にサービスを止めないために何に気をつけますか
+4. `utils.js` の `readDB` / `writeDB` をどう整理しますか。整理する前にやるべきことも述べてください
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-t01">
+## T-01: サイトマップを書こう
+
+**このチュートリアルについて**
+
+アサイン初日。まず「どんなページが存在するか」を把握することが出発点になる。コードを読み始める前に、実際に動かして自分の目で確かめ、チームで共有できる形で記録する。
+
+**Step 1: まず動かしてみよう**
+
+`sample-ec` を起動して、すべてのページを実際に触ってみよう。
+
+```sh
+cd 10_sample-ec
+npm install
+node app.js
+```
+
+ブラウザで `http://localhost:3000` を開き、各ページを順に辿ること。**各ページのスクリーンショットを撮っておくこと**（後のチュートリアルで使う）。
+
+**Step 2: サイトマップ用の Markdown を書こう**
+
+インタラクティブサイトマップツール（`04_インタラクティブサイトマップ/12_src`）を使って `sample-ec` のサイトマップを作成しよう。まず `ReadMe.md` でツールの書式を確認すること。
+
+**Step 3: 生成したサイトマップを確認しよう**
+
+生成されたサイトマップを実際のサイトと見比べ、抜け漏れや誤りがあれば修正する。
+
+**設問**
+
+1. すべてのページを見つけられたか。最初の一覧と修正後の一覧を並べ、「どこで見落とした / 何を足した」かを説明してほしい
+2. 実際に触ってみて、「ページ一覧には見えないが、存在するページや機能」は見つかったか
+3. この作業にどれくらい時間がかかったか。これをプロジェクトメンバー全員がそれぞれ個人メモとしてやっていたとしたら、チーム全体でどのくらいの時間が無駄になると思うか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-t02">
+## T-02: 機能仕様書をAIに書かせよう
+
+**このチュートリアルについて**
+
+T-01 でサイト全体の構造は把握できた。次は「このシステムが**何をする**のか」を言葉にする。機能仕様書とは「このシステムはこういう操作ができて、こういう結果になる」を整理したドキュメントだ。
+
+**Step 1: まず何も渡さずに聞いてみよう**
+
+AI に以下のプロンプトを投げてみよう。
+
+```
+sample-ec という EC サイトの機能仕様書を書いてほしい。
+```
+
+**Step 2: 自分が分かっていることを伝えて、再度頼もう**
+
+T-01 で作成したサイトマップと各ページのスクリーンショットを使って AI に追加情報を渡す。ページ一覧と「分かっていること」をプロンプトに含めること。
+
+**Step 3: ソースコードを渡してさらに精度を上げよう**
+
+`app.js` の内容を AI に渡して、機能仕様書をより詳しく書き直してもらおう。
+
+**設問**
+
+1. Step 1・Step 2・Step 3 それぞれで、AI の出力はどう変わったか。「情報を渡すほど精度が上がった部分」と「それでも間違えた部分」を整理してほしい
+2. AI が生成した機能仕様書の中で、実際に動かして確認しないと検証できない項目はどれか。最低 3 つ挙げて、どう確認するかを説明してほしい
+3. もし自分がこのプロジェクトを引き継いだ次の人なら、この機能仕様書のどこに「信頼してよい情報」と「要確認の情報」を書き分けるか。方法を提案してほしい
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-t03">
+## T-03: データ設計図をAIに書かせよう
+
+**このチュートリアルについて**
+
+「どんなページがあるか」「何ができるか」の次は、「どんなデータを持っているか」だ。データ構造を把握すると、機能の理解がぐっと深まる。
+
+**Step 1: データファイルを確認しよう**
+
+`sample-ec` の `db/` フォルダにあるファイルをすべて確認しよう（`users.json`・`products.json`・`orders.json`・`cart.json`）。
+
+**Step 2: AI に ER 図を書かせよう**
+
+データファイルの内容を AI に渡して、エンティティ間の関係を PlantUML の ER 図で生成させよう。
+
+**Step 3: 生成された図を確認・修正しよう**
+
+PlantUML VS Code Extension で図を確認し、エンティティの属性・リレーション・実際のデータと見比べて矛盾がないかをチェックする。
+
+**設問**
+
+1. ER 図を見る前と後で、このシステムへの理解はどう変わったか。「図を見て初めて気づいたこと」を少なくとも 1 つ挙げてほしい
+2. AI が生成した ER 図で、修正が必要だった箇所はどこか。なぜ AI はそこを誤ったと思うか
+3. このデータ構造から読み取れる「このシステムの制約」を 1 つ以上挙げてほしい
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-t04">
+## T-04: 画面仕様書をAIに書かせよう
+
+**このチュートリアルについて**
+
+機能仕様書は「システムが何をするか」、ER 図は「何を記憶しているか」を示す。では「画面がどう見えて、何ができるか」を伝えるには何が必要か。それが画面仕様書だ。
+
+**Step 1: まずソースコードだけを渡してみよう**
+
+「カートページ」の `cart.html` の内容だけを AI に渡して、画面仕様書をMarkdownで書かせよう。
+
+**Step 2: スクリーンショットも一緒に渡してみよう**
+
+T-01 で撮ったカートページのスクリーンショットも AI に渡して、画面仕様書を書き直してもらおう。
+
+**Step 3: 残りの画面の仕様書を作ろう**
+
+同じ方法で、トップページ・ログインページ・注文確認ページ・注文完了ページ・マイページの仕様書も作成し、1 つのドキュメントにまとめる。
+
+**設問**
+
+1. ソースコードだけを渡した場合と、スクリーンショットも一緒に渡した場合で、AI の出力にどんな違いがあったか。具体的に比較してほしい
+2. AI が画面仕様書を書けなかった、または誤った部分はどこか。「コードを読んでも分からないこと」にはどんなものがあったか
+3. 画面仕様書と T-02 で作った機能仕様書を見比べたとき、「機能仕様書にはあるが画面仕様書にない」「画面仕様書にはあるが機能仕様書にない」ものはあったか。それぞれ何を意味すると思うか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-t05">
+## T-05: PlantUMLのシーケンス図をAIに書かせよう
+
+**このチュートリアルについて**
+
+T-01〜T-04 で「どんな画面があるか」「何ができるか」「どんなデータがあるか」が揃った。最後のピースは「処理がどんな順番で流れるか」だ。シーケンス図は複数の登場人物（ユーザー・フロントエンド・バックエンド・DBなど）のやり取りの順序を可視化する。
+
+**Step 1: まずシンプルな処理を選ぼう**
+
+「ログイン処理」を題材に。`login.html` と `app.js` のログイン関連コードを AI に渡し、PlantUML のシーケンス図を生成させよう。
+
+**Step 2: 生成された図を確認しよう**
+
+PlantUML VS Code Extension で図を確認し、実際のコードと見比べる。正常系だけでなく異常系（ログイン失敗）も描かれているかチェック。
+
+**Step 3: 購入フロー全体のシーケンス図を作ろう**
+
+ログインから始まり、商品選択→カート追加→注文確認→注文完了までの一連のフローをシーケンス図にしてみよう。
+
+**設問**
+
+1. シーケンス図を見て、機能仕様書や画面仕様書では気づかなかったことはあったか。「図にして初めて分かったこと」を述べてほしい
+2. AI が生成したシーケンス図で、実際のコードと異なっていた部分はあったか。どんな情報を追加で渡したら、より正確になると思うか
+3. T-01 から T-05 まで作ってきたドキュメント（サイトマップ・機能仕様書・ER 図・画面仕様書・シーケンス図）を全部並べてみよう。新しくこのプロジェクトに参加した人に、**どの順番で読んでもらうか**。理由も含めて説明してほしい
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-s01">
+## S-01: AIに設計を伝えてみよう
+
+**状況**
+
+あなたは `sample-ec` に「注文キャンセル機能」を追加することになった。まず AI に相談してみることにした。
+
+**Step 1**
+
+以下のプロンプトをそのまま AI に投げてみよう。
+
+```
+sample-ec に注文キャンセル機能を追加したい。
+どのファイルに何を実装すればいい？
+```
+
+AI が返してきた内容を読んで、実装してみよう。
+
+**Step 2**
+
+次に、以下の追加要件を AI に伝えてみよう。
+
+- キャンセルできるのは注文から 24 時間以内だけ
+- プレミアム会員は 72 時間以内までキャンセル可能
+- キャンセル時に在庫を戻す
+- 管理者はいつでもキャンセルできる
+
+その通りに実装して、動作確認してみよう。
+
+**設問**
+
+1. AI の指示通りに実装できたとして、**あなたはその設計を人に説明できるか？** 「どこに何があって、どこが何を呼んでいるか」を文章で書いてみよう
+2. 明日、別の人（あるいは 3 ヶ月後の自分）が AI に「この設計の続きをやってほしい」と頼むとき、**何を渡せばいいか？** 考えてみよう
+3. 文章で説明しようとして、うまく書けなかった部分はどこか。何があれば伝わりやすかったと思うか
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-s02">
+## S-02: 図を描いてみよう
+
+**状況**
+
+S-01 で実装した設計を、チームメンバーにレビューしてもらうことになった。口頭で説明しようとしたが、「どこが何を呼んでいるか」がうまく伝わらなかった。
+
+**Step 1**
+
+PlantUML を使って、S-01 で実装した注文キャンセル機能の処理フローを図にしてみよう。まず AI に頼んでみよう。
+
+```
+S-01 で実装した注文キャンセル機能の処理フローを PlantUML のシーケンス図で書いて
+```
+
+**Step 2**
+
+生成された PlantUML を PlantUML VS Code Extension で確認し、コードと見比べよう。
+
+**設問**
+
+1. AI が生成した PlantUML の図と、実際のコードは一致しているか。ズレている部分があれば、どこがどうズレているかを説明してほしい
+2. 図を見て初めて気づいたことはあるか。コードだけを読んでいたときと、何が違ったか
+3. この図を見た別の人が「在庫を戻す処理はどこで呼ばれているか」と聞いてきたとき、図を使って説明してみよう
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-s03">
+## S-03: 設計が変わったとき、図はどうなるか
+
+**状況**
+
+S-01 で実装した注文キャンセル機能に、新しい要件が追加された。
+
+> 「キャンセルした注文はキャンセル履歴テーブルに記録してほしい。あとで管理者が一覧で確認できるようにしたい。」
+
+**Step 1**
+
+AI に実装を頼んでみよう。
+
+```
+注文キャンセル時に、キャンセル履歴を記録する機能を追加したい。
+キャンセル履歴には注文ID・ユーザーID・キャンセル日時・理由を保持する。
+管理者が一覧で確認できる API も追加してほしい。
+```
+
+**Step 2**
+
+S-02 で作った PlantUML の図を、今回の変更に合わせて更新してみよう。AI に頼んでもいいし、自分で書き足してもいい。
+
+**設問**
+
+1. コードの変更と図の更新、どちらが先になったか。またはどちらが難しかったか
+2. 図を更新することで、何か気づいたことはあるか（実装し忘れ・設計の矛盾など）
+3. 「コードと図が食い違っていたら、どちらが正しいか」——このプロジェクトではどう決めるべきか、あなたの考えを述べてほしい
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
+
+<script type="text/x-markdown" id="md-q-s04">
+## S-04: 設計をAIに渡して続きを頼んでみよう
+
+**状況**
+
+3 ヶ月後。あなたは別の案件にアサインされており、`sample-ec` の機能追加は別の人が担当することになった。引き継いだ担当者は AI を使って続きを実装しようとしている。あなたは引き継ぎ資料のレビューを頼まれた。
+
+**Step 1**
+
+S-03 までで作った PlantUML の図と、以下のプロンプトをセットで AI に渡してみよう。
+
+```
+以下の PlantUML の図を参考に、ポイント機能を追加したい。
+注文キャンセル時にポイントを付与し、次回の注文で使えるようにしてほしい。
+
+[S-03 の PlantUML をここに貼る]
+```
+
+**Step 2**
+
+AI が返してきた実装案を確認しよう。
+
+**設問**
+
+1. 図を渡したことで、AI の返答は S-01 のとき（何も渡さなかったとき）と何が変わったか
+2. AI が図を読み違えた部分や、補足が必要だった部分はあったか
+3. 「AI に設計の続きを頼むときに必要なもの」を、この体験を踏まえて整理してほしい。コード・図・文章のうち、何がどう役に立ったか（あるいは足りなかったか）
+4. S-01 からここまでを振り返って、「設計ドキュメントを残すことの意味」を自分の言葉で説明してほしい
+
+> **AI ツールの利用は自由です。** ただしすべての設問で「なぜそう判断したか」を自分の言葉で書いてください。
+</script>
 
 <script>
 (function(){
@@ -603,6 +1101,126 @@ node app.js  <span style="color:#64748b;"># → http://localhost:3000</span></di
       });
     });
   }
+
+  // ---- Q-card modal (ticket style + group nav) ----
+  const Q_GROUPS = [
+    { label: '初級',           badgeClass: 'badge-b', accent: '#16a34a', ghUrl: 'https://github.com/kaku3/workbooks/blob/main/18_learn-with-ai/20_essential/10_questions/10_beginner.md',     ids: ['q-b01','q-b02','q-b03'] },
+    { label: '中級',           badgeClass: 'badge-m', accent: '#2563eb', ghUrl: 'https://github.com/kaku3/workbooks/blob/main/18_learn-with-ai/20_essential/10_questions/20_intermediate.md',  ids: ['q-m01','q-m02','q-m03'] },
+    { label: '上級',           badgeClass: 'badge-a', accent: '#d97706', ghUrl: 'https://github.com/kaku3/workbooks/blob/main/18_learn-with-ai/20_essential/10_questions/30_advanced.md',      ids: ['q-a01','q-a02','q-a03'] },
+    { label: 'チュートリアル', badgeClass: 'badge-t', accent: '#0891b2', ghUrl: 'https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai/30_documentation/10_questions',               ids: ['q-t01','q-t02','q-t03','q-t04','q-t05'] },
+    { label: '設計ドキュメント', badgeClass: 'badge-d', accent: '#7c3aed', ghUrl: 'https://github.com/kaku3/workbooks/tree/main/18_learn-with-ai/30_documentation/10_questions',             ids: ['q-s01','q-s02','q-s03','q-s04'] },
+  ];
+  const Q_LOOKUP = {};
+  Q_GROUPS.forEach(function(g, gi) {
+    g.ids.forEach(function(id, pos) { Q_LOOKUP[id] = { group: g, groupIdx: gi, pos: pos }; });
+  });
+  let qCurrentId = null;
+  const qModal      = document.getElementById('q-modal');
+  const qModalInner = document.getElementById('q-modal-inner');
+  const qModalBody  = document.getElementById('q-modal-body');
+  const qModalLabel = document.getElementById('q-modal-label');
+  const qModalBadge = document.getElementById('q-modal-cat-badge');
+  const qModalCount = document.getElementById('q-modal-nav-count');
+  const qModalPrev  = document.getElementById('q-modal-prev');
+  const qModalNext  = document.getElementById('q-modal-next');
+
+  function openQModal(qId) {
+    const info = Q_LOOKUP[qId];
+    if (!info) return;
+    qCurrentId = qId;
+    const { group: g, groupIdx: gi, pos } = info;
+    const src = document.getElementById('md-' + qId);
+    const md  = src ? src.textContent.trim() : '（内容が見つかりません）';
+    qModalLabel.textContent = qId.slice(2, 3).toUpperCase() + '-' + qId.slice(3);
+    qModalBadge.className   = 'q-modal-cat-badge ' + g.badgeClass;
+    qModalBadge.textContent = g.label;
+    qModalInner.style.setProperty('--q-accent', g.accent);
+    qModalBody.innerHTML    = (typeof marked !== 'undefined') ? marked.parse(md) : md.replace(/\n/g, '<br>');
+    // GitHub CTA
+    const ghBtn = document.createElement('a');
+    ghBtn.className = 'q-modal-gh-btn';
+    ghBtn.href = g.ghUrl;
+    ghBtn.target = '_blank';
+    ghBtn.rel = 'noopener noreferrer';
+    ghBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg> GitHub で問題ファイルを開く';
+    qModalBody.appendChild(ghBtn);
+    qModalBody.scrollTop    = 0;
+    qModalCount.textContent = (pos + 1) + ' / ' + g.ids.length;
+    // prev
+    if (pos > 0) {
+      qModalPrev.disabled = false; qModalPrev.textContent = '← 前の設問'; qModalPrev.classList.remove('boundary');
+    } else if (gi > 0) {
+      const pg = Q_GROUPS[gi - 1];
+      qModalPrev.disabled = false; qModalPrev.textContent = '← ' + pg.label; qModalPrev.classList.add('boundary');
+    } else {
+      qModalPrev.disabled = true; qModalPrev.textContent = '← 前の設問'; qModalPrev.classList.remove('boundary');
+    }
+    // next
+    if (pos < g.ids.length - 1) {
+      qModalNext.disabled = false; qModalNext.textContent = '次の設問 →'; qModalNext.classList.remove('boundary');
+    } else if (gi < Q_GROUPS.length - 1) {
+      const ng = Q_GROUPS[gi + 1];
+      qModalNext.disabled = false; qModalNext.textContent = ng.label + ' →'; qModalNext.classList.add('boundary');
+    } else {
+      qModalNext.disabled = true; qModalNext.textContent = '次の設問 →'; qModalNext.classList.remove('boundary');
+    }
+    qModal.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeQModal() {
+    qModal.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+  }
+
+  Q_GROUPS.forEach(function(g) {
+    g.ids.forEach(function(qId) {
+      const card = document.getElementById(qId);
+      if (!card) return;
+      card.setAttribute('data-question', '');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', qId.slice(2,3).toUpperCase() + '-' + qId.slice(3) + ' 設問を開く');
+      const hint = document.createElement('p');
+      hint.className = 'q-card-expand';
+      hint.textContent = 'タップして設問を確認 →';
+      const body = card.querySelector('.q-body');
+      (body || card).appendChild(hint);
+      card.addEventListener('click', function() { openQModal(qId); });
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openQModal(qId); }
+      });
+    });
+  });
+
+  document.getElementById('q-modal-close').addEventListener('click', closeQModal);
+  document.getElementById('q-modal-overlay').addEventListener('click', closeQModal);
+  qModalPrev.addEventListener('click', function() {
+    const info = Q_LOOKUP[qCurrentId];
+    if (!info) return;
+    if (info.pos > 0) openQModal(info.group.ids[info.pos - 1]);
+    else if (info.groupIdx > 0) { const pg = Q_GROUPS[info.groupIdx-1]; openQModal(pg.ids[pg.ids.length-1]); }
+  });
+  qModalNext.addEventListener('click', function() {
+    const info = Q_LOOKUP[qCurrentId];
+    if (!info) return;
+    if (info.pos < info.group.ids.length - 1) openQModal(info.group.ids[info.pos + 1]);
+    else if (info.groupIdx < Q_GROUPS.length - 1) openQModal(Q_GROUPS[info.groupIdx + 1].ids[0]);
+  });
+  document.addEventListener('keydown', function(e) {
+    if (qModal.hasAttribute('hidden')) return;
+    if (e.key === 'Escape') { closeQModal(); return; }
+    const info = Q_LOOKUP[qCurrentId];
+    if (!info) return;
+    if (e.key === 'ArrowLeft') {
+      if (info.pos > 0) openQModal(info.group.ids[info.pos - 1]);
+      else if (info.groupIdx > 0) { const pg = Q_GROUPS[info.groupIdx-1]; openQModal(pg.ids[pg.ids.length-1]); }
+    }
+    if (e.key === 'ArrowRight') {
+      if (info.pos < info.group.ids.length - 1) openQModal(info.group.ids[info.pos + 1]);
+      else if (info.groupIdx < Q_GROUPS.length - 1) openQModal(Q_GROUPS[info.groupIdx + 1].ids[0]);
+    }
+  });
 })();
 </script>
 
