@@ -32,7 +32,6 @@ export function createInitialState(playerIds, playerNames) {
     playerOrder: [...playerIds],
     supplyPoints: [...SUPPLY_FIXED],
     mines: [],
-    decoys: [],
     turnLog: [],
     actionEvents: [],
     winner: null,
@@ -64,7 +63,7 @@ function makePlayer(id, name, pos) {
 }
 
 function defaultBuffs() {
-  return { chaffActive: false, armorActive: false };
+  return { chaffActive: false };
 }
 
 function getRandomRespawnPos(state) {
@@ -87,95 +86,85 @@ function getRandomRespawnPos(state) {
 }
 
 /* ============================================================
-   2. コマンドフェーズ
+   2. コマンドフェーズ―このファイルは状態初期化とアクション解決のみ。
+   handleCommand / forceConfirmAll / advanceToNextTurn は
+   gameSequence.js が担当する。
    ============================================================ */
-export function calcTimeCost(opIds) {
-  return opIds.reduce((sum, id) => sum + (OPS[id]?.cost ?? 0), 0);
-}
-
-export function handleCommand(state, playerId, opIds, targets) {
-  const p = state.players[playerId];
-  if (!p || !p.alive || state.phase !== 'command') return false;
-  if (!opIds.every(id => !!OPS[id])) return false;
-  const cost = calcTimeCost(opIds);
-  if (cost > p.time) return false;
-  const invUse = {};
-  for (const id of opIds) {
-    const op = OPS[id];
-    if (op.invKey) invUse[op.invKey] = (invUse[op.invKey] || 0) + 1;
-  }
-  for (const [key, count] of Object.entries(invUse)) {
-    if ((p.inventory[key] ?? 0) < count) return false;
-  }
-  p.commandQueue = opIds.map((op, i) => ({ op, target: targets[i] || {} }));
-  p.commandConfirmed = true;
-  if (allAliveDone(state, pl => pl.commandConfirmed)) resolveActions(state);
-  return true;
-}
-
-export function forceConfirmAll(state) {
-  if (state.phase !== 'command') return;
-  alivePlayers(state).forEach(id => {
-    const p = state.players[id];
-    if (!p.commandConfirmed) { p.commandQueue = []; p.commandConfirmed = true; }
-  });
-  resolveActions(state);
-}
-
 /* ============================================================
    3. アクションフェーズ解決
+   ─────────────────────────────────────────────────────
+   タイムライン方式:
+     各プレイヤーのコマンドに「累積コスト = 完了時刻 t」を付けて
+     1本のリストに並べ、t 昇順で実行する。
+     同一 t のコマンドは「同時に完了した」扱いでまとめて実行し、
+     ティック境界（t が変わる瞬間）で機雷・ドッグファイト突入を判定。
+     これにより「前進→ソナー」は前進後にソナーが動き、
+     「前進の結果ドッグファイト範囲に入った」も正しく検出できる。
    ============================================================ */
 export function resolveActions(state) {
   state.phase = 'action';
-  state.actionPhaseStartedAt = Date.now(); // アニメ同期用タイムスタンプ
+  state.actionPhaseStartedAt = Date.now();
   state.actionEvents = [];
   state.turnLog = [];
   const alive = alivePlayers(state);
 
-  // 0) 防御バフ (chaff / armor) -- 在庫消費含む
+  // 1) チャフ（コマンドを先読みして即時展開）
   alive.forEach(id => {
     for (const { op } of state.players[id].commandQueue) {
       if (op === 'chaff') activateChaff(state, id);
-      if (op === 'armor') activateArmor(state, id);
     }
   });
 
-  // 1) コマンドをインデックス順にラウンドロビン処理
-  //    インデックス i で全プレイヤーの cmd[i] を同時実行
-  //    → ソナーはキューの位置通りに発動（例: 移動→ソナー なら移動後に検知）
-  const maxCmds = alive.reduce((m, id) => Math.max(m, state.players[id].commandQueue.length), 0);
-  for (let i = 0; i < maxCmds; i++) {
-    alive.forEach(id => {
-      const cmd = state.players[id].commandQueue[i];
-      if (!cmd) return;
-      const cat = OPS[cmd.op]?.cat;
-      if      (cat === 'move')     resolveMove(state, id, cmd);
-      else if (cmd.op === 'sonar') resolveSonar(state, id, cmd);
-      else if (cat === 'weapon')   resolveWeapon(state, id, cmd);
-      else if (cmd.op === 'decoy') resolveDecoy(state, id, cmd);
-      else if (cmd.op === 'mine')  resolveMine(state, id, cmd);
-    });
+  // 2) タイムライン構築（累積コスト = 完了時刻）
+  const timeline = [];
+  for (const pid of alive) {
+    let t = 0;
+    for (const cmd of state.players[pid].commandQueue) {
+      t += OPS[cmd.op]?.cost ?? 1;
+      timeline.push({ t, pid, cmd });
+    }
   }
+  // t 昇順 → 同 t はプレイヤー順（決定論的）
+  timeline.sort((a, b) =>
+    a.t - b.t || state.playerOrder.indexOf(a.pid) - state.playerOrder.indexOf(b.pid)
+  );
 
-  // 2) 収縮ダメージ — 機能売りまたは定数変更で再有効化するまでコメントアウト
-  // alive.forEach(id => {
-  //   const p = state.players[id];
-  //   if (isInDanger(p.x, p.y, state.turn)) applyDamage(state, id, 1, 'shrink', null);
-  // });
+  // 3) タイムライン実行
+  //    ティックが変わるたびに飛翔体前進 → 機雷トリガーとドッグファイト突入を判定する
+  const projectiles = [];
+  let projSeq = 0;
+  let prevT = -1;
+  for (const { t, pid, cmd } of timeline) {
+    // ─ ティック境界: 飛翔体を1ステップ前進させてから衝突判定 ─
+    if (t !== prevT && prevT >= 0) {
+      _advanceProjectiles(state, projectiles);
+      _tickEnterCheck(state);
+    }
+    prevT = t;
 
-  // 3) 機雷チェック（全移動完了後）
-  checkMines(state, alive);
+    if (!state.players[pid].alive) continue;
+    const cat = OPS[cmd.op]?.cat;
+    if      (cat === 'move')     resolveMove(state, pid, cmd);
+    else if (cmd.op === 'sonar') resolveSonar(state, pid, cmd);
+    else if (cat === 'weapon')   _spawnProjectile(state, pid, cmd, projectiles, projSeq++);
+    else if (cmd.op === 'mine')  resolveMine(state, pid, cmd);
+  }
+  // 最終ティック後: 残存飛翔体を射程が尽きるまで前進させる
+  for (let extra = 0; extra < GRID_SIZE && projectiles.length > 0; extra++) {
+    _advanceProjectiles(state, projectiles);
+  }
+  _tickEnterCheck(state);
 
-  // 4) 補給（全移動完了後）
-  resolveSupply(state, alive);
+  // 4) 補給（全行動完了後）
+  resolveSupply(state, alivePlayers(state));
 
-  // weapon/place 在庫消費 (chaff/armor は既に消費済み)
+  // 5) 在庫消費（chaff は activateChaff 内で消費済み）
   alive.forEach(id => {
     const p = state.players[id];
     const invUse = {};
     for (const { op } of p.commandQueue) {
       const opDef = OPS[op];
-      if (opDef?.invKey && op !== 'chaff' && op !== 'armor') {
+      if (opDef?.invKey && op !== 'chaff') {
         invUse[opDef.invKey] = (invUse[opDef.invKey] || 0) + 1;
       }
     }
@@ -184,51 +173,67 @@ export function resolveActions(state) {
     }
   });
 
-  // 8) ドッグファイト
-  resolveDogfight(state, alive);
+  // 6) 前方警戒
+  resolveForwardWarning(state, alivePlayers(state));
 
-  // 9) 前方警戒
-  resolveForwardWarning(state, alive);
-
-  // 10) デコイ寿命
-  state.decoys = state.decoys.filter(d => { d.turnsLeft--; return d.turnsLeft > 0; });
-
-  // 11) 脱落チェック
+  // 8) 脱落チェック
   checkEliminations(state);
 }
 
-export function advanceToNextTurn(state) {
-  if (state.winner || state.phase === 'ended') return;
-  state.turn++;
-  prepareNextTurn(state);
-}
+/**
+ * ティック境界での衝突・ドッグファイト判定
+ * 順序: ドッグファイト離脱 → 突入 → 機雷トリガー
+ * 「離脱した直後に別ペアに突入」を同一ティック内で正しく処理するため
+ * 離脱を先に行う。
+ */
+function _tickEnterCheck(state) {
+  const alive = alivePlayers(state);
 
-function prepareNextTurn(state) {
-  state.playerOrder.forEach(id => {
-    const p = state.players[id];
-    if (p.respawning) {
-      const pos = getRandomRespawnPos(state);
-      p.x = pos.x; p.y = pos.y; p.dir = pos.dir;
-      p.hp = INITIAL_HP;
-      p.alive = true;
-      p.respawning = false;
-      p.inventory = { ...INITIAL_INVENTORY };
-      p.buffs = defaultBuffs();
-      pushEvent(state, { type: 'respawn', pid: id, x: pos.x, y: pos.y, public: true });
-      state.turnLog.push(`${p.name} が外縁(${pos.x},${pos.y})に復活`);
+  // 1) ドッグファイト離脱（先に判定）
+  const exited = new Set();
+  alive.forEach(pid => {
+    const p = state.players[pid];
+    if (!p.dogfightWith || exited.has(pid)) return;
+    const other = state.players[p.dogfightWith];
+    if (!other || !other.alive || chebyshev(p.x, p.y, other.x, other.y) > 4) {
+      exited.add(pid);
+      exited.add(p.dogfightWith);
+      const partnerId = p.dogfightWith;
+      if (other) other.dogfightWith = null;
+      p.dogfightWith = null;
+      pushEvent(state, { type: 'dogfight_end', pid,            public: false, to: pid });
+      pushEvent(state, { type: 'dogfight_end', pid: partnerId, public: false, to: partnerId });
     }
   });
-  state.phase = 'command';
-  alivePlayers(state).forEach(id => {
-    const p = state.players[id];
-    p.time = BASE_TIME;
-    p.sonarResults = [];
-    p.forwardWarning = null;
-    p.commandQueue = [];
-    p.commandConfirmed = false;
-    // dogfightWith はリセットしない。
-    // コマンドフェーズ中も相手座標・方向を公開するため、および
-    // resolveDogfight が「距離 > 4 なら解除」「設定済みなら再発火しない」を正しく処理するため。
+
+  // 2) ドッグファイト突入（離脱後に判定 / ターン1はスキップ）
+  if (state.turn > 1) {
+    for (let i = 0; i < alive.length; i++) {
+      for (let j = i + 1; j < alive.length; j++) {
+        const a = state.players[alive[i]], b = state.players[alive[j]];
+        if (a.dogfightWith === alive[j]) continue; // 既に同士ならスキップ
+        if (a.dogfightWith || b.dogfightWith) continue; // 他と交戦中ならスキップ
+        if (chebyshev(a.x, a.y, b.x, b.y) <= 3) {
+          a.dogfightWith = alive[j];
+          b.dogfightWith = alive[i];
+          pushEvent(state, { type: 'dogfight_start', pids: [alive[i], alive[j]], public: false, to: alive[i] });
+          pushEvent(state, { type: 'dogfight_start', pids: [alive[i], alive[j]], public: false, to: alive[j] });
+        }
+      }
+    }
+  }
+
+  // 3) 機雷トリガー
+  alive.forEach(pid => {
+    const p = state.players[pid];
+    state.mines = state.mines.filter(m => {
+      if (m.x === p.x && m.y === p.y && m.ownerId !== pid) {
+        applyDamage(state, pid, 1, 'mine', m.ownerId);
+        pushEvent(state, { type: 'explosion', x: m.x, y: m.y, public: true });
+        return false;
+      }
+      return true;
+    });
   });
 }
 
@@ -258,7 +263,8 @@ function resolveMove(state, pid, cmd) {
       break;
     }
   }
-  pushEvent(state, { type: 'move', pid, op: cmd.op, fromX, fromY, fromDir, x: p.x, y: p.y, dir: p.dir, public: false, to: pid });
+  // public: true → 全端末で全プレイヤーのアニメーションを再生するために必要
+  pushEvent(state, { type: 'move', pid, op: cmd.op, fromX, fromY, fromDir, x: p.x, y: p.y, dir: p.dir, public: true });
 }
 
 function resolveSonar(state, pid, cmd) {
@@ -268,95 +274,184 @@ function resolveSonar(state, pid, cmd) {
   const r = 1;  // Chebyshev1（前ステップで移動より先に解決するため1で十分）
   const hits = [];
   findEnemiesInRadius(state, pid, cx, cy, r).forEach(ep => {
-    const hasDecoy = state.decoys.some(d => d.ownerId === ep.id && d.x === ep.x && d.y === ep.y);
-    if (!hasDecoy) {
-      const hit = { x: ep.x, y: ep.y, playerId: ep.id };
-      p.sonarResults.push(hit);
-      hits.push(hit);
-      // 検知された側に警告イベントを通知
-      pushEvent(state, { type: 'sonar_detected', pid: ep.id, detectedBy: pid, public: false, to: ep.id });
-    }
+    const hit = { x: ep.x, y: ep.y, playerId: ep.id, expiresAfterTurn: state.turn + 1 };
+    p.sonarResults.push(hit);
+    hits.push(hit);
+    // 検知された側に警告イベントを通知
+    pushEvent(state, { type: 'sonar_detected', pid: ep.id, detectedBy: pid, public: false, to: ep.id });
   });
   pushEvent(state, { type: 'sonar', pid, op: 'sonar', cx, cy, r, hits, public: false, to: pid });
 }
 
-function resolveWeapon(state, pid, cmd) {
+/* ── 飛翔体スポーン・管理 ─────────────────────────────────── */
+const TORPEDO_RANGE = 8;
+const GUIDED_RANGE  = 12;
+/** 追尾魚雷の角度修正間隔（ティック数）― 導いほど追尾強度が強まる */
+const GUIDED_REROUTE_INTERVAL = 4;
+/** 追尾魚雷が追尾を終了する移動歩数（これを超えたら結果が変わらない） */
+const GUIDED_TRACK_STEPS = 6;
+
+/**
+ * 武器コマンドを飛翔体として登録する。
+ * 実際のダメージは _advanceProjectiles() 内のヒット判定で発生する。
+ */
+function _spawnProjectile(state, pid, cmd, projectiles, seq) {
   const p = state.players[pid];
-  switch (cmd.op) {
-    case 'torpedo': {
-      const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : null;
-      const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : null;
-      if (tx == null || ty == null) break;
-      // 前方45度扇形バリデーション
-      const td = DIR_DELTA[p.dir];
-      const tdx = tx - p.x, tdy = ty - p.y;
-      const tFwd = tdx * td.dx + tdy * td.dy;
-      const tCross = Math.abs(tdx * td.dy - tdy * td.dx);
-      if (tFwd <= 0 || tCross > tFwd) break; // 扇外は無効
-      const { endX, endY, didHit, hitX, hitY } = fireTorpedoToward(state, pid, p.x, p.y, tx, ty, 2);
-      pushEvent(state, { type: 'torpedo_fire', pid, op: 'torpedo', sx: p.x, sy: p.y, ex: endX, ey: endY, hit: didHit, hitX, hitY, public: false, to: pid });
-      pushEvent(state, { type: 'attack_leak', pid, op: 'torpedo', sx: p.x, sy: p.y, ex: endX, ey: endY, public: true });
-      break;
-    }
-    case 'guided': {
-      const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : p.x;
-      const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : p.y;
-      // 前方45度扇形バリデーション（サーバー側）
-      const gd = DIR_DELTA[p.dir];
-      const dtx = tx - p.x, dty = ty - p.y;
-      const fwdDot = dtx * gd.dx + dty * gd.dy;
-      const crossMag = Math.abs(dtx * gd.dy - dty * gd.dx);
-      if (fwdDot <= 0 || crossMag > fwdDot) break;  // 扇外は無効
-      // 目標座標からチェビシェフ2以内の最近岐を先に判定（イベントに hit 情報を含めるため）
-      let nearestEnemy = null;
-      let nearestDist = Infinity;
-      alivePlayers(state).forEach(eid => {
-        if (eid === pid) return;
-        const ep = state.players[eid];
-        const dist = chebyshev(ep.x, ep.y, tx, ty);
-        if (dist <= 2 && dist < nearestDist) { nearestEnemy = eid; nearestDist = dist; }
-      });
-      const hitEp   = nearestEnemy ? state.players[nearestEnemy] : null;
-      const hitInfo = hitEp ? { hit: true, hitX: hitEp.x, hitY: hitEp.y } : {};
-      // 発射者向けプライベートイベント（アニメーション用）
-      pushEvent(state, { type: 'guided_fire', pid, op: 'guided', sx: p.x, sy: p.y, tx, ty, ...hitInfo, public: false, to: pid });
-      if (nearestEnemy) {
-        const ep = state.players[nearestEnemy];
-        if (ep.buffs.chaffActive) {
-          ep.buffs.chaffActive = false;
-          state.turnLog.push(`${ep.name} のチャフが追尾魚雷を無効化`);
-          pushEvent(state, { type: 'chaff_block', pid: nearestEnemy, public: false, to: nearestEnemy });
-        } else {
-          applyDamage(state, nearestEnemy, 1, 'guided', pid);
-        }
-      }
-      break;
-    }
-    case 'shotgun': {
-      const fwd = DIR_DELTA[p.dir];
-      const lDir = rotateDir(p.dir, -1), rDir = rotateDir(p.dir, 1);
-      const fan = [
-        { x: clamp(p.x + fwd.dx, 0, GRID_SIZE - 1), y: clamp(p.y + fwd.dy, 0, GRID_SIZE - 1) },
-        { x: clamp(p.x + DIR_DELTA[lDir].dx + fwd.dx, 0, GRID_SIZE - 1), y: clamp(p.y + DIR_DELTA[lDir].dy + fwd.dy, 0, GRID_SIZE - 1) },
-        { x: clamp(p.x + DIR_DELTA[rDir].dx + fwd.dx, 0, GRID_SIZE - 1), y: clamp(p.y + DIR_DELTA[rDir].dy + fwd.dy, 0, GRID_SIZE - 1) },
-      ];
-      alivePlayers(state).forEach(eid => {
-        if (eid === pid) return;
-        const ep = state.players[eid];
-        if (fan.some(f => f.x === ep.x && f.y === ep.y)) {
-          if (ep.buffs.armorActive) {
-            ep.buffs.armorActive = false;
-            state.turnLog.push(`${ep.name} の装甲板が散弾を無効化`);
-            pushEvent(state, { type: 'armor_block', pid: eid, public: false, to: eid });
-          } else {
-            applyDamage(state, eid, 1, 'shotgun', pid);
-          }
-        }
-      });
-      pushEvent(state, { type: 'attack_leak', pid, op: 'shotgun', dir: p.dir, public: true, fan: true });
-      break;
+  const projId = `pj${seq}`;
+  if (cmd.op === 'torpedo') {
+    const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : null;
+    const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : null;
+    if (tx == null || ty == null) return;
+    const td = DIR_DELTA[p.dir];
+    const tFwd   = (tx - p.x) * td.dx + (ty - p.y) * td.dy;
+    const tCross = Math.abs((tx - p.x) * td.dy - (ty - p.y) * td.dx);
+    if (tFwd <= 0 || tCross > tFwd) return;
+    const path = _computeProjPath(p.x, p.y, tx, ty, TORPEDO_RANGE);
+    projectiles.push({ id: projId, type: 'torpedo', ownerId: pid, x: p.x, y: p.y, path, pathIdx: 0, damage: 2 });
+    pushEvent(state, { type: 'torpedo_fire', pid, projId, sx: p.x, sy: p.y, tx, ty, public: true });
+    state.turnLog.push(`${p.name} が魚雷を発射 (→${tx},${ty})`);
+  } else if (cmd.op === 'guided') {
+    const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : p.x;
+    const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : p.y;
+    const gd = DIR_DELTA[p.dir];
+    const fwdDot  = (tx - p.x) * gd.dx + (ty - p.y) * gd.dy;
+    const crossMag = Math.abs((tx - p.x) * gd.dy - (ty - p.y) * gd.dx);
+    if (fwdDot <= 0 || crossMag > fwdDot) return;
+    const path = _computeProjPath(p.x, p.y, tx, ty, GUIDED_RANGE);
+    projectiles.push({ id: projId, type: 'guided', ownerId: pid, x: p.x, y: p.y, path, pathIdx: 0, damage: 1, targetX: tx, targetY: ty, rerouteTick: 0, stepCount: 0, prevX: p.x, prevY: p.y });
+    pushEvent(state, { type: 'guided_fire', pid, projId, sx: p.x, sy: p.y, tx, ty, public: true });
+    state.turnLog.push(`${p.name} が追尾魚雷を発射 (→${tx},${ty})`);
+  } else if (cmd.op === 'shotgun') {
+    const fwd  = DIR_DELTA[p.dir];
+    const lDir = rotateDir(p.dir, -1), rDir = rotateDir(p.dir, 1);
+    [
+      [clamp(p.x + fwd.dx,                              0, GRID_SIZE - 1), clamp(p.y + fwd.dy,                              0, GRID_SIZE - 1)],
+      [clamp(p.x + DIR_DELTA[lDir].dx + fwd.dx,         0, GRID_SIZE - 1), clamp(p.y + DIR_DELTA[lDir].dy + fwd.dy,         0, GRID_SIZE - 1)],
+      [clamp(p.x + DIR_DELTA[rDir].dx + fwd.dx,         0, GRID_SIZE - 1), clamp(p.y + DIR_DELTA[rDir].dy + fwd.dy,         0, GRID_SIZE - 1)],
+    ].forEach(([tx, ty], i) => {
+      projectiles.push({ id: `${projId}_${i}`, type: 'shotgun', ownerId: pid, x: p.x, y: p.y,
+        path: _computeProjPath(p.x, p.y, tx, ty, 1), pathIdx: 0, damage: 1 });
+    });
+    pushEvent(state, { type: 'shotgun_fire', pid, projId, dir: p.dir, sx: p.x, sy: p.y, public: true });
+    state.turnLog.push(`${p.name} が散弾を発射`);
+  }
+}
+
+/**
+ * atan2 で発射元→目標の角度を求め、直線補間で最大 maxSteps セル分の経路を返す。
+ * 各ステップは「スタートから i × (cos・sin) 進んだ位置を Math.round」で決定。
+ * 隔逸ステップが同一セルになる場合は重複を除去（斜め方向で自然発生）。
+ * 目標を超えても同方向で直進。盤外 or maxSteps で経路終端。
+ */
+function _computeProjPath(sx, sy, tx, ty, maxSteps) {
+  if (sx === tx && sy === ty) return [];
+  const angle = Math.atan2(ty - sy, tx - sx);
+  const cosA = Math.cos(angle), sinA = Math.sin(angle);
+  const path = [];
+  let prevX = sx, prevY = sy;
+  for (let i = 1; i <= maxSteps; i++) {
+    const nx = Math.round(sx + cosA * i);
+    const ny = Math.round(sy + sinA * i);
+    if (nx < 0 || nx >= GRID_SIZE || ny < 0 || ny >= GRID_SIZE) break;
+    if (nx !== prevX || ny !== prevY) {
+      path.push({ x: nx, y: ny });
+      prevX = nx; prevY = ny;
     }
   }
+  return path;
+}
+
+/**
+ * 全飛翔体を 1 ステップ前進させ、ヒット/射程切れを処理する。
+ */
+function _advanceProjectiles(state, projectiles) {
+  const toRemove = new Set();
+  for (const proj of projectiles) {
+    if (toRemove.has(proj.id)) continue;
+
+    // 追尾魚雷: GUIDED_REROUTE_INTERVAL ティックかぞに角度修正
+    if (proj.type === 'guided') {
+      proj.stepCount = (proj.stepCount ?? 0) + 1;
+      _rerouteGuided(proj, state);
+    }
+
+    if (proj.pathIdx >= proj.path.length) {
+      pushEvent(state, { type: 'projectile_miss', projId: proj.id, projType: proj.type, ownerId: proj.ownerId, x: proj.x, y: proj.y, public: true });
+      toRemove.add(proj.id);
+      continue;
+    }
+    const next = proj.path[proj.pathIdx++];
+    proj.x = next.x; proj.y = next.y;
+    const hit = alivePlayers(state).find(eid =>
+      eid !== proj.ownerId && state.players[eid].x === proj.x && state.players[eid].y === proj.y
+    );
+    if (hit) {
+      if (proj.type === 'guided' && state.players[hit].buffs.chaffActive) {
+        state.players[hit].buffs.chaffActive = false;
+        state.turnLog.push(`${state.players[hit].name} のチャフが追尾魚雷を無効化`);
+        pushEvent(state, { type: 'chaff_block',    pid: hit,        public: false, to: hit });
+        pushEvent(state, { type: 'projectile_hit', projId: proj.id, projType: proj.type, ownerId: proj.ownerId, x: proj.x, y: proj.y, blocked: true, public: true });
+      } else {
+        applyDamage(state, hit, proj.damage, proj.type, proj.ownerId);
+        pushEvent(state, { type: 'projectile_hit', projId: proj.id, projType: proj.type, ownerId: proj.ownerId, x: proj.x, y: proj.y, public: true });
+      }
+      toRemove.add(proj.id);
+    } else {
+      pushEvent(state, { type: 'projectile_tick', projId: proj.id, projType: proj.type, ownerId: proj.ownerId, x: proj.x, y: proj.y, public: true });
+    }
+  }
+  for (const id of toRemove) {
+    const i = projectiles.findIndex(p => p.id === id);
+    if (i >= 0) projectiles.splice(i, 1);
+  }
+}
+
+/**
+ * 追尾魚雷: `GUIDED_REROUTE_INTERVAL` ティックごとに最近傍敵への角度を atan2 で再計算する。
+ * 恵瓟インターバル内は元の経路をなぞる。
+ */
+function _rerouteGuided(proj, state) {
+  // 追尾射程外（GUIDED_TRACK_STEPS 超過）は追尾しない
+  if ((proj.stepCount ?? 0) > GUIDED_TRACK_STEPS) return;
+
+  proj.rerouteTick = (proj.rerouteTick ?? 0) + 1;
+  if (proj.rerouteTick % GUIDED_REROUTE_INTERVAL !== 0) return;
+
+  let nearest = null, bestDist = Infinity;
+  alivePlayers(state).forEach(eid => {
+    if (eid === proj.ownerId) return;
+    const ep = state.players[eid];
+    const d = Math.hypot(ep.x - proj.x, ep.y - proj.y);
+    if (d < bestDist) { nearest = ep; bestDist = d; }
+  });
+  if (!nearest) return;
+
+  // 現在の進行角度（prevX/prevY から計算）
+  const prevX = proj.prevX ?? proj.x, prevY = proj.prevY ?? proj.y;
+  const curAngle = Math.atan2(proj.y - prevY, proj.x - prevX);
+  // 新角度（目標への方向）
+  const newAngle = Math.atan2(nearest.y - proj.y, nearest.x - proj.x);
+  // 角度差を -π〜+π に正規化
+  let delta = newAngle - curAngle;
+  while (delta >  Math.PI) delta -= 2 * Math.PI;
+  while (delta < -Math.PI) delta += 2 * Math.PI;
+  const MAX_TURN = Math.PI / 4; // ±45度
+
+  let finalAngle;
+  if (Math.abs(delta) <= MAX_TURN) {
+    finalAngle = newAngle;
+  } else {
+    finalAngle = curAngle + Math.sign(delta) * MAX_TURN;
+  }
+
+  // clamp後の角度で終点を計算して経路再計算
+  const targetX = Math.round(proj.x + Math.cos(finalAngle) * GUIDED_RANGE);
+  const targetY = Math.round(proj.y + Math.sin(finalAngle) * GUIDED_RANGE);
+  const newPath = _computeProjPath(proj.x, proj.y, targetX, targetY, GUIDED_RANGE);
+  if (newPath.length > 0) { proj.path = newPath; proj.pathIdx = 0; }
+  proj.targetX = nearest.x; proj.targetY = nearest.y;
+  // 次ティックの角度計算用に現在位置を保存
+  proj.prevX = proj.x; proj.prevY = proj.y;
 }
 
 function activateChaff(state, pid) {
@@ -368,24 +463,6 @@ function activateChaff(state, pid) {
   state.turnLog.push(`${p.name} がチャフを展開`);
 }
 
-function activateArmor(state, pid) {
-  const p = state.players[pid];
-  if ((p.inventory.armor ?? 0) <= 0) return;
-  p.inventory.armor--;
-  p.buffs.armorActive = true;
-  pushEvent(state, { type: 'buff', pid, op: 'armor', public: false, to: pid });
-  state.turnLog.push(`${p.name} が装甲板を展開`);
-}
-
-function resolveDecoy(state, pid, cmd) {
-  const p = state.players[pid];
-  const tx = cmd.target?.x ?? p.x;
-  const ty = cmd.target?.y ?? p.y;
-  state.decoys.push({ x: tx, y: ty, ownerId: pid, turnsLeft: 2 });
-  pushEvent(state, { type: 'decoy', pid, x: tx, y: ty, public: false, to: pid });
-  state.turnLog.push(`${p.name} がデコイを設置 (${tx},${ty})`);
-}
-
 function resolveMine(state, pid, cmd) {
   const p = state.players[pid];
   const tx = cmd.target?.x ?? p.x;
@@ -393,40 +470,6 @@ function resolveMine(state, pid, cmd) {
   state.mines.push({ x: tx, y: ty, ownerId: pid });
   pushEvent(state, { type: 'mine_place', pid, x: tx, y: ty, public: false, to: pid });
   state.turnLog.push(`${p.name} が機雷を設置 (${tx},${ty})`);}
-
-function fireTorpedoLine(state, pid, sx, sy, dir, range, damage) {
-  const dl = DIR_DELTA[dir];
-  let cx = sx, cy = sy, endX = sx, endY = sy;
-  for (let i = 0; i < range; i++) {
-    cx += dl.dx; cy += dl.dy;
-    if (cx < 0 || cx >= GRID_SIZE || cy < 0 || cy >= GRID_SIZE) break;
-    endX = cx; endY = cy;
-    const hit = alivePlayers(state).find(eid => eid !== pid && state.players[eid].x === cx && state.players[eid].y === cy);
-    if (hit) { applyDamage(state, hit, damage, 'torpedo', pid); break; }
-  }
-  return { endX, endY };
-}
-
-/** 指定座標方向へ直線発射（Bresenham近似）・GRID_SIZE 履分続行 */
-function fireTorpedoToward(state, pid, sx, sy, tx, ty, damage) {
-  const adx = tx - sx, ady = ty - sy;
-  if (adx === 0 && ady === 0) return { endX: sx, endY: sy, didHit: false, hitX: sx, hitY: sy };
-  const maxSteps = Math.max(Math.abs(adx), Math.abs(ady));
-  let endX = sx, endY = sy, didHit = false, hitX = sx, hitY = sy;
-  const seen = new Set([`${sx},${sy}`]);
-  for (let i = 1; i <= GRID_SIZE * 2; i++) {
-    const fx = Math.round(sx + adx * i / maxSteps);
-    const fy = Math.round(sy + ady * i / maxSteps);
-    if (fx < 0 || fx >= GRID_SIZE || fy < 0 || fy >= GRID_SIZE) break;
-    const key = `${fx},${fy}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    endX = fx; endY = fy;
-    const hit = alivePlayers(state).find(eid => eid !== pid && state.players[eid].x === fx && state.players[eid].y === fy);
-    if (hit) { applyDamage(state, hit, damage, 'torpedo', pid); didHit = true; hitX = fx; hitY = fy; break; }
-  }
-  return { endX, endY, didHit, hitX, hitY };
-}
 
 function resolveSupply(state, alive) {
   alive.forEach(pid => {
@@ -444,47 +487,6 @@ function resolveSupply(state, alive) {
       }
     }
   });
-}
-
-function checkMines(state, alive) {
-  alive.forEach(pid => {
-    const p = state.players[pid];
-    state.mines = state.mines.filter(m => {
-      if (m.x === p.x && m.y === p.y && m.ownerId !== pid) {
-        applyDamage(state, pid, 1, 'mine', m.ownerId);
-        pushEvent(state, { type: 'explosion', x: m.x, y: m.y, public: true });
-        return false;
-      }
-      return true;
-    });
-  });
-}
-
-function resolveDogfight(state, alive) {
-  alive.forEach(pid => {
-    const p = state.players[pid];
-    if (p.dogfightWith) {
-      const other = state.players[p.dogfightWith];
-      if (!other || !other.alive || chebyshev(p.x, p.y, other.x, other.y) > 4) {
-        if (other) other.dogfightWith = null;
-        p.dogfightWith = null;
-        pushEvent(state, { type: 'dogfight_end', pid, public: false, to: pid });
-      }
-    }
-  });
-  if (state.turn <= 1) return;
-  for (let i = 0; i < alive.length; i++) {
-    for (let j = i + 1; j < alive.length; j++) {
-      const a = state.players[alive[i]], b = state.players[alive[j]];
-      if (a.dogfightWith || b.dogfightWith) continue;
-      if (chebyshev(a.x, a.y, b.x, b.y) <= 3) {
-        a.dogfightWith = alive[j];
-        b.dogfightWith = alive[i];
-        pushEvent(state, { type: 'dogfight_start', pids: [alive[i], alive[j]], public: false, to: alive[i] });
-        pushEvent(state, { type: 'dogfight_start', pids: [alive[i], alive[j]], public: false, to: alive[j] });
-      }
-    }
-  }
 }
 
 function resolveForwardWarning(state, alive) {
@@ -527,6 +529,12 @@ function checkEliminations(state) {
 export function sanitizeStateForPlayer(state, playerId) {
   const me = state.players[playerId];
   const safeZone = getSafeZone(state.turn);
+
+  // ソナー検知中の敵プレイヤーIDセット（次ターンのコマンド・行動フェーズ中も見える）
+  const sonarVisible = new Set(
+    (me?.sonarResults || []).map(r => r.playerId)
+  );
+
   const players = {};
   state.playerOrder.forEach(id => {
     if (id === playerId) {
@@ -541,9 +549,15 @@ export function sanitizeStateForPlayer(state, playerId) {
         hp: o.hp,
         x: undefined, y: undefined, dir: undefined,
       };
+      // ドッグファイト中は相手座標・コマンドを公開
       if (me && me.dogfightWith === id && o.alive) {
         revealed.x = o.x; revealed.y = o.y; revealed.dir = o.dir;
-        revealed.commandQueue = o.commandQueue;  // ドッグファイト中は相手コマンドを公開
+        revealed.commandQueue = o.commandQueue;
+      }
+      // ソナー検知中は次ターンまで座標を公開
+      if (sonarVisible.has(id) && o.alive) {
+        revealed.x = o.x; revealed.y = o.y;
+        revealed.sonarDetected = true;
       }
       if (!o.alive) revealed.hp = 0;
       players[id] = revealed;
@@ -559,10 +573,8 @@ export function sanitizeStateForPlayer(state, playerId) {
       e.public || e.to === playerId || (Array.isArray(e.pids) && e.pids.includes(playerId))
     ),
     myMines: state.mines.filter(m => m.ownerId === playerId),
-    myDecoys: state.decoys.filter(d => d.ownerId === playerId),
-    // 自機からチェビシェフ3マス以内の敵機雷・敵デコイ・近接敵
+    // 自機からチェビシェフ3マス以内の敵機雷・近接敵
     nearbyMines: state.mines.filter(m => m.ownerId !== playerId && me && chebyshev(me.x, me.y, m.x, m.y) <= 3),
-    nearbyDecoys: state.decoys.filter(d => d.ownerId !== playerId && me && chebyshev(me.x, me.y, d.x, d.y) <= 3),
     nearbyEnemies: (() => {
       if (!me) return [];
       return state.playerOrder
@@ -575,14 +587,15 @@ export function sanitizeStateForPlayer(state, playerId) {
 }
 
 /* ============================================================
-   6. ユーティリティ
+   6. ユーティリティ（gameSequence.js からも使用するため export）
    ============================================================ */
-function alivePlayers(state) {
+export function alivePlayers(state) {
   return state.playerOrder.filter(id => state.players[id].alive);
 }
-function allAliveDone(state, pred) {
+export function allAliveDone(state, pred) {
   return state.playerOrder.every(id => !state.players[id].alive || pred(state.players[id]));
 }
+export function pushEvent(state, ev) { state.actionEvents.push(ev); }
 function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 function chebyshev(x1, y1, x2, y2) { return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2)); }
 function findEnemiesInRadius(state, pid, cx, cy, r) {
@@ -591,7 +604,6 @@ function findEnemiesInRadius(state, pid, cx, cy, r) {
     .map(eid => state.players[eid])
     .filter(ep => chebyshev(cx, cy, ep.x, ep.y) <= r);
 }
-function pushEvent(state, ev) { state.actionEvents.push(ev); }
 
 function applyDamage(state, pid, amount, source, attackerId) {
   const p = state.players[pid];

@@ -198,13 +198,13 @@
       </div>
     </div>
 
-    <!-- 操作パネル: 左=移動/索敵 十字キー | 右=武器/設置/防御 在庫 -->
+    <!-- 操作パネル: 移動2行 + 索敵/攻撃1行 -->
     <div class="op-panel hidden" id="op-panel">
 
-      <!-- 左パネル: 移動・ソナー 十字キー配置 -->
-      <div class="op-left">
+      <!-- 移動ブロック: 3列×2行グリッド（中央＝ソナー） -->
+      <div class="op-section">
         <div class="op-section-label">移動 / 索敵</div>
-        <div class="crosspad">
+        <div class="move-pad">
           <button class="op-btn move-btn" data-op="turn_left">
             <span class="material-symbols-outlined">turn_left</span>
             <span class="op-name">←旋回</span>
@@ -238,68 +238,43 @@
         </div>
       </div>
 
-      <!-- 右パネル: カテゴリ別在庫 -->
-      <div class="op-right">
-        <div class="inv-row-group">
-          <div class="inv-section">
-            <div class="inv-section-label">武器</div>
-            <div class="inv-row">
-              <button class="op-btn inv-btn" data-op="torpedo">
-                <span class="material-symbols-outlined">rocket_launch</span>
-                <span class="op-name">魚雷</span>
-                <span class="op-cost">1</span>
-                <span class="inv-count" id="inv-torpedo">×3</span>
-              </button>
-              <button class="op-btn inv-btn" data-op="guided">
-                <span class="material-symbols-outlined">assistant_navigation</span>
-                <span class="op-name">追尾魚雷</span>
-                <span class="op-cost">2</span>
-                <span class="inv-count" id="inv-guided">×2</span>
-              </button>
-              <button class="op-btn inv-btn" data-op="shotgun">
-                <span class="material-symbols-outlined">scatter_plot</span>
-                <span class="op-name">散弾</span>
-                <span class="op-cost">1</span>
-                <span class="inv-count" id="inv-shotgun">×2</span>
-              </button>
-            </div>
-          </div>
-          <div class="inv-section">
-            <div class="inv-section-label">防御</div>
-            <div class="inv-row">
-              <button class="op-btn inv-btn defense-btn" data-op="chaff">
-                <span class="material-symbols-outlined">blur_on</span>
-                <span class="op-name">チャフ</span>
-                <span class="op-cost">1</span>
-                <span class="inv-count" id="inv-chaff">×2</span>
-              </button>
-              <button class="op-btn inv-btn defense-btn" data-op="armor">
-                <span class="material-symbols-outlined">shield</span>
-                <span class="op-name">装甲板</span>
-                <span class="op-cost">2</span>
-                <span class="inv-count" id="inv-armor">×2</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="inv-section inv-section-place">
-          <div class="inv-section-label">設置</div>
-          <div class="inv-row">
-            <button class="op-btn inv-btn" data-op="decoy">
-              <span class="material-symbols-outlined">help_outline</span>
-              <span class="op-name">デコイ</span>
-              <span class="op-cost">1</span>
-              <span class="inv-count" id="inv-decoy">×2</span>
-            </button>
-            <button class="op-btn inv-btn" data-op="mine">
-              <span class="material-symbols-outlined">dangerous</span>
-              <span class="op-name">機雷</span>
-              <span class="op-cost">1</span>
-              <span class="inv-count" id="inv-mine">×2</span>
-            </button>
-          </div>
+      <!-- 攻撃ブロック: 1行 (魚雷 / 追尾 / 散弾 / 機雷 / チャフ) -->
+      <div class="op-section">
+        <div class="op-section-label">攻撃 / 防御</div>
+        <div class="attack-row">
+          <button class="op-btn inv-btn" data-op="torpedo">
+            <span class="material-symbols-outlined">rocket_launch</span>
+            <span class="op-name">魚雷</span>
+            <span class="op-cost">1</span>
+            <span class="inv-count" id="inv-torpedo">×3</span>
+          </button>
+          <button class="op-btn inv-btn" data-op="guided">
+            <span class="material-symbols-outlined">assistant_navigation</span>
+            <span class="op-name">追尾</span>
+            <span class="op-cost">2</span>
+            <span class="inv-count" id="inv-guided">×2</span>
+          </button>
+          <button class="op-btn inv-btn" data-op="shotgun">
+            <span class="material-symbols-outlined">scatter_plot</span>
+            <span class="op-name">散弾</span>
+            <span class="op-cost">1</span>
+            <span class="inv-count" id="inv-shotgun">×2</span>
+          </button>
+          <button class="op-btn inv-btn" data-op="mine">
+            <span class="material-symbols-outlined">dangerous</span>
+            <span class="op-name">機雷</span>
+            <span class="op-cost">1</span>
+            <span class="inv-count" id="inv-mine">×2</span>
+          </button>
+          <button class="op-btn inv-btn defense-btn" data-op="chaff">
+            <span class="material-symbols-outlined">blur_on</span>
+            <span class="op-name">チャフ</span>
+            <span class="op-cost">1</span>
+            <span class="inv-count" id="inv-chaff">×2</span>
+          </button>
         </div>
       </div>
+
     </div>
 
     <!-- アクションキュー -->

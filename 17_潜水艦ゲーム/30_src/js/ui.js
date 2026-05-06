@@ -68,7 +68,7 @@ function _updateTimeBar(me) {
 function _renderInventory(me) {
   if (!me.inventory) return;
   // 在庫数バッジを更新し、在庫0はグレーアウト
-  ['torpedo','guided','shotgun','decoy','mine','chaff','armor'].forEach(key => {
+  ['torpedo','guided','shotgun','mine','chaff'].forEach(key => {
     const cnt = me.inventory[key] ?? 0;
     const el = document.querySelector(`.op-btn[data-op="${_invKeyToOpId(key)}"]`);
     if (!el) return;
@@ -203,12 +203,6 @@ function _buildCommandPreview(ops, me) {
         });
         break;
       }
-      case 'decoy': {
-        if (target && typeof target.x === 'number') {
-          steps.push({ type: 'decoy_preview', x0: sx, y0: sy, x1: target.x, y1: target.y });
-        }
-        break;
-      }
       case 'mine': {
         if (target && typeof target.x === 'number') {
           steps.push({ type: 'mine_preview', x: target.x, y: target.y });
@@ -217,10 +211,6 @@ function _buildCommandPreview(ops, me) {
       }
       case 'chaff': {
         steps.push({ type: 'chaff_preview', x: sx, y: sy });
-        break;
-      }
-      case 'armor': {
-        steps.push({ type: 'armor_preview', x: sx, y: sy });
         break;
       }
     }
@@ -313,6 +303,12 @@ function _updateTurnLog(log) {
 function _updateDogfightBanner(me, view) {
   const el = document.getElementById('dogfight-banner');
   if (!el) return;
+  // 行動フェーズ中はアニメが座標を管理するため非表示
+  // (最終状態の dogfightWith がアニメ開始前の位置に対応しないため)
+  if (view.phase === 'action') {
+    el.classList.add('hidden');
+    return;
+  }
   if (me.dogfightWith) {
     const other = view.players[me.dogfightWith];
     el.classList.remove('hidden');
@@ -518,9 +514,16 @@ async function _onOpClick(opId, view) {
    アクションフェーズ
    ============================================================ */
 export function showActionEvents(events, view) {
-  // アニメーション中はパネルを隠す
+  // 盤面ピック中のソナートグル・ターゲット選択も解除（タイムアウト経由の透過に対応）
+  _deactivateSonarToggle();
+  cancelBoardPick();
+  // 行動フェーズ中はコマンド入力を完全に無効化
   const panel = document.getElementById('op-panel');
-  if (panel) panel.classList.add('hidden');
+  if (panel) {
+    panel.classList.add('hidden');
+    // ボタンをdisabledにしてイベント発火も防ぐ
+    panel.querySelectorAll('button').forEach(b => { b.disabled = true; });
+  }
   const area = document.getElementById('command-area');
   if (area) area.classList.add('hidden');
 }

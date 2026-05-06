@@ -12,8 +12,7 @@ const OP_LABELS = {
   forward: '前進', turn_left: '←旋回', turn_right: '旋回→',
   strafe_l: '←横移', strafe_r: '横移→',
   sonar: 'ソナー', torpedo: '魚雷', guided: '追尾魚雷',
-  shotgun: '散弾', decoy: 'デコイ', mine: '機雷',
-  chaff: 'チャフ', armor: '装甲板',
+  shotgun: '散弾', mine: '機雷', chaff: 'チャフ',
 };
 
 let _ctx = null;
@@ -75,11 +74,13 @@ export function stopPickHighlight() {
 /**
  * renderState() の末尾（Layer 9）から呼ばれる。
  * プレビューが設定されていなければ何もしない。
+ * また、アニメーション中の飛翔体も常時描画する（ティック間で消えないよう）。
  */
 export function applyPreviewLayer() {
-  const hasPreview   = _previewSteps && _previewSteps.length;
-  const hasHighlight = _pickHighlightCells.length > 0;
-  if (!hasPreview && !hasHighlight) return;
+  const hasPreview     = _previewSteps && _previewSteps.length;
+  const hasHighlight   = _pickHighlightCells.length > 0;
+  const hasProjectiles = _animView?.projectiles && Object.keys(_animView.projectiles).length > 0;
+  if (!hasPreview && !hasHighlight && !hasProjectiles) return;
   const ctx      = _ctx;
   const cellSize = _getCellSize();
   const bo       = _getOffset();
@@ -93,6 +94,11 @@ export function applyPreviewLayer() {
     for (const { x, y } of _pickHighlightCells) {
       ctx.fillRect(bo.x + x * cellSize, bo.y + y * cellSize, cellSize, cellSize);
     }
+  }
+
+  // 飛翔体をボード上に常時表示（アニメ間で消えないよう renderState のたびに重描画）
+  if (hasProjectiles) {
+    _drawActiveProjectiles(ctx, cellSize, bo);
   }
 
   if (!hasPreview) { ctx.restore(); return; }
@@ -193,29 +199,19 @@ export function applyPreviewLayer() {
         ctx.beginPath(); ctx.arc(tx + cellSize/2, ty + cellSize/2, cellSize * 0.38, 0, Math.PI * 2); ctx.stroke();
         break;
       }
-      case 'decoy_preview': {
-        // 発射ライン
-        const dx0 = bo.x + step.x0 * cellSize + cellSize/2;
-        const dy0 = bo.y + step.y0 * cellSize + cellSize/2;
-        const dx1 = bo.x + step.x1 * cellSize + cellSize/2;
-        const dy1 = bo.y + step.y1 * cellSize + cellSize/2;
-        ctx.strokeStyle = 'rgba(255,255,100,0.55)';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([3, 5]);
-        ctx.beginPath(); ctx.moveTo(dx0, dy0); ctx.lineTo(dx1, dy1); ctx.stroke();
-        ctx.setLineDash([]);
-        // 配置位置：デコイアイコン（黄円 + D文字）
-        ctx.strokeStyle = 'rgba(255,255,100,0.85)';
+      case 'mine_preview': {
+        const mx = bo.x + step.x * cellSize + cellSize/2;
+        const my = bo.y + step.y * cellSize + cellSize/2;
+        ctx.strokeStyle = 'rgba(255,80,80,0.85)';
         ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(dx1, dy1, cellSize * 0.3, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = 'rgba(255,255,100,0.9)';
+        ctx.beginPath(); ctx.arc(mx, my, cellSize * 0.3, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,80,80,0.9)';
         ctx.font = `bold ${Math.max(11, cellSize * 0.3)}px sans-serif`;
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('D', dx1, dy1);
+        ctx.fillText('M', mx, my);
         break;
       }
       case 'chaff_preview': {
-        // 自身セルに青白の身が隐れるイメージ
         const cx2 = bo.x + step.x * cs + cs / 2;
         const cy2 = bo.y + step.y * cs + cs / 2;
         ctx.fillStyle = 'rgba(200,230,255,0.15)';
@@ -229,34 +225,6 @@ export function applyPreviewLayer() {
         ctx.font = `bold ${Math.max(9, cs * 0.22)}px sans-serif`;
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText('チャフ', cx2, cy2);
-        break;
-      }
-      case 'armor_preview': {
-        // 自身セルに黄色の盾イメージ
-        const ax = bo.x + step.x * cs + cs / 2;
-        const ay = bo.y + step.y * cs + cs / 2;
-        ctx.strokeStyle = 'rgba(255,215,0,0.85)';
-        ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.arc(ax, ay, cs * 0.44, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = 'rgba(255,215,0,0.15)';
-        ctx.fill();
-        ctx.fillStyle = 'rgba(255,215,0,0.9)';
-        ctx.font = `bold ${Math.max(9, cs * 0.22)}px sans-serif`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('盾', ax, ay);
-        break;
-      }
-      case 'mine_preview': {
-        const mx = bo.x + step.x * cellSize + cellSize/2;
-        const my = bo.y + step.y * cellSize + cellSize/2;
-        // 機雷アイコン（赤円 + M文字）
-        ctx.strokeStyle = 'rgba(255,80,80,0.85)';
-        ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(mx, my, cellSize * 0.3, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = 'rgba(255,80,80,0.9)';
-        ctx.font = `bold ${Math.max(11, cellSize * 0.3)}px sans-serif`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('M', mx, my);
         break;
       }
     }
@@ -299,67 +267,74 @@ let _actionBaseView    = null;
 let _animView          = null;   // アニメーション中の可変ビュー（位置を逐次更新）
 let _actionOnDone      = null;
 let _actionOnEachEvent = null;
-let _animTimeoutId     = null;let _torpedoRaf        = null;   // 追尾魚雷移動アニメ rAF ID
+let _animTimeoutId     = null;
 
-/** 追尾魚雷アニメをキャンセル */
-function _cancelTorpedoAnim() {
-  if (_torpedoRaf) { cancelAnimationFrame(_torpedoRaf); _torpedoRaf = null; }
+/* ──────────────────────────────────────────────────────────────────
+   飛翔体 rAF ループ（単一ループで全飛翔体をピクセル座標で滑らか描画）
+   各飛翔体は _animView.projectiles[id] に以下のフィールドを持つ:
+     pixX, pixY    … 現在のピクセル座標（浮動小数）
+     velX, velY    … 速度（px/ms）
+     toPixX,toPixY … 目標ピクセル座標
+     color, projType, ownerId
+   ────────────────────────────────────────────────────────────────── */
+let _projRafId   = null;
+let _projLastTime = 0;
+
+/** 飛翔体 rAF ループを起動（既に動いていれば何もしない） */
+function _startProjLoop() {
+  if (_projRafId !== null) return;
+  _projLastTime = performance.now();
+  const loop = (now) => {
+    if (!_animView?.projectiles || Object.keys(_animView.projectiles).length === 0) {
+      _projRafId = null;
+      return;
+    }
+    const dt = Math.min(now - _projLastTime, 50);
+    _projLastTime = now;
+    for (const proj of Object.values(_animView.projectiles)) {
+      if (proj.pixX == null) continue;
+      proj.pixX += proj.velX * dt;
+      proj.pixY += proj.velY * dt;
+      // 目標に達したら速度を0にして止める
+      const dx = proj.toPixX - proj.pixX, dy = proj.toPixY - proj.pixY;
+      if (Math.hypot(dx, dy) < Math.hypot(proj.velX, proj.velY) * dt + 0.5) {
+        proj.pixX = proj.toPixX; proj.pixY = proj.toPixY;
+        proj.velX = 0; proj.velY = 0;
+      }
+    }
+    if (_renderState && _animView) _renderState(_animView);
+    _projRafId = requestAnimationFrame(loop);
+  };
+  _projRafId = requestAnimationFrame(loop);
+}
+
+/** 飛翔体 rAF ループを停止 */
+function _stopProjLoop() {
+  if (_projRafId !== null) { cancelAnimationFrame(_projRafId); _projRafId = null; }
 }
 
 /**
- * 追尾魚雷の移動アニメーションを rAF で実行する。
- * durationMs 内に魚雷が発射地点→標的地点へ射動する。
+ * アニメーション中の全飛翔体を現在ピクセル座標でグロードット描画する。
+ * applyPreviewLayer() から呼ばれる（Layer 9）。
+ * rAFループも renderState → applyPreviewLayer の流れで描画するため一本化されている。
  */
-function _startTorpedoAnim(sx, sy, tx, ty, color, durationMs, onDone, label) {
-  _cancelTorpedoAnim();
-  const startTime = performance.now();
-  const loop = (now) => {
-    const t = Math.min((now - startTime) / durationMs, 1.0);
-    // ボードを再描画してから魚雷を重ねる
-    if (_renderState && _animView) _renderState(_animView);
-    _drawTorpedoFrame(sx, sy, tx, ty, t, color, label);
-    if (t < 1.0 && _torpedoRaf !== null) {
-      _torpedoRaf = requestAnimationFrame(loop);
-    } else {
-      _torpedoRaf = null;
-      if (onDone) onDone();
-    }
-  };
-  _torpedoRaf = requestAnimationFrame(loop);
-}
-
-/** 1フレーム分の魚雷位置描画 (t = 0→発射地 / 1→着弾地) */
-function _drawTorpedoFrame(sx, sy, tx, ty, t, color, label = '追尾魚雷') {
-  const ctx = _ctx;
-  if (!ctx) return;
-  const cs = _getCellSize();
-  const bo = _getOffset();
-  const x1 = bo.x + sx * cs + cs / 2;
-  const y1 = bo.y + sy * cs + cs / 2;
-  const x2 = bo.x + tx * cs + cs / 2;
-  const y2 = bo.y + ty * cs + cs / 2;
-  const cx = x1 + (x2 - x1) * t;
-  const cy = y1 + (y2 - y1) * t;
+function _drawActiveProjectiles(ctx, cs, bo) {
+  if (!_animView?.projectiles) return;
   ctx.save();
-  // トレイル（発射地 → 現在位置）
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.globalAlpha = 0.4;
-  ctx.setLineDash([4, 6]);
-  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(cx, cy); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.globalAlpha = 1.0;
-  // 魚雷本体（グロードット）
-  const r = cs * 0.13;
-  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 2.5);
-  grad.addColorStop(0, color);
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = grad;
-  ctx.beginPath(); ctx.arc(cx, cy, r * 2.5, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath(); ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2); ctx.fill();
-  // ラベル（発射地付近）
-  _eventLabel(label, sx, sy, color);
+  Object.values(_animView.projectiles).forEach(proj => {
+    // pixX/pixY があればピクセル座標をそのまま使用（スムーズ移動）
+    const px = proj.pixX != null ? proj.pixX : bo.x + proj.x * cs + cs / 2;
+    const py = proj.pixY != null ? proj.pixY : bo.y + proj.y * cs + cs / 2;
+    const color = proj.projType === 'guided' ? '#00e5ff' : '#ffaa00';
+    const r = cs * 0.13;
+    const grad = ctx.createRadialGradient(px, py, 0, px, py, r * 2.5);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(px, py, r * 2.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(px, py, r * 0.6, 0, Math.PI * 2); ctx.fill();
+  });
   ctx.restore();
 }
 
@@ -387,21 +362,23 @@ function _drawExplosion(x, y, color = '#ff6600') {
 /** イベント種別ごとの表示時間（ms） */
 function _eventDelay(ev) {
   switch (ev.type) {
-    case 'eliminated':   return 4000;
-    case 'damage':       return 3000;
-    case 'torpedo_fire': return 3000;
-    case 'guided_fire':  return 2500;
-    case 'attack_leak':  return (ev.op === 'guided') ? 2000 : ev.card === 'depth_charge' ? 3000 : 400;
-    case 'explosion':    return 2800;
-    case 'sonar':           return 3000;
-    case 'sonar_detected': return 2000;
-    case 'move': {
-      const simple = ['free_forward', 'free_turn_left', 'free_turn_right'];
-      return simple.includes(ev.card) ? 1200 : 2500;
-    }
-    case 'buff':         return 1500;
-    case 'sound_leak':   return  400;
-    default:             return 1500;
+    case 'tick_start':       return  80;  // ティック境界の短い間
+    case 'eliminated':       return 4000;
+    case 'damage':           return 2500;
+    case 'torpedo_fire':
+    case 'guided_fire':
+    case 'shotgun_fire':     return  400;  // 発射エフェクト
+    case 'projectile_tick':  return ev.projType === 'guided' ? 400 : 200;  // 追尾魚雷は遅く
+    case 'projectile_hit':   return 2200;  // 爆発
+    case 'projectile_miss':  return  350;
+    case 'explosion':        return 2800;
+    case 'sonar':            return 3000;
+    case 'sonar_detected':   return 2000;
+    case 'move':             return  400;  // 並列ティック内は高速再生
+    case 'buff':             return 1500;
+    case 'sound_leak':       return  300;
+    case 'attack_leak':      return  400;
+    default:                 return 1200;
   }
 }
 
@@ -413,17 +390,22 @@ export function startActionAnimation(events, view, onDone, onEachEvent) {
   _actionOnEachEvent  = onEachEvent || null;
 
   // アニメーション用の可変ビューを作成（各プレイヤーの位置を逐次更新する）
-  _animView = { ...view, players: {} };
+  _animView = { ...view, players: {}, projectiles: {} };
   Object.keys(view.players).forEach(pid => {
     _animView.players[pid] = { ...view.players[pid] };
   });
   // move イベントの fromX/fromY を使ってプレイヤーをアクション前の位置に巻き戻す
+  // ただし capturedView で x が null のプレイヤー（視界外）は巻き戻さない
   const rewound = new Set();
   for (const ev of _actionQueue) {
-    if (ev.type === 'move' && !rewound.has(ev.pid) && ev.fromX != null && _animView.players[ev.pid]) {
-      _animView.players[ev.pid].x   = ev.fromX;
-      _animView.players[ev.pid].y   = ev.fromY;
-      _animView.players[ev.pid].dir = ev.fromDir;
+    if (ev.type === 'move' && !rewound.has(ev.pid) && ev.fromX != null) {
+      const player = _animView.players[ev.pid];
+      if (player && player.x != null) {
+        // 視界内プレイヤーのみ巻き戻す
+        player.x   = ev.fromX;
+        player.y   = ev.fromY;
+        player.dir = ev.fromDir;
+      }
       rewound.add(ev.pid);
     }
   }
@@ -431,6 +413,8 @@ export function startActionAnimation(events, view, onDone, onEachEvent) {
   // ソナー結果をアニメ開始時はクリア→ソナーイベント発火時に復元
   if (_animView.players[view.myId]) {
     _animView.players[view.myId].sonarResults = [];
+    // ドッグファイト状態をリセット → dogfight_start/end イベントで更新
+    _animView.players[view.myId].dogfightWith = null;
   }
 
   // 左巻きした初期状態を即座に描画（終了位置の一瞬表示を防ぐ）
@@ -442,21 +426,103 @@ export function startActionAnimation(events, view, onDone, onEachEvent) {
 /** アニメーションビューにイベントを適用してプレイヤー状態を更新 */
 function _applyEventToAnimView(ev) {
   if (!_animView) return;
-  const p = _animView.players[ev.pid];
-  if (!p) return;
+  // pid を持つイベントのみプレイヤー参照を取得（pid なしのイベントをスキップしない）
+  const p = ev.pid ? _animView.players[ev.pid] : null;
   switch (ev.type) {
-    case 'move': p.x = ev.x; p.y = ev.y; p.dir = ev.dir; break;
-    case 'damage': p.hp = ev.hp; break;
-    case 'repair': p.hp = ev.hp; break;
-    case 'eliminated': p.alive = false; break;
+    case 'move':      if (p) { p.x = ev.x; p.y = ev.y; p.dir = ev.dir; } break;
+    case 'damage':    if (p) p.hp = ev.hp; break;
+    case 'repair':    if (p) p.hp = ev.hp; break;
+    case 'eliminated': if (p) p.alive = false; break;
+    case 'dogfight_start': {
+      // ドッグファイト開始: 位置が公開される → _animView に反映してバナー表示
+      if (ev.pids && _actionBaseView) {
+        const me = _animView.myId;
+        if (ev.pids.includes(me)) {
+          for (const pid of ev.pids) {
+            if (pid !== me && ev.x != null && ev.y != null) {
+              // 座標はイベント内に含まれていれば使用（なければ現在のまま）
+            }
+          }
+          // バナーを表示（myプレイヤーの dogfightWith を animView に設定）
+          const otherId = ev.pids.find(id => id !== me);
+          if (otherId && _animView.players[me]) {
+            _animView.players[me].dogfightWith = otherId;
+          }
+          _updateAnimDogfightBanner(_animView);
+        }
+      }
+      break;
+    }
+    case 'dogfight_end': {
+      const me = _animView.myId;
+      if (ev.pid === me && _animView.players[me]) {
+        _animView.players[me].dogfightWith = null;
+      }
+      _updateAnimDogfightBanner(_animView);
+      break;
+    }
     case 'sonar': {
       // ソナーヒットをイベント発火時に復元（アニメ開始時はクリアしてある）
-      if (ev.pid === _animView.myId && ev.hits) {
+      if (p && ev.pid === _animView.myId && ev.hits) {
         if (!p.sonarResults) p.sonarResults = [];
         ev.hits.forEach(h => p.sonarResults.push(h));
       }
       break;
     }
+    // 飛翔体発射: ピクセル座標で初期化し rAF ループ起動
+    case 'torpedo_fire':
+    case 'guided_fire': {
+      if (!_animView.projectiles) _animView.projectiles = {};
+      const projType = ev.type === 'torpedo_fire' ? 'torpedo' : 'guided';
+      const cs = _getCellSize(), bo = _getOffset();
+      const sx = bo.x + ev.sx * cs + cs / 2;
+      const sy = bo.y + ev.sy * cs + cs / 2;
+      _animView.projectiles[ev.projId] = {
+        x: ev.sx, y: ev.sy,
+        pixX: sx, pixY: sy,
+        toPixX: sx, toPixY: sy,
+        velX: 0, velY: 0,
+        projType, ownerId: ev.pid,
+      };
+      _startProjLoop();
+      break;
+    }
+    // 飛翔体位置更新: 目標ピクセル座標と速度をセットして rAF に任せる
+    case 'projectile_tick': {
+      if (!_animView.projectiles) _animView.projectiles = {};
+      const proj = _animView.projectiles[ev.projId];
+      if (!proj) break;
+      const cs = _getCellSize(), bo = _getOffset();
+      const toX = bo.x + ev.x * cs + cs / 2;
+      const toY = bo.y + ev.y * cs + cs / 2;
+      const durationMs = _eventDelay(ev);
+      const dist = Math.hypot(toX - (proj.pixX ?? toX), toY - (proj.pixY ?? toY));
+      const speed = dist > 0 ? dist / durationMs : 0;
+      const angle = Math.atan2(toY - (proj.pixY ?? toY), toX - (proj.pixX ?? toX));
+      proj.toPixX = toX; proj.toPixY = toY;
+      proj.velX = speed * Math.cos(angle);
+      proj.velY = speed * Math.sin(angle);
+      proj.x = ev.x; proj.y = ev.y;
+      _startProjLoop();
+      break;
+    }
+    case 'projectile_hit':
+    case 'projectile_miss':
+      if (_animView.projectiles) delete _animView.projectiles[ev.projId];
+      break;
+  }
+}
+
+function _updateAnimDogfightBanner(animView) {
+  const el = document.getElementById('dogfight-banner');
+  if (!el) return;
+  const me = animView.players[animView.myId];
+  if (me?.dogfightWith) {
+    const other = animView.players[me.dogfightWith];
+    el.classList.remove('hidden');
+    el.innerHTML = `⚠ ドッグファイトモード ⚠<br><small>${other?.name || '不明'} と近距離で交戦中</small>`;
+  } else {
+    el.classList.add('hidden');
   }
 }
 
@@ -477,7 +543,6 @@ function _nextActionStep() {
   }
 
   const ev = _actionQueue.shift();
-  _cancelTorpedoAnim();   // 前イベントの魚雷アニメを必ずキャンセル
   _applyEventToAnimView(ev);
   if (_renderState && _animView) _renderState(_animView);
   _drawEventAnnotation(ev);
@@ -487,7 +552,7 @@ function _nextActionStep() {
 
 /** ドローフェーズ開始時に呼び、初期化済みアニメタイマーをキャンセルする。 */
 export function clearActionAnimation() {
-  _cancelTorpedoAnim();
+  _stopProjLoop();
   if (_animTimeoutId) { clearTimeout(_animTimeoutId); _animTimeoutId = null; }
   const evCb         = _actionOnEachEvent;
   _animView          = null;
@@ -613,18 +678,79 @@ function _drawEventAnnotation(ev) {
       break;
     }
     case 'torpedo_fire': {
-      // rAF で弾を飛ばし、ヒット時は着弾点で爆発
-      const onDone = ev.hit ? () => _drawExplosion(ev.hitX ?? ev.ex, ev.hitY ?? ev.ey, '#ffaa00') : null;
-      _startTorpedoAnim(ev.sx, ev.sy, ev.ex, ev.ey, '#ffaa00', _eventDelay(ev) * 0.75, onDone, '魚雷');
+      // 発射フラッシュ（実際の飛翔は projectile_tick イベントでアニメーションする）
+      const tpx = bo.x + ev.sx * cs + cs / 2;
+      const tpy = bo.y + ev.sy * cs + cs / 2;
+      ctx.fillStyle = 'rgba(255,170,0,0.4)';
+      ctx.beginPath(); ctx.arc(tpx, tpy, cs * 0.5, 0, Math.PI * 2); ctx.fill();
+      _eventLabel('\u9b5a\u96f7\u767a\u5c04', ev.sx, ev.sy, '#ffaa00');
       break;
     }
     case 'guided_fire': {
-      // 追尾魚雷：rAF アニメで移動、ヒット時は着弾点で爆発
-      const onDone = ev.hit ? () => _drawExplosion(ev.hitX ?? ev.tx, ev.hitY ?? ev.ty, '#00e5ff') : null;
-      _startTorpedoAnim(ev.sx, ev.sy, ev.tx, ev.ty, '#00e5ff', _eventDelay(ev) * 0.85, onDone, '追尾魚雷');
+      // 発射フラッシュ
+      const gpx = bo.x + ev.sx * cs + cs / 2;
+      const gpy = bo.y + ev.sy * cs + cs / 2;
+      ctx.fillStyle = 'rgba(0,229,255,0.4)';
+      ctx.beginPath(); ctx.arc(gpx, gpy, cs * 0.5, 0, Math.PI * 2); ctx.fill();
+      _eventLabel('\u8ffd\u5c3e\u767a\u5c04', ev.sx, ev.sy, '#00e5ff');
       break;
     }
-    case 'attack_leak':
+    case 'shotgun_fire': {
+      // 散弾: 発射位置から扇形エリアを表示
+      if (ev.dir != null) {
+        const DD = { N:{dx:0,dy:-1}, S:{dx:0,dy:1}, E:{dx:1,dy:0}, W:{dx:-1,dy:0} };
+        const RL = (d, t) => { const l=['N','E','S','W']; return l[(l.indexOf(d)+t+4)%4]; };
+        const fwd = DD[ev.dir];
+        const fanCells = [
+          { dx: fwd.dx, dy: fwd.dy },
+          { dx: DD[RL(ev.dir,-1)].dx + fwd.dx, dy: DD[RL(ev.dir,-1)].dy + fwd.dy },
+          { dx: DD[RL(ev.dir, 1)].dx + fwd.dx, dy: DD[RL(ev.dir, 1)].dy + fwd.dy },
+        ];
+        ctx.fillStyle = 'rgba(255,160,0,0.22)';
+        fanCells.forEach(fc => {
+          const fx = bo.x + Math.max(0, Math.min(9, ev.sx + fc.dx)) * cs;
+          const fy = bo.y + Math.max(0, Math.min(9, ev.sy + fc.dy)) * cs;
+          ctx.fillRect(fx + 1, fy + 1, cs - 2, cs - 2);
+        });
+        ctx.strokeStyle = 'rgba(255,160,0,0.85)'; ctx.lineWidth = 2; ctx.setLineDash([4, 3]);
+        fanCells.forEach(fc => {
+          const fx = bo.x + Math.max(0, Math.min(9, ev.sx + fc.dx)) * cs;
+          const fy = bo.y + Math.max(0, Math.min(9, ev.sy + fc.dy)) * cs;
+          ctx.strokeRect(fx + 1, fy + 1, cs - 2, cs - 2);
+        });
+        ctx.setLineDash([]);
+        _eventLabel('\u6563\u5f3e', ev.sx, ev.sy, '#ffa000');
+      }
+      break;
+    }
+    case 'projectile_tick': {
+      // 飛翔体移動は _applyEventToAnimView で vel/pos を設定し rAF ループが描画する
+      // アノテーションラベルのみここで出す
+      const color = ev.projType === 'guided' ? '#00e5ff' : ev.projType === 'shotgun' ? '#ffa000' : '#ffaa00';
+      const label = ev.projType === 'guided' ? '追尾' : ev.projType === 'shotgun' ? '散弾' : '魚雷';
+      _eventLabel(label, ev.x, ev.y, color);
+      break;
+    }
+    case 'projectile_hit': {
+      // 命中爆発 (blocked = チャフ無効化)
+      const hitColor = ev.projType === 'guided' ? '#00e5ff' : '#ffaa00';
+      if (ev.blocked) {
+        _eventLabel('\u30c1\u30e3\u30d5\u7121\u52b9', ev.x, ev.y, '#b4dcff');
+      } else {
+        _drawExplosion(ev.x, ev.y, hitColor);
+        _eventLabel('\u547d\u4e2d', ev.x, ev.y, '#ff4444');
+      }
+      break;
+    }
+    case 'projectile_miss': {
+      // 射程切れ・屋外れ: 小さなパフ
+      const mpx = bo.x + ev.x * cs + cs / 2, mpy = bo.y + ev.y * cs + cs / 2;
+      ctx.strokeStyle = 'rgba(180,180,180,0.5)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(mpx, mpy, cs * 0.28, 0, Math.PI * 2); ctx.stroke();
+      break;
+    }
+    case 'tick_start':
+      break; // ティック境界は視覚アノテーションなし
       if (ev.op === 'torpedo' && ev.sx != null && ev.ex != null) {
         const x1 = bo.x + ev.sx * cs + cs / 2;
         const y1 = bo.y + ev.sy * cs + cs / 2;

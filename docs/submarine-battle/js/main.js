@@ -4,13 +4,15 @@
 import { MSG, getMyId, getIsHost, setMessageHandler,
          broadcastState, sendPrivate, broadcastPublic,
          broadcastGameOver, sendToGuest } from './peer.js';
-import { createInitialState, handleCommand,
-         forceConfirmAll, advanceToNextTurn,
-         sanitizeStateForPlayer, calcTimeCost } from './gameLogic.js';
+import { createInitialState,
+         sanitizeStateForPlayer } from './gameLogic.js';
+import { handleCommand, forceConfirmAll,
+         advanceToNextTurn, calcTimeCost } from './gameSequence.js';
 import { COMMAND_TIME_LIMIT } from './constants.js';
 import { initRenderer, renderState, startActionAnimation, clearActionAnimation } from './render.js';
 import { initUI, updateUI, showPhase, showPhaseOverlay, showActionEvents, getSelectedOps,
          showGameOver, enableDraw, enableCommand, showTurnSummary, showCurrentAction } from './ui.js';
+import { cancelBoardPick } from './modal.js';
 
 let gameState = null;   // ホストのみ保持
 let localView  = null;  // 各クライアントが受信したサニタイズ済み状態
@@ -134,14 +136,17 @@ function startCommandTimer() {
     broadcastPublic({ timerTick: remaining });
     if (remaining <= 0) {
       clearInterval(commandTimer);
-      commandTimer = null;
-      // 時間切れ: ローカルプレイヤーがまだ確定していなければ、入力中のコマンドをそのまま確定送信
+      commandTimer = 'expired'; // syncStateToAll がタイマーを再起動しないようガード
+      // 時間切れ: 盤面ピック中のプロミスを先にキャンセルしてから selectedOps を取得
+      cancelBoardPick();
+      // ローカルプレイヤーがまだ確定していなければ、選択済みのコマンドをそのまま確定送信
       const myId = getMyId();
       if (gameState.players[myId] && !gameState.players[myId].commandConfirmed) {
         const { opIds, targets } = getSelectedOps();
         handleConfirmLocal(opIds, targets);
       }
       forceConfirmAll(gameState);
+      commandTimer = null; // ガード解除（以後は syncStateToAll が通常通り動作）
       syncStateToAll();
       // 次ターンへの遷移はアニメ完了コールバックで行う
     }
@@ -177,14 +182,16 @@ function onLocalStateUpdate(event) {
     clearActionAnimation();
     enableCommand(localView, isNewPhase);
   } else if (phase === 'action') {
+    stopCommandTimer(); // タイムアウト経由でタイマーが再起動された場合も確実に停止
     showActionEvents(localView.actionEvents, localView);
     // isNewPhase のときのみアニメを開始（再送信等による多重起動を防ぐ）
     // フェーズオーバーレイ（1800ms）が消えてからアニメ開始
     if (isNewPhase) {
       const capturedView = localView;
-      // actionPhaseStartedAt を使ってネットワーク遅延分だけ待機時間を短縮し同期を記る
-      const elapsed = capturedView.actionPhaseStartedAt ? Date.now() - capturedView.actionPhaseStartedAt : 0;
-      const delay = Math.max(0, 1800 - elapsed);
+      // オーバーレイ表示（1800ms）が消えてからアニメ開始するよう常に1800ms待つ。
+      // (actionPhaseStartedAtを使った「経過時間差し引き」は、
+      //   ネットワーク遅延が大きいとdelay=0になりオーバーレイ中に開始してしまうため廃止)
+      const delay = 1800;
       _animStartTimeoutId = setTimeout(() => {
         _animStartTimeoutId = null;
         startActionAnimation(
@@ -215,6 +222,17 @@ function onPublicEvent(msg) {
   if (msg.timerTick !== undefined) {
     const el = document.getElementById('timer-display');
     if (el) el.textContent = msg.timerTick;
+
+    // ゲスト側: timerTick=0 受信時に入力済みコマンドを自動送信（ベストエフォート）
+    // ホスト側は startCommandTimer 内で直接処理するためここでは不要
+    if (!getIsHost() && msg.timerTick <= 0) {
+      const myId = getMyId();
+      if (localView?.phase === 'command' && localView?.players?.[myId] && !localView.players[myId].commandConfirmed) {
+        cancelBoardPick();
+        const { opIds, targets } = getSelectedOps();
+        handleConfirmLocal(opIds, targets);
+      }
+    }
   }
 }
 

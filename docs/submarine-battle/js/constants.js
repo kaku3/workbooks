@@ -43,10 +43,8 @@ export const OPS = {
   torpedo:   { id: 'torpedo',   name: '魚雷',     cost: 1, icon: 'rocket_launch',         cat: 'weapon', invKey: 'torpedo' },
   guided:    { id: 'guided',    name: '追尾魚雷', cost: 2, icon: 'assistant_navigation',  cat: 'weapon', invKey: 'guided' },
   shotgun:   { id: 'shotgun',   name: '散弾',     cost: 1, icon: 'scatter_plot',          cat: 'weapon', invKey: 'shotgun' },
-  decoy:     { id: 'decoy',     name: 'デコイ',   cost: 1, icon: 'help_outline',          cat: 'place',  invKey: 'decoy' },
   mine:      { id: 'mine',      name: '機雷',     cost: 1, icon: 'dangerous',             cat: 'place',  invKey: 'mine' },
   chaff:     { id: 'chaff',     name: 'チャフ',   cost: 1, icon: 'blur_on',               cat: 'defense',invKey: 'chaff' },
-  armor:     { id: 'armor',     name: '装甲板',   cost: 2, icon: 'shield',                cat: 'defense',invKey: 'armor' },
 };
 
 /** 初期在庫 */
@@ -54,10 +52,8 @@ export const INITIAL_INVENTORY = {
   torpedo: 6,
   guided:  3,
   shotgun: 3,
-  decoy:   3,
   mine:    3,
   chaff:   3,
-  armor:   3,
 };
 
 // ============================================================

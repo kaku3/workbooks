@@ -87,28 +87,20 @@
 .player-chip-status { color: #4caf50; font-size: 11px; font-weight: 700; }
 .player-chip-queue { font-size: 10px; color: #ffeb3b; opacity: 0.9; word-break: break-all; }
 
-/* モバイル: 盤面はフッターによる㠯込みを許さない */
+/* SP / タブレット(縦): 盤面上、パネル下の縦積み */
 .panel-center {
   flex: 0 0 auto;
   width: 100%;
-  /* 盤面はコンテナ幅にfitするcanvasが自動リサイズ */
-  aspect-ratio: 1 / 1;
-  max-height: 55vw;
-  min-height: 200px;
+  /* 高さを一度に設定（aspect-ratioより信頼性高）
+     - 幅と等しく: min(100vw, 100vh-200px) で縦・横両対応 */
+  height: min(100vw, calc(100vh - 200px));
+  min-height: 180px;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
   background: var(--bg-deep);
-  min-height: 0;
 }
-.board-wrapper {
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  width: 100%; height: 100%;
-}
-#board-canvas {
-  max-width: 100%; max-height: 100%;
-  display: block;
-}
+
+/* ─── PCレイアウト: 盤面左 / パネル右横並び (≥900px は下の @media で制御) ─── */
 
 /* ─── 盤面配置オーバーレイ ─── */
 #board-place-overlay {
@@ -227,41 +219,11 @@
   font-size: 1.3rem; color: var(--accent-gold); margin-bottom: 24px;
 }
 
-/* ─── PC レイアウト: プレイヤー列(左) + 盤面(中) + 操作パネル(右) ─── */
+/* ─── PC レイアウト: 盤面(左) + 操作パネル(右) 横並び ─── */
 @media (min-width: 900px) {
-  /* 2行×2列グリッド: header全幅 / players|main */
-  #game-screen {
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 140px 1fr;
-    grid-template-areas:
-      "header  header"
-      "players main";
-  }
-  .game-header {
-    grid-area: header;
-  }
-  /* プレイヤーストリップ → 左縦列 */
-  .player-strip {
-    grid-area: players;
-    border-bottom: none;
-    border-right: 1px solid var(--border);
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 8px 6px;
-    display: flex;
-    flex-direction: column;
-  }
-  #player-list {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-  }
-  .player-chip {
-    border-radius: 10px;
-  }
-  /* 盤面+操作パネル → 右エリア */
+  /* プレイヤーストリップは SP と同じく上部横並びを維持 (grid 変更なし) */
+  /* 盤面+操作パネル → 横並び */
   .game-body {
-    grid-area: main;
     display: flex;
     flex-direction: row;
     min-height: 0;
@@ -270,13 +232,14 @@
   .panel-center {
     flex: 1 1 0;
     min-width: 0;
+    height: 100%;
     aspect-ratio: unset;
     max-height: none;
     min-height: 0;
   }
   .game-footer {
-    width: 520px;
-    flex: 0 0 520px;
+    width: 400px;
+    flex: 0 0 400px;
     max-height: none;
     border-top: none;
     border-left: 1px solid var(--border);
@@ -285,43 +248,22 @@
   #turn-log {
     max-height: none;
   }
-  /* PC では op-panel を全部縦積み: 移動(2行)→武器→防御→設置 */
+  /* PC: op-panel はベースがすでに column なので調整のみ */
   .op-panel {
-    flex-direction: column;
-    align-items: stretch;
+    padding: 8px 10px 12px;
   }
-  /* crosspad は引き続き 3列 */
-  .op-left .crosspad {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  /* PC では武器+防御グループを縦積みに戻す */
-  .inv-row-group {
-    flex-direction: column;
-  }
-  /* PC: ラベルを上表示 (縦積み) */
-  .op-right .inv-section {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding-top: 6px;
-  }
-  .op-right .inv-section-label {
-    font-size: 10px;
-    writing-mode: initial;
-    white-space: nowrap;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .op-right .inv-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  /* PC ボタンを少し大きく */
+  /* PC: ボタンを少し大きく */
   .op-panel .op-btn {
-    min-width: 72px;
-    min-height: 62px;
+    min-width: 68px;
+    min-height: 58px;
+    font-size: 10px;
+  }
+  /* PC: attack-row はすべて横並びに収まるよう flex-wrap を解除 */
+  .attack-row {
+    flex-wrap: nowrap;
+  }
+  /* PC: attack-row のボタンは少し小さく（5個を1行に収める） */
+  .attack-row .op-btn {
+    min-width: 60px;
   }
 }

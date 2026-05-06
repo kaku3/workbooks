@@ -45,14 +45,36 @@
 /* ── 操作パネル全体 ── */
 .op-panel {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 6px;
   padding: 6px 12px 8px;
   border-top: 1px solid var(--border, #2a3a55);
 }
 
-/* ── 左パネル: 移動・ソナー ── */
-.op-left {
-  flex-shrink: 0;
+/* ── セクション (移動 / 攻撃) ── */
+.op-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── 移動パッド: 3列×2行グリッド ── */
+.move-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.move-spacer {
+  /* グリッドのセンターセル(空白) */
+  min-height: 40px;
+}
+
+/* ── 攻撃行: 6ボタン横並び (折り返し可) ── */
+.attack-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .op-section-label,
