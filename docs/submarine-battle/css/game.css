@@ -1,0 +1,327 @@
+/* ============================================================
+   game.css  ゲーム画面レイアウト（レスポンシブ）
+   ============================================================ */
+#game-screen {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+/* モバイル: board + footer 縦積み */
+.game-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* モバイル: フッターはスクロール可能に */
+.game-footer {
+  background: var(--bg-mid);
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  /* max-height なし: コントロール部全体のスクロールを許可 */
+}
+
+/* ─── ヘッダー: フェーズ + タイマー ─── */
+.game-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 16px;
+  background: var(--bg-mid);
+  border-bottom: 1px solid var(--border);
+  gap: 12px; flex-wrap: wrap;
+  min-height: 40px;
+}
+#phase-display {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--accent-cyan);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.game-header-right { display: flex; align-items: center; gap: 12px; }
+.timer-box {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 1rem;
+}
+#timer-display { color: var(--accent-amber); font-weight: 700; }
+
+/* ─── プレイヤーストリップ ─── */
+.player-strip {
+  background: var(--bg-mid);
+  border-bottom: 1px solid var(--border);
+  padding: 4px 12px;
+  overflow-x: auto;
+  /* スクロールバーを細く暗く → 単位時間バーと区別する */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.player-strip::-webkit-scrollbar { height: 3px; }
+.player-strip::-webkit-scrollbar-track { background: transparent; }
+.player-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+#player-list {
+  display: flex; gap: 8px; align-items: center;
+  min-height: 30px;
+}
+.player-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.player-chip.is-me { background: rgba(0,229,255,0.08); border-color: var(--accent-cyan); }
+.player-chip.eliminated { opacity: 0.4; text-decoration: line-through; }
+.player-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.player-chip-body { display: flex; flex-direction: column; gap: 0; line-height: 1.2; }
+.player-chip-name { color: var(--text-primary); font-size: 12px; }
+.player-chip-hp { font-family: var(--font-mono); font-size: 11px; color: #ff6677; }
+.player-chip-hp.hp-crit { color: #ff2222; animation: playerHpBlink 0.6s infinite; }
+@keyframes playerHpBlink { 50% { opacity: 0.2; } }
+.player-chip-status { color: #4caf50; font-size: 11px; font-weight: 700; }
+.player-chip-queue { font-size: 10px; color: #ffeb3b; opacity: 0.9; word-break: break-all; }
+
+/* モバイル: 盤面はフッターによる㠯込みを許さない */
+.panel-center {
+  flex: 0 0 auto;
+  width: 100%;
+  /* 盤面はコンテナ幅にfitするcanvasが自動リサイズ */
+  aspect-ratio: 1 / 1;
+  max-height: 55vw;
+  min-height: 200px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background: var(--bg-deep);
+  min-height: 0;
+}
+.board-wrapper {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+}
+#board-canvas {
+  max-width: 100%; max-height: 100%;
+  display: block;
+}
+
+/* ─── 盤面配置オーバーレイ ─── */
+#board-place-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 14px 8px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #00e5ff;
+  text-shadow: 0 0 14px #00e5ff;
+  pointer-events: none;
+  animation: boardPlacePulse 0.7s ease-in-out infinite;
+  z-index: 5;
+}
+@keyframes boardPlacePulse { 50% { opacity: 0.1; } }
+
+/* ─── ドッグファイトバナー ─── */
+#dogfight-banner {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,0,50,0.85);
+  color: #fff; font-weight: 700;
+  padding: 8px 20px;
+  border-radius: var(--radius);
+  text-align: center; font-size: 13px;
+  animation: dangerFlash 1.5s infinite;
+  z-index: 10;
+  white-space: nowrap;
+}
+@keyframes dangerFlash {
+  0%, 100% { box-shadow: 0 0 0px rgba(255,30,30,0); }
+  50% { box-shadow: 0 0 20px rgba(255,30,30,0.6); }
+}
+
+/* 行1: HP + 燃料バー(全幅) + コマンド確定(右) */
+.footer-row-time {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* コマンド確定後の待機インジケーター */
+#cmd-waiting {
+  text-align: center;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--accent-amber);
+  letter-spacing: 0.5px;
+  animation: waitingBlink 1.2s ease-in-out infinite;
+}
+@keyframes waitingBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+/* フェーズ切り替えオーバーレイ */
+#phase-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 5, 20, 0.88);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+#phase-overlay.show {
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.phase-overlay-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--accent-cyan);
+  letter-spacing: 5px;
+  text-shadow: 0 0 24px rgba(0, 229, 255, 0.55);
+  margin-bottom: 12px;
+}
+.phase-overlay-sub {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+}
+#turn-log {
+  flex: 1; overflow-y: auto;
+  padding: 4px 14px 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  max-height: 80px;
+}
+.log-line { padding: 2px 0; }
+
+/* ─── ゲームオーバー ─── */
+#game-over-overlay {
+  position: fixed; inset: 0;
+  background: rgba(5,13,26,0.92);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.game-over-content {
+  text-align: center;
+  padding: 40px; border-radius: var(--radius);
+  background: var(--bg-mid);
+  border: 2px solid var(--accent-cyan);
+}
+.game-over-content h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem; color: var(--accent-cyan); margin-bottom: 12px;
+}
+.winner-name {
+  font-size: 1.3rem; color: var(--accent-gold); margin-bottom: 24px;
+}
+
+/* ─── PC レイアウト: プレイヤー列(左) + 盤面(中) + 操作パネル(右) ─── */
+@media (min-width: 900px) {
+  /* 2行×2列グリッド: header全幅 / players|main */
+  #game-screen {
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 140px 1fr;
+    grid-template-areas:
+      "header  header"
+      "players main";
+  }
+  .game-header {
+    grid-area: header;
+  }
+  /* プレイヤーストリップ → 左縦列 */
+  .player-strip {
+    grid-area: players;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+  }
+  #player-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .player-chip {
+    border-radius: 10px;
+  }
+  /* 盤面+操作パネル → 右エリア */
+  .game-body {
+    grid-area: main;
+    display: flex;
+    flex-direction: row;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .panel-center {
+    flex: 1 1 0;
+    min-width: 0;
+    aspect-ratio: unset;
+    max-height: none;
+    min-height: 0;
+  }
+  .game-footer {
+    width: 520px;
+    flex: 0 0 520px;
+    max-height: none;
+    border-top: none;
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  #turn-log {
+    max-height: none;
+  }
+  /* PC では op-panel を全部縦積み: 移動(2行)→武器→防御→設置 */
+  .op-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  /* crosspad は引き続き 3列 */
+  .op-left .crosspad {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* PC では武器+防御グループを縦積みに戻す */
+  .inv-row-group {
+    flex-direction: column;
+  }
+  /* PC: ラベルを上表示 (縦積み) */
+  .op-right .inv-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 6px;
+  }
+  .op-right .inv-section-label {
+    font-size: 10px;
+    writing-mode: initial;
+    white-space: nowrap;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .op-right .inv-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  /* PC ボタンを少し大きく */
+  .op-panel .op-btn {
+    min-width: 72px;
+    min-height: 62px;
+  }
+}
