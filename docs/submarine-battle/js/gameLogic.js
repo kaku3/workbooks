@@ -286,51 +286,59 @@ function resolveSonar(state, pid, cmd) {
 /* ── 飛翔体スポーン・管理 ─────────────────────────────────── */
 const TORPEDO_RANGE = 8;
 const GUIDED_RANGE  = 12;
-/** 追尾魚雷の角度修正間隔（ティック数）― 導いほど追尾強度が強まる */
+/** 追尾魚雷の角度修正間隔（ティック数）― 小さいほど追尾強度が強まる */
 const GUIDED_REROUTE_INTERVAL = 4;
-/** 追尾魚雷が追尾を終了する移動歩数（これを超えたら結果が変わらない） */
+/** 追尾魚雷が追尾を終了する移動歩数（これを超えたら追尾しない） */
 const GUIDED_TRACK_STEPS = 6;
+/** ヒット判定半径（グリッド単位）― プレイヤー座標との距離がこれ未満で命中 */
+const HIT_RADIUS = 0.6;
 
 /**
  * 武器コマンドを飛翔体として登録する。
- * 実際のダメージは _advanceProjectiles() 内のヒット判定で発生する。
+ * 飛翔体は angle（ラジアン）と distTraveled（移動済み距離）で管理し、
+ * 毎ティック cos/sin で 1 単位前進する（グリッド座標は浮動小数）。
+ * ヒット判定は Math.hypot(player.x - proj.x, player.y - proj.y) < HIT_RADIUS。
  */
 function _spawnProjectile(state, pid, cmd, projectiles, seq) {
   const p = state.players[pid];
   const projId = `pj${seq}`;
   if (cmd.op === 'torpedo') {
-    const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : null;
-    const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : null;
+    const tx = cmd.target?.x != null ? Number(cmd.target.x) : null;
+    const ty = cmd.target?.y != null ? Number(cmd.target.y) : null;
     if (tx == null || ty == null) return;
     const td = DIR_DELTA[p.dir];
     const tFwd   = (tx - p.x) * td.dx + (ty - p.y) * td.dy;
     const tCross = Math.abs((tx - p.x) * td.dy - (ty - p.y) * td.dx);
     if (tFwd <= 0 || tCross > tFwd) return;
-    const path = _computeProjPath(p.x, p.y, tx, ty, TORPEDO_RANGE);
-    projectiles.push({ id: projId, type: 'torpedo', ownerId: pid, x: p.x, y: p.y, path, pathIdx: 0, damage: 2 });
+    const angle = Math.atan2(ty - p.y, tx - p.x);
+    projectiles.push({ id: projId, type: 'torpedo', ownerId: pid,
+      x: p.x, y: p.y, angle, distMax: TORPEDO_RANGE, distTraveled: 0, damage: 2 });
     pushEvent(state, { type: 'torpedo_fire', pid, projId, sx: p.x, sy: p.y, tx, ty, public: true });
     state.turnLog.push(`${p.name} が魚雷を発射 (→${tx},${ty})`);
   } else if (cmd.op === 'guided') {
-    const tx = cmd.target?.x != null ? Math.round(Number(cmd.target.x)) : p.x;
-    const ty = cmd.target?.y != null ? Math.round(Number(cmd.target.y)) : p.y;
+    const tx = cmd.target?.x != null ? Number(cmd.target.x) : p.x;
+    const ty = cmd.target?.y != null ? Number(cmd.target.y) : p.y;
     const gd = DIR_DELTA[p.dir];
-    const fwdDot  = (tx - p.x) * gd.dx + (ty - p.y) * gd.dy;
+    const fwdDot   = (tx - p.x) * gd.dx + (ty - p.y) * gd.dy;
     const crossMag = Math.abs((tx - p.x) * gd.dy - (ty - p.y) * gd.dx);
     if (fwdDot <= 0 || crossMag > fwdDot) return;
-    const path = _computeProjPath(p.x, p.y, tx, ty, GUIDED_RANGE);
-    projectiles.push({ id: projId, type: 'guided', ownerId: pid, x: p.x, y: p.y, path, pathIdx: 0, damage: 1, targetX: tx, targetY: ty, rerouteTick: 0, stepCount: 0, prevX: p.x, prevY: p.y });
+    const angle = Math.atan2(ty - p.y, tx - p.x);
+    projectiles.push({ id: projId, type: 'guided', ownerId: pid,
+      x: p.x, y: p.y, angle, distMax: GUIDED_RANGE, distTraveled: 0, damage: 1,
+      rerouteTick: 0, stepCount: 0 });
     pushEvent(state, { type: 'guided_fire', pid, projId, sx: p.x, sy: p.y, tx, ty, public: true });
     state.turnLog.push(`${p.name} が追尾魚雷を発射 (→${tx},${ty})`);
   } else if (cmd.op === 'shotgun') {
     const fwd  = DIR_DELTA[p.dir];
     const lDir = rotateDir(p.dir, -1), rDir = rotateDir(p.dir, 1);
     [
-      [clamp(p.x + fwd.dx,                              0, GRID_SIZE - 1), clamp(p.y + fwd.dy,                              0, GRID_SIZE - 1)],
-      [clamp(p.x + DIR_DELTA[lDir].dx + fwd.dx,         0, GRID_SIZE - 1), clamp(p.y + DIR_DELTA[lDir].dy + fwd.dy,         0, GRID_SIZE - 1)],
-      [clamp(p.x + DIR_DELTA[rDir].dx + fwd.dx,         0, GRID_SIZE - 1), clamp(p.y + DIR_DELTA[rDir].dy + fwd.dy,         0, GRID_SIZE - 1)],
-    ].forEach(([tx, ty], i) => {
-      projectiles.push({ id: `${projId}_${i}`, type: 'shotgun', ownerId: pid, x: p.x, y: p.y,
-        path: _computeProjPath(p.x, p.y, tx, ty, 1), pathIdx: 0, damage: 1 });
+      [fwd.dx,                                        fwd.dy                                       ],
+      [DIR_DELTA[lDir].dx + fwd.dx,                   DIR_DELTA[lDir].dy + fwd.dy                  ],
+      [DIR_DELTA[rDir].dx + fwd.dx,                   DIR_DELTA[rDir].dy + fwd.dy                  ],
+    ].forEach(([ddx, ddy], i) => {
+      const angle = Math.atan2(ddy, ddx);
+      projectiles.push({ id: `${projId}_${i}`, type: 'shotgun', ownerId: pid,
+        x: p.x, y: p.y, angle, distMax: 1.5, distTraveled: 0, damage: 1 });
     });
     pushEvent(state, { type: 'shotgun_fire', pid, projId, dir: p.dir, sx: p.x, sy: p.y, public: true });
     state.turnLog.push(`${p.name} が散弾を発射`);
@@ -338,53 +346,41 @@ function _spawnProjectile(state, pid, cmd, projectiles, seq) {
 }
 
 /**
- * atan2 で発射元→目標の角度を求め、直線補間で最大 maxSteps セル分の経路を返す。
- * 各ステップは「スタートから i × (cos・sin) 進んだ位置を Math.round」で決定。
- * 隔逸ステップが同一セルになる場合は重複を除去（斜め方向で自然発生）。
- * 目標を超えても同方向で直進。盤外 or maxSteps で経路終端。
- */
-function _computeProjPath(sx, sy, tx, ty, maxSteps) {
-  if (sx === tx && sy === ty) return [];
-  const angle = Math.atan2(ty - sy, tx - sx);
-  const cosA = Math.cos(angle), sinA = Math.sin(angle);
-  const path = [];
-  let prevX = sx, prevY = sy;
-  for (let i = 1; i <= maxSteps; i++) {
-    const nx = Math.round(sx + cosA * i);
-    const ny = Math.round(sy + sinA * i);
-    if (nx < 0 || nx >= GRID_SIZE || ny < 0 || ny >= GRID_SIZE) break;
-    if (nx !== prevX || ny !== prevY) {
-      path.push({ x: nx, y: ny });
-      prevX = nx; prevY = ny;
-    }
-  }
-  return path;
-}
-
-/**
- * 全飛翔体を 1 ステップ前進させ、ヒット/射程切れを処理する。
+ * 全飛翔体を 1 ステップ（1グリッド単位）前進させ、ヒット/射程切れを処理する。
+ * 飛翔体の x/y は浮動小数グリッド座標。ヒット判定は距離 < HIT_RADIUS。
  */
 function _advanceProjectiles(state, projectiles) {
   const toRemove = new Set();
   for (const proj of projectiles) {
     if (toRemove.has(proj.id)) continue;
 
-    // 追尾魚雷: GUIDED_REROUTE_INTERVAL ティックかぞに角度修正
+    // 追尾魚雷: GUIDED_REROUTE_INTERVAL ティックごとに角度修正
     if (proj.type === 'guided') {
       proj.stepCount = (proj.stepCount ?? 0) + 1;
       _rerouteGuided(proj, state);
     }
 
-    if (proj.pathIdx >= proj.path.length) {
+    // 前進（1グリッド単位）
+    proj.x += Math.cos(proj.angle);
+    proj.y += Math.sin(proj.angle);
+    proj.distTraveled = (proj.distTraveled ?? 0) + 1;
+
+    // 射程切れ or 盤外
+    if (proj.distTraveled >= proj.distMax ||
+        proj.x < -0.5 || proj.x >= GRID_SIZE - 0.5 ||
+        proj.y < -0.5 || proj.y >= GRID_SIZE - 0.5) {
       pushEvent(state, { type: 'projectile_miss', projId: proj.id, projType: proj.type, ownerId: proj.ownerId, x: proj.x, y: proj.y, public: true });
       toRemove.add(proj.id);
       continue;
     }
-    const next = proj.path[proj.pathIdx++];
-    proj.x = next.x; proj.y = next.y;
-    const hit = alivePlayers(state).find(eid =>
-      eid !== proj.ownerId && state.players[eid].x === proj.x && state.players[eid].y === proj.y
-    );
+
+    // ヒット判定（距離ベース）
+    const hit = alivePlayers(state).find(eid => {
+      if (eid === proj.ownerId) return false;
+      const ep = state.players[eid];
+      return Math.hypot(ep.x - proj.x, ep.y - proj.y) < HIT_RADIUS;
+    });
+
     if (hit) {
       if (proj.type === 'guided' && state.players[hit].buffs.chaffActive) {
         state.players[hit].buffs.chaffActive = false;
@@ -407,11 +403,10 @@ function _advanceProjectiles(state, projectiles) {
 }
 
 /**
- * 追尾魚雷: `GUIDED_REROUTE_INTERVAL` ティックごとに最近傍敵への角度を atan2 で再計算する。
- * 恵瓟インターバル内は元の経路をなぞる。
+ * 追尾魚雷: GUIDED_REROUTE_INTERVAL ティックごとに最近傍敵方向へ angle を更新する。
+ * ±45度の旋回制限あり。GUIDED_TRACK_STEPS を超えたら追尾停止。
  */
 function _rerouteGuided(proj, state) {
-  // 追尾射程外（GUIDED_TRACK_STEPS 超過）は追尾しない
   if ((proj.stepCount ?? 0) > GUIDED_TRACK_STEPS) return;
 
   proj.rerouteTick = (proj.rerouteTick ?? 0) + 1;
@@ -426,32 +421,12 @@ function _rerouteGuided(proj, state) {
   });
   if (!nearest) return;
 
-  // 現在の進行角度（prevX/prevY から計算）
-  const prevX = proj.prevX ?? proj.x, prevY = proj.prevY ?? proj.y;
-  const curAngle = Math.atan2(proj.y - prevY, proj.x - prevX);
-  // 新角度（目標への方向）
   const newAngle = Math.atan2(nearest.y - proj.y, nearest.x - proj.x);
-  // 角度差を -π〜+π に正規化
-  let delta = newAngle - curAngle;
+  let delta = newAngle - proj.angle;
   while (delta >  Math.PI) delta -= 2 * Math.PI;
   while (delta < -Math.PI) delta += 2 * Math.PI;
   const MAX_TURN = Math.PI / 4; // ±45度
-
-  let finalAngle;
-  if (Math.abs(delta) <= MAX_TURN) {
-    finalAngle = newAngle;
-  } else {
-    finalAngle = curAngle + Math.sign(delta) * MAX_TURN;
-  }
-
-  // clamp後の角度で終点を計算して経路再計算
-  const targetX = Math.round(proj.x + Math.cos(finalAngle) * GUIDED_RANGE);
-  const targetY = Math.round(proj.y + Math.sin(finalAngle) * GUIDED_RANGE);
-  const newPath = _computeProjPath(proj.x, proj.y, targetX, targetY, GUIDED_RANGE);
-  if (newPath.length > 0) { proj.path = newPath; proj.pathIdx = 0; }
-  proj.targetX = nearest.x; proj.targetY = nearest.y;
-  // 次ティックの角度計算用に現在位置を保存
-  proj.prevX = proj.x; proj.prevY = proj.y;
+  proj.angle = proj.angle + Math.sign(delta) * Math.min(Math.abs(delta), MAX_TURN);
 }
 
 function activateChaff(state, pid) {
