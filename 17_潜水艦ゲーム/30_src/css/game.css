@@ -3,7 +3,7 @@
    ============================================================ */
 #game-screen {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto auto 1fr;
   height: 100vh;
   overflow: hidden;
   background: var(--bg-deep);
@@ -87,6 +87,10 @@
 .player-chip-status { color: #4caf50; font-size: 11px; font-weight: 700; }
 .player-chip-queue { font-size: 10px; color: #ffeb3b; opacity: 0.9; word-break: break-all; }
 
+/* game-body は常に grid の5行目（1fr）に配置されるよう明示 */
+/* （#dogfight-banner や #board-pick-hint が display:none の時でも 1fr 行に入る）  */
+.game-body { grid-row: 5; }
+
 /* SP / タブレット(縦): 盤面上、パネル下の縦積み */
 .panel-center {
   flex: 0 0 auto;
@@ -102,34 +106,42 @@
 
 /* ─── PCレイアウト: 盤面左 / パネル右横並び (≥900px は下の @media で制御) ─── */
 
-/* ─── 盤面配置オーバーレイ ─── */
-#board-place-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  padding: 14px 8px;
+/* 盤面クリック待機ヒントバナー（盤面外・ヘッダー直下の内線表示） */
+#board-pick-hint {
+  display: block;
+  background: rgba(0, 180, 220, 0.12);
+  border-bottom: 2px solid var(--accent-cyan, #00e5ff);
+  color: var(--accent-cyan, #00e5ff);
+  font-size: 13px; font-weight: 600;
   text-align: center;
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #00e5ff;
-  text-shadow: 0 0 14px #00e5ff;
-  pointer-events: none;
-  animation: boardPlacePulse 0.7s ease-in-out infinite;
-  z-index: 5;
+  padding: 5px 16px;
+  letter-spacing: 0.5px;
+  animation: boardPickPulse 1s ease-in-out infinite;
+  flex-shrink: 0;
 }
-@keyframes boardPlacePulse { 50% { opacity: 0.1; } }
+#board-pick-hint.hidden { display: none; }
+@keyframes boardPickPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+/* 盤面配置オーバーレイ（canvas 内の古い要素）—非表示で残履 */
+#board-place-overlay { display: none !important; }
 
 /* ─── ドッグファイトバナー ─── */
+/* board-wrapper の外に移動したので position: static のブロック要素 */
 #dogfight-banner {
-  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  display: block;
   background: rgba(255,0,50,0.85);
   color: #fff; font-weight: 700;
-  padding: 8px 20px;
-  border-radius: var(--radius);
+  padding: 6px 20px;
   text-align: center; font-size: 13px;
   animation: dangerFlash 1.5s infinite;
-  z-index: 10;
   white-space: nowrap;
+  flex-shrink: 0;
 }
+/* .hidden 時は表示しない */
+#dogfight-banner.hidden { display: none; }
 @keyframes dangerFlash {
   0%, 100% { box-shadow: 0 0 0px rgba(255,30,30,0); }
   50% { box-shadow: 0 0 20px rgba(255,30,30,0.6); }

@@ -186,3 +186,43 @@
 .rules-table td.rules-td-val {
   text-align: center; color: var(--accent-cyan); font-weight: 700;
 }
+
+/* ── ルール説明: ボタンデモ ── */
+.rules-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+  padding: 0;
+  font-style: italic;
+}
+
+.rules-ops-group {
+  margin-bottom: 12px;
+}
+
+.rules-ops-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+/* デモ用ボタン: 非インタラクティブ */
+.op-btn-demo {
+  cursor: default !important;
+  pointer-events: none;
+  min-width: 52px;
+  min-height: 52px;
+  opacity: 0.9;
+}
+
+/* 武器ボタン下の説明文 */
+.rules-op-tip {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 1px;
+  line-height: 1.3;
+  white-space: nowrap;
+}

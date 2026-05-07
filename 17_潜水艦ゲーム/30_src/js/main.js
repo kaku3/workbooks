@@ -145,9 +145,14 @@ function startCommandTimer() {
         const { opIds, targets } = getSelectedOps();
         handleConfirmLocal(opIds, targets);
       }
-      forceConfirmAll(gameState);
-      commandTimer = null; // ガード解除（以後は syncStateToAll が通常通り動作）
-      syncStateToAll();
+      // ゲスト側は timerTick=0 を受けて確定メッセージを送信するが PeerJS 経由のため
+      // ホストへの到着は非同期。600ms 猶予を設けて先着順に受け付け、
+      // それでも未確定のプレイヤーは forceConfirmAll で強制確定する。
+      setTimeout(() => {
+        forceConfirmAll(gameState);
+        commandTimer = null; // ガード解除（以後は syncStateToAll が通常通り動作）
+        syncStateToAll();
+      }, 600);
       // 次ターンへの遷移はアニメ完了コールバックで行う
     }
   }, 1000);
@@ -197,12 +202,18 @@ function onLocalStateUpdate(event) {
         startActionAnimation(
           capturedView.actionEvents || [],
           capturedView,
-          // onDone: ホストのみ次ターンへ遷移
+          // onDone: ホストのみ次ターンへ遷移（winner 確定時は ended に遷移して broadcastGameOver）
           getIsHost() ? () => {
             advanceToNextTurn(gameState);
             syncStateToAll();
           } : null,
-          (ev) => showCurrentAction(ev, capturedView)
+          (ev) => {
+            showCurrentAction(ev, capturedView);
+            // 勝利確定の eliminated イベント時に勝利画面を表示（爆発アニメの途中）
+            if (ev?.type === 'eliminated' && capturedView.winner) {
+              setTimeout(() => showGameOver(capturedView.winner, capturedView), 1500);
+            }
+          }
         );
       }, delay);
     }

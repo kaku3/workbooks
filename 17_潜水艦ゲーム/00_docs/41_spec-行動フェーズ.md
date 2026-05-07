@@ -210,10 +210,16 @@ function _rerouteGuided(proj, state) {
 | `chaff_block` | false | pid | チャフ無効化通知は被弾者のみ |
 | `dogfight_start/end` | false | pid | ドッグファイト当事者それぞれに個別送信 |
 | `damage` | true | (全員) | 被弾情報（撃沈は公開） |
+| `eliminated` | true | (全員) | 死亡通知。`x`, `y`, `respawning` を含む |
 
 > **`move` を `public: true` にする理由**:  
 > 全端末が全プレイヤーの移動アニメーションを再生できるようにする。  
 > コマンドフェーズへ戻ったとき `sanitizeStateForPlayer` が座標を再び隠すためステルスは維持される。
+
+> **霧戦中の死亡者座標について**:  
+> `sanitizeStateForPlayer` はターン終了時に `respawning=true` の死亡者の座標を全員に開示するが、  
+> アニメーション開始時に `startActionAnimation` がその座標を消す（上記「alive 状態の巻き戻し」参照）。  
+> `eliminated` イベントに埋め込まれた `x`, `y` を使ってはじめて死亡地点が全員に公開される。
 
 ---
 
@@ -232,7 +238,7 @@ _animStartTimeoutId = setTimeout(() => { startActionAnimation(…) }, delay);
 > ネットワーク遅延によって state が遅く届いても遅延を短縮しない。  
 > （`actionPhaseStartedAt` で `elapsed` を引く方式は overlay 表示中にアニメが始まるバグになるため廃止）
 
-### プレイヤー初期位置の復元
+### プレイヤー初期位置・生死状態の復元
 
 `actionEvents` 内の `move` イベントの `fromX/fromY/fromDir` を使い、  
 全プレイヤーをアクション前の位置に巻き戻してから再生を開始する。
@@ -248,6 +254,40 @@ for (const ev of actionEvents) {
   }
 }
 ```
+
+#### alive 状態の巻き戻し（今ターン死亡プレイヤー対応）
+
+`sanitizeStateForPlayer` はターン終了時点の最終状態を配布するため、  
+今ターン `eliminated` されたプレイヤーは `alive=false` / `respawning=true` になっている。  
+このまま `_animView` にコピーすると、アニメ開始時点からキャラが見えない。
+
+そのため `startActionAnimation` は **`eliminated` イベントがキューにあるプレイヤー** を  
+`alive=true` / `respawning=false` に巻き戻し、`eliminated` イベント発火時に `alive=false` に変える。
+
+```javascript
+// キューに eliminated があるプレイヤーは alive=true に戻す
+const eliminatedThisTurn = new Set(
+  _actionQueue.filter(e => e.type === 'eliminated').map(e => e.pid)
+);
+Object.keys(_animView.players).forEach(pid => {
+  const ap = _animView.players[pid];
+  if (!ap.alive && eliminatedThisTurn.has(pid)) {
+    ap.alive = true;
+    ap.respawning = false;
+    // move イベントが届いていない（霧戦で視界外だった）場合は座標も消す
+    // → eliminated イベント発火時に初めて座標が公開される
+    if (!rewound.has(pid)) {
+      ap.x = undefined; ap.y = undefined; ap.dir = undefined;
+    }
+  }
+});
+```
+
+#### 霧戦と死亡者座標の扱い
+
+`sanitizeStateForPlayer` はターン終了時に `respawning=true` の死亡者の座標を全員へ開示する。  
+しかしアニメ中は「そのプレイヤーの `move` イベントが届いたタイミング（= 視界内に入ったとき）」まで  
+座標を見せたくない。上記の `!rewound.has(pid)` による座標クリアがこれを担保する。
 
 ### イベント再生順序
 
@@ -285,12 +325,23 @@ for (const ev of actionEvents) {
 
 ## 7. タイマー切れ時の処理
 
+### 基本方針: 入力途中でも確定
+
+**確定ボタンを押していなくても、それまでに積み上げたコマンドは確定される。**
+
+- 移動だけして時間切れになった場合 → その移動コマンドが確定
+- 魚雷発射先を入力中（盤面タップ待ち）に時間切れ → タップ待ちをキャンセルし、
+  それ以前に積んだコマンドが確定（魚雷コマンド自体はキューに入っていないためスキップ）
+- コマンドを何も積まずに時間切れ → 空のコマンドキューで確定（何もしない扱い）
+
 ### ホスト側（`main.js`）
 
 ```
 ① commandTimer が 'expired' に設定（再起動防止ガード）
 ② cancelBoardPick()                  ← 盤面ピック中の await を resolve(null) で中断
+   ※ ソナー/魚雷のトグルモード中でも盤面ピックがキャンセルされる
 ③ getSelectedOps() で入力済みコマンドを取得
+   ※ selectedOps に積まれていたコマンドがそのまま commandQueue になる
 ④ まだ未確定であれば handleConfirmLocal(opIds, targets) でホスト自身のコマンドを確定
 ⑤ forceConfirmAll(state) を呼ぶ
    - 未確定プレイヤー（ゲスト等）に空の commandQueue をセット
@@ -298,8 +349,9 @@ for (const ev of actionEvents) {
 ⑥ syncStateToAll()
 ```
 
-ポイント: `cancelBoardPick()` を先に呼ぶことで、追尾魚雷ボタンを押して
-盤面選択待ち中に時間切れになっても、直前まで積んだコマンドが確定される。
+ポイント: `cancelBoardPick()` を先に呼ぶことで、魚雷/ソナーのトグルモード中に
+盤面選択待ちになっていても resolve(null) で中断され、
+それまでに積んだコマンドが確定される。
 
 ### ゲスト側（`main.js` `onPublicEvent`）
 

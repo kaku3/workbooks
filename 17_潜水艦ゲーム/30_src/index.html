@@ -79,55 +79,100 @@
 
       <div class="rules-section">
         <div class="rules-section-title">🏆 勝利条件</div>
-        <p>先に <strong>3キル</strong> したプレイヤーの勝利。撃沈された艦は次のターンに外縁から復活する。</p>
+        <p>先に <strong>3キル</strong> したプレイヤーの勝利。撃沈された艦は次のターンに外縁から復活（HP全回復）。</p>
       </div>
 
       <div class="rules-section">
         <div class="rules-section-title">⏱ ターンの流れ</div>
         <ol>
-          <li><strong>コマンドフェーズ</strong><br/>— 全員同時・秘密裏に操作を入力（制限 30 秒）</li>
-          <li><strong>行動フェーズ</strong><br/>— 全員の操作が同時に解決されアニメーションで表示</li>
+          <li><strong>コマンドフェーズ（30秒）</strong><br/>— 画面下のボタンを押して操作をキューに積んで「確定」</li>
+          <li><strong>行動フェーズ</strong><br/>— 全員の操作が同時に解決、アニメーションで表示</li>
         </ol>
       </div>
 
       <div class="rules-section">
-        <div class="rules-section-title">⏰ 単位時間（1ターン = 10）</div>
-        <table class="rules-table">
-          <tr><th>操作</th><th>コスト</th><th>操作</th></tr>
-          <tr><td>前進</td><td class="rules-td-val">1</td><td>魚雷 / 散弾 / デコイ / 機雷 / チャフ</td></tr>
-          <tr><td>横移動(←→)</td><td class="rules-td-val">2</td><td>追尾魚雷 / 装甲板 / ソナー</td></tr>
-          <tr><td>旋回(←→)</td><td class="rules-td-val">3</td><td></td></tr>
-        </table>
-      </div>
+        <div class="rules-section-title">🕹 操作ボタン（1ターン = 単位時間 10）</div>
+        <p class="rules-hint">ゲーム中に実際に表示されるボタンです</p>
 
-      <div class="rules-section">
-        <div class="rules-section-title">⚔️ 武器・設置系</div>
-        <table class="rules-table">
-          <tr><th>操作</th><th>効果</th></tr>
-          <tr><td>🚀 魚雷</td><td>前方45°に直線発射。最初に当たった敵に <strong>ダメージ2</strong></td></tr>
-          <tr><td>🛸 追尾魚雷</td><td>前方45°内の指定座標付近の敵に自動ロック。チャフで無効化可。<strong>ダメージ1</strong></td></tr>
-          <tr><td>🔫 散弾</td><td>前方3マス（正面・左斜め・右斜め）を同時攻撃。装甲板で無効化可。<strong>ダメージ1</strong></td></tr>
-          <tr><td>💣 機雷</td><td>近傍に設置。踏んだ敵に <strong>ダメージ1</strong></td></tr>
-        </table>
-      </div>
+        <div class="rules-ops-group">
+          <div class="rules-ops-label">移動 / 索敵</div>
+          <div class="move-pad rules-demo-pad">
+            <div class="op-btn op-btn-demo move-btn">
+              <span class="material-symbols-outlined">turn_left</span>
+              <span class="op-name">←旋回</span>
+              <span class="op-cost">3</span>
+            </div>
+            <div class="op-btn op-btn-demo move-btn">
+              <span class="material-symbols-outlined">arrow_upward</span>
+              <span class="op-name">前進</span>
+              <span class="op-cost">1</span>
+            </div>
+            <div class="op-btn op-btn-demo move-btn">
+              <span class="material-symbols-outlined">turn_right</span>
+              <span class="op-name">旋回→</span>
+              <span class="op-cost">3</span>
+            </div>
+            <div class="op-btn op-btn-demo move-btn">
+              <span class="material-symbols-outlined">arrow_back</span>
+              <span class="op-name">←横移</span>
+              <span class="op-cost">2</span>
+            </div>
+            <div class="op-btn op-btn-demo sonar-btn">
+              <span class="material-symbols-outlined">radar</span>
+              <span class="op-name">ソナー</span>
+              <span class="op-cost">1</span>
+            </div>
+            <div class="op-btn op-btn-demo move-btn">
+              <span class="material-symbols-outlined">arrow_forward</span>
+              <span class="op-name">横移→</span>
+              <span class="op-cost">2</span>
+            </div>
+          </div>
+        </div>
 
-      <div class="rules-section">
-        <div class="rules-section-title">🛡 防御・その他</div>
-        <table class="rules-table">
-          <tr><th>操作</th><th>効果</th></tr>
-          <tr><td>チャフ</td><td>当ターン、追尾魚雷を1発無効化</td></tr>
-          <tr><td>装甲板</td><td>当ターン、散弾を1発無効化</td></tr>
-          <tr><td>デコイ</td><td>2ターン間、そのマスのソナー検知を回避</td></tr>
-          <tr><td>ソナー</td><td>3×3マスの敵を検知。<strong>検知された側に全画面警告</strong></td></tr>
-        </table>
+        <div class="rules-ops-group">
+          <div class="rules-ops-label">攻撃 / 防御</div>
+          <div class="attack-row rules-demo-row">
+            <div class="op-btn op-btn-demo inv-btn">
+              <span class="material-symbols-outlined">rocket_launch</span>
+              <span class="op-name">魚雷</span>
+              <span class="op-cost">1</span>
+              <span class="rules-op-tip">前方直線 ×2dmg</span>
+            </div>
+            <div class="op-btn op-btn-demo inv-btn">
+              <span class="material-symbols-outlined">assistant_navigation</span>
+              <span class="op-name">追尾</span>
+              <span class="op-cost">2</span>
+              <span class="rules-op-tip">自動ロック ×1dmg</span>
+            </div>
+            <div class="op-btn op-btn-demo inv-btn">
+              <span class="material-symbols-outlined">scatter_plot</span>
+              <span class="op-name">散弾</span>
+              <span class="op-cost">1</span>
+              <span class="rules-op-tip">前方3マス ×1dmg</span>
+            </div>
+            <div class="op-btn op-btn-demo inv-btn">
+              <span class="material-symbols-outlined">dangerous</span>
+              <span class="op-name">機雷</span>
+              <span class="op-cost">1</span>
+              <span class="rules-op-tip">設置 踏んだ敵×1dmg</span>
+            </div>
+            <div class="op-btn op-btn-demo inv-btn defense-btn">
+              <span class="material-symbols-outlined">blur_on</span>
+              <span class="op-name">チャフ</span>
+              <span class="op-cost">1</span>
+              <span class="rules-op-tip">追尾魚雷を1発無効</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="rules-section">
         <div class="rules-section-title">📍 霧戦（フォグ・オブ・ウォー）</div>
         <ul>
-          <li>敵の座標は基本的に不明。自艦から <strong>3マス以内の敵座標は公開</strong>される。</li>
-          <li>ドッグファイトモード（距離3マス以内）では相手の座標・コマンドが公開される。</li>
-          <li>補給ポイント（⛽ 弾薬補給 / 🔧 修理）に乗ると自動で適用される。</li>
+          <li>敵の座標は基本不明。<strong>自艦から3マス以内の敵は見える</strong></li>
+          <li>ソナーで3×3マスを索敵。<strong>検知された側には全画面警告</strong>が出る</li>
+          <li>補給ポイント（⛽ 弾薬補給 / 🔧 修理）に乗ると自動適用</li>
         </ul>
       </div>
 
@@ -155,6 +200,12 @@
     <div id="player-list"></div>
   </div>
 
+  <!-- 盤面クリック待機: 方向指示バナー（盤面外のヘッダー直下に固定） -->
+  <div id="board-pick-hint" class="hidden"></div>
+
+  <!-- ページ上部メッセージ: ドッグファイトバナー / スキャン警告 -->
+  <div id="dogfight-banner" class="hidden"></div>
+
   <!-- 盤面＋操作パネル包括ラッパー -->
   <div class="game-body">
 
@@ -162,16 +213,8 @@
   <main class="panel-center">
     <div class="board-wrapper">
       <canvas id="board-canvas" width="500" height="500"></canvas>
+      <!-- board-place-overlay は非表示に（ヒントは board-pick-hint へ移動） -->
       <div id="board-place-overlay" class="hidden"></div>
-      <div id="dogfight-banner" class="hidden"></div>
-      <!-- 行動フェーズ: 現在実行中アクション表示カード -->
-      <div id="action-event-card" class="hidden">
-        <span class="material-symbols-outlined" id="ae-icon">rocket_launch</span>
-        <div class="ae-body">
-          <div id="ae-label"></div>
-          <div id="ae-sub"></div>
-        </div>
-      </div>
     </div>
   </main>
 
@@ -199,6 +242,14 @@
     </div>
 
     <!-- 操作パネル: 移動2行 + 索敵/攻撃1行 -->
+    <!-- 行動フェーズ: 現在実行中アクション表示カード（op-panelが隠れた領域に表示） -->
+    <div id="action-event-card" class="hidden">
+      <span class="material-symbols-outlined" id="ae-icon">rocket_launch</span>
+      <div class="ae-body">
+        <div id="ae-label"></div>
+        <div id="ae-sub"></div>
+      </div>
+    </div>
     <div class="op-panel hidden" id="op-panel">
 
       <!-- 移動ブロック: 3列×2行グリッド（中央＝ソナー） -->

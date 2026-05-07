@@ -59,7 +59,8 @@ export function forceConfirmAll(state) {
    次ターンへ進める（アクションアニメ完了後にホストが呼ぶ）
    ============================================================ */
 export function advanceToNextTurn(state) {
-  if (state.winner || state.phase === 'ended') return;
+  if (state.winner) { state.phase = 'ended'; return; }
+  if (state.phase === 'ended') return;
   state.turn++;
   _prepareNextTurn(state);
 }
@@ -79,8 +80,10 @@ function _prepareNextTurn(state) {
       p.respawning = false;
       p.inventory = { ...INITIAL_INVENTORY };
       p.buffs = { chaffActive: false };
-      pushEvent(state, { type: 'respawn', pid: id, x: pos.x, y: pos.y, public: true });
-      state.turnLog.push(`${p.name} が外縁(${pos.x},${pos.y})に復活`);
+      // 復活は全員に公開（ただし座標は本人のみ）
+      pushEvent(state, { type: 'respawn', pid: id, public: true });
+      pushEvent(state, { type: 'respawn_coords', pid: id, x: pos.x, y: pos.y, public: false, to: id });
+      state.turnLog.push(`${p.name} が外縁に復活`); // 座標は全体ログに出さない
     }
   });
 

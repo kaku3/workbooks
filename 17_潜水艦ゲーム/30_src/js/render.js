@@ -27,7 +27,7 @@ const C = {
   warning:  'rgba(255,160,0,0.2)',
   warnNear: 'rgba(255,160,0,0.45)',
   warnCrit: 'rgba(255,60,0,0.55)',
-  supply:   { fuel: '#ffeb3b', repair: '#4caf50', armory: '#f44336', random: '#9c27b0' },
+  supply:   { fuel: '#ffeb3b', repair: '#4caf50', ammo: '#f44336', armory: '#f44336', random: '#9c27b0' },
   playerColors: ['#00e5ff', '#ff4444', '#ffeb3b', '#4caf50', '#ab47bc', '#ff9800'],
 };
 
@@ -142,7 +142,7 @@ function drawGrid() {
 /* ─── Layer 3: 補給ポイント ─── */
 function drawSupplyPoints(supplyPoints) {
   if (!supplyPoints) return;
-  const icons = { fuel: '⛽', repair: '🔧', armory: '🔫', random: '❓' };
+  const icons = { fuel: '⛽', repair: '🔧', ammo: '🔫', armory: '🔫', random: '❓' };
   for (const sp of supplyPoints) {
     const px = boardOffset.x + sp.x * cellSize + cellSize / 2;
     const py = boardOffset.y + sp.y * cellSize + cellSize / 2;
@@ -268,19 +268,22 @@ function drawForwardWarning(view) {
 /* ─── Layer 6: 潜水艦 ─── */
 function drawSubmarine(view) {
   const me = view.players[view.myId];
-  if (!me || !me.alive) return;
+  if (!me) return;
 
   // プレイヤーインデックスを playerOrder から決定（色の一貫性のため）
   const myColorIdx = view.playerOrder.indexOf(view.myId);
 
-  // 自艦
-  drawSub(me.x, me.y, me.dir, C.playerColors[myColorIdx % C.playerColors.length], true, me.name);
+  // 自艦: alive かつ座標が有効なときのみ描画
+  if (me.alive && typeof me.x === 'number' && typeof me.y === 'number') {
+    drawSub(me.x, me.y, me.dir, C.playerColors[myColorIdx % C.playerColors.length], true, me.name);
+  }
 
-  // 他プレイヤー (ドッグファイト時のみ位置が公開される)
+  // 他プレイヤー: alive かつ座標が有効なときのみ描画
+  // 霧戦フィルタは sanitizeStateForPlayer（ターン終了時）と
+  // startActionAnimation の fog-of-war 修正（アニメ中）が責任を持つ
   view.playerOrder.forEach((id, idx) => {
     if (id === view.myId) return;
     const p = view.players[id];
-    // x/y が null/undefined でなく数値のときのみ描画
     if (p && p.alive && typeof p.x === 'number' && typeof p.y === 'number') {
       drawSub(p.x, p.y, p.dir, C.playerColors[idx % C.playerColors.length], false, p.name);
     }

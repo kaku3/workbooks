@@ -212,17 +212,17 @@ export function applyPreviewLayer() {
         break;
       }
       case 'chaff_preview': {
-        const cx2 = bo.x + step.x * cs + cs / 2;
-        const cy2 = bo.y + step.y * cs + cs / 2;
+        const cx2 = bo.x + step.x * cellSize + cellSize / 2;
+        const cy2 = bo.y + step.y * cellSize + cellSize / 2;
         ctx.fillStyle = 'rgba(200,230,255,0.15)';
-        ctx.fillRect(bo.x + step.x * cs + 1, bo.y + step.y * cs + 1, cs - 2, cs - 2);
+        ctx.fillRect(bo.x + step.x * cellSize + 1, bo.y + step.y * cellSize + 1, cellSize - 2, cellSize - 2);
         ctx.strokeStyle = 'rgba(180,220,255,0.8)';
         ctx.lineWidth = 2;
         ctx.setLineDash([3, 2]);
-        ctx.beginPath(); ctx.arc(cx2, cy2, cs * 0.40, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx2, cy2, cellSize * 0.40, 0, Math.PI * 2); ctx.stroke();
         ctx.setLineDash([]);
         ctx.fillStyle = 'rgba(180,220,255,0.85)';
-        ctx.font = `bold ${Math.max(9, cs * 0.22)}px sans-serif`;
+        ctx.font = `bold ${Math.max(9, cellSize * 0.22)}px sans-serif`;
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.fillText('チャフ', cx2, cy2);
         break;
@@ -410,6 +410,26 @@ export function startActionAnimation(events, view, onDone, onEachEvent) {
     }
   }
 
+  // alive 状態の巻き戻し + fog-of-war 修正:
+  //   今ターン eliminated されるプレイヤー → アニメ開始時は alive=true に戻す
+  //   move イベントが届いていない（霧で見えていなかった）場合は初期座標も消す
+  //   → eliminated イベント発火時にはじめて座標が公開される
+  const eliminatedThisTurn = new Set(
+    _actionQueue.filter(e => e.type === 'eliminated').map(e => e.pid)
+  );
+  Object.keys(_animView.players).forEach(pid => {
+    const ap = _animView.players[pid];
+    if (!ap.alive && eliminatedThisTurn.has(pid)) {
+      ap.alive = true;
+      ap.respawning = false;
+      // move イベントがなく、かつ元々座標が非公開だった（霧で見えていなかった）場合のみ隠す
+      // 自分自身や視界内にいた敵は view に x が定義済みなので消さない
+      if (!rewound.has(pid) && view.players[pid]?.x == null) {
+        ap.x = undefined; ap.y = undefined; ap.dir = undefined;
+      }
+    }
+  });
+
   // ソナー結果をアニメ開始時はクリア→ソナーイベント発火時に復元
   if (_animView.players[view.myId]) {
     _animView.players[view.myId].sonarResults = [];
@@ -432,7 +452,14 @@ function _applyEventToAnimView(ev) {
     case 'move':      if (p) { p.x = ev.x; p.y = ev.y; p.dir = ev.dir; } break;
     case 'damage':    if (p) p.hp = ev.hp; break;
     case 'repair':    if (p) p.hp = ev.hp; break;
-    case 'eliminated': if (p) p.alive = false; break;
+    case 'eliminated':
+      if (p) {
+        p.alive = false;
+        if (ev.respawning != null) p.respawning = ev.respawning;
+        // 死亡座標が含まれていれば位置を確定（霧が晴れても正しい位置に表示）
+        if (ev.x != null) { p.x = ev.x; p.y = ev.y; }
+      }
+      break;
     case 'dogfight_start': {
       // ドッグファイト開始: 位置が公開される → _animView に反映してバナー表示
       if (ev.pids && _actionBaseView) {

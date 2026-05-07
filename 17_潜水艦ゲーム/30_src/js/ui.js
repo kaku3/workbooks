@@ -1,7 +1,7 @@
 ﻿// ============================================================
 // ui.js  v5.0 パネル操作制 UI
 // ============================================================
-import { OPS, COMMAND_TIME_LIMIT, DIR_DELTA, rotateDir, GRID_SIZE } from './constants.js';
+import { OPS, COMMAND_TIME_LIMIT, DIR_DELTA, rotateDir, GRID_SIZE, WIN_KILLS } from './constants.js';
 import { setCommandPreview, clearCommandPreview, renderState } from './render.js';
 import { promptTarget, cancelBoardPick } from './modal.js';
 
@@ -9,7 +9,8 @@ let callbacks = {};         // { onConfirm, calcTimeCost }
 let selectedOps = [];       // { op: string, target: {} }[]
 let _commandConfirmed = false; // 確定後〜アクション開始前: キュー表示をロック
 let latestView = null;
-let _sonarToggleActive = false; // ソナートグルモード中フラグ
+let _sonarToggleActive   = false; // ソナートグルモード中フラグ
+let _torpedoToggleActive = false; // 魚雷トグルモード中フラグ
 
 /* ============================================================
    初期化
@@ -20,7 +21,7 @@ export function initUI(cbs) {
   if (confirmBtn) {
     confirmBtn.addEventListener('click', () => {
       if (callbacks.onConfirm) {
-        _deactivateSonarToggle(); // ソナートグルを必ず解除
+        _deactivateAllToggles(); // 全トグルモードを必ず解除
         callbacks.onConfirm(selectedOps.map(s => s.op), selectedOps.map(s => s.target));
         // selectedOps はアクションフェーズ開始（enableCommand isNewPhase=true）まで保持。
         // キャンバスプレビューも保持して、自分が確定した内容が見えるようにする。
@@ -274,17 +275,11 @@ function _renderPlayerList(view) {
       : (view.phase === 'command' ? (p.commandConfirmed ? '✓' : '…') : '');
     const hp = p.hp ?? '?';
     const hpCrit = typeof p.hp === 'number' && p.hp <= 1;
-    // ドッグファイト相手の確定済みコマンドを表示
-    const isDogfightPartner = id !== view.myId && me?.dogfightWith === id;
-    const queueText = (isDogfightPartner && view.phase === 'command' && p.commandQueue?.length > 0)
-      ? p.commandQueue.map(c => OPS[c.op]?.name ?? c.op).join('→')
-      : '';
     div.innerHTML = `
       <span class="player-dot" style="background:${colors[i % colors.length]}"></span>
       <span class="player-chip-body">
         <span class="player-chip-name">${p.name}${id === view.myId ? '★' : ''}${statusIcon ? ' ' + statusIcon : ''}</span>
         <span class="player-chip-hp${hpCrit ? ' hp-crit' : ''}">HP ${hp}</span>
-        ${queueText ? `<span class="player-chip-queue">${queueText}</span>` : ''}
       </span>
     `;
     el.appendChild(div);
@@ -354,8 +349,8 @@ export function enableCommand(view, isNewPhase = false) {
   if (area) area.classList.remove('hidden');
 
   if (isNewPhase) {
-    _deactivateSonarToggle(); // ソナートグル解除（内部で cancelBoardPick も呼ぶ）
-    cancelBoardPick();        // 非ソナーの盤面ピックも念のため解除
+    _deactivateAllToggles(); // 全トグル解除（内部で cancelBoardPick も呼ぶ）
+    cancelBoardPick();      // 非トグルの盤面ピックも念のため解除
     _hideWaiting();
     _commandConfirmed = false;
     selectedOps = [];
@@ -416,6 +411,21 @@ function _deactivateSonarToggle() {
   if (btn) btn.classList.remove('toggle-active');
 }
 
+/** 魚雷トグルを解除し盤面ピックをキャンセルする */
+function _deactivateTorpedoToggle() {
+  if (!_torpedoToggleActive) return;
+  _torpedoToggleActive = false;
+  cancelBoardPick();
+  const btn = document.querySelector('.op-btn[data-op="torpedo"]');
+  if (btn) btn.classList.remove('toggle-active');
+}
+
+/** 全トグルモードを解除する */
+function _deactivateAllToggles() {
+  _deactivateSonarToggle();
+  _deactivateTorpedoToggle();
+}
+
 /** 待機メッセージ表示: バー・ボタン・パネルをまるごと置換 */
 function _showWaiting() {
   const waiting    = document.getElementById('cmd-waiting');
@@ -444,16 +454,16 @@ async function _onOpClick(opId, view) {
   const opDef = OPS[opId];
   if (!opDef) return;
 
-  // ソナートグル中に再クリック → 解除して終了
+  // トグル中の同じボタンを再クリック → 解除して終了
   if (opId === 'sonar' && _sonarToggleActive) {
-    _deactivateSonarToggle();
-    return;
+    _deactivateSonarToggle(); return;
+  }
+  if (opId === 'torpedo' && _torpedoToggleActive) {
+    _deactivateTorpedoToggle(); return;
   }
 
-  // ソナー以外のコマンドが押されたらトグル解除
-  if (opId !== 'sonar') {
-    _deactivateSonarToggle();
-  }
+  // 別のボタンが押されたら全トグルを解除
+  _deactivateAllToggles();
 
   // コスト確認
   const used = selectedOps.reduce((sum, s) => sum + (OPS[s.op]?.cost ?? 0), 0);
@@ -466,23 +476,33 @@ async function _onOpClick(opId, view) {
     if (avail <= 0) return;
   }
 
-  // ──── ソナー: トグルモード（クリックするたびに追加し続ける） ────
-  if (opId === 'sonar') {
-    _sonarToggleActive = true;
-    const sonarBtn = document.querySelector('.op-btn[data-op="sonar"]');
-    if (sonarBtn) sonarBtn.classList.add('toggle-active');
+  // ──── ソナー / 魚雷: トグルモード（クリックするたびに追加し続ける） ────
+  if (opId === 'sonar' || opId === 'torpedo') {
+    if (opId === 'sonar') {
+      _sonarToggleActive = true;
+      document.querySelector('.op-btn[data-op="sonar"]')?.classList.add('toggle-active');
+    } else {
+      _torpedoToggleActive = true;
+      document.querySelector('.op-btn[data-op="torpedo"]')?.classList.add('toggle-active');
+    }
+    const isActive = () => opId === 'sonar' ? _sonarToggleActive : _torpedoToggleActive;
+    const deactivate = opId === 'sonar' ? _deactivateSonarToggle : _deactivateTorpedoToggle;
 
-    while (_sonarToggleActive) {
-      // 毎ループで最新の残り時間・在庫を確認
+    while (isActive()) {
       const cur = latestView?.players[latestView?.myId];
-      if (!cur) { _deactivateSonarToggle(); break; }
+      if (!cur) { deactivate(); break; }
       const usedNow = selectedOps.reduce((sum, s) => sum + (OPS[s.op]?.cost ?? 0), 0);
-      if (opDef.cost > (cur.time ?? 10) - usedNow) { _deactivateSonarToggle(); break; }
+      if (opDef.cost > (cur.time ?? 10) - usedNow) { deactivate(); break; }
+      // 在庫が尽きたら終了
+      if (opDef.invKey) {
+        const inQueue = selectedOps.filter(s => s.op === opId).length;
+        if ((cur.inventory?.[opDef.invKey] ?? 0) - inQueue <= 0) { deactivate(); break; }
+      }
 
       const simMe = _simulatedPosition(cur, selectedOps);
       const target = await promptTarget(opDef, simMe);
-      if (target === null || !_sonarToggleActive) {
-        _deactivateSonarToggle();
+      if (target === null || !isActive()) {
+        deactivate();
         break;
       }
 
@@ -514,8 +534,8 @@ async function _onOpClick(opId, view) {
    アクションフェーズ
    ============================================================ */
 export function showActionEvents(events, view) {
-  // 盤面ピック中のソナートグル・ターゲット選択も解除（タイムアウト経由の透過に対応）
-  _deactivateSonarToggle();
+  // 盤面ピック中のトグル・ターゲット選択も解除（タイムアウト経由の透過に対応）
+  _deactivateAllToggles();
   cancelBoardPick();
   // 行動フェーズ中はコマンド入力を完全に無効化
   const panel = document.getElementById('op-panel');
@@ -544,9 +564,56 @@ export function showCurrentAction(ev, view) {
   const label  = document.getElementById('ae-label');
   const sub    = document.getElementById('ae-sub');
   const opDef  = ev.op ? OPS[ev.op] : null;
-  if (iconEl) iconEl.textContent = opDef?.icon || 'info';
-  if (label)  label.textContent  = opDef?.name || ev.type || '';
-  if (sub)    sub.textContent    = '';
+
+  // イベントタイプ別の表示ラベルとアイコン
+  const EVENT_DISPLAY = {
+    move:            { label: '移動',           icon: 'moving' },
+    torpedo_fire:    { label: '魚雷 発射',       icon: 'rocket_launch' },
+    guided_fire:     { label: '追尾魚雷 発射',   icon: 'rocket_launch' },
+    shotgun_fire:    { label: '散弾 発射',       icon: 'rocket_launch' },
+    projectile_tick: { label: '飛翔中…',        icon: 'rocket_launch' },
+    projectile_hit:  { label: '命中！',          icon: 'explosion' },
+    projectile_miss: { label: '外れ',           icon: 'close' },
+    damage:          { label: 'ダメージ',        icon: 'heart_broken' },
+    eliminated:      { label: '撃沈',           icon: 'skull' },
+    respawn:         { label: '復活',           icon: 'autorenew' },
+    sonar:           { label: 'ソナー スキャン', icon: 'sonar' },
+    sonar_detected:  { label: 'ソナー検知！',    icon: 'radar' },
+    dogfight_start:  { label: 'ドッグファイト突入', icon: 'swords' },
+    dogfight_end:    { label: 'ドッグファイト解除', icon: 'check_circle' },
+    explosion:       { label: '爆発',           icon: 'explosion' },
+    supply:          { label: '補給',           icon: 'inventory_2' },
+    mine_place:      { label: '機雷 設置',       icon: 'warning' },
+    buff:            { label: 'バフ',           icon: 'shield' },
+    chaff_block:     { label: 'チャフ無効化',    icon: 'block' },
+    repair:          { label: '修理',           icon: 'build' },
+    tick_start:      { label: '',              icon: 'info' },
+  };
+
+  const evDisp = EVENT_DISPLAY[ev.type];
+  const displayIcon  = opDef?.icon  || evDisp?.icon  || 'info';
+  const displayLabel = opDef?.name  || evDisp?.label || ev.type || '';
+
+  // サブテキスト（発射者名や対象を補足）
+  let subText = '';
+  if (ev.pid) {
+    const actor = view?.players?.[ev.pid];
+    if (actor) subText = actor.name;
+  }
+  if (ev.type === 'damage' && ev.dmg != null) {
+    const target = view?.players?.[ev.pid];
+    subText = target ? `${target.name} に ${ev.dmg} ダメージ` : `${ev.dmg} ダメージ`;
+  }
+  if (ev.type === 'projectile_hit' && !ev.blocked) {
+    subText = '直撃';
+  }
+  if (ev.type === 'projectile_hit' && ev.blocked) {
+    subText = 'チャフで無効化';
+  }
+
+  if (iconEl) iconEl.textContent = displayIcon;
+  if (label)  label.textContent  = displayLabel;
+  if (sub)    sub.textContent    = subText;
   card.classList.remove('hidden');
 }
 

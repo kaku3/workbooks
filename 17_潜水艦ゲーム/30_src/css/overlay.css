@@ -101,8 +101,8 @@
 
 /* ─── ソナー検知警告オーバーレイ ─── */
 #sonar-alert-overlay {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: center;
   z-index: 100;
   pointer-events: none;
   background: rgba(0, 40, 0, 0);
@@ -245,21 +245,17 @@
 .modal-sep { height: 1px; background: var(--border); margin: 12px 0; }
 
 /* ─── 行動フェーズ: 現在実行中アクション表示カード ─── */
+/* game-footer内の op-panel が隠れた領域に自然に表示される */
 #action-event-card {
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  transform: translateY(-50%);
   display: flex;
   align-items: center;
   gap: 10px;
   background: rgba(5, 13, 26, 0.88);
-  border: 1px solid var(--accent-cyan, #00e5ff);
-  border-radius: var(--radius, 8px);
+  border-bottom: 1px solid var(--accent-cyan, #00e5ff);
   padding: 10px 16px;
   pointer-events: none;
-  z-index: 20;
-  min-width: 120px;
+  min-width: 0;
+  flex-shrink: 0;
 }
 #action-event-card .material-symbols-outlined {
   font-size: 28px;
