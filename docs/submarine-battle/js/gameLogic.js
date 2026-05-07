@@ -263,8 +263,20 @@ function resolveMove(state, pid, cmd) {
       break;
     }
   }
-  // public: true → 全端末で全プレイヤーのアニメーションを再生するために必要
-  pushEvent(state, { type: 'move', pid, op: cmd.op, fromX, fromY, fromDir, x: p.x, y: p.y, dir: p.dir, public: true });
+  // fog-of-war: 移動後の位置でチェビシェフ3マス以内またはソナー検知済みの観渫者にのみ公開
+  const aliveNow = alivePlayers(state);
+  const seenBy = aliveNow.filter(obsId => {
+    if (obsId === pid) return true;
+    const obs = state.players[obsId];
+    return chebyshev(obs.x, obs.y, p.x, p.y) <= 3
+        || (obs.sonarResults || []).some(r => r.playerId === pid);
+  });
+  const moveEv = { type: 'move', pid, op: cmd.op, fromX, fromY, fromDir, x: p.x, y: p.y, dir: p.dir };
+  if (seenBy.length === aliveNow.length) {
+    pushEvent(state, { ...moveEv, public: true });
+  } else {
+    pushEvent(state, { ...moveEv, public: false, pids: seenBy });
+  }
 }
 
 function resolveSonar(state, pid, cmd) {
@@ -492,10 +504,11 @@ function checkEliminations(state) {
         if (partner) partner.dogfightWith = null;
       }
       p.dogfightWith = null;
-      pushEvent(state, { type: 'eliminated', pid: id, respawning: true, public: true });
+      pushEvent(state, { type: 'eliminated', pid: id, x: p.x, y: p.y, respawning: true, public: true });
     }
   });
-  if (state.winner) state.phase = 'ended';
+  // phase='ended' への遷移は advanceToNextTurn（アニメ完了後）で行う
+  // → クライアントが先にアニメを再生してから勝利画面を表示できる
 }
 
 /* ============================================================
@@ -524,10 +537,13 @@ export function sanitizeStateForPlayer(state, playerId) {
         hp: o.hp,
         x: undefined, y: undefined, dir: undefined,
       };
-      // ドッグファイト中は相手座標・コマンドを公開
-      if (me && me.dogfightWith === id && o.alive) {
+      // ドッグファイト中またはチェビシェフ3マス以内は相手座標を公開
+      if (o.alive && me && (me.dogfightWith === id || chebyshev(me.x, me.y, o.x, o.y) <= 3)) {
         revealed.x = o.x; revealed.y = o.y; revealed.dir = o.dir;
-        revealed.commandQueue = o.commandQueue;
+      }
+      // 死亡プレイヤー（respawning=true）は座標を公開（アニメーション巧し辺みのため、霧戦不要）
+      if (!o.alive && o.respawning) {
+        revealed.x = o.x; revealed.y = o.y; revealed.dir = o.dir;
       }
       // ソナー検知中は次ターンまで座標を公開
       if (sonarVisible.has(id) && o.alive) {
@@ -582,7 +598,7 @@ function findEnemiesInRadius(state, pid, cx, cy, r) {
 
 function applyDamage(state, pid, amount, source, attackerId) {
   const p = state.players[pid];
-  if (!p.alive) return;
+  if (!p.alive || p.hp <= 0) return;  // 死亡済み or 既にHP0（同ティック重複ヒット防止）
   p.hp -= amount;
   pushEvent(state, { type: 'damage', pid, dmg: amount, source, attackerId, hp: p.hp, public: source !== 'mine' });
   const _sourceLabel = { torpedo: '魚雷', guided: '追尾魚雷', shotgun: '散弾', mine: '機雷', shrink: '収縮' };

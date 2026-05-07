@@ -48,7 +48,7 @@ export async function promptTarget(op, me) {
 function _boardCoordPick(cardName, hint = '設置箇所を盤面でクリック', highlightCells = null) {
   return new Promise(resolve => {
     if (_boardPickAbortFn) _boardPickAbortFn(); // 前の未完了ピックをキャンセル
-    const overlay = document.getElementById('board-place-overlay');
+    const overlay = document.getElementById('board-pick-hint');  // 盤面外ヘッダー直下のヒントバナー
     const canvas  = document.getElementById('board-canvas');
     const cleanup = () => {
       if (overlay) overlay.classList.add('hidden');
