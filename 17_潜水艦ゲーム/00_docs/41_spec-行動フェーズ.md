@@ -96,6 +96,14 @@ _tickEnterCheck(state);
 ### 1) ドッグファイト離脱チェック（先に判定）
 チェビシェフ距離 > 4 のペアに `dogfight_end` イベントを生成。
 
+`dogfight_end` は解除対象プレイヤーごとに 1 件ずつ発行し、
+`pid`（自分）に加えて `otherId`（相手）を持つ。
+
+```javascript
+pushEvent(state, { type: 'dogfight_end', pid, otherId: partnerId, public: false, to: pid });
+pushEvent(state, { type: 'dogfight_end', pid: partnerId, otherId: pid, public: false, to: partnerId });
+```
+
 ### 2) ドッグファイト突入チェック（離脱後に判定）
 チェビシェフ距離 ≤ 3 の未交戦ペアに `dogfight_start` イベントを生成。  
 ターン1はスキップ（配置直後は突入しない）。
@@ -208,7 +216,8 @@ function _rerouteGuided(proj, state) {
 | `mine_place` | false | pid | 機雷設置は自分だけ |
 | `buff` (chaff) | false | pid | チャフ展開は自分だけ |
 | `chaff_block` | false | pid | チャフ無効化通知は被弾者のみ |
-| `dogfight_start/end` | false | pid | ドッグファイト当事者それぞれに個別送信 |
+| `dogfight_start` | false | pid | 当事者それぞれに個別送信 (`pids: [a,b]`) |
+| `dogfight_end` | false | pid | 当事者それぞれに個別送信 (`pid`, `otherId`) |
 | `damage` | true | (全員) | 被弾情報（撃沈は公開） |
 | `eliminated` | true | (全員) | 死亡通知。`x`, `y`, `respawning` を含む |
 
@@ -274,9 +283,9 @@ Object.keys(_animView.players).forEach(pid => {
   if (!ap.alive && eliminatedThisTurn.has(pid)) {
     ap.alive = true;
     ap.respawning = false;
-    // move イベントが届いていない（霧戦で視界外だった）場合は座標も消す
-    // → eliminated イベント発火時に初めて座標が公開される
-    if (!rewound.has(pid)) {
+    // move がなく、かつ元の view で座標非公開だった相手のみ隠す
+    // （自分自身や視界内にいた相手は保持）
+    if (!rewound.has(pid) && view.players[pid]?.x == null) {
       ap.x = undefined; ap.y = undefined; ap.dir = undefined;
     }
   }
@@ -287,7 +296,34 @@ Object.keys(_animView.players).forEach(pid => {
 
 `sanitizeStateForPlayer` はターン終了時に `respawning=true` の死亡者の座標を全員へ開示する。  
 しかしアニメ中は「そのプレイヤーの `move` イベントが届いたタイミング（= 視界内に入ったとき）」まで  
-座標を見せたくない。上記の `!rewound.has(pid)` による座標クリアがこれを担保する。
+座標を見せたくない。上記の `!rewound.has(pid) && view.players[pid]?.x == null` による
+座標クリアがこれを担保する。
+
+### ドッグファイト状態のアニメ初期化
+
+`startActionAnimation` では、アニメ開始時にドッグファイト状態をいったんリセットし、
+イベントキューから必要な初期状態だけ復元する。
+
+1. 自分向け `dogfight_start` がキューにある場合: イベントで開始を描画するため初期復元しない
+2. `dogfight_start` がなく `dogfight_end` のみある場合:
+   前ターンから継続していた交戦の解除を見せるため、`dogfight_end.otherId` で初期復元する
+
+```javascript
+function initializeAnimDogfightState(animView, actionQueue) {
+  const meId = animView.myId;
+  const me = animView.players[meId];
+  if (!me) return;
+  me.dogfightWith = null;
+
+  const hasStartForMe = actionQueue.some(ev =>
+    ev.type === 'dogfight_start' && Array.isArray(ev.pids) && ev.pids.includes(meId)
+  );
+  if (hasStartForMe) return;
+
+  const endForMe = actionQueue.find(ev => ev.type === 'dogfight_end' && ev.pid === meId && ev.otherId);
+  if (endForMe) me.dogfightWith = endForMe.otherId;
+}
+```
 
 ### イベント再生順序
 
