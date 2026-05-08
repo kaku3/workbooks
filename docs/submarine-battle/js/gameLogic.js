@@ -201,8 +201,8 @@ function _tickEnterCheck(state) {
       const partnerId = p.dogfightWith;
       if (other) other.dogfightWith = null;
       p.dogfightWith = null;
-      pushEvent(state, { type: 'dogfight_end', pid,            public: false, to: pid });
-      pushEvent(state, { type: 'dogfight_end', pid: partnerId, public: false, to: partnerId });
+      pushEvent(state, { type: 'dogfight_end', pid, otherId: partnerId, public: false, to: pid });
+      pushEvent(state, { type: 'dogfight_end', pid: partnerId, otherId: pid, public: false, to: partnerId });
     }
   });
 
@@ -263,14 +263,11 @@ function resolveMove(state, pid, cmd) {
       break;
     }
   }
-  // fog-of-war: 移動後の位置でチェビシェフ3マス以内またはソナー検知済みの観渫者にのみ公開
+  // fog-of-war: 移動後の位置を観測できるプレイヤーにのみ公開
   const aliveNow = alivePlayers(state);
-  const seenBy = aliveNow.filter(obsId => {
-    if (obsId === pid) return true;
-    const obs = state.players[obsId];
-    return chebyshev(obs.x, obs.y, p.x, p.y) <= 3
-        || (obs.sonarResults || []).some(r => r.playerId === pid);
-  });
+  const seenBy = aliveNow.filter(obsId =>
+    canObservePosition(state, obsId, pid, { includeDogfight: false, includeSonar: true })
+  );
   const moveEv = { type: 'move', pid, op: cmd.op, fromX, fromY, fromDir, x: p.x, y: p.y, dir: p.dir };
   if (seenBy.length === aliveNow.length) {
     pushEvent(state, { ...moveEv, public: true });
@@ -518,11 +515,6 @@ export function sanitizeStateForPlayer(state, playerId) {
   const me = state.players[playerId];
   const safeZone = getSafeZone(state.turn);
 
-  // ソナー検知中の敵プレイヤーIDセット（次ターンのコマンド・行動フェーズ中も見える）
-  const sonarVisible = new Set(
-    (me?.sonarResults || []).map(r => r.playerId)
-  );
-
   const players = {};
   state.playerOrder.forEach(id => {
     if (id === playerId) {
@@ -537,17 +529,16 @@ export function sanitizeStateForPlayer(state, playerId) {
         hp: o.hp,
         x: undefined, y: undefined, dir: undefined,
       };
-      // ドッグファイト中またはチェビシェフ3マス以内は相手座標を公開
-      if (o.alive && me && (me.dogfightWith === id || chebyshev(me.x, me.y, o.x, o.y) <= 3)) {
+      // ドッグファイト / 近接 / ソナー検知に応じて相手座標を公開
+      if (o.alive && canObservePosition(state, playerId, id, { includeDogfight: true, includeSonar: true })) {
         revealed.x = o.x; revealed.y = o.y; revealed.dir = o.dir;
       }
       // 死亡プレイヤー（respawning=true）は座標を公開（アニメーション巧し辺みのため、霧戦不要）
       if (!o.alive && o.respawning) {
         revealed.x = o.x; revealed.y = o.y; revealed.dir = o.dir;
       }
-      // ソナー検知中は次ターンまで座標を公開
-      if (sonarVisible.has(id) && o.alive) {
-        revealed.x = o.x; revealed.y = o.y;
+      // ソナー検知中の表示フラグ（UI表示用）
+      if (isSonarTrackedBy(state, playerId, id) && o.alive) {
         revealed.sonarDetected = true;
       }
       if (!o.alive) revealed.hp = 0;
@@ -560,9 +551,7 @@ export function sanitizeStateForPlayer(state, playerId) {
     supplyPoints: state.supplyPoints, safeZone,
     winner: state.winner, turnLog: state.turnLog,
     actionPhaseStartedAt: state.actionPhaseStartedAt,
-    actionEvents: state.actionEvents.filter(e =>
-      e.public || e.to === playerId || (Array.isArray(e.pids) && e.pids.includes(playerId))
-    ),
+    actionEvents: state.actionEvents.filter(e => isEventVisibleToPlayer(e, playerId)),
     myMines: state.mines.filter(m => m.ownerId === playerId),
     // 自機からチェビシェフ3マス以内の敵機雷・近接敵
     nearbyMines: state.mines.filter(m => m.ownerId !== playerId && me && chebyshev(me.x, me.y, m.x, m.y) <= 3),
@@ -587,6 +576,31 @@ export function allAliveDone(state, pred) {
   return state.playerOrder.every(id => !state.players[id].alive || pred(state.players[id]));
 }
 export function pushEvent(state, ev) { state.actionEvents.push(ev); }
+
+function isEventVisibleToPlayer(event, playerId) {
+  return event.public || event.to === playerId ||
+    (Array.isArray(event.pids) && event.pids.includes(playerId));
+}
+
+function isSonarTrackedBy(state, observerId, targetId) {
+  const obs = state.players[observerId];
+  if (!obs || observerId === targetId) return false;
+  return (obs.sonarResults || []).some(r => r.playerId === targetId);
+}
+
+function canObservePosition(state, observerId, targetId, options = {}) {
+  const { includeDogfight = true, includeSonar = true } = options;
+  if (observerId === targetId) return true;
+  const observer = state.players[observerId];
+  const target = state.players[targetId];
+  if (!observer || !target) return false;
+  if (typeof observer.x !== 'number' || typeof observer.y !== 'number') return false;
+  if (typeof target.x !== 'number' || typeof target.y !== 'number') return false;
+  if (includeDogfight && observer.dogfightWith === targetId) return true;
+  if (chebyshev(observer.x, observer.y, target.x, target.y) <= 3) return true;
+  return includeSonar && isSonarTrackedBy(state, observerId, targetId);
+}
+
 function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 function chebyshev(x1, y1, x2, y2) { return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2)); }
 function findEnemiesInRadius(state, pid, cx, cy, r) {

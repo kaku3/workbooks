@@ -394,53 +394,76 @@ export function startActionAnimation(events, view, onDone, onEachEvent) {
   Object.keys(view.players).forEach(pid => {
     _animView.players[pid] = { ...view.players[pid] };
   });
-  // move イベントの fromX/fromY を使ってプレイヤーをアクション前の位置に巻き戻す
-  // ただし capturedView で x が null のプレイヤー（視界外）は巻き戻さない
-  const rewound = new Set();
-  for (const ev of _actionQueue) {
-    if (ev.type === 'move' && !rewound.has(ev.pid) && ev.fromX != null) {
-      const player = _animView.players[ev.pid];
-      if (player && player.x != null) {
-        // 視界内プレイヤーのみ巻き戻す
-        player.x   = ev.fromX;
-        player.y   = ev.fromY;
-        player.dir = ev.fromDir;
-      }
-      rewound.add(ev.pid);
-    }
-  }
-
-  // alive 状態の巻き戻し + fog-of-war 修正:
-  //   今ターン eliminated されるプレイヤー → アニメ開始時は alive=true に戻す
-  //   move イベントが届いていない（霧で見えていなかった）場合は初期座標も消す
-  //   → eliminated イベント発火時にはじめて座標が公開される
-  const eliminatedThisTurn = new Set(
-    _actionQueue.filter(e => e.type === 'eliminated').map(e => e.pid)
-  );
-  Object.keys(_animView.players).forEach(pid => {
-    const ap = _animView.players[pid];
-    if (!ap.alive && eliminatedThisTurn.has(pid)) {
-      ap.alive = true;
-      ap.respawning = false;
-      // move イベントがなく、かつ元々座標が非公開だった（霧で見えていなかった）場合のみ隠す
-      // 自分自身や視界内にいた敵は view に x が定義済みなので消さない
-      if (!rewound.has(pid) && view.players[pid]?.x == null) {
-        ap.x = undefined; ap.y = undefined; ap.dir = undefined;
-      }
-    }
-  });
+  const rewound = rewindPlayersToActionStart(_animView, _actionQueue);
+  restoreAliveStateForPendingEliminations(_animView, view, _actionQueue, rewound);
 
   // ソナー結果をアニメ開始時はクリア→ソナーイベント発火時に復元
   if (_animView.players[view.myId]) {
     _animView.players[view.myId].sonarResults = [];
-    // ドッグファイト状態をリセット → dogfight_start/end イベントで更新
-    _animView.players[view.myId].dogfightWith = null;
+    initializeAnimDogfightState(_animView, _actionQueue);
   }
 
   // 左巻きした初期状態を即座に描画（終了位置の一瞬表示を防ぐ）
   if (_renderState && _animView) _renderState(_animView);
 
   _nextActionStep();
+}
+
+function rewindPlayersToActionStart(animView, actionQueue) {
+  // move イベントの fromX/fromY を使ってプレイヤーをアクション前の位置に巻き戻す
+  // ただし capturedView で x が null のプレイヤー（視界外）は巻き戻さない
+  const rewound = new Set();
+  for (const ev of actionQueue) {
+    if (ev.type !== 'move' || rewound.has(ev.pid) || ev.fromX == null) continue;
+    const player = animView.players[ev.pid];
+    if (player && player.x != null) {
+      // 視界内プレイヤーのみ巻き戻す
+      player.x = ev.fromX;
+      player.y = ev.fromY;
+      player.dir = ev.fromDir;
+    }
+    rewound.add(ev.pid);
+  }
+  return rewound;
+}
+
+function restoreAliveStateForPendingEliminations(animView, capturedView, actionQueue, rewound) {
+  // alive 状態の巻き戻し + fog-of-war 修正:
+  //   今ターン eliminated されるプレイヤー → アニメ開始時は alive=true に戻す
+  //   move イベントがなく、かつ元々座標が非公開なら初期座標を隠す
+  //   → eliminated イベント発火時にはじめて座標が公開される
+  const eliminatedThisTurn = new Set(
+    actionQueue.filter(e => e.type === 'eliminated').map(e => e.pid)
+  );
+  Object.keys(animView.players).forEach(pid => {
+    const ap = animView.players[pid];
+    if (!ap.alive && eliminatedThisTurn.has(pid)) {
+      ap.alive = true;
+      ap.respawning = false;
+      if (!rewound.has(pid) && capturedView.players[pid]?.x == null) {
+        ap.x = undefined; ap.y = undefined; ap.dir = undefined;
+      }
+    }
+  });
+}
+
+function initializeAnimDogfightState(animView, actionQueue) {
+  const meId = animView.myId;
+  const me = animView.players[meId];
+  if (!me) return;
+
+  // いったんリセットし、イベントから必要な初期状態だけ復元する
+  me.dogfightWith = null;
+
+  const hasStartForMe = actionQueue.some(ev =>
+    ev.type === 'dogfight_start' && Array.isArray(ev.pids) && ev.pids.includes(meId)
+  );
+  if (hasStartForMe) return;
+
+  // このターンに dogfight_end だけが届く場合、前ターンから交戦中だったとみなして復元
+  // （start は前ターンで発生済み。終了アニメを見せるために初期値を補う）
+  const endForMe = actionQueue.find(ev => ev.type === 'dogfight_end' && ev.pid === meId && ev.otherId);
+  if (endForMe) me.dogfightWith = endForMe.otherId;
 }
 
 /** アニメーションビューにイベントを適用してプレイヤー状態を更新 */
@@ -481,9 +504,8 @@ function _applyEventToAnimView(ev) {
       break;
     }
     case 'dogfight_end': {
-      const me = _animView.myId;
-      if (ev.pid === me && _animView.players[me]) {
-        _animView.players[me].dogfightWith = null;
+      if (p) {
+        p.dogfightWith = null;
       }
       _updateAnimDogfightBanner(_animView);
       break;

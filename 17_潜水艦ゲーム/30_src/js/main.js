@@ -19,6 +19,7 @@ let localView  = null;  // 各クライアントが受信したサニタイズ�
 let commandTimer = null;
 let _lastPhase = null;  // フェーズ変化検出用
 let _animStartTimeoutId = null;  // actionアニメ開始の1800ms遅延タイマー（キャンセル可能）
+let _gameOverTimeoutId = null;    // 勝利画面表示タイマー（多重起動防止）
 
 /* ============================================================
    ゲーム開始（ロビーから呼ばれる）
@@ -84,7 +85,7 @@ function onHostMessage(msg) {
       break;
     }
     case MSG.GAME_OVER: {
-      if (msg._local) showGameOver(msg.winnerId, localView);
+      if (msg._local) showGameOverNow(msg.winnerId, localView);
       break;
     }
   }
@@ -106,7 +107,7 @@ export function onGuestMessage(msg) {
       onPublicEvent(msg);
       break;
     case MSG.GAME_OVER:
-      showGameOver(msg.winnerId, localView);
+      showGameOverNow(msg.winnerId, localView);
       break;
   }
 }
@@ -184,6 +185,7 @@ function onLocalStateUpdate(event) {
 
   if (phase === 'command') {
     if (_animStartTimeoutId) { clearTimeout(_animStartTimeoutId); _animStartTimeoutId = null; }
+    if (_gameOverTimeoutId) { clearTimeout(_gameOverTimeoutId); _gameOverTimeoutId = null; }
     clearActionAnimation();
     enableCommand(localView, isNewPhase);
   } else if (phase === 'action') {
@@ -211,7 +213,7 @@ function onLocalStateUpdate(event) {
             showCurrentAction(ev, capturedView);
             // 勝利確定の eliminated イベント時に勝利画面を表示（爆発アニメの途中）
             if (ev?.type === 'eliminated' && capturedView.winner) {
-              setTimeout(() => showGameOver(capturedView.winner, capturedView), 1500);
+              scheduleGameOver(capturedView.winner, capturedView, 1500);
             }
           }
         );
@@ -256,6 +258,22 @@ function handleConfirmLocal(opIds, targets) {
   } else {
     import('./peer.js').then(m => m.sendCommandConfirm(opIds, targets));
   }
+}
+
+function showGameOverNow(winnerId, view) {
+  if (_gameOverTimeoutId) {
+    clearTimeout(_gameOverTimeoutId);
+    _gameOverTimeoutId = null;
+  }
+  showGameOver(winnerId, view);
+}
+
+function scheduleGameOver(winnerId, view, delayMs) {
+  if (_gameOverTimeoutId) clearTimeout(_gameOverTimeoutId);
+  _gameOverTimeoutId = setTimeout(() => {
+    _gameOverTimeoutId = null;
+    showGameOver(winnerId, view);
+  }, delayMs);
 }
 
 export function getLocalView() { return localView; }
