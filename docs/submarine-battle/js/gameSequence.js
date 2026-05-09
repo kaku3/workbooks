@@ -150,7 +150,6 @@ function _prepareNextTurn(state) {
     p.time = BASE_TIME;
     // ソナー結果: 有効期限切れのみ削除（次ターンのコマンド＋行動フェーズまで表示し続ける）
     p.sonarResults = (p.sonarResults || []).filter(r => r.expiresAfterTurn >= state.turn);
-    p.forwardWarning = null;
     p.commandQueue = [];
     p.commandConfirmed = false;
     // dogfightWith はリセットしない（解除はresolveDogfightが行う）

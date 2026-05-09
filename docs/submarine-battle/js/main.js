@@ -218,10 +218,6 @@ function onLocalStateUpdate(event) {
           } : null,
           (ev) => {
             showCurrentAction(ev, capturedView);
-            // 勝利確定の eliminated イベント時に勝利画面を表示（爆発アニメの途中）
-            if (ev?.type === 'eliminated' && capturedView.winner) {
-              scheduleGameOver(capturedView.winner, capturedView, 1500);
-            }
           }
         );
       }, delay);

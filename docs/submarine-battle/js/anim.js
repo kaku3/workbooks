@@ -43,6 +43,7 @@ export function initAnim(ctx, getCellSize, getOffset, renderStateFn) {
             {type:'attack',x0,y0,x1,y1} | {type:'target',x,y}]
    ============================================================ */
 let _previewSteps = null;
+let _overlayEffects = []; // 再描画で消えない短命エフェクト
 
 export function setCommandPreview(steps) { _previewSteps = steps; }
 export function clearCommandPreview()    { _previewSteps = null; }
@@ -80,7 +81,10 @@ export function applyPreviewLayer() {
   const hasPreview     = _previewSteps && _previewSteps.length;
   const hasHighlight   = _pickHighlightCells.length > 0;
   const hasProjectiles = _animView?.projectiles && Object.keys(_animView.projectiles).length > 0;
-  if (!hasPreview && !hasHighlight && !hasProjectiles) return;
+  const now = performance.now();
+  _overlayEffects = _overlayEffects.filter(fx => fx.until > now);
+  const hasOverlayFx = _overlayEffects.length > 0;
+  if (!hasPreview && !hasHighlight && !hasProjectiles && !hasOverlayFx) return;
   const ctx      = _ctx;
   const cellSize = _getCellSize();
   const bo       = _getOffset();
@@ -99,6 +103,10 @@ export function applyPreviewLayer() {
   // 飛翔体をボード上に常時表示（アニメ間で消えないよう renderState のたびに重描画）
   if (hasProjectiles) {
     _drawActiveProjectiles(ctx, cellSize, bo);
+  }
+
+  if (hasOverlayFx) {
+    _drawOverlayEffects(ctx, cellSize, bo, now);
   }
 
   if (!hasPreview) { ctx.restore(); return; }
@@ -246,6 +254,48 @@ function _arrowHead(tipX, tipY, dx, dy, color) {
   _ctx.fill();
 }
 
+function _pushOverlayEffect(effect) {
+  if (!effect || effect.x == null || effect.y == null) return;
+  _overlayEffects.push(effect);
+}
+
+function _drawOverlayEffects(ctx, cs, bo, now) {
+  ctx.save();
+  for (const fx of _overlayEffects) {
+    const t = Math.max(0, Math.min(1, (now - fx.start) / Math.max(1, fx.until - fx.start)));
+    const alpha = 1 - t;
+    if (fx.type === 'explosion') {
+      const px = bo.x + fx.x * cs + cs / 2;
+      const py = bo.y + fx.y * cs + cs / 2;
+      const color = fx.color || '#ff6600';
+      const r = cs * (0.52 + 0.25 * t);
+      const grad = ctx.createRadialGradient(px, py, 0, px, py, r * 1.25);
+      grad.addColorStop(0, `rgba(255,240,120,${0.92 * alpha})`);
+      grad.addColorStop(0.35, `rgba(255,140,0,${0.80 * alpha})`);
+      grad.addColorStop(1, 'rgba(255,60,0,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(px, py, r * 1.25, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = 0.9 * alpha;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 1;
+    } else if (fx.type === 'damage') {
+      const px = bo.x + fx.x * cs;
+      const py = bo.y + fx.y * cs;
+      ctx.fillStyle = `rgba(255,50,50,${0.35 * alpha})`;
+      ctx.fillRect(px, py, cs, cs);
+      if (fx.dmg != null) {
+        ctx.fillStyle = `rgba(255,51,51,${0.95 * alpha})`;
+        ctx.font = `bold ${Math.max(13, cs * 0.38)}px "Share Tech Mono", monospace`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(`-${fx.dmg}`, px + cs / 2, py + cs / 2);
+      }
+    }
+  }
+  ctx.restore();
+}
+
 /* ============================================================
    アクションフェーズ コマ送りアニメーション
    ============================================================ */
@@ -365,15 +415,15 @@ function _eventDelay(ev) {
   switch (ev.type) {
     case 'tick_start':       return  80;  // ティック境界の短い間
     case 'eliminated':       return 600;
-    case 'damage':           return 2500;
+    case 'damage':           return 500;
     case 'torpedo_fire':
     case 'guided_fire':
     case 'shotgun_fire':     return  400;  // 発射エフェクト
     case 'projectile_tick':  return ev.projType === 'guided' ? 400 : 200;  // 追尾魚雷は遅く
-    case 'projectile_hit':   return 2200;  // 爆発
+    case 'projectile_hit':   return 220;   // ヒット時も進行を止めすぎない
     case 'projectile_miss':  return  350;
-    case 'explosion':        return 2800;
-    case 'sonar':            return 3000;
+    case 'explosion':        return 260;
+    case 'sonar':            return 900;
     case 'sonar_detected':   return 2000;
     case 'move':             return  400;  // 並列ティック内は高速再生
     case 'buff':             return 1500;
@@ -385,6 +435,7 @@ function _eventDelay(ev) {
 
 export function startActionAnimation(events, view, onDone, onEachEvent) {
   _previewSteps       = null;           // プレビューをクリア
+  _overlayEffects     = [];
   _actionQueue        = (events || []).slice();
   _actionBaseView     = view;
   _actionOnDone       = onDone || null;
@@ -712,6 +763,7 @@ export function clearActionAnimation() {
   _stopProjLoop();
   if (_animTimeoutId) { clearTimeout(_animTimeoutId); _animTimeoutId = null; }
   const evCb         = _actionOnEachEvent;
+  _overlayEffects    = [];
   _animMineCache     = [];
   _animView          = null;
   _actionBaseView    = null;
@@ -802,24 +854,17 @@ function _drawEventAnnotation(ev) {
     }
     case 'damage': {
       const vp = baseView.players[ev.pid];
-      if (vp && vp.x != null) {
-        const px = bo.x + vp.x * cs;
-        const py = bo.y + vp.y * cs;
-        ctx.fillStyle = 'rgba(255,50,50,0.35)';
-        ctx.fillRect(px, py, cs, cs);
-        ctx.fillStyle = '#ff3333';
-        ctx.font = `bold ${Math.max(13, cs * 0.38)}px "Share Tech Mono", monospace`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(`-${ev.dmg}`, px + cs / 2, py + cs / 2);
+      const hitX = vp?.x != null ? vp.x : ev.x;
+      const hitY = vp?.y != null ? vp.y : ev.y;
+      if (hitX != null && hitY != null) {
+        const start = performance.now();
+        _pushOverlayEffect({ type: 'damage', x: hitX, y: hitY, dmg: ev.dmg, start, until: start + 420 });
       }
       break;
     }
     case 'explosion': {
-      const epx = bo.x + ev.x * cs + cs / 2;
-      const epy = bo.y + ev.y * cs + cs / 2;
-      ctx.fillStyle = 'rgba(255,120,0,0.45)';
-      ctx.beginPath(); ctx.arc(epx, epy, cs * 0.52, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#ff6600'; ctx.lineWidth = 2; ctx.stroke();
+      const start = performance.now();
+      _pushOverlayEffect({ type: 'explosion', x: ev.x, y: ev.y, color: '#ff6600', start, until: start + 320 });
       _eventLabel('爆発', ev.x, ev.y, '#ff6600');
       break;
     }
@@ -895,7 +940,8 @@ function _drawEventAnnotation(ev) {
       if (ev.blocked) {
         _eventLabel('\u30c1\u30e3\u30d5\u7121\u52b9', ev.x, ev.y, '#b4dcff');
       } else {
-        _drawExplosion(ev.x, ev.y, hitColor);
+        const start = performance.now();
+        _pushOverlayEffect({ type: 'explosion', x: ev.x, y: ev.y, color: hitColor, start, until: start + 300 });
         _eventLabel('\u547d\u4e2d', ev.x, ev.y, '#ff4444');
       }
       break;

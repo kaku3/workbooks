@@ -58,7 +58,6 @@ function makePlayer(id, name, pos) {
     buffs: defaultBuffs(),
     sonarResults: [],
     dogfightWith: null,
-    forwardWarning: null,
   };
 }
 
@@ -176,10 +175,7 @@ export function resolveActions(state) {
   // 4) 最終位置で補給（行動中に通過した補給点は既に適用済み。重複適用はしない）
   alivePlayers(state).forEach(pid => resolveSupplyAtPosition(state, pid, supplyVisited));
 
-  // 5) 前方警戒
-  resolveForwardWarning(state, alivePlayers(state));
-
-  // 6) 脱落チェック
+  // 5) 脱落チェック
   checkEliminations(state);
 }
 
@@ -595,23 +591,6 @@ function resolveSupplyAtPosition(state, pid, supplyVisited) {
   }
 }
 
-function resolveForwardWarning(state, alive) {
-  alive.forEach(pid => {
-    const p = state.players[pid];
-    p.forwardWarning = null;
-    const dl = DIR_DELTA[p.dir];
-    for (let step = 1; step <= 3; step++) {
-      const fx = p.x + dl.dx * step, fy = p.y + dl.dy * step;
-      if (fx < 0 || fx >= GRID_SIZE || fy < 0 || fy >= GRID_SIZE) continue;
-      if (alive.some(eid => eid !== pid && state.players[eid].x === fx && state.players[eid].y === fy)) {
-        if (step === 1) p.forwardWarning = 'critical';
-        else if (step === 2) p.forwardWarning = p.forwardWarning || 'near';
-        else p.forwardWarning = p.forwardWarning || 'far';
-      }
-    }
-  });
-}
-
 function checkEliminations(state) {
   state.playerOrder.forEach(id => {
     const p = state.players[id];
@@ -700,6 +679,7 @@ export function allAliveDone(state, pred) {
 export function pushEvent(state, ev) { state.actionEvents.push(ev); }
 
 function isEventVisibleToPlayer(event, playerId) {
+  if (event.type === 'explosion' || event.type === 'projectile_hit') return true;
   return event.public || event.to === playerId ||
     (Array.isArray(event.pids) && event.pids.includes(playerId));
 }
@@ -734,19 +714,28 @@ function findEnemiesInRadius(state, pid, cx, cy, r) {
 
 function applyDamage(state, pid, amount, source, attackerId) {
   const p = state.players[pid];
-  if (!p.alive || p.hp <= 0) return;  // 死亡済み or 既にHP0（同ティック重複ヒット防止）
-  p.hp -= amount;
-  pushEvent(state, { type: 'damage', pid, dmg: amount, source, attackerId, hp: p.hp, public: source !== 'mine' });
+  if (!p.alive) return;
+  const prevHp = p.hp;
+  p.hp = Math.max(0, p.hp - amount);
+  pushEvent(state, {
+    type: 'damage',
+    pid,
+    dmg: amount,
+    source,
+    attackerId,
+    hp: p.hp,
+    x: p.x,
+    y: p.y,
+    to: pid,
+    public: source !== 'mine'
+  });
   const _sourceLabel = { torpedo: '魚雷', guided: '追尾魚雷', shotgun: '散弾', mine: '機雷', shrink: '収縮' };
   state.turnLog.push(`${p.name} が ${_sourceLabel[source] || source} で ${amount} ダメージ (HP:${p.hp})`);
-  if (p.hp <= 0 && attackerId && state.players[attackerId]) {
+  const killedNow = prevHp > 0 && p.hp <= 0;
+  if (killedNow && attackerId && state.players[attackerId]) {
     state.players[attackerId].kills++;
     state.turnLog.push(`${state.players[attackerId].name} がキル (計${state.players[attackerId].kills}キル)`);
     if (state.players[attackerId].kills >= WIN_KILLS) state.winner = attackerId;
-  }
-
-  if (p.hp <= 0) {
-    eliminatePlayer(state, pid);
   }
 }
 

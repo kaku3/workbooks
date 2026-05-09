@@ -76,8 +76,6 @@ export function renderState(view) {
   drawMarkers(view);
   // Layer 4b: 近辺可視（敵機雷・敵デコイ・近接敵）
   drawNearby(view);
-  // Layer 5: 前方警戒
-  drawForwardWarning(view);
   // Layer 6: 潜水艦
   drawSubmarine(view);
   // Layer 7: ソナー結果
@@ -266,21 +264,6 @@ function _drawMineMarker(px, py, color, alpha = 1) {
 }
 
 /* ─── Layer 5: 前方警戒 ─── */
-function drawForwardWarning(view) {
-  const me = view.players[view.myId];
-  if (!me || !me.forwardWarning) return;
-  const d = DIR_ARROW[me.dir];
-  if (!d) return;
-  const colors = { far: C.warning, near: C.warnNear, critical: C.warnCrit };
-  ctx.fillStyle = colors[me.forwardWarning] || C.warning;
-  for (let step = 1; step <= 3; step++) {
-    const fx = me.x + d[0] * step, fy = me.y + d[1] * step;
-    if (fx < 0 || fx >= GRID_SIZE || fy < 0 || fy >= GRID_SIZE) continue;
-    const px = boardOffset.x + fx * cellSize;
-    const py = boardOffset.y + fy * cellSize;
-    ctx.fillRect(px + 1, py + 1, cellSize - 2, cellSize - 2);
-  }
-}
 
 /* ─── Layer 6: 潜水艦 ─── */
 function drawSubmarine(view) {
