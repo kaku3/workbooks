@@ -38,6 +38,7 @@ export function initLobby() {
     if (elStatus)    elStatus.textContent = '';
     if (elPlayers)   elPlayers.innerHTML = '';
     if (elName)      elName.disabled = false;
+    if (elRoomId)    elRoomId.disabled = false;
   }
 
   // URL パラメータ
@@ -95,7 +96,7 @@ export function initLobby() {
       });
 
       elStart.classList.remove('hidden');
-      elStart.disabled = players.length < 3;
+      elStart.disabled = players.length < 2;
     } catch (e) {
       elStatus.textContent = 'ルーム作成失敗: ' + e.message;
       elCreate.disabled = false;
@@ -113,6 +114,7 @@ export function initLobby() {
     if (!hostId) { elStatus.textContent = 'ルームIDを入力してください'; return; }
     elCreate.disabled = true;
     elJoin.disabled = true;
+    if (elRoomId) elRoomId.disabled = true;
     if (elName) elName.disabled = true;
     elStatus.textContent = '接続中…';
     try {
@@ -122,13 +124,14 @@ export function initLobby() {
       elStatus.textContent = '接続失敗: ' + e.message;
       elCreate.disabled = false;
       elJoin.disabled = false;
+      if (elRoomId) elRoomId.disabled = false;
       if (elName) elName.disabled = false;
     }
   });
 
   // ────── ゲーム開始 ──────
   elStart?.addEventListener('click', () => {
-    if (players.length < 3) { elStatus.textContent = '3人以上必要です'; return; }
+    if (players.length < 2) { elStatus.textContent = '2人以上必要です'; return; }
     const playerIds = players.map(p => p.id);
     const playerNames = players.map(p => p.name);
     broadcastGameStart(playerIds, playerNames, maxPlayers);
@@ -150,7 +153,7 @@ function onHostLobbyMessage(msg) {
       renderPlayers($('#lobby-players'));
       broadcastPlayerList(players);
       const startBtn = $('#start-game-btn');
-      if (startBtn) startBtn.disabled = players.length < 3;
+      if (startBtn) startBtn.disabled = players.length < 2;
       break;
     }
     case MSG.PLAYER_LIST:

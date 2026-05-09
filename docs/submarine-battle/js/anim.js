@@ -265,6 +265,7 @@ const EVENT_CARD_LABEL = {
 let _actionQueue       = [];
 let _actionBaseView    = null;
 let _animView          = null;   // アニメーション中の可変ビュー（位置を逐次更新）
+let _animMineCache     = [];     // アニメ中に既知の機雷一覧
 let _actionOnDone      = null;
 let _actionOnEachEvent = null;
 let _animTimeoutId     = null;
@@ -363,7 +364,7 @@ function _drawExplosion(x, y, color = '#ff6600') {
 function _eventDelay(ev) {
   switch (ev.type) {
     case 'tick_start':       return  80;  // ティック境界の短い間
-    case 'eliminated':       return 4000;
+    case 'eliminated':       return 600;
     case 'damage':           return 2500;
     case 'torpedo_fire':
     case 'guided_fire':
@@ -396,6 +397,10 @@ export function startActionAnimation(events, view, onDone, onEachEvent) {
   });
   const rewound = rewindPlayersToActionStart(_animView, _actionQueue);
   restoreAliveStateForPendingEliminations(_animView, view, _actionQueue, rewound);
+  hidePendingDogfightRevealAtActionStart(_animView, _actionQueue, rewound);
+  restoreMinesForActionStart(_animView, _actionQueue);
+  _initAnimMineCache(_animView);
+  _syncAnimNearbyMines(_animView);
 
   // ソナー結果をアニメ開始時はクリア→ソナーイベント発火時に復元
   if (_animView.players[view.myId]) {
@@ -447,6 +452,77 @@ function restoreAliveStateForPendingEliminations(animView, capturedView, actionQ
   });
 }
 
+function hidePendingDogfightRevealAtActionStart(animView, actionQueue, rewound) {
+  const meId = animView.myId;
+  const hiddenTargets = new Set();
+  for (const ev of actionQueue) {
+    if (ev.type !== 'dogfight_start' || !Array.isArray(ev.pids)) continue;
+    if (!ev.pids.includes(meId)) continue;
+    const otherId = ev.pids.find(id => id !== meId);
+    if (otherId) hiddenTargets.add(otherId);
+  }
+
+  for (const pid of hiddenTargets) {
+    if (rewound.has(pid)) continue;
+    const p = animView.players?.[pid];
+    if (!p) continue;
+    p.x = undefined;
+    p.y = undefined;
+    p.dir = undefined;
+  }
+}
+
+function restoreMinesForActionStart(animView, actionQueue) {
+  if (!animView) return;
+  const myMines = Array.isArray(animView.myMines) ? [...animView.myMines] : [];
+  const nearbyMines = Array.isArray(animView.nearbyMines) ? [...animView.nearbyMines] : [];
+  const hasMine = (arr, x, y) => arr.some(m => m.x === x && m.y === y);
+
+  // 行動中に爆発する機雷は開始時に見えている状態へ戻す
+  for (const ev of actionQueue) {
+    if (ev.type !== 'explosion' || ev.x == null || ev.y == null) continue;
+    if (!hasMine(myMines, ev.x, ev.y) && !hasMine(nearbyMines, ev.x, ev.y)) {
+      nearbyMines.push({ x: ev.x, y: ev.y, ownerId: null });
+    }
+  }
+
+  animView.myMines = myMines;
+  animView.nearbyMines = nearbyMines;
+}
+
+function _initAnimMineCache(animView) {
+  const merged = [
+    ...(Array.isArray(animView.myMines) ? animView.myMines : []),
+    ...(Array.isArray(animView.nearbyMines) ? animView.nearbyMines : []),
+  ];
+  const keySet = new Set();
+  _animMineCache = [];
+  for (const m of merged) {
+    const key = `${m.x},${m.y}`;
+    if (keySet.has(key)) continue;
+    keySet.add(key);
+    _animMineCache.push({ x: m.x, y: m.y, ownerId: m.ownerId ?? null });
+  }
+}
+
+function _syncAnimNearbyMines(animView) {
+  if (!animView) return;
+  const me = animView.players?.[animView.myId];
+  if (!me || typeof me.x !== 'number' || typeof me.y !== 'number') {
+    animView.nearbyMines = [];
+    return;
+  }
+
+  const myMineKeys = new Set((animView.myMines || []).map(m => `${m.x},${m.y}`));
+  const nearby = _animMineCache.filter(m => {
+    if (myMineKeys.has(`${m.x},${m.y}`)) return false;
+    const dx = Math.abs(me.x - m.x);
+    const dy = Math.abs(me.y - m.y);
+    return Math.max(dx, dy) <= 3;
+  });
+  animView.nearbyMines = nearby;
+}
+
 function initializeAnimDogfightState(animView, actionQueue) {
   const meId = animView.myId;
   const me = animView.players[meId];
@@ -472,7 +548,10 @@ function _applyEventToAnimView(ev) {
   // pid を持つイベントのみプレイヤー参照を取得（pid なしのイベントをスキップしない）
   const p = ev.pid ? _animView.players[ev.pid] : null;
   switch (ev.type) {
-    case 'move':      if (p) { p.x = ev.x; p.y = ev.y; p.dir = ev.dir; } break;
+    case 'move':
+      if (p) { p.x = ev.x; p.y = ev.y; p.dir = ev.dir; }
+      if (ev.pid === _animView.myId) _syncAnimNearbyMines(_animView);
+      break;
     case 'damage':    if (p) p.hp = ev.hp; break;
     case 'repair':    if (p) p.hp = ev.hp; break;
     case 'eliminated':
@@ -482,6 +561,9 @@ function _applyEventToAnimView(ev) {
         // 死亡座標が含まれていれば位置を確定（霧が晴れても正しい位置に表示）
         if (ev.x != null) { p.x = ev.x; p.y = ev.y; }
       }
+      // 死亡時点で残り演出を打ち切るため、飛翔体を停止する
+      if (_animView?.projectiles) _animView.projectiles = {};
+      _stopProjLoop();
       break;
     case 'dogfight_start': {
       // ドッグファイト開始: 位置が公開される → _animView に反映してバナー表示
@@ -559,6 +641,26 @@ function _applyEventToAnimView(ev) {
     case 'projectile_miss':
       if (_animView.projectiles) delete _animView.projectiles[ev.projId];
       break;
+    case 'mine_place':
+      if (ev.x != null && ev.y != null) {
+        if (!_animView.myMines) _animView.myMines = [];
+        if (!_animView.myMines.some(m => m.x === ev.x && m.y === ev.y)) {
+          _animView.myMines.push({ x: ev.x, y: ev.y, ownerId: ev.pid });
+        }
+        if (!_animMineCache.some(m => m.x === ev.x && m.y === ev.y)) {
+          _animMineCache.push({ x: ev.x, y: ev.y, ownerId: ev.pid });
+        }
+        _syncAnimNearbyMines(_animView);
+      }
+      break;
+    case 'explosion':
+      if (ev.x != null && ev.y != null) {
+        if (_animView.myMines) _animView.myMines = _animView.myMines.filter(m => !(m.x === ev.x && m.y === ev.y));
+        if (_animView.nearbyMines) _animView.nearbyMines = _animView.nearbyMines.filter(m => !(m.x === ev.x && m.y === ev.y));
+        _animMineCache = _animMineCache.filter(m => !(m.x === ev.x && m.y === ev.y));
+        _syncAnimNearbyMines(_animView);
+      }
+      break;
   }
 }
 
@@ -596,6 +698,12 @@ function _nextActionStep() {
   if (_renderState && _animView) _renderState(_animView);
   _drawEventAnnotation(ev);
   if (_actionOnEachEvent) _actionOnEachEvent(ev);
+
+  // 死亡発生後は残りイベントを再生せず終了へ向かう
+  if (ev?.type === 'eliminated') {
+    _actionQueue = [];
+  }
+
   _animTimeoutId = setTimeout(_nextActionStep, _eventDelay(ev));
 }
 
@@ -604,6 +712,7 @@ export function clearActionAnimation() {
   _stopProjLoop();
   if (_animTimeoutId) { clearTimeout(_animTimeoutId); _animTimeoutId = null; }
   const evCb         = _actionOnEachEvent;
+  _animMineCache     = [];
   _animView          = null;
   _actionBaseView    = null;
   _actionQueue       = [];

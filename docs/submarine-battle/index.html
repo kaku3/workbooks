@@ -30,7 +30,7 @@
 <!-- ========== ロビー画面 ========== -->
 <div id="lobby-screen">
   <h1 class="lobby-title">SUBMARINE BATTLE</h1>
-  <p class="lobby-subtitle">3〜6人で遊ぶ深海タクティカル海戦ストラテジー</p>
+  <p class="lobby-subtitle">2〜6人で遊ぶ深海タクティカル海戦ストラテジー</p>
 
   <div class="lobby-box">
     <div class="lobby-field">
@@ -41,6 +41,7 @@
     <div class="lobby-field" id="max-players-field">
       <label>最大人数</label>
       <div class="player-count-select">
+        <label><input type="radio" name="max-players" value="2"><span>2</span></label>
         <label><input type="radio" name="max-players" value="3"><span>3</span></label>
         <label><input type="radio" name="max-players" value="4"><span>4</span></label>
         <label><input type="radio" name="max-players" value="5"><span>5</span></label>
@@ -136,7 +137,7 @@
             <div class="op-btn op-btn-demo inv-btn">
               <span class="material-symbols-outlined">rocket_launch</span>
               <span class="op-name">魚雷</span>
-              <span class="op-cost">1</span>
+              <span class="op-cost">2</span>
               <span class="rules-op-tip">前方直線 ×2dmg</span>
             </div>
             <div class="op-btn op-btn-demo inv-btn">
@@ -296,7 +297,7 @@
           <button class="op-btn inv-btn" data-op="torpedo">
             <span class="material-symbols-outlined">rocket_launch</span>
             <span class="op-name">魚雷</span>
-            <span class="op-cost">1</span>
+            <span class="op-cost">2</span>
             <span class="inv-count" id="inv-torpedo">×3</span>
           </button>
           <button class="op-btn inv-btn" data-op="guided">

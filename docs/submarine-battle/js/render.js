@@ -165,9 +165,7 @@ function drawMarkers(view) {
     for (const m of view.myMines) {
       const px = boardOffset.x + m.x * cellSize + cellSize / 2;
       const py = boardOffset.y + m.y * cellSize + cellSize / 2;
-      ctx.font = `${cellSize * 0.35}px serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('💣', px, py);
+      _drawMineMarker(px, py, '#00e5ff', 1);
     }
   }
   // 自分のデコイ
@@ -205,11 +203,7 @@ function drawNearby(view) {
     for (const m of view.nearbyMines) {
       const px = boardOffset.x + m.x * cellSize + cellSize / 2;
       const py = boardOffset.y + m.y * cellSize + cellSize / 2;
-      ctx.font = `${cellSize * 0.35}px serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.globalAlpha = 0.65;
-      ctx.fillText('💣', px, py);
-      ctx.globalAlpha = 1;
+      _drawMineMarker(px, py, '#ff6b6b', 0.8);
     }
   }
   // 敵デコイ（赤縁）
@@ -227,7 +221,8 @@ function drawNearby(view) {
     }
   }
   // 近接敵（ドッグファイト以外で3マス以内）
-  if (view.nearbyEnemies) {
+  // 行動フェーズ中はアニメ側の本体表示と重複するためマーカーを描かない
+  if (view.phase !== 'action' && view.nearbyEnemies) {
     const colors = ['#00e5ff','#ff4444','#ffeb3b','#4caf50','#ab47bc','#ff9800'];
     for (const ep of view.nearbyEnemies) {
       const idx = view.playerOrder.indexOf(ep.id);
@@ -246,6 +241,28 @@ function drawNearby(view) {
       ctx.setLineDash([]);
     }
   }
+}
+
+function _drawMineMarker(px, py, color, alpha = 1) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(2, cellSize * 0.06);
+  ctx.beginPath();
+  ctx.arc(px, py, cellSize * 0.24, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = color;
+  ctx.font = `bold ${Math.max(10, cellSize * 0.24)}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('M', px, py);
+
+  ctx.globalAlpha = alpha * 0.35;
+  ctx.beginPath();
+  ctx.arc(px, py, cellSize * 0.36, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
 }
 
 /* ─── Layer 5: 前方警戒 ─── */

@@ -1,7 +1,7 @@
 ﻿// ============================================================
 // ui.js  v5.0 パネル操作制 UI
 // ============================================================
-import { OPS, COMMAND_TIME_LIMIT, DIR_DELTA, rotateDir, GRID_SIZE, WIN_KILLS } from './constants.js';
+import { OPS, COMMAND_TIME_LIMIT, DIR_DELTA, rotateDir, GRID_SIZE, WIN_KILLS, INITIAL_INVENTORY } from './constants.js';
 import { setCommandPreview, clearCommandPreview, renderState } from './render.js';
 import { promptTarget, cancelBoardPick } from './modal.js';
 
@@ -11,6 +11,8 @@ let _commandConfirmed = false; // 確定後〜アクション開始前: キュ�
 let latestView = null;
 let _sonarToggleActive   = false; // ソナートグルモード中フラグ
 let _torpedoToggleActive = false; // 魚雷トグルモード中フラグ
+let _pendingEliminations = new Set();
+let _animatedEliminations = new Set();
 
 /* ============================================================
    初期化
@@ -35,6 +37,13 @@ export function initUI(cbs) {
       }
     });
   }
+}
+
+function hideGameOverOverlay() {
+  const overlay = document.getElementById('game-over-overlay');
+  if (!overlay) return;
+  overlay.classList.add('hidden');
+  overlay.innerHTML = '';
 }
 
 /* ============================================================
@@ -68,9 +77,10 @@ function _updateTimeBar(me) {
 /* ─── 在庫表示 ─── */
 function _renderInventory(me) {
   if (!me.inventory) return;
+  const projected = _simulateQueueState(me, selectedOps);
   // 在庫数バッジを更新し、在庫0はグレーアウト
   ['torpedo','guided','shotgun','mine','chaff'].forEach(key => {
-    const cnt = me.inventory[key] ?? 0;
+    const cnt = projected.inventory?.[key] ?? 0;
     const el = document.querySelector(`.op-btn[data-op="${_invKeyToOpId(key)}"]`);
     if (!el) return;
     const badge = el.querySelector('.inv-count');
@@ -87,14 +97,17 @@ function _invKeyToOpId(invKey) {
 }
 
 function _validateButtons(me) {
+  _reconcileSelectedOps(me);
+
   const used = selectedOps.reduce((sum, s) => sum + (OPS[s.op]?.cost ?? 0), 0);
   const remaining = (me.time ?? 10) - used;
+  const projected = _simulateQueueState(me, selectedOps);
 
   document.querySelectorAll('.op-btn[data-op]').forEach(btn => {
     const opId = btn.dataset.op;
     const opDef = OPS[opId];
     if (!opDef) return;
-    const cnt = opDef.invKey ? (me.inventory?.[opDef.invKey] ?? 0) : Infinity;
+    const cnt = opDef.invKey ? (projected.inventory?.[opDef.invKey] ?? 0) : Infinity;
     const canAfford = opDef.cost <= remaining;
     const hasInv = cnt > 0 || !opDef.invKey;
     btn.disabled = !canAfford || !hasInv;
@@ -180,27 +193,27 @@ function _buildCommandPreview(ops, me) {
         break;
       }
       case 'shotgun': {
-        // 前方扇状: 前進方向 + 左直交 + 右直交 、各 3 マス
+        // 行動フェーズ準拠: 左前・正面・右前の3マス
         const dF  = DIR_DELTA[sdir];
-        const dL  = DIR_DELTA[rotateDir(sdir, -1)];
-        const dR  = DIR_DELTA[rotateDir(sdir,  1)];
+        const dLF = DIR_DELTA[rotateDir(sdir, -1)];
+        const dRF = DIR_DELTA[rotateDir(sdir,  1)];
         steps.push({
           type: 'attack',
           x0: sx, y0: sy,
-          x1: clamp(sx + dF.dx * 3, 0, GRID_SIZE - 1),
-          y1: clamp(sy + dF.dy * 3, 0, GRID_SIZE - 1),
+          x1: clamp(sx + dLF.dx + dF.dx, 0, GRID_SIZE - 1),
+          y1: clamp(sy + dLF.dy + dF.dy, 0, GRID_SIZE - 1),
         });
         steps.push({
           type: 'attack',
           x0: sx, y0: sy,
-          x1: clamp(sx + dL.dx * 3, 0, GRID_SIZE - 1),
-          y1: clamp(sy + dL.dy * 3, 0, GRID_SIZE - 1),
+          x1: clamp(sx + dF.dx, 0, GRID_SIZE - 1),
+          y1: clamp(sy + dF.dy, 0, GRID_SIZE - 1),
         });
         steps.push({
           type: 'attack',
           x0: sx, y0: sy,
-          x1: clamp(sx + dR.dx * 3, 0, GRID_SIZE - 1),
-          y1: clamp(sy + dR.dy * 3, 0, GRID_SIZE - 1),
+          x1: clamp(sx + dRF.dx + dF.dx, 0, GRID_SIZE - 1),
+          y1: clamp(sy + dRF.dy + dF.dy, 0, GRID_SIZE - 1),
         });
         break;
       }
@@ -267,11 +280,13 @@ function _renderPlayerList(view) {
   const me = view.players[view.myId];
   view.playerOrder.forEach((id, i) => {
     const p = view.players[id];
+    const actionPendingDeath = view.phase === 'action' && _pendingEliminations.has(id) && !_animatedEliminations.has(id);
+    const isDeadForUi = !p.alive && !actionPendingDeath;
     const div = document.createElement('div');
     div.className = 'player-chip'
-      + (p.alive ? '' : ' eliminated')
+      + (isDeadForUi ? ' eliminated' : '')
       + (id === view.myId ? ' is-me' : '');
-    const statusIcon = !p.alive ? '✗'
+    const statusIcon = isDeadForUi ? '✗'
       : (view.phase === 'command' ? (p.commandConfirmed ? '✓' : '…') : '');
     const hp = p.hp ?? '?';
     const hpCrit = typeof p.hp === 'number' && p.hp <= 1;
@@ -347,12 +362,15 @@ export function getSelectedOps() {
 export function enableCommand(view, isNewPhase = false) {
   const area = document.getElementById('command-area');
   if (area) area.classList.remove('hidden');
+  hideGameOverOverlay();
 
   if (isNewPhase) {
     _deactivateAllToggles(); // 全トグル解除（内部で cancelBoardPick も呼ぶ）
     cancelBoardPick();      // 非トグルの盤面ピックも念のため解除
     _hideWaiting();
     _commandConfirmed = false;
+    _pendingEliminations.clear();
+    _animatedEliminations.clear();
     selectedOps = [];
     clearCommandPreview(); // アクション開始時にプレビューをクリア
     if (view) renderState(view);
@@ -388,18 +406,89 @@ function _setupPanelButtons(view) {
  * decoy/mine/sonar の promptTarget に渡すために使用。
  */
 function _simulatedPosition(me, ops) {
-  let sx = me.x, sy = me.y, sdir = me.dir;
-  const cl = (v, mn, mx) => Math.max(mn, Math.min(mx, v));
+  const v = _simulateQueueState(me, ops);
+  return { ...me, x: v.x, y: v.y, dir: v.dir };
+}
+
+function _simulateQueueState(me, ops) {
+  const v = {
+    x: me.x,
+    y: me.y,
+    dir: me.dir,
+    inventory: { ...(me.inventory || {}) },
+    usedTime: 0,
+  };
+  const cl = (n) => Math.max(0, Math.min(GRID_SIZE - 1, n));
+
   for (const { op } of ops) {
+    const opDef = OPS[op];
+    if (!opDef) continue;
+    v.usedTime += opDef.cost ?? 0;
+
+    if (opDef.invKey) {
+      v.inventory[opDef.invKey] = Math.max(0, (v.inventory[opDef.invKey] ?? 0) - 1);
+    }
+
     switch (op) {
-      case 'forward': { const d = DIR_DELTA[sdir]; sx = cl(sx+d.dx,0,GRID_SIZE-1); sy = cl(sy+d.dy,0,GRID_SIZE-1); break; }
-      case 'turn_left':  sdir = rotateDir(sdir, -1); break;
-      case 'turn_right': sdir = rotateDir(sdir,  1); break;
-      case 'strafe_l': { const d = DIR_DELTA[rotateDir(sdir,-1)]; sx = cl(sx+d.dx,0,GRID_SIZE-1); sy = cl(sy+d.dy,0,GRID_SIZE-1); break; }
-      case 'strafe_r': { const d = DIR_DELTA[rotateDir(sdir, 1)]; sx = cl(sx+d.dx,0,GRID_SIZE-1); sy = cl(sy+d.dy,0,GRID_SIZE-1); break; }
+      case 'forward': {
+        const d = DIR_DELTA[v.dir];
+        v.x = cl(v.x + d.dx); v.y = cl(v.y + d.dy);
+        break;
+      }
+      case 'turn_left':
+        v.dir = rotateDir(v.dir, -1);
+        break;
+      case 'turn_right':
+        v.dir = rotateDir(v.dir, 1);
+        break;
+      case 'strafe_l': {
+        const d = DIR_DELTA[rotateDir(v.dir, -1)];
+        v.x = cl(v.x + d.dx); v.y = cl(v.y + d.dy);
+        break;
+      }
+      case 'strafe_r': {
+        const d = DIR_DELTA[rotateDir(v.dir, 1)];
+        v.x = cl(v.x + d.dx); v.y = cl(v.y + d.dy);
+        break;
+      }
+    }
+
+    const supplyPoints = latestView?.supplyPoints || [];
+    for (const sp of supplyPoints) {
+      if (sp.x === v.x && sp.y === v.y && sp.type === 'ammo') {
+        v.inventory = { ...INITIAL_INVENTORY };
+      }
     }
   }
-  return { ...me, x: sx, y: sy, dir: sdir };
+  return v;
+}
+
+function _reconcileSelectedOps(me) {
+  if (!selectedOps.length) return;
+  const kept = [];
+  let v = {
+    x: me.x,
+    y: me.y,
+    dir: me.dir,
+    inventory: { ...(me.inventory || {}) },
+    usedTime: 0,
+  };
+
+  for (const entry of selectedOps) {
+    const opDef = OPS[entry.op];
+    if (!opDef) break;
+    if (v.usedTime + (opDef.cost ?? 0) > (me.time ?? 10)) break;
+    if (opDef.invKey && (v.inventory[opDef.invKey] ?? 0) <= 0) break;
+
+    kept.push(entry);
+    v = _simulateQueueState(me, kept);
+  }
+
+  if (kept.length !== selectedOps.length) {
+    selectedOps = kept;
+    _renderQueue();
+    _updateCommandPreview();
+  }
 }
 
 /** ソナートグルを解除し盤面ピックをキャンセルする */
@@ -466,13 +555,12 @@ async function _onOpClick(opId, view) {
   _deactivateAllToggles();
 
   // コスト確認
-  const used = selectedOps.reduce((sum, s) => sum + (OPS[s.op]?.cost ?? 0), 0);
-  if (opDef.cost > (me.time ?? 10) - used) return;
+  const projectedBefore = _simulateQueueState(me, selectedOps);
+  if (opDef.cost > (me.time ?? 10) - projectedBefore.usedTime) return;
 
   // 在庫確認
   if (opDef.invKey) {
-    const inQueue = selectedOps.filter(s => s.op === opId).length;
-    const avail = (me.inventory?.[opDef.invKey] ?? 0) - inQueue;
+    const avail = projectedBefore.inventory?.[opDef.invKey] ?? 0;
     if (avail <= 0) return;
   }
 
@@ -491,12 +579,11 @@ async function _onOpClick(opId, view) {
     while (isActive()) {
       const cur = latestView?.players[latestView?.myId];
       if (!cur) { deactivate(); break; }
-      const usedNow = selectedOps.reduce((sum, s) => sum + (OPS[s.op]?.cost ?? 0), 0);
-      if (opDef.cost > (cur.time ?? 10) - usedNow) { deactivate(); break; }
+      const projectedLoop = _simulateQueueState(cur, selectedOps);
+      if (opDef.cost > (cur.time ?? 10) - projectedLoop.usedTime) { deactivate(); break; }
       // 在庫が尽きたら終了
       if (opDef.invKey) {
-        const inQueue = selectedOps.filter(s => s.op === opId).length;
-        if ((cur.inventory?.[opDef.invKey] ?? 0) - inQueue <= 0) { deactivate(); break; }
+        if ((projectedLoop.inventory?.[opDef.invKey] ?? 0) <= 0) { deactivate(); break; }
       }
 
       const simMe = _simulatedPosition(cur, selectedOps);
@@ -546,12 +633,21 @@ export function showActionEvents(events, view) {
   }
   const area = document.getElementById('command-area');
   if (area) area.classList.add('hidden');
+
+  _animatedEliminations.clear();
+  _pendingEliminations = new Set((events || []).filter(ev => ev.type === 'eliminated').map(ev => ev.pid));
+  _renderPlayerList(view);
 }
 
 export function showCurrentAction(ev, view) {
   const card = document.getElementById('action-event-card');
   if (!card) return;
   if (!ev) { card.classList.add('hidden'); return; }
+
+  if (ev.type === 'eliminated' && ev.pid) {
+    _animatedEliminations.add(ev.pid);
+    _renderPlayerList(view);
+  }
 
   // ソナー検知警告: 全画面エフェクトを表示してカードは非表示
   if (ev.type === 'sonar_detected') {
@@ -644,9 +740,16 @@ export function showGameOver(winnerId, view) {
     <div class="gameover-box">
       <div class="gameover-title">${winner ? winner.name : '誰か'} の勝利！</div>
       <div class="gameover-sub">${WIN_KILLS}キル達成</div>
-      <button class="btn btn-primary" onclick="location.reload()">もう一度プレイ</button>
+      <button class="btn btn-primary" id="rematch-btn">もう一度プレイ</button>
     </div>
   `;
+  const rematchBtn = overlay.querySelector('#rematch-btn');
+  if (rematchBtn) {
+    rematchBtn.addEventListener('click', () => {
+      rematchBtn.disabled = true;
+      if (callbacks.onRematch) callbacks.onRematch();
+    });
+  }
   overlay.classList.remove('hidden');
 }
 

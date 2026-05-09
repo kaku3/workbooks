@@ -3,7 +3,7 @@
 //   ゲームロジック（gameLogic.js）と分離し、
 //   コマンド確定・フェーズ遷移・ターン進行のみを担う。
 // ============================================================
-import { OPS, INITIAL_HP, INITIAL_INVENTORY, BASE_TIME, GRID_SIZE } from './constants.js';
+import { OPS, INITIAL_HP, INITIAL_INVENTORY, BASE_TIME, GRID_SIZE, DIR_DELTA, rotateDir } from './constants.js';
 import { resolveActions, alivePlayers, allAliveDone, pushEvent } from './gameLogic.js';
 
 /* ============================================================
@@ -23,15 +23,8 @@ export function handleCommand(state, playerId, opIds, targets) {
   const cost = calcTimeCost(opIds);
   if (cost > p.time) return false;
 
-  // 在庫確認
-  const invUse = {};
-  for (const id of opIds) {
-    const op = OPS[id];
-    if (op.invKey) invUse[op.invKey] = (invUse[op.invKey] || 0) + 1;
-  }
-  for (const [key, count] of Object.entries(invUse)) {
-    if ((p.inventory[key] ?? 0) < count) return false;
-  }
+  // 在庫確認（移動中の補給通過を考慮した逐次判定）
+  if (!_canQueueWithSupply(state, p, opIds)) return false;
 
   p.commandQueue = opIds.map((op, i) => ({ op, target: targets[i] || {} }));
   p.commandConfirmed = true;
@@ -41,6 +34,70 @@ export function handleCommand(state, playerId, opIds, targets) {
     resolveActions(state);
   }
   return true;
+}
+
+function _canQueueWithSupply(state, p, opIds) {
+  const v = {
+    x: p.x,
+    y: p.y,
+    dir: p.dir,
+    inventory: { ...p.inventory },
+  };
+
+  for (const id of opIds) {
+    const op = OPS[id];
+    if (!op) return false;
+
+    if (op.invKey) {
+      if ((v.inventory[op.invKey] ?? 0) <= 0) return false;
+      v.inventory[op.invKey]--;
+    }
+
+    if (op.cat === 'move') {
+      _applyVirtualMove(v, op.id);
+      _applyVirtualSupply(v, state.supplyPoints || []);
+    }
+  }
+  return true;
+}
+
+function _applyVirtualMove(v, opId) {
+  const clamp = (n) => Math.max(0, Math.min(GRID_SIZE - 1, n));
+  switch (opId) {
+    case 'forward': {
+      const d = DIR_DELTA[v.dir];
+      v.x = clamp(v.x + d.dx);
+      v.y = clamp(v.y + d.dy);
+      break;
+    }
+    case 'turn_left':
+      v.dir = rotateDir(v.dir, -1);
+      break;
+    case 'turn_right':
+      v.dir = rotateDir(v.dir, 1);
+      break;
+    case 'strafe_l': {
+      const d = DIR_DELTA[rotateDir(v.dir, -1)];
+      v.x = clamp(v.x + d.dx);
+      v.y = clamp(v.y + d.dy);
+      break;
+    }
+    case 'strafe_r': {
+      const d = DIR_DELTA[rotateDir(v.dir, 1)];
+      v.x = clamp(v.x + d.dx);
+      v.y = clamp(v.y + d.dy);
+      break;
+    }
+  }
+}
+
+function _applyVirtualSupply(v, supplyPoints) {
+  for (const sp of supplyPoints) {
+    if (v.x !== sp.x || v.y !== sp.y) continue;
+    if (sp.type === 'ammo') {
+      v.inventory = { ...INITIAL_INVENTORY };
+    }
+  }
 }
 
 /* ============================================================

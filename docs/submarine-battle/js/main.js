@@ -3,7 +3,7 @@
 // ============================================================
 import { MSG, getMyId, getIsHost, setMessageHandler,
          broadcastState, sendPrivate, broadcastPublic,
-         broadcastGameOver, sendToGuest } from './peer.js';
+         broadcastGameOver, sendToGuest, sendRematchRequest } from './peer.js';
 import { createInitialState,
          sanitizeStateForPlayer } from './gameLogic.js';
 import { handleCommand, forceConfirmAll,
@@ -37,6 +37,7 @@ export function initGameScreen(playerIds, playerNames) {
   initUI({
     onConfirm: handleConfirmLocal,
     calcTimeCost,
+    onRematch: handleRematchLocal,
   });
 }
 
@@ -86,6 +87,12 @@ function onHostMessage(msg) {
     }
     case MSG.GAME_OVER: {
       if (msg._local) showGameOverNow(msg.winnerId, localView);
+      break;
+    }
+    case MSG.REMATCH_REQUEST: {
+      if (gameState?.phase === 'ended') {
+        restartGameFromCurrentPlayers();
+      }
       break;
     }
   }
@@ -258,6 +265,28 @@ function handleConfirmLocal(opIds, targets) {
   } else {
     import('./peer.js').then(m => m.sendCommandConfirm(opIds, targets));
   }
+}
+
+function handleRematchLocal() {
+  if (getIsHost()) {
+    if (gameState?.phase === 'ended') {
+      restartGameFromCurrentPlayers();
+    }
+    return;
+  }
+  sendRematchRequest();
+}
+
+function restartGameFromCurrentPlayers() {
+  if (!gameState) return;
+  const playerIds = [...gameState.playerOrder];
+  const playerNames = playerIds.map(id => gameState.players[id]?.name || 'プレイヤー');
+  gameState = createInitialState(playerIds, playerNames);
+  _lastPhase = null;
+  if (_animStartTimeoutId) { clearTimeout(_animStartTimeoutId); _animStartTimeoutId = null; }
+  if (_gameOverTimeoutId) { clearTimeout(_gameOverTimeoutId); _gameOverTimeoutId = null; }
+  commandTimer = null;
+  syncStateToAll();
 }
 
 function showGameOverNow(winnerId, view) {

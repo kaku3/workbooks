@@ -27,6 +27,7 @@ export const MSG = {
   PRIVATE_EVENT:  'private_event',     // ソナー結果等（個人宛）
   PUBLIC_EVENT:   'public_event',      // 音漏れ等（全員）
   GAME_OVER:      'game_over',
+  REMATCH_REQUEST:'rematch_request',
   ERROR:          'error',
 };
 
@@ -164,6 +165,12 @@ export function sendCardTarget(cardUid, target) {
 
 export function sendDiscardChoice(cardUids) {
   const msg = { type: MSG.DISCARD_CHOICE, cardUids };
+  if (isHost) onMessageCallback({ from: myId, ...msg });
+  else sendToHost(msg);
+}
+
+export function sendRematchRequest() {
+  const msg = { type: MSG.REMATCH_REQUEST };
   if (isHost) onMessageCallback({ from: myId, ...msg });
   else sendToHost(msg);
 }

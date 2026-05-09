@@ -40,7 +40,7 @@ export const OPS = {
   strafe_l:  { id: 'strafe_l',  name: '←横移',   cost: 2, icon: 'arrow_back',            cat: 'move' },
   strafe_r:  { id: 'strafe_r',  name: '横移→',   cost: 2, icon: 'arrow_forward',         cat: 'move' },
   sonar:     { id: 'sonar',     name: 'ソナー',   cost: 1, icon: 'radar',                 cat: 'recon' },
-  torpedo:   { id: 'torpedo',   name: '魚雷',     cost: 1, icon: 'rocket_launch',         cat: 'weapon', invKey: 'torpedo' },
+  torpedo:   { id: 'torpedo',   name: '魚雷',     cost: 2, icon: 'rocket_launch',         cat: 'weapon', invKey: 'torpedo' },
   guided:    { id: 'guided',    name: '追尾魚雷', cost: 2, icon: 'assistant_navigation',  cat: 'weapon', invKey: 'guided' },
   shotgun:   { id: 'shotgun',   name: '散弾',     cost: 1, icon: 'scatter_plot',          cat: 'weapon', invKey: 'shotgun' },
   mine:      { id: 'mine',      name: '機雷',     cost: 1, icon: 'dangerous',             cat: 'place',  invKey: 'mine' },

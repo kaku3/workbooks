@@ -132,22 +132,40 @@ export function resolveActions(state) {
   // 3) タイムライン実行
   //    ティックが変わるたびに飛翔体前進 → 機雷トリガーとドッグファイト突入を判定する
   const projectiles = [];
+  const supplyVisited = new Map();
   let projSeq = 0;
   let prevT = -1;
-  for (const { t, pid, cmd } of timeline) {
+  let i = 0;
+  while (i < timeline.length) {
+    const t = timeline[i].t;
+    const batch = [];
+    while (i < timeline.length && timeline[i].t === t) {
+      batch.push(timeline[i]);
+      i++;
+    }
+
     // ─ ティック境界: 飛翔体を1ステップ前進させてから衝突判定 ─
-    if (t !== prevT && prevT >= 0) {
-      _advanceProjectiles(state, projectiles);
+    if (prevT >= 0) {
+      const plannedTrails = _buildPlannedMoveTrails(state, batch);
+      _advanceProjectiles(state, projectiles, plannedTrails);
       _tickEnterCheck(state);
     }
     prevT = t;
 
-    if (!state.players[pid].alive) continue;
-    const cat = OPS[cmd.op]?.cat;
-    if      (cat === 'move')     resolveMove(state, pid, cmd);
-    else if (cmd.op === 'sonar') resolveSonar(state, pid, cmd);
-    else if (cat === 'weapon')   _spawnProjectile(state, pid, cmd, projectiles, projSeq++);
-    else if (cmd.op === 'mine')  resolveMine(state, pid, cmd);
+    for (const { pid, cmd } of batch) {
+      if (!state.players[pid].alive) continue;
+      const opDef = OPS[cmd.op];
+      if (opDef?.invKey && cmd.op !== 'chaff') {
+        const inv = state.players[pid].inventory;
+        if ((inv[opDef.invKey] ?? 0) <= 0) continue;
+        inv[opDef.invKey]--;
+      }
+      const cat = opDef?.cat;
+      if      (cat === 'move')     { resolveMove(state, pid, cmd); resolveSupplyAtPosition(state, pid, supplyVisited); }
+      else if (cmd.op === 'sonar') resolveSonar(state, pid, cmd);
+      else if (cat === 'weapon')   _spawnProjectile(state, pid, cmd, projectiles, projSeq++);
+      else if (cmd.op === 'mine')  resolveMine(state, pid, cmd);
+    }
   }
   // 最終ティック後: 残存飛翔体を射程が尽きるまで前進させる
   for (let extra = 0; extra < GRID_SIZE && projectiles.length > 0; extra++) {
@@ -155,29 +173,52 @@ export function resolveActions(state) {
   }
   _tickEnterCheck(state);
 
-  // 4) 補給（全行動完了後）
-  resolveSupply(state, alivePlayers(state));
+  // 4) 最終位置で補給（行動中に通過した補給点は既に適用済み。重複適用はしない）
+  alivePlayers(state).forEach(pid => resolveSupplyAtPosition(state, pid, supplyVisited));
 
-  // 5) 在庫消費（chaff は activateChaff 内で消費済み）
-  alive.forEach(id => {
-    const p = state.players[id];
-    const invUse = {};
-    for (const { op } of p.commandQueue) {
-      const opDef = OPS[op];
-      if (opDef?.invKey && op !== 'chaff') {
-        invUse[opDef.invKey] = (invUse[opDef.invKey] || 0) + 1;
-      }
-    }
-    for (const [key, count] of Object.entries(invUse)) {
-      p.inventory[key] = Math.max(0, (p.inventory[key] ?? 0) - count);
-    }
-  });
-
-  // 6) 前方警戒
+  // 5) 前方警戒
   resolveForwardWarning(state, alivePlayers(state));
 
-  // 8) 脱落チェック
+  // 6) 脱落チェック
   checkEliminations(state);
+}
+
+function _buildPlannedMoveTrails(state, batch) {
+  const trails = {};
+  for (const { pid, cmd } of batch) {
+    const p = state.players[pid];
+    if (!p?.alive) continue;
+    const cat = OPS[cmd?.op]?.cat;
+    if (cat !== 'move') continue;
+    const next = _predictMoveResult(p, cmd?.op);
+    if (!next) continue;
+    if (next.x === p.x && next.y === p.y) continue;
+    trails[pid] = { x0: p.x, y0: p.y, x1: next.x, y1: next.y };
+  }
+  return trails;
+}
+
+function _predictMoveResult(player, op) {
+  const p = { x: player.x, y: player.y, dir: player.dir };
+  switch (op) {
+    case 'forward':
+      p.x = clamp(p.x + DIR_DELTA[p.dir].dx, 0, GRID_SIZE - 1);
+      p.y = clamp(p.y + DIR_DELTA[p.dir].dy, 0, GRID_SIZE - 1);
+      return { x: p.x, y: p.y };
+    case 'turn_left':
+    case 'turn_right':
+      return { x: p.x, y: p.y };
+    case 'strafe_l': {
+      const d = DIR_DELTA[rotateDir(p.dir, -1)];
+      return { x: clamp(p.x + d.dx, 0, GRID_SIZE - 1), y: clamp(p.y + d.dy, 0, GRID_SIZE - 1) };
+    }
+    case 'strafe_r': {
+      const d = DIR_DELTA[rotateDir(p.dir, 1)];
+      return { x: clamp(p.x + d.dx, 0, GRID_SIZE - 1), y: clamp(p.y + d.dy, 0, GRID_SIZE - 1) };
+    }
+    default:
+      return null;
+  }
 }
 
 /**
@@ -284,7 +325,8 @@ function resolveSonar(state, pid, cmd) {
   const hits = [];
   findEnemiesInRadius(state, pid, cx, cy, r).forEach(ep => {
     const hit = { x: ep.x, y: ep.y, playerId: ep.id, expiresAfterTurn: state.turn + 1 };
-    p.sonarResults.push(hit);
+    const hasSameTarget = (p.sonarResults || []).some(r0 => r0.playerId === ep.id && r0.expiresAfterTurn >= state.turn);
+    if (!hasSameTarget) p.sonarResults.push(hit);
     hits.push(hit);
     // 検知された側に警告イベントを通知
     pushEvent(state, { type: 'sonar_detected', pid: ep.id, detectedBy: pid, public: false, to: ep.id });
@@ -323,7 +365,7 @@ function _spawnProjectile(state, pid, cmd, projectiles, seq) {
     projectiles.push({ id: projId, type: 'torpedo', ownerId: pid,
       x: p.x, y: p.y, angle, distMax: TORPEDO_RANGE, distTraveled: 0, damage: 2 });
     pushEvent(state, { type: 'torpedo_fire', pid, projId, sx: p.x, sy: p.y, tx, ty, public: true });
-    state.turnLog.push(`${p.name} が魚雷を発射 (→${tx},${ty})`);
+    state.turnLog.push(`${p.name} が魚雷を発射 (→${toCellLabel(tx, ty)})`);
   } else if (cmd.op === 'guided') {
     const tx = cmd.target?.x != null ? Number(cmd.target.x) : p.x;
     const ty = cmd.target?.y != null ? Number(cmd.target.y) : p.y;
@@ -336,7 +378,7 @@ function _spawnProjectile(state, pid, cmd, projectiles, seq) {
       x: p.x, y: p.y, angle, distMax: GUIDED_RANGE, distTraveled: 0, damage: 1,
       rerouteTick: 0, stepCount: 0 });
     pushEvent(state, { type: 'guided_fire', pid, projId, sx: p.x, sy: p.y, tx, ty, public: true });
-    state.turnLog.push(`${p.name} が追尾魚雷を発射 (→${tx},${ty})`);
+    state.turnLog.push(`${p.name} が追尾魚雷を発射 (→${toCellLabel(tx, ty)})`);
   } else if (cmd.op === 'shotgun') {
     const fwd  = DIR_DELTA[p.dir];
     const lDir = rotateDir(p.dir, -1), rDir = rotateDir(p.dir, 1);
@@ -358,8 +400,10 @@ function _spawnProjectile(state, pid, cmd, projectiles, seq) {
  * 全飛翔体を 1 ステップ（1グリッド単位）前進させ、ヒット/射程切れを処理する。
  * 飛翔体の x/y は浮動小数グリッド座標。ヒット判定は距離 < HIT_RADIUS。
  */
-function _advanceProjectiles(state, projectiles) {
+function _advanceProjectiles(state, projectiles, plannedMoveTrails = null) {
   const toRemove = new Set();
+  const hitRadiusSq = HIT_RADIUS * HIT_RADIUS;
+
   for (const proj of projectiles) {
     if (toRemove.has(proj.id)) continue;
 
@@ -370,6 +414,8 @@ function _advanceProjectiles(state, projectiles) {
     }
 
     // 前進（1グリッド単位）
+    const prevX = proj.x;
+    const prevY = proj.y;
     proj.x += Math.cos(proj.angle);
     proj.y += Math.sin(proj.angle);
     proj.distTraveled = (proj.distTraveled ?? 0) + 1;
@@ -383,12 +429,34 @@ function _advanceProjectiles(state, projectiles) {
       continue;
     }
 
+    // 機雷に命中したら機雷を破壊し、飛翔体も消える
+    const hitMineIdx = state.mines.findIndex(m => distSq(m.x, m.y, proj.x, proj.y) < hitRadiusSq);
+    if (hitMineIdx >= 0) {
+      const mine = state.mines[hitMineIdx];
+      state.mines.splice(hitMineIdx, 1);
+      pushEvent(state, { type: 'explosion', x: mine.x, y: mine.y, public: true });
+      state.turnLog.push(`機雷 ${toCellLabel(mine.x, mine.y)} が攻撃で破壊された`);
+      toRemove.add(proj.id);
+      continue;
+    }
+
     // ヒット判定（距離ベース）
-    const hit = alivePlayers(state).find(eid => {
-      if (eid === proj.ownerId) return false;
+    let hit = null;
+    for (const eid of alivePlayers(state)) {
+      if (eid === proj.ownerId) continue;
       const ep = state.players[eid];
-      return Math.hypot(ep.x - proj.x, ep.y - proj.y) < HIT_RADIUS;
-    });
+      if (!ep?.alive) continue;
+      if (distSq(ep.x, ep.y, proj.x, proj.y) < hitRadiusSq) {
+        hit = eid;
+        break;
+      }
+      const trail = plannedMoveTrails?.[eid];
+      if (!trail) continue;
+      if (_projectileCrossesMovingTarget(prevX, prevY, proj.x, proj.y, trail, hitRadiusSq)) {
+        hit = eid;
+        break;
+      }
+    }
 
     if (hit) {
       if (proj.type === 'guided' && state.players[hit].buffs.chaffActive) {
@@ -409,6 +477,54 @@ function _advanceProjectiles(state, projectiles) {
     const i = projectiles.findIndex(p => p.id === id);
     if (i >= 0) projectiles.splice(i, 1);
   }
+}
+
+function distSq(x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return dx * dx + dy * dy;
+}
+
+function pointToSegmentDistSq(px, py, x1, y1, x2, y2) {
+  const vx = x2 - x1;
+  const vy = y2 - y1;
+  const wx = px - x1;
+  const wy = py - y1;
+  const c1 = vx * wx + vy * wy;
+  if (c1 <= 0) return distSq(px, py, x1, y1);
+  const c2 = vx * vx + vy * vy;
+  if (c2 <= c1) return distSq(px, py, x2, y2);
+  const b = c1 / c2;
+  const bx = x1 + b * vx;
+  const by = y1 + b * vy;
+  return distSq(px, py, bx, by);
+}
+
+function _projectileCrossesMovingTarget(px0, py0, px1, py1, trail, hitRadiusSq) {
+  const tx0 = trail.x0;
+  const ty0 = trail.y0;
+  const tx1 = trail.x1;
+  const ty1 = trail.y1;
+
+  const projDx = px1 - px0;
+  const projDy = py1 - py0;
+  const trgDx = tx1 - tx0;
+  const trgDy = ty1 - ty0;
+
+  const relX = px0 - tx0;
+  const relY = py0 - ty0;
+  const relVx = projDx - trgDx;
+  const relVy = projDy - trgDy;
+
+  const vv = relVx * relVx + relVy * relVy;
+  if (vv === 0) return relX * relX + relY * relY <= hitRadiusSq;
+
+  const t = Math.max(0, Math.min(1, - (relX * relVx + relY * relVy) / vv));
+  const cx = relX + relVx * t;
+  const cy = relY + relVy * t;
+  if (cx * cx + cy * cy <= hitRadiusSq) return true;
+
+  return false;
 }
 
 /**
@@ -453,24 +569,30 @@ function resolveMine(state, pid, cmd) {
   const ty = cmd.target?.y ?? p.y;
   state.mines.push({ x: tx, y: ty, ownerId: pid });
   pushEvent(state, { type: 'mine_place', pid, x: tx, y: ty, public: false, to: pid });
-  state.turnLog.push(`${p.name} が機雷を設置 (${tx},${ty})`);}
+  state.turnLog.push(`${p.name} が機雷を設置 (${toCellLabel(tx, ty)})`);
+}
 
-function resolveSupply(state, alive) {
-  alive.forEach(pid => {
-    const p = state.players[pid];
-    for (const sp of state.supplyPoints) {
-      if (p.x === sp.x && p.y === sp.y) {
-        if (sp.type === 'ammo') {
-          p.inventory = { ...INITIAL_INVENTORY };
-          state.turnLog.push(`${p.name} が弾薬を全回復`);
-        } else if (sp.type === 'repair') {
-          p.hp = Math.min(p.hp + 1, p.maxHp);
-          state.turnLog.push(`${p.name} がHP回復 (${p.hp}/${p.maxHp})`);
-        }
-        pushEvent(state, { type: 'supply', pid, supplyType: sp.type, public: false, to: pid });
-      }
+function resolveSupplyAtPosition(state, pid, supplyVisited) {
+  const p = state.players[pid];
+  if (!p?.alive) return;
+  if (!supplyVisited.has(pid)) supplyVisited.set(pid, new Set());
+  const visited = supplyVisited.get(pid);
+
+  for (const sp of state.supplyPoints) {
+    if (p.x !== sp.x || p.y !== sp.y) continue;
+    const key = `${sp.x},${sp.y}`;
+    if (visited.has(key)) continue;
+    visited.add(key);
+
+    if (sp.type === 'ammo') {
+      p.inventory = { ...INITIAL_INVENTORY };
+      state.turnLog.push(`${p.name} が ${toCellLabel(sp.x, sp.y)} で弾薬を全回復`);
+    } else if (sp.type === 'repair') {
+      p.hp = Math.min(p.hp + 1, p.maxHp);
+      state.turnLog.push(`${p.name} が ${toCellLabel(sp.x, sp.y)} でHP回復 (${p.hp}/${p.maxHp})`);
     }
-  });
+    pushEvent(state, { type: 'supply', pid, supplyType: sp.type, x: sp.x, y: sp.y, public: false, to: pid });
+  }
 }
 
 function resolveForwardWarning(state, alive) {
@@ -622,4 +744,27 @@ function applyDamage(state, pid, amount, source, attackerId) {
     state.turnLog.push(`${state.players[attackerId].name} がキル (計${state.players[attackerId].kills}キル)`);
     if (state.players[attackerId].kills >= WIN_KILLS) state.winner = attackerId;
   }
+
+  if (p.hp <= 0) {
+    eliminatePlayer(state, pid);
+  }
+}
+
+function eliminatePlayer(state, id) {
+  const p = state.players[id];
+  if (!p || !p.alive) return;
+  p.alive = false;
+  p.respawning = true;
+  if (p.dogfightWith) {
+    const partner = state.players[p.dogfightWith];
+    if (partner) partner.dogfightWith = null;
+  }
+  p.dogfightWith = null;
+  pushEvent(state, { type: 'eliminated', pid: id, x: p.x, y: p.y, respawning: true, public: true });
+}
+
+function toCellLabel(x, y) {
+  const col = String.fromCharCode(65 + Number(x));
+  const row = Number(y) + 1;
+  return `${col}${row}`;
 }

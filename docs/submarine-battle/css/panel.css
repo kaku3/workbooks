@@ -65,6 +65,11 @@
   gap: 4px;
 }
 
+.move-pad .op-btn,
+.attack-row .op-btn {
+  min-height: 40px;
+}
+
 .move-spacer {
   /* グリッドのセンターセル(空白) */
   min-height: 40px;
@@ -98,10 +103,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 1px;
   min-width: 60px;
-  min-height: 56px;
-  padding: 6px 4px;
+  min-height: 40px;
+  padding: 9px 4px 5px;
   border-radius: 8px;
   background: var(--bg-surface, #1a2233);
   border: 1px solid var(--border, #2a3a55);
@@ -133,10 +138,23 @@
 }
 
 .op-btn .op-cost {
-  font-size: 10px;
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  line-height: 1;
   font-family: var(--font-mono, monospace);
-  color: var(--accent-cyan, #00e5ff);
+  color: #001421;
+  background: var(--accent-cyan, #00e5ff);
   font-weight: bold;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18) inset;
 }
 
 /* ── 待機メッセージ ── */
@@ -181,7 +199,8 @@
 }
 
 .sonar-btn .op-cost {
-  color: #00e5a0;
+  background: #00e5a0;
+  color: #001a12;
 }
 
 .sonar-btn:hover:not(:disabled) {
