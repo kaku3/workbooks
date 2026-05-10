@@ -207,10 +207,11 @@ let _parallaxRaf = null;
 
 function _initParallax() {
   const screen = document.getElementById('lobby-screen');
+  const base = document.querySelector('.lp-layer-base');
   const far  = document.querySelector('.lp-layer-far');
   const mid  = document.querySelector('.lp-layer-mid');
   const near = document.querySelector('.lp-layer-near');
-  if (!screen || !far || !mid || !near) return;
+  if (!screen || !base || !far || !mid || !near) return;
 
   // マウス視差
   let mx = 0, my = 0;
@@ -225,7 +226,7 @@ function _initParallax() {
     if (raf) return;
     raf = requestAnimationFrame(() => {
       raf = null;
-      _applyParallax(screen, far, mid, near, mx, my);
+      _applyParallax(base, far, mid, near, mx, my, performance.now());
     });
   }
   screen.addEventListener('scroll', onScroll, { passive: true });
@@ -236,18 +237,20 @@ function _initParallax() {
   function loop() {
     curMx += (mx - curMx) * 0.06;
     curMy += (my - curMy) * 0.06;
-    _applyParallax(screen, far, mid, near, curMx, curMy);
+    _applyParallax(base, far, mid, near, curMx, curMy, performance.now());
     _parallaxRaf = requestAnimationFrame(loop);
   }
   _parallaxRaf = requestAnimationFrame(loop);
 }
 
-function _applyParallax(screen, far, mid, near, mx, my) {
+function _applyParallax(base, far, mid, near, mx, my, now = performance.now()) {
   const scrollY = window.scrollY || document.documentElement.scrollTop;
-  // 各レイヤーをスクロール量 × 視差係数 + マウス視差 でずらす
-  far.style.transform  = `translate(${mx * 10 - scrollY * 0.08}px, ${my * 10  + scrollY * 0.08}px)`;
-  mid.style.transform  = `translate(${mx * 22 - scrollY * 0.18}px, ${my * 22  + scrollY * 0.18}px)`;
-  near.style.transform = `translate(${mx * 40 - scrollY * 0.30}px, ${my * 40  + scrollY * 0.30}px)`;
+  // スクロールに追従しつつ、レイヤーごとに係数を変えて視差を強調
+  const t = now * 0.001;
+  base.style.transform = `translate(${mx * 4 + Math.sin(t * 0.18) * 6}px, ${my * 4 + scrollY * 0.06 + Math.cos(t * 0.16) * 4}px)`;
+  far.style.transform  = `translate(${mx * 10 + Math.sin(t * 0.34) * 9}px, ${my * 10 + scrollY * 0.18 + Math.cos(t * 0.30) * 8}px)`;
+  mid.style.transform  = `translate(${mx * 22 - Math.sin(t * 0.50) * 12}px, ${my * 22 + scrollY * 0.36 + Math.cos(t * 0.44) * 10}px)`;
+  near.style.transform = `translate(${mx * 40 + Math.sin(t * 0.75) * 16}px, ${my * 40 + scrollY * 0.62 + Math.cos(t * 0.70) * 14}px)`;
 }
 
 function _stopParallax() {

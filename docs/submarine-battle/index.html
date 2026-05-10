@@ -40,6 +40,7 @@
 
 <!-- パララックス背景 -->
 <div class="lobby-parallax" id="lobby-parallax">
+  <div class="lp-layer lp-layer-base"></div>
   <div class="lp-layer lp-layer-far"></div>
   <div class="lp-layer lp-layer-mid"></div>
   <div class="lp-layer lp-layer-near"></div>
@@ -151,36 +152,46 @@
 
         <div class="rules-ops-group">
           <div class="rules-ops-label">攻撃 / 防御</div>
-          <div class="attack-row rules-demo-row">
-            <div class="op-btn op-btn-demo inv-btn">
-              <span class="material-symbols-outlined">rocket_launch</span>
-              <span class="op-name">魚雷</span>
-              <span class="op-cost">2</span>
-              <span class="rules-op-tip">前方直線 ×2dmg</span>
+          <div class="rules-attack-list">
+            <div class="rules-attack-item">
+              <div class="op-btn op-btn-demo inv-btn">
+                <span class="material-symbols-outlined">rocket_launch</span>
+                <span class="op-name">魚雷</span>
+                <span class="op-cost">2</span>
+              </div>
+              <div class="rules-attack-desc">前方直線に発射して命中時 <strong>2ダメージ</strong>。</div>
             </div>
-            <div class="op-btn op-btn-demo inv-btn">
-              <span class="material-symbols-outlined">assistant_navigation</span>
-              <span class="op-name">追尾</span>
-              <span class="op-cost">2</span>
-              <span class="rules-op-tip">自動ロック ×1dmg</span>
+            <div class="rules-attack-item">
+              <div class="op-btn op-btn-demo inv-btn">
+                <span class="material-symbols-outlined">assistant_navigation</span>
+                <span class="op-name">追尾</span>
+                <span class="op-cost">2</span>
+              </div>
+              <div class="rules-attack-desc">敵方向へ追尾し、命中時 <strong>1ダメージ</strong>。</div>
             </div>
-            <div class="op-btn op-btn-demo inv-btn">
-              <span class="material-symbols-outlined">scatter_plot</span>
-              <span class="op-name">散弾</span>
-              <span class="op-cost">1</span>
-              <span class="rules-op-tip">前方3マス ×1dmg</span>
+            <div class="rules-attack-item">
+              <div class="op-btn op-btn-demo inv-btn">
+                <span class="material-symbols-outlined">scatter_plot</span>
+                <span class="op-name">散弾</span>
+                <span class="op-cost">1</span>
+              </div>
+              <div class="rules-attack-desc">前方3方向に同時射撃し、各弾 <strong>1ダメージ</strong>。</div>
             </div>
-            <div class="op-btn op-btn-demo inv-btn">
-              <span class="material-symbols-outlined">dangerous</span>
-              <span class="op-name">機雷</span>
-              <span class="op-cost">1</span>
-              <span class="rules-op-tip">設置 踏んだ敵×1dmg</span>
+            <div class="rules-attack-item">
+              <div class="op-btn op-btn-demo inv-btn">
+                <span class="material-symbols-outlined">dangerous</span>
+                <span class="op-name">機雷</span>
+                <span class="op-cost">1</span>
+              </div>
+              <div class="rules-attack-desc">指定地点に設置。踏んだ敵へ <strong>1ダメージ</strong>。</div>
             </div>
-            <div class="op-btn op-btn-demo inv-btn defense-btn">
-              <span class="material-symbols-outlined">blur_on</span>
-              <span class="op-name">チャフ</span>
-              <span class="op-cost">1</span>
-              <span class="rules-op-tip">追尾魚雷を1発無効</span>
+            <div class="rules-attack-item">
+              <div class="op-btn op-btn-demo inv-btn defense-btn">
+                <span class="material-symbols-outlined">blur_on</span>
+                <span class="op-name">チャフ</span>
+                <span class="op-cost">1</span>
+              </div>
+              <div class="rules-attack-desc">次に受ける追尾魚雷を <strong>1発無効化</strong>。</div>
             </div>
           </div>
         </div>
