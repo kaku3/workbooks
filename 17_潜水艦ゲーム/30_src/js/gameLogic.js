@@ -586,6 +586,21 @@ function resolveSupplyAtPosition(state, pid, supplyVisited) {
     } else if (sp.type === 'repair') {
       p.hp = Math.min(p.hp + 1, p.maxHp);
       state.turnLog.push(`${p.name} が ${toCellLabel(sp.x, sp.y)} でHP回復 (${p.hp}/${p.maxHp})`);
+    } else if (sp.type === 'fuel') {
+      p.time = Math.min(p.maxTime, p.time + 2);
+      state.turnLog.push(`${p.name} が ${toCellLabel(sp.x, sp.y)} で行動時間を回復 (${p.time}/${p.maxTime})`);
+    } else if (sp.type === 'random') {
+      const roll = Math.random();
+      if (roll < 0.34) {
+        p.inventory = { ...INITIAL_INVENTORY };
+        state.turnLog.push(`${p.name} が ${toCellLabel(sp.x, sp.y)} でランダム補給: 弾薬全回復`);
+      } else if (roll < 0.67) {
+        p.hp = Math.min(p.hp + 1, p.maxHp);
+        state.turnLog.push(`${p.name} が ${toCellLabel(sp.x, sp.y)} でランダム補給: HP回復 (${p.hp}/${p.maxHp})`);
+      } else {
+        p.time = Math.min(p.maxTime, p.time + 2);
+        state.turnLog.push(`${p.name} が ${toCellLabel(sp.x, sp.y)} でランダム補給: 行動時間回復 (${p.time}/${p.maxTime})`);
+      }
     }
     pushEvent(state, { type: 'supply', pid, supplyType: sp.type, x: sp.x, y: sp.y, public: false, to: pid });
   }

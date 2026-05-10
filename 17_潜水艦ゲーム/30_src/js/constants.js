@@ -57,13 +57,15 @@ export const INITIAL_INVENTORY = {
 };
 
 // ============================================================
-// 補給ポイント (ammo=在庫全回復 / repair=HP+1)
+// 補給ポイント (ammo=在庫全回復 / repair=HP+1 / fuel=random系は演出含む拡張)
 // ============================================================
-export const SUPPLY_TYPES = ['ammo', 'repair'];
+export const SUPPLY_TYPES = ['ammo', 'repair', 'fuel', 'random'];
 export const SUPPLY_FIXED = [
   { x: 3, y: 3, type: 'ammo' },
   { x: 6, y: 6, type: 'repair' },
   { x: 2, y: 7, type: 'ammo' },
+  { x: 7, y: 2, type: 'fuel' },
+  { x: 1, y: 5, type: 'random' },
 ];
 
 // ============================================================

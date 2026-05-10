@@ -22,6 +22,15 @@ let _renderState   = null;   // renderState の参照（アニメループ用）
 let _lastView      = null;   // 最後にレンダリングされたビュー（ハイライト用）
 let _pickHighlightCells = []; // 盤面ピックモード時のハイライトセル
 let _pickRafId     = null;   // ピックアニメーション rAF ID
+let _spriteSheet   = null;
+let _spriteReady   = false;
+
+const SPRITESHEET_URL = new URL('../assets/spritesheet.svg', import.meta.url).href;
+const SPRITES = {
+  torpedo: { x: 384, y: 0, w: 64, h: 64 },
+  guided_torpedo: { x: 448, y: 0, w: 64, h: 64 },
+  chaff: { x: 384, y: 64, w: 64, h: 64 },
+};
 
 /**
  * render.js の initRenderer() から呼ばれる初期化。
@@ -35,6 +44,21 @@ export function initAnim(ctx, getCellSize, getOffset, renderStateFn) {
   _getCellSize = getCellSize;
   _getOffset   = getOffset;
   _renderState = renderStateFn;
+  _loadSpriteSheet();
+}
+
+function _loadSpriteSheet() {
+  const img = new Image();
+  img.onload = () => {
+    _spriteSheet = img;
+    _spriteReady = true;
+    if (_renderState && _lastView) _renderState(_lastView);
+  };
+  img.onerror = () => {
+    _spriteReady = false;
+    _spriteSheet = null;
+  };
+  img.src = SPRITESHEET_URL;
 }
 
 /* ============================================================
@@ -222,6 +246,16 @@ export function applyPreviewLayer() {
       case 'chaff_preview': {
         const cx2 = bo.x + step.x * cellSize + cellSize / 2;
         const cy2 = bo.y + step.y * cellSize + cellSize / 2;
+
+        if (_drawSprite(ctx, 'chaff', cx2, cy2, cellSize * 0.78, 0, 0.95)) {
+          ctx.strokeStyle = 'rgba(180,220,255,0.75)';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([3, 2]);
+          ctx.beginPath(); ctx.arc(cx2, cy2, cellSize * 0.4, 0, Math.PI * 2); ctx.stroke();
+          ctx.setLineDash([]);
+          break;
+        }
+
         ctx.fillStyle = 'rgba(200,230,255,0.15)';
         ctx.fillRect(bo.x + step.x * cellSize + 1, bo.y + step.y * cellSize + 1, cellSize - 2, cellSize - 2);
         ctx.strokeStyle = 'rgba(180,220,255,0.8)';
@@ -376,6 +410,11 @@ function _drawActiveProjectiles(ctx, cs, bo) {
     // pixX/pixY があればピクセル座標をそのまま使用（スムーズ移動）
     const px = proj.pixX != null ? proj.pixX : bo.x + proj.x * cs + cs / 2;
     const py = proj.pixY != null ? proj.pixY : bo.y + proj.y * cs + cs / 2;
+    const spriteName = proj.projType === 'guided' ? 'guided_torpedo' : 'torpedo';
+    const angle = (typeof proj.angle === 'number') ? proj.angle : Math.atan2(proj.velY || 0, proj.velX || 0);
+    const drewSprite = _drawSprite(ctx, spriteName, px, py, cs * 0.62, angle, 0.96);
+    if (drewSprite) return;
+
     const color = proj.projType === 'guided' ? '#00e5ff' : '#ffaa00';
     const r = cs * 0.13;
     const grad = ctx.createRadialGradient(px, py, 0, px, py, r * 2.5);
@@ -387,6 +426,24 @@ function _drawActiveProjectiles(ctx, cs, bo) {
     ctx.beginPath(); ctx.arc(px, py, r * 0.6, 0, Math.PI * 2); ctx.fill();
   });
   ctx.restore();
+}
+
+function _drawSprite(ctx, name, centerX, centerY, drawSize, rotation = 0, alpha = 1) {
+  if (!_spriteReady || !_spriteSheet) return false;
+  const frame = SPRITES[name];
+  if (!frame) return false;
+  const half = drawSize / 2;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(centerX, centerY);
+  ctx.rotate(rotation);
+  ctx.drawImage(
+    _spriteSheet,
+    frame.x, frame.y, frame.w, frame.h,
+    -half, -half, drawSize, drawSize
+  );
+  ctx.restore();
+  return true;
 }
 
 /** 着弾爆発エフェクト（rAF アニメ終了時の onDone から呼ぶ） */
@@ -664,6 +721,7 @@ function _applyEventToAnimView(ev) {
         pixX: sx, pixY: sy,
         toPixX: sx, toPixY: sy,
         velX: 0, velY: 0,
+        angle: Math.atan2((ev.ty ?? ev.sy) - ev.sy, (ev.tx ?? ev.sx) - ev.sx),
         projType, ownerId: ev.pid,
       };
       _startProjLoop();
@@ -684,6 +742,7 @@ function _applyEventToAnimView(ev) {
       proj.toPixX = toX; proj.toPixY = toY;
       proj.velX = speed * Math.cos(angle);
       proj.velY = speed * Math.sin(angle);
+      if (dist > 0.001) proj.angle = angle;
       proj.x = ev.x; proj.y = ev.y;
       _startProjLoop();
       break;

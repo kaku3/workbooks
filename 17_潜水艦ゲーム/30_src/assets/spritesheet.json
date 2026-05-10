@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "image": "spritesheet.svg",
+    "cellWidth": 64,
+    "cellHeight": 64,
+    "columns": 8,
+    "rows": 2,
+    "scaleHint": 1
+  },
+  "sprites": {
+    "submarine_cyan": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "submarine_red": { "x": 64, "y": 0, "w": 64, "h": 64 },
+    "submarine_yellow": { "x": 128, "y": 0, "w": 64, "h": 64 },
+    "submarine_green": { "x": 192, "y": 0, "w": 64, "h": 64 },
+    "submarine_purple": { "x": 256, "y": 0, "w": 64, "h": 64 },
+    "submarine_orange": { "x": 320, "y": 0, "w": 64, "h": 64 },
+    "torpedo": { "x": 384, "y": 0, "w": 64, "h": 64 },
+    "guided_torpedo": { "x": 448, "y": 0, "w": 64, "h": 64 },
+    "mine_friendly": { "x": 0, "y": 64, "w": 64, "h": 64 },
+    "mine_enemy": { "x": 64, "y": 64, "w": 64, "h": 64 },
+    "supply_fuel": { "x": 128, "y": 64, "w": 64, "h": 64 },
+    "supply_random": { "x": 192, "y": 64, "w": 64, "h": 64 },
+    "sonar_ping_0": { "x": 128, "y": 64, "w": 64, "h": 64 },
+    "sonar_ping_1": { "x": 192, "y": 64, "w": 64, "h": 64 },
+    "supply_ammo": { "x": 256, "y": 64, "w": 64, "h": 64 },
+    "supply_repair": { "x": 320, "y": 64, "w": 64, "h": 64 },
+    "chaff": { "x": 384, "y": 64, "w": 64, "h": 64 },
+    "reserved": { "x": 448, "y": 64, "w": 64, "h": 64 }
+  }
+}

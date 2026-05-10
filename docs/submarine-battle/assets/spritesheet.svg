@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="128" viewBox="0 0 512 128" role="img" aria-label="Submarine battle sprite sheet">
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15304b"/>
+      <stop offset="100%" stop-color="#0b1726"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- cell guides -->
+  <rect width="512" height="128" fill="url(#sea)"/>
+  <g stroke="#2b4663" stroke-width="1" opacity="0.45">
+    <path d="M64 0v128M128 0v128M192 0v128M256 0v128M320 0v128M384 0v128M448 0v128"/>
+    <path d="M0 64h512"/>
+  </g>
+
+  <!-- 0: submarine_cyan -->
+  <g transform="translate(0 0)">
+    <ellipse cx="32" cy="34" rx="19" ry="9" fill="#2aa6d9"/>
+    <rect x="24" y="24" width="16" height="8" rx="3" fill="#b5f3ff"/>
+    <circle cx="25" cy="34" r="2" fill="#e8fdff"/>
+    <polygon points="50,34 56,31 56,37" fill="#78dfff"/>
+  </g>
+
+  <!-- 1: submarine_red -->
+  <g transform="translate(64 0)">
+    <ellipse cx="32" cy="34" rx="19" ry="9" fill="#df4d5e"/>
+    <rect x="24" y="24" width="16" height="8" rx="3" fill="#ffd4d9"/>
+    <circle cx="25" cy="34" r="2" fill="#fff3f4"/>
+    <polygon points="50,34 56,31 56,37" fill="#ff9ca7"/>
+  </g>
+
+  <!-- 2: submarine_yellow -->
+  <g transform="translate(128 0)">
+    <ellipse cx="32" cy="34" rx="19" ry="9" fill="#d9c14a"/>
+    <rect x="24" y="24" width="16" height="8" rx="3" fill="#fff6bc"/>
+    <circle cx="25" cy="34" r="2" fill="#fffbe2"/>
+    <polygon points="50,34 56,31 56,37" fill="#ffe082"/>
+  </g>
+
+  <!-- 3: submarine_green -->
+  <g transform="translate(192 0)">
+    <ellipse cx="32" cy="34" rx="19" ry="9" fill="#4ba06a"/>
+    <rect x="24" y="24" width="16" height="8" rx="3" fill="#c8ffe0"/>
+    <circle cx="25" cy="34" r="2" fill="#ecfff5"/>
+    <polygon points="50,34 56,31 56,37" fill="#8de7ad"/>
+  </g>
+
+  <!-- 4: submarine_purple -->
+  <g transform="translate(256 0)">
+    <ellipse cx="32" cy="34" rx="19" ry="9" fill="#8d5eb2"/>
+    <rect x="24" y="24" width="16" height="8" rx="3" fill="#efd9ff"/>
+    <circle cx="25" cy="34" r="2" fill="#fbf4ff"/>
+    <polygon points="50,34 56,31 56,37" fill="#c79be6"/>
+  </g>
+
+  <!-- 5: submarine_orange -->
+  <g transform="translate(320 0)">
+    <ellipse cx="32" cy="34" rx="19" ry="9" fill="#d9873b"/>
+    <rect x="24" y="24" width="16" height="8" rx="3" fill="#ffe5c2"/>
+    <circle cx="25" cy="34" r="2" fill="#fff3e1"/>
+    <polygon points="50,34 56,31 56,37" fill="#f4b374"/>
+  </g>
+
+  <!-- 6: torpedo -->
+  <g transform="translate(384 0)">
+    <rect x="18" y="30" width="28" height="8" rx="4" fill="#f7d870"/>
+    <polygon points="46,30 54,34 46,38" fill="#ffe9a8"/>
+    <line x1="18" y1="34" x2="13" y2="34" stroke="#fff4c6" stroke-width="2"/>
+  </g>
+
+  <!-- 7: guided_torpedo -->
+  <g transform="translate(448 0)">
+    <rect x="18" y="30" width="28" height="8" rx="4" fill="#5cd6ff"/>
+    <polygon points="46,30 54,34 46,38" fill="#b7f0ff"/>
+    <circle cx="20" cy="34" r="2" fill="#e9fbff"/>
+    <path d="M11 34c-2-5 2-8 6-9" fill="none" stroke="#8fe7ff" stroke-width="1.4"/>
+  </g>
+
+  <!-- 8: mine_friendly -->
+  <g transform="translate(0 64)">
+    <circle cx="32" cy="34" r="9" fill="#1f3d55"/>
+    <g stroke="#6dd8ff" stroke-width="1.4">
+      <line x1="32" y1="21" x2="32" y2="17"/>
+      <line x1="32" y1="47" x2="32" y2="51"/>
+      <line x1="19" y1="34" x2="15" y2="34"/>
+      <line x1="45" y1="34" x2="49" y2="34"/>
+      <line x1="23" y1="25" x2="20" y2="22"/>
+      <line x1="41" y1="43" x2="44" y2="46"/>
+      <line x1="41" y1="25" x2="44" y2="22"/>
+      <line x1="23" y1="43" x2="20" y2="46"/>
+    </g>
+  </g>
+
+  <!-- 9: mine_enemy -->
+  <g transform="translate(64 64)">
+    <circle cx="32" cy="34" r="9" fill="#3a2c35"/>
+    <g stroke="#ff8b8b" stroke-width="1.4">
+      <line x1="32" y1="21" x2="32" y2="17"/>
+      <line x1="32" y1="47" x2="32" y2="51"/>
+      <line x1="19" y1="34" x2="15" y2="34"/>
+      <line x1="45" y1="34" x2="49" y2="34"/>
+      <line x1="23" y1="25" x2="20" y2="22"/>
+      <line x1="41" y1="43" x2="44" y2="46"/>
+      <line x1="41" y1="25" x2="44" y2="22"/>
+      <line x1="23" y1="43" x2="20" y2="46"/>
+    </g>
+  </g>
+
+  <!-- 10: supply_fuel -->
+  <g transform="translate(128 64)">
+    <rect x="22" y="19" width="20" height="30" rx="4" fill="#876a2f"/>
+    <rect x="24" y="22" width="16" height="8" rx="2" fill="#e7bf5a"/>
+    <rect x="24" y="33" width="16" height="12" rx="2" fill="#d89e32"/>
+    <path d="M32 25l3 6h-2v8h-2v-8h-2z" fill="#192534"/>
+    <rect x="20" y="22" width="2" height="24" fill="#5e4a23" opacity="0.75"/>
+    <rect x="42" y="22" width="2" height="24" fill="#5e4a23" opacity="0.75"/>
+  </g>
+
+  <!-- 11: supply_random -->
+  <g transform="translate(192 64)">
+    <rect x="18" y="20" width="28" height="28" rx="4" fill="#394865"/>
+    <rect x="21" y="23" width="22" height="22" rx="3" fill="#536a91"/>
+    <path d="M29 29c0-3 2-5 5-5 2 0 4 1 5 3 1 2 0 4-2 6-2 1-3 2-3 4" fill="none" stroke="#f7f3cc" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="34" cy="40" r="1.5" fill="#f7f3cc"/>
+    <path d="M18 34h-4M50 34h4M32 20v-4M32 48v4" stroke="#8ac7ff" stroke-width="1.4" opacity="0.85"/>
+  </g>
+
+  <!-- 12: supply_ammo -->
+  <g transform="translate(256 64)">
+    <rect x="20" y="21" width="24" height="26" rx="3" fill="#9a3a3a"/>
+    <rect x="22" y="26" width="20" height="3" fill="#d86a6a"/>
+    <rect x="25" y="31" width="3" height="13" fill="#f2c56d"/>
+    <rect x="30" y="31" width="3" height="13" fill="#f2c56d"/>
+    <rect x="35" y="31" width="3" height="13" fill="#f2c56d"/>
+  </g>
+
+  <!-- 13: supply_repair -->
+  <g transform="translate(320 64)">
+    <circle cx="32" cy="34" r="14" fill="#2c7f5d"/>
+    <rect x="29" y="24" width="6" height="20" fill="#dcffe9"/>
+    <rect x="22" y="31" width="20" height="6" fill="#dcffe9"/>
+  </g>
+
+  <!-- 14: chaff -->
+  <g transform="translate(384 64)">
+    <circle cx="32" cy="34" r="5" fill="#d8ebff"/>
+    <path d="M18 34h28M32 20v28M22 24l20 20M42 24L22 44" stroke="#9ac7ff" stroke-width="1.6" opacity="0.8"/>
+  </g>
+
+  <!-- 15: empty/reserved -->
+  <g transform="translate(448 64)">
+    <rect x="10" y="12" width="44" height="44" rx="6" fill="none" stroke="#4e6b89" stroke-dasharray="4 4"/>
+  </g>
+</svg>
