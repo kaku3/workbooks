@@ -75,10 +75,10 @@
 
     <div class="lobby-actions" id="lobby-actions">
       <button class="btn btn-primary" id="create-room-btn">
-        <span class="material-symbols-outlined">add_circle</span>ルーム作成
+        <span class="material-symbols-outlined">hourglass_top</span>ルーム作成
       </button>
       <button class="btn" id="join-room-btn">
-        <span class="material-symbols-outlined">login</span>参加
+        <span class="material-symbols-outlined">group_add</span>参加
       </button>
     </div>
 
@@ -98,21 +98,16 @@
     <div class="lobby-rules-body">
 
       <div class="rules-section">
-        <div class="rules-section-title">🏆 勝利条件</div>
-        <p>先に <strong>3キル</strong> したプレイヤーの勝利。撃沈された艦は次のターンに外縁から復活（HP全回復）。</p>
-      </div>
-
-      <div class="rules-section">
-        <div class="rules-section-title">⏱ ターンの流れ</div>
-        <ol>
-          <li><strong>コマンドフェーズ（30秒）</strong><br/>— 画面下のボタンを押して操作をキューに積んで「確定」</li>
-          <li><strong>行動フェーズ</strong><br/>— 全員の操作が同時に解決、アニメーションで表示</li>
-        </ol>
+        <div class="rules-section-title">📘 ルール</div>
+        <p class="rules-prose">本作は同時プロット型のボードゲームです。</p>
+        <p class="rules-prose">各プレイヤーはコマンドフェーズ（30秒）で同時に行動を予約し、行動フェーズで予約したコマンドが一斉に実行されます。</p>
+        <p class="rules-prose">遠くの敵は見えないため、索敵をうまく使って敵の進路を予測し、先回りして攻撃を置くのが基本戦術です。</p>
+        <p class="rules-prose">最初に<strong>3キル</strong>したプレイヤーが勝利です。撃沈された艦は次のターンに外縁から復活し、HPは全回復します。</p>
       </div>
 
       <div class="rules-section">
         <div class="rules-section-title">🕹 操作ボタン（1ターン = 単位時間 10）</div>
-        <p class="rules-hint">ゲーム中に実際に表示されるボタンです</p>
+        <p class="rules-hint">パネルパッドで移動・索敵。</p>
 
         <div class="rules-ops-group">
           <div class="rules-ops-label">移動 / 索敵</div>
@@ -159,7 +154,7 @@
                 <span class="op-name">魚雷</span>
                 <span class="op-cost">2</span>
               </div>
-              <div class="rules-attack-desc">前方直線に発射して命中時 <strong>2ダメージ</strong>。</div>
+              <div class="rules-attack-desc">前方直線に発射<br />命中時 <strong>2ダメージ</strong>。</div>
             </div>
             <div class="rules-attack-item">
               <div class="op-btn op-btn-demo inv-btn">
@@ -167,7 +162,7 @@
                 <span class="op-name">追尾</span>
                 <span class="op-cost">2</span>
               </div>
-              <div class="rules-attack-desc">敵方向へ追尾し、命中時 <strong>1ダメージ</strong>。</div>
+              <div class="rules-attack-desc">敵を追尾<br />命中時 <strong>1ダメージ</strong>。</div>
             </div>
             <div class="rules-attack-item">
               <div class="op-btn op-btn-demo inv-btn">
@@ -175,7 +170,7 @@
                 <span class="op-name">散弾</span>
                 <span class="op-cost">1</span>
               </div>
-              <div class="rules-attack-desc">前方3方向に同時射撃し、各弾 <strong>1ダメージ</strong>。</div>
+              <div class="rules-attack-desc">前方3方向に同時射撃<br />各弾 <strong>1ダメージ</strong>。</div>
             </div>
             <div class="rules-attack-item">
               <div class="op-btn op-btn-demo inv-btn">
@@ -183,7 +178,7 @@
                 <span class="op-name">機雷</span>
                 <span class="op-cost">1</span>
               </div>
-              <div class="rules-attack-desc">指定地点に設置。踏んだ敵へ <strong>1ダメージ</strong>。</div>
+              <div class="rules-attack-desc">指定地点に設置<br />踏んだ敵へ <strong>1ダメージ</strong>。</div>
             </div>
             <div class="rules-attack-item">
               <div class="op-btn op-btn-demo inv-btn defense-btn">
@@ -191,19 +186,10 @@
                 <span class="op-name">チャフ</span>
                 <span class="op-cost">1</span>
               </div>
-              <div class="rules-attack-desc">次に受ける追尾魚雷を <strong>1発無効化</strong>。</div>
+              <div class="rules-attack-desc">追尾魚雷を <strong>1発無効化</strong>。</div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="rules-section">
-        <div class="rules-section-title">📍 霧戦（フォグ・オブ・ウォー）</div>
-        <ul>
-          <li>敵の座標は基本不明。<strong>自艦から3マス以内の敵は見える</strong></li>
-          <li>ソナーで3×3マスを索敵。<strong>検知された側には全画面警告</strong>が出る</li>
-          <li>補給ポイント（⛽ 弾薬補給 / 🔧 修理）に乗ると自動適用</li>
-        </ul>
       </div>
 
     </div>

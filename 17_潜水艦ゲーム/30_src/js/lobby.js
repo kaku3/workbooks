@@ -27,6 +27,11 @@ export function initLobby() {
   const elRoomField   = $('#room-id-field');
   const elMaxField    = $('#max-players-field');
 
+  function syncJoinEnabledByRoomId() {
+    if (!elJoin || !elRoomId) return;
+    elJoin.disabled = !elRoomId.value.trim();
+  }
+
   // ── 初期UI設定 ──
   function resetLobbyUI() {
     if (elCreate)    elCreate.classList.remove('hidden');
@@ -39,6 +44,7 @@ export function initLobby() {
     if (elPlayers)   elPlayers.innerHTML = '';
     if (elName)      elName.disabled = false;
     if (elRoomId)    elRoomId.disabled = false;
+    syncJoinEnabledByRoomId();
   }
 
   // URL パラメータ
@@ -51,10 +57,16 @@ export function initLobby() {
     if (elMaxField) elMaxField.classList.add('hidden');
   }
 
+  // 初期状態の参加ボタン活性を同期
+  syncJoinEnabledByRoomId();
+
   // ルームIDをクリアしたら初期UIに戻す
   elRoomId?.addEventListener('input', () => {
     if (!elRoomId.value.trim()) resetLobbyUI();
   });
+
+  // 有効/無効の切り替えはフォーカスアウト時のみ行う
+  elRoomId?.addEventListener('blur', syncJoinEnabledByRoomId);
 
   // 人数選択
   document.querySelectorAll('input[name="max-players"]').forEach(r => {
@@ -189,8 +201,9 @@ function renderPlayers(el) {
   if (!el) return;
   el.innerHTML = players.map((p, i) => {
     const isMe = p.id === getMyId();
+    const spriteIndex = i % 6;
     return `<div class="lobby-player${isMe ? ' is-me' : ''}">
-      <span class="lobby-player-icon">${i === 0 ? '👑' : '🚢'}</span>
+      <span class="lobby-player-icon sprite-${spriteIndex}${isMe ? ' me' : ''}" aria-hidden="true"></span>
       <span>${p.name}${isMe ? ' (あなた)' : ''}</span>
     </div>`;
   }).join('');

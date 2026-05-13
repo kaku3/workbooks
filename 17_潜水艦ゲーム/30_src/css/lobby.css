@@ -109,8 +109,17 @@
 .lobby-field { margin-bottom: 14px; }
 .lobby-field label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
 
-.lobby-actions { display: flex; gap: 10px; margin-top: 8px; }
-.lobby-actions .btn { flex: 1; }
+.lobby-actions { display: flex; gap: 8px; margin-top: 8px; }
+.lobby-actions .btn {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.lobby-actions .btn .material-symbols-outlined {
+  font-size: 18px;
+}
 
 /* 人数選択 */
 .player-count-select {
@@ -135,7 +144,26 @@
   font-size: 13px;
 }
 .lobby-player.is-me { border-left: 3px solid var(--accent-cyan); }
-.lobby-player-icon { font-size: 16px; }
+.lobby-player-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-image: url('../assets/spritesheet.svg');
+  background-repeat: no-repeat;
+  background-size: 128px 32px;
+  background-position: 0 0;
+}
+.lobby-player-icon.sprite-0 { background-position: 0 0; }
+.lobby-player-icon.sprite-1 { background-position: -16px 0; }
+.lobby-player-icon.sprite-2 { background-position: -32px 0; }
+.lobby-player-icon.sprite-3 { background-position: -48px 0; }
+.lobby-player-icon.sprite-4 { background-position: -64px 0; }
+.lobby-player-icon.sprite-5 { background-position: -80px 0; }
+.lobby-player-icon.me {
+  box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.8), 0 0 8px rgba(0, 229, 255, 0.45);
+}
 
 #lobby-status {
   font-size: 12px; color: var(--text-muted); text-align: center;
@@ -201,6 +229,12 @@
 .rules-section ul {
   font-size: 12px; color: var(--text-muted);
   line-height: 1.7; margin: 0; padding-left: 16px;
+}
+.rules-section .rules-prose {
+  padding-left: 0;
+}
+.rules-section .rules-prose + .rules-prose {
+  margin-top: 8px;
 }
 .rules-section strong { color: var(--text-primary); }
 
