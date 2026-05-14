@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コミュ力診断 — 診断履歴</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="site-logo">🧭 コミュ力診断</a>
+  <nav class="site-nav">
+    <a href="check.html" class="nav-link">診断</a>
+    <a href="types.html" class="nav-link">タイプ一覧</a>
+    <a href="history.html" class="nav-link active">履歴</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+  <h1 class="page-title">診断履歴</h1>
+  <p class="page-sub">このデバイスに保存された直近10件の診断結果です。<br>名前はクリックして編集できます。</p>
+  <div id="history-list"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+'use strict';
+
+const H_KEY = 'commu-checker-history';
+
+function loadList() {
+  try {
+    return JSON.parse(localStorage.getItem(H_KEY) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveList(list) {
+  localStorage.setItem(H_KEY, JSON.stringify(list));
+}
+
+function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('ja-JP', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+function renderList() {
+  const list = loadList();
+  const el = document.getElementById('history-list');
+
+  if (list.length === 0) {
+    el.innerHTML = '<p class="history-empty">まだ診断履歴がありません。<br><a href="check.html">診断する →</a></p>';
+    return;
+  }
+
+  el.innerHTML = list.map((entry, idx) => {
+    /* top type badges */
+    const badges = (entry.topTypes || []).map(id => {
+      const t = TYPES.find(x => x.id === id);
+      return t
+        ? `<span class="badge badge-${escapeHTML(t.clsKey)}">${escapeHTML(t.id)} ${escapeHTML(t.emoji)} ${escapeHTML(t.sub)}</span>`
+        : '';
+    }).join('');
+
+    /* safe URL for result link (r should be comma-separated digits) */
+    const safeR = /^[\d,]*$/.test(entry.r || '') ? entry.r : '';
+    const resultHref = safeR ? `check.html?r=${encodeURIComponent(safeR)}` : 'check.html';
+
+    /* name display */
+    const nameDisplay = entry.name
+      ? `<span class="hist-name" id="hname-${idx}" onclick="startEdit(${idx})" title="クリックして編集">✏️ ${escapeHTML(entry.name)}</span>`
+      : `<span class="hist-name" id="hname-${idx}" onclick="startEdit(${idx})" title="クリックして名前をつける"><span class="hist-name-empty">名前なし（クリックで追加）</span></span>`;
+
+    return `
+      <div class="hist-card" data-idx="${idx}">
+        <div class="hist-card-head">
+          <div class="hist-date">${escapeHTML(formatDate(entry.date))}</div>
+          <button class="hist-delete" onclick="deleteEntry(${idx})" aria-label="削除">✕</button>
+        </div>
+        <div class="hist-name-row">${nameDisplay}</div>
+        <div class="hist-badges">${badges}</div>
+        <a class="btn btn-secondary hist-link" href="${resultHref}">結果を見る →</a>
+      </div>`;
+  }).join('');
+}
+
+function startEdit(idx) {
+  const list = loadList();
+  const entry = list[idx];
+  const nameEl = document.getElementById(`hname-${idx}`);
+  if (!nameEl) return;
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'hist-name-input';
+  input.value = entry.name || '';
+  input.placeholder = '例: 田中さん 5月';
+  input.maxLength = 30;
+  nameEl.replaceWith(input);
+  input.focus();
+  input.select();
+
+  function commit() {
+    const newName = input.value.trim();
+    list[idx].name = newName;
+    saveList(list);
+    renderList();
+  }
+
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { renderList(); }
+  });
+}
+
+function deleteEntry(idx) {
+  const list = loadList();
+  list.splice(idx, 1);
+  saveList(list);
+  renderList();
+}
+
+renderList();
+</script>
+</body>
+</html>

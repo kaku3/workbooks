@@ -669,6 +669,49 @@ img { max-width: 100%; }
 }
 .share-btn:hover { border-color: #aaa; color: var(--text); }
 
+/* ========== History Page ========== */
+.history-empty {
+  color: var(--text-muted); font-size: 14px;
+  padding: 48px 0; text-align: center;
+}
+.hist-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 16px;
+  margin-bottom: 12px;
+}
+.hist-card-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.hist-date { font-size: 12px; color: var(--text-muted); }
+.hist-delete {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 14px; cursor: pointer;
+  padding: 2px 7px; border-radius: 4px; line-height: 1;
+}
+.hist-delete:hover { color: #c00; background: #fff0f0; }
+.hist-name-row { margin-bottom: 10px; }
+.hist-name {
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.hist-name:hover { color: var(--green); }
+.hist-name-empty {
+  font-size: 13px; color: var(--text-muted);
+  font-weight: 400; font-style: italic;
+}
+.hist-name-input {
+  font-size: 14px; font-weight: 600;
+  border: 1.5px solid var(--green); border-radius: var(--radius-sm);
+  padding: 5px 10px; width: 100%; max-width: 300px;
+  font-family: inherit; outline: none;
+}
+.hist-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.hist-link {
+  font-size: 13px; padding: 8px 14px;
+  text-decoration: none; display: inline-flex;
+}
+
 /* ========== Responsive ========== */
 @media (max-width: 600px) {
   .page-wrap { padding: 20px 16px 80px; }

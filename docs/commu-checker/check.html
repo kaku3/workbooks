@@ -79,6 +79,7 @@
   <a href="index.html" class="site-logo">🧭 コミュ力診断</a>
   <nav class="site-nav">
     <a href="types.html" class="nav-link">タイプ一覧</a>
+    <a href="history.html" class="nav-link">履歴</a>
   </nav>
 </header>
 
@@ -146,7 +147,7 @@
 </div>
 
 <!-- Sticky Bar -->
-<div class="sticky-bar">
+<div class="sticky-bar" id="sticky-bar">
   <div class="sticky-progress-wrap">
     <div class="sticky-progress-text" id="progress-text">0 / 18 回答済み</div>
     <div class="sticky-progress-track">
@@ -262,7 +263,7 @@ function updateProgress() {
 }
 
 /* ── Show Result ── */
-function showResult() {
+function showResult(skipSave) {
   const done = ratings.filter(r => r !== null).length;
   if (done < 4) return;
 
@@ -322,11 +323,27 @@ function showResult() {
   /* Show & Scroll */
   const resultEl = document.getElementById('result-section');
   resultEl.style.display = 'block';
+  document.getElementById('sticky-bar').style.display = 'none';
   setTimeout(() => resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
 
   /* Update URL */
   const encoded = ratings.map(r => (r == null ? '' : r)).join(',');
   history.replaceState(null, '', `?r=${encoded}`);
+
+  /* Save to history */
+  if (!skipSave) {
+    const _hKey = 'commu-checker-history';
+    const _hList = JSON.parse(localStorage.getItem(_hKey) || '[]');
+    _hList.unshift({
+      id: Date.now(),
+      date: new Date().toISOString(),
+      name: '',
+      r: encoded,
+      topTypes: ranked.slice(0, 3).map(t => t.id)
+    });
+    if (_hList.length > 10) _hList.length = 10;
+    localStorage.setItem(_hKey, JSON.stringify(_hList));
+  }
 }
 
 /* ── Radar Chart (SVG) ── */
@@ -472,7 +489,7 @@ function loadFromURL() {
     if (!isNaN(n) && n >= 0 && n <= 4) setRating(qi, n);
   });
   if (ratings.filter(x => x !== null).length >= 4) {
-    setTimeout(showResult, 300);
+    setTimeout(() => showResult(true), 300);
   }
 }
 
@@ -481,7 +498,9 @@ function resetCheck() {
   ratings = Array(QUESTIONS.length).fill(null);
   renderQuestions();
   updateProgress();
+  setupScrollBehavior();
   document.getElementById('result-section').style.display = 'none';
+  document.getElementById('sticky-bar').style.display = '';
   history.replaceState(null, '', location.pathname);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
