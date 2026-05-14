@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コミュ力診断 — メンターのための傾向と対策ツール</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.lp-wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 60px; }
+.section-title {
+  font-size: 20px; font-weight: 700;
+  margin-bottom: 6px; margin-top: 48px;
+}
+.section-sub {
+  font-size: 14px; color: var(--text-sub);
+  margin-bottom: 20px; line-height: 1.7;
+}
+.badge-chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .05em;
+  color: var(--green); background: var(--green-light);
+  border-radius: 20px; padding: 3px 12px;
+  display: inline-block; margin-bottom: 10px;
+}
+.flow-steps {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 10px; margin-bottom: 12px;
+}
+@media(max-width:520px){ .flow-steps { grid-template-columns: 1fr; } }
+.flow-step {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 16px;
+  position: relative;
+}
+.flow-num {
+  font-size: 11px; font-weight: 700; color: var(--green);
+  margin-bottom: 6px;
+}
+.flow-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.flow-desc  { font-size: 12px; color: var(--text-sub); line-height: 1.6; }
+.divider { height: 1px; background: var(--border); margin: 48px 0 0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="site-logo">🧭 コミュ力診断</a>
+  <nav class="site-nav">
+    <a href="check.html" class="nav-link">診断</a>
+    <a href="types.html" class="nav-link">タイプ一覧</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">メンター向け 無料ツール</div>
+  <h1 class="hero-title">その指導、<br>届いていますか？</h1>
+  <p class="hero-sub">
+    同じことを何度伝えても変わらない──<br>
+    その理由、実は<strong>分類できます。</strong><br>
+    2分の観察チェックで、次の一手が見えてくる。
+  </p>
+  <div class="hero-cta-wrap">
+    <a href="check.html" class="btn btn-hero btn-lg">診断スタート →</a>
+    <a href="types.html" class="btn btn-hero-ghost btn-lg">タイプ一覧を見る</a>
+  </div>
+</section>
+
+<div class="lp-wrap">
+
+  <!-- How it works -->
+  <p class="badge-chip" style="margin-top:40px">使い方</p>
+  <h2 class="section-title">3ステップで傾向を特定</h2>
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="flow-num">STEP 1</div>
+      <div class="flow-title">👀 観察する</div>
+      <div class="flow-desc">対象者の日常の行動を思い浮かべながら18問に回答します。</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">STEP 2</div>
+      <div class="flow-title">📊 傾向を確認</div>
+      <div class="flow-desc">レーダーチャートで問題パターンの重なりが一目でわかります。</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">STEP 3</div>
+      <div class="flow-title">💡 対策を立てる</div>
+      <div class="flow-desc">上位タイプの「有効なアプローチ」と「効きにくい方法」を確認。</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted)">※ メンターが対象者を観察して回答する想定です。対象者本人が使うこともできます。</p>
+
+  <!-- Features -->
+  <p class="badge-chip" style="margin-top:48px">特長</p>
+  <h2 class="section-title">このツールでできること</h2>
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <div class="feature-title">11パターンを識別</div>
+      <div class="feature-desc">「動機欠如」「言語化困難」など、見た目が似た問題を分類します。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📡</div>
+      <div class="feature-title">レーダーチャートで可視化</div>
+      <div class="feature-desc">複合型が多いコミュニケーション課題を、10軸で重なりごと見せます。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛠️</div>
+      <div class="feature-title">タイプ別の傾向と対策</div>
+      <div class="feature-desc">「何をしても変わらない」ではなく、タイプに合った介入方法を提示します。</div>
+    </div>
+  </div>
+
+  <!-- Type Preview -->
+  <p class="badge-chip" style="margin-top:0">タイプ一覧</p>
+  <h2 class="section-title">11のコミュニケーションパターン</h2>
+  <p class="section-sub">複合型が多い。緑枠は良好パターン。カードをタップで詳細へ。</p>
+  <div class="preview-grid" id="preview-grid"></div>
+  <div style="text-align:center;margin-top:16px">
+    <a href="types.html" class="btn btn-secondary">タイプの詳細を見る →</a>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-title">まずは2分、観察チェックを試してみましょう</div>
+    <p class="cta-sub">回答した内容はデバイス上にのみ保存されます。<br>アカウント不要・完全無料です。</p>
+    <a href="check.html" class="btn btn-primary btn-lg">診断スタート →</a>
+  </div>
+
+  <div class="divider"></div>
+</div>
+
+<footer class="site-footer">
+  コミュ力診断 — メンターのための観察ツール
+</footer>
+
+<!-- Modal (shared with types.html logic) -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-top-bar">
+      <div class="modal-handle"></div>
+      <button class="modal-close-btn" onclick="closeMod()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+function renderPreviewGrid() {
+  document.getElementById('preview-grid').innerHTML = TYPES.map((t, i) => `
+    <div class="preview-card${t.good ? ' good' : ''}" onclick="openModal(${i})">
+      <div class="preview-emoji">${t.emoji}</div>
+      <div class="preview-id">${t.id} — ${t.sub}</div>
+      <div class="preview-name">${t.name}</div>
+    </div>
+  `).join('');
+}
+
+function openModal(idx) {
+  const t = TYPES[idx];
+  document.getElementById('modal-body').innerHTML = buildTypeDetailHTML(t);
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function closeMod() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+renderPreviewGrid();
+</script>
+</body>
+</html>

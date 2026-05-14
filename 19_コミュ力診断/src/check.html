@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コミュ力診断 — 簡易診断</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.check-intro {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+.scale-legend {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 10px;
+}
+.scale-legend span {
+  font-size: 11px; color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 2px 9px;
+}
+
+.result-chart-area {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; margin: 12px 0;
+}
+.result-share-row {
+  display: flex; gap: 8px; align-items: center;
+  margin-top: 16px; flex-wrap: wrap;
+}
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: #333; color: #fff;
+  font-size: 13px; padding: 10px 20px; border-radius: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+  z-index: 200;
+}
+.toast.show { opacity: 1; }
+
+.z-bar-row { margin-bottom: 20px; }
+.z-bar-label {
+  font-size: 13px; font-weight: 600; color: var(--green);
+  margin-bottom: 6px;
+}
+.z-bar-track {
+  height: 10px; background: #e8e8e8;
+  border-radius: 5px; overflow: hidden; margin-bottom: 4px;
+}
+.z-bar-fill {
+  height: 100%; background: linear-gradient(90deg, #1D9E75, #26c993);
+  border-radius: 5px; transition: width .8s ease-out;
+}
+.z-bar-note { font-size: 12px; color: var(--text-muted); }
+
+/* ── Result button states ── */
+@keyframes result-ready {
+  0%   { box-shadow: 0 0 0 0 rgba(29,158,117,.75); transform: scale(1); }
+  35%  { box-shadow: 0 0 0 14px rgba(29,158,117,0);  transform: scale(1.07); }
+  65%  { transform: scale(1); }
+  82%  { box-shadow: 0 0 0 8px rgba(29,158,117,0);  transform: scale(1.04); }
+  100% { box-shadow: 0 0 0 0 rgba(29,158,117,0);  transform: scale(1); }
+}
+.btn-result-ready { animation: result-ready .9s ease-out 3; }
+.btn-primary:disabled,
+.btn-primary:disabled:hover {
+  background: #bfc2bf; color: #7a7d7a;
+  cursor: not-allowed; pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="site-logo">🧭 コミュ力診断</a>
+  <nav class="site-nav">
+    <a href="types.html" class="nav-link">タイプ一覧</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+  <h1 class="page-title">簡易診断</h1>
+  <p class="page-sub">メンターが対象者を観察して回答する想定です。<br>18問、約2〜3分で完了します。</p>
+
+  <!-- Intro Card -->
+  <div class="check-intro">
+    <div style="font-size:14px;font-weight:600;margin-bottom:6px">🎯 回答の目安</div>
+    <div style="font-size:13px;color:var(--text-sub);line-height:1.7">
+      対象者の<strong>日常的な行動</strong>を思い浮かべながら回答してください。
+      特定のシーンだけでなく、全体的な傾向として答えるとより正確になります。
+    </div>
+    <div class="scale-legend">
+      <span>0＝全くない</span>
+      <span>1＝ほぼない</span>
+      <span>2＝たまに</span>
+      <span>3＝よくある</span>
+      <span>4＝常に</span>
+    </div>
+  </div>
+
+  <!-- Questions (rendered by JS) -->
+  <div id="questions-list"></div>
+
+  <!-- Result Section (hidden until calc) -->
+  <div class="result-section" id="result-section" style="display:none">
+    <div class="result-header">
+      <div id="verdict-el"></div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-note"  id="result-note"></div>
+    </div>
+
+    <!-- Z Score Bar -->
+    <div class="section-heading">良好スコア（Z）</div>
+    <div class="z-bar-row">
+      <div class="z-bar-label" id="z-bar-label">Z スコア: —</div>
+      <div class="z-bar-track">
+        <div class="z-bar-fill" id="z-bar-fill" style="width:0%"></div>
+      </div>
+      <div class="z-bar-note">スコアが高いほどコミュニケーションが良好な状態です</div>
+    </div>
+
+    <!-- Radar Chart -->
+    <div class="section-heading">問題パターン レーダーチャート</div>
+    <div class="result-chart-area">
+      <div class="radar-with-legend">
+        <div id="radar-chart"></div>
+        <div class="radar-legend" id="radar-legend"></div>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center">外側に広がるほど該当度が高い</p>
+    </div>
+
+    <!-- Top 3 Types -->
+    <div class="section-heading">上位タイプの傾向と対策</div>
+    <div id="top-types-list"></div>
+
+    <!-- Share -->
+    <div class="result-share-row">
+      <button class="share-btn" onclick="copyShareURL()">🔗 結果URLをコピー</button>
+      <button class="btn btn-secondary" onclick="resetCheck()">リセットして再診断</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky Bar -->
+<div class="sticky-bar">
+  <div class="sticky-progress-wrap">
+    <div class="sticky-progress-text" id="progress-text">0 / 18 回答済み</div>
+    <div class="sticky-progress-track">
+      <div class="sticky-progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <button id="result-btn" class="btn btn-primary" onclick="showResult()" disabled>結果を見る</button>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">コピーしました</div>
+
+<script src="data.js"></script>
+<script>
+/* ── State ── */
+let ratings = Array(QUESTIONS.length).fill(null);
+
+/* ── Init ── */
+(function init() {
+  renderQuestions();
+  loadFromURL();
+  updateProgress();
+  setupScrollBehavior();
+})();
+
+/* ── Scroll Behavior ── */
+function setupScrollBehavior() {
+  const cards = document.querySelectorAll('.q-card');
+  const fadeObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  cards.forEach(c => fadeObs.observe(c));
+  updateActiveCard();
+}
+
+/* 最初の未回答カードを active-q にする */
+function updateActiveCard() {
+  const cards = document.querySelectorAll('.q-card');
+  // 最初の未回答 = answered がない最小インデックスのカード
+  let firstUnanswered = null;
+  cards.forEach(c => {
+    if (!c.classList.contains('answered') && firstUnanswered === null) {
+      firstUnanswered = c;
+    }
+  });
+  // アニメーション再発火のため、一度クラスを外してから次フレームで付け直す
+  if (firstUnanswered && firstUnanswered.classList.contains('active-q')) {
+    // 既に active-q なら何もしない（再アニメーション不要）
+    cards.forEach(c => { if (c !== firstUnanswered) c.classList.remove('active-q'); });
+  } else {
+    cards.forEach(c => c.classList.remove('active-q'));
+    if (firstUnanswered) {
+      // void で reflow を強制してアニメーションを再発火させる
+      void firstUnanswered.offsetWidth;
+      firstUnanswered.classList.add('active-q');
+    }
+  }
+}
+
+/* ── Render Questions ── */
+function renderQuestions() {
+  document.getElementById('questions-list').innerHTML = QUESTIONS.map((q, qi) => `
+    <div class="q-card" id="qcard-${qi}">
+      <div class="q-num">Q${qi + 1} / ${QUESTIONS.length}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-scale" id="qscale-${qi}">
+        ${[0,1,2,3,4].map(v => `
+          <button class="scale-btn" data-qi="${qi}" data-v="${v}"
+                  onclick="setRating(${qi},${v})"
+                  aria-label="${v}">${v}</button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── Set Rating ── */
+function setRating(qi, val) {
+  ratings[qi] = val;
+  const scaleEl = document.getElementById(`qscale-${qi}`);
+  scaleEl.querySelectorAll('.scale-btn').forEach(btn => {
+    const v = parseInt(btn.dataset.v, 10);
+    btn.classList.remove('selected', 'lesser');
+    if (v === val)   btn.classList.add('selected');
+    else if (v < val) btn.classList.add('lesser');
+  });
+  document.getElementById(`qcard-${qi}`).classList.add('answered');
+  updateProgress();
+  updateActiveCard();
+}
+
+/* ── Progress ── */
+function updateProgress() {
+  const done = ratings.filter(r => r !== null).length;
+  const total = QUESTIONS.length;
+  document.getElementById('progress-text').textContent = `${done} / ${total} 回答済み`;
+  document.getElementById('progress-fill').style.width = `${done / total * 100}%`;
+
+  const btn = document.getElementById('result-btn');
+  btn.disabled = done < 4;
+  if (done === total && !btn.classList.contains('btn-result-ready')) {
+    btn.classList.add('btn-result-ready');
+  }
+}
+
+/* ── Show Result ── */
+function showResult() {
+  const done = ratings.filter(r => r !== null).length;
+  if (done < 4) return;
+
+  const scores        = calcScores(ratings);
+  const verdict       = getVerdict(scores);
+  const zScore        = scores[0];
+  const problemScores = scores.slice(1);   // A〜J
+  const normalized    = normalizeProblemScores(problemScores);
+
+  /* Verdict */
+  document.getElementById('verdict-el').innerHTML =
+    `<div class="verdict verdict-${verdict.cls}">${verdict.emoji} ${verdict.label}</div>`;
+  document.getElementById('result-title').textContent =
+    verdict.cls === 'good'   ? 'コミュニケーションは概ね良好です' :
+    verdict.cls === 'ok'     ? '大きな問題はないが、改善の余地あり' :
+    verdict.cls === 'watch'  ? 'いくつかの問題パターンが見られます' :
+                               '複数の問題パターンが顕著です';
+  document.getElementById('result-note').textContent = verdict.note;
+
+  /* Z Score Bar */
+  const zMax = 60; // rough upper bound for normalization display
+  const zPct = Math.min(Math.max(Math.round(zScore / zMax * 100), 0), 100);
+  document.getElementById('z-bar-label').textContent = `Z 良好スコア: ${zScore}`;
+  setTimeout(() => {
+    document.getElementById('z-bar-fill').style.width = zPct + '%';
+  }, 100);
+
+  /* Radar Chart */
+  const radarContainer = document.getElementById('radar-chart');
+  renderRadarChart(radarContainer, normalized);
+
+  /* Radar Legend */
+  const legendEl = document.getElementById('radar-legend');
+  if (legendEl) {
+    let lgHtml = '';
+    GROUPS.forEach(g => {
+      lgHtml += `<div class="radar-legend-group-hdr" style="color:${g.color}">${g.emoji} ${g.name}</div>`;
+      TYPES.filter(t => t.group === g.key).forEach(t => {
+        lgHtml += `
+          <div class="radar-legend-item">
+            <span class="radar-legend-dot" style="background:${t.color}"></span>
+            <span class="radar-legend-id">${t.id}</span>
+            <span style="font-size:12px">${t.emoji}</span>
+            <span class="radar-legend-sub">${t.sub}</span>
+          </div>`;
+      });
+    });
+    legendEl.innerHTML = lgHtml;
+  }
+
+  /* Top Types */
+  const ranked = TYPES.slice(1)
+    .map((t, i) => ({ ...t, score: problemScores[i], norm: normalized[i] }))
+    .sort((a, b) => b.score - a.score);
+  renderTopTypes(ranked.slice(0, 3));
+
+  /* Show & Scroll */
+  const resultEl = document.getElementById('result-section');
+  resultEl.style.display = 'block';
+  setTimeout(() => resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+
+  /* Update URL */
+  const encoded = ratings.map(r => (r == null ? '' : r)).join(',');
+  history.replaceState(null, '', `?r=${encoded}`);
+}
+
+/* ── Radar Chart (SVG) ── */
+function renderRadarChart(container, finalNorm) {
+  const W = 300, H = 300, cx = 150, cy = 150, R = 100, LR = 128;
+  const N = 10, LEVELS = 4;
+
+  // 軸の表示順（TYPES.slice(1)のインデックス）
+  // 動機: M1(0),M2(4) → 聴き方: R1(7),R2(8),R3(9) → 整理: S1(3),S2(5),S3(6) → 組み立て: D1(1),D2(2)
+  const RADAR_ORDER = [0, 4, 7, 8, 9, 3, 5, 6, 1, 2];
+  const orderedTypes = RADAR_ORDER.map(i => TYPES.slice(1)[i]);
+  const orderedNorm  = RADAR_ORDER.map(i => finalNorm[i]);
+
+  const angle = i => (Math.PI * 2 * i / N) - Math.PI / 2;
+  const pX = (i, v) => cx + R * v * Math.cos(angle(i));
+  const pY = (i, v) => cy + R * v * Math.sin(angle(i));
+  const polyPts = vArr => vArr.map((v, i) => `${pX(i,v).toFixed(1)},${pY(i,v).toFixed(1)}`).join(' ');
+
+  /* Static parts */
+  let grid = '';
+  for (let l = LEVELS; l >= 1; l--) {
+    const r = l / LEVELS;
+    const pts = Array.from({length:N}, (_,i) =>
+      `${(cx + R * r * Math.cos(angle(i))).toFixed(1)},${(cy + R * r * Math.sin(angle(i))).toFixed(1)}`
+    ).join(' ');
+    grid += `<polygon points="${pts}" fill="${l%2===0?'#eeeeeb':'#f6f6f3'}" stroke="#e0e0dc" stroke-width="0.8"/>`;
+  }
+  const GROUP_COLORS = { M: '#C84B1A', R: '#163080', S: '#5A3EC8', D: '#1A7A6A' };
+  for (let i = 0; i < N; i++) {
+    const grp = orderedTypes[i].group;
+    const axisColor = grp ? GROUP_COLORS[grp] + '55' : '#d4d4d0';
+    grid += `<line x1="${cx}" y1="${cy}" x2="${pX(i,1).toFixed(1)}" y2="${pY(i,1).toFixed(1)}"
+              stroke="${axisColor}" stroke-width="1.5"/>`;
+  }
+
+  /* Type labels */
+  let labels = '';
+  for (let i = 0; i < N; i++) {
+    const t = orderedTypes[i];
+    const lx = cx + LR * Math.cos(angle(i));
+    const ly = cy + LR * Math.sin(angle(i));
+    const anchor = Math.abs(lx - cx) < 6 ? 'middle' : lx > cx ? 'start' : 'end';
+    const labelColor = t.group ? GROUP_COLORS[t.group] : '#333';
+    labels += `<text x="${lx.toFixed(1)}" y="${(ly - 6).toFixed(1)}"
+                text-anchor="${anchor}" font-size="13" font-weight="700" fill="${labelColor}">${t.id}</text>`;
+    labels += `<text x="${lx.toFixed(1)}" y="${(ly + 8).toFixed(1)}"
+                text-anchor="${anchor}" font-size="10" fill="#999">${t.emoji}</text>`;
+  }
+
+  container.innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"
+         style="width:100%;max-width:300px;display:block;margin:0 auto">
+      ${grid}
+      <polygon id="rdr-poly" points="${polyPts(Array(N).fill(0))}"
+               fill="rgba(226,75,74,0.15)" stroke="#E24B4A" stroke-width="2.5" stroke-linejoin="round"/>
+      ${Array.from({length:N}, (_,i) =>
+        `<circle id="rdr-dot-${i}" cx="${cx}" cy="${cy}" r="4.5" fill="#E24B4A"/>`).join('')}
+      ${labels}
+    </svg>`;
+
+  /* Animate */
+  const start = performance.now();
+  const dur   = 900;
+  function tick(now) {
+    const t    = Math.min((now - start) / dur, 1);
+    const ease = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+    const cur  = orderedNorm.map(v => (v / 100) * ease);
+
+    const poly = container.querySelector('#rdr-poly');
+    if (poly) poly.setAttribute('points', polyPts(cur));
+    cur.forEach((v, i) => {
+      const dot = container.querySelector(`#rdr-dot-${i}`);
+      if (dot) {
+        dot.setAttribute('cx', pX(i, v).toFixed(1));
+        dot.setAttribute('cy', pY(i, v).toFixed(1));
+      }
+    });
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ── Top Type Cards ── */
+function renderTopTypes(topTypes) {
+  const ranks = ['🥇','🥈','🥉'];
+  document.getElementById('top-types-list').innerHTML = topTypes.map((t, ri) => `
+    <div class="top-type-card" id="ttcard-${ri}">
+      <div class="top-type-head" onclick="toggleTopType(${ri})">
+        <div class="top-type-rank">${ranks[ri]}</div>
+        <div class="top-type-info">
+          <div class="top-type-name">
+            <span class="badge badge-${t.clsKey}" style="margin-right:6px">${t.id} — ${t.sub}</span>
+            ${t.emoji} ${t.name}
+          </div>
+          <div class="top-type-sub">${t.desc.slice(0, 50)}…</div>
+        </div>
+        <div class="top-type-score">${Math.max(t.score, 0)}</div>
+        <div class="top-type-arrow">▼</div>
+      </div>
+      <div class="top-type-body">
+        ${buildTypeDetailHTML(t, { showHeader: false })}
+        <div style="margin-top:12px">
+          <a href="types.html" class="btn btn-secondary" style="font-size:13px;padding:8px 14px">
+            全タイプの詳細を見る →
+          </a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  /* Auto-expand top type */
+  toggleTopType(0);
+}
+
+function toggleTopType(ri) {
+  const card = document.getElementById(`ttcard-${ri}`);
+  if (card) card.classList.toggle('open');
+}
+
+/* ── URL Share ── */
+function copyShareURL() {
+  const encoded = ratings.map(r => (r == null ? '' : r)).join(',');
+  const url = location.href.split('?')[0] + '?r=' + encoded;
+  navigator.clipboard.writeText(url).then(() => showToast('URLをコピーしました'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ── Load from URL ── */
+function loadFromURL() {
+  const params = new URLSearchParams(location.search);
+  const r = params.get('r');
+  if (!r) return;
+  const vals = r.split(',');
+  vals.forEach((v, qi) => {
+    if (qi >= QUESTIONS.length) return;
+    const n = parseInt(v, 10);
+    if (!isNaN(n) && n >= 0 && n <= 4) setRating(qi, n);
+  });
+  if (ratings.filter(x => x !== null).length >= 4) {
+    setTimeout(showResult, 300);
+  }
+}
+
+/* ── Reset ── */
+function resetCheck() {
+  ratings = Array(QUESTIONS.length).fill(null);
+  renderQuestions();
+  updateProgress();
+  document.getElementById('result-section').style.display = 'none';
+  history.replaceState(null, '', location.pathname);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Modal ── */
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+</script>
+</body>
+</html>

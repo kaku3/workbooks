@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コミュ力診断 — タイプ一覧</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.type-card-inner {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.type-card-head {
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.type-card-emoji { font-size: 24px; line-height: 1; margin-top: 2px; }
+
+.type-card-quick {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.quick-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  color: var(--text-muted); margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.quick-pill {
+  display: inline-block;
+  font-size: 11px; color: var(--text-sub);
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2px 8px;
+  margin: 2px 3px 2px 0;
+}
+
+.modal-type-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.modal-type-emoji { font-size: 36px; }
+.modal-type-title-wrap { flex: 1; }
+.modal-type-title { font-size: 18px; font-weight: 700; line-height: 1.3; }
+.modal-type-sub   { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="site-logo">🧭 コミュ力診断</a>
+  <nav class="site-nav">
+    <a href="check.html" class="nav-link">診断</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+  <h1 class="page-title">タイプ一覧</h1>
+  <p class="page-sub">
+    11のコミュニケーションパターン。複合型が多いため、1〜3つを組み合わせて読むのが有効です。<br>
+    カードをタップすると詳細（傾向と対策）が確認できます。
+  </p>
+
+  <!-- Filter -->
+  <div class="filter-bar" id="filter-bar"></div>
+
+  <!-- Type Grid -->
+  <div id="type-grid"></div>
+
+  <!-- CTA -->
+  <div style="text-align:center;margin-top:32px">
+    <a href="check.html" class="btn btn-primary btn-lg">診断をやってみる →</a>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-top-bar">
+      <div class="modal-handle"></div>
+      <button class="modal-close-btn" onclick="closeMod()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+function typeCardHTML(t) {
+  return `
+    <div class="card card-hover${t.good ? ' card-good' : ''}"
+         onclick="openModal('${t.id}')">
+      <div class="type-card-inner">
+        <div class="type-card-head">
+          <span class="type-card-emoji">${t.emoji}</span>
+          <div>
+            <span class="badge badge-${t.clsKey}">${t.id} — ${t.sub}</span>
+            <div class="type-card-name">${t.name}</div>
+          </div>
+        </div>
+        <div class="type-card-desc">${t.desc.slice(0, 60)}…</div>
+        <div class="type-card-quick">
+          <div class="quick-label">有効なアプローチ</div>
+          ${t.effective.slice(0, 2).map(e => {
+            const s = typeof e === 'string' ? e : e.t;
+            return `<span class="quick-pill">✓ ${s.length > 20 ? s.slice(0, 20) + '…' : s}</span>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderGrid() {
+  const zType = TYPES.find(t => t.id === 'Z');
+  let html = '';
+
+  // 良好タイプ
+  html += `
+    <div class="group-block" data-group="Z">
+      <div class="group-block-header" style="border-left-color:#085041">
+        <span class="group-block-emoji">✅</span>
+        <div>
+          <div class="group-block-name" style="color:#085041">良好パターン</div>
+          <div class="group-block-desc">目立った問題が見られない状態。信頼して任せ、裁量や難度の高いタスクを広げる方向で関わると良い。</div>
+        </div>
+      </div>
+      <div class="type-grid">${typeCardHTML(zType)}</div>
+    </div>`;
+
+  GROUPS.forEach(g => {
+    const gTypes = TYPES.filter(t => t.group === g.key);
+    html += `
+      <div class="group-block" data-group="${g.key}">
+        <div class="group-block-header" style="border-left-color:${g.color}">
+          <span class="group-block-emoji">${g.emoji}</span>
+          <div>
+            <div class="group-block-name" style="color:${g.color}">${g.name}</div>
+            <div class="group-block-desc">${g.desc}</div>
+          </div>
+        </div>
+        <div class="type-grid">${gTypes.map(typeCardHTML).join('')}</div>
+      </div>`;
+  });
+
+  document.getElementById('type-grid').innerHTML = html;
+}
+
+function openModal(typeId) {
+  const t = TYPES.find(x => x.id === typeId);
+  if (!t) return;
+  const cta = `
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <a href="check.html" class="btn btn-primary" style="width:100%;justify-content:center">
+        診断してみる →
+      </a>
+    </div>`;
+  document.getElementById('modal-body').innerHTML = buildTypeDetailHTML(t) + cta;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function closeMod() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* Open modal from URL hash: types.html#A */
+(function checkHash() {
+  const hash = location.hash.replace('#', '');
+  if (hash && TYPES.find(t => t.id === hash)) {
+    setTimeout(() => openModal(hash), 200);
+  }
+})();
+
+function setupFilter() {
+  const bar = document.getElementById('filter-bar');
+  if (!bar) return;
+
+  const filters = [
+    { key: 'all', label: 'すべて', color: '#085041' },
+    ...GROUPS.map(g => ({ key: g.key, label: `${g.emoji} ${g.name.replace('グループ', '')}`, color: g.color }))
+  ];
+
+  bar.innerHTML = filters.map(f =>
+    `<button class="filter-btn${f.key === 'all' ? ' active' : ''}" data-key="${f.key}"
+      style="${f.key === 'all' ? `background:${f.color};border-color:${f.color};color:#fff` : ''}">
+      ${f.label}
+    </button>`
+  ).join('');
+
+  bar.addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    const key = btn.dataset.key;
+
+    bar.querySelectorAll('.filter-btn').forEach(b => {
+      const fg = filters.find(f => f.key === b.dataset.key);
+      b.classList.remove('active');
+      b.style.background = '';
+      b.style.borderColor = '';
+      b.style.color = '';
+    });
+    btn.classList.add('active');
+    btn.style.background = filters.find(f => f.key === key).color;
+    btn.style.borderColor = filters.find(f => f.key === key).color;
+    btn.style.color = '#fff';
+
+    document.querySelectorAll('#type-grid .group-block').forEach(block => {
+      block.style.display =
+        key === 'all' || block.dataset.group === key ? '' : 'none';
+    });
+  });
+}
+
+renderGrid();
+setupFilter();
+</script>
+</body>
+</html>
