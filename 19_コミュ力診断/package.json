@@ -1,0 +1,9 @@
+{
+  "name": "commu-checker-sync",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "sync:docs": "powershell -NoProfile -ExecutionPolicy Bypass -File ./sync-to-docs.ps1",
+    "sync:docs:dry": "powershell -NoProfile -ExecutionPolicy Bypass -File ./sync-to-docs.ps1 -WhatIf"
+  }
+}
