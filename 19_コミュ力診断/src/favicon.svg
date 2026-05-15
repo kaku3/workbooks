@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="コミュ力診断 favicon">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f8c64"/>
+      <stop offset="1" stop-color="#31b487"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g)"/>
+  <path d="M18 26c0-5 4-9 9-9h10c7 0 11 4 11 11s-4 11-11 11h-4l-8 8v-8h-2c-3 0-5-2-5-5z" fill="#ffffff" opacity="0.96"/>
+  <circle cx="29" cy="28" r="2.5" fill="#169a72"/>
+  <circle cx="37" cy="28" r="2.5" fill="#169a72"/>
+  <circle cx="45" cy="28" r="2.5" fill="#169a72"/>
+</svg>

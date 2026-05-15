@@ -24,6 +24,7 @@ $files = @(
   'history.html',
   'data.js',
   'style.css',
+  'favicon.svg',
   'thumbnail.png',
   'ogp.png'
 )
