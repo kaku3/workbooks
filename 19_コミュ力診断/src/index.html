@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>コミュ力診断 — メンターのための傾向と対策ツール</title>
+<meta name="description" content="メンター向けコミュニケーション診断。18問の観察チェックで傾向を可視化し、タイプ別の対策を確認できます。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="コミュ力診断">
+<meta property="og:title" content="コミュ力診断 — メンターのための傾向と対策ツール">
+<meta property="og:description" content="18問の観察チェックでコミュニケーション傾向を可視化。上位タイプの対策まで確認できます。">
+<meta property="og:url" content="https://kaku3.github.io/workbooks/commu-checker/">
+<meta property="og:image" content="https://kaku3.github.io/workbooks/commu-checker/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="コミュ力診断 — メンターのための傾向と対策ツール">
+<meta name="twitter:description" content="18問の観察チェックでコミュニケーション傾向を可視化。上位タイプの対策まで確認できます。">
+<meta name="twitter:image" content="https://kaku3.github.io/workbooks/commu-checker/ogp.png">
 <link rel="stylesheet" href="style.css">
 <style>
 .lp-wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 60px; }
@@ -53,6 +64,7 @@
 
 <!-- Hero -->
 <section class="hero">
+  <div class="hero-bg-parallax" aria-hidden="true"></div>
   <div class="hero-eyebrow">メンター向け 無料ツール</div>
   <h1 class="hero-title">その指導、<br>届いていますか？</h1>
   <p class="hero-sub">
@@ -149,7 +161,7 @@
 <script>
 function renderPreviewGrid() {
   document.getElementById('preview-grid').innerHTML = TYPES.map((t, i) => `
-    <div class="preview-card${t.good ? ' good' : ''}" onclick="openModal(${i})">
+    <div class="preview-card preview-${t.good ? 'z' : (t.group || '').toLowerCase()}${t.good ? ' good' : ''}" onclick="openModal(${i})">
       <div class="preview-emoji">${t.emoji}</div>
       <div class="preview-id">${t.id} — ${t.sub}</div>
       <div class="preview-name">${t.name}</div>
@@ -176,7 +188,36 @@ function closeMod() {
   document.body.style.overflow = '';
 }
 
+function initHeroParallax() {
+  const hero = document.querySelector('.hero');
+  const bg = document.querySelector('.hero-bg-parallax');
+  if (!hero || !bg) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
+  let rafId = null;
+  const update = () => {
+    const rect = hero.getBoundingClientRect();
+    const progress = Math.max(Math.min((window.innerHeight - rect.top) / (window.innerHeight + rect.height), 1), 0);
+    const y = (progress - 0.5) * 40;
+    bg.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0) scale(1.08)`;
+    rafId = null;
+  };
+
+  const requestTick = () => {
+    if (rafId != null) return;
+    rafId = requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', requestTick, { passive: true });
+  window.addEventListener('resize', requestTick);
+  requestTick();
+}
+
 renderPreviewGrid();
+initHeroParallax();
 </script>
 </body>
 </html>
