@@ -332,7 +332,7 @@ function buildTypeDetailHTML(t, opts) {
   const trainingCta = (!t.good && t.clsKey && showTrainingLink) ? `
     <div class="detail-section" style="margin-bottom:0">
       <a href="trainings/${t.clsKey}.html" class="btn btn-secondary" style="width:100%;justify-content:center">
-        90日トレーニングを見る →
+        10週間トレーニングを見る →
       </a>
     </div>` : '';
   return `

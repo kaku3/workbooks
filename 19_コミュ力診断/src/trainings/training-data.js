@@ -16,7 +16,7 @@ const TRAINING_TYPES = [
 const TRAINING_PAGES = {
   d1: {
     label: 'D1',
-    title: 'D1型 90日トレーニング｜コミュ力診断',
+    title: 'D1型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#eaf6fb', border: '#d0e7f2', text: '#0C447C' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -572,7 +572,7 @@ const TRAINING_PAGES = {
   },
   d2: {
     label: 'D2',
-    title: 'D2型 90日トレーニング｜コミュ力診断',
+    title: 'D2型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#eaf6fb', border: '#d0e7f2', text: '#0C447C' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -1128,7 +1128,7 @@ const TRAINING_PAGES = {
   },
   m1: {
     label: 'M1',
-    title: 'M1型 90日トレーニング｜コミュ力診断',
+    title: 'M1型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#fff4ee', border: '#f3d8ca', text: '#7a2f13' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -1684,7 +1684,7 @@ const TRAINING_PAGES = {
   },
   m2: {
     label: 'M2',
-    title: 'M2型 90日トレーニング｜コミュ力診断',
+    title: 'M2型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#fff4ee', border: '#f3d8ca', text: '#7a2f13' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -2240,7 +2240,7 @@ const TRAINING_PAGES = {
   },
   r1: {
     label: 'R1',
-    title: 'R1型 90日トレーニング｜コミュ力診断',
+    title: 'R1型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#e8f1ff', border: '#ccddfb', text: '#3A3832' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -2796,7 +2796,7 @@ const TRAINING_PAGES = {
   },
   r2: {
     label: 'R2',
-    title: 'R2型 90日トレーニング｜コミュ力診断',
+    title: 'R2型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#e8f1ff', border: '#ccddfb', text: '#7A2006' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -3352,7 +3352,7 @@ const TRAINING_PAGES = {
   },
   r3: {
     label: 'R3',
-    title: 'R3型 90日トレーニング｜コミュ力診断',
+    title: 'R3型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#e8f1ff', border: '#ccddfb', text: '#163080' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -3908,7 +3908,7 @@ const TRAINING_PAGES = {
   },
   s1: {
     label: 'S1',
-    title: 'S1型 90日トレーニング｜コミュ力診断',
+    title: 'S1型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#f4eefb', border: '#dfd0f2', text: '#4a2a78' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -4464,7 +4464,7 @@ const TRAINING_PAGES = {
   },
   s2: {
     label: 'S2',
-    title: 'S2型 90日トレーニング｜コミュ力診断',
+    title: 'S2型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#f4eefb', border: '#dfd0f2', text: '#4a2a78' },
     mainHtml: `
 <!-- TYPE HERO -->
@@ -5020,7 +5020,7 @@ const TRAINING_PAGES = {
   },
   s3: {
     label: 'S3',
-    title: 'S3型 90日トレーニング｜コミュ力診断',
+    title: 'S3型 10週間トレーニング｜コミュ力診断',
     tone: { bg: '#f4eefb', border: '#dfd0f2', text: '#4a2a78' },
     mainHtml: `
 <!-- TYPE HERO -->
