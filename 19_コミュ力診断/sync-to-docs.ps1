@@ -61,9 +61,10 @@ if (Test-Path $srcTrainingsDir) {
     }
   }
 
-  $trainingFiles = Get-ChildItem -Path $srcTrainingsDir -File -Filter '*.html'
+  $trainingFiles = Get-ChildItem -Path $srcTrainingsDir -File |
+    Where-Object { $_.Extension -in @('.html', '.js') }
   if ($trainingFiles.Count -eq 0) {
-    Write-Warning 'No training HTML files found in src/trainings'
+    Write-Warning 'No training HTML/JS files found in src/trainings'
   } else {
     foreach ($file in $trainingFiles) {
       $dest = Join-Path $destTrainingsDir $file.Name
