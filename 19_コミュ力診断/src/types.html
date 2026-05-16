@@ -59,7 +59,7 @@
   <h1 class="page-title">タイプ一覧</h1>
   <p class="page-sub">
     11のコミュニケーションパターン。複合型が多いため、1〜3つを組み合わせて読むのが有効です。<br>
-    カードをタップすると詳細（傾向と対策）が確認できます。
+    カードをタップすると詳細と、タイプ別90日トレーニングへの導線が確認できます。
   </p>
 
   <!-- Filter -->
@@ -149,13 +149,19 @@ function renderGrid() {
 function openModal(typeId) {
   const t = TYPES.find(x => x.id === typeId);
   if (!t) return;
+  const trainBtn = !t.good
+    ? `<a href="trainings/${t.clsKey}.html" class="btn btn-secondary" style="font-size:13px;padding:8px 14px">90日トレーニング →</a>`
+    : '';
   const cta = `
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-      <a href="check.html" class="btn btn-primary" style="width:100%;justify-content:center">
-        診断してみる →
-      </a>
+    <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:14px;margin-bottom:14px">
+      ${trainBtn}
+      <a href="check.html" class="btn btn-primary" style="font-size:13px;padding:8px 14px">診断してみる →</a>
     </div>`;
-  document.getElementById('modal-body').innerHTML = buildTypeDetailHTML(t) + cta;
+  document.getElementById('modal-body').innerHTML = cta + buildTypeDetailHTML(t, { showTrainingLink: false });
+  const sheet = document.querySelector('#modal .modal-sheet');
+  if (sheet) sheet.scrollTop = 0;
+  const body = document.getElementById('modal-body');
+  if (body) body.scrollTop = 0;
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
