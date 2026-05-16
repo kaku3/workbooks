@@ -442,6 +442,8 @@ function renderRadarChart(container, finalNorm) {
 /* ── Top Type Cards ── */
 function renderTopTypes(topTypes) {
   const ranks = ['🥇','🥈','🥉'];
+  const subjects = topTypes.map((t) => t.clsKey).join(',');
+  const summaryHref = `trainings/index.html?type=summary&subjects=${encodeURIComponent(subjects)}`;
   document.getElementById('top-types-list').innerHTML = topTypes.map((t, ri) => `
     <div class="top-type-card" id="ttcard-${ri}">
       <div class="top-type-head" onclick="toggleTopType(${ri})">
@@ -457,7 +459,7 @@ function renderTopTypes(topTypes) {
         <div class="top-type-arrow">▼</div>
       </div>
       <div class="top-type-quick-row">
-        <a href="trainings/${t.clsKey}.html" class="btn btn-secondary">
+        <a href="${summaryHref}" class="btn btn-secondary">
           90日トレーニング →
         </a>
         <a href="types.html" class="btn btn-secondary">
