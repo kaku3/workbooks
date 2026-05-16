@@ -320,6 +320,7 @@ function buildApproachList(items, cls) {
 
 function buildTypeDetailHTML(t, opts) {
   const showHeader = !opts || opts.showHeader !== false;
+  const showTrainingLink = !opts || opts.showTrainingLink !== false;
   const header = showHeader ? `
     <div class="modal-type-header">
       <span class="modal-type-emoji">${t.emoji}</span>
@@ -327,6 +328,12 @@ function buildTypeDetailHTML(t, opts) {
         <span class="badge badge-${t.clsKey}">${t.id} — ${t.sub}</span>
         <div class="modal-type-title">${t.name}</div>
       </div>
+    </div>` : '';
+  const trainingCta = (!t.good && t.clsKey && showTrainingLink) ? `
+    <div class="detail-section" style="margin-bottom:0">
+      <a href="trainings/${t.clsKey}.html" class="btn btn-secondary" style="width:100%;justify-content:center">
+        90日トレーニングを見る →
+      </a>
     </div>` : '';
   return `
     ${header}
@@ -342,5 +349,6 @@ function buildTypeDetailHTML(t, opts) {
     <div class="detail-section">
       <div class="detail-label">❌ 効きにくいアプローチ</div>
       ${buildApproachList(t.ineffective, 'bad')}
-    </div>`;
+    </div>
+    ${trainingCta}`;
 }

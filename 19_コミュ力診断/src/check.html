@@ -72,6 +72,18 @@
   background: #bfc2bf; color: #7a7d7a;
   cursor: not-allowed; pointer-events: none;
 }
+
+.top-type-quick-row {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px 12px;
+  flex-wrap: wrap;
+}
+
+.top-type-quick-row .btn {
+  font-size: 12px;
+  padding: 7px 10px;
+}
 </style>
 </head>
 <body>
@@ -444,8 +456,16 @@ function renderTopTypes(topTypes) {
         <div class="top-type-score">${Math.max(t.score, 0)}</div>
         <div class="top-type-arrow">▼</div>
       </div>
+      <div class="top-type-quick-row">
+        <a href="trainings/${t.clsKey}.html" class="btn btn-secondary">
+          90日トレーニング →
+        </a>
+        <a href="types.html" class="btn btn-secondary">
+          タイプ詳細 →
+        </a>
+      </div>
       <div class="top-type-body">
-        ${buildTypeDetailHTML(t, { showHeader: false })}
+        ${buildTypeDetailHTML(t, { showHeader: false, showTrainingLink: false })}
         <div style="margin-top:12px">
           <a href="types.html" class="btn btn-secondary" style="font-size:13px;padding:8px 14px">
             全タイプの詳細を見る →
