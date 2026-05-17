@@ -550,7 +550,7 @@ window.TRAINING_PAGE_PARTS['d1'] = {
   <!-- GRADUATION -->
   <div class="grad-section" id="grad-section">
     <div class="grad-icon"><span class="material-icons-round">workspace_premium</span></div>
-    <div class="grad-title">90日間、お疲れさまでした！</div>
+    <div class="grad-title">10週間、お疲れさまでした！</div>
     <div class="grad-sub">
       「見えていること」を「出力」に変える回路が繋がりました。<br>
       これからは、一人でも「誰が読むか」を考えながら動ける自分がいます。

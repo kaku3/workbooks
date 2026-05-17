@@ -806,8 +806,14 @@ function renderSummaryStats() {
           : checkEntries.map((entry) => {
               const count = getCheckCountForEntry(state[entry.key]);
               const toneClass = getCountToneClass(count);
+              const checkedToday = hasCheckOnDay(state[entry.key], activeDay);
+              const actionableClass = isViewer ? '' : ' summary-target-item-actionable';
+              const todayClass = checkedToday ? ' summary-target-item-today' : '';
+              const actionAttrs = isViewer
+                ? ''
+                : ` data-type="${row.type}" data-key="${entry.key}" role="button" tabindex="0" aria-pressed="${checkedToday ? 'true' : 'false'}"`;
               return `
-              <div class="summary-target-item ${toneClass}">
+              <div class="summary-target-item ${toneClass}${actionableClass}${todayClass}"${actionAttrs}>
                 <span class="summary-target-item-text">${escapeHtml(entry.text)}</span>
                 <span class="summary-target-item-count">${count}</span>
               </div>
@@ -825,6 +831,26 @@ function renderSummaryStats() {
           </div>
         `;
       }).join('');
+
+      if (!isViewer) {
+        listEl.querySelectorAll('.summary-target-item-actionable').forEach((item) => {
+          item.addEventListener('click', () => {
+            const type = item.dataset.type;
+            const key = item.dataset.key;
+            toggleSummaryCheck(type, key, item);
+          });
+
+          item.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') {
+              return;
+            }
+            event.preventDefault();
+            const type = item.dataset.type;
+            const key = item.dataset.key;
+            toggleSummaryCheck(type, key, item);
+          });
+        });
+      }
     }
   }
 
@@ -1295,9 +1321,6 @@ function renderAll() {
     }
     if (chip) {
       chip.classList.toggle('done', phaseDone);
-      if (phaseDone) {
-        chip.classList.remove('active');
-      }
     }
   }
 
@@ -1351,6 +1374,37 @@ function toggleCheck(el, weekId, idx) {
   if (hasCheckOnDay(state[key], today())) {
     autoOpenNext(weekId);
   }
+}
+
+function toggleSummaryCheck(type, key, el) {
+  if (isViewer) {
+    return;
+  }
+  if (!isTrainingType(type) || !key) {
+    return;
+  }
+
+  const state = cleanOldChecks(getTypeState(type));
+  const todayStr = today();
+  const history = normalizeCheckEntry(state[key]);
+
+  if (history.includes(todayStr)) {
+    const next = history.filter((d) => d !== todayStr);
+    if (next.length === 0) {
+      delete state[key];
+    } else {
+      state[key] = next;
+    }
+  } else {
+    history.push(todayStr);
+    state[key] = normalizeCheckEntry(history);
+    if (el) {
+      burst(el);
+    }
+  }
+
+  saveTypeState(type, state);
+  renderAll();
 }
 
 function autoOpenNext(weekId) {
@@ -1482,8 +1536,9 @@ function renderHeatmap(state) {
   todayD.setHours(0, 0, 0, 0);
 
   const start = new Date(todayD);
-  start.setDate(start.getDate() - 90);
-  start.setDate(start.getDate() - start.getDay());
+  // 13列(91日)の最終列を常に「今週」に合わせる
+  // 今週の日曜から12週前の日曜を開始日にする
+  start.setDate(start.getDate() - todayD.getDay() - (12 * 7));
 
   const grid = document.getElementById('heatmap-grid');
   if (!grid) {

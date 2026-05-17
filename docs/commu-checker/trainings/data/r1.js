@@ -550,7 +550,7 @@ window.TRAINING_PAGE_PARTS['r1'] = {
   <!-- GRADUATION -->
   <div class="grad-section" id="grad-section">
     <div class="grad-icon"><span class="material-icons-round">workspace_premium</span></div>
-    <div class="grad-title">90日間、お疲れさまでした！</div>
+    <div class="grad-title">10週間、お疲れさまでした！</div>
     <div class="grad-sub">
       指示を聞いて終わりではなく、受け取って残す習慣を作れました。<br>
       これからは、再説明に頼らず安定して動けます。

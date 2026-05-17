@@ -550,7 +550,7 @@ window.TRAINING_PAGE_PARTS['m1'] = {
   <!-- GRADUATION -->
   <div class="grad-section" id="grad-section">
     <div class="grad-icon"><span class="material-icons-round">workspace_premium</span></div>
-    <div class="grad-title">90日間、お疲れさまでした！</div>
+    <div class="grad-title">10週間、お疲れさまでした！</div>
     <div class="grad-sub">
       改善を気分でやる状態から、仕組みで回す状態へ移行できました。<br>
       これからは、日々の実行を自分で維持しながら成果に結びつけられます。

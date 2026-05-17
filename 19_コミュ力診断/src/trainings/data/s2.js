@@ -550,7 +550,7 @@ window.TRAINING_PAGE_PARTS['s2'] = {
   <!-- GRADUATION -->
   <div class="grad-section" id="grad-section">
     <div class="grad-icon"><span class="material-icons-round">workspace_premium</span></div>
-    <div class="grad-title">90日間、お疲れさまでした！</div>
+    <div class="grad-title">10週間、お疲れさまでした！</div>
     <div class="grad-sub">
       自分視点だけで書く癖から、相手視点で結論を補う習慣へ進化できました。<br>
       これからは、誰が読んでも迷いにくい説明を自分で組み立てられます。

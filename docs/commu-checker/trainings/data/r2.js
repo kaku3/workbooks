@@ -550,7 +550,7 @@ window.TRAINING_PAGE_PARTS['r2'] = {
   <!-- GRADUATION -->
   <div class="grad-section" id="grad-section">
     <div class="grad-icon"><span class="material-icons-round">workspace_premium</span></div>
-    <div class="grad-title">90日間、お疲れさまでした！</div>
+    <div class="grad-title">10週間、お疲れさまでした！</div>
     <div class="grad-sub">
       話す力に加えて、止まって聞く力を習慣にできました。<br>
       これからは、対話の質を自分で安定させられます。

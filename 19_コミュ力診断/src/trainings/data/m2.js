@@ -550,7 +550,7 @@ window.TRAINING_PAGE_PARTS['m2'] = {
   <!-- GRADUATION -->
   <div class="grad-section" id="grad-section">
     <div class="grad-icon"><span class="material-icons-round">workspace_premium</span></div>
-    <div class="grad-title">90日間、お疲れさまでした！</div>
+    <div class="grad-title">10週間、お疲れさまでした！</div>
     <div class="grad-sub">
       防衛反応で止まる状態から、落ち着いて改善を選べる状態へ進めました。<br>
       これからは、指摘を材料にして自分で次の行動を選択できます。

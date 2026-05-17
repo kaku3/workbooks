@@ -71,15 +71,78 @@
 .flow-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
 .flow-desc  { font-size: 13px; color: var(--text-sub); line-height: 1.65; }
 .divider { height: 1px; background: var(--border); margin: 48px 0 0; }
+
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text-sub);
+}
+
+.nav-toggle .close-icon {
+  display: none;
+}
+
+.site-header.menu-open .nav-toggle .menu-icon {
+  display: none;
+}
+
+.site-header.menu-open .nav-toggle .close-icon {
+  display: inline;
+}
+
+@media (max-width: 760px) {
+  .site-header {
+    position: sticky;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .site-nav {
+    position: absolute;
+    top: 52px;
+    left: 12px;
+    right: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    padding: 8px;
+  }
+
+  .site-header.menu-open .site-nav {
+    display: flex;
+  }
+
+  .site-nav .nav-link {
+    border-radius: 10px;
+    padding: 9px 10px;
+  }
+}
 </style>
 </head>
 <body>
 
 <header class="site-header">
   <a href="index.html" class="site-logo"><span class="material-icons-round icon-md">navigation</span> コミュ力診断</a>
-  <nav class="site-nav">
-    <a href="check.html" class="nav-link"><span class="material-icons-round icon-sm">quiz</span> 診断</a>
+  <button class="nav-toggle" id="nav-toggle" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く">
+    <span class="material-icons-round icon-md menu-icon">menu</span>
+    <span class="material-icons-round icon-md close-icon">close</span>
+  </button>
+  <nav class="site-nav" id="global-nav">
     <a href="types.html" class="nav-link"><span class="material-icons-round icon-sm">grid_view</span> タイプ一覧</a>
+    <a href="check.html" class="nav-link"><span class="material-icons-round icon-sm">quiz</span> 診断</a>
+    <a href="trainings/index.html?type=summary" class="nav-link"><span class="material-icons-round icon-sm">fitness_center</span> トレーニング</a>
     <a href="history.html" class="nav-link"><span class="material-icons-round icon-sm">history</span> 履歴</a>
   </nav>
 </header>
@@ -253,8 +316,57 @@ function initHeroParallax() {
   requestTick();
 }
 
+function initHeaderMenu() {
+  const header = document.querySelector('.site-header');
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('global-nav');
+  if (!header || !toggle || !nav) {
+    return;
+  }
+
+  const closeMenu = () => {
+    header.classList.remove('menu-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'メニューを開く');
+  };
+
+  const openMenu = () => {
+    header.classList.add('menu-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'メニューを閉じる');
+  };
+
+  toggle.addEventListener('click', () => {
+    if (header.classList.contains('menu-open')) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  nav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!header.classList.contains('menu-open')) {
+      return;
+    }
+    if (!header.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 760) {
+      closeMenu();
+    }
+  });
+}
+
 renderPreviewGrid();
 initHeroParallax();
+initHeaderMenu();
 </script>
 </body>
 </html>
