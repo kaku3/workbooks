@@ -61,18 +61,29 @@ if (Test-Path $srcTrainingsDir) {
     }
   }
 
-  $trainingFiles = Get-ChildItem -Path $srcTrainingsDir -File |
+  $trainingFiles = Get-ChildItem -Path $srcTrainingsDir -Recurse -File |
     Where-Object { $_.Extension -in @('.html', '.js') }
   if ($trainingFiles.Count -eq 0) {
     Write-Warning 'No training HTML/JS files found in src/trainings'
   } else {
     foreach ($file in $trainingFiles) {
-      $dest = Join-Path $destTrainingsDir $file.Name
+      $relativePath = ($file.FullName.Substring($srcTrainingsDir.Length) -replace '^[\\/]+', '')
+      $dest = Join-Path $destTrainingsDir $relativePath
+      $destParent = Split-Path -Parent $dest
+
+      if (!(Test-Path $destParent)) {
+        if ($WhatIf) {
+          Write-Host "[WhatIf] Create trainings subdirectory: $destParent"
+        } else {
+          New-Item -ItemType Directory -Path $destParent -Force | Out-Null
+        }
+      }
+
       if ($WhatIf) {
-        Write-Host "[WhatIf] Copy trainings/$($file.Name)"
+        Write-Host "[WhatIf] Copy trainings/$relativePath"
       } else {
         Copy-Item -Path $file.FullName -Destination $dest -Force
-        Write-Host "Copied trainings/$($file.Name)"
+        Write-Host "Copied trainings/$relativePath"
       }
     }
   }

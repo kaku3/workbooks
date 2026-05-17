@@ -141,6 +141,9 @@ a { color: inherit; text-decoration: none; }
   padding: 10px 14px; text-align: center; min-width: 96px;
 }
 .insight-node .node-icon { font-size: 22px; line-height: 1; margin-bottom: 4px; }
+/* 左ノード=送信/入力側、右ノード=受信/結果側で色を分ける */
+.insight-diagram > .insight-node:first-child .node-icon { color: var(--amber); }
+.insight-diagram > .insight-node:last-child .node-icon { color: var(--blue); }
 .insight-node .node-label { font-size: 12px; font-weight: 700; color: var(--tone-d-text); }
 .insight-node .node-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 .insight-arrow {
@@ -1158,6 +1161,16 @@ body.viewer-mode .share-wrap { display: none; }
   <div class="sticky-count" id="sticky-pct">0%</div>
 </div>
 
+<script src="./data/d1.js"></script>
+<script src="./data/d2.js"></script>
+<script src="./data/m1.js"></script>
+<script src="./data/m2.js"></script>
+<script src="./data/r1.js"></script>
+<script src="./data/r2.js"></script>
+<script src="./data/r3.js"></script>
+<script src="./data/s1.js"></script>
+<script src="./data/s2.js"></script>
+<script src="./data/s3.js"></script>
 <script src="./training-data.js"></script>
 <script src="./training-app.js"></script>
 </body>
