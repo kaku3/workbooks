@@ -1,4 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
+
+/* ========== Material Icons ========== */
+.material-icons-round { font-size: inherit; line-height: 1; vertical-align: middle; }
+.icon-sm { font-size: 16px; }
+.icon-md { font-size: 20px; }
+.icon-lg { font-size: 28px; }
 
 /* ========== Reset & Base ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -62,6 +69,7 @@ img { max-width: 100%; }
 .site-logo {
   font-size: 15px; font-weight: 700; color: var(--green);
   letter-spacing: -.01em;
+  display: flex; align-items: center; gap: 6px;
 }
 
 .site-nav { display: flex; gap: 4px; }
@@ -70,6 +78,7 @@ img { max-width: 100%; }
   font-size: 13px; color: var(--text-sub);
   padding: 6px 12px; border-radius: 20px;
   transition: background .15s, color .15s;
+  display: inline-flex; align-items: center; gap: 4px;
 }
 .nav-link:hover { background: var(--bg); color: var(--text); }
 
@@ -648,20 +657,35 @@ img { max-width: 100%; }
 /* ========== Features ========== */
 .features {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 12px; margin-bottom: 40px;
+  gap: 16px; margin-bottom: 40px;
 }
 @media (max-width: 540px) {
   .features { grid-template-columns: 1fr; }
 }
 .feature-card {
   background: var(--white);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(0,0,0,.06);
   border-radius: var(--radius-md);
-  padding: 18px 16px;
+  padding: 28px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  transition: box-shadow .2s, transform .2s;
 }
-.feature-icon { font-size: 28px; margin-bottom: 8px; }
-.feature-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.feature-desc  { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+.feature-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,.10);
+  transform: translateY(-3px);
+}
+.feature-icon {
+  width: 68px; height: 68px;
+  background: var(--green-light);
+  border: 1.5px solid rgba(29,158,117,.25);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--green);
+  font-size: 30px;
+  margin: 0 auto 16px;
+}
+.feature-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.feature-desc  { font-size: 13px; color: var(--text-sub); line-height: 1.65; }
 
 /* ========== LP Type Preview ========== */
 .preview-grid {
@@ -683,7 +707,8 @@ img { max-width: 100%; }
 .preview-card.preview-d { background: var(--tone-d-bg); border-color: var(--tone-d-border); }
 .preview-card.preview-r { background: var(--tone-r-bg); border-color: var(--tone-r-border); }
 .preview-card.preview-s { background: var(--tone-s-bg); border-color: var(--tone-s-border); }
-.preview-emoji { font-size: 22px; margin-bottom: 6px; }
+.preview-emoji { font-size: 22px; margin-bottom: 6px; text-align: center; }
+.modal-type-emoji { font-size: 36px; }
 .preview-id   { font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 3px; }
 .preview-name { font-size: 13px; font-weight: 600; }
 

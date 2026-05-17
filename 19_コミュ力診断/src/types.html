@@ -13,7 +13,7 @@
 .type-card-head {
   display: flex; align-items: flex-start; gap: 8px;
 }
-.type-card-emoji { font-size: 24px; line-height: 1; margin-top: 2px; }
+.type-card-emoji { font-size: 24px; line-height: 1; }
 
 .type-card-quick {
   margin-top: 10px; padding-top: 10px;
@@ -48,10 +48,10 @@
 <body>
 
 <header class="site-header">
-  <a href="index.html" class="site-logo">🧭 コミュ力診断</a>
+  <a href="index.html" class="site-logo"><span class="material-icons-round icon-md">navigation</span> コミュ力診断</a>
   <nav class="site-nav">
-    <a href="check.html" class="nav-link">診断</a>
-    <a href="history.html" class="nav-link">履歴</a>
+    <a href="check.html" class="nav-link"><span class="material-icons-round icon-sm">quiz</span> 診断</a>
+    <a href="history.html" class="nav-link"><span class="material-icons-round icon-sm">history</span> 履歴</a>
   </nav>
 </header>
 
@@ -93,7 +93,7 @@ function typeCardHTML(t) {
          onclick="openModal('${t.id}')">
       <div class="type-card-inner">
         <div class="type-card-head">
-          <span class="type-card-emoji">${t.emoji}</span>
+          <span class="type-card-emoji material-icons-round" style="color:${t.color}">${t.icon}</span>
           <div>
             <span class="badge badge-${t.clsKey}">${t.id} — ${t.sub}</span>
             <div class="type-card-name">${t.name}</div>
@@ -119,7 +119,7 @@ function renderGrid() {
   html += `
     <div class="group-block" data-group="Z">
       <div class="group-block-header" style="border-left-color:#085041">
-        <span class="group-block-emoji">✅</span>
+        <span class="group-block-emoji material-icons-round" style="color:#1D9E75">task_alt</span>
         <div>
           <div class="group-block-name" style="color:#085041">良好パターン</div>
           <div class="group-block-desc">目立った問題が見られない状態。信頼して任せ、裁量や難度の高いタスクを広げる方向で関わると良い。</div>

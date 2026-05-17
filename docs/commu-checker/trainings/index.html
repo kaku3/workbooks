@@ -6,7 +6,18 @@
 <title>10週間トレーニング｜コミュ力診断</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <style>
+/* ===== MATERIAL ICONS ===== */
+.material-icons-round {
+  font-size: inherit;
+  line-height: 1;
+  vertical-align: middle;
+}
+.icon-sm { font-size: 16px; }
+.icon-md { font-size: 20px; }
+.icon-lg { font-size: 28px; }
+
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -56,12 +67,13 @@ a { color: inherit; text-decoration: none; }
   position: sticky; top: 0; z-index: 100;
   box-shadow: var(--shadow-sm);
 }
-.site-logo { font-weight: 800; font-size: 16px; color: var(--green); }
+.site-logo { font-weight: 800; font-size: 16px; color: var(--green); display: flex; align-items: center; gap: 6px; }
 .site-nav { display: flex; gap: 12px; }
 .nav-link {
   font-size: 13px; font-weight: 700; color: var(--text-sub);
   padding: 4px 10px; border-radius: 20px;
   transition: background .15s;
+  display: inline-flex; align-items: center; gap: 4px;
 }
 .nav-link:hover { background: var(--bg); }
 
@@ -86,11 +98,12 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 28px;
   position: relative; overflow: hidden;
 }
-.type-hero::before {
-  content: '🔌';
+/* .type-hero::before は廃止 — .type-hero-bg-icon span で実装 */
+.type-hero-bg-icon {
   position: absolute; right: 16px; top: 16px;
-  font-size: 72px; opacity: .1; line-height: 1;
-  pointer-events: none;
+  font-size: 72px; opacity: .08; line-height: 1;
+  pointer-events: none; user-select: none;
+  color: var(--tone-d-text);
 }
 .type-eyebrow {
   display: inline-flex; align-items: center; gap: 6px;
@@ -394,6 +407,8 @@ a { color: inherit; text-decoration: none; }
 }
 .phase-banner.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .phase-banner-emoji { font-size: 28px; }
+.phase-banner-icon { display: flex; align-items: center; }
+.phase-banner-icon .material-icons-round { font-size: 28px; color: var(--green-dark); }
 .phase-banner-title { font-size: 15px; font-weight: 800; color: var(--green-dark); }
 .phase-banner-sub { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
 
@@ -403,6 +418,8 @@ a { color: inherit; text-decoration: none; }
   padding: 48px 20px; margin-top: 16px;
 }
 .grad-emoji { font-size: 56px; margin-bottom: 12px; }
+.grad-icon { font-size: 56px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
+.grad-icon .material-icons-round { font-size: 56px; color: var(--green); }
 .grad-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
 .grad-sub { font-size: 14px; color: var(--text-sub); line-height: 1.75; max-width: 400px; margin: 0 auto; }
 
@@ -616,9 +633,11 @@ body.viewer-mode .share-wrap { display: none; }
 }
 
 .summary-num {
-  margin-top: 10px;
-  font-size: 26px;
+  margin-top: 8px;
+  font-size: 52px;
   font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.02em;
   color: var(--blue);
 }
 
@@ -1097,14 +1116,21 @@ body.viewer-mode .share-wrap { display: none; }
 <div id="confetti-wrap" class="confetti-wrap"></div>
 
 <div class="viewer-banner" id="viewer-banner">
-  👁 閲覧専用モード — メンターとして確認中です。チェック操作はできません。
+  <span class="material-icons-round icon-sm">visibility</span>
+  閲覧専用モード — メンターとして確認中です。チェック操作はできません。
 </div>
 
 <header class="site-header">
-  <a class="site-logo" href="../index.html">🧭 コミュ力診断</a>
+  <a class="site-logo" href="../index.html">
+    <span class="material-icons-round icon-md">navigation</span> コミュ力診断
+  </a>
   <nav class="site-nav">
-    <a class="nav-link" href="../check.html">診断</a>
-    <a class="nav-link" href="../types.html">タイプ一覧</a>
+    <a class="nav-link" href="../check.html">
+      <span class="material-icons-round icon-sm">quiz</span> 診断
+    </a>
+    <a class="nav-link" href="../types.html">
+      <span class="material-icons-round icon-sm">grid_view</span> タイプ一覧
+    </a>
   </nav>
 </header>
 

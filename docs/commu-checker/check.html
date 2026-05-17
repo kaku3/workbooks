@@ -73,26 +73,16 @@
   cursor: not-allowed; pointer-events: none;
 }
 
-.top-type-quick-row {
-  display: flex;
-  gap: 8px;
-  padding: 0 12px 12px;
-  flex-wrap: wrap;
-}
 
-.top-type-quick-row .btn {
-  font-size: 12px;
-  padding: 7px 10px;
-}
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <a href="index.html" class="site-logo">🧭 コミュ力診断</a>
+  <a href="index.html" class="site-logo"><span class="material-icons-round icon-md">navigation</span> コミュ力診断</a>
   <nav class="site-nav">
-    <a href="types.html" class="nav-link">タイプ一覧</a>
-    <a href="history.html" class="nav-link">履歴</a>
+    <a href="types.html" class="nav-link"><span class="material-icons-round icon-sm">grid_view</span> タイプ一覧</a>
+    <a href="history.html" class="nav-link"><span class="material-icons-round icon-sm">history</span> 履歴</a>
   </nav>
 </header>
 
@@ -102,7 +92,7 @@
 
   <!-- Intro Card -->
   <div class="check-intro">
-    <div style="font-size:14px;font-weight:600;margin-bottom:6px">🎯 回答の目安</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:6px"><span class="material-icons-round icon-sm">adjust</span> 回答の目安</div>
     <div style="font-size:13px;color:var(--text-sub);line-height:1.7">
       対象者の<strong>日常的な行動</strong>を思い浮かべながら回答してください。
       特定のシーンだけでなく、全体的な傾向として答えるとより正確になります。
@@ -153,8 +143,11 @@
 
     <!-- Share -->
     <div class="result-share-row">
-      <button class="share-btn" onclick="copyShareURL()">🔗 結果URLをコピー</button>
+      <button class="share-btn" onclick="copyShareURL()"><span class="material-icons-round icon-sm">content_copy</span> 結果URLをコピー</button>
       <button class="btn btn-secondary" onclick="resetCheck()">リセットして再診断</button>
+      <a id="training-link-btn" href="trainings/index.html" class="btn btn-primary" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px">
+        <span class="material-icons-round icon-sm">fitness_center</span> 10週間トレーニング →
+      </a>
     </div>
   </div>
 </div>
@@ -319,7 +312,7 @@ function showResult(skipSave) {
           <div class="radar-legend-item">
             <span class="radar-legend-dot" style="background:${t.color}"></span>
             <span class="radar-legend-id">${t.id}</span>
-            <span style="font-size:12px">${t.emoji}</span>
+            <span class="material-icons-round" style="font-size:16px;color:${t.color}">${t.icon}</span>
             <span class="radar-legend-sub">${t.sub}</span>
           </div>`;
       });
@@ -402,8 +395,6 @@ function renderRadarChart(container, finalNorm) {
     const labelColor = t.group ? GROUP_COLORS[t.group] : '#333';
     labels += `<text x="${lx.toFixed(1)}" y="${(ly - 6).toFixed(1)}"
                 text-anchor="${anchor}" font-size="13" font-weight="700" fill="${labelColor}">${t.id}</text>`;
-    labels += `<text x="${lx.toFixed(1)}" y="${(ly + 8).toFixed(1)}"
-                text-anchor="${anchor}" font-size="10" fill="#999">${t.emoji}</text>`;
   }
 
   container.innerHTML = `
@@ -451,20 +442,12 @@ function renderTopTypes(topTypes) {
         <div class="top-type-info">
           <div class="top-type-name">
             <span class="badge badge-${t.clsKey}" style="margin-right:6px">${t.id} — ${t.sub}</span>
-            ${t.emoji} ${t.name}
+            <span class="material-icons-round" style="font-size:15px;vertical-align:middle;margin-right:3px;color:${t.color}">${t.icon}</span>${t.name}
           </div>
           <div class="top-type-sub">${t.desc.slice(0, 50)}…</div>
         </div>
         <div class="top-type-score">${Math.max(t.score, 0)}</div>
         <div class="top-type-arrow">▼</div>
-      </div>
-      <div class="top-type-quick-row">
-        <a href="${summaryHref}" class="btn btn-secondary">
-          10週間トレーニング →
-        </a>
-        <a href="types.html" class="btn btn-secondary">
-          タイプ詳細 →
-        </a>
       </div>
       <div class="top-type-body">
         ${buildTypeDetailHTML(t, { showHeader: false, showTrainingLink: false })}
@@ -476,6 +459,9 @@ function renderTopTypes(topTypes) {
       </div>
     </div>
   `).join('');
+
+  const trainingBtn = document.getElementById('training-link-btn');
+  if (trainingBtn) trainingBtn.href = summaryHref;
 
   /* Auto-expand top type */
   toggleTopType(0);

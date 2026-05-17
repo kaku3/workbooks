@@ -127,19 +127,25 @@ function ensureCurrentTypeInSubjects() {
 
 function initSubjects() {
   const fromUrl = parseSubjectsFromURL();
+  const stored = loadStoredSubjects();
+
+  if (stored.length > 0) {
+    // 既存の受講順を維持しつつ、URLに含まれる新科目だけ末尾に追加
+    const merged = [...stored];
+    fromUrl.forEach((t) => { if (!merged.includes(t)) merged.push(t); });
+    enrolledTypes = sanitizeTypeList(merged);
+    if (fromUrl.length > 0) saveSubjects(enrolledTypes);
+    return;
+  }
+
   if (fromUrl.length > 0) {
     enrolledTypes = fromUrl;
     saveSubjects(enrolledTypes);
     return;
   }
 
-  const stored = loadStoredSubjects();
-  if (stored.length > 0) {
-    enrolledTypes = stored;
-  } else {
-    enrolledTypes = getOrderedTypes();
-    saveSubjects(enrolledTypes);
-  }
+  enrolledTypes = getOrderedTypes();
+  saveSubjects(enrolledTypes);
 }
 
 function stripEmojiPrefix(text) {
@@ -150,6 +156,27 @@ function getTypeExtraLabel(type) {
   const page = TRAINING_PAGES[type];
   if (!page || !page.mainHtml) {
     return '';
+  }
+
+  // Material Icons が span 内に入っているため DOMParser でテキストノードのみ抽出
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(`<div>${page.mainHtml}</div>`, 'text/html');
+    const el = doc.querySelector('.insight-gap-label');
+    if (el) {
+      let text = '';
+      el.childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          text += node.textContent;
+        }
+      });
+      const trimmed = text.trim();
+      if (trimmed) {
+        return trimmed;
+      }
+    }
+  } catch {
+    // fall through to regex fallback
   }
 
   const match = page.mainHtml.match(/insight-gap-label">([^<]+)</);

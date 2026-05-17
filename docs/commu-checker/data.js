@@ -4,7 +4,7 @@
 const TYPES = [
   {
     id: 'Z', clsKey: 'z', good: true,
-    name: '「良好」型', sub: 'コミュニケーション良好', emoji: '✅', color: '#1D9E75',
+    name: '「良好」型', sub: 'コミュニケーション良好', emoji: '✅', icon: 'task_alt', color: '#1D9E75',
     desc: '自分の状況を相手に合わせて伝えられる。問題の自覚と改善の意欲がある。この状態を維持・伸ばす関わりが有効。',
     symptoms: [
       'フィードバックを次回に自発的に反映できる',
@@ -25,7 +25,7 @@ const TYPES = [
   },
   {
     id: 'M1', clsKey: 'm1', group: 'M', good: false,
-    name: '「困っていない」型', sub: '動機欠如', emoji: '😶', color: '#C84B1A',
+    name: '「困っていない」型', sub: '動機欠如', emoji: '😶', icon: 'sentiment_neutral', color: '#C84B1A',
     desc: '問題を問題と認識しておらず、改善の動機がゼロ。外部刺激で一時的に変わるが内面化しない。最も介入コストが高い。',
     symptoms: [
       'その場では「確かに」と言うが翌日には元の行動に戻っている',
@@ -46,7 +46,7 @@ const TYPES = [
   },
   {
     id: 'D1', clsKey: 'd1', group: 'D', good: false,
-    name: '「見えてるけど気づかない」型', sub: '回路未接続', emoji: '🔌', color: '#A06010',
+    name: '「見えてるけど気づかない」型', sub: '回路未接続', emoji: '🔌', icon: 'link_off', color: '#A06010',
     desc: '認知はできているが、判断・行動に変換するステップが抜けている。一緒に問答すると意外と見えている。一人だと動かない。',
     symptoms: [
       '質問したり一緒に考えたりすると答えが出てくるが、一人に任せると出てこない',
@@ -67,7 +67,7 @@ const TYPES = [
   },
   {
     id: 'D2', clsKey: 'd2', group: 'D', good: false,
-    name: '「自分視点のまま」型', sub: '読み手不在', emoji: '🪟', color: '#1A4FBB',
+    name: '「自分視点のまま」型', sub: '読み手不在', emoji: '🪟', icon: 'visibility_off', color: '#1A4FBB',
     desc: '書いた内容は自分では理解しているが、読み手に何が伝わらないか想像できない。用語の説明不足・前提の欠落が多い。',
     symptoms: [
       '固有名詞・略語を説明なく使う',
@@ -87,7 +87,7 @@ const TYPES = [
   },
   {
     id: 'S1', clsKey: 's1', group: 'S', good: false,
-    name: '「整理できない」型', sub: '構造化困難', emoji: '🧩', color: '#5A3EC8',
+    name: '「整理できない」型', sub: '構造化困難', emoji: '🧩', icon: 'account_tree', color: '#5A3EC8',
     desc: '情報は持っているが、優先度・粒度・順序の整理コストが高い。時間をかけるほど複雑になる傾向がある。',
     symptoms: [
       '粒度がバラバラ（概要と細部が混在）',
@@ -107,7 +107,7 @@ const TYPES = [
   },
   {
     id: 'M2', clsKey: 'm2', group: 'M', good: false,
-    name: '「防衛本能がつよい」型', sub: 'ハリネズミタイプ', emoji: '🦔', color: '#1a6a3a',
+    name: '「防衛本能がつよい」型', sub: 'ハリネズミタイプ', emoji: '🦔', icon: 'shield', color: '#1a6a3a',
     desc: '指摘を改善材料ではなく自己否定として受け取りやすい。防御反応が先に立つため、何を言っても正しく受け止めにくくなる。',
     symptoms: [
       '指摘の意図よりも「責められたかどうか」に反応が向く',
@@ -127,7 +127,7 @@ const TYPES = [
   },
   {
     id: 'S2', clsKey: 's2', group: 'S', good: false,
-    name: '「頭の中にあるけど出ない」型', sub: '言語化困難', emoji: '💭', color: '#8E2050',
+    name: '「頭の中にあるけど出ない」型', sub: '言語化困難', emoji: '💭', icon: 'psychology', color: '#8E2050',
     desc: '口頭でも文章でも要点が伝わりにくい。思考はあるかもしれないが、アウトプットへの変換が苦手。',
     symptoms: [
       '口頭でも文章でも要点が伝わりにくく、冗長',
@@ -147,7 +147,7 @@ const TYPES = [
   },
   {
     id: 'S3', clsKey: 's3', group: 'S', good: false,
-    name: '「具体から動けない」型', sub: '抽象化困難', emoji: '🔭', color: '#2E5E08',
+    name: '「具体から動けない」型', sub: '抽象化困難', emoji: '🔭', icon: 'blur_on', color: '#2E5E08',
     desc: '目の前の作業はこなせるが要約・概念化・意味づけが難しい。時系列の作業記録は書けるが概要が出てこない。',
     symptoms: [
       '時系列に作業内容が並んでいるが概要・まとめがない',
@@ -166,7 +166,7 @@ const TYPES = [
   },
   {
     id: 'R1', clsKey: 'r1', group: 'R', good: false,
-    name: '「聞けていない」型', sub: '受信困難', emoji: '👂', color: '#555',
+    name: '「聞けていない」型', sub: '受信困難', emoji: '👂', icon: 'hearing_disabled', color: '#555',
     desc: '同じ指摘を複数回しても改善されない。自分からは確認しに来ない。情報の取り込みにボトルネックがある。',
     symptoms: [
       '同じ指摘を複数回しても改善されない',
@@ -186,7 +186,7 @@ const TYPES = [
   },
   {
     id: 'R2', clsKey: 'r2', group: 'R', good: false,
-    name: '「止まれない」型', sub: '出力過多', emoji: '🌊', color: '#952808',
+    name: '「止まれない」型', sub: '出力過多', emoji: '🌊', icon: 'waves', color: '#952808',
     desc: '受信はできているが自分の出力を止めることができない。話し続けることで相手の発言を遮断する。悪意ではなく制御困難。',
     symptoms: [
       '相手の話が終わる前に話し始める',
@@ -205,7 +205,7 @@ const TYPES = [
   },
   {
     id: 'R3', clsKey: 'r3', group: 'R', good: false,
-    name: '「残らない」型', sub: '保持困難', emoji: '🫧', color: '#163080',
+    name: '「残らない」型', sub: '保持困難', emoji: '🫧', icon: 'memory', color: '#163080',
     desc: '聞いた時点では理解しているが時間が経つと消えている。メモを取る習慣がないか、取っても後で読めないメモになる。意図的なサボりではなく保持のメカニズム自体が弱い。',
     symptoms: [
       'メモを取らない、または取っても後で参照できない内容になっている',
@@ -323,7 +323,7 @@ function buildTypeDetailHTML(t, opts) {
   const showTrainingLink = !opts || opts.showTrainingLink !== false;
   const header = showHeader ? `
     <div class="modal-type-header">
-      <span class="modal-type-emoji">${t.emoji}</span>
+      <span class="modal-type-emoji material-icons-round" style="color:${t.color}">${t.icon}</span>
       <div class="modal-type-title-wrap">
         <span class="badge badge-${t.clsKey}">${t.id} — ${t.sub}</span>
         <div class="modal-type-title">${t.name}</div>
