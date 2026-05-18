@@ -886,6 +886,7 @@ function applyTypeTone(type) {
 function buildTypeMenu() {
   const menu = document.getElementById('type-menu');
   menu.innerHTML = '';
+  const orderedEnrolled = sortTypesForSummary(enrolledTypes);
 
   const summaryBtn = document.createElement('button');
   summaryBtn.className = 'type-menu-btn';
@@ -896,7 +897,7 @@ function buildTypeMenu() {
   });
   menu.appendChild(summaryBtn);
 
-  enrolledTypes.forEach((type) => {
+  orderedEnrolled.forEach((type) => {
     const page = TRAINING_PAGES[type];
     if (!page) {
       return;
