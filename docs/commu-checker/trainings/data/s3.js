@@ -1,6 +1,64 @@
-'use strict';
+﻿'use strict';
 
 window.TRAINING_PAGE_PARTS = window.TRAINING_PAGE_PARTS || {};
+
+const S3_CHECK_TEXT = [
+  '作業ログから「つまり何か」を1文で書いた',
+  'その1文を本文の先頭に置いてから詳細を書いた',
+  '先頭1文をメンターに口頭で確認した',
+  '具体の事実を3つ選んで共通点を1つ探した',
+  '共通点を「一言ラベル」で表現した',
+  'ラベルが伝わるか1文で自己確認した',
+  '自分の文章を見直して「具体だけで終わる箇所」を1つ見つけた',
+  'その箇所に要約1文を追加した',
+  '追加後の文章を「初見の人に伝わるか」で再確認した',
+  '提出前に「要約1文→具体3点」の順で読んで確認した',
+  '要約が曖昧な箇所を1点以上修正した',
+  '修正前後の差分をメンターに1行で共有した',
+  '書いた文章を1つ選び「事実」と「要点」を分けて書いた',
+  '事実3つから要点1つを作って追記した',
+  '要約後の文章を自分で読み直し「詰まらないか」を確認した',
+  '提出前に「この記録の学び」を1行で書き出した',
+  '要点不足を自分で1点以上補ってから提出した',
+  '「先回りで要点化できた箇所」をメンターに共有した',
+  'WK4〜6で効いた手順を2つ以上組み合わせて使った',
+  '「自分の要点化手順」をメンターに1分で説明した',
+  '意識しなくても具体から要点を引き上げられた場面を1つ見つけた',
+  'その瞬間を「どの事実から要点化したか」でメモした',
+  '今日のメモを次回1on1で共有できる場所に保存した',
+  '相手が詰まりそうな箇所を1つ記録した（なければ「なし」と記録）',
+  '受けた指摘を「要点不足/具体過多/順序不足」に分類してメモした',
+  '明日の改善アクションを1行で決めた',
+  '【自走】今日のタスクで、要点化してから共有できた',
+  '【自覚】「なぜ要点化が必要か」を自分の言葉で説明した',
+  '【再現】今日の新しいタスクでも要点化手順を再現して使った'
+];
+
+const S3_WEEK_GOALS = [
+  '毎日、相手に必要な要点を先に置いてから本文を書けた。',
+  '毎日、専門用語や略語を聞き手向けに言い換えられた。',
+  '毎日、要点不足を1つ見つけて要約できた。',
+  '毎日、提出前に聞き手目線のテストを実施できた。',
+  '毎日、要点チェックを自分だけで回せた。',
+  '毎日、指摘前に要点要約を1回以上実行できた。',
+  '毎日、自分に効く要約手順を同じ順番で回せた。',
+  '毎日、無意識でできた要点要約の行動を記録できた。',
+  '毎日、要点要約のサイクルを自走で完了できた。',
+  '毎日、卒業3基準を実タスクで満たせた。'
+];
+
+const S3_GUIDE_TEXT = [
+  'S3型は「本人には自明な要点」が抜けやすい。必ず「聞く人は何を知らないか」を先に聞く。修正文は長さより、要点が補われているかだけを評価する。',
+  'S3は具体は出せても要約で止まりやすい。まず「一言で言うと？」を置くだけで伝達の芯ができる。完璧さより、毎日1回の要約を優先する。',
+  '「説明が長い/短い」ではなく「要点が埋まっているか」を軸に評価する。1文でも要点が入れば改善として認め、継続意欲を保つ。',
+  '声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。',
+  'ここは「本人が自分で要点漏れを拾えるか」の確認週。見つけ方を言語化させ、再現可能な手順に固定する。',
+  '1文の要点要約でも効果は大きい。完璧な説明を狙うより、相手が詰まる一点を先に埋める意識を優先する。',
+  '要約手順を固定できると再現性が上がる。「誰を想定→何を要約→どこに書く」の順で本人の型を確定させる。',
+  '最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。',
+  'この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。',
+  '3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（要点/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。'
+];
 window.TRAINING_PAGE_PARTS['s3'] = {
   label: "S3",
   title: "S3型 10週間トレーニング｜コミュ力診断",
@@ -125,28 +183,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、相手に必要な要点を先に置いてから本文を書けた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[0]}
       </div>
       <div class="check-list" id="checks-week-1">
         <div class="check-item" onclick="toggleCheck(this,'week-1',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">書く前に「相手が知らない要点」を1つ書き出した</div>
+          <div class="check-text">${S3_CHECK_TEXT[0]}</div>
           <div class="check-date" id="date-week-1-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">本文の冒頭に要点条件を1行追加してから書き始めた</div>
+          <div class="check-text">${S3_CHECK_TEXT[1]}</div>
           <div class="check-date" id="date-week-1-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「この人は何を知らないか」をメンターに口頭共有した</div>
+          <div class="check-text">${S3_CHECK_TEXT[2]}</div>
           <div class="check-date" id="date-week-1-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        S3型は「本人には自明な要点」が抜けやすい。必ず「聞く人は何を知らないか」を先に聞く。修正文は長さより、要点が補われているかだけを評価する。
+        ${S3_GUIDE_TEXT[0]}
       </div>
     </div>
   </div>
@@ -164,28 +222,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、専門用語や略語を聞き手向けに言い換えられた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[1]}
       </div>
       <div class="check-list" id="checks-week-2">
         <div class="check-item" onclick="toggleCheck(this,'week-2',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">専門用語・略語を1つ以上やさしい表現に言い換えた</div>
+          <div class="check-text">${S3_CHECK_TEXT[3]}</div>
           <div class="check-date" id="date-week-2-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">略語を初出時に正式名称または注釈つきで書いた</div>
+          <div class="check-text">${S3_CHECK_TEXT[4]}</div>
           <div class="check-date" id="date-week-2-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">言い換え後に「この文で伝わるか」を1文で自己確認した</div>
+          <div class="check-text">${S3_CHECK_TEXT[5]}</div>
           <div class="check-date" id="date-week-2-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> なぜ「言い換え」が効くのか</div>
-        S3は具体は出せても要約で止まりやすい。まず「一言で言うと？」を置くだけで伝達の芯ができる。完璧さより、毎日1回の要約を優先する。
+        ${S3_GUIDE_TEXT[1]}
       </div>
     </div>
   </div>
@@ -203,28 +261,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、要点不足を1つ見つけて要約できた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[2]}
       </div>
       <div class="check-list" id="checks-week-3">
         <div class="check-item" onclick="toggleCheck(this,'week-3',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">自分の文章を見直して「要点が飛んでいる箇所」を1つ見つけた</div>
+          <div class="check-text">${S3_CHECK_TEXT[6]}</div>
           <div class="check-date" id="date-week-3-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">その箇所に背景説明または条件説明を1行補った</div>
+          <div class="check-text">${S3_CHECK_TEXT[7]}</div>
           <div class="check-date" id="date-week-3-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">要約後の文章を「初見の人に伝わるか」で再確認した</div>
+          <div class="check-text">${S3_CHECK_TEXT[8]}</div>
           <div class="check-date" id="date-week-3-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        「説明が長い/短い」ではなく「要点が埋まっているか」を軸に評価する。1文でも要点が入れば改善として認め、継続意欲を保つ。
+        ${S3_GUIDE_TEXT[2]}
       </div>
     </div>
   </div>
@@ -256,28 +314,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、提出前に聞き手目線のテストを実施できた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[3]}
       </div>
       <div class="check-list" id="checks-week-4">
         <div class="check-item" onclick="toggleCheck(this,'week-4',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">提出前に「この文章は初見でも分かるか？」を声に出して確認した</div>
+          <div class="check-text">${S3_CHECK_TEXT[9]}</div>
           <div class="check-date" id="date-week-4-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">確認後に要点不足または用語不足を1点以上修正した</div>
+          <div class="check-text">${S3_CHECK_TEXT[10]}</div>
           <div class="check-date" id="date-week-4-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">修正前後の差分をメンターに1行で共有した</div>
+          <div class="check-text">${S3_CHECK_TEXT[11]}</div>
           <div class="check-date" id="date-week-4-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> まず要点を言う理由</div>
-        声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。
+        ${S3_GUIDE_TEXT[3]}
       </div>
     </div>
   </div>
@@ -295,28 +353,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、要点チェックを自分だけで回せた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[4]}
       </div>
       <div class="check-list" id="checks-week-5">
         <div class="check-item" onclick="toggleCheck(this,'week-5',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">書いた文章を1つ選び「聞き手が知らない要点」を1つ抽出した</div>
+          <div class="check-text">${S3_CHECK_TEXT[12]}</div>
           <div class="check-date" id="date-week-5-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">抽出した要点を1〜2行で要約した</div>
+          <div class="check-text">${S3_CHECK_TEXT[13]}</div>
           <div class="check-date" id="date-week-5-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">要約後の文章を自分で読み直し「詰まらないか」を確認した</div>
+          <div class="check-text">${S3_CHECK_TEXT[14]}</div>
           <div class="check-date" id="date-week-5-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        ここは「本人が自分で要点漏れを拾えるか」の確認週。見つけ方を言語化させ、再現可能な手順に固定する。
+        ${S3_GUIDE_TEXT[4]}
       </div>
     </div>
   </div>
@@ -334,28 +392,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、指摘前に要点要約を1回以上実行できた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[5]}
       </div>
       <div class="check-list" id="checks-week-6">
         <div class="check-item" onclick="toggleCheck(this,'week-6',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">提出前に「この人は何を知らないか」を1つ書き出した</div>
+          <div class="check-text">${S3_CHECK_TEXT[15]}</div>
           <div class="check-date" id="date-week-6-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">要点不足を自分で1点以上要約してから提出した</div>
+          <div class="check-text">${S3_CHECK_TEXT[16]}</div>
           <div class="check-date" id="date-week-6-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「先回りで要約できた箇所」をメンターに共有した</div>
+          <div class="check-text">${S3_CHECK_TEXT[17]}</div>
           <div class="check-date" id="date-week-6-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 先回りは小さくてよい</div>
-        1文の要点要約でも効果は大きい。完璧な説明を狙うより、相手が詰まる一点を先に埋める意識を優先する。
+        ${S3_GUIDE_TEXT[5]}
       </div>
     </div>
   </div>
@@ -373,23 +431,23 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、自分に効く要約手順を同じ順番で回せた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[6]}
       </div>
       <div class="check-list" id="checks-week-7">
         <div class="check-item" onclick="toggleCheck(this,'week-7',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">WK4〜6で効いた手順を2つ以上組み合わせて使った</div>
+          <div class="check-text">${S3_CHECK_TEXT[18]}</div>
           <div class="check-date" id="date-week-7-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-7',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「自分の要約手順」をメンターに1分で説明した</div>
+          <div class="check-text">${S3_CHECK_TEXT[19]}</div>
           <div class="check-date" id="date-week-7-1"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        要約手順を固定できると再現性が上がる。「誰を想定→何を要約→どこに書く」の順で本人の型を確定させる。
+        ${S3_GUIDE_TEXT[6]}
       </div>
     </div>
   </div>
@@ -421,28 +479,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、無意識でできた要点要約の行動を記録できた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[7]}
       </div>
       <div class="check-list" id="checks-week-8">
         <div class="check-item" onclick="toggleCheck(this,'week-8',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">意識しなくても相手視点で要約できた場面を1つ見つけた</div>
+          <div class="check-text">${S3_CHECK_TEXT[20]}</div>
           <div class="check-date" id="date-week-8-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">その瞬間を「いつ・何の文・どの要点を補ったか」でメモした</div>
+          <div class="check-text">${S3_CHECK_TEXT[21]}</div>
           <div class="check-date" id="date-week-8-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">今日のメモを次回1on1で共有できる場所に保存した</div>
+          <div class="check-text">${S3_CHECK_TEXT[22]}</div>
           <div class="check-date" id="date-week-8-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 変化は小さくていい</div>
-        最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。
+        ${S3_GUIDE_TEXT[7]}
       </div>
     </div>
   </div>
@@ -460,28 +518,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、要点要約のサイクルを自走で完了できた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[8]}
       </div>
       <div class="check-list" id="checks-week-10">
         <div class="check-item" onclick="toggleCheck(this,'week-10',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">相手が詰まりそうな箇所を1つ記録した（なければ「なし」と記録）</div>
+          <div class="check-text">${S3_CHECK_TEXT[23]}</div>
           <div class="check-date" id="date-week-10-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">受けた指摘を「要点不足/用語不足/順序不足」に分類してメモした</div>
+          <div class="check-text">${S3_CHECK_TEXT[24]}</div>
           <div class="check-date" id="date-week-10-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">明日の改善アクションを1行で決めた</div>
+          <div class="check-text">${S3_CHECK_TEXT[25]}</div>
           <div class="check-date" id="date-week-10-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。
+        ${S3_GUIDE_TEXT[8]}
       </div>
     </div>
   </div>
@@ -513,28 +571,28 @@ window.TRAINING_PAGE_PARTS['s3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、卒業3基準を実タスクで満たせた。
+        <strong>今週のゴール：</strong>${S3_WEEK_GOALS[9]}
       </div>
       <div class="check-list" id="checks-week-12">
         <div class="check-item" onclick="toggleCheck(this,'week-12',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【自走】今日のタスクで、要点不足を自分で補って完了した</div>
+          <div class="check-text">${S3_CHECK_TEXT[26]}</div>
           <div class="check-date" id="date-week-12-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【自覚】「なぜ要点共有が必要か」を自分の言葉で説明した</div>
+          <div class="check-text">${S3_CHECK_TEXT[27]}</div>
           <div class="check-date" id="date-week-12-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【再現】今日の新しいタスクでも要点要約の手順を再現して使った</div>
+          <div class="check-text">${S3_CHECK_TEXT[28]}</div>
           <div class="check-date" id="date-week-12-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（要点/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。
+        ${S3_GUIDE_TEXT[9]}
       </div>
     </div>
   </div>
@@ -558,3 +616,9 @@ window.TRAINING_PAGE_PARTS['s3'] = {
   </div>
 `
 };
+
+
+
+
+
+

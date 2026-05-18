@@ -1,6 +1,64 @@
-'use strict';
+﻿'use strict';
 
 window.TRAINING_PAGE_PARTS = window.TRAINING_PAGE_PARTS || {};
+
+const R2_CHECK_TEXT = [
+  '相手の話を最後まで聞いてから1文で要約した',
+  '話し始める前に3秒待てた',
+  '割り込みそうになった場面を1件記録した',
+  '相手の発話を1文で要約してから話した',
+  '話す前に「今話してよいか」を確認した',
+  '会話後に割り込みの有無を1件メモした',
+  '相手が話し終えるまで3秒待てた',
+  '途中で話し始めそうになった場面を1件記録した',
+  '待てた場面を1つ振り返った',
+  '1対話で自分の発話時間をざっくり記録した',
+  '相手の発話を遮った回数を記録した',
+  '次の対話で減らす行動を1つ決めた',
+  '相手の最後の一言まで待ってから話した',
+  '質問を1つして理解を確認した',
+  '待てなかった場面の原因を1つ書いた',
+  '相手の話を要約して返した',
+  '助言は相手の同意を得てから伝えた',
+  '急ぎ過ぎた場面を1件メモした',
+  '待つ→要約→質問を1セット実行した',
+  '自分の聞く手順を1分で説明した',
+  '話したくなる瞬間を1つ記録した',
+  'その原因を1つ選んでメモした',
+  '今日のメモを次回1on1で共有できる場所に保存した',
+  '会話前に待つ意識を1回確認した',
+  '割り込みの有無を分類してメモした',
+  '明日の改善アクションを1行で決めた',
+  '【自走】相手の話を最後まで聞いてから発言した',
+  '【説明】待つ理由を自分の言葉で説明した',
+  '【再現】今日の新しい場面でも「待つ→要約→質問」を使えた'
+];
+
+const R2_WEEK_GOALS = [
+  '毎日、相手に必要な前提を先に置いてから本文を書けた。',
+  '毎日、要約してから話し始めることができた。',
+  '毎日、沈黙を保って相手の最後まで聞けた。',
+  '毎日、会話の占有率を測って調整できた。',
+  '毎日、割り込みを減らして最後まで聞けた。',
+  '毎日、解決策を急がず理解を返せた。',
+  '毎日、待つ→要約→質問を同じ順番で回せた。',
+  '毎日、暴走の予兆を1件記録できた。',
+  '毎日、会話制御を自分だけで完了できた。',
+  '毎日、卒業3基準を実タスクで満たせた。'
+];
+
+const R2_GUIDE_TEXT = [
+  'R2型は「待って聞く」が抜けやすい。必ず「3秒待つ→要約する→話す」を毎回確認する。評価は話量より、相手の発話を最後まで受け取れたかを軸にする。',
+  'R2は「話したい衝動」が先に出やすい。要約してから発言するだけで、聞き漏れと衝突は減る。',
+  '話量より、最後まで聞けた回数を評価する。できた場面を具体的に褒める。',
+  '声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。',
+  'ここは「最後まで聞く」が自走できるかの確認週。待つ条件を具体化し、再現可能な手順に固定する。',
+  '完璧な返答より、相手を最後まで聞くことを優先する。',
+  '聞く手順を固定できると再現性が上がる。「待つ→要約→質問」の順で本人の型を確定させる。',
+  '最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。',
+  'この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。',
+  '3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（前提/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。'
+];
 window.TRAINING_PAGE_PARTS['r2'] = {
   label: "R2",
   title: "R2型 10週間トレーニング｜コミュ力診断",
@@ -125,28 +183,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、相手に必要な前提を先に置いてから本文を書けた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[0]}
       </div>
       <div class="check-list" id="checks-week-1">
         <div class="check-item" onclick="toggleCheck(this,'week-1',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">書く前に「相手が知らない前提」を1つ書き出した</div>
+          <div class="check-text">${R2_CHECK_TEXT[0]}</div>
           <div class="check-date" id="date-week-1-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">本文の冒頭に前提条件を1行追加してから書き始めた</div>
+          <div class="check-text">${R2_CHECK_TEXT[1]}</div>
           <div class="check-date" id="date-week-1-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「この人は何を知らないか」をメンターに口頭共有した</div>
+          <div class="check-text">${R2_CHECK_TEXT[2]}</div>
           <div class="check-date" id="date-week-1-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        R2型は「待って聞く」が抜けやすい。必ず「3秒待つ→要約する→話す」を毎回確認する。評価は話量より、相手の発話を最後まで受け取れたかを軸にする。
+        ${R2_GUIDE_TEXT[0]}
       </div>
     </div>
   </div>
@@ -164,28 +222,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、要約してから話し始めることができた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[1]}
       </div>
       <div class="check-list" id="checks-week-2">
         <div class="check-item" onclick="toggleCheck(this,'week-2',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">相手の発話を1文で要約してから話した</div>
+          <div class="check-text">${R2_CHECK_TEXT[3]}</div>
           <div class="check-date" id="date-week-2-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">話す前に「今話してよいか」を確認した</div>
+          <div class="check-text">${R2_CHECK_TEXT[4]}</div>
           <div class="check-date" id="date-week-2-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">会話後に割り込みの有無を1件メモした</div>
+          <div class="check-text">${R2_CHECK_TEXT[5]}</div>
           <div class="check-date" id="date-week-2-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> なぜ「言い換え」が効くのか</div>
-        R2は「話したい衝動」が先に出やすい。要約してから発言するだけで、聞き漏れと衝突は減る。
+        ${R2_GUIDE_TEXT[1]}
       </div>
     </div>
   </div>
@@ -203,28 +261,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、沈黙を保って相手の最後まで聞けた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[2]}
       </div>
       <div class="check-list" id="checks-week-3">
         <div class="check-item" onclick="toggleCheck(this,'week-3',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">相手が話し終えるまで3秒待てた</div>
+          <div class="check-text">${R2_CHECK_TEXT[6]}</div>
           <div class="check-date" id="date-week-3-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">途中で話し始めそうになった場面を1件記録した</div>
+          <div class="check-text">${R2_CHECK_TEXT[7]}</div>
           <div class="check-date" id="date-week-3-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">待てた場面を1つ振り返った</div>
+          <div class="check-text">${R2_CHECK_TEXT[8]}</div>
           <div class="check-date" id="date-week-3-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        話量より、最後まで聞けた回数を評価する。できた場面を具体的に褒める。
+        ${R2_GUIDE_TEXT[2]}
       </div>
     </div>
   </div>
@@ -256,28 +314,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、会話の占有率を測って調整できた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[3]}
       </div>
       <div class="check-list" id="checks-week-4">
         <div class="check-item" onclick="toggleCheck(this,'week-4',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">1対話で自分の発話時間をざっくり記録した</div>
+          <div class="check-text">${R2_CHECK_TEXT[9]}</div>
           <div class="check-date" id="date-week-4-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">相手の発話を遮った回数を記録した</div>
+          <div class="check-text">${R2_CHECK_TEXT[10]}</div>
           <div class="check-date" id="date-week-4-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">次の対話で減らす行動を1つ決めた</div>
+          <div class="check-text">${R2_CHECK_TEXT[11]}</div>
           <div class="check-date" id="date-week-4-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 声に出す理由</div>
-        声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。
+        ${R2_GUIDE_TEXT[3]}
       </div>
     </div>
   </div>
@@ -295,28 +353,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、割り込みを減らして最後まで聞けた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[4]}
       </div>
       <div class="check-list" id="checks-week-5">
         <div class="check-item" onclick="toggleCheck(this,'week-5',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">相手の最後の一言まで待ってから話した</div>
+          <div class="check-text">${R2_CHECK_TEXT[12]}</div>
           <div class="check-date" id="date-week-5-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">質問を1つして理解を確認した</div>
+          <div class="check-text">${R2_CHECK_TEXT[13]}</div>
           <div class="check-date" id="date-week-5-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">待てなかった場面の原因を1つ書いた</div>
+          <div class="check-text">${R2_CHECK_TEXT[14]}</div>
           <div class="check-date" id="date-week-5-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        ここは「最後まで聞く」が自走できるかの確認週。待つ条件を具体化し、再現可能な手順に固定する。
+        ${R2_GUIDE_TEXT[4]}
       </div>
     </div>
   </div>
@@ -334,28 +392,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、解決策を急がず理解を返せた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[5]}
       </div>
       <div class="check-list" id="checks-week-6">
         <div class="check-item" onclick="toggleCheck(this,'week-6',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">相手の話を要約して返した</div>
+          <div class="check-text">${R2_CHECK_TEXT[15]}</div>
           <div class="check-date" id="date-week-6-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">助言は相手の同意を得てから伝えた</div>
+          <div class="check-text">${R2_CHECK_TEXT[16]}</div>
           <div class="check-date" id="date-week-6-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">急ぎ過ぎた場面を1件メモした</div>
+          <div class="check-text">${R2_CHECK_TEXT[17]}</div>
           <div class="check-date" id="date-week-6-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 先回りは小さくてよい</div>
-        完璧な返答より、相手を最後まで聞くことを優先する。
+        ${R2_GUIDE_TEXT[5]}
       </div>
     </div>
   </div>
@@ -373,23 +431,23 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、待つ→要約→質問を同じ順番で回せた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[6]}
       </div>
       <div class="check-list" id="checks-week-7">
         <div class="check-item" onclick="toggleCheck(this,'week-7',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">待つ→要約→質問を1セット実行した</div>
+          <div class="check-text">${R2_CHECK_TEXT[18]}</div>
           <div class="check-date" id="date-week-7-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-7',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">自分の聞く手順を1分で説明した</div>
+          <div class="check-text">${R2_CHECK_TEXT[19]}</div>
           <div class="check-date" id="date-week-7-1"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        聞く手順を固定できると再現性が上がる。「待つ→要約→質問」の順で本人の型を確定させる。
+        ${R2_GUIDE_TEXT[6]}
       </div>
     </div>
   </div>
@@ -421,28 +479,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、暴走の予兆を1件記録できた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[7]}
       </div>
       <div class="check-list" id="checks-week-8">
         <div class="check-item" onclick="toggleCheck(this,'week-8',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">話したくなる瞬間を1つ記録した</div>
+          <div class="check-text">${R2_CHECK_TEXT[20]}</div>
           <div class="check-date" id="date-week-8-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">その原因を1つ選んでメモした</div>
+          <div class="check-text">${R2_CHECK_TEXT[21]}</div>
           <div class="check-date" id="date-week-8-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">今日のメモを次回1on1で共有できる場所に保存した</div>
+          <div class="check-text">${R2_CHECK_TEXT[22]}</div>
           <div class="check-date" id="date-week-8-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 変化は小さくていい</div>
-        最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。
+        ${R2_GUIDE_TEXT[7]}
       </div>
     </div>
   </div>
@@ -460,28 +518,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、会話制御を自分だけで完了できた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[8]}
       </div>
       <div class="check-list" id="checks-week-10">
         <div class="check-item" onclick="toggleCheck(this,'week-10',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">会話前に待つ意識を1回確認した</div>
+          <div class="check-text">${R2_CHECK_TEXT[23]}</div>
           <div class="check-date" id="date-week-10-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">割り込みの有無を分類してメモした</div>
+          <div class="check-text">${R2_CHECK_TEXT[24]}</div>
           <div class="check-date" id="date-week-10-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">明日の改善アクションを1行で決めた</div>
+          <div class="check-text">${R2_CHECK_TEXT[25]}</div>
           <div class="check-date" id="date-week-10-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。
+        ${R2_GUIDE_TEXT[8]}
       </div>
     </div>
   </div>
@@ -513,28 +571,28 @@ window.TRAINING_PAGE_PARTS['r2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、卒業3基準を実タスクで満たせた。
+        <strong>今週のゴール：</strong>${R2_WEEK_GOALS[9]}
       </div>
       <div class="check-list" id="checks-week-12">
         <div class="check-item" onclick="toggleCheck(this,'week-12',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【自走】相手の話を最後まで聞いてから発言した</div>
+          <div class="check-text">${R2_CHECK_TEXT[26]}</div>
           <div class="check-date" id="date-week-12-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【説明】待つ理由を自分の言葉で説明した</div>
+          <div class="check-text">${R2_CHECK_TEXT[27]}</div>
           <div class="check-date" id="date-week-12-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【再現】今日の新しい場面でも「待つ→要約→質問」を使えた</div>
+          <div class="check-text">${R2_CHECK_TEXT[28]}</div>
           <div class="check-date" id="date-week-12-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（前提/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。
+        ${R2_GUIDE_TEXT[9]}
       </div>
     </div>
   </div>
@@ -558,3 +616,9 @@ window.TRAINING_PAGE_PARTS['r2'] = {
   </div>
 `
 };
+
+
+
+
+
+

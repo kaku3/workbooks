@@ -1,6 +1,64 @@
-'use strict';
+﻿'use strict';
 
 window.TRAINING_PAGE_PARTS = window.TRAINING_PAGE_PARTS || {};
+
+const S2_CHECK_TEXT = [
+  '話す前に「結論ひと言」を先に書いた',
+  'ひと言の後に理由を1つだけ足して話した',
+  '話し終わりを30秒以内に収めた',
+  '口頭で30秒説明してから箇条書き3点にした',
+  '箇条書きを見て1文の結論に言い換えた',
+  '言い淀んだ箇所を1つメモした',
+  '自分の文章を見直して「結論が後ろ」の箇所を1つ見つけた',
+  'その箇所を結論先頭の1文に書き直した',
+  '書き直し後に30秒で読めるか確認した',
+  '提出前に「結論だけ」を先に読んで意味が通るか確認した',
+  '結論が曖昧な箇所を1点以上修正した',
+  '修正前後の差分をメンターに1行で共有した',
+  '書いた文章を1つ選び「最初の1文」を言い換えた',
+  '言い換え文を口頭で先に言ってから本文を整えた',
+  '言い換え後の文章を自分で読み直し「詰まらないか」を確認した',
+  '提出前に「相手が最初に知りたいこと」を1つ書き出した',
+  '結論不足を自分で1点以上補ってから提出した',
+  '「先回りで結論を置けた箇所」をメンターに共有した',
+  'WK4〜6で効いた手順を2つ以上組み合わせて使った',
+  '「自分の結論先出し手順」をメンターに1分で説明した',
+  '意識しなくても結論を先に言えた場面を1つ見つけた',
+  'その瞬間を「いつ・何を先に言えたか」でメモした',
+  '今日のメモを次回1on1で共有できる場所に保存した',
+  '相手が詰まりそうな箇所を1つ記録した（なければ「なし」と記録）',
+  '受けた指摘を「結論不足/順序不足/冗長」に分類してメモした',
+  '明日の改善アクションを1行で決めた',
+  '【自走】今日のタスクで、結論を先に示して完了した',
+  '【自覚】「なぜ先に結論が必要か」を自分の言葉で説明した',
+  '【再現】今日の新しいタスクでも結論先出し手順を再現して使った'
+];
+
+const S2_WEEK_GOALS = [
+  '毎日、相手に必要な結論を先に置いてから本文を書けた。',
+  '毎日、専門用語や略語を聞き手向けに言い換えられた。',
+  '毎日、結論不足を1つ見つけて言い換えできた。',
+  '毎日、提出前に聞き手目線のテストを実施できた。',
+  '毎日、結論チェックを自分だけで回せた。',
+  '毎日、指摘前に結論言い換えを1回以上実行できた。',
+  '毎日、自分に効く言い換え手順を同じ順番で回せた。',
+  '毎日、無意識でできた結論言い換えの行動を記録できた。',
+  '毎日、結論言い換えのサイクルを自走で完了できた。',
+  '毎日、卒業3基準を実タスクで満たせた。'
+];
+
+const S2_GUIDE_TEXT = [
+  'S2型は「本人には自明な結論」が抜けやすい。必ず「聞く人は何を知らないか」を先に聞く。修正文は長さより、結論が補われているかだけを評価する。',
+  'S2は考えがあっても言葉の出口で止まりやすい。まず一言で言ってから補足すると、伝達の流れが安定する。完璧さより、先に短く言い切る習慣を優先する。',
+  '「説明が長い/短い」ではなく「結論が埋まっているか」を軸に評価する。1文でも結論が入れば改善として認め、継続意欲を保つ。',
+  '声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。',
+  'ここは「本人が自分で結論漏れを拾えるか」の確認週。見つけ方を言語化させ、再現可能な手順に固定する。',
+  '1文の結論言い換えでも効果は大きい。完璧な説明を狙うより、相手が詰まる一点を先に埋める意識を優先する。',
+  '言い換え手順を固定できると再現性が上がる。「誰を想定→何を言い換え→どこに書く」の順で本人の型を確定させる。',
+  '最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。',
+  'この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。',
+  '3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（結論/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。'
+];
 window.TRAINING_PAGE_PARTS['s2'] = {
   label: "S2",
   title: "S2型 10週間トレーニング｜コミュ力診断",
@@ -125,28 +183,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、相手に必要な結論を先に置いてから本文を書けた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[0]}
       </div>
       <div class="check-list" id="checks-week-1">
         <div class="check-item" onclick="toggleCheck(this,'week-1',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">書く前に「相手が知らない結論」を1つ書き出した</div>
+          <div class="check-text">${S2_CHECK_TEXT[0]}</div>
           <div class="check-date" id="date-week-1-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">本文の冒頭に結論条件を1行追加してから書き始めた</div>
+          <div class="check-text">${S2_CHECK_TEXT[1]}</div>
           <div class="check-date" id="date-week-1-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「この人は何を知らないか」をメンターに口頭共有した</div>
+          <div class="check-text">${S2_CHECK_TEXT[2]}</div>
           <div class="check-date" id="date-week-1-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        S2型は「本人には自明な結論」が抜けやすい。必ず「聞く人は何を知らないか」を先に聞く。修正文は長さより、結論が補われているかだけを評価する。
+        ${S2_GUIDE_TEXT[0]}
       </div>
     </div>
   </div>
@@ -164,28 +222,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、専門用語や略語を聞き手向けに言い換えられた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[1]}
       </div>
       <div class="check-list" id="checks-week-2">
         <div class="check-item" onclick="toggleCheck(this,'week-2',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">専門用語・略語を1つ以上やさしい表現に言い換えた</div>
+          <div class="check-text">${S2_CHECK_TEXT[3]}</div>
           <div class="check-date" id="date-week-2-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">略語を初出時に正式名称または注釈つきで書いた</div>
+          <div class="check-text">${S2_CHECK_TEXT[4]}</div>
           <div class="check-date" id="date-week-2-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">言い換え後に「この文で伝わるか」を1文で自己確認した</div>
+          <div class="check-text">${S2_CHECK_TEXT[5]}</div>
           <div class="check-date" id="date-week-2-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> なぜ「言い換え」が効くのか</div>
-        S2は考えがあっても言葉の出口で止まりやすい。まず一言で言ってから補足すると、伝達の流れが安定する。完璧さより、先に短く言い切る習慣を優先する。
+        ${S2_GUIDE_TEXT[1]}
       </div>
     </div>
   </div>
@@ -203,28 +261,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、結論不足を1つ見つけて言い換えできた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[2]}
       </div>
       <div class="check-list" id="checks-week-3">
         <div class="check-item" onclick="toggleCheck(this,'week-3',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">自分の文章を見直して「結論が飛んでいる箇所」を1つ見つけた</div>
+          <div class="check-text">${S2_CHECK_TEXT[6]}</div>
           <div class="check-date" id="date-week-3-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">その箇所に背景説明または条件説明を1行補った</div>
+          <div class="check-text">${S2_CHECK_TEXT[7]}</div>
           <div class="check-date" id="date-week-3-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">言い換え後の文章を「初見の人に伝わるか」で再確認した</div>
+          <div class="check-text">${S2_CHECK_TEXT[8]}</div>
           <div class="check-date" id="date-week-3-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        「説明が長い/短い」ではなく「結論が埋まっているか」を軸に評価する。1文でも結論が入れば改善として認め、継続意欲を保つ。
+        ${S2_GUIDE_TEXT[2]}
       </div>
     </div>
   </div>
@@ -256,28 +314,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、提出前に聞き手目線のテストを実施できた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[3]}
       </div>
       <div class="check-list" id="checks-week-4">
         <div class="check-item" onclick="toggleCheck(this,'week-4',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">提出前に「この文章は初見でも分かるか？」を声に出して確認した</div>
+          <div class="check-text">${S2_CHECK_TEXT[9]}</div>
           <div class="check-date" id="date-week-4-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">確認後に結論不足または用語不足を1点以上修正した</div>
+          <div class="check-text">${S2_CHECK_TEXT[10]}</div>
           <div class="check-date" id="date-week-4-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">修正前後の差分をメンターに1行で共有した</div>
+          <div class="check-text">${S2_CHECK_TEXT[11]}</div>
           <div class="check-date" id="date-week-4-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 一言を先に言う理由</div>
-        声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。
+        ${S2_GUIDE_TEXT[3]}
       </div>
     </div>
   </div>
@@ -295,28 +353,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、結論チェックを自分だけで回せた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[4]}
       </div>
       <div class="check-list" id="checks-week-5">
         <div class="check-item" onclick="toggleCheck(this,'week-5',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">書いた文章を1つ選び「聞き手が知らない結論」を1つ抽出した</div>
+          <div class="check-text">${S2_CHECK_TEXT[12]}</div>
           <div class="check-date" id="date-week-5-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">抽出した結論を1〜2行で言い換えした</div>
+          <div class="check-text">${S2_CHECK_TEXT[13]}</div>
           <div class="check-date" id="date-week-5-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">言い換え後の文章を自分で読み直し「詰まらないか」を確認した</div>
+          <div class="check-text">${S2_CHECK_TEXT[14]}</div>
           <div class="check-date" id="date-week-5-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        ここは「本人が自分で結論漏れを拾えるか」の確認週。見つけ方を言語化させ、再現可能な手順に固定する。
+        ${S2_GUIDE_TEXT[4]}
       </div>
     </div>
   </div>
@@ -334,28 +392,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、指摘前に結論言い換えを1回以上実行できた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[5]}
       </div>
       <div class="check-list" id="checks-week-6">
         <div class="check-item" onclick="toggleCheck(this,'week-6',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">提出前に「この人は何を知らないか」を1つ書き出した</div>
+          <div class="check-text">${S2_CHECK_TEXT[15]}</div>
           <div class="check-date" id="date-week-6-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">結論不足を自分で1点以上言い換えしてから提出した</div>
+          <div class="check-text">${S2_CHECK_TEXT[16]}</div>
           <div class="check-date" id="date-week-6-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「先回りで言い換えできた箇所」をメンターに共有した</div>
+          <div class="check-text">${S2_CHECK_TEXT[17]}</div>
           <div class="check-date" id="date-week-6-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 先回りは小さくてよい</div>
-        1文の結論言い換えでも効果は大きい。完璧な説明を狙うより、相手が詰まる一点を先に埋める意識を優先する。
+        ${S2_GUIDE_TEXT[5]}
       </div>
     </div>
   </div>
@@ -373,23 +431,23 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、自分に効く言い換え手順を同じ順番で回せた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[6]}
       </div>
       <div class="check-list" id="checks-week-7">
         <div class="check-item" onclick="toggleCheck(this,'week-7',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">WK4〜6で効いた手順を2つ以上組み合わせて使った</div>
+          <div class="check-text">${S2_CHECK_TEXT[18]}</div>
           <div class="check-date" id="date-week-7-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-7',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「自分の言い換え手順」をメンターに1分で説明した</div>
+          <div class="check-text">${S2_CHECK_TEXT[19]}</div>
           <div class="check-date" id="date-week-7-1"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        言い換え手順を固定できると再現性が上がる。「誰を想定→何を言い換え→どこに書く」の順で本人の型を確定させる。
+        ${S2_GUIDE_TEXT[6]}
       </div>
     </div>
   </div>
@@ -421,28 +479,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、無意識でできた結論言い換えの行動を記録できた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[7]}
       </div>
       <div class="check-list" id="checks-week-8">
         <div class="check-item" onclick="toggleCheck(this,'week-8',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">意識しなくても相手視点で言い換えできた場面を1つ見つけた</div>
+          <div class="check-text">${S2_CHECK_TEXT[20]}</div>
           <div class="check-date" id="date-week-8-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">その瞬間を「いつ・何の文・どの結論を補ったか」でメモした</div>
+          <div class="check-text">${S2_CHECK_TEXT[21]}</div>
           <div class="check-date" id="date-week-8-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">今日のメモを次回1on1で共有できる場所に保存した</div>
+          <div class="check-text">${S2_CHECK_TEXT[22]}</div>
           <div class="check-date" id="date-week-8-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 変化は小さくていい</div>
-        最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。
+        ${S2_GUIDE_TEXT[7]}
       </div>
     </div>
   </div>
@@ -460,28 +518,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、結論言い換えのサイクルを自走で完了できた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[8]}
       </div>
       <div class="check-list" id="checks-week-10">
         <div class="check-item" onclick="toggleCheck(this,'week-10',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">相手が詰まりそうな箇所を1つ記録した（なければ「なし」と記録）</div>
+          <div class="check-text">${S2_CHECK_TEXT[23]}</div>
           <div class="check-date" id="date-week-10-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">受けた指摘を「結論不足/用語不足/順序不足」に分類してメモした</div>
+          <div class="check-text">${S2_CHECK_TEXT[24]}</div>
           <div class="check-date" id="date-week-10-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">明日の改善アクションを1行で決めた</div>
+          <div class="check-text">${S2_CHECK_TEXT[25]}</div>
           <div class="check-date" id="date-week-10-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。
+        ${S2_GUIDE_TEXT[8]}
       </div>
     </div>
   </div>
@@ -513,28 +571,28 @@ window.TRAINING_PAGE_PARTS['s2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、卒業3基準を実タスクで満たせた。
+        <strong>今週のゴール：</strong>${S2_WEEK_GOALS[9]}
       </div>
       <div class="check-list" id="checks-week-12">
         <div class="check-item" onclick="toggleCheck(this,'week-12',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【自走】今日のタスクで、結論不足を自分で補って完了した</div>
+          <div class="check-text">${S2_CHECK_TEXT[26]}</div>
           <div class="check-date" id="date-week-12-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【自覚】「なぜ結論共有が必要か」を自分の言葉で説明した</div>
+          <div class="check-text">${S2_CHECK_TEXT[27]}</div>
           <div class="check-date" id="date-week-12-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【再現】今日の新しいタスクでも結論言い換えの手順を再現して使った</div>
+          <div class="check-text">${S2_CHECK_TEXT[28]}</div>
           <div class="check-date" id="date-week-12-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（結論/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。
+        ${S2_GUIDE_TEXT[9]}
       </div>
     </div>
   </div>
@@ -558,3 +616,9 @@ window.TRAINING_PAGE_PARTS['s2'] = {
   </div>
 `
 };
+
+
+
+
+
+

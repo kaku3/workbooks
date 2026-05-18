@@ -1,6 +1,63 @@
-'use strict';
+﻿'use strict';
 
 window.TRAINING_PAGE_PARTS = window.TRAINING_PAGE_PARTS || {};
+
+const M2_CHECK_TEXT = [
+  'フィードバック前に「能力否定ではない」と自分に言語化した',
+  '指摘を聞いた直後に反論せず3秒待った',
+  '聞いた内容を「要点1行」で復唱した',
+  '受けた指摘を「事実」と「解釈」に分けて書いた',
+  '事実部分だけを使って改善点を1つ決めた',
+  '決めた改善を実行して結果を1行で記録した',
+  '言い訳や説明の前に相手の指摘を1文で要約した',
+  '要約が正しいか相手に確認してから発言した',
+  '改善の次アクションを1つ合意した',
+  '改善案を2択にしてどちらで直すか自分で選んだ',
+  '選んだ案で実際に1点修正した',
+  '選んだ理由を1行で共有した',
+  '強い言い回しを避けて短い言葉で確認した',
+  '会話後に気持ちを落ち着かせる行動を1つ実施した',
+  '改善内容を翌日に持ち越さずその場で確定した',
+  '指摘を受けた直後に3秒待って要約した',
+  '要約後に改善アクションを1つ実行した',
+  '実行結果を記録して次回の型を維持した',
+  '順番が崩れた場面を1つ記録し修正した',
+  '【自走】促されずに日次チェックを開始して完了した',
+  '【動機】改善の損得を自分の言葉で1文説明した',
+  '【再現】別タスクでも同じ実行手順を再現した',
+  '開始時刻・チェック順・記録先を固定運用できた',
+  '逸脱しそうな場面でも基準どおりに戻せた',
+  '翌日の実行計画を1行で確定した',
+  '【安全】指摘の場で反応前に落ち着く手順を実行した',
+  '【受容】指摘を要約し改善アクションへ変換した',
+  '【再現】新しい場面でも同じ会話手順を再現した'
+];
+
+const M2_WEEK_GOALS = [
+  '毎日、指摘を攻撃ではなく情報として受け止められた。',
+  '毎日、指摘内容を事実ベースで整理できた。',
+  '毎日、指摘内容を先に要約してから話せた。',
+  '毎日、A/Bの選択肢から自分で改善を選べた。',
+  '毎日、感情を荒らさずに改善会話を完了できた。',
+  '毎日、受け取り→要約→修正の流れを自走で完了できた。',
+  '毎日、同じ受け取り手順を再現できた。',
+  '毎日、卒業3基準（安全・受容・再現）を満たせた。',
+  '毎日、卒業後も崩れない運用で実行できた。',
+  '毎日、最終3基準を満たして卒業判定を通過できた。'
+];
+
+const M2_GUIDE_TEXT = [
+  'M2は「まず守る」が先に出る。冒頭で安全を確保し、短い復唱を入れるだけで受け取り率が上がる。',
+  '感情が高いと内容が入らない。事実だけを先に扱うと、防衛反応を下げながら改善行動に移しやすくなる。',
+  '「まず要約」は防衛反応を下げる最短手段。理解確認を先にすると、対話が衝突ではなく調整になる。',
+  '声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。',
+  'M2は会話の刺激量が高いと崩れやすい。短く・事実ベース・選択肢提示を固定し、毎日同じ型で回す。',
+  '防衛反応は悪ではなく反射。反射を否定せず、順番だけ整えると改善は進められる。',
+  '手順が固定されると、感情が揺れても行動は崩れにくい。順番を守ること自体を成果として評価する。',
+  'その日たまたまで終わらせず、同じ基準で繰り返せるかを重視する。再現できるなら卒業条件は満たせる。',
+  '卒業直前は「崩れない運用」の確認が最優先。高難度の日でも最低限の実行を維持できるかを見る。',
+  '3つ全部YESなら卒業。未達がある場合は、崩れた手順（安全確認/要約/選択/実行）を特定して翌日に戻す。'
+];
 window.TRAINING_PAGE_PARTS['m2'] = {
   label: "M2",
   title: "M2型 10週間トレーニング｜コミュ力診断",
@@ -125,28 +182,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、指摘を攻撃ではなく情報として受け止められた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[0]}
       </div>
       <div class="check-list" id="checks-week-1">
         <div class="check-item" onclick="toggleCheck(this,'week-1',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">フィードバック前に「能力否定ではない」と自分に言語化した</div>
+          <div class="check-text">${M2_CHECK_TEXT[0]}</div>
           <div class="check-date" id="date-week-1-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">指摘を聞いた直後に反論せず3秒待った</div>
+          <div class="check-text">${M2_CHECK_TEXT[1]}</div>
           <div class="check-date" id="date-week-1-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">聞いた内容を「要点1行」で復唱した</div>
+          <div class="check-text">${M2_CHECK_TEXT[2]}</div>
           <div class="check-date" id="date-week-1-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        M2は「まず守る」が先に出る。冒頭で安全を確保し、短い復唱を入れるだけで受け取り率が上がる。
+        ${M2_GUIDE_TEXT[0]}
       </div>
     </div>
   </div>
@@ -164,28 +221,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、指摘内容を事実ベースで整理できた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[1]}
       </div>
       <div class="check-list" id="checks-week-2">
         <div class="check-item" onclick="toggleCheck(this,'week-2',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">受けた指摘を「事実」と「解釈」に分けて書いた</div>
+          <div class="check-text">${M2_CHECK_TEXT[3]}</div>
           <div class="check-date" id="date-week-2-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">事実部分だけを使って改善点を1つ決めた</div>
+          <div class="check-text">${M2_CHECK_TEXT[4]}</div>
           <div class="check-date" id="date-week-2-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">決めた改善を実行して結果を1行で記録した</div>
+          <div class="check-text">${M2_CHECK_TEXT[5]}</div>
           <div class="check-date" id="date-week-2-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> なぜ「事実分離」が効くのか</div>
-        感情が高いと内容が入らない。事実だけを先に扱うと、防衛反応を下げながら改善行動に移しやすくなる。
+        ${M2_GUIDE_TEXT[1]}
       </div>
     </div>
   </div>
@@ -203,28 +260,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、指摘内容を先に要約してから話せた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[2]}
       </div>
       <div class="check-list" id="checks-week-3">
         <div class="check-item" onclick="toggleCheck(this,'week-3',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">言い訳や説明の前に相手の指摘を1文で要約した</div>
+          <div class="check-text">${M2_CHECK_TEXT[6]}</div>
           <div class="check-date" id="date-week-3-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">要約が正しいか相手に確認してから発言した</div>
+          <div class="check-text">${M2_CHECK_TEXT[7]}</div>
           <div class="check-date" id="date-week-3-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">改善の次アクションを1つ合意した</div>
+          <div class="check-text">${M2_CHECK_TEXT[8]}</div>
           <div class="check-date" id="date-week-3-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        「まず要約」は防衛反応を下げる最短手段。理解確認を先にすると、対話が衝突ではなく調整になる。
+        ${M2_GUIDE_TEXT[2]}
       </div>
     </div>
   </div>
@@ -256,28 +313,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、A/Bの選択肢から自分で改善を選べた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[3]}
       </div>
       <div class="check-list" id="checks-week-4">
         <div class="check-item" onclick="toggleCheck(this,'week-4',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">改善案を2択にしてどちらで直すか自分で選んだ</div>
+          <div class="check-text">${M2_CHECK_TEXT[9]}</div>
           <div class="check-date" id="date-week-4-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">選んだ案で実際に1点修正した</div>
+          <div class="check-text">${M2_CHECK_TEXT[10]}</div>
           <div class="check-date" id="date-week-4-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">選んだ理由を1行で共有した</div>
+          <div class="check-text">${M2_CHECK_TEXT[11]}</div>
           <div class="check-date" id="date-week-4-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 声に出す理由</div>
-        声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。
+        ${M2_GUIDE_TEXT[3]}
       </div>
     </div>
   </div>
@@ -295,28 +352,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、感情を荒らさずに改善会話を完了できた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[4]}
       </div>
       <div class="check-list" id="checks-week-5">
         <div class="check-item" onclick="toggleCheck(this,'week-5',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">強い言い回しを避けて短い言葉で確認した</div>
+          <div class="check-text">${M2_CHECK_TEXT[12]}</div>
           <div class="check-date" id="date-week-5-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">会話後に気持ちを落ち着かせる行動を1つ実施した</div>
+          <div class="check-text">${M2_CHECK_TEXT[13]}</div>
           <div class="check-date" id="date-week-5-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">改善内容を翌日に持ち越さずその場で確定した</div>
+          <div class="check-text">${M2_CHECK_TEXT[14]}</div>
           <div class="check-date" id="date-week-5-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        M2は会話の刺激量が高いと崩れやすい。短く・事実ベース・選択肢提示を固定し、毎日同じ型で回す。
+        ${M2_GUIDE_TEXT[4]}
       </div>
     </div>
   </div>
@@ -334,28 +391,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、受け取り→要約→修正の流れを自走で完了できた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[5]}
       </div>
       <div class="check-list" id="checks-week-6">
         <div class="check-item" onclick="toggleCheck(this,'week-6',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">指摘を受けた直後に3秒待って要約した</div>
+          <div class="check-text">${M2_CHECK_TEXT[15]}</div>
           <div class="check-date" id="date-week-6-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">要約後に改善アクションを1つ実行した</div>
+          <div class="check-text">${M2_CHECK_TEXT[16]}</div>
           <div class="check-date" id="date-week-6-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">実行結果を記録して次回の型を維持した</div>
+          <div class="check-text">${M2_CHECK_TEXT[17]}</div>
           <div class="check-date" id="date-week-6-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 先に落ち着く、次に直す</div>
-        防衛反応は悪ではなく反射。反射を否定せず、順番だけ整えると改善は進められる。
+        ${M2_GUIDE_TEXT[5]}
       </div>
     </div>
   </div>
@@ -373,7 +430,7 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、同じ受け取り手順を再現できた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[6]}
       </div>
       <div class="check-list" id="checks-week-7">
         <div class="check-item" onclick="toggleCheck(this,'week-7',0)">
@@ -383,13 +440,13 @@ window.TRAINING_PAGE_PARTS['m2'] = {
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-7',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">順番が崩れた場面を1つ記録し修正した</div>
+          <div class="check-text">${M2_CHECK_TEXT[18]}</div>
           <div class="check-date" id="date-week-7-1"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        手順が固定されると、感情が揺れても行動は崩れにくい。順番を守ること自体を成果として評価する。
+        ${M2_GUIDE_TEXT[6]}
       </div>
     </div>
   </div>
@@ -421,28 +478,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、卒業3基準（安全・受容・再現）を満たせた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[7]}
       </div>
       <div class="check-list" id="checks-week-8">
         <div class="check-item" onclick="toggleCheck(this,'week-8',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【自走】促されずに日次チェックを開始して完了した</div>
+          <div class="check-text">${M2_CHECK_TEXT[19]}</div>
           <div class="check-date" id="date-week-8-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【動機】改善の損得を自分の言葉で1文説明した</div>
+          <div class="check-text">${M2_CHECK_TEXT[20]}</div>
           <div class="check-date" id="date-week-8-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【再現】別タスクでも同じ実行手順を再現した</div>
+          <div class="check-text">${M2_CHECK_TEXT[21]}</div>
           <div class="check-date" id="date-week-8-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 卒業は「気分」ではなく「再現」</div>
-        その日たまたまで終わらせず、同じ基準で繰り返せるかを重視する。再現できるなら卒業条件は満たせる。
+        ${M2_GUIDE_TEXT[7]}
       </div>
     </div>
   </div>
@@ -460,28 +517,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、卒業後も崩れない運用で実行できた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[8]}
       </div>
       <div class="check-list" id="checks-week-10">
         <div class="check-item" onclick="toggleCheck(this,'week-10',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">開始時刻・チェック順・記録先を固定運用できた</div>
+          <div class="check-text">${M2_CHECK_TEXT[22]}</div>
           <div class="check-date" id="date-week-10-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">逸脱しそうな場面でも基準どおりに戻せた</div>
+          <div class="check-text">${M2_CHECK_TEXT[23]}</div>
           <div class="check-date" id="date-week-10-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">翌日の実行計画を1行で確定した</div>
+          <div class="check-text">${M2_CHECK_TEXT[24]}</div>
           <div class="check-date" id="date-week-10-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        卒業直前は「崩れない運用」の確認が最優先。高難度の日でも最低限の実行を維持できるかを見る。
+        ${M2_GUIDE_TEXT[8]}
       </div>
     </div>
   </div>
@@ -513,28 +570,28 @@ window.TRAINING_PAGE_PARTS['m2'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、最終3基準を満たして卒業判定を通過できた。
+        <strong>今週のゴール：</strong>${M2_WEEK_GOALS[9]}
       </div>
       <div class="check-list" id="checks-week-12">
         <div class="check-item" onclick="toggleCheck(this,'week-12',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【安全】指摘の場で反応前に落ち着く手順を実行した</div>
+          <div class="check-text">${M2_CHECK_TEXT[25]}</div>
           <div class="check-date" id="date-week-12-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【受容】指摘を要約し改善アクションへ変換した</div>
+          <div class="check-text">${M2_CHECK_TEXT[26]}</div>
           <div class="check-date" id="date-week-12-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【再現】新しい場面でも同じ会話手順を再現した</div>
+          <div class="check-text">${M2_CHECK_TEXT[27]}</div>
           <div class="check-date" id="date-week-12-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        3つ全部YESなら卒業。未達がある場合は、崩れた手順（安全確認/要約/選択/実行）を特定して翌日に戻す。
+        ${M2_GUIDE_TEXT[9]}
       </div>
     </div>
   </div>
@@ -558,3 +615,5 @@ window.TRAINING_PAGE_PARTS['m2'] = {
   </div>
 `
 };
+
+

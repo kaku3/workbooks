@@ -1,6 +1,64 @@
-'use strict';
+﻿'use strict';
 
 window.TRAINING_PAGE_PARTS = window.TRAINING_PAGE_PARTS || {};
+
+const R3_CHECK_TEXT = [
+  '指示を受けた直後に「目的・期限・完了条件」を3行で記録した',
+  '記録内容を1文で復唱して認識ズレを確認した',
+  '記録を翌日に見返す場所へ保存した',
+  '指示を日付・内容・期限で記録した',
+  '記録した内容を1回見返した',
+  '見返しで抜けに気づいた点を1つ追記した',
+  '作業前に前日のメモを見返した',
+  '見返しで不足していた情報を1つ追記した',
+  '追記後に実行順を1回確認した',
+  '指示を3行で要約して共有した',
+  '共有後の修正点を1つ反映した',
+  '要約を保管場所に保存した',
+  '今週の指示を1分で復唱した',
+  '抜けていた指示を1つ追記した',
+  '追記した内容をタスクに反映した',
+  'タスクに対応する指示メモを確認した',
+  '不足情報を1件追記した',
+  '紐づけ結果をメンターへ1行共有した',
+  '記録→見返し→実行を1セット実行した',
+  '自分の保持手順を1分で説明した',
+  '忘れやすい条件を1つ記録した',
+  'その条件への対策を1行で書いた',
+  '今日のメモを次回1on1で共有できる場所に保存した',
+  '作業前に記録の見返しを実行した',
+  '抜けの種類を分類してメモした',
+  '明日の改善アクションを1行で決めた',
+  '【自走】記録を見返して再説明なしで実行した',
+  '【説明】保持手順を自分の言葉で説明した',
+  '【再現】今日の新しい指示でも「記録→見返し→実行」を使えた'
+];
+
+const R3_WEEK_GOALS = [
+  '毎日、相手に必要な前提を先に置いてから本文を書けた。',
+  '毎日、メモの型で指示を残せた。',
+  '毎日、翌日の見返しで抜けを早く見つけられた。',
+  '毎日、要約共有で保持を強化できた。',
+  '毎日、週の指示を復唱して抜けを防げた。',
+  '毎日、タスクと指示の紐づけを維持できた。',
+  '毎日、記録→見返し→実行を同じ順番で回せた。',
+  '毎日、抜けパターンを1件記録できた。',
+  '毎日、保持運用を自分だけで完了できた。',
+  '毎日、卒業3基準を実タスクで満たせた。'
+];
+
+const R3_GUIDE_TEXT = [
+  'R3型は「保持の仕組み」が抜けやすい。必ず指示直後に3行要約を残し、翌日の再確認をセットにする。評価は記憶力より、記録を使って再現できたかを軸にする。',
+  'R3は「その場で分かって後で抜ける」が起きやすい。メモの型を固定すると保持率が上がる。',
+  '記憶力より、記録を使って再現できたかを評価する。',
+  '声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。',
+  'ここは「保持手順を自分で回せるか」の確認週。どこで抜けるかを言語化させ、再現可能な手順に固定する。',
+  '短い記録でも効果は大きい。完璧さより翌日に再利用できることを優先する。',
+  '保持手順を固定できると再現性が上がる。「記録→見返し→実行」の順で本人の型を確定させる。',
+  '最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。',
+  'この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。',
+  '3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（前提/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。'
+];
 window.TRAINING_PAGE_PARTS['r3'] = {
   label: "R3",
   title: "R3型 10週間トレーニング｜コミュ力診断",
@@ -125,28 +183,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、相手に必要な前提を先に置いてから本文を書けた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[0]}
       </div>
       <div class="check-list" id="checks-week-1">
         <div class="check-item" onclick="toggleCheck(this,'week-1',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">書く前に「相手が知らない前提」を1つ書き出した</div>
+          <div class="check-text">${R3_CHECK_TEXT[0]}</div>
           <div class="check-date" id="date-week-1-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">本文の冒頭に前提条件を1行追加してから書き始めた</div>
+          <div class="check-text">${R3_CHECK_TEXT[1]}</div>
           <div class="check-date" id="date-week-1-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-1',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">「この人は何を知らないか」をメンターに口頭共有した</div>
+          <div class="check-text">${R3_CHECK_TEXT[2]}</div>
           <div class="check-date" id="date-week-1-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        R3型は「保持の仕組み」が抜けやすい。必ず指示直後に3行要約を残し、翌日の再確認をセットにする。評価は記憶力より、記録を使って再現できたかを軸にする。
+        ${R3_GUIDE_TEXT[0]}
       </div>
     </div>
   </div>
@@ -164,28 +222,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、メモの型で指示を残せた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[1]}
       </div>
       <div class="check-list" id="checks-week-2">
         <div class="check-item" onclick="toggleCheck(this,'week-2',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">指示を日付・内容・期限で記録した</div>
+          <div class="check-text">${R3_CHECK_TEXT[3]}</div>
           <div class="check-date" id="date-week-2-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">記録した内容を1回見返した</div>
+          <div class="check-text">${R3_CHECK_TEXT[4]}</div>
           <div class="check-date" id="date-week-2-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-2',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">見返しで抜けに気づいた点を1つ追記した</div>
+          <div class="check-text">${R3_CHECK_TEXT[5]}</div>
           <div class="check-date" id="date-week-2-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> なぜ「言い換え」が効くのか</div>
-        R3は「その場で分かって後で抜ける」が起きやすい。メモの型を固定すると保持率が上がる。
+        ${R3_GUIDE_TEXT[1]}
       </div>
     </div>
   </div>
@@ -203,28 +261,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、翌日の見返しで抜けを早く見つけられた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[2]}
       </div>
       <div class="check-list" id="checks-week-3">
         <div class="check-item" onclick="toggleCheck(this,'week-3',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">作業前に前日のメモを見返した</div>
+          <div class="check-text">${R3_CHECK_TEXT[6]}</div>
           <div class="check-date" id="date-week-3-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">見返しで不足していた情報を1つ追記した</div>
+          <div class="check-text">${R3_CHECK_TEXT[7]}</div>
           <div class="check-date" id="date-week-3-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-3',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">追記後に実行順を1回確認した</div>
+          <div class="check-text">${R3_CHECK_TEXT[8]}</div>
           <div class="check-date" id="date-week-3-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        記憶力より、記録を使って再現できたかを評価する。
+        ${R3_GUIDE_TEXT[2]}
       </div>
     </div>
   </div>
@@ -256,28 +314,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、要約共有で保持を強化できた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[3]}
       </div>
       <div class="check-list" id="checks-week-4">
         <div class="check-item" onclick="toggleCheck(this,'week-4',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">指示を3行で要約して共有した</div>
+          <div class="check-text">${R3_CHECK_TEXT[9]}</div>
           <div class="check-date" id="date-week-4-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">共有後の修正点を1つ反映した</div>
+          <div class="check-text">${R3_CHECK_TEXT[10]}</div>
           <div class="check-date" id="date-week-4-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-4',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">要約を保管場所に保存した</div>
+          <div class="check-text">${R3_CHECK_TEXT[11]}</div>
           <div class="check-date" id="date-week-4-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 声に出す理由</div>
-        声に出すと視覚野と音声野が同時に動き、黙って読むより盲点に気づきやすくなる。慣れてくれば心の中で言うだけでもOK。まず1週間、必ず声に出してみる。
+        ${R3_GUIDE_TEXT[3]}
       </div>
     </div>
   </div>
@@ -295,28 +353,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、週の指示を復唱して抜けを防げた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[4]}
       </div>
       <div class="check-list" id="checks-week-5">
         <div class="check-item" onclick="toggleCheck(this,'week-5',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">今週の指示を1分で復唱した</div>
+          <div class="check-text">${R3_CHECK_TEXT[12]}</div>
           <div class="check-date" id="date-week-5-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">抜けていた指示を1つ追記した</div>
+          <div class="check-text">${R3_CHECK_TEXT[13]}</div>
           <div class="check-date" id="date-week-5-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-5',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">追記した内容をタスクに反映した</div>
+          <div class="check-text">${R3_CHECK_TEXT[14]}</div>
           <div class="check-date" id="date-week-5-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        ここは「保持手順を自分で回せるか」の確認週。どこで抜けるかを言語化させ、再現可能な手順に固定する。
+        ${R3_GUIDE_TEXT[4]}
       </div>
     </div>
   </div>
@@ -334,28 +392,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、タスクと指示の紐づけを維持できた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[5]}
       </div>
       <div class="check-list" id="checks-week-6">
         <div class="check-item" onclick="toggleCheck(this,'week-6',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">タスクに対応する指示メモを確認した</div>
+          <div class="check-text">${R3_CHECK_TEXT[15]}</div>
           <div class="check-date" id="date-week-6-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">不足情報を1件追記した</div>
+          <div class="check-text">${R3_CHECK_TEXT[16]}</div>
           <div class="check-date" id="date-week-6-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-6',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">紐づけ結果をメンターへ1行共有した</div>
+          <div class="check-text">${R3_CHECK_TEXT[17]}</div>
           <div class="check-date" id="date-week-6-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 先回りは小さくてよい</div>
-        短い記録でも効果は大きい。完璧さより翌日に再利用できることを優先する。
+        ${R3_GUIDE_TEXT[5]}
       </div>
     </div>
   </div>
@@ -373,23 +431,23 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、記録→見返し→実行を同じ順番で回せた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[6]}
       </div>
       <div class="check-list" id="checks-week-7">
         <div class="check-item" onclick="toggleCheck(this,'week-7',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">記録→見返し→実行を1セット実行した</div>
+          <div class="check-text">${R3_CHECK_TEXT[18]}</div>
           <div class="check-date" id="date-week-7-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-7',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">自分の保持手順を1分で説明した</div>
+          <div class="check-text">${R3_CHECK_TEXT[19]}</div>
           <div class="check-date" id="date-week-7-1"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        保持手順を固定できると再現性が上がる。「記録→見返し→実行」の順で本人の型を確定させる。
+        ${R3_GUIDE_TEXT[6]}
       </div>
     </div>
   </div>
@@ -421,28 +479,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、抜けパターンを1件記録できた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[7]}
       </div>
       <div class="check-list" id="checks-week-8">
         <div class="check-item" onclick="toggleCheck(this,'week-8',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">忘れやすい条件を1つ記録した</div>
+          <div class="check-text">${R3_CHECK_TEXT[20]}</div>
           <div class="check-date" id="date-week-8-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">その条件への対策を1行で書いた</div>
+          <div class="check-text">${R3_CHECK_TEXT[21]}</div>
           <div class="check-date" id="date-week-8-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-8',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">今日のメモを次回1on1で共有できる場所に保存した</div>
+          <div class="check-text">${R3_CHECK_TEXT[22]}</div>
           <div class="check-date" id="date-week-8-2"></div>
         </div>
       </div>
       <div class="tip-box">
         <div class="tip-label"><span class="material-icons-round icon-sm">lightbulb</span> 変化は小さくていい</div>
-        最初は少なくて問題ない。「できた瞬間」を拾うほど再現しやすくなる。できなかった日も「なぜ抜けたか」を一言残すと次が改善しやすい。
+        ${R3_GUIDE_TEXT[7]}
       </div>
     </div>
   </div>
@@ -460,28 +518,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、保持運用を自分だけで完了できた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[8]}
       </div>
       <div class="check-list" id="checks-week-10">
         <div class="check-item" onclick="toggleCheck(this,'week-10',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">作業前に記録の見返しを実行した</div>
+          <div class="check-text">${R3_CHECK_TEXT[23]}</div>
           <div class="check-date" id="date-week-10-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">抜けの種類を分類してメモした</div>
+          <div class="check-text">${R3_CHECK_TEXT[24]}</div>
           <div class="check-date" id="date-week-10-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-10',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">明日の改善アクションを1行で決めた</div>
+          <div class="check-text">${R3_CHECK_TEXT[25]}</div>
           <div class="check-date" id="date-week-10-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        この期間は「助言より記録」。詰まり分類と改善アクションが自分で回っていれば合格。細かい添削は減らして自走性を優先する。
+        ${R3_GUIDE_TEXT[8]}
       </div>
     </div>
   </div>
@@ -513,28 +571,28 @@ window.TRAINING_PAGE_PARTS['r3'] = {
     </div>
     <div class="week-body">
       <div class="week-goal">
-        <strong>今週のゴール：</strong>毎日、卒業3基準を実タスクで満たせた。
+        <strong>今週のゴール：</strong>${R3_WEEK_GOALS[9]}
       </div>
       <div class="check-list" id="checks-week-12">
         <div class="check-item" onclick="toggleCheck(this,'week-12',0)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【自走】記録を見返して再説明なしで実行した</div>
+          <div class="check-text">${R3_CHECK_TEXT[26]}</div>
           <div class="check-date" id="date-week-12-0"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',1)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【説明】保持手順を自分の言葉で説明した</div>
+          <div class="check-text">${R3_CHECK_TEXT[27]}</div>
           <div class="check-date" id="date-week-12-1"></div>
         </div>
         <div class="check-item" onclick="toggleCheck(this,'week-12',2)">
           <div class="check-box"><span class="material-icons-round">check</span></div>
-          <div class="check-text">【再現】今日の新しい指示でも「記録→見返し→実行」を使えた</div>
+          <div class="check-text">${R3_CHECK_TEXT[28]}</div>
           <div class="check-date" id="date-week-12-2"></div>
         </div>
       </div>
       <div class="mentor-note">
         <div class="mentor-label"><span class="material-icons-round icon-sm">support_agent</span> メンター向け</div>
-        3つ全部YESなら卒業。未達項目がある場合は、詰まり分類（前提/用語/順序）のどこで崩れたかを特定して翌日タスクに戻す。
+        ${R3_GUIDE_TEXT[9]}
       </div>
     </div>
   </div>
@@ -558,3 +616,9 @@ window.TRAINING_PAGE_PARTS['r3'] = {
   </div>
 `
 };
+
+
+
+
+
+
