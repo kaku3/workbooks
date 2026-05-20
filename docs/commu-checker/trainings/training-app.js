@@ -3,6 +3,8 @@
 const ROOT_STORAGE_KEY = 'commu-checker-training-history';
 const SUBJECTS_STORAGE_KEY = 'commu-checker-training-subjects';
 const SUMMARY_TAB = 'summary';
+const EXPORT_APP_NAME = 'commu-checker-training';
+const EXPORT_VERSION = 1;
 
 const urlParams = new URLSearchParams(location.search);
 const isViewer = urlParams.has('check');
@@ -204,6 +206,14 @@ function resolveBadgeCode(type) {
     return fromUrl;
   }
   return TYPE_BADGE_CODES[type] || (TYPE_MENU_LABELS[type] || '').replace(/\D/g, '');
+}
+
+function getTotalCountByType(type) {
+  const sourceState = isViewer
+    ? (viewerRootState[type] && typeof viewerRootState[type] === 'object' ? viewerRootState[type] : {})
+    : getTypeState(type);
+  const state = cleanOldChecks(sourceState);
+  return Object.values(state).reduce((sum, entry) => sum + getCheckCountForEntry(entry), 0);
 }
 
 function getTodayCountByType(type) {
@@ -924,7 +934,7 @@ function buildTypeMenu() {
 }
 
 function mountShareButtonToSubHeader() {
-  const host = document.getElementById('subheader-share');
+  const host = document.getElementById('header-training-actions');
   if (!host) {
     return;
   }
@@ -934,16 +944,80 @@ function mountShareButtonToSubHeader() {
     return;
   }
 
-  const shareButton = document.getElementById('share-btn');
-  if (!shareButton) {
-    return;
-  }
-
-  const sourceWrap = shareButton.closest('.share-wrap');
+  const sourceShareButton = document.getElementById('share-btn');
+  const sourceWrap = sourceShareButton ? sourceShareButton.closest('.share-wrap') : null;
   if (sourceWrap) {
     sourceWrap.style.display = 'none';
   }
-  host.appendChild(shareButton);
+
+  const group = document.createElement('div');
+  group.className = 'header-training-actions-group';
+
+  const shareButton = document.createElement('button');
+  shareButton.type = 'button';
+  shareButton.className = 'nav-link header-menu-action';
+  shareButton.id = 'share-btn';
+  shareButton.innerHTML = '<span class="material-icons-round icon-sm">link</span> トレーニングURLコピー';
+  shareButton.addEventListener('click', () => shareProgress(shareButton));
+  group.appendChild(shareButton);
+
+  const exportBtn = document.createElement('button');
+  exportBtn.type = 'button';
+  exportBtn.className = 'nav-link header-menu-action';
+  exportBtn.id = 'export-json-btn';
+  exportBtn.innerHTML = '<span class="material-icons-round icon-sm">download</span> エクスポート';
+  exportBtn.addEventListener('click', exportProgressJson);
+  group.appendChild(exportBtn);
+
+  const importBtn = document.createElement('button');
+  importBtn.type = 'button';
+  importBtn.className = 'nav-link header-menu-action';
+  importBtn.id = 'import-json-btn';
+  importBtn.innerHTML = '<span class="material-icons-round icon-sm">upload</span> インポート';
+  importBtn.addEventListener('click', openImportDialog);
+  group.appendChild(importBtn);
+
+  host.appendChild(group);
+  ensureImportFileInput();
+}
+
+function setupHeaderMenu() {
+  const header = document.querySelector('.site-header');
+  const toggle = document.getElementById('header-menu-toggle');
+  const nav = document.getElementById('site-nav');
+  if (!header || !toggle || !nav) {
+    return;
+  }
+
+  const closeMenu = () => {
+    header.classList.remove('menu-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const opened = header.classList.toggle('menu-open');
+    toggle.setAttribute('aria-expanded', opened ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!header.classList.contains('menu-open')) {
+      return;
+    }
+    if (!header.contains(e.target)) {
+      closeMenu();
+    }
+  });
+
+  nav.addEventListener('click', (e) => {
+    const target = e.target.closest('a,button');
+    if (!target) {
+      return;
+    }
+    if (window.matchMedia('(max-width: 780px)').matches) {
+      closeMenu();
+    }
+  });
 }
 
 function applyTypeGapBadge(type) {
@@ -1476,6 +1550,18 @@ function buildShareURL(allTypeState) {
   return `${location.origin}${location.pathname}?type=${encodeURIComponent(currentType)}&check=${encoded}`;
 }
 
+function buildLightShareURL() {
+  const url = new URL(location.origin + location.pathname);
+  const type = currentType === SUMMARY_TAB ? SUMMARY_TAB : (isTrainingType(currentType) ? currentType : SUMMARY_TAB);
+  const subjects = sanitizeTypeList(enrolledTypes);
+
+  url.searchParams.set('type', type);
+  if (subjects.length > 0) {
+    url.searchParams.set('subjects', subjects.join(','));
+  }
+  return url.toString();
+}
+
 function collectShareState() {
   const root = getRootState();
   const out = {};
@@ -1488,24 +1574,230 @@ function collectShareState() {
   return out;
 }
 
-function shareProgress() {
-  const allState = collectShareState();
-  const total = Object.values(allState).reduce((sum, s) => sum + Object.keys(s).length, 0);
-  if (total === 0) {
-    alert('まだチェックがありません。チェックを入れてから共有してください。');
+function collectAllStateForExport() {
+  const root = getRootState();
+  const out = {};
+
+  TRAINING_TYPES.forEach((type) => {
+    const raw = root[type] && typeof root[type] === 'object' ? root[type] : {};
+    const normalized = {};
+
+    Object.entries(raw).forEach(([key, entry]) => {
+      const dates = normalizeCheckEntry(entry);
+      if (dates.length > 0) {
+        normalized[key] = dates;
+      }
+    });
+
+    if (Object.keys(normalized).length > 0) {
+      out[type] = normalized;
+    }
+  });
+
+  return out;
+}
+
+function setButtonCopiedState(btn, copiedLabel, defaultLabel) {
+  if (!btn) {
+    return;
+  }
+  btn.innerHTML = copiedLabel;
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.innerHTML = defaultLabel;
+    btn.classList.remove('copied');
+  }, 1800);
+}
+
+function downloadJsonFile(filename, dataObj) {
+  const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: 'application/json' });
+  const href = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = href;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(href);
+}
+
+function buildExportPayload() {
+  return {
+    version: EXPORT_VERSION,
+    app: EXPORT_APP_NAME,
+    exportedAt: new Date().toISOString(),
+    subjects: sanitizeTypeList(enrolledTypes),
+    state: collectAllStateForExport(),
+  };
+}
+
+function makeExportFilename(prefix) {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  const ts = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  return `${prefix}-${ts}.json`;
+}
+
+function exportProgressJson() {
+  const payload = buildExportPayload();
+  const filename = makeExportFilename('commu-checker-training-export');
+  downloadJsonFile(filename, payload);
+
+  const btn = document.getElementById('export-json-btn');
+  setButtonCopiedState(
+    btn,
+    '<span class="material-icons-round icon-sm">check</span> 書き出しました',
+    '<span class="material-icons-round icon-sm">download</span> エクスポート'
+  );
+}
+
+function ensureImportFileInput() {
+  if (document.getElementById('import-json-input')) {
     return;
   }
 
-  const url = buildShareURL(allState);
-  const btn = document.getElementById('share-btn');
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.id = 'import-json-input';
+  input.accept = 'application/json,.json';
+  input.style.display = 'none';
+  input.addEventListener('change', onImportFileSelected);
+  document.body.appendChild(input);
+}
+
+function openImportDialog() {
+  const input = document.getElementById('import-json-input');
+  if (!input) {
+    return;
+  }
+  input.value = '';
+  input.click();
+}
+
+function isValidImportKey(key) {
+  return /^week-\d+-\d+$/.test(String(key || ''));
+}
+
+function sanitizeImportedState(rawState) {
+  const out = {};
+  const src = rawState && typeof rawState === 'object' ? rawState : {};
+
+  TRAINING_TYPES.forEach((type) => {
+    const typeState = src[type];
+    if (!typeState || typeof typeState !== 'object') {
+      return;
+    }
+
+    const clean = {};
+    Object.entries(typeState).forEach(([key, entry]) => {
+      if (!isValidImportKey(key)) {
+        return;
+      }
+      const dates = normalizeCheckEntry(entry);
+      if (dates.length > 0) {
+        clean[key] = dates;
+      }
+    });
+
+    if (Object.keys(clean).length > 0) {
+      out[type] = clean;
+    }
+  });
+
+  return out;
+}
+
+function createBackupBeforeImport() {
+  const current = {
+    version: EXPORT_VERSION,
+    app: EXPORT_APP_NAME,
+    exportedAt: new Date().toISOString(),
+    subjects: sanitizeTypeList(loadStoredSubjects()),
+    state: collectAllStateForExport(),
+  };
+
+  const count = Object.values(current.state).reduce((sum, s) => sum + Object.keys(s).length, 0);
+  if (count > 0) {
+    const backupName = makeExportFilename('commu-checker-training-backup');
+    downloadJsonFile(backupName, current);
+  }
+}
+
+async function onImportFileSelected(e) {
+  const input = e.target;
+  const file = input && input.files ? input.files[0] : null;
+  if (!file) {
+    return;
+  }
+
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+
+    if (!parsed || typeof parsed !== 'object') {
+      alert('JSON形式が不正です。');
+      return;
+    }
+    if (parsed.app !== EXPORT_APP_NAME) {
+      alert('このJSONはコミュ力診断トレーニング用ではありません。');
+      return;
+    }
+    if (!Number.isInteger(parsed.version) || parsed.version < 1 || parsed.version > EXPORT_VERSION) {
+      alert('未対応のバージョンです。');
+      return;
+    }
+
+    const nextSubjects = sanitizeTypeList(parsed.subjects || []);
+    const nextState = sanitizeImportedState(parsed.state);
+    const importedCount = Object.values(nextState).reduce((sum, s) => sum + Object.keys(s).length, 0);
+
+    if (importedCount === 0) {
+      alert('有効なチェックデータが見つかりませんでした。');
+      return;
+    }
+
+    const ok = confirm('現在の学習記録を置き換えます。インポート前にバックアップJSONを保存します。続行しますか？');
+    if (!ok) {
+      return;
+    }
+
+    createBackupBeforeImport();
+    saveRootState(nextState);
+    const derivedSubjects = nextSubjects.length > 0
+      ? nextSubjects
+      : sanitizeTypeList(Object.keys(nextState));
+    enrolledTypes = derivedSubjects.length > 0 ? derivedSubjects : getOrderedTypes();
+    saveSubjects(enrolledTypes);
+
+    if (currentType !== SUMMARY_TAB && !enrolledTypes.includes(currentType)) {
+      currentType = SUMMARY_TAB;
+    }
+
+    buildTypeMenu();
+    switchType(currentType);
+
+    const btn = document.getElementById('import-json-btn');
+    setButtonCopiedState(
+      btn,
+      '<span class="material-icons-round icon-sm">check</span> 読込しました',
+      '<span class="material-icons-round icon-sm">upload</span> インポート'
+    );
+  } catch (err) {
+    console.warn('import json error', err);
+    alert('JSONの読込に失敗しました。ファイル内容を確認してください。');
+  }
+}
+
+function shareProgress(btnEl) {
+  const url = buildLightShareURL();
+  const btn = btnEl || document.getElementById('share-btn');
 
   navigator.clipboard.writeText(url).then(() => {
-    btn.textContent = '✅ コピーしました！';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '📤 メンターに共有';
-      btn.classList.remove('copied');
-    }, 2000);
+    setButtonCopiedState(
+      btn,
+      '<span class="material-icons-round icon-sm">check</span> コピーしました',
+      '<span class="material-icons-round icon-sm">link</span> トレーニングURLコピー'
+    );
   }).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = url;
@@ -1516,12 +1808,11 @@ function shareProgress() {
     document.execCommand('copy');
     document.body.removeChild(ta);
 
-    btn.textContent = '✅ コピーしました！';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '📤 メンターに共有';
-      btn.classList.remove('copied');
-    }, 2000);
+    setButtonCopiedState(
+      btn,
+      '<span class="material-icons-round icon-sm">check</span> コピーしました',
+      '<span class="material-icons-round icon-sm">link</span> トレーニングURLコピー'
+    );
   });
 }
 
@@ -1635,6 +1926,7 @@ function burst(el) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  setupHeaderMenu();
   migrateLegacyState();
   viewerRootState = decodeViewerData();
   initSubjects();
