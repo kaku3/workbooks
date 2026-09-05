@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>図解ドリル | 情報を整理・構築して伝わる図を描く</title>
+  <meta name="description" content="外部設計向けに、要求仕様を整理して伝わる図解に落とし込む練習教材" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <div class="bg-shape bg-shape-a" aria-hidden="true"></div>
+  <div class="bg-shape bg-shape-b" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="container">
+      <p class="eyebrow">ZUKAI DESIGN TRAINING</p>
+      <h1>情報を整理・構築して
+      伝わる図を描く</h1>
+      <p class="lead">要求仕様をそのまま図にするのではなく、誰に何を理解してほしいかを先に設計して図解する。<br>外部設計書の説明力を鍛えるドリルです。</p>
+    </div>
+  </header>
+
+  <main class="container app-shell">
+    <aside class="side-menu panel" aria-label="設問メニュー">
+      <p id="completion-summary" class="menu-summary">完了 0 / 0</p>
+      <div id="progress" class="progress" aria-label="問題進捗"></div>
+      <ul id="question-nav-list" class="question-nav-list"></ul>
+    </aside>
+
+    <section class="content-area">
+      <section id="landing-panel" class="panel panel-intro">
+        <div class="intro-layout">
+          <section class="intro-copy">
+            <h2>なぜ図解が必要か</h2>
+            <p>人は、思っている以上に相手の話をそのまま理解しません。伝わったつもりでも、頭の中では別の前提で解釈され、後から認識のズレとして発覚することがあります。</p>
+            <p>このズレは、実装やレビューの手戻りにつながります。だからこそ、文章だけでなく、ひと目で全体像が分かる図解が必要です。</p>
+            <p>図解の目的は、情報を整理し、伝える順番を設計し、関係者の理解をそろえることです。このドリルでは、要求仕様を読み解きながら、伝わる図を構築する練習を行います。</p>
+            <div class="intro-action">
+              <button id="start-first-btn" type="button" class="primary">はじめる</button>
+            </div>
+          </section>
+
+          <aside class="intro-visual" aria-label="導入イメージ">
+            <img src="./assets/intro.png" alt="図解の下書きイメージ" />
+          </aside>
+        </div>
+      </section>
+
+      <section id="problem-wrap" class="hidden">
+        <section id="problem-container" class="panel panel-problem" aria-live="polite"></section>
+
+        <nav class="pager" aria-label="問題ナビゲーション">
+          <button id="prev-btn" type="button">前の問題</button>
+          <button id="next-btn" type="button" class="primary">次の問題</button>
+        </nav>
+      </section>
+    </section>
+  </main>
+
+  <template id="problem-template">
+    <article>
+      <div class="problem-head">
+        <span class="badge" data-bind="number"></span>
+        <span class="difficulty" data-bind="difficulty"></span>
+      </div>
+      <h2 data-bind="title"></h2>
+      <p class="subtitle" data-bind="learningGoal"></p>
+
+      <section>
+        <h3>課題文章</h3>
+        <p class="hint">情報量の多い文章です。何を先に伝えるべきかを意識して読み解いてください。</p>
+        <pre class="scenario" data-bind="scenario"></pre>
+      </section>
+
+      <section class="exercise-block">
+        <h3 data-bind="badTitle"></h3>
+        <p class="hint">この図のよい点、悪い点を列挙してください。</p>
+        <div id="bad-diagram" class="diagram-lines"></div>
+        <ul id="mistakes-list" class="checklist"></ul>
+      </section>
+
+      <section class="exercise-block q1-block">
+        <header class="card-head">
+          <p class="card-kicker">Question 1</p>
+          <h3>図の主役にする情報を選択</h3>
+        </header>
+        <p class="hint">選択後に自己採点できます。</p>
+        <div id="focus-options" class="options"></div>
+        <button id="score-btn" type="button" class="subtle">自己採点する</button>
+        <p id="score-text" class="score-text" aria-live="polite"></p>
+      </section>
+
+      <section class="exercise-block q2-block">
+        <header class="card-head">
+          <p class="card-kicker">Question 2</p>
+          <h3>1-2文で主題を要約</h3>
+        </header>
+        <textarea id="story-answer" rows="4" placeholder="現状の課題と、改善後の価値が伝わる1-2文を書いてください"></textarea>
+      </section>
+
+      <div class="answer-cta-wrap">
+        <button id="reveal-answer" type="button" class="primary">解答を見る</button>
+      </div>
+
+      <section class="exercise-block answer-block hidden" id="answer-block">
+        <header class="card-head">
+          <p class="card-kicker">Answer</p>
+          <h3>解答</h3>
+        </header>
+        <div id="sample-area" class="sample-area">
+          <div class="sample-grid single">
+            <article class="sample good">
+              <h4 data-bind="goodTitle"></h4>
+              <div id="good-diagram" class="diagram-good"></div>
+              <ul id="principles-list" class="checklist"></ul>
+            </article>
+          </div>
+          <section class="coach">
+            <h4>解説: 設計書への転用ポイント</h4>
+            <p id="transfer-text"></p>
+          </section>
+
+          <section class="ai-prompt-block">
+            <h4>問2 AI採点用プロンプト</h4>
+            <p class="hint">問2の入力内容を反映した採点プロンプトです。必要に応じて観点を追加して使ってください。</p>
+            <textarea id="ai-eval-prompt" class="ai-prompt-text" rows="12" readonly></textarea>
+            <div class="ai-prompt-actions">
+              <button id="copy-ai-prompt" type="button" class="subtle">プロンプトをコピー</button>
+              <p id="copy-status" class="copy-status" aria-live="polite"></p>
+            </div>
+          </section>
+        </div>
+      </section>
+    </article>
+  </template>
+
+  <script src="./assets/app.js" defer></script>
+</body>
+</html>
