@@ -1,0 +1,465 @@
+{
+  "version": "1.1.0",
+  "meta": {
+    "title": "図解ドリル",
+    "description": "要求仕様を整理し、伝わる図を設計して描くトレーニング"
+  },
+  "problems": [
+    {
+      "id": "beginner-login-notice",
+      "title": "ログイン完了通知の流れ",
+      "difficultyLabel": "★☆☆",
+      "learningGoal": "入力から通知までの一本線を短く示す",
+      "scenario": "利用者がメールアドレスとパスワードを入力してログインする。認証が成功したらホーム画面へ遷移する。あわせてログイン成功通知メールを送る。通知メールには時刻を含める。ログイン画面の背景画像は来月変更予定である。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "input", "label": "利用者が認証情報を入力", "isCore": true },
+          { "id": "auth", "label": "認証成功でログイン完了", "isCore": true },
+          { "id": "redirect", "label": "ホーム画面へ遷移", "isCore": true },
+          { "id": "mail", "label": "成功通知メールを送信", "isCore": true },
+          { "id": "mail-time", "label": "メールに時刻を含める", "isCore": false },
+          { "id": "bg", "label": "背景画像は来月変更予定", "isCore": false },
+          { "id": "ui-color", "label": "ボタン色は青系", "isCore": false },
+          { "id": "input-order", "label": "入力順はメールが先", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 補足まで同列に並べる図",
+        "lines": [
+          "メール入力 -> パスワード入力 -> 背景画像変更 -> 認証 -> 青ボタン -> ホーム",
+          "時刻付きメール -> 送信",
+          "入力順"
+        ],
+        "mistakes": [
+          "主フローに関係ないUIメモが混ざっている",
+          "認証後に何が起きるかが分かりにくい",
+          "通知の目的が図から読み取りにくい"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 認証と通知を主軸で示す図",
+        "lanes": [
+          { "name": "利用者", "steps": ["認証情報入力", "ログイン"] },
+          { "name": "システム", "steps": ["認証", "ホーム遷移", "通知メール送信"] }
+        ],
+        "principles": [
+          "最短で理解させたい流れだけ残す",
+          "補足仕様は図外メモに分離する",
+          "処理の完了条件を明示する"
+        ]
+      },
+      "transferTip": "まず成功パターンを1本で描き、その後に補足ルールを追記するとレビューが速くなる。"
+    },
+    {
+      "id": "beginner-profile-update",
+      "title": "プロフィール更新の基本",
+      "difficultyLabel": "★☆☆",
+      "learningGoal": "更新処理の開始と完了を明確にする",
+      "scenario": "利用者がマイページで表示名を変更し、保存ボタンを押す。システムは入力文字数をチェックし、問題がなければ保存する。保存後に完了メッセージを表示する。将来的にアイコン画像の変更機能も追加予定である。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "edit", "label": "表示名を編集", "isCore": true },
+          { "id": "validate", "label": "文字数チェック", "isCore": true },
+          { "id": "save", "label": "データ保存", "isCore": true },
+          { "id": "done", "label": "完了メッセージ表示", "isCore": true },
+          { "id": "future", "label": "将来は画像変更追加", "isCore": false },
+          { "id": "button", "label": "保存ボタンの形", "isCore": false },
+          { "id": "font", "label": "表示フォント", "isCore": false },
+          { "id": "page-name", "label": "画面名はマイページ", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 画面情報を中心にした図",
+        "lines": [
+          "マイページ -> フォント -> 保存ボタン -> 表示名 -> 画像変更予定",
+          "文字数 -> 保存",
+          "完了メッセージ"
+        ],
+        "mistakes": [
+          "更新の開始点と終了点が曖昧",
+          "将来仕様が中心に出てしまっている",
+          "チェック処理の位置づけが不明"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 更新フローを時系列で示す図",
+        "lanes": [
+          { "name": "利用者", "steps": ["表示名編集", "保存実行"] },
+          { "name": "システム", "steps": ["文字数チェック", "保存", "完了表示"] }
+        ],
+        "principles": [
+          "処理順が追えるように並べる",
+          "将来仕様を主図に混ぜない",
+          "完了状態を最後に置く"
+        ]
+      },
+      "transferTip": "更新系は『入力→検証→保存→完了』を定型で描くと、説明が安定する。"
+    },
+    {
+      "id": "easy-upload-validation",
+      "title": "ファイルアップロードと検証",
+      "difficultyLabel": "★☆☆",
+      "learningGoal": "正常系とエラー系を分けて示す",
+      "scenario": "利用者がPDFファイルをアップロードする。システムはファイルサイズ上限10MBをチェックし、拡張子がPDFか確認する。条件を満たす場合のみ保存し、保存後に一覧へ反映する。条件を満たさない場合はエラーメッセージを表示する。サーバーのディスク容量監視は別チームが担当している。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "upload", "label": "ファイルをアップロード", "isCore": true },
+          { "id": "size", "label": "サイズをチェック", "isCore": true },
+          { "id": "ext", "label": "拡張子をチェック", "isCore": true },
+          { "id": "save-list", "label": "保存後に一覧反映", "isCore": true },
+          { "id": "error", "label": "不正時はエラー表示", "isCore": true },
+          { "id": "monitor", "label": "ディスク監視は別チーム", "isCore": false },
+          { "id": "pdf-name", "label": "PDFの命名規則", "isCore": false },
+          { "id": "owner", "label": "担当者の所属", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 条件と運用情報を混在させた図",
+        "lines": [
+          "アップロード -> 10MB -> PDF -> 別チーム監視 -> 一覧",
+          "命名規則 -> 所属",
+          "エラー"
+        ],
+        "mistakes": [
+          "正常系とエラー系が区別できない",
+          "運用責任情報が主フローを邪魔している",
+          "どの条件で保存されるか不明"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 判定後の分岐を明示する図",
+        "lanes": [
+          { "name": "受付", "steps": ["アップロード受付", "サイズチェック", "拡張子チェック"] },
+          { "name": "結果", "steps": ["OK: 保存", "一覧反映", "NG: エラー表示"] }
+        ],
+        "principles": [
+          "分岐条件を1か所に集約する",
+          "正常系と異常系を明確に分ける",
+          "運用情報は別資料に分離する"
+        ]
+      },
+      "transferTip": "検証処理は『条件』『結果』を対にすると、実装漏れレビューがしやすい。"
+    },
+    {
+      "id": "easy-stock-sync",
+      "title": "在庫連携バッチの基本",
+      "difficultyLabel": "★☆☆",
+      "learningGoal": "外部連携の送受信と反映を簡潔に示す",
+      "scenario": "毎時0分に在庫連携バッチを実行する。自社システムは在庫CSVを外部倉庫システムへ送信する。外部倉庫システムは処理結果CSVを返却する。結果が成功なら在庫更新時刻を記録し、失敗行がある場合は担当者へ通知メールを送る。CSVの列順は外部仕様書に従う。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "batch-start", "label": "定時にバッチ開始", "isCore": true },
+          { "id": "send-csv", "label": "在庫CSVを送信", "isCore": true },
+          { "id": "receive-result", "label": "結果CSVを受信", "isCore": true },
+          { "id": "success-log", "label": "成功時刻を記録", "isCore": true },
+          { "id": "fail-mail", "label": "失敗時は通知メール", "isCore": true },
+          { "id": "column-order", "label": "CSV列順の仕様", "isCore": false },
+          { "id": "batch-user", "label": "実行ユーザー名", "isCore": false },
+          { "id": "server-name", "label": "サーバーのホスト名", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 送受信と補足が混ざった図",
+        "lines": [
+          "0分実行 -> サーバー名 -> CSV列順 -> 自社 -> 外部倉庫 -> 担当者",
+          "成功時刻",
+          "結果CSV"
+        ],
+        "mistakes": [
+          "データの往復が見えない",
+          "成功時と失敗時の扱いが分離されていない",
+          "仕様書メモが主フローを圧迫している"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 連携の往復と結果分岐を分けた図",
+        "lanes": [
+          { "name": "自社システム", "steps": ["定時起動", "在庫CSV送信", "結果CSV受信"] },
+          { "name": "結果処理", "steps": ["成功: 時刻記録", "失敗: 通知メール"] }
+        ],
+        "principles": [
+          "外部連携は送信と受信を必ず対で描く",
+          "分岐先ごとの処理を明確にする",
+          "データ仕様詳細は別途記載する"
+        ]
+      },
+      "transferTip": "外部連携図は『誰が何を送るか』が一目で分かる配置にすると、IF設計に接続しやすい。"
+    },
+    {
+      "id": "easy-payment-authorization",
+      "title": "決済オーソリの流れ",
+      "difficultyLabel": "★★☆",
+      "learningGoal": "決済可否と注文確定条件の関係を示す",
+      "scenario": "利用者が購入確定ボタンを押すと、ECシステムは決済代行へオーソリ要求を送る。承認されれば注文を確定し、注文番号を画面表示する。非承認の場合は注文を確定せず、支払い方法の再入力を促す。配送先住所の表示順は別途UI仕様で定義する。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "purchase-click", "label": "購入確定を実行", "isCore": true },
+          { "id": "auth-request", "label": "決済代行へオーソリ要求", "isCore": true },
+          { "id": "approved", "label": "承認なら注文確定", "isCore": true },
+          { "id": "order-number", "label": "注文番号を表示", "isCore": true },
+          { "id": "declined", "label": "非承認なら再入力促進", "isCore": true },
+          { "id": "address-ui", "label": "配送先表示順の仕様", "isCore": false },
+          { "id": "button-color", "label": "購入ボタン色", "isCore": false },
+          { "id": "font-size", "label": "文字サイズ", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 注文確定条件が曖昧な図",
+        "lines": [
+          "購入確定 -> 住所表示順 -> オーソリ -> 注文番号 -> 再入力",
+          "UI仕様",
+          "非承認"
+        ],
+        "mistakes": [
+          "承認/非承認の分岐条件が見えない",
+          "UI仕様が決済フローに混在している",
+          "注文確定のタイミングが不明確"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 決済判定を中心にした図",
+        "lanes": [
+          { "name": "利用者/EC", "steps": ["購入確定", "オーソリ要求", "判定"] },
+          { "name": "承認", "steps": ["注文確定", "注文番号表示"] },
+          { "name": "非承認", "steps": ["注文未確定", "支払情報再入力"] }
+        ],
+        "principles": [
+          "判定点を中心に置く",
+          "確定/未確定を明示する",
+          "UI詳細を主図に混ぜない"
+        ]
+      },
+      "transferTip": "決済系は『確定条件』を図に固定すると、後工程の実装判断がぶれにくい。"
+    },
+    {
+      "id": "easy-refund-flow",
+      "title": "注文キャンセルと返金",
+      "difficultyLabel": "★★☆",
+      "learningGoal": "業務操作と外部返金APIの順序を整理する",
+      "scenario": "運用担当者が注文をキャンセルすると、システムは返金対象かどうかを判定する。返金対象であれば決済代行の返金APIを呼び出し、成功時に注文ステータスを返金済みに更新する。API失敗時は再試行キューに登録し、担当者へアラート通知する。注文メモの自由入力文字数は200文字までである。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "cancel", "label": "担当者がキャンセル操作", "isCore": true },
+          { "id": "refund-check", "label": "返金対象を判定", "isCore": true },
+          { "id": "refund-api", "label": "返金APIを呼び出す", "isCore": true },
+          { "id": "refunded", "label": "成功時に返金済み更新", "isCore": true },
+          { "id": "retry", "label": "失敗時は再試行キュー登録", "isCore": true },
+          { "id": "alert", "label": "失敗時アラート通知", "isCore": true },
+          { "id": "memo-limit", "label": "メモ文字数上限200", "isCore": false },
+          { "id": "operator-name", "label": "担当者名の表記", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 失敗時処理が埋もれた図",
+        "lines": [
+          "キャンセル -> メモ200文字 -> 返金API -> 返金済み -> アラート",
+          "再試行キュー",
+          "担当者名"
+        ],
+        "mistakes": [
+          "返金対象判定が欠けている",
+          "失敗時処理の分岐が追えない",
+          "業務メモが主フローに混ざっている"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 成功/失敗を対で示す図",
+        "lanes": [
+          { "name": "運用", "steps": ["キャンセル操作", "返金対象判定"] },
+          { "name": "成功系", "steps": ["返金API成功", "返金済み更新"] },
+          { "name": "失敗系", "steps": ["返金API失敗", "再試行キュー", "アラート"] }
+        ],
+        "principles": [
+          "判定と実行を分離する",
+          "失敗時導線を明示する",
+          "補助情報を主図から外す"
+        ]
+      },
+      "transferTip": "外部API連携は失敗時を先に図示すると、監視設計の抜け漏れを防げる。"
+    },
+    {
+      "id": "easy-shipping-api",
+      "title": "出荷依頼API連携",
+      "difficultyLabel": "★★☆",
+      "learningGoal": "非同期連携の状態遷移を図で整理する",
+      "scenario": "注文確定後、システムは配送会社APIへ出荷依頼を送信する。配送会社は受付IDを返却する。システムは受付IDを保存し、ステータスを出荷依頼中に更新する。その後、配送会社の結果通知Webhookを受けて、成功なら出荷済み、失敗なら出荷保留へ更新する。Webhook署名検証方式はセキュリティ章に記載する。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "send-request", "label": "出荷依頼APIを送信", "isCore": true },
+          { "id": "receive-id", "label": "受付IDを受領", "isCore": true },
+          { "id": "pending", "label": "出荷依頼中へ更新", "isCore": true },
+          { "id": "webhook", "label": "Webhookで結果受信", "isCore": true },
+          { "id": "shipped", "label": "成功時は出荷済み", "isCore": true },
+          { "id": "hold", "label": "失敗時は出荷保留", "isCore": true },
+          { "id": "signature", "label": "署名検証方式の詳細", "isCore": false },
+          { "id": "endpoint-name", "label": "エンドポイントURL", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 同期/非同期が混ざった図",
+        "lines": [
+          "注文確定 -> API送信 -> URL -> 受付ID -> 出荷済み -> 出荷保留",
+          "Webhook",
+          "署名検証"
+        ],
+        "mistakes": [
+          "受付後の待機状態が表現されていない",
+          "Webhook結果で状態が分岐することが不明",
+          "セキュリティ詳細が主フローを妨げる"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 状態遷移中心で表現した図",
+        "lanes": [
+          { "name": "依頼", "steps": ["注文確定", "出荷依頼送信", "受付ID保存", "出荷依頼中"] },
+          { "name": "結果通知", "steps": ["Webhook受信", "成功: 出荷済み", "失敗: 出荷保留"] }
+        ],
+        "principles": [
+          "非同期待ち状態を明示する",
+          "通知起点の分岐を別レーンに分ける",
+          "詳細設計は別章に逃がす"
+        ]
+      },
+      "transferTip": "非同期連携は状態遷移図に寄せると、運用と実装の会話が揃いやすい。"
+    },
+    {
+      "id": "expense-workflow-redesign",
+      "title": "経費精算フローの再設計",
+      "difficultyLabel": "★★☆",
+      "learningGoal": "現行と新方式の差分を一本の主フローとして説明する",
+      "scenario": "現在、経費精算はExcelファイルをメール送付して申請している。申請者は毎月25日までに提出し、経理担当者が内容を確認する。不備がある場合は差し戻し、問題がなければ部門長へ承認依頼を送る。部門長承認後に支払い処理を行う。交通費は定期区間と重複する区間を除外する必要がある。経理担当は現在3名で、うち1名は来年度に異動予定である。月末は申請集中により確認作業が滞留しやすい。新システムではWeb申請と入力チェックを導入し、承認依頼と支払い依頼を自動通知する。申請者は進捗状態をWebで確認できる。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "current-method", "label": "現行はExcelメール申請", "isCore": true },
+          { "id": "new-method", "label": "新方式はWeb申請+入力チェック", "isCore": true },
+          { "id": "approval-flow", "label": "承認後に支払い処理へ進む", "isCore": true },
+          { "id": "applicant-visibility", "label": "申請者が進捗を自己確認できる", "isCore": true },
+          { "id": "member-transfer", "label": "経理担当1名が来年度異動予定", "isCore": false },
+          { "id": "deadline", "label": "提出締切は毎月25日", "isCore": false },
+          { "id": "transport-detail", "label": "定期区間との重複除外ルール", "isCore": false },
+          { "id": "peak-info", "label": "月末に申請が集中する", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: 文章順をそのまま線で結んだ図",
+        "lines": [
+          "申請者 -> 25日締切 -> Excel -> メール -> 経理3名 -> 不備差戻し -> 部門長承認",
+          "交通費重複除外 -> 来年1名異動 -> 月末集中 -> 支払い",
+          "Web申請 -> 入力チェック -> 承認依頼 -> 進捗確認"
+        ],
+        "mistakes": [
+          "主フローと補足仕様が同じ強度で並んでいる",
+          "現行と新方式の差分が見えない",
+          "読み手が最初に理解すべき順番が設計されていない"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 主張を先に固定した図",
+        "lanes": [
+          { "name": "現行", "steps": ["Excel申請", "経理確認", "部門長承認", "支払い処理"] },
+          { "name": "新方式", "steps": ["Web申請", "入力チェック", "承認依頼自動化", "支払い依頼自動化"] },
+          { "name": "利用者価値", "steps": ["申請者が進捗をWebで確認"] }
+        ],
+        "principles": [
+          "現行と新方式を分離して比較可能にする",
+          "処理の連鎖を主軸にして、組織情報は脚注へ逃がす",
+          "詳細ルールは別図や注記に分離する"
+        ]
+      },
+      "transferTip": "外部設計書ではまず主フロー比較図を置き、業務ルールや体制情報は補足章に退避すると読み手が迷いにくい。"
+    },
+    {
+      "id": "contact-handling-improvement",
+      "title": "問い合わせ対応の設計改善",
+      "difficultyLabel": "★★☆",
+      "learningGoal": "課題の根因と新機能の対応関係を一枚で示す",
+      "scenario": "顧客から問い合わせが届くと、窓口担当者が内容を確認し、担当部署へ転送する。担当部署は回答案を作成し、窓口担当者が顧客へメール回答する。電話で受けた問い合わせも後からシステム登録している。同一顧客の類似問い合わせが繰り返されることが多く、担当者は過去回答の検索に時間を使っている。新システムでは問い合わせ内容を全文検索し、類似問い合わせと過去回答を候補表示する。回答済み問い合わせは履歴化する。なお、来月に担当者の座席レイアウト変更が予定されている。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "current-route", "label": "窓口担当者が部署間転送を担う", "isCore": true },
+          { "id": "pain-point", "label": "過去回答検索に時間がかかる", "isCore": true },
+          { "id": "new-search", "label": "類似問い合わせ検索を導入", "isCore": true },
+          { "id": "history", "label": "回答履歴を継続活用する", "isCore": true },
+          { "id": "seat-layout", "label": "来月に座席変更がある", "isCore": false },
+          { "id": "phone-input", "label": "電話問い合わせも後で登録", "isCore": false },
+          { "id": "mail-channel", "label": "回答連絡手段はメール", "isCore": false },
+          { "id": "department-name", "label": "担当部署の名称一覧", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: チャネルや周辺情報を中心にした図",
+        "lines": [
+          "電話/メール -> 窓口 -> 部署A/B/C -> メール返信",
+          "座席変更 -> 来月予定",
+          "検索に時間 -> 新システム検索 -> 履歴保存"
+        ],
+        "mistakes": [
+          "課題の根因と解決策の対応が途中で切れている",
+          "業務導線と組織メモが混線している",
+          "新機能が何を改善するか読み取れない"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 課題から施策への連鎖を明示",
+        "lanes": [
+          { "name": "現行フロー", "steps": ["問い合わせ受付", "担当部署へ転送", "回答作成", "顧客へ返信"] },
+          { "name": "問題", "steps": ["類似問い合わせ再発", "過去回答探索に時間"] },
+          { "name": "改善", "steps": ["全文検索", "類似候補提示", "回答履歴再利用"] }
+        ],
+        "principles": [
+          "現行フローと改善施策を分けて描く",
+          "改善対象のボトルネックを中央に置く",
+          "運用メモは図の外に追い出す"
+        ]
+      },
+      "transferTip": "設計レビュー資料では、課題ノードと改善ノードの線が一本で追えることを最低条件にすると、議論がぶれにくい。"
+    },
+    {
+      "id": "attendance-role-separation",
+      "title": "勤怠システムの責務分離",
+      "difficultyLabel": "★★★",
+      "learningGoal": "人とシステムの責務境界を図で固定する",
+      "scenario": "社員は出社時と退社時に打刻し、テレワーク時はPC打刻を利用する。システムは打刻データから勤務時間を算出する。休暇取得時は社員が申請し上長が承認する。月末には人事担当者が勤怠一覧を確認し、未打刻と長時間勤務を確認している。確定した勤務データは給与計算システムへ連携する。現在は人事担当者が同じ情報をExcelへ二重転記しているため工数がかかる。新システムでは二重転記を廃止する。休憩時間ルールは部署差異があり、詳細定義は別資料で定義予定。",
+      "tasks": {
+        "focusOptions": [
+          { "id": "employee-punch", "label": "社員が打刻を実行する", "isCore": true },
+          { "id": "system-calc", "label": "システムが勤務時間を計算する", "isCore": true },
+          { "id": "leave-approval", "label": "休暇は申請と承認で確定する", "isCore": true },
+          { "id": "hr-payroll", "label": "人事確認後に給与システムへ連携", "isCore": true },
+          { "id": "double-entry-stop", "label": "Excel二重転記を廃止する", "isCore": true },
+          { "id": "telework", "label": "テレワーク時はPC打刻", "isCore": false },
+          { "id": "overtime-check", "label": "月末に未打刻と長時間勤務を確認", "isCore": false },
+          { "id": "break-rule", "label": "休憩ルールは部署差異あり", "isCore": false }
+        ]
+      },
+      "badDiagram": {
+        "title": "悪い例: イベント羅列型で責務が曖昧",
+        "lines": [
+          "出社 -> 打刻 -> 退社 -> 打刻 -> テレワーク -> PC",
+          "休暇申請 -> 承認 -> 月末確認 -> 未打刻確認 -> Excel転記 -> 給与連携",
+          "部署差異休憩ルール"
+        ],
+        "mistakes": [
+          "誰が処理主体か判別できない",
+          "確認業務とデータ連携の境界が曖昧",
+          "廃止したい作業が目立たない"
+        ]
+      },
+      "goodDiagram": {
+        "title": "良い例: 主体別に責務を分解",
+        "lanes": [
+          { "name": "社員", "steps": ["打刻", "休暇申請"] },
+          { "name": "上長", "steps": ["休暇承認"] },
+          { "name": "勤怠システム", "steps": ["勤務時間計算", "勤怠確定", "給与連携データ生成"] },
+          { "name": "人事", "steps": ["例外確認", "給与システムへ連携"] }
+        ],
+        "principles": [
+          "主体ごとにレーンを分ける",
+          "通常フローと例外確認を分離する",
+          "廃止対象作業を注記して改善効果を示す"
+        ]
+      },
+      "transferTip": "責務分離図は実装分担やIF設計に直結するため、主体ラベルを曖昧にしないことが外部設計の品質に直結する。"
+    }
+  ]
+}
