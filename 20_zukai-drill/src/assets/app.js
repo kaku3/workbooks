@@ -257,13 +257,21 @@ function wireSampleToggle(fragment, problem, problemId) {
   fragment.querySelector('[data-bind="goodTitle"]').textContent = problem.goodDiagram.title;
 
   const badDiagram = fragment.getElementById("bad-diagram");
-  badDiagram.innerHTML = buildBadDiagramSvg(problem.badDiagram);
+  renderDiagramImage(
+    badDiagram,
+    `./data/diagrams/${problem.id}_bad-diagram.drawio.png`,
+    "悪い図の例"
+  );
 
   const mistakes = fragment.getElementById("mistakes-list");
   mistakes.innerHTML = problem.badDiagram.mistakes.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
   const goodDiagram = fragment.getElementById("good-diagram");
-  goodDiagram.innerHTML = buildGoodDiagramSvg(problem.goodDiagram);
+  renderDiagramImage(
+    goodDiagram,
+    `./data/diagrams/${problem.id}_good-diagram.drawio.png`,
+    "良い図の例"
+  );
 
   const principles = fragment.getElementById("principles-list");
   principles.innerHTML = problem.goodDiagram.principles.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
@@ -346,6 +354,29 @@ function buildQ2ModelAnswer(problem, coreLabels) {
   }
 
   return `主題: ${problem.learningGoal}。要点は${mainFlow}を主軸に、処理の開始から完了までを一連の流れとして示す。`;
+}
+
+function renderDiagramImage(container, src, alt) {
+  const img = document.createElement("img");
+  img.className = "diagram-svg";
+  img.alt = alt;
+  img.decoding = "async";
+  img.loading = "lazy";
+
+  img.addEventListener("error", () => {
+    container.innerHTML = '<p class="hint">図画像の読み込みに失敗しました。</p>';
+  });
+
+  img.addEventListener("load", () => {
+    if (!img.naturalWidth || !img.naturalHeight) {
+      container.innerHTML = '<p class="hint">図画像が空でした。</p>';
+    } else {
+      container.replaceChildren(img);
+    }
+  });
+
+  container.replaceChildren(img);
+  img.src = src;
 }
 
 function isProblemCompleted(problemId) {

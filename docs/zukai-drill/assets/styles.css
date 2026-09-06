@@ -232,6 +232,9 @@ h1 {
   margin-bottom: 18px;
 }
 
+.panel-intro {
+}
+
 .intro-layout {
   display: grid;
   grid-template-columns: 1fr 720px;
