@@ -4,98 +4,144 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>視点ドリル | 仕様を、誰に伝えるかで書き分ける</title>
-  <meta name="description" content="仕様書における「システム目線」「ユーザー目線」の書き分けを練習する問題集">
+  <meta name="description" content="仕様書の「向き」を見抜き、読み手に伝わる文章へ書き換える反復ドリル。">
   <meta property="og:title" content="視点ドリル | 仕様を、誰に伝えるかで書き分ける">
-  <meta property="og:description" content="仕様書における「システム目線」「ユーザー目線」の書き分けを練習する問題集">
+  <meta property="og:description" content="仕様書の「向き」を見抜き、読み手に伝わる文章へ書き換える反復ドリル。">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://kaku3.github.io/workbooks/shiten-drill/assets/ogp.png">
   <meta property="og:url" content="https://kaku3.github.io/workbooks/shiten-drill/">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="視点ドリル | 仕様を、誰に伝えるかで書き分ける">
-  <meta name="twitter:description" content="仕様書における「システム目線」「ユーザー目線」の書き分けを練習する問題集">
+  <meta name="twitter:description" content="仕様書の「向き」を見抜き、読み手に伝わる文章へ書き換える反復ドリル。">
   <meta name="twitter:image" content="https://kaku3.github.io/workbooks/shiten-drill/assets/ogp.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="wrap page-shell">
-    <main class="content">
-      <header class="hero">
-        <div class="eyebrow">WRITING PRACTICE FOR SPEC DOCS</div>
-        <h1>視点ドリル</h1>
-        <p class="lead">新人・若手エンジニア向け。仕様書で迷いがちな「システム目線」と「ユーザー目線」の書き分けを学ぶ20問の演習です。</p>
-      </header>
+  <div class="site-bg">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="視点ドリル トップ">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>視点ドリル</span>
+      </a>
+      <div class="topbar-note">SPEC WRITING MINI DRILL</div>
+    </header>
 
-      <section id="why">
-        <h2>意外と教えてもらえない「視点・目線」</h2>
-        <div class="why-box">
-          <p>このドリルは、仕様書を書き始めた人が<strong>「何を書けば伝わるのか」</strong>を素早く掴むためのものです。</p>
-          <p>実装者に伝えるべき文と、利用者体験を説明する文が混ざると、レビューで「主語がぶれる」「読み手が迷う」状態になります。</p>
-          <p>そこで使うのが<strong>「システム目線」</strong>と<strong>「ユーザー目線」</strong>の2軸です。</p>
-          <p>どちらで書くべき文かを切り分けるだけで、仕様の伝達精度は大きく上がります。</p>
-          <p style="margin-bottom:0;">目線書き換え問題、分類問題を通じて、実務でそのまま使える書き分けの考え方を身につけましょう。</p>
+    <main class="wrap page-shell">
+      <section class="hero-card">
+        <div class="hero-copy">
+          <div class="eyebrow">仕様の「向き」を見抜く、反復ドリル。</div>
+          <h1>その仕様書、<em>どっちを向いていますか？</em></h1>
+          <p class="lead">概要の中に、ひとつだけ向きの違う文章が混ざると、急に読みづらくなる。見つけて、直して、「あ、なるほど」を積み重ねよう。</p>
+          <div class="hero-pills">
+            <span>🖥 システム目線</span>
+            <span>👤 ユーザー目線</span>
+            <span>↔ 向きを見抜く</span><span>✎ 書き換える</span>
+          </div>
+        </div>
+        <div class="hero-board" aria-hidden="true">
+          <div class="board-note note-a"></div><div class="board-note note-b"></div>
+          <div class="board-line line-a"></div><div class="board-line line-b"></div>
+          <div class="board-node node-a">SYSTEM</div>
+          <div class="board-node node-b">USER</div>
+          <div class="board-arrow">↔</div>
+          <div class="board-dot dot-a"></div><div class="board-dot dot-b"></div><div class="board-dot dot-c"></div>
         </div>
       </section>
 
-      <section id="all">
-        <h2>問題</h2>
-        <div class="list-tabs" role="tablist" aria-label="一覧タブ">
-          <button type="button" class="list-tab active" id="listWriteTab" data-list-tab="write" role="tab" aria-selected="true">目線</button>
-          <button type="button" class="list-tab" id="listClassifyTab" data-list-tab="classify" role="tab" aria-selected="false">分類</button>
+      <section class="progress-strip" aria-label="進捗">
+        <div class="progress-main">
+          <div class="progress-label"><span>YOUR PROGRESS</span><strong id="sidebarStatus">未着手</strong></div>
+          <div class="progress-track"><div class="progress-fill" id="overallFill"></div></div>
         </div>
+        <div class="progress-score"><strong id="sidebarSolved">0</strong><span>/ <span id="sidebarTotal">40</span></span></div>
+      </section>
+
+      <section class="challenge-section" id="challenge">
+        <div class="section-kicker"><span>CHALLENGE</span><span class="kicker-dot"></span></div>
+        <div class="mode-switch" role="tablist" aria-label="問題モード">
+          <button type="button" class="mode-tab active" id="listClassifyTab" data-list-tab="classify" role="tab" aria-selected="true"><span>🧩</span> 仕様を分類する</button>
+          <button type="button" class="mode-tab" id="listWriteTab" data-list-tab="write" role="tab" aria-selected="false"><span>🖥↔👤</span> 目線を書き換える</button>
+        </div>
+        <div class="challenge-intro" id="challengeIntro">
+          <strong>まずは分類から。</strong> 仕様を「システム目線」と「ユーザー目線」に分けると、文章の構造が見えやすくなります。
+        </div>
+
+        <div id="writeChallenge" class="challenge-panel">
+          <div class="challenge-head">
+            <div><span class="question-type">VIEW SWITCH</span><h2>この文章を、別の視点から言い換えよう</h2></div>
+            <div class="challenge-counter"><strong id="qCounter">Q1.</strong><span class="counter-total"> / 20</span><span class="level-line"><span id="writeLevel" class="level-badge lv1">入門</span> · QUESTION</span></div>
+          </div>
+          <div class="challenge-card card">
+            <div class="challenge-direction" id="qtag"><span>システム目線</span> → <span>ユーザー目線</span></div>
+            <div class="given-wrap"><span class="given-label">GIVEN</span><p class="given" id="given"></p></div>
+            <div class="task-wrap"><span class="task-label">YOUR TURN</span><p class="task" id="task"></p></div>
+            <textarea id="answerInput" placeholder="まず自分の言葉で書いてみよう…"></textarea>
+            <div class="card-actions"><button class="btn primary" id="checkBtn" type="button">答えを見る <span>→</span></button></div>
+            <div class="answer" id="answerBox">
+              <div class="answer-block answer-example"><span class="label">解答例</span><p class="model" id="modelAnswer"></p></div>
+              <div class="answer-block answer-explain"><span class="label">POINT</span><p class="tip" id="tip"></p></div>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="btn ghost" id="prevBtn" type="button">← 前の問題</button>
+            <button class="btn next" id="nextBtn" type="button">次の問題 <span>→</span></button>
+          </div>
+        </div>
+
+        <div id="classifyChallenge" class="challenge-panel">
+          <div class="challenge-head">
+            <div><span class="question-type">FIND THE DIRECTION</span><h2>概要の中で、向きが違う文章を探そう</h2></div>
+            <div class="challenge-counter"><strong id="clCounter">Q1.</strong><span class="counter-total"> / 20</span><span>QUESTION</span></div>
+          </div>
+          <div class="difficulty-row"><span>難易度</span><span id="clLevel" class="level-badge lv1">入門</span><span class="difficulty-note">まずは「違和感」を見つけるだけ。</span></div>
+          <div class="challenge-card cl-card">
+            <div class="cl-question"><strong>この概要は、ユーザー視点2つとシステム視点1つで書かれています。</strong><br><span>どれがシステム視点でしょう？</span></div>
+            <div class="cl-sentences" id="clSentences"></div>
+            <div class="cl-explain" id="clExplain">
+              <p class="cl-result" id="clResult"></p>
+              <div class="before-after" id="clBeforeAfter">
+                <div class="before"><span>BEFORE</span><p id="clBefore"></p></div>
+                <div class="ba-arrow">→</div>
+                <div class="after"><span>AFTER</span><p id="clAfter"></p></div>
+              </div>
+              <p id="clExplainText"></p>
+            </div>
+          </div>
+          <div class="nav-row">
+            <button class="btn ghost" id="clPrevBtn" type="button">← 前の問題</button>
+            <button class="btn next" id="clNextBtn" type="button">次の問題 <span>→</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section id="all" class="list-section">
+        <div class="section-heading-row"><div><div class="section-kicker"><span>QUESTION MAP</span><span class="kicker-dot"></span></div><h2>問題マップ</h2></div><p>入門から挑戦まで。気になる問題から復習できます。</p></div>
         <div id="allList" class="question-list" aria-live="polite"></div>
       </section>
 
-      <section id="tips">
-        <h2>目線の考え方</h2>
-        <ul class="hint-list">
-          <li><strong>主語チェック：</strong>「システムは」「処理は」が主語ならシステム目線。「ユーザーは」「画面には」ならユーザー目線。</li>
-          <li><strong>誰が読むか：</strong>実装者・テストが読む機能仕様のコアはシステム目線。UI仕様や受け入れ基準はユーザー目線。</li>
-          <li><strong>非機能要件：</strong>性能・セキュリティなど見えない制約は、無理にユーザー目線へ翻訳しない。</li>
-          <li><strong>受け入れ条件：</strong>「ユーザーが何をしたら何が起きるべきか」から書き、内部処理はシステム目線で紐づける。</li>
-        </ul>
+      <section class="why-section" id="why">
+        <div class="section-kicker"><span>WHY THIS DRILL?</span><span class="kicker-dot"></span></div>
+        <h2>「向き」が揃うと、なぜ読みやすい？</h2>
+        <p class="why-lead"><strong>機能仕様書は、システムがどのように振る舞うかを定義する文書です。</strong> だから概要では、システムの振る舞いを中心に文章の向きを揃えておくと、読み手が「これは誰の操作で、システムが何をするのか」を頭の中で翻訳し直さずに追えます。ユーザーが見える結果を書く場合も、同じ流れの中で役割を揃えておくと、仕様の全体像がつかみやすくなります。</p>
+        <div class="why-grid">
+          <div><span class="why-icon sys-icon">🖥</span><strong>システム目線</strong><p>何を処理するか、どんな制約があるか。実装者が追える具体的な仕様。</p></div>
+          <div><span class="why-icon usr-icon">👤</span><strong>ユーザー目線</strong><p>何をすると、何が起きるか。利用者が体験する結果を中心にした説明。</p></div>
+          <div><span class="why-icon mix-icon">↔</span><strong>視点を切り替える</strong><p>概要の中で視点が混ざると、読み手は頭の中で翻訳し直す必要があります。向きを揃えると、流れがそのまま入ってきます。</p></div>
+        </div>
       </section>
 
-      <section id="learn-guide">
-        <h2>学習の進め方</h2>
-        <p>問題一覧または右側のPROGRESSから問題を選んで、モーダルで解答。</p>
-        <p>モーダル内で「前の問題 / 次の問題」に進みながら、連続して学習してください。</p>
+      <section id="tips" class="tips-section">
+        <div class="section-kicker"><span>QUICK TIPS</span><span class="kicker-dot"></span></div>
+        <h2>迷ったら、この3つを見る。</h2>
+        <div class="tip-grid">
+          <div><b>01</b><strong>主語を見る</strong><p>「システムは」「処理は」ならシステム目線。「ユーザーは」「画面には」ならユーザー目線。</p></div>
+          <div><b>02</b><strong>読み手を見る</strong><p>実装者・テストが読む機能仕様はシステム寄り。UIや受け入れ条件はユーザー寄り。</p></div>
+          <div><b>03</b><strong>結果に翻訳する</strong><p>内部処理をそのまま書くのではなく、ユーザーにとって何が起きるかに置き換える。</p></div>
+        </div>
       </section>
 
-      <footer>
-        <p>視点ドリル（shiten-drill） — <a href="https://kaku3.github.io/workbooks/zukai-drill/">図解ドリル</a>の姉妹編</p>
-      </footer>
+      <footer><p>視点ドリル（shiten-drill） — <a href="https://kaku3.github.io/workbooks/zukai-drill/">図解ドリル</a>の姉妹編</p></footer>
     </main>
-
-    <aside class="sidebar">
-      <div class="sidebar-panel">
-        <div class="panel-header">Progress</div>
-        <div class="mini-progress">
-          <div class="mini-stat">
-            <strong id="sidebarSolved">0</strong>
-            <span>/20</span>
-          </div>
-          <div class="mini-status" id="sidebarStatus">未着手</div>
-        </div>
-
-        <div class="map-tabs" role="tablist" aria-label="問題タイプ">
-          <button type="button" class="map-tab active" id="mapWriteTab" data-map-tab="write" role="tab" aria-selected="true">目線</button>
-          <button type="button" class="map-tab" id="mapClassifyTab" data-map-tab="classify" role="tab" aria-selected="false">分類</button>
-        </div>
-        <div class="map-count"><span id="mapTabSolved">0</span>/<span id="mapTabTotal">10</span></div>
-
-        <nav id="questionNav" class="question-nav" aria-label="問題一覧"></nav>
-      </div>
-    </aside>
-
-  </div>
-
-  <div class="modal" id="listModal" aria-hidden="true">
-    <div class="modal-backdrop" id="modalBackdrop"></div>
-    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button type="button" class="modal-close" id="modalCloseBtn" aria-label="閉じる">×</button>
-      <h3 id="modalTitle"></h3>
-      <div class="modal-body" id="modalBody"></div>
-    </div>
   </div>
 
   <script src="data.js"></script>
