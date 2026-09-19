@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>視点ドリル | 仕様を、誰に伝えるかで書き分ける</title>
+  <meta name="description" content="仕様書における「システム目線」「ユーザー目線」の書き分けを練習する問題集">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap page-shell">
+    <main class="content">
+      <header class="hero">
+        <div class="eyebrow">WRITING PRACTICE FOR SPEC DOCS</div>
+        <h1>視点ドリル</h1>
+        <p class="lead">新人・若手エンジニア向け。仕様書で迷いがちな「システム目線」と「ユーザー目線」の書き分けを学ぶ20問の演習です。</p>
+      </header>
+
+      <section id="why">
+        <h2>意外と教えてもらえない「視点・目線」</h2>
+        <div class="why-box">
+          <p>このドリルは、仕様書を書き始めた人が<strong>「何を書けば伝わるのか」</strong>を素早く掴むためのものです。</p>
+          <p>実装者に伝えるべき文と、利用者体験を説明する文が混ざると、レビューで「主語がぶれる」「読み手が迷う」状態になります。</p>
+          <p>そこで使うのが<strong>「システム目線」</strong>と<strong>「ユーザー目線」</strong>の2軸です。</p>
+          <p>どちらで書くべき文かを切り分けるだけで、仕様の伝達精度は大きく上がります。</p>
+          <p style="margin-bottom:0;">目線書き換え問題、分類問題を通じて、実務でそのまま使える書き分けの考え方を身につけましょう。</p>
+        </div>
+      </section>
+
+      <section id="all">
+        <h2>問題</h2>
+        <div class="list-tabs" role="tablist" aria-label="一覧タブ">
+          <button type="button" class="list-tab active" id="listWriteTab" data-list-tab="write" role="tab" aria-selected="true">目線</button>
+          <button type="button" class="list-tab" id="listClassifyTab" data-list-tab="classify" role="tab" aria-selected="false">分類</button>
+        </div>
+        <div id="allList" class="question-list" aria-live="polite"></div>
+      </section>
+
+      <section id="tips">
+        <h2>目線の考え方</h2>
+        <ul class="hint-list">
+          <li><strong>主語チェック：</strong>「システムは」「処理は」が主語ならシステム目線。「ユーザーは」「画面には」ならユーザー目線。</li>
+          <li><strong>誰が読むか：</strong>実装者・テストが読む機能仕様のコアはシステム目線。UI仕様や受け入れ基準はユーザー目線。</li>
+          <li><strong>非機能要件：</strong>性能・セキュリティなど見えない制約は、無理にユーザー目線へ翻訳しない。</li>
+          <li><strong>受け入れ条件：</strong>「ユーザーが何をしたら何が起きるべきか」から書き、内部処理はシステム目線で紐づける。</li>
+        </ul>
+      </section>
+
+      <section id="learn-guide">
+        <h2>学習の進め方</h2>
+        <p>問題一覧または右側のPROGRESSから問題を選んで、モーダルで解答。</p>
+        <p>モーダル内で「前の問題 / 次の問題」に進みながら、連続して学習してください。</p>
+      </section>
+
+      <footer>
+        <p>視点ドリル（shiten-drill） — <a href="https://kaku3.github.io/workbooks/zukai-drill/">図解ドリル</a>の姉妹編</p>
+      </footer>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-panel">
+        <div class="panel-header">Progress</div>
+        <div class="mini-progress">
+          <div class="mini-stat">
+            <strong id="sidebarSolved">0</strong>
+            <span>/20</span>
+          </div>
+          <div class="mini-status" id="sidebarStatus">未着手</div>
+        </div>
+
+        <div class="map-tabs" role="tablist" aria-label="問題タイプ">
+          <button type="button" class="map-tab active" id="mapWriteTab" data-map-tab="write" role="tab" aria-selected="true">目線</button>
+          <button type="button" class="map-tab" id="mapClassifyTab" data-map-tab="classify" role="tab" aria-selected="false">分類</button>
+        </div>
+        <div class="map-count"><span id="mapTabSolved">0</span>/<span id="mapTabTotal">10</span></div>
+
+        <nav id="questionNav" class="question-nav" aria-label="問題一覧"></nav>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="modal" id="listModal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button type="button" class="modal-close" id="modalCloseBtn" aria-label="閉じる">×</button>
+      <h3 id="modalTitle"></h3>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
