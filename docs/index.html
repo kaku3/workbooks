@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="エンジニアのためのお仕事問題集。読む、考える、整理する、伝える、作る。メンターもメンティーも、一緒に学ぶための小さな教材集です。">
+  <meta property="og:title" content="Workbooks｜エンジニアのためのお仕事問題集">
+  <meta property="og:description" content="教える人も、教わる人も。一緒に考えて、一緒に育つ。エンジニアのためのお仕事問題集。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kaku3.github.io/workbooks/">
+  <meta property="og:image" content="https://kaku3.github.io/workbooks/assets/hero-workbooks.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Workbooks｜エンジニアのためのお仕事問題集</title>
+  <style>
+    :root{--paper:#f7f3ea;--paper2:#efe8da;--ink:#26352f;--muted:#68746e;--green:#789488;--green2:#dce8e1;--amber:#d39b59;--amber2:#f2dfc2;--white:#fffdf8;--line:#ddd4c6;--shadow:0 18px 55px rgba(76,65,48,.10)}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;line-height:1.85;-webkit-font-smoothing:antialiased} a{color:inherit}
+    .wrap{width:min(1080px,calc(100% - 40px));margin:auto}
+    header{position:relative;overflow:hidden;padding:34px 0 74px;background:linear-gradient(180deg,#fbf8f0 0%,#f4efe5 100%)}
+    .nav{display:flex;justify-content:space-between;align-items:center;font-size:.84rem;color:#748078}.brand{font-weight:800;letter-spacing:.06em}.nav a{text-decoration:none}.nav a:hover{color:var(--amber)}
+    .hero{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;padding:62px 0 28px}.kicker{display:inline-flex;gap:9px;align-items:center;color:#728b80;font-size:.78rem;font-weight:800;letter-spacing:.13em}.kicker:before{content:"";width:25px;height:2px;background:var(--amber)}h1{margin:17px 0 0;font-size:clamp(2.45rem,5.5vw,4.6rem);line-height:1.18;letter-spacing:-.055em;font-weight:850}h1 em{font-style:normal;color:#789488}.lead{margin:25px 0 0;font-size:1.05rem;color:#66736d}.lead strong{color:var(--ink)}
+    .hero-art{border-radius:28px;box-shadow:var(--shadow);overflow:hidden;transform:rotate(1deg)}.hero-art img{display:block;width:100%;height:auto}
+    main{position:relative}.paper-card{margin-top:-10px;padding:42px clamp(24px,5vw,58px);background:var(--white);border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow)}h2{margin:0;font-size:clamp(1.55rem,3vw,2.15rem);line-height:1.4;letter-spacing:-.035em}h2 small{display:block;margin-bottom:8px;color:var(--amber);font-size:.72rem;letter-spacing:.14em}p{margin:15px 0}.soft{color:var(--muted)}.quote{margin:28px 0 0;padding:23px 25px;background:var(--paper);border-radius:16px;border-left:4px solid var(--amber);font-size:1.02rem}.quote strong{font-size:1.12rem}
+    section{padding:92px 0 0}.section-intro{max-width:710px;margin:10px 0 28px;color:var(--muted)}
+    section{position:relative;padding-bottom:92px} section:before{content:"";position:absolute;z-index:-1;left:50%;top:0;bottom:0;width:100vw;transform:translateX(-50%);background:rgba(255,253,248,.34)} section:nth-of-type(2):before{background:rgba(220,232,225,.34)} section:nth-of-type(3):before{background:rgba(242,223,194,.24)} section:nth-of-type(4):before{background:rgba(255,253,248,.55)} section:nth-of-type(5):before{background:rgba(220,232,225,.20)}.section-title{display:flex;justify-content:space-between;align-items:end;gap:20px}.section-title .number{color:#a99474;font-size:.75rem;font-weight:800;letter-spacing:.13em}
+    .skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}.skill{padding:26px 25px;background:rgba(255,253,248,.82);border:1px solid var(--line);border-radius:18px;min-width:0}.skill a{font-weight:750;text-decoration:none;border-bottom:1px solid rgba(155,128,92,.35);transition:.15s}.skill a:hover{color:#9b805c;border-bottom-color:#9b805c}.skill span{color:var(--muted)}.skill b{color:#9b805c;font-size:.74rem;letter-spacing:.12em}.skill h3{margin:8px 0 4px;font-size:1.12rem}.skill p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.7}
+    .workbooks{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.workbook{display:flex;gap:20px;min-height:170px;padding:23px;background:var(--white);border:1px solid var(--line);border-radius:20px;text-decoration:none;transition:.2s ease;box-shadow:0 4px 0 rgba(100,83,57,.035)}.workbook:hover{transform:translateY(-4px) rotate(-.3deg);box-shadow:0 15px 35px rgba(76,65,48,.11);border-color:#c9bba5}.workbook-art{width:96px;min-width:96px;height:96px;border-radius:15px;background:var(--green2);overflow:hidden;display:flex;align-items:center;justify-content:center}.workbook-art span{font-size:2rem}.workbook-body{display:flex;flex-direction:column}.tag{font-size:.7rem;font-weight:800;color:#728b80}.workbook h3{margin:5px 0 5px;font-size:1.1rem;line-height:1.4}.workbook p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.65}.try{margin-top:auto;padding-top:9px;color:#9b805c;font-weight:800;font-size:.78rem}
+    .story{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:stretch}.story-main{padding:38px;background:#718c80;color:#fff;border-radius:24px;position:relative;overflow:hidden}.story-main:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-80px;bottom:-120px;background:rgba(255,255,255,.08)}.story-main h2{color:#fff}.story-main p{color:#e9f0eb}.story-main .line{margin:25px 0;width:65px;height:3px;background:#e4bd80}.story-side{padding:34px;background:var(--amber2);border-radius:24px}.story-side h3{margin:0 0 12px;font-size:1.2rem}.story-side p{color:#695e50}.mini-list{display:grid;gap:10px;margin-top:20px}.mini-list span{padding:10px 13px;background:rgba(255,255,255,.5);border-radius:10px;font-weight:750}
+    .use{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.use article{padding:25px;background:var(--white);border:1px solid var(--line);border-radius:18px}.use strong{font-size:1.03rem}.use p{color:var(--muted);font-size:.9rem}
+    .closing{padding:100px 0 110px;text-align:center}.closing h2{max-width:750px;margin:auto}.closing p{max-width:650px;margin:18px auto;color:var(--muted)}.button{display:inline-flex;margin-top:14px;padding:12px 20px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:800;font-size:.9rem;transition:.2s}.button:hover{transform:translateY(-2px);background:#466359}
+    footer{padding:32px 20px 48px;text-align:center;color:#8b8b7f;font-size:.78rem;border-top:1px solid var(--line)}footer strong{color:#61766c}
+    @media(max-width:850px){.hero,.story{grid-template-columns:1fr}.hero-art{max-width:650px}.skills{grid-template-columns:1fr}.workbooks{grid-template-columns:1fr}.use{grid-template-columns:1fr}}
+    @media(max-width:540px){.wrap{width:calc(100% - 24px)}header{padding-top:22px}.hero{padding-top:45px;gap:30px}h1{font-size:2.65rem}.hero-art{border-radius:20px}.paper-card{padding:30px 21px;border-radius:19px}.skills{grid-template-columns:1fr}.workbook{padding:18px}.workbook-art{width:74px;min-width:74px;height:74px}.story-main,.story-side{padding:28px}.section-title{display:block}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav class="nav"><div class="brand">WORKBOOKS</div><a href="https://github.com/kaku3/workbooks" target="_blank" rel="noopener">GitHub ↗</a></nav>
+    <div class="hero">
+      <div>
+        <div class="kicker">FOR ENGINEERS, MENTORS &amp; MENTEES</div>
+        <h1>仕事をしながら、<br><em>一緒に育つ。</em></h1>
+        <p class="lead">読む。考える。整理する。伝える。<br><strong>仕事の「ちょっとうまくいかない」を、5分から。</strong></p>
+      </div>
+      <div class="hero-art"><img src="assets/hero-workbooks.svg" alt="紙の上に仕事のメモや図解が並び、考える人がそれらをつないでいるイラスト"></div>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="paper-card" id="about">
+    <h2><small>WHY WORKBOOKS?</small>教える人も、教わる人も。</h2>
+    <p>自分の仕事で手一杯。それでも、2年目・3年目になると後輩を見る。</p>
+    <p>先輩は片手間。後輩は指示待ち。<strong>「言われたことをやる。終わったら、また指示を待つ。」</strong>それだけでは、仕事の中に学びが残りにくい。</p>
+    <p>だから、教える側だけに「育成」を背負わせない。教わる側だけにも「勉強」を押しつけない。</p>
+    <div class="quote"><strong>同じ問題を、一緒に考える。</strong><br>新人は新人なりに考える。先輩は「なぜそう考えるのか」を言葉にする。そこに、教える・教わるだけではない学びが生まれます。</div>
+  </div>
+
+  <section>
+    <div class="section-title"><h2>日常を、ちょっとよくする教養。</h2><div class="number">01 / SMALL STEPS</div></div>
+    <p class="section-intro">仕事の中にある小さな「？」を、そのままにしない。読む、考える、伝える。気になった入口から、5分だけ。</p>
+    <div class="skills">
+      <article class="skill"><b>READ</b><h3>読み取る</h3><p><a href="shiten-drill">視点ドリル</a><br><a href="learn-with-ai">AI時代のコードレビュー力試験</a></p></article>
+      <article class="skill"><b>THINK</b><h3>考える</h3><p><a href="think-lab-from-buggy-code">ThinkLab from Buggy Code</a></p></article>
+      <article class="skill"><b>SHARE</b><h3>伝える</h3><p><a href="zukai-drill">図解ドリル</a><br><a href="commu-checker">コミュ力診断</a><br><a href="it-business-mail-typing">香ばしビジメ ― 極タイピング</a></p></article>
+    </div>
+  </section>
+
+  <section id="workbooks">
+    <div class="section-title"><h2>Workbooks</h2><div class="number">02 / TRY ONE</div></div>
+    <p class="section-intro">気になるものからどうぞ。先輩と一緒でも、一人でも、AIと一緒でも。</p>
+    <div class="workbooks">
+      <a class="workbook" href="learn-with-ai"><div class="workbook-art"><span>🔍</span></div><div class="workbook-body"><span class="tag">レビュー・AI</span><h3>AI時代のコードレビュー力試験</h3><p>AIが作った成果物を、そのまま受け取らずに読み、考え、レビューする。</p><div class="try">やってみる →</div></div></a>
+      <a class="workbook" href="zukai-drill"><div class="workbook-art"><span>🗂️</span></div><div class="workbook-body"><span class="tag">整理・図解</span><h3>図解ドリル</h3><p>文章を読み、情報を整理して「伝わる図」にする。</p><div class="try">やってみる →</div></div></a>
+      <a class="workbook" href="shiten-drill"><div class="workbook-art"><span>👀</span></div><div class="workbook-body"><span class="tag">読解・視点</span><h3>視点ドリル</h3><p>文章の中にある「向き」や視点の違いを見つける。</p><div class="try">やってみる →</div></div></a>
+      <a class="workbook" href="think-lab-from-buggy-code"><div class="workbook-art"><span>🧩</span></div><div class="workbook-body"><span class="tag">論理・デバッグ</span><h3>ThinkLab from Buggy Code</h3><p>現象から原因を推測し、切り分けて考える。</p><div class="try">やってみる →</div></div></a>
+      <a class="workbook" href="it-business-mail-typing"><div class="workbook-art"><span>⌨️</span></div><div class="workbook-body"><span class="tag">日本語・実務</span><h3>香ばしビジメ ― 極タイピング</h3><p>IT現場のちょっと香ばしい文面を題材に、日本語を鍛える。</p><div class="try">やってみる →</div></div></a>
+      <a class="workbook" href="commu-checker"><div class="workbook-art"><span>💬</span></div><div class="workbook-body"><span class="tag">観察・コミュニケーション</span><h3>コミュ力診断</h3><p>相手を観察し、伝え方や次の一手を考える。</p><div class="try">やってみる →</div></div></a>
+    </div>
+  </section>
+
+  <section>
+    <div class="story">
+      <div class="story-main"><h2>AIが来たから、<br>始めたわけではない。</h2><div class="line"></div><p>この問題集を作り始めた理由は、もっと前にあります。</p><p>仕事の中で「もう少し練習できたら」と思ったことを、気軽に試せる場所がほしかった。</p><p>AIがコードを書けるようになった今も、読む・考える・整理する・伝えることは、人間の仕事として残ります。</p></div>
+      <div class="story-side"><h3>AIに聞く前に、ひと呼吸。</h3><p>答えを出してもらうことより、出てきた答えをどう扱うか。その土台は、案外昔から変わっていません。</p><div class="mini-list"><span>読む</span><span>考える</span><span>疑う</span><span>伝える</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title"><h2>使い方も、ゆるく。</h2><div class="number">03 / TOGETHER</div></div>
+    <p class="section-intro">正解を覚えるためではなく、話すきっかけとして使ってください。</p>
+    <div class="use"><article><strong>一人で</strong><p>仕事の合間に、気になった問題を一つだけ。</p></article><article><strong>メンターと</strong><p>新人だけに解かせず、先輩も一緒に考えてみる。</p></article><article><strong>AIと</strong><p>先に答えを聞くのではなく、自分の考えと比べてみる。</p></article></div>
+  </section>
+
+  <div class="closing"><h2>「勉強しなきゃ」ではなく、<br>「これ、ちょっとやってみよう」から。</h2><p>仕事の「ちょっとうまくいかない」を、まずは5分。</p><a class="button" href="#workbooks">問題を探す ↓</a></div>
+</main>
+<footer><strong>Workbooks</strong><br>エンジニアのためのお仕事問題集</footer>
+</body>
+</html>
