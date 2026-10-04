@@ -358,15 +358,10 @@
 .review-card.done:after{display:none}
 @media(max-width:700px){.review-card{min-height:104px}.review-type{font-size:8px!important}.review-state{padding:4px 5px}}
 
-/* v4.10: clearer current card + balanced status marker */
 .review-card.current{box-shadow:0 0 0 2px rgba(82,145,190,.16);border-color:#8dbbd8}
-.review-card.current:before{content:'NOW';position:absolute;top:8px;left:40px;padding:3px 6px;border-radius:999px;background:#eaf5ff;border:1px solid #b9d8ee;color:#2a76ad;font-size:7px;line-height:1;font-weight:900;letter-spacing:.08em}
-.review-card.current .review-card-header{padding-right:38px}
+.review-card.current:before{content:'NOW';position:absolute;top:12px;left:40px;padding:3px 6px;border-radius:999px;background:#eaf5ff;border:1px solid #b9d8ee;color:#2a76ad;font-size:7px;line-height:1;font-weight:900;letter-spacing:.08em}
 
 .review-state b{display:inline-flex;width:11px;justify-content:center;align-items:center}
-
-@media(max-width:700px){.review-card.current:before{top:7px;right:7px}.review-card.current .review-card-header{padding-right:34px}}
-
 
 /* v4.11: canonical review-state marker */
 .review-state{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:0;padding:4px 5px;border:1px solid #dce5ef;border-radius:100vh;background:#fff;font-size:6px!important;line-height:1;font-weight:900;white-space:nowrap;min-width:46px}
