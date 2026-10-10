@@ -53,14 +53,15 @@
           <div class="progress-label"><span>YOUR PROGRESS</span><strong id="sidebarStatus">未着手</strong></div>
           <div class="progress-track"><div class="progress-fill" id="overallFill"></div></div>
         </div>
-        <div class="progress-score"><strong id="sidebarSolved">0</strong><span>/ <span id="sidebarTotal">40</span></span></div>
+        <div class="progress-score"><strong id="sidebarSolved">0</strong><span>/ <span id="sidebarTotal">60</span></span></div>
       </section>
 
       <section class="challenge-section" id="challenge">
         <div class="section-kicker"><span>CHALLENGE</span><span class="kicker-dot"></span></div>
         <div class="mode-switch" role="tablist" aria-label="問題モード">
-          <button type="button" class="mode-tab active" id="listClassifyTab" data-list-tab="classify" role="tab" aria-selected="true"><span>🧩</span> 仕様を分類する</button>
-          <button type="button" class="mode-tab" id="listWriteTab" data-list-tab="write" role="tab" aria-selected="false"><span>🖥↔👤</span> 目線を書き換える</button>
+          <button type="button" class="mode-tab active" id="listClassifyTab" data-list-tab="classify" role="tab" aria-selected="true">視点を見分ける</button>
+          <button type="button" class="mode-tab" id="listSys2UsrTab" data-list-tab="sys2usr" role="tab" aria-selected="false">ユーザー視点に書き換える</button>
+          <button type="button" class="mode-tab" id="listUsr2SysTab" data-list-tab="usr2sys" role="tab" aria-selected="false">システム視点に書き換える</button>
         </div>
         <div class="challenge-intro" id="challengeIntro">
           <strong>まずは分類から。</strong> 仕様を「システム目線」と「ユーザー目線」に分けると、文章の構造が見えやすくなります。
@@ -68,54 +69,71 @@
 
         <div id="writeChallenge" class="challenge-panel">
           <div class="challenge-head">
-            <div><span class="question-type">VIEW SWITCH</span><h2>この文章を、別の視点から言い換えよう</h2></div>
-            <div class="challenge-counter"><strong id="qCounter">Q1.</strong><span class="counter-total"> / 20</span><span class="level-line"><span id="writeLevel" class="level-badge lv1">入門</span> · QUESTION</span></div>
+            <div><span class="question-type">VIEW SWITCH</span><h2 id="writeTitle">システム視点の文章を、ユーザー視点の文章に書き換えよう</h2></div>
+            <span id="writeLevel" class="level-badge lv1">入門</span>
           </div>
-          <div class="challenge-card card">
-            <div class="challenge-direction" id="qtag"><span>システム目線</span> → <span>ユーザー目線</span></div>
-            <div class="given-wrap"><span class="given-label">GIVEN</span><p class="given" id="given"></p></div>
-            <div class="task-wrap"><span class="task-label">YOUR TURN</span><p class="task" id="task"></p></div>
+          <div class="write-carousel question-carousel" id="writeCarousel">
+            <div class="side-question side-question-prev" id="wrPrevPreview" aria-hidden="true">
+              <span class="side-q-label">← 前の問題</span><strong id="wrPrevPreviewNum"></strong>
+            </div>
+            <div class="challenge-card card write-card" id="writeCard">
+            <div class="cl-card-topline"><span class="cl-mini-label">VIEW SWITCH</span><span class="cl-progress-dots" id="wrProgressDots" aria-hidden="true"></span></div>
+            <div class="challenge-direction" id="qtag">システム視点 → ユーザー視点</div>
+            <div class="given-wrap"><p class="given" id="given"></p></div>
             <textarea id="answerInput" placeholder="まず自分の言葉で書いてみよう…"></textarea>
             <div class="card-actions"><button class="btn primary" id="checkBtn" type="button">答えを見る <span>→</span></button></div>
             <div class="answer" id="answerBox">
               <div class="answer-block answer-example"><span class="label">解答例</span><p class="model" id="modelAnswer"></p></div>
               <div class="answer-block answer-explain"><span class="label">POINT</span><p class="tip" id="tip"></p></div>
             </div>
+            </div>
+            <div class="side-question side-question-next" id="wrNextPreview" aria-hidden="true">
+              <span class="side-q-label">次の問題 →</span><strong id="wrNextPreviewNum"></strong>
+            </div>
           </div>
-          <div class="nav-row">
-            <button class="btn ghost" id="prevBtn" type="button">← 前の問題</button>
-            <button class="btn next" id="nextBtn" type="button">次の問題 <span>→</span></button>
+          <div class="section-complete-nav" id="writeCompleteNav" hidden>
+            <button type="button" class="next-section-link" id="toUsr2SysFromSys2Usr">次の向きへ →</button>
+            <button type="button" class="next-section-link" id="toClassifyFromUsr2Sys">← 視点を見分ける</button>
           </div>
         </div>
 
         <div id="classifyChallenge" class="challenge-panel">
           <div class="challenge-head">
             <div><span class="question-type">FIND THE DIRECTION</span><h2>概要の中で、向きが違う文章を探そう</h2></div>
-            <div class="challenge-counter"><strong id="clCounter">Q1.</strong><span class="counter-total"> / 20</span><span>QUESTION</span></div>
+            <span id="clLevel" class="level-badge lv1">入門</span>
           </div>
-          <div class="difficulty-row"><span>難易度</span><span id="clLevel" class="level-badge lv1">入門</span><span class="difficulty-note">まずは「違和感」を見つけるだけ。</span></div>
-          <div class="challenge-card cl-card">
-            <div class="cl-question"><strong>この概要は、ユーザー視点2つとシステム視点1つで書かれています。</strong><br><span>どれがシステム視点でしょう？</span></div>
-            <div class="cl-sentences" id="clSentences"></div>
-            <div class="cl-explain" id="clExplain">
-              <p class="cl-result" id="clResult"></p>
-              <div class="before-after" id="clBeforeAfter">
-                <div class="before"><span>BEFORE</span><p id="clBefore"></p></div>
-                <div class="ba-arrow">→</div>
-                <div class="after"><span>AFTER</span><p id="clAfter"></p></div>
+          <div class="difficulty-row"><span>難易度</span><span class="difficulty-note">まずは「違和感」を見つけるだけ。</span></div>
+          <div class="question-carousel" id="classifyCarousel">
+            <div class="side-question side-question-prev" id="clPrevPreview" aria-hidden="true">
+              <span class="side-q-label">← 前の問題</span><strong id="clPrevPreviewNum"></strong>
+            </div>
+            <div class="challenge-card cl-card" id="clCard">
+              <div class="cl-card-topline"><span class="cl-mini-label">FIND THE DIRECTION</span><span class="cl-progress-dots" id="clProgressDots" aria-hidden="true"></span></div>
+              <div class="cl-question"><strong>この概要には、3つの文章があります。</strong><br><span>そのうち1つだけ、システム側から書かれています。</span><em>システム視点なのは、どれ？</em></div>
+              <div class="cl-sentences" id="clSentences"></div>
+              <div class="cl-answer-status" id="clAnswerStatus" hidden></div>
+              <div class="cl-explain" id="clExplain">
+                <div class="explain-heading">解説</div>
+                <div class="before-after" id="clBeforeAfter">
+                  <div class="before"><span>BEFORE</span><p id="clBefore"></p></div>
+                  <div class="ba-arrow">→</div>
+                  <div class="after"><span>AFTER</span><p id="clAfter"></p></div>
+                </div>
+                <p id="clExplainText"></p>
               </div>
-              <p id="clExplainText"></p>
+            </div>
+            <div class="side-question side-question-next" id="clNextPreview" aria-hidden="true">
+              <span class="side-q-label">次の問題 →</span><strong id="clNextPreviewNum"></strong>
             </div>
           </div>
-          <div class="nav-row">
-            <button class="btn ghost" id="clPrevBtn" type="button">← 前の問題</button>
-            <button class="btn next" id="clNextBtn" type="button">次の問題 <span>→</span></button>
+          <div class="section-complete-nav" id="classifyCompleteNav" hidden>
+            <button type="button" class="next-section-link" id="toSys2UsrFromClassify">ユーザー視点に書き換える →</button>
           </div>
         </div>
       </section>
 
       <section id="all" class="list-section">
-        <div class="section-heading-row"><div><div class="section-kicker"><span>QUESTION MAP</span><span class="kicker-dot"></span></div><h2>問題マップ</h2></div><p>入門から挑戦まで。気になる問題から復習できます。</p></div>
+        <div class="section-heading-row"><div><div class="section-kicker"><span>QUESTIONS</span><span class="kicker-dot"></span></div><h2>問題一覧</h2></div><p>気になる問題から、いつでも復習できます。</p></div>
         <div id="allList" class="question-list" aria-live="polite"></div>
       </section>
 
