@@ -8,6 +8,31 @@ const state = {
 
 const STORAGE_KEY = "zukai-drill-progress-v1";
 
+const DEFAULT_PROGRESS = Object.freeze({
+  selected: [],
+  scored: false,
+  summary: "",
+  revealed: false
+});
+
+function createProgressState() {
+  return { ...DEFAULT_PROGRESS };
+}
+
+function normalizeProgressEntry(progress) {
+  const selected = Array.isArray(progress?.selected) ? progress.selected.filter((item) => typeof item === "string") : [];
+  const scored = typeof progress?.scored === "boolean" ? progress.scored : false;
+  const summary = typeof progress?.summary === "string" ? progress.summary : "";
+  const revealed = typeof progress?.revealed === "boolean" ? progress.revealed : false;
+
+  return {
+    selected,
+    scored,
+    summary,
+    revealed
+  };
+}
+
 const refs = {
   progress: document.getElementById("progress"),
   container: document.getElementById("problem-container"),
@@ -37,12 +62,7 @@ async function init() {
 
   state.problems = json.problems;
   for (const problem of state.problems) {
-    state.progressByProblem[problem.id] = {
-      selected: [],
-      scored: false,
-      summary: "",
-      revealed: false
-    };
+    state.progressByProblem[problem.id] = createProgressState();
   }
 
   loadStateFromStorage();
@@ -151,17 +171,16 @@ function renderSidebar() {
       }
 
       const statusClass = done ? "done" : "todo";
-      const statusText = done ? "完了" : "未了";
+      const statusMarkup = done
+        ? '<span class="qnav-status done" aria-label="完了">✓</span>'
+        : "";
       const activeClass = idx === state.index ? "active" : "";
 
       return `
       <li class="question-nav-item">
         <button class="question-nav-btn ${activeClass}" type="button" data-index="${idx}">
-          <div class="qnav-top">
-            <span class="qnav-no">LESSON ${String(idx + 1).padStart(2, "0")}</span>
-            <span class="qnav-status ${statusClass}">${statusText}</span>
-          </div>
-          <div class="qnav-title">${escapeHtml(problem.title)}</div>
+          <span class="qnav-title">${escapeHtml(problem.title)}</span>
+          ${statusMarkup}
         </button>
       </li>`;
     })
@@ -385,17 +404,18 @@ function isProblemCompleted(problemId) {
     return false;
   }
 
+  const normalized = normalizeProgressEntry(progress);
   const problem = state.problems.find((item) => item.id === problemId);
   if (!problem) {
     return false;
   }
 
   const coreIds = problem.tasks.focusOptions.filter((item) => item.isCore).map((item) => item.id);
-  const selectedSet = new Set(progress.selected);
+  const selectedSet = new Set(normalized.selected);
   const hasAllCore = coreIds.every((id) => selectedSet.has(id));
 
-  const q1Completed = progress.scored && hasAllCore;
-  const q2Completed = progress.revealed && progress.summary.trim().length > 0;
+  const q1Completed = normalized.scored === true && hasAllCore;
+  const q2Completed = normalized.revealed === true && normalized.summary.trim().length > 0;
   return q1Completed && q2Completed;
 }
 
@@ -431,10 +451,14 @@ function loadStateFromStorage() {
       const current = state.progressByProblem[problem.id];
       const saved = savedProgress[problem.id];
       if (saved && typeof saved === "object") {
-        current.selected = Array.isArray(saved.selected) ? saved.selected : [];
-        current.scored = Boolean(saved.scored);
-        current.summary = typeof saved.summary === "string" ? saved.summary : "";
-        current.revealed = Boolean(saved.revealed);
+        state.progressByProblem[problem.id] = normalizeProgressEntry({
+          selected: saved.selected,
+          scored: saved.scored,
+          summary: saved.summary,
+          revealed: saved.revealed
+        });
+      } else {
+        state.progressByProblem[problem.id] = normalizeProgressEntry(current);
       }
 
       const savedOrder = savedShuffled[problem.id];
@@ -453,9 +477,13 @@ function loadStateFromStorage() {
 
 function saveStateToStorage() {
   try {
+    const progressByProblem = Object.fromEntries(
+      Object.entries(state.progressByProblem).map(([problemId, progress]) => [problemId, normalizeProgressEntry(progress)])
+    );
+
     const payload = {
       index: state.resumeIndex,
-      progressByProblem: state.progressByProblem,
+      progressByProblem,
       shuffledOptionsByProblem: state.shuffledOptionsByProblem
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
