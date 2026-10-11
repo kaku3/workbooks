@@ -80,7 +80,7 @@ body {
   padding: 44px 0 30px;
   background-image:
     linear-gradient(140deg, rgba(15, 39, 70, 0.86) 0%, rgba(37, 79, 134, 0.82) 100%),
-    url("./hero.png");
+    url("./assets/hero.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
