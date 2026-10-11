@@ -12,7 +12,11 @@ const DEFAULT_PROGRESS = Object.freeze({
   selected: [],
   scored: false,
   summary: "",
-  revealed: false
+  revealed: false,
+  revealedReview: false,
+  revealedCreate: false,
+  findings: "",
+  revealedOnce: false
 });
 
 function createProgressState() {
@@ -24,12 +28,20 @@ function normalizeProgressEntry(progress) {
   const scored = typeof progress?.scored === "boolean" ? progress.scored : false;
   const summary = typeof progress?.summary === "string" ? progress.summary : "";
   const revealed = typeof progress?.revealed === "boolean" ? progress.revealed : false;
+  const revealedReview = typeof progress?.revealedReview === "boolean" ? progress.revealedReview : false;
+  const revealedCreate = typeof progress?.revealedCreate === "boolean" ? progress.revealedCreate : false;
+  const findings = typeof progress?.findings === "string" ? progress.findings : "";
+  const revealedOnce = typeof progress?.revealedOnce === "boolean" ? progress.revealedOnce : false;
 
   return {
     selected,
     scored,
     summary,
-    revealed
+    revealed,
+    revealedReview,
+    revealedCreate,
+    findings,
+    revealedOnce
   };
 }
 
@@ -37,6 +49,7 @@ const refs = {
   progress: document.getElementById("progress"),
   container: document.getElementById("problem-container"),
   template: document.getElementById("problem-template"),
+  reviewTemplate: document.getElementById("review-template"),
   prevBtn: document.getElementById("prev-btn"),
   nextBtn: document.getElementById("next-btn"),
   questionNavList: document.getElementById("question-nav-list"),
@@ -141,6 +154,17 @@ function renderCurrentProblem() {
 
   const problem = state.problems[state.index];
   const progress = state.progressByProblem[problem.id];
+
+  if (problem.review) {
+    const reviewFragment = refs.reviewTemplate.content.cloneNode(true);
+    renderReviewProblem(reviewFragment, problem, progress);
+    refs.container.replaceChildren(reviewFragment);
+
+    refs.prevBtn.disabled = state.index === 0;
+    refs.nextBtn.disabled = state.index === state.problems.length - 1;
+    return;
+  }
+
   const fragment = refs.template.content.cloneNode(true);
 
   fragment.querySelector('[data-bind="number"]').textContent = `LESSON ${String(state.index + 1).padStart(2, "0")}`;
@@ -364,6 +388,293 @@ function wireSampleToggle(fragment, problem, problemId) {
   });
 }
 
+// ---- レビュー形式(problem.review を持つ問題)の画面 ----------------------
+// AIが描いた図をレビューする4手順: 仕様を読む → AIの図を見る → 残すものを選ぶ → コピーを書く
+
+function renderReviewProblem(fragment, problem, progress) {
+  const review = problem.review;
+
+  const bind = (name, text) => {
+    fragment.querySelectorAll(`[data-bind="${name}"]`).forEach((node) => {
+      node.textContent = text;
+    });
+  };
+
+  bind("number", `LESSON ${String(state.index + 1).padStart(2, "0")}`);
+  bind("difficulty", `難易度 ${problem.difficultyLabel}`);
+  bind("title", problem.title);
+  bind("lead", review.lead);
+  bind("specNote", review.specNote);
+  bind("scenario", problem.scenario);
+  bind("figureNote", review.figureNote);
+  bind("findingsLabel", review.findingsLabel);
+  bind("keepLead", review.keepLead);
+  bind("copyLead", review.copyLead);
+  bind("fixedNote", review.fixedNote);
+  bind("copyExample", review.copyExample);
+  bind("transfer", review.transferTip);
+
+  // fragment は画面に載せると空になるので、使う要素は先に拾っておく
+  const ui = {
+    focusBox: fragment.getElementById("focus-options"),
+    findingsInput: fragment.getElementById("findings-input"),
+    copyInput: fragment.getElementById("copy-input"),
+    materials: fragment.getElementById("copy-materials"),
+    materialsList: fragment.getElementById("copy-materials-list"),
+    reviewRevealBtn: fragment.querySelector('.reveal-answer-trigger[data-answer-role="review"]'),
+    createRevealBtn: fragment.getElementById("reveal-answer"),
+    reviewAnswerBlock: fragment.getElementById("review-answer-block"),
+    createAnswerBlock: fragment.getElementById("create-answer-block"),
+    yourFindings: fragment.getElementById("your-findings"),
+    yourCopy: fragment.getElementById("your-copy"),
+    keepScore: fragment.getElementById("keep-score"),
+    keepCore: fragment.getElementById("keep-core"),
+    keepOut: fragment.getElementById("keep-out"),
+    promptBox: fragment.getElementById("ai-eval-prompt"),
+    copyBtn: fragment.getElementById("copy-ai-prompt"),
+    copyStatus: fragment.getElementById("copy-status")
+  };
+
+  // 図は、押すと原寸で開く(スマホでは縮んで文字が小さくなるため)
+  const placeFigure = (box, src, alt) => {
+    const link = document.createElement("a");
+    link.className = "figure-link";
+    link.href = src;
+    link.target = "_blank";
+    link.rel = "noopener";
+    box.prepend(link);
+    renderDiagramImage(link, src, alt);
+  };
+  placeFigure(
+    fragment.getElementById("ai-figure"),
+    `./data/diagrams/${problem.id}_bad-diagram.drawio.png`,
+    review.figureAlt
+  );
+  placeFigure(
+    fragment.getElementById("create-fixed-figure"),
+    `./data/diagrams/${problem.id}_good-diagram.drawio.png`,
+    review.fixedAlt
+  );
+
+  // 3: 選択肢(データを直したときに残る古い選択は捨てる)
+  const options = getShuffledOptions(problem);
+  const optionIds = new Set(options.map((opt) => opt.id));
+  progress.selected = progress.selected.filter((id) => optionIds.has(id));
+  const coreCount = options.filter((opt) => opt.isCore).length;
+  fragment.getElementById("keep-count").textContent = `${coreCount}つ選んでください。`;
+  renderFocusOptions(fragment, options, progress.selected);
+
+  // 2・4: 入力欄
+  ui.findingsInput.value = progress.findings;
+  ui.findingsInput.placeholder = review.findingsPlaceholder;
+  ui.copyInput.value = progress.summary;
+  ui.copyInput.placeholder = review.copyPlaceholder;
+
+  // 答えのうち、入力に左右されない部分
+  const findingsList = fragment.getElementById("findings-list");
+  for (const item of review.findings) {
+    const li = document.createElement("li");
+    const strong = document.createElement("strong");
+    strong.textContent = item.title;
+    const why = document.createElement("span");
+    why.className = "why";
+    why.textContent = item.why;
+    li.append(strong, why);
+    findingsList.append(li);
+  }
+  fillPlainList(fragment.getElementById("copy-points"), review.copyPoints);
+  fillPlainList(fragment.getElementById("create-fixed-points"), review.fixedPoints);
+
+  const showYours = (wrap, text) => {
+    wrap.classList.toggle("hidden", text.trim().length === 0);
+    wrap.querySelector(".yours-text").textContent = text;
+  };
+
+  const updateMaterials = () => {
+    const picked = new Set(progress.selected);
+    const items = options.filter((opt) => picked.has(opt.id)).map((opt) => opt.label);
+    ui.materials.classList.toggle("hidden", items.length === 0);
+    ui.materialsList.replaceChildren(
+      ...items.map((label) => {
+        const li = document.createElement("li");
+        li.textContent = label;
+        return li;
+      })
+    );
+  };
+
+  // 答えのうち、入力で変わる部分(答え合わせ・本人の入力のエコー・AI採点用の文章)
+  const renderAnswer = () => {
+    showYours(ui.yourFindings, progress.findings);
+    showYours(ui.yourCopy, progress.summary);
+
+    const picked = new Set(progress.selected);
+    let hit = 0;
+    let extra = 0;
+    ui.keepCore.replaceChildren();
+    ui.keepOut.replaceChildren();
+
+    for (const opt of problem.tasks.focusOptions) {
+      const isPicked = picked.has(opt.id);
+      let tagClass;
+      let tagText;
+      if (opt.isCore) {
+        hit += isPicked ? 1 : 0;
+        tagClass = isPicked ? "ok" : "miss";
+        tagText = isPicked ? "o" : "x";
+      } else {
+        extra += isPicked ? 1 : 0;
+        tagClass = isPicked ? "extra" : "skip";
+        tagText = isPicked ? "x" : "o";
+      }
+
+      const li = document.createElement("li");
+      const tag = document.createElement("span");
+      tag.className = `tag ${tagClass}`;
+      tag.textContent = tagText;
+      const label = document.createElement("span");
+      label.textContent = opt.label;
+      li.append(tag, label);
+      if (!opt.isCore && opt.note) {
+        const note = document.createElement("span");
+        note.className = "keep-note";
+        note.textContent = opt.note;
+        li.append(note);
+      }
+      (opt.isCore ? ui.keepCore : ui.keepOut).append(li);
+    }
+
+    if (progress.selected.length === 0) {
+      ui.keepScore.textContent = "「残すもの」は、まだ選んでいません。";
+    } else {
+      const extraText = extra > 0 ? `図の外に回すものを、${extra}つ選んでいます。` : "";
+      ui.keepScore.textContent = `残す${coreCount}つのうち、${hit}つを選べました。${extraText}`;
+    }
+
+    ui.promptBox.value = buildReviewPrompt(problem.scenario, progress.summary.trim() || "(未入力)");
+  };
+
+  const syncVisibility = () => {
+    ui.reviewAnswerBlock.classList.toggle("hidden", !progress.revealedReview);
+    ui.createAnswerBlock.classList.toggle("hidden", !progress.revealedCreate);
+
+    if (ui.reviewRevealBtn) {
+      ui.reviewRevealBtn.textContent = progress.revealedReview ? "答えを隠す" : "答えを見る";
+    }
+    if (ui.createRevealBtn) {
+      ui.createRevealBtn.textContent = progress.revealedCreate ? "答えを隠す" : "答えを見る";
+    }
+  };
+
+  const afterEdit = () => {
+    if (progress.revealedReview || progress.revealedCreate) {
+      renderAnswer();
+    }
+    saveStateToStorage();
+    renderSidebar();
+    renderProgress();
+  };
+
+  ui.findingsInput.addEventListener("input", () => {
+    progress.findings = ui.findingsInput.value;
+    afterEdit();
+  });
+
+  ui.copyInput.addEventListener("input", () => {
+    progress.summary = ui.copyInput.value;
+    afterEdit();
+  });
+
+  ui.focusBox.addEventListener("change", () => {
+    progress.selected = Array.from(ui.focusBox.querySelectorAll('input[type="checkbox"]:checked')).map((x) => x.value);
+    updateMaterials();
+    afterEdit();
+  });
+
+  if (ui.reviewRevealBtn) {
+    ui.reviewRevealBtn.addEventListener("click", () => {
+      progress.revealedReview = !progress.revealedReview;
+      if (progress.revealedReview) {
+        progress.revealedOnce = true;
+        renderAnswer();
+      }
+      syncVisibility();
+      if (progress.revealedReview) {
+        ui.reviewAnswerBlock.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      saveStateToStorage();
+      renderSidebar();
+      renderProgress();
+    });
+  }
+
+  if (ui.createRevealBtn) {
+    ui.createRevealBtn.addEventListener("click", () => {
+      progress.revealedCreate = !progress.revealedCreate;
+      if (progress.revealedCreate) {
+        progress.revealedOnce = true;
+        renderAnswer();
+      }
+      syncVisibility();
+      if (progress.revealedCreate) {
+        ui.createAnswerBlock.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      saveStateToStorage();
+      renderSidebar();
+      renderProgress();
+    });
+  }
+
+  ui.copyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(ui.promptBox.value);
+      ui.copyStatus.textContent = "コピーしました。";
+    } catch (error) {
+      ui.promptBox.focus();
+      ui.promptBox.select();
+      ui.copyStatus.textContent = "自動コピーに失敗しました。選択済みの内容をコピーしてください。";
+    }
+  });
+
+  updateMaterials();
+  renderAnswer();
+  syncVisibility();
+}
+
+function fillPlainList(list, items) {
+  for (const text of items) {
+    const li = document.createElement("li");
+    li.textContent = text;
+    list.append(li);
+  }
+}
+
+function buildReviewPrompt(scenario, copy) {
+  return [
+    "以下の情報をもとに、図のコピーを評価してください。",
+    "コピーは、仕様をもとにAIが描いた図を直したあと、その図に付ける見出しです。",
+    "",
+    "[仕様]",
+    scenario,
+    "",
+    "[コピー]",
+    copy,
+    "",
+    "評価観点:",
+    "1. 何の図か: 何が起きて、どうなるかを言い切れているか",
+    "2. 仕様どおりか: 仕様にないことを足していないか、順番を勝手に決めていないか",
+    "3. 本筋か: 予定や補足の話が混ざっていないか",
+    "4. 読み手視点: 初見の人が、この1-2文だけで図の見方をつかめるか",
+    "5. 簡潔さ: 1-2文で過不足なく要点を表現できているか",
+    "",
+    "出力形式:",
+    "- 総合評価: A/B/C/D",
+    "- 観点別評価: 各観点を5点満点で採点し、理由を1行で記載",
+    "- 改善提案: 箇条書きで3点まで",
+    "- 改善後のコピー例: 1-2文"
+  ].join("\n");
+}
+
 function buildQ2ModelAnswer(problem, coreLabels) {
   const mainFlow = coreLabels.slice(0, 3).join("、");
   const tailFlow = coreLabels.slice(3).join("、");
@@ -408,6 +719,16 @@ function isProblemCompleted(problemId) {
   const problem = state.problems.find((item) => item.id === problemId);
   if (!problem) {
     return false;
+  }
+
+  if (problem.review) {
+    // レビュー形式: レビュー側と作成側の両方の解答を見てから完了とする
+    return (
+      normalized.findings.trim().length > 0 &&
+      normalized.summary.trim().length > 0 &&
+      normalized.revealedReview === true &&
+      normalized.revealedCreate === true
+    );
   }
 
   const coreIds = problem.tasks.focusOptions.filter((item) => item.isCore).map((item) => item.id);
@@ -455,7 +776,11 @@ function loadStateFromStorage() {
           selected: saved.selected,
           scored: saved.scored,
           summary: saved.summary,
-          revealed: saved.revealed
+          revealed: saved.revealed,
+          revealedReview: saved.revealedReview,
+          revealedCreate: saved.revealedCreate,
+          findings: saved.findings,
+          revealedOnce: saved.revealedOnce
         });
       } else {
         state.progressByProblem[problem.id] = normalizeProgressEntry(current);

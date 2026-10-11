@@ -156,6 +156,132 @@
     </article>
   </template>
 
+  <template id="review-template">
+    <article class="review">
+      <div class="problem-head">
+        <span class="badge" data-bind="number"></span>
+        <span class="difficulty" data-bind="difficulty"></span>
+      </div>
+      <h2 data-bind="title"></h2>
+      <p class="subtitle" data-bind="lead"></p>
+
+      <section class="step">
+        <h2 class="step-title">要求仕様</h2>
+        <pre class="scenario" data-bind="scenario"></pre>
+      </section>
+
+      <section class="step">
+        <h2 class="step-title">図 : AI作成版</h2>
+        <div id="ai-figure" class="figure-box"><p class="figure-tip">タップすると、大きく開きます</p></div>
+      </section>
+
+      <section class="step review-card review-card-group">
+        <header class="card-head">
+          <h2 class="step-title">問題 (レビュー)</h2>
+        </header>
+
+        <section class="review-subsection">
+          <h3 class="step-title">分かりづらいと感じる点</h3>
+          <textarea id="findings-input" rows="4"></textarea>
+        </section>
+
+        <section class="review-subsection">
+          <h3 class="step-title">主題となる点</h3>
+          <p class="hint"><span data-bind="keepLead"></span><strong id="keep-count"></strong></p>
+          <div id="focus-options" class="options"></div>
+        </section>
+      </section>
+
+      <div class="answer-cta-wrap review-cta">
+        <p class="cta-note">分かりづらいと感じる点と要約を書いて答えを見ると、メニューに✓がつきます。</p>
+        <button type="button" class="primary reveal-answer-trigger" data-answer-role="review">答えを見る</button>
+      </div>
+
+      <section class="exercise-block answer-block hidden" id="review-answer-block">
+        <header class="card-head">
+          <p class="card-kicker">Answer</p>
+          <h3>問題 (レビュー) の解答</h3>
+        </header>
+
+        <section class="answer-part">
+          <h4>分かりづらいと感じる点</h4>
+          <div id="your-findings" class="yours hidden">
+            <p class="yours-label">あなたが書いたこと</p>
+            <p class="yours-text"></p>
+          </div>
+          <ol id="findings-list" class="finding-list"></ol>
+        </section>
+
+        <section class="answer-part">
+          <h4>主題となる点</h4>
+          <p id="keep-score" class="score-text"></p>
+          <p class="yours-label">図に残す</p>
+          <ul id="keep-core" class="keep-list"></ul>
+          <p class="yours-label">図の外のメモへ</p>
+          <ul id="keep-out" class="keep-list"></ul>
+        </section>
+
+        <section class="coach">
+          <h4>次に使うとき</h4>
+          <p data-bind="transfer"></p>
+        </section>
+      </section>
+
+      <section class="step q2-block create-card">
+        <header class="card-head">
+          <h3 class="step-title">問題 (作成)</h3>
+        </header>
+        <p class="hint" data-bind="copyLead"></p>
+        <div id="copy-materials" class="materials hidden">
+          <p class="materials-label">いま選んでいるもの</p>
+          <ul id="copy-materials-list" class="chips"></ul>
+        </div>
+        <textarea id="copy-input" rows="3"></textarea>
+      </section>
+
+      <div class="answer-cta-wrap review-cta">
+        <p class="cta-note">分かりづらいと感じる点と要約を書いて答えを見ると、メニューに✓がつきます。</p>
+        <button id="reveal-answer" type="button" class="primary">答えを見る</button>
+      </div>
+
+      <section class="exercise-block answer-block hidden" id="create-answer-block">
+        <header class="card-head">
+          <p class="card-kicker">Answer</p>
+          <h3>問題 (作成) の解答</h3>
+        </header>
+        <p class="callout">要約は、図の主役を伝える1〜2文に整理します。補足の予定や追加仕様は、図の外へ回すと伝わりやすくなります。</p>
+
+        <section class="answer-part">
+          <h4>要約</h4>
+          <div id="your-copy" class="yours hidden">
+            <p class="yours-label">あなたが書いたこと</p>
+            <p class="yours-text"></p>
+          </div>
+          <p class="correct-answer-text" data-bind="copyExample"></p>
+          <p class="yours-label">見るところ</p>
+          <ul id="copy-points" class="checklist"></ul>
+        </section>
+
+        <section class="answer-part">
+          <h4>図 : 修正例</h4>
+          <p class="hint" data-bind="fixedNote"></p>
+          <div id="create-fixed-figure" class="figure-box"><p class="figure-tip">タップすると、大きく開きます</p></div>
+          <ul id="create-fixed-points" class="checklist"></ul>
+        </section>
+
+        <details class="ai-prompt-block">
+          <summary>要約を、AIに見てもらう(任意)</summary>
+          <p class="hint">下の文章をAIに貼ると、あなたの要約を採点してもらえます。観点は、足してもかまいません。</p>
+          <textarea id="ai-eval-prompt" class="ai-prompt-text" rows="12" readonly></textarea>
+          <div class="ai-prompt-actions">
+            <button id="copy-ai-prompt" type="button" class="subtle">プロンプトをコピー</button>
+            <p id="copy-status" class="copy-status" aria-live="polite"></p>
+          </div>
+        </details>
+      </section>
+    </article>
+  </template>
+
   <script src="./app.js" defer></script>
 </body>
 </html>

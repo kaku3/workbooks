@@ -492,7 +492,8 @@ button.subtle {
   justify-content: flex-end;
 }
 
-#reveal-answer {
+#reveal-answer,
+.reveal-answer-trigger {
   min-width: 180px;
 }
 
@@ -783,6 +784,271 @@ button.subtle {
   }
 
   .pager button {
+    width: 100%;
+  }
+}
+
+/* ---- レビュー形式の問題(AIが描いた図を見て、コピーを書く) ---------------- */
+.review .step {
+  margin-top: 24px;
+}
+
+.review .review-card,
+.review .create-card {
+  padding: 18px;
+  border: 1px solid #cfd9ea;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(26, 47, 84, 0.08);
+}
+
+.review .review-card {
+  background: linear-gradient(180deg, #eef5ff 0%, #e1edff 100%);
+  border-color: #cfe0ff;
+}
+
+.review .review-card-group .review-subsection + .review-subsection {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(31, 57, 98, 0.14);
+}
+
+.review .review-card-group .answer-cta-wrap {
+  margin-top: 20px;
+}
+
+.review .create-card {
+  background: linear-gradient(180deg, #fff6e8 0%, #ffefca 100%);
+  border-color: #f0d6a3;
+}
+
+.step-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.step-no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* 既存の「課題文章」見出し用の装飾を、レビュー形式では使わない */
+.panel-problem > article.review > section:nth-of-type(1) > h3.step-title {
+  margin: 0 0 6px;
+  padding: 0;
+  font-size: 1.1rem;
+  border: 0;
+}
+
+.review .card-head .step-title {
+  margin: 0;
+}
+
+.figure-box {
+  margin: 8px 0 14px;
+  padding: 8px;
+  border: 1px solid #cfd9ea;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.figure-box .diagram-svg {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.figure-link {
+  display: block;
+}
+
+.figure-tip {
+  margin: 6px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.field-label {
+  display: block;
+  margin: 6px 0;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.materials {
+  margin: 0 0 10px;
+}
+
+.materials-label,
+.yours-label {
+  margin: 10px 0 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chips li {
+  padding: 2px 10px;
+  border: 1px solid #e1c98f;
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 0.88rem;
+}
+
+.review-cta {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.cta-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.callout {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--accent-2);
+  border-radius: 8px;
+  background: #fff9e8;
+}
+
+.answer-part {
+  margin-top: 20px;
+}
+
+.answer-part h4 {
+  margin: 0 0 6px;
+  color: #1b3c68;
+  font-size: 1.02rem;
+}
+
+.finding-list {
+  margin: 8px 0 0;
+  padding-left: 1.3rem;
+}
+
+.finding-list li {
+  margin-bottom: 10px;
+}
+
+.finding-list .why {
+  display: block;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.yours {
+  margin: 6px 0 10px;
+}
+
+.yours-text {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px dashed #b9c7e0;
+  border-radius: 8px;
+  background: #ffffff;
+  white-space: pre-wrap;
+}
+
+.keep-list {
+  list-style: none;
+  margin: 4px 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.keep-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  padding: 6px 10px;
+  border: 1px solid #d4deef;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.tag.ok {
+  background: #d6efdf;
+  color: #1f6c43;
+}
+
+.tag.miss,
+.tag.extra {
+  background: #fde2d3;
+  color: #9a4a1c;
+}
+
+.tag.skip {
+  background: #e6ebf3;
+  color: #42566f;
+}
+
+.keep-note {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+details.ai-prompt-block summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #1d3e6f;
+}
+
+details.ai-prompt-block[open] summary {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 820px) {
+  .review .figure-box {
+    margin-left: -8px;
+    margin-right: -8px;
+    padding: 4px;
+  }
+
+  .review .answer-block .figure-box {
+    margin-left: -12px;
+    margin-right: -12px;
+  }
+
+  .review-cta {
+    justify-content: flex-start;
+  }
+
+  .review-cta button {
     width: 100%;
   }
 }
