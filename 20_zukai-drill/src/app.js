@@ -48,7 +48,6 @@ function normalizeProgressEntry(progress) {
 const refs = {
   progress: document.getElementById("progress"),
   container: document.getElementById("problem-container"),
-  template: document.getElementById("problem-template"),
   reviewTemplate: document.getElementById("review-template"),
   prevBtn: document.getElementById("prev-btn"),
   nextBtn: document.getElementById("next-btn"),
@@ -155,30 +154,10 @@ function renderCurrentProblem() {
   const problem = state.problems[state.index];
   const progress = state.progressByProblem[problem.id];
 
-  if (problem.review) {
-    const reviewFragment = refs.reviewTemplate.content.cloneNode(true);
-    renderReviewProblem(reviewFragment, problem, progress);
-    refs.container.replaceChildren(reviewFragment);
-
-    refs.prevBtn.disabled = state.index === 0;
-    refs.nextBtn.disabled = state.index === state.problems.length - 1;
-    return;
-  }
-
-  const fragment = refs.template.content.cloneNode(true);
-
-  fragment.querySelector('[data-bind="number"]').textContent = `LESSON ${String(state.index + 1).padStart(2, "0")}`;
-  fragment.querySelector('[data-bind="difficulty"]').textContent = `難易度 ${problem.difficultyLabel}`;
-  fragment.querySelector('[data-bind="title"]').textContent = problem.title;
-  fragment.querySelector('[data-bind="learningGoal"]').textContent = problem.learningGoal;
-  fragment.querySelector('[data-bind="scenario"]').textContent = problem.scenario;
-
-  const focusOptions = getShuffledOptions(problem);
-  renderFocusOptions(fragment, focusOptions, progress.selected);
-  wireScoring(fragment, focusOptions, problem.id);
-  wireSampleToggle(fragment, problem, problem.id);
-
-  refs.container.replaceChildren(fragment);
+  // 現行の問題はすべてレビュー形式で表示する。
+  const reviewFragment = refs.reviewTemplate.content.cloneNode(true);
+  renderReviewProblem(reviewFragment, problem, progress);
+  refs.container.replaceChildren(reviewFragment);
 
   refs.prevBtn.disabled = state.index === 0;
   refs.nextBtn.disabled = state.index === state.problems.length - 1;
@@ -239,154 +218,6 @@ function renderFocusOptions(fragment, options, selectedValues) {
       </label>`;
     })
     .join("");
-}
-
-function wireScoring(fragment, options, problemId) {
-  const scoreBtn = fragment.getElementById("score-btn");
-  const scoreText = fragment.getElementById("score-text");
-  const focusBox = fragment.getElementById("focus-options");
-
-  const syncSelected = () => {
-    const selected = Array.from(focusBox.querySelectorAll('input[type="checkbox"]:checked')).map((x) => x.value);
-    state.progressByProblem[problemId].selected = selected;
-    saveStateToStorage();
-  };
-
-  focusBox.addEventListener("change", syncSelected);
-
-  scoreBtn.addEventListener("click", () => {
-    syncSelected();
-    const selected = state.progressByProblem[problemId].selected;
-    const coreSet = new Set(options.filter((x) => x.isCore).map((x) => x.id));
-
-    let correct = 0;
-    for (const value of selected) {
-      if (coreSet.has(value)) {
-        correct += 1;
-      }
-    }
-
-    let nonCoreSelected = 0;
-    for (const value of selected) {
-      if (!coreSet.has(value)) {
-        nonCoreSelected += 1;
-      }
-    }
-
-    const score = Math.max(0, correct * 2 - nonCoreSelected);
-    scoreText.textContent = `自己採点: ${score} 点 | 主情報 ${correct} 件 / 補足情報の選択 ${nonCoreSelected} 件`;
-
-    state.progressByProblem[problemId].scored = true;
-    saveStateToStorage();
-    renderSidebar();
-    renderProgress();
-  });
-}
-
-function wireSampleToggle(fragment, problem, problemId) {
-  const progress = state.progressByProblem[problemId];
-
-  const btn = fragment.getElementById("reveal-answer");
-  const answerBlock = fragment.getElementById("answer-block");
-  const area = fragment.getElementById("sample-area");
-  const storyInput = fragment.getElementById("story-answer");
-  const promptBox = fragment.getElementById("ai-eval-prompt");
-  const copyBtn = fragment.getElementById("copy-ai-prompt");
-  const copyStatus = fragment.getElementById("copy-status");
-  const correctQ1Answer = fragment.getElementById("correct-q1-answer");
-  const correctQ2Answer = fragment.getElementById("correct-q2-answer");
-
-  fragment.querySelector('[data-bind="badTitle"]').textContent = problem.badDiagram.title;
-  fragment.querySelector('[data-bind="goodTitle"]').textContent = problem.goodDiagram.title;
-
-  const badDiagram = fragment.getElementById("bad-diagram");
-  renderDiagramImage(
-    badDiagram,
-    `./data/diagrams/${problem.id}_bad-diagram.drawio.png`,
-    "悪い図の例"
-  );
-
-  const mistakes = fragment.getElementById("mistakes-list");
-  mistakes.innerHTML = problem.badDiagram.mistakes.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-
-  const goodDiagram = fragment.getElementById("good-diagram");
-  renderDiagramImage(
-    goodDiagram,
-    `./data/diagrams/${problem.id}_good-diagram.drawio.png`,
-    "良い図の例"
-  );
-
-  const principles = fragment.getElementById("principles-list");
-  principles.innerHTML = problem.goodDiagram.principles.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
-
-  const transfer = fragment.getElementById("transfer-text");
-  transfer.textContent = problem.transferTip;
-
-  const coreLabels = problem.tasks.focusOptions
-    .filter((item) => item.isCore)
-    .map((item) => item.label);
-
-  const q2ModelAnswer = buildQ2ModelAnswer(problem, coreLabels);
-
-  const renderCorrectAnswers = () => {
-    correctQ1Answer.innerHTML = coreLabels.map((label) => `<li>${escapeHtml(label)}</li>`).join("");
-    correctQ2Answer.textContent = q2ModelAnswer;
-  };
-
-  const syncAnswerVisibility = () => {
-    if (progress.revealed) {
-      answerBlock.classList.remove("hidden");
-      area.classList.remove("hidden");
-      btn.textContent = "解答を隠す";
-      return;
-    }
-
-    answerBlock.classList.add("hidden");
-    area.classList.add("hidden");
-    btn.textContent = "解答を見る";
-  };
-
-  storyInput.value = progress.summary;
-
-  const updatePrompt = () => {
-    const summary = storyInput.value.trim() || "(未入力)";
-    progress.summary = storyInput.value;
-    promptBox.value = buildEvaluationPrompt(problem.scenario, summary);
-
-    saveStateToStorage();
-    renderSidebar();
-    renderProgress();
-  };
-
-  renderCorrectAnswers();
-  updatePrompt();
-  storyInput.addEventListener("input", updatePrompt);
-  syncAnswerVisibility();
-
-  copyBtn.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(promptBox.value);
-      copyStatus.textContent = "コピーしました。";
-    } catch (error) {
-      promptBox.focus();
-      promptBox.select();
-      copyStatus.textContent = "自動コピーに失敗しました。選択済みの内容をコピーしてください。";
-    }
-  });
-
-  btn.addEventListener("click", () => {
-    animateAnswerButton(btn);
-    progress.revealed = !progress.revealed;
-    syncAnswerVisibility();
-    updatePrompt();
-    if (progress.revealed) {
-      answerBlock.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    saveStateToStorage();
-    renderSidebar();
-    renderProgress();
-  });
 }
 
 // ---- レビュー形式(problem.review を持つ問題)の画面 ----------------------
@@ -699,17 +530,6 @@ function buildReviewPrompt(scenario, copy) {
     "- 改善提案: 箇条書きで3点まで",
     "- 改善後の要約例: 1〜2文"
   ].join("\n");
-}
-
-function buildQ2ModelAnswer(problem, coreLabels) {
-  const mainFlow = coreLabels.slice(0, 3).join("、");
-  const tailFlow = coreLabels.slice(3).join("、");
-
-  if (tailFlow) {
-    return `主題: ${problem.learningGoal}。要点は${mainFlow}を主軸に整理し、${tailFlow}までを一連の流れとして示す。`;
-  }
-
-  return `主題: ${problem.learningGoal}。要点は${mainFlow}を主軸に、処理の開始から完了までを一連の流れとして示す。`;
 }
 
 function typewriterText(node, text, onComplete) {
@@ -1110,31 +930,6 @@ function toSvgText(x, y, lines, className, lineHeight) {
     .map((line, idx) => `<tspan x="${x}" dy="${idx === 0 ? 0 : lineHeight}">${escapeHtml(line)}</tspan>`)
     .join("");
   return `<text x="${x}" y="${y}" text-anchor="middle" class="${className}">${tspans}</text>`;
-}
-
-function buildEvaluationPrompt(scenario, summary) {
-  return [
-    "以下の情報をもとに、図の要約を評価してください。",
-    "",
-    "[仕様]",
-    scenario,
-    "",
-    "[要約]",
-    summary,
-    "",
-    "評価観点:",
-    "1. 主題の明確さ: 何を説明したい図かが明確か",
-    "2. 変化の提示: 現状と改善後の違いが伝わるか",
-    "3. 情報整理: 重要情報と補足情報を分けられているか",
-    "4. 読み手視点: 初見の人でも流れを追える表現か",
-    "5. 簡潔さ: 1-2文で過不足なく要点を表現できているか",
-    "",
-    "出力形式:",
-    "- 総合評価: A/B/C/D",
-    "- 観点別評価: 各観点を5点満点で採点し、理由を1行で記載",
-    "- 改善提案: 箇条書きで3点まで",
-    "- 改善後の要約例: 1〜2文"
-  ].join("\n");
 }
 
 function escapeHtml(text) {

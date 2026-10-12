@@ -1270,8 +1270,20 @@ button.reveal-answer-trigger:active,
   }
 }
 
-/* レビュー画面は「仕様のタイプ表示 → 図の描画 → レビュー欄」の順に見せる */
-/* 図は仕様のタイプ表示が終わるまで隠し、先に完成図が見えるちらつきを防ぐ */
+/* レビュー画面は「仕様のタイプ表示 → 図セクションと図の登場 → レビュー欄」の順に見せる */
+/* タイプ表示中は図だけでなく、見出し・枠を含むセクション全体を隠す */
+.review .review-figure-panel:not(.sequence-ready) {
+  visibility: hidden;
+  opacity: 0;
+}
+.review .review-figure-panel.sequence-ready {
+  visibility: visible;
+  animation: figure-panel-appear 260ms ease-out both;
+}
+@keyframes figure-panel-appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .review .sequence-figure img {
   clip-path: inset(0 0 100% 0);
   opacity: 0;
@@ -1292,5 +1304,18 @@ button.reveal-answer-trigger:active,
   100% { clip-path: inset(0 0 0 0); opacity: 1; filter: saturate(1); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .review .review-card { opacity: 1; }
+  .review .review-figure-panel.sequence-ready {
+    animation: none !important;
+    opacity: 1;
+    visibility: visible;
+  }
+  .review .sequence-figure img {
+    clip-path: none;
+    opacity: 1;
+    animation: none !important;
+  }
+  .review .review-card {
+    opacity: 1;
+    animation: none !important;
+  }
 }

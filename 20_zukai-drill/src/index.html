@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -70,91 +71,6 @@
       </section>
     </section>
   </main>
-
-  <template id="problem-template">
-    <article>
-      <div class="problem-head">
-        <span class="badge" data-bind="number"></span>
-        <span class="difficulty" data-bind="difficulty"></span>
-      </div>
-      <h2 data-bind="title"></h2>
-      <p class="subtitle" data-bind="learningGoal"></p>
-
-      <section>
-        <h3>課題文章</h3>
-        <p class="hint">情報量の多い文章です。何を先に伝えるべきかを意識して読み解いてください。</p>
-        <pre class="scenario" data-bind="scenario"></pre>
-      </section>
-
-      <section class="exercise-block">
-        <h3 data-bind="badTitle"></h3>
-        <p class="hint">この図の気になる点を何でもよいので列挙してください。</p>
-        <div id="bad-diagram" class="diagram-lines"></div>
-        <ul id="mistakes-list" class="checklist"></ul>
-      </section>
-
-      <section class="exercise-block q1-block">
-        <header class="card-head">
-          <p class="card-kicker">Question 1</p>
-          <h3>図の主役にする情報を選択</h3>
-        </header>
-        <p class="hint">選択後に自己採点できます。</p>
-        <div id="focus-options" class="options"></div>
-        <button id="score-btn" type="button" class="subtle">自己採点する</button>
-        <p id="score-text" class="score-text" aria-live="polite"></p>
-      </section>
-
-      <section class="exercise-block q2-block">
-        <header class="card-head">
-          <p class="card-kicker">Question 2</p>
-          <h3>1-2文で主題を要約</h3>
-        </header>
-        <textarea id="story-answer" rows="4" placeholder="現状の課題と、改善後の価値が伝わる1-2文を書いてください"></textarea>
-      </section>
-
-      <div class="answer-cta-wrap">
-        <button id="reveal-answer" type="button" class="primary">解答を見る</button>
-      </div>
-
-      <section class="exercise-block answer-block hidden" id="answer-block">
-        <header class="card-head">
-          <p class="card-kicker">Answer</p>
-          <h3>解答</h3>
-        </header>
-        <div id="sample-area" class="sample-area">
-          <section class="correct-answer-block">
-            <h4>問1・問2の正解</h4>
-            <p class="correct-answer-label">問1 正解: 図の主役にする情報</p>
-            <ul id="correct-q1-answer" class="checklist"></ul>
-            <p class="correct-answer-label">問2 正解例: 主題の要約</p>
-            <p id="correct-q2-answer" class="correct-answer-text"></p>
-          </section>
-
-          <div class="sample-grid single">
-            <article class="sample good">
-              <h4 data-bind="goodTitle"></h4>
-              <div id="good-diagram" class="diagram-good"></div>
-              <ul id="principles-list" class="checklist"></ul>
-            </article>
-          </div>
-          <section class="coach">
-            <h4>解説: 設計書への転用ポイント</h4>
-            <p id="transfer-text"></p>
-          </section>
-
-          <section class="ai-prompt-block">
-            <h4>問2 AI採点用プロンプト</h4>
-            <p class="hint">問2の入力内容を反映した採点プロンプトです。必要に応じて観点を追加して使ってください。</p>
-            <textarea id="ai-eval-prompt" class="ai-prompt-text" rows="12" readonly></textarea>
-            <div class="ai-prompt-actions">
-              <button id="copy-ai-prompt" type="button" class="subtle">プロンプトをコピー</button>
-              <p id="copy-status" class="copy-status" aria-live="polite"></p>
-            </div>
-          </section>
-        </div>
-      </section>
-    </article>
-  </template>
 
   <template id="review-template">
     <article class="review">
