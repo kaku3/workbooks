@@ -98,16 +98,16 @@ function bindGlobalEvents() {
   });
 
   refs.questionNavList.addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-index]");
-    if (!button) {
+    const item = event.target.closest(".question-nav-item");
+    const button = item?.querySelector("button[data-index]");
+    if (!button) return;
+
+    const idx = Number.parseInt(button.dataset.index, 10);
+    if (!Number.isInteger(idx) || idx < 0 || idx >= state.problems.length) return;
+    if (idx === state.index) {
+      scrollToProblemTop();
       return;
     }
-
-    const idx = Number(button.dataset.index);
-    if (Number.isNaN(idx)) {
-      return;
-    }
-
     openProblem(idx, true);
   });
 
@@ -375,6 +375,7 @@ function wireSampleToggle(fragment, problem, problemId) {
   });
 
   btn.addEventListener("click", () => {
+    animateAnswerButton(btn);
     progress.revealed = !progress.revealed;
     syncAnswerVisibility();
     updatePrompt();
@@ -389,14 +390,14 @@ function wireSampleToggle(fragment, problem, problemId) {
 }
 
 // ---- レビュー形式(problem.review を持つ問題)の画面 ----------------------
-// AIが描いた図をレビューする4手順: 仕様を読む → AIの図を見る → 残すものを選ぶ → コピーを書く
+// AIが描いた図をレビューする4手順: 仕様を読む → AIの図を見る → 残すものを選ぶ → 要約を書く
 
 function renderReviewProblem(fragment, problem, progress) {
   const review = problem.review;
 
   const bind = (name, text) => {
     fragment.querySelectorAll(`[data-bind="${name}"]`).forEach((node) => {
-      node.textContent = text;
+      node.textContent = text ?? "";
     });
   };
 
@@ -405,7 +406,23 @@ function renderReviewProblem(fragment, problem, progress) {
   bind("title", problem.title);
   bind("lead", review.lead);
   bind("specNote", review.specNote);
-  bind("scenario", problem.scenario);
+  fragment.querySelectorAll('[data-bind="scenario"]').forEach((node) => {
+    typewriterText(node, problem.scenario, () => {
+      const figurePanel = refs.container.querySelector(".review-figure-panel");
+      const figure = refs.container.querySelector("#ai-figure");
+      const reviewCard = refs.container.querySelector(".review-card");
+      if (!figurePanel || !figure || !reviewCard) return;
+      figurePanel.classList.add("sequence-ready");
+      const img = figure.querySelector("img");
+      const revealReview = () => reviewCard.classList.add("sequence-enter");
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        revealReview();
+      } else if (img && img.complete && img.naturalWidth) {
+        img.addEventListener("animationend", revealReview, { once: true });
+        img.classList.add("diagram-draw-in");
+      } else if (!img) revealReview();
+    });
+  });
   bind("figureNote", review.figureNote);
   bind("findingsLabel", review.findingsLabel);
   bind("keepLead", review.keepLead);
@@ -439,6 +456,7 @@ function renderReviewProblem(fragment, problem, progress) {
   const placeFigure = (box, src, alt) => {
     const link = document.createElement("a");
     link.className = "figure-link";
+    if (box.id === "ai-figure") box.classList.add("sequence-figure");
     link.href = src;
     link.target = "_blank";
     link.rel = "noopener";
@@ -467,23 +485,29 @@ function renderReviewProblem(fragment, problem, progress) {
   // 2・4: 入力欄
   ui.findingsInput.value = progress.findings;
   ui.findingsInput.placeholder = review.findingsPlaceholder;
+  const findingsHint = fragment.getElementById("findings-hint");
+  const leadHint = review.lead.match(/特に、(.+?)(?:。|$)/);
+  findingsHint.textContent = leadHint ? `ヒント：${leadHint[1]}。` : "ヒント：図の中で、情報の順序・関係・役割が伝わりにくい箇所を探してみましょう。";
   ui.copyInput.value = progress.summary;
   ui.copyInput.placeholder = review.copyPlaceholder;
 
   // 答えのうち、入力に左右されない部分
   const findingsList = fragment.getElementById("findings-list");
-  for (const item of review.findings) {
+  // 学習データによっては解説項目が未定義のため、配列であることを確認して描画する。
+  const findings = Array.isArray(review.findings) ? review.findings : [];
+  for (const item of findings) {
+    if (!item || typeof item !== "object") continue;
     const li = document.createElement("li");
     const strong = document.createElement("strong");
-    strong.textContent = item.title;
+    strong.textContent = item.title || "確認ポイント";
     const why = document.createElement("span");
     why.className = "why";
-    why.textContent = item.why;
+    why.textContent = item.why || "";
     li.append(strong, why);
     findingsList.append(li);
   }
-  fillPlainList(fragment.getElementById("copy-points"), review.copyPoints);
-  fillPlainList(fragment.getElementById("create-fixed-points"), review.fixedPoints);
+  fillPlainList(fragment.getElementById("copy-points"), Array.isArray(review.copyPoints) ? review.copyPoints : []);
+  fillPlainList(fragment.getElementById("create-fixed-points"), Array.isArray(review.fixedPoints) ? review.fixedPoints : []);
 
   const showYours = (wrap, text) => {
     wrap.classList.toggle("hidden", text.trim().length === 0);
@@ -593,6 +617,7 @@ function renderReviewProblem(fragment, problem, progress) {
 
   if (ui.reviewRevealBtn) {
     ui.reviewRevealBtn.addEventListener("click", () => {
+      animateAnswerButton(ui.reviewRevealBtn);
       progress.revealedReview = !progress.revealedReview;
       if (progress.revealedReview) {
         progress.revealedOnce = true;
@@ -610,6 +635,7 @@ function renderReviewProblem(fragment, problem, progress) {
 
   if (ui.createRevealBtn) {
     ui.createRevealBtn.addEventListener("click", () => {
+      animateAnswerButton(ui.createRevealBtn);
       progress.revealedCreate = !progress.revealedCreate;
       if (progress.revealedCreate) {
         progress.revealedOnce = true;
@@ -651,13 +677,13 @@ function fillPlainList(list, items) {
 
 function buildReviewPrompt(scenario, copy) {
   return [
-    "以下の情報をもとに、図のコピーを評価してください。",
-    "コピーは、仕様をもとにAIが描いた図を直したあと、その図に付ける見出しです。",
+    "以下の情報をもとに、図の要約を評価してください。",
+    "要約は、仕様をもとにAIが描いた図をレビューして修正したあと、その図の主題や全体像を伝える1〜2文の文章です。",
     "",
     "[仕様]",
     scenario,
     "",
-    "[コピー]",
+    "[要約]",
     copy,
     "",
     "評価観点:",
@@ -671,7 +697,7 @@ function buildReviewPrompt(scenario, copy) {
     "- 総合評価: A/B/C/D",
     "- 観点別評価: 各観点を5点満点で採点し、理由を1行で記載",
     "- 改善提案: 箇条書きで3点まで",
-    "- 改善後のコピー例: 1-2文"
+    "- 改善後の要約例: 1〜2文"
   ].join("\n");
 }
 
@@ -684,6 +710,37 @@ function buildQ2ModelAnswer(problem, coreLabels) {
   }
 
   return `主題: ${problem.learningGoal}。要点は${mainFlow}を主軸に、処理の開始から完了までを一連の流れとして示す。`;
+}
+
+function typewriterText(node, text, onComplete) {
+  node.textContent = "";
+  node.classList.add("typewriter-text");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    node.textContent = text ?? "";
+    node.classList.remove("typewriter-text");
+    if (onComplete) onComplete();
+    return;
+  }
+  let position = 0;
+  const step = () => {
+    if (!node.isConnected) return;
+    position = Math.min(position + 2, text.length);
+    node.textContent = text.slice(0, position);
+    if (position < text.length) window.setTimeout(step, 12);
+    else {
+      node.classList.remove("typewriter-text");
+      if (onComplete) onComplete();
+    }
+  };
+  window.setTimeout(step, 120);
+}
+
+function animateAnswerButton(button) {
+  button.classList.remove("answer-pulse");
+  // Reflow restarts the short tap animation on repeated clicks.
+  void button.offsetWidth;
+  button.classList.add("answer-pulse");
+  window.setTimeout(() => button.classList.remove("answer-pulse"), 420);
 }
 
 function renderDiagramImage(container, src, alt) {
@@ -702,6 +759,20 @@ function renderDiagramImage(container, src, alt) {
       container.innerHTML = '<p class="hint">図画像が空でした。</p>';
     } else {
       container.replaceChildren(img);
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const sequenceFigure = container.closest(".sequence-figure");
+        if (!sequenceFigure) img.classList.add("diagram-draw-in");
+        else if (sequenceFigure.classList.contains("sequence-ready")) {
+          img.addEventListener("animationend", () => {
+            const reviewCard = container.closest(".review")?.querySelector(".review-card");
+            if (reviewCard) reviewCard.classList.add("sequence-enter");
+          }, { once: true });
+          img.classList.add("diagram-draw-in");
+        }
+      } else {
+        const reviewCard = container.closest(".review")?.querySelector(".review-card");
+        if (reviewCard) reviewCard.classList.add("sequence-enter");
+      }
     }
   });
 
@@ -1043,12 +1114,12 @@ function toSvgText(x, y, lines, className, lineHeight) {
 
 function buildEvaluationPrompt(scenario, summary) {
   return [
-    "以下の情報をもとに、問2の概要文を評価してください。",
+    "以下の情報をもとに、図の要約を評価してください。",
     "",
-    "[問題文]",
+    "[仕様]",
     scenario,
     "",
-    "[概要文]",
+    "[要約]",
     summary,
     "",
     "評価観点:",
@@ -1062,7 +1133,7 @@ function buildEvaluationPrompt(scenario, summary) {
     "- 総合評価: A/B/C/D",
     "- 観点別評価: 各観点を5点満点で採点し、理由を1行で記載",
     "- 改善提案: 箇条書きで3点まで",
-    "- 改善後の概要文サンプル: 1-2文"
+    "- 改善後の要約例: 1〜2文"
   ].join("\n");
 }
 

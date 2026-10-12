@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -27,7 +28,7 @@
   <header class="hero">
     <div class="container">
       <p class="eyebrow">ZUKAI DESIGN TRAINING</p>
-<h1>頭の中は分かっているのに、<br>相手に伝わらない。</h1>
+<h1>頭ではわかっているのに、<br>相手に伝わらない。</h1>
 <p class="lead">自分の理解を図にして、相手が判断できる形に組み立てる。<br>開発全般で必要になる説明力を鍛えるドリルです。</p>
     </div>
   </header>
@@ -165,23 +166,27 @@
       <h2 data-bind="title"></h2>
       <p class="subtitle" data-bind="lead"></p>
 
-      <section class="step">
-        <h2 class="step-title">要求仕様</h2>
-        <pre class="scenario" data-bind="scenario"></pre>
-      </section>
+      <div class="review-workspace">
+        <div class="review-context-column">
+        <section class="step review-spec-panel">
+          <h2 class="step-title">要求仕様</h2>
+          <pre class="scenario" data-bind="scenario"></pre>
+        </section>
 
-      <section class="step">
-        <h2 class="step-title">図 : AI作成版</h2>
-        <div id="ai-figure" class="figure-box"><p class="figure-tip">タップすると、大きく開きます</p></div>
-      </section>
+        <section class="step review-figure-panel">
+          <h2 class="step-title">AIが描いた図</h2>
+          <div id="ai-figure" class="figure-box"><p class="figure-tip">タップすると、大きく開きます</p></div>
+        </section>
+        </div>
 
-      <section class="step review-card review-card-group">
+        <section class="step review-card review-card-group">
         <header class="card-head">
           <h2 class="step-title">問題 (レビュー)</h2>
         </header>
 
         <section class="review-subsection">
           <h3 class="step-title">分かりづらいと感じる点</h3>
+          <p id="findings-hint" class="hint"></p>
           <textarea id="findings-input" rows="4"></textarea>
         </section>
 
@@ -190,10 +195,11 @@
           <p class="hint"><span data-bind="keepLead"></span><strong id="keep-count"></strong></p>
           <div id="focus-options" class="options"></div>
         </section>
-      </section>
+        </section>
+      </div>
 
       <div class="answer-cta-wrap review-cta">
-        <p class="cta-note">分かりづらいと感じる点と要約を書いて答えを見ると、メニューに✓がつきます。</p>
+        <p class="cta-note">気づいた点と概要を書いて答えを見ると、メニューに✓がつきます。</p>
         <button type="button" class="primary reveal-answer-trigger" data-answer-role="review">答えを見る</button>
       </div>
 
@@ -203,6 +209,7 @@
           <h3>問題 (レビュー) の解答</h3>
         </header>
 
+        <div class="answer-review-grid">
         <section class="answer-part">
           <h4>分かりづらいと感じる点</h4>
           <div id="your-findings" class="yours hidden">
@@ -220,6 +227,7 @@
           <p class="yours-label">図の外のメモへ</p>
           <ul id="keep-out" class="keep-list"></ul>
         </section>
+        </div>
 
         <section class="coach">
           <h4>次に使うとき</h4>
@@ -231,7 +239,7 @@
         <header class="card-head">
           <h3 class="step-title">問題 (作成)</h3>
         </header>
-        <p class="hint" data-bind="copyLead"></p>
+        <p class="hint copy-lead"><span data-bind="copyLead"></span><a href="https://app.diagrams.net/" target="_blank" rel="noopener noreferrer">draw.io</a> で修正版の図を作成してください。</p>
         <div id="copy-materials" class="materials hidden">
           <p class="materials-label">いま選んでいるもの</p>
           <ul id="copy-materials-list" class="chips"></ul>
@@ -240,7 +248,7 @@
       </section>
 
       <div class="answer-cta-wrap review-cta">
-        <p class="cta-note">分かりづらいと感じる点と要約を書いて答えを見ると、メニューに✓がつきます。</p>
+        <p class="cta-note">気づいた点と概要を書いて答えを見ると、メニューに✓がつきます。</p>
         <button id="reveal-answer" type="button" class="primary">答えを見る</button>
       </div>
 
@@ -251,6 +259,7 @@
         </header>
         <p class="callout">要約は、図の主役を伝える1〜2文に整理します。補足の予定や追加仕様は、図の外へ回すと伝わりやすくなります。</p>
 
+        <div class="answer-create-grid">
         <section class="answer-part">
           <h4>要約</h4>
           <div id="your-copy" class="yours hidden">
@@ -268,6 +277,7 @@
           <div id="create-fixed-figure" class="figure-box"><p class="figure-tip">タップすると、大きく開きます</p></div>
           <ul id="create-fixed-points" class="checklist"></ul>
         </section>
+        </div>
 
         <details class="ai-prompt-block">
           <summary>要約を、AIに見てもらう(任意)</summary>

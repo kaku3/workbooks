@@ -340,9 +340,9 @@ h3 {
 .scenario {
   margin: 0;
   white-space: pre-wrap;
-  background: #f9faf5;
-  border: 1px solid #dde5d8;
-  border-left: 5px solid var(--accent-2);
+  background: #fff9e9;
+  border: 1px solid #f0dca9;
+  border-left: 5px solid #e8b83f;
   border-radius: 12px;
   padding: 14px;
   font: inherit;
@@ -433,9 +433,14 @@ textarea {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
 }
 
 .option-item {
+  min-height: 70px;
+  height: 100%;
+  box-sizing: border-box;
   border: 1px solid #d4ddd8;
   border-radius: 12px;
   padding: 10px 12px;
@@ -1051,4 +1056,241 @@ details.ai-prompt-block[open] summary {
   .review-cta button {
     width: 100%;
   }
+}
+
+/* 読む・操作する動きを控えめに伝える */
+.review .subtitle {
+  white-space: pre-line;
+  line-height: 1.85;
+}
+
+.copy-lead {
+  line-height: 1.8;
+}
+
+.copy-lead a {
+  color: #245b91;
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.question-nav-item {
+  cursor: pointer;
+}
+
+button.primary,
+button.reveal-answer-trigger,
+#reveal-answer {
+  transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+}
+
+button.primary:active,
+button.reveal-answer-trigger:active,
+#reveal-answer:active {
+  transform: translateY(1px) scale(0.985);
+  filter: brightness(0.94);
+}
+
+.answer-pulse {
+  animation: answer-pulse 380ms ease;
+}
+
+@keyframes answer-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(55, 112, 176, 0.3); }
+  45% { transform: scale(0.975); box-shadow: 0 0 0 7px rgba(55, 112, 176, 0.12); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(55, 112, 176, 0); }
+}
+
+.typewriter-text::after {
+  content: "▍";
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--accent-2);
+  animation: typewriter-caret 700ms steps(2, end) infinite;
+}
+
+@keyframes typewriter-caret {
+  50% { opacity: 0; }
+}
+
+.diagram-draw-in {
+  animation: diagram-draw-in 2200ms cubic-bezier(.2,.75,.25,1) both;
+  clip-path: inset(0 100% 0 0);
+}
+
+@keyframes diagram-draw-in {
+  0% { clip-path: inset(0 100% 0 0); opacity: .45; filter: saturate(.7); }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; filter: saturate(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 広い画面では、左列に仕様と図を縦に、右列にレビューを配置 */
+.review .review-context-column {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+@media (min-width: 1600px) {
+  .review .review-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr);
+    align-items: start;
+    gap: 22px;
+    margin-top: 22px;
+  }
+
+  .review .review-workspace > .step,
+  .review .review-context-column > .step {
+    min-width: 0;
+    margin-top: 0;
+  }
+
+  .review .review-workspace .scenario {
+    overflow-wrap: anywhere;
+  }
+
+  .review .review-workspace .figure-box {
+    min-width: 0;
+  }
+
+  .review .review-workspace .review-card {
+    min-width: 0;
+  }
+}
+
+
+/* 回答カードも広い画面では二段組にして比較しやすくする */
+@media (min-width: 1600px) {
+  .review-answer-grid,
+  .answer-review-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 22px;
+  }
+
+  .answer-review-grid > .answer-part {
+    min-width: 0;
+  }
+
+  .review .review-card-group .options .option-item {
+    min-height: 70px;
+  }
+}
+
+
+/* 回答の二段組みに視覚的な区切りを追加 */
+@media (min-width: 1600px) {
+  .answer-review-grid > .answer-part + .answer-part {
+    border-left: 1px solid #c7d3e6;
+    padding-left: 22px;
+  }
+
+  .answer-review-grid > .answer-part h4 {
+    margin-bottom: 14px;
+    padding-bottom: 9px;
+    border-bottom: 2px solid #9fb4d7;
+  }
+
+  .answer-create-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 22px;
+  }
+
+  .answer-create-grid > .answer-part {
+    min-width: 0;
+  }
+
+  .answer-create-grid > .answer-part + .answer-part {
+    border-left: 1px solid #c7d3e6;
+    padding-left: 22px;
+  }
+
+  .answer-create-grid > .answer-part h4 {
+    margin-bottom: 14px;
+    padding-bottom: 9px;
+    border-bottom: 2px solid #9fb4d7;
+  }
+}
+
+@media (max-width: 1599px) {
+  .answer-create-grid {
+    display: block;
+  }
+}
+
+
+/* レビュー欄はウィンドウが開くように少し遅れて現れる */
+@keyframes review-window-open {
+  from { opacity: 0; transform: translateY(12px) scale(.985); clip-path: inset(0 0 100% 0 round 14px); }
+  to { opacity: 1; transform: translateY(0) scale(1); clip-path: inset(0 0 0 0 round 14px); }
+}
+.review .review-card {
+  animation: review-window-open 720ms cubic-bezier(.2,.75,.25,1) both;
+  transform-origin: top center;
+}
+
+/* 解答は見出しから順に視線を誘導するように表示 */
+@keyframes answer-reading-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#review-answer-block:not(.hidden),
+#create-answer-block:not(.hidden) {
+  animation: answer-reading-in 650ms ease-out both;
+}
+#review-answer-block:not(.hidden) .answer-part,
+#create-answer-block:not(.hidden) .answer-part {
+  animation: answer-reading-in 520ms ease-out both;
+}
+#review-answer-block:not(.hidden) .answer-part:nth-child(2),
+#create-answer-block:not(.hidden) .answer-part:nth-child(2) {
+  animation-delay: 140ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .review .review-card,
+  #review-answer-block:not(.hidden),
+  #create-answer-block:not(.hidden),
+  #review-answer-block:not(.hidden) .answer-part,
+  #create-answer-block:not(.hidden) .answer-part {
+    animation: none !important;
+  }
+}
+
+/* レビュー画面は「仕様のタイプ表示 → 図の描画 → レビュー欄」の順に見せる */
+/* 図は仕様のタイプ表示が終わるまで隠し、先に完成図が見えるちらつきを防ぐ */
+.review .sequence-figure img {
+  clip-path: inset(0 0 100% 0);
+  opacity: 0;
+}
+.review .review-card {
+  opacity: 0;
+  animation: none;
+}
+.review .review-card.sequence-enter {
+  animation: review-window-open 620ms cubic-bezier(.2,.75,.25,1) both;
+}
+.review .sequence-figure .diagram-draw-in {
+  animation: diagram-reveal-top-down 680ms cubic-bezier(.2,.75,.25,1) both;
+  clip-path: inset(0 0 100% 0);
+}
+@keyframes diagram-reveal-top-down {
+  0% { clip-path: inset(0 0 100% 0); opacity: .55; filter: saturate(.75); }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; filter: saturate(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .review .review-card { opacity: 1; }
 }
