@@ -259,7 +259,8 @@ function renderReviewProblem(fragment, problem, progress) {
   bind("keepLead", review.keepLead);
   bind("copyLead", review.copyLead);
   bind("fixedNote", review.fixedNote);
-  bind("copyExample", review.copyExample);
+  // 要約例が未設定の問題でも、解答欄の「要約」セクション自体は維持する。
+  bind("copyExample", review.copyExample || "この問題の要約例は準備中です。");
   bind("transfer", review.transferTip);
 
   // fragment は画面に載せると空になるので、使う要素は先に拾っておく

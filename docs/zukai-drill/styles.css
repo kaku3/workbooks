@@ -262,10 +262,12 @@ h1 {
 }
 
 .intro-visual {
-  border: 1px solid #cfd9ea;
-  border-radius: 8px;
-  background: #f8fbff;
-  overflow: hidden;
+  border: 1px solid #e2d9c5;
+  border-radius: 2px;
+  background: #fffdf6;
+  padding: 10px;
+  box-shadow: 2px 4px 0 rgba(93, 79, 48, 0.06), 0 8px 18px rgba(50, 47, 35, 0.06);
+  overflow: visible;
 }
 
 .intro-visual img {
@@ -274,6 +276,7 @@ h1 {
   object-fit: contain;
   object-position: center;
   display: block;
+  mix-blend-mode: multiply;
 }
 
 .side-menu {
@@ -451,9 +454,27 @@ textarea {
   cursor: pointer;
 }
 
-.option-item input {
+ .option-item input {
   margin-top: 2px;
 }
+
+/* 選択肢：左メニューと同じ「文字の下を太めのマーカーで引く」表現 */
+.option-item:has(input:checked) {
+  position: relative;
+  border-color: #d4ddd8;
+  background: #fffef9;
+  box-shadow: 0 2px 4px rgba(72, 67, 43, .06);
+}
+.option-item:has(input:checked) > span {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 213, 55, .95);
+  text-decoration-thickness: .42em;
+  text-underline-offset: -.18em;
+  text-decoration-skip-ink: none;
+  font-weight: 650;
+}
+
+.option-item:has(input:checked) input { accent-color: #b58a00; }
 
 .score-text {
   margin: 10px 0 0;
@@ -903,6 +924,22 @@ button.subtle {
   color: var(--muted);
 }
 
+.answer-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 8px 0 6px;
+  padding: 3px 9px;
+  border: 1px solid #d8c58c;
+  border-radius: 3px;
+  background: #fff2b9;
+  color: #66531b;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 1px 2px 0 rgba(94, 75, 23, 0.08);
+}
+
 .chips {
   list-style: none;
   margin: 0;
@@ -1317,5 +1354,335 @@ button.reveal-answer-trigger:active,
   .review .review-card {
     opacity: 1;
     animation: none !important;
+  }
+}
+
+/* ---- ノートと付箋を使って考えるワークスペース ---- */
+:root {
+  --paper: #fffdf7;
+  --paper-line: #e8e1d2;
+  --sticky-yellow: #fff2b8;
+  --sticky-blue: #e8f1ff;
+  --sticky-green: #e6f5e9;
+}
+
+body {
+  background-color: #f7f4eb;
+  background-image:
+    linear-gradient(to right, rgba(115, 126, 132, 0.075) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(115, 126, 132, 0.075) 1px, transparent 1px),
+    linear-gradient(180deg, #fbfaf5 0%, #f2efe5 100%);
+  background-size: 24px 24px, 24px 24px, 100% 100%;
+}
+
+.panel {
+  background: rgba(255, 254, 249, 0.96);
+  border-color: #ded8ca;
+  border-radius: 5px;
+  box-shadow: 0 5px 14px rgba(55, 48, 35, 0.07);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    rgba(114, 145, 170, 0.075) 32px,
+    transparent 33px
+  );
+}
+
+.side-menu {
+  background: rgba(255, 254, 249, 0.92);
+}
+
+.question-nav-btn {
+  border-color: #e4d9a9;
+  border-radius: 3px 3px 5px 3px;
+  background: #fff9df;
+  box-shadow: 1px 2px 3px rgba(67, 58, 32, 0.07);
+  transform: none;
+}
+.question-nav-btn.active {
+  background: #ffedaa;
+  border-color: #c8a64a;
+  box-shadow: 0 3px 8px rgba(67, 58, 32, 0.1);
+}
+
+.review .review-spec-panel {
+  padding: 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.review .review-spec-panel > .step-title {
+  margin-bottom: 10px;
+}
+.review .scenario {
+  position: relative;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  min-height: 9.5em;
+  box-sizing: border-box;
+  border: 1px solid #e5d28a;
+  border-left: 4px solid #e7c34f;
+  border-radius: 2px 2px 4px 2px;
+  background-color: #fff4b9;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.72em,
+    rgba(135, 119, 67, 0.09) 1.76em,
+    transparent 1.8em
+  );
+  box-shadow: 2px 5px 0 rgba(107, 88, 38, 0.1), 0 8px 15px rgba(76, 64, 34, 0.09);
+  padding: 18px 16px;
+}
+.review .scenario::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 64px;
+  height: 16px;
+  transform: translateX(-50%) rotate(-2deg);
+  background: rgba(220, 199, 130, 0.48);
+  border-left: 1px solid rgba(177, 154, 86, 0.12);
+  border-right: 1px solid rgba(177, 154, 86, 0.12);
+  pointer-events: none;
+}
+
+.review .review-figure-panel {
+  padding: 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.review .figure-box {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 8px 0 14px;
+  padding: 8px;
+  overflow: hidden;
+  border: 1px solid #ded8ca;
+  border-radius: 4px;
+  background: var(--paper);
+  box-shadow: 2px 4px 0 rgba(55, 48, 35, 0.06);
+}
+.review .figure-link {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.review .figure-box img,
+.review .figure-box svg,
+.review .diagram-svg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.review .review-card,
+.review .create-card,
+.review .answer-block {
+  position: relative;
+  border-radius: 5px 5px 10px 5px;
+  box-shadow: 2px 5px 0 rgba(55, 48, 35, 0.06), 0 7px 16px rgba(55, 48, 35, 0.06);
+}
+.review .review-card {
+  background: linear-gradient(145deg, #f0f6ff 0%, #e6efff 100%);
+  border-color: #d0def3;
+}
+.review .create-card {
+  background: linear-gradient(145deg, #f2faee 0%, #e6f3dd 100%);
+  border-color: #cfe1c4;
+}
+.review .answer-block {
+  background: #fffdf7;
+  border-color: #ded8ca;
+}
+.review .review-card .card-head,
+.review .create-card .card-head,
+.review .answer-block .card-head {
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(65, 78, 91, 0.22);
+}
+
+/* スマホではカード内に図を収め、図の全体像を優先する */
+@media (max-width: 820px) {
+  .container {
+    width: calc(100% - 20px);
+  }
+  .panel {
+    padding: 14px;
+  }
+  .review .review-workspace,
+  .review .review-context-column,
+  .review .review-workspace > *,
+  .review .review-context-column > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .review .review-spec-panel,
+  .review .review-figure-panel {
+    padding: 8px 0;
+  }
+  .review .figure-box,
+  .review .answer-block .figure-box {
+    width: 100%;
+    max-width: 100%;
+    margin: 8px 0 14px;
+    padding: 5px;
+    overflow: hidden;
+  }
+  .review .figure-box img,
+  .review .figure-box svg,
+  .review .diagram-svg {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+  }
+  .review .review-card,
+  .review .create-card,
+  .review .answer-block {
+    padding: 14px;
+  }
+  .review .scenario {
+    padding: 14px 12px;
+    font-size: 0.94rem;
+  }
+  .review .review-card-group .review-subsection + .review-subsection {
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+}
+
+
+/* スマホでも仕様の紙がタイプライター表示中に伸び縮みしないよう高さを確保 */
+@media (max-width: 640px) {
+  .review .scenario { min-height: 13.5em; padding: 20px 13px 16px; }
+}
+
+/* v3: ノート／付箋の見た目を整理 */
+:root {
+  --ink-line: #c8d7df;
+  --heading-line: #9eafb9;
+  --marker-yellow: rgba(255, 221, 82, .58);
+  --marker-red: rgba(255, 132, 113, .42);
+}
+
+/* 罫線は控えめな青灰色、見出しの区切り線は一段濃くして役割を分離 */
+.panel {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    rgba(105, 145, 170, .035) 32px,
+    transparent 33px
+  );
+}
+.problem-head + h2,
+.card-head {
+  border-bottom-color: var(--heading-line);
+}
+.card-head { border-bottom-style: solid; }
+
+/* 仕様の付箋：タイプライター表示の前から紙面サイズを確保 */
+.scenario,
+.review .scenario {
+  box-sizing: border-box;
+  position: relative;
+  height: 15.5em;
+  min-height: 15.5em;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  padding: 22px 17px 16px;
+  color: #3d392b;
+  border: 1px solid #e3ce79;
+  border-left: 1px solid #e3ce79;
+  border-radius: 2px 2px 3px 2px;
+  background-color: #fff5b9;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.68em,
+    rgba(114, 137, 147, .045) 1.72em,
+    transparent 1.76em
+  );
+  box-shadow: 2px 3px 0 rgba(103, 85, 37, .10), 0 7px 12px rgba(76, 64, 34, .07);
+  font: inherit;
+}
+.review .scenario::before,
+.scenario::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 66px;
+  height: 15px;
+  transform: translateX(-50%) rotate(-2deg);
+  z-index: 2;
+  background: rgba(210, 187, 111, .55);
+  border: 1px solid rgba(177, 154, 86, .12);
+  border-top: 0;
+  pointer-events: none;
+}
+
+/* 選択中の問題は、色面＋マーカー風の下線で視認性を上げる */
+.question-nav-btn.active {
+  position: relative;
+  background: #fff4bd;
+  border-color: #d2b34f;
+  box-shadow: inset 3px 0 0 #e3bf3f, 1px 2px 3px rgba(67, 58, 32, .07);
+}
+.question-nav-btn.active .qnav-title {
+  text-decoration: underline;
+  text-decoration-color: rgba(230, 190, 55, .85);
+  text-decoration-thickness: .28em;
+  text-underline-offset: -.12em;
+  text-decoration-skip-ink: none;
+}
+.progress-dot.active:not(.done) {
+  background: #f3ca4f;
+  outline-color: #c99e25;
+}
+
+/* レビューだけ浮いて見えないよう、他の紙面と影・角・見出し線を統一 */
+.review .review-card,
+.review .create-card,
+.review .answer-block {
+  border-radius: 3px 3px 5px 3px;
+  box-shadow: 1px 3px 0 rgba(55, 48, 35, .055);
+}
+.review .review-card {
+  background: rgba(238, 245, 255, .94);
+  border-color: #cbd9e7;
+  border-left: 3px solid #a9c4df;
+}
+.review .create-card {
+  background: rgba(242, 248, 235, .96);
+  border-color: #d0ddc7;
+  border-left: 3px solid #b2cc9f;
+}
+.review .answer-block {
+  background: rgba(255, 254, 249, .97);
+  border-color: #d8d5c9;
+  border-left: 3px solid #c9c5b8;
+}
+.review .review-card .card-head,
+.review .create-card .card-head,
+.review .answer-block .card-head {
+  border-bottom: 1px solid #b9c6ce;
+}
+
+@media (max-width: 640px) {
+  .scenario,
+  .review .scenario {
+    height: 17em;
+    min-height: 17em;
+    padding: 21px 13px 14px;
+    font-size: .94rem;
   }
 }
