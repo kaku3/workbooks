@@ -401,10 +401,10 @@ function renderReviewProblem(fragment, problem, progress) {
     }
 
     if (progress.selected.length === 0) {
-      ui.keepScore.textContent = "「残すもの」は、まだ選んでいません。";
+      ui.keepScore.textContent = "「主題」は、まだ選んでいません。";
     } else {
       const extraText = extra > 0 ? `図の外に回すものを、${extra}つ選んでいます。` : "";
-      ui.keepScore.textContent = `残す${coreCount}つのうち、${hit}つを選べました。${extraText}`;
+      ui.keepScore.textContent = `主題${coreCount}つのうち、${hit}つを選べました。${extraText}`;
     }
 
     ui.promptBox.value = buildReviewPrompt(problem.scenario, progress.summary.trim() || "(未入力)");
@@ -415,10 +415,12 @@ function renderReviewProblem(fragment, problem, progress) {
     ui.createAnswerBlock.classList.toggle("hidden", !progress.revealedCreate);
 
     if (ui.reviewRevealBtn) {
-      ui.reviewRevealBtn.textContent = progress.revealedReview ? "答えを隠す" : "答えを見る";
+      const label = ui.reviewRevealBtn.querySelector(".button-label");
+      if (label) label.textContent = progress.revealedReview ? "答えを隠す" : "答えを見る";
     }
     if (ui.createRevealBtn) {
-      ui.createRevealBtn.textContent = progress.revealedCreate ? "答えを隠す" : "答えを見る";
+      const label = ui.createRevealBtn.querySelector(".button-label");
+      if (label) label.textContent = progress.revealedCreate ? "答えを隠す" : "答えを見る";
     }
   };
 
