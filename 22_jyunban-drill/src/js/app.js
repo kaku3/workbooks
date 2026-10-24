@@ -282,7 +282,20 @@
     state.hintUsed = false;
     $('#hint-button').disabled = false; $('#hint-button').setAttribute('aria-expanded', 'false'); $('#hint-button').title = 'ヒント（使用すると-1 pt）';
     $('#hint-content').textContent = ''; $('#hint-content').hidden = true;
+    $('#hint-penalty-flash').classList.remove('is-visible'); updatePotentialPoints();
     renderOrder();
+  }
+  function updatePotentialPoints() {
+    if (!state.careerConfig) { $('#answer-points').textContent = '0 pt'; return; }
+    const career = getCareer();
+    const rewards = state.careerConfig.rewards;
+    let points = state.sessionType === 'daily' ? rewards.dailyCorrect : rewards.practiceCorrect;
+    const nextCorrectCount = career.correctCount + 1;
+    rewards.milestones.forEach(milestone => {
+      if (nextCorrectCount >= milestone.correct && !career.milestones.includes(milestone.correct)) points += milestone.bonus;
+    });
+    if (state.hintUsed) points -= 1;
+    $('#answer-points').textContent = `${points > 0 ? '+' : ''}${points} pt`;
   }
   function showHint() {
     if (state.hintUsed) return;
@@ -291,6 +304,8 @@
     hint.textContent = state.questions[state.index].explanation || 'この問題の解説はありません。';
     hint.hidden = false;
     $('#hint-button').disabled = true; $('#hint-button').setAttribute('aria-expanded', 'true'); $('#hint-button').title = 'ヒント使用済み（-1 pt）';
+    updatePotentialPoints();
+    const penaltyFlash = $('#hint-penalty-flash'); penaltyFlash.classList.remove('is-visible'); void penaltyFlash.offsetWidth; penaltyFlash.classList.add('is-visible');
     if (state.careerConfig) {
       const career = getCareer(); career.points -= 1; saveCareer(career);
       state.earnedPoints -= 1; renderCareer();
