@@ -4,11 +4,22 @@
     "practiceCorrect": 2,
     "dailyCorrect": 5,
     "milestones": [
-      { "correct": 25, "bonus": 50 },
-      { "correct": 50, "bonus": 100 },
-      { "correct": 100, "bonus": 200 },
-      { "correct": 400, "bonus": 500 },
-      { "correct": 1000, "bonus": 1000 }
+      { "correct": 25, "bonus": 30 },
+      { "correct": 80, "bonus": 80 },
+      { "correct": 100, "bonus": 50 },
+      { "correct": 200, "bonus": 60 },
+      { "correct": 300, "bonus": 50 },
+      { "correct": 400, "bonus": 80 },
+      { "correct": 500, "bonus": 50 },
+      { "correct": 600, "bonus": 50 },
+      { "correct": 700, "bonus": 50 },
+      { "correct": 800, "bonus": 50 },
+      { "correct": 900, "bonus": 50 },
+      { "correct": 1000, "bonus": 300 },
+      { "correct": 1600, "bonus": 300 },
+      { "correct": 2100, "bonus": 300 },
+      { "correct": 2600, "bonus": 300 },
+      { "correct": 3200, "bonus": 1000 }
     ]
   },
   "stages": [
@@ -49,25 +60,25 @@
       "room": "テストの記録と仕様書を並べ、利用者が迷う理由を探しています。"
     },
     {
-      "points": 2000,
+      "points": 1500,
       "title": "シニア",
       "story": "手順通りでも使えない端末がある。設定が異なる条件を先に確かめておこう。",
       "room": "作業の目的や例外条件を確認できるチェックリストが整ってきました。"
     },
     {
-      "points": 4000,
+      "points": 2000,
       "title": "エキスパート",
       "story": "作るものだけでなく、誰が何に困っているのかから整理して話せるようになった。",
       "room": "目的、制約、選択肢、次の行動を一緒に見渡せるノートがあります。"
     },
     {
-      "points": 8000,
+      "points": 3000,
       "title": "一人称で動ける人",
       "story": "依頼を受け取るだけでなく、目的や関係者を自分から確かめ、できることを提案できるようになった。",
       "room": "相談ノートには、目的、自分の仮説、次に確認することが並んでいます。"
     },
     {
-      "points": 20000,
+      "points": 5000,
       "title": "プレイングマネジャー",
       "story": "自分の担当も進めながら、チームの状況を整理し、メンバーが判断して動けるよう支援している。",
       "room": "自分の作業とチームの相談を見渡せるボードがあり、困りごとを早めに拾えるようになりました。"
