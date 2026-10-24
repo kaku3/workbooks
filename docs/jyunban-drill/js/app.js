@@ -432,7 +432,7 @@
       if (data.version !== 1 || !Array.isArray(data.stages) || !data.stages.length || !data.rewards || !Number.isFinite(data.rewards.practiceCorrect) || !Number.isFinite(data.rewards.dailyCorrect) || !Array.isArray(data.rewards.milestones) || data.rewards.milestones.some(item => !Number.isFinite(item.correct) || !Number.isFinite(item.bonus)) || data.stages.some(stage => !Number.isFinite(stage.points) || !stage.title || !stage.story || !stage.room)) throw new Error('キャリアデータの形式が正しくありません');
       state.careerConfig = data;
     } catch (error) { console.error(error); }
-    $$('.mode-tab').forEach(button => button.addEventListener('click', () => { if (state.finished || !views.quiz.hidden) return; state.category = button.dataset.category; updateSetup(); }));
+    $$('.mode-tab').forEach(button => button.addEventListener('click', () => { if (!views.quiz.hidden) return; state.category = button.dataset.category; updateSetup(); }));
     $$('.count-button').forEach(button => button.addEventListener('click', () => { state.count = Number(button.dataset.count); updateSetup(); }));
     $('#start-button').addEventListener('click', () => startSession()); $('#submit-answer').addEventListener('click', submitAnswer);
     const helpModal = $('#help-modal');
