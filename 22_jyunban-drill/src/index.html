@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f1e8">
+  <meta name="description" content="4行の文章を並べ替えて、伝わる順番を考える小さなドリル。">
+  <title>順番のセンス｜文章の順番ドリル</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="順番のセンス ホーム"><span class="brand-mark">順</span><span><strong>順番のセンス</strong><small>文章の順番ドリル</small></span></a>
+    <div class="header-actions"><button id="help-button" class="help-button" aria-label="操作方法を表示" aria-haspopup="dialog">?</button><a class="header-link" href="#history">学習の記録 <span aria-hidden="true">↘</span></a></div>
+  </header>
+
+  <main class="page-shell">
+    <section class="intro">
+      <p class="eyebrow">A LITTLE PRACTICE FOR CLEAR THINKING</p>
+      <h1>伝わる順番は、<br><span>反復で身につく。</span></h1>
+      <p class="intro-copy">とっさに出てこない「説明の順番」と「文章の順番」。<br>4行の文章の並べ替えの反復で、センスを少しずつ体に覚えさせよう。</p>
+    </section>
+
+    <section class="practice panel category-explanation count-five" aria-labelledby="practice-title">
+      <div class="section-heading"><div><p class="eyebrow">PRACTICE</p><h2 id="practice-title">今日のドリル</h2></div><span class="tiny-note">同じ問題を何度解いてもOK</span></div>
+      <div class="setup-row">
+        <div class="mode-tabs" role="tablist" aria-label="問題の種類">
+          <button class="mode-tab active" data-category="説明の順番" role="tab" aria-selected="true">説明の順番</button>
+          <button class="mode-tab" data-category="文章の順番" role="tab" aria-selected="false">文章の順番</button>
+        </div>
+        <div class="count-switch" aria-label="問題数">
+          <button data-count="5" class="count-button active">5問</button>
+          <button data-count="10" class="count-button">10問</button>
+        </div>
+      </div>
+
+      <div id="start-view" class="start-view">
+        <div class="start-illustration" aria-hidden="true"><span>あ</span><span>い</span><span>う</span><span>え</span><i>↕</i></div>
+        <h3 id="start-title">説明の順番を整える</h3>
+        <p id="start-description">目的から詳細へ。読み手が迷わない説明の流れを考えます。</p>
+        <div class="start-meta"><span>◷ 時間を計測</span><span>↻ 履歴を保存</span><span>▤ 4行を並べ替え</span></div>
+        <button id="start-button" class="primary-button">さらっと5問に挑戦 <span aria-hidden="true">→</span></button>
+      </div>
+
+      <div id="quiz-view" class="quiz-view" hidden>
+        <div class="quiz-topline"><span id="question-counter">問題 1 / 10</span><span class="timer"><span class="timer-dot"></span><span id="timer">00:00</span></span></div>
+        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+        <p class="task-prompt">次の文章を、伝わる順番に並べ替えてください。</p>
+        <p id="question-title" class="question-title"></p>
+        
+        <ol id="sentence-list" class="sentence-list" aria-label="並べ替える文章"></ol>
+        <div id="quiz-actions" class="quiz-actions"><button id="reset-order" class="text-button">順番をリセット</button><button id="submit-answer" class="primary-button">この順番で回答 <span aria-hidden="true">→</span></button></div>
+        <div id="feedback" class="feedback" aria-live="polite" hidden></div>
+      </div>
+
+      <div id="result-view" class="result-view" hidden>
+        <p class="eyebrow">SESSION COMPLETE</p><h3>おつかれさまでした。</h3>
+        <div class="result-stats"><div><span>正答率</span><strong id="result-accuracy">—</strong></div><div><span>所要時間</span><strong id="result-time">—</strong></div><div><span>平均回答時間</span><strong id="result-average">—</strong></div></div>
+        <p id="result-message" class="result-message"></p>
+        <div class="result-actions"><button id="review-button" class="secondary-button">回答と解説を振り返る</button><button id="again-button" class="primary-button">同じセットでもう一度 <span aria-hidden="true">↻</span></button></div>
+        <div id="review-list" class="review-list" hidden></div>
+      </div>
+    </section>
+
+    <section id="history" class="history-section">
+      <div class="section-heading"><div><p class="eyebrow">YOUR PRACTICE LOG</p><h2>積み重ねの記録</h2></div><button id="clear-history" class="text-button">記録を消去</button></div>
+      <p class="section-copy">このブラウザ内に記録します。ログインや個人情報の登録は必要ありません。</p>
+      <div class="history-grid">
+        <article class="history-card"><span class="card-label">これまでの挑戦</span><strong id="total-sessions" class="big-number">0<span>回</span></strong><span id="total-questions" class="muted">回答した問題 0問</span></article>
+        <article class="history-card"><span class="card-label">最近の正答率</span><strong id="recent-accuracy" class="big-number">—<span>%</span></strong><span class="muted">直近5回の平均</span></article>
+      </div>
+      <article class="history-card chart-card"><div class="chart-heading"><div><h3>正答率の変化</h3><p class="muted">日付ごとの挑戦</p></div><div class="chart-keys"><span class="chart-key accuracy-key"><i></i> 正答率（左軸）</span><span class="chart-key time-key"><i></i> 平均回答時間（右軸）</span></div></div><div id="history-chart" class="history-chart"><p class="empty-state">まずは1回、ドリルに挑戦してみましょう。</p></div></article>
+      <article class="history-card log-card"><div class="chart-heading"><h3>最近の記録</h3><span id="history-count" class="muted">0件</span></div><div id="history-list" class="history-list"><p class="empty-state">まだ記録はありません。</p></div></article>
+      <p class="privacy-note">※ 記録はこのブラウザ内に保存されます。別の端末・ブラウザとは共有されません。</p>
+    </section>
+  </main>
+  <div id="answer-flash" class="answer-flash" role="status" aria-live="assertive" aria-atomic="true" hidden><span class="answer-flash-mark" aria-hidden="true"></span><span class="answer-flash-label"></span></div>
+  <div id="help-modal" class="modal-backdrop" hidden>
+    <section class="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <button id="close-help" class="modal-close" aria-label="閉じる">×</button>
+      <p class="eyebrow">HOW TO PLAY</p><h2 id="help-title">並べ替えの操作方法</h2>
+      <ul><li>カードをドラッグして、移動したい位置に置きます。</li><li>スマートフォンでは、カード右側の上下の矢印で並べ替えます。</li><li>並べ替えが終わったら「この順番で回答」を押します。</li><li>解説はタイムアタック終了後、結果画面でまとめて確認できます。</li></ul>
+      <button id="close-help-bottom" class="primary-button">わかりました</button>
+    </section>
+  </div>
+  <footer class="site-footer"><span>順番のセンス</span><span>一問ずつ、考える習慣を。</span></footer>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
