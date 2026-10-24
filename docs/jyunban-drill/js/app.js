@@ -457,6 +457,11 @@
       if (question && !getCareer().dailyCompletedDates.includes(date)) startSession([question], 'daily', date);
     });
     state.attendanceDays = loadAttendanceDays();
+    const sharePage = new URL(window.location.href); sharePage.hash = '';
+    const shareUrl = encodeURIComponent(sharePage.href), shareText = encodeURIComponent(document.title);
+    $('#share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+    $('#share-x').href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`;
+    $('#share-line').href = `https://social-plugins.line.me/lineit/share?url=${shareUrl}`;
     $('#attendance-prev').addEventListener('click', () => shiftAttendanceMonth(-1));
     $('#attendance-next').addEventListener('click', () => shiftAttendanceMonth(1));
     $('#clear-history').addEventListener('click', () => {
