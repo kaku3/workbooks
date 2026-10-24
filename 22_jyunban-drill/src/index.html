@@ -64,7 +64,8 @@
         <div class="quiz-topline"><span id="question-counter">問題 1 / 10</span><span class="timer"><span class="timer-dot"></span><span id="timer">00:00</span></span></div>
         <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
         <p class="task-prompt">次の文章を、伝わる順番に並べ替えてください。</p>
-        <p id="question-title" class="question-title"></p>
+        <div class="question-heading"><p id="question-title" class="question-title"></p><button id="hint-button" class="hint-button" type="button" aria-label="ヒントを見る。使用すると1ポイント減ります" aria-expanded="false" aria-controls="hint-content" title="ヒント（使用すると-1 pt）">?</button></div>
+        <p id="hint-content" class="hint-content" hidden></p>
         
         <ol id="sentence-list" class="sentence-list" aria-label="並べ替える文章"></ol>
         <div id="quiz-actions" class="quiz-actions"><button id="reset-order" class="text-button">順番をリセット</button><button id="submit-answer" class="primary-button">この順番で回答 <span aria-hidden="true">→</span></button></div>
@@ -119,7 +120,7 @@
       <p class="privacy-note">※ 学習カレンダーはこのブラウザ内に保存され、学習履歴を消去しても残ります。</p>
     </section>
   </main>
-  <div id="answer-flash" class="answer-flash" role="status" aria-live="assertive" aria-atomic="true" hidden><span class="answer-flash-mark" aria-hidden="true"></span><span class="answer-flash-label"></span></div>
+  <div id="answer-flash" class="answer-flash" role="status" aria-live="assertive" aria-atomic="true" hidden><span class="answer-flash-mark" aria-hidden="true"></span><span class="answer-flash-label"></span><span class="answer-flash-points"></span></div>
   <div id="daily-record-modal" class="modal-backdrop" hidden>
     <section class="daily-record-dialog" role="dialog" aria-modal="true" aria-labelledby="daily-record-title">
       <button id="daily-record-close" class="modal-close" type="button" aria-label="閉じる">×</button>

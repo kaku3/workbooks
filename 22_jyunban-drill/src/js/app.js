@@ -5,7 +5,7 @@
   const ATTENDANCE_STORAGE_KEY = 'junban-drill-attendance-v1';
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
-  const state = { problems: [], careerConfig: null, attendanceDays: [], calendarYear: new Date().getFullYear(), calendarMonth: new Date().getMonth(), category: '説明の順番', count: 5, questions: [], index: 0, startedAt: 0, questionStartedAt: 0, timerId: null, order: [], answers: [], dragIndex: null, finished: false, sessionType: 'practice', sessionId: '', dailyDate: '', earnedPoints: 0, earnedMilestones: [] };
+  const state = { problems: [], careerConfig: null, attendanceDays: [], calendarYear: new Date().getFullYear(), calendarMonth: new Date().getMonth(), category: '説明の順番', count: 5, questions: [], index: 0, startedAt: 0, questionStartedAt: 0, timerId: null, order: [], answers: [], dragIndex: null, finished: false, sessionType: 'practice', sessionId: '', dailyDate: '', earnedPoints: 0, earnedMilestones: [], hintsUsed: 0, hintUsed: false };
   const views = { start: $('#start-view'), quiz: $('#quiz-view'), result: $('#result-view') };
   const descriptions = {
     '説明の順番': ['説明の順番を整える', '目的から詳細へ。読み手が迷わない説明の流れを考えます。'],
@@ -269,7 +269,7 @@
     $('#setup-row').hidden = sessionType === 'daily';
     setCountControlsDisabled(true);
     state.sessionType = sessionType; state.dailyDate = dailyDate; state.sessionId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-    state.earnedPoints = 0; state.earnedMilestones = [];
+    state.earnedPoints = 0; state.earnedMilestones = []; state.hintsUsed = 0;
     $('#daily-start-button').disabled = true;
     state.index = 0; state.answers = []; state.finished = false; state.startedAt = Date.now(); state.questionStartedAt = Date.now(); state.timerId = setInterval(() => { $('#timer').textContent = formatTime(elapsed()); }, 250);
     setView('quiz'); renderQuestion();
@@ -279,7 +279,22 @@
     const q = state.questions[state.index]; state.order = shuffle(q.sentences.map((_, i) => i)); state.dragIndex = null; state.questionStartedAt = Date.now();
     $('#question-counter').textContent = `問題 ${state.index + 1} / ${state.questions.length}`; $('#progress-bar').style.width = `${state.index / state.questions.length * 100}%`;
     $('#question-title').textContent = q.title; $('#feedback').hidden = true; $('#submit-answer').hidden = false; $('#reset-order').hidden = false; $('#quiz-actions').hidden = false;
+    state.hintUsed = false;
+    $('#hint-button').disabled = false; $('#hint-button').setAttribute('aria-expanded', 'false'); $('#hint-button').title = 'ヒント（使用すると-1 pt）';
+    $('#hint-content').textContent = ''; $('#hint-content').hidden = true;
     renderOrder();
+  }
+  function showHint() {
+    if (state.hintUsed) return;
+    state.hintUsed = true; state.hintsUsed++;
+    const hint = $('#hint-content');
+    hint.textContent = state.questions[state.index].explanation || 'この問題の解説はありません。';
+    hint.hidden = false;
+    $('#hint-button').disabled = true; $('#hint-button').setAttribute('aria-expanded', 'true'); $('#hint-button').title = 'ヒント使用済み（-1 pt）';
+    if (state.careerConfig) {
+      const career = getCareer(); career.points -= 1; saveCareer(career);
+      state.earnedPoints -= 1; renderCareer();
+    }
   }
   function renderOrder() {
     const q = state.questions[state.index]; const list = $('#sentence-list'); list.innerHTML = '';
@@ -303,25 +318,27 @@
     const correct = state.order.every((sentenceIndex, position) => sentenceIndex === position);
     const duration = (Date.now() - state.questionStartedAt) / 1000;
     markAttendance();
-    state.answers.push({ id: q.id, title: q.title, category: q.category, correct, duration, submittedOrder: [...state.order], correctOrder: q.sentences.map((_, i) => i), explanation: q.explanation, sentences: q.sentences });
+    state.answers.push({ id: q.id, title: q.title, category: q.category, correct, duration, hintUsed: state.hintUsed, submittedOrder: [...state.order], correctOrder: q.sentences.map((_, i) => i), explanation: q.explanation, sentences: q.sentences });
     const reward = recordAnswerReward({
       eventId: state.sessionType === 'daily' ? `daily:${state.dailyDate}` : `${state.sessionId}:${state.index}`,
       correct, isDaily: state.sessionType === 'daily', date: state.dailyDate
     });
     state.earnedPoints += reward.points;
     state.earnedMilestones.push(...reward.milestones);
-    $('#submit-answer').hidden = true; $('#reset-order').hidden = true; $('#quiz-actions').hidden = true;
-    showAnswerFlash(correct);
+    $('#submit-answer').hidden = true; $('#reset-order').hidden = true; $('#quiz-actions').hidden = true; $('#hint-button').disabled = true;
+    const hintPenalty = state.hintUsed && state.careerConfig ? 1 : 0;
+    showAnswerFlash(correct, reward.points - hintPenalty);
     $('#feedback').hidden = true;
     setTimeout(() => { state.index++; if (state.index >= state.questions.length) finishSession(); else renderQuestion(); }, 850);
   }
-  function showAnswerFlash(correct) {
+  function showAnswerFlash(correct, pointChange) {
     const flash = $('#answer-flash');
     clearTimeout(flash.hideTimer);
     flash.classList.toggle('is-correct', correct);
     flash.classList.toggle('is-incorrect', !correct);
     flash.querySelector('.answer-flash-mark').textContent = correct ? '○' : '×';
     flash.querySelector('.answer-flash-label').textContent = correct ? '正解' : '不正解';
+    flash.querySelector('.answer-flash-points').textContent = pointChange > 0 ? `+${pointChange} pt` : pointChange < 0 ? `${pointChange} pt` : '±0 pt';
     flash.hidden = false;
     flash.hideTimer = setTimeout(() => { flash.hidden = true; }, 850);
   }
@@ -329,13 +346,14 @@
     clearInterval(state.timerId); state.finished = true; const total = state.answers.length; const correct = state.answers.filter(a => a.correct).length; const duration = Math.round(elapsed());
     const correctAnswers = state.answers.filter(answer => answer.correct);
     const averageCorrect = correctAnswers.length ? Math.round(correctAnswers.reduce((sum, answer) => sum + answer.duration, 0) / correctAnswers.length) : null;
-    const record = { date: new Date().toISOString(), category: state.questions[0]?.category || state.category, count: total, correct, accuracy: Math.round(correct / total * 100), duration, average: averageCorrect, answers: state.answers.map(a => ({ id: a.id, correct: a.correct, duration: a.duration })) };
+    const record = { date: new Date().toISOString(), category: state.questions[0]?.category || state.category, count: total, correct, accuracy: Math.round(correct / total * 100), duration, average: averageCorrect, answers: state.answers.map(a => ({ id: a.id, correct: a.correct, duration: a.duration, hintUsed: a.hintUsed })) };
     saveHistory(record);
     if (state.sessionType === 'practice' && state.careerConfig) { const career = getCareer(); career.hasPlayed = true; saveCareer(career); }
     renderDailyChallenge(); renderCareer();
     $('#result-accuracy').textContent = `${record.accuracy}%`; $('#result-time').textContent = formatTime(duration); $('#result-average').textContent = averageCorrect == null ? '—' : `${averageCorrect}秒`;
     const milestoneNote = state.earnedMilestones.length ? '（節目ボーナスを含む）' : '';
-    $('#reward-summary').textContent = state.earnedPoints ? `今回獲得：+${state.earnedPoints} pt${milestoneNote}` : '今回はポイント獲得はありません。次の練習でまた積み重ねられます。';
+    const pointBalance = `${state.earnedPoints > 0 ? '+' : ''}${state.earnedPoints} pt`;
+    $('#reward-summary').textContent = `今回のポイント収支：${pointBalance}${state.hintsUsed ? `（ヒント${state.hintsUsed}回：-${state.hintsUsed} pt）` : ''}${milestoneNote}`;
     $('#again-button').hidden = state.sessionType === 'daily';
     $('#daily-return-button').hidden = state.sessionType !== 'daily';
     $('#result-message').textContent = record.accuracy === 100 ? '全問正解！順番の感覚がつかめてきましたね。' : record.accuracy >= 70 ? 'いい調子です。迷った問題を、また後で解いてみましょう。' : '繰り返すうちに、少しずつ見えてきます。同じ問題でもう一度どうぞ。';
@@ -434,7 +452,7 @@
     } catch (error) { console.error(error); }
     $$('.mode-tab').forEach(button => button.addEventListener('click', () => { if (!views.quiz.hidden) return; state.category = button.dataset.category; updateSetup(); }));
     $$('.count-button').forEach(button => button.addEventListener('click', () => { state.count = Number(button.dataset.count); updateSetup(); }));
-    $('#start-button').addEventListener('click', () => startSession()); $('#submit-answer').addEventListener('click', submitAnswer);
+    $('#start-button').addEventListener('click', () => startSession()); $('#submit-answer').addEventListener('click', submitAnswer); $('#hint-button').addEventListener('click', showHint);
     const helpModal = $('#help-modal');
     const closeHelp = () => { helpModal.hidden = true; };
     $('#help-button').addEventListener('click', () => { helpModal.hidden = false; $('#close-help-bottom').focus(); });

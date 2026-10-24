@@ -116,3 +116,5 @@
   .career-progress-panel { padding: 2px 0 4px; }
   .career-next { font-size: 9px; }
 }
+.question-heading{display:flex;align-items:center;gap:9px;margin:0 0 12px}.question-heading .question-title{flex:1;margin:0}.hint-button{flex:0 0 28px;width:28px;height:28px;padding:0;border:1px solid #d8d2c5;border-radius:50%;background:#fffdf8;color:var(--green-dark);font-size:15px;font-weight:700;line-height:1}.hint-button:hover:not(:disabled){background:#edf1e9;border-color:#b8c8b3}.hint-button:disabled{opacity:.55;cursor:default}.hint-content{margin:0 0 16px;padding:12px 14px;border:1px solid #dce6d8;border-radius:9px;background:#f0f4ec;color:#596459;font-size:12px;line-height:1.8}
+.answer-flash-points{position:relative;z-index:1;margin-top:5px;font-size:clamp(16px,4vw,22px);font-weight:700;letter-spacing:.04em;text-shadow:0 3px 14px #17201940}.answer-flash.is-correct .answer-flash-points{animation:answer-content-correct .85s ease both}@media(prefers-reduced-motion:reduce){.answer-flash.is-correct .answer-flash-points{animation:none;opacity:1}}
