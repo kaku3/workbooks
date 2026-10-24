@@ -6,6 +6,17 @@
   <meta name="theme-color" content="#f5f1e8">
   <meta name="description" content="4行の文章を並べ替えて、伝わる順番を考える小さなドリル。">
   <title>順番のセンス｜文章の順番ドリル</title>
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:title" content="順番のセンス｜文章の順番ドリル">
+  <meta property="og:description" content="伝わる順番は、反復で身につく。4行の文章を並べ替えて、説明や文章の順番を練習するドリルです。">
+  <meta property="og:image" content="assets/ogp.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="順番のセンス｜文章の順番ドリル">
+  <meta name="twitter:description" content="伝わる順番は、反復で身につく。4行の文章を並べ替える小さなドリル。">
+  <meta name="twitter:image" content="assets/ogp.png">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,9 +32,14 @@
       <p class="intro-copy">とっさに出てこない「説明の順番」と「文章の順番」。<br>4行の文章の並べ替えの反復で、センスを少しずつ体に覚えさせよう。</p>
     </section>
 
+    <section id="daily-challenge" class="daily-challenge" aria-labelledby="daily-title" hidden>
+      <div class="daily-copy"><p class="eyebrow">A LITTLE FOR TODAY</p><h2 id="daily-title">今日の1問</h2><p id="daily-description">今日だけの問題に挑戦できます。正解すると5ptが加算されます。</p><span id="daily-category" class="daily-category"></span></div>
+      <button id="daily-start-button" class="primary-button" type="button">今日の1問に挑戦 <span aria-hidden="true">→</span></button>
+    </section>
+
     <section class="practice panel category-explanation count-five" aria-labelledby="practice-title">
-      <div class="section-heading"><div><p class="eyebrow">PRACTICE</p><h2 id="practice-title">今日のドリル</h2></div><span class="tiny-note">同じ問題を何度解いてもOK</span></div>
-      <div class="setup-row">
+      <div class="section-heading"><div><p class="eyebrow">PRACTICE</p><h2 id="practice-title">ドリル</h2></div><span class="tiny-note">同じ問題を何度解いてもOK</span></div>
+      <div id="setup-row" class="setup-row">
         <div class="mode-tabs" role="tablist" aria-label="問題の種類">
           <button class="mode-tab active" data-category="説明の順番" role="tab" aria-selected="true">説明の順番</button>
           <button class="mode-tab" data-category="文章の順番" role="tab" aria-selected="false">文章の順番</button>
@@ -40,6 +56,7 @@
         <p id="start-description">目的から詳細へ。読み手が迷わない説明の流れを考えます。</p>
         <div class="start-meta"><span>◷ 時間を計測</span><span>↻ 履歴を保存</span><span>▤ 4行を並べ替え</span></div>
         <button id="start-button" class="primary-button">さらっと5問に挑戦 <span aria-hidden="true">→</span></button>
+        <p id="milestone-prompt" class="milestone-prompt" hidden></p>
       </div>
 
       <div id="quiz-view" class="quiz-view" hidden>
@@ -57,9 +74,25 @@
         <p class="eyebrow">SESSION COMPLETE</p><h3>おつかれさまでした。</h3>
         <div class="result-stats"><div><span>正答率</span><strong id="result-accuracy">—</strong></div><div><span>所要時間</span><strong id="result-time">—</strong></div><div><span>平均回答時間</span><strong id="result-average">—</strong></div></div>
         <p id="result-message" class="result-message"></p>
-        <div class="result-actions"><button id="review-button" class="secondary-button">回答と解説を振り返る</button><button id="again-button" class="primary-button">同じセットでもう一度 <span aria-hidden="true">↻</span></button></div>
+        <p id="reward-summary" class="reward-summary" aria-live="polite"></p>
+        <div class="result-actions"><button id="review-button" class="secondary-button">回答と解説を振り返る</button><button id="daily-return-button" class="primary-button" hidden>ドリル <span aria-hidden="true">→</span></button><button id="again-button" class="primary-button">同じセットでもう一度 <span aria-hidden="true">↻</span></button></div>
         <div id="review-list" class="review-list" hidden></div>
       </div>
+    </section>
+
+    <section class="career-section" aria-labelledby="career-heading">
+      <article class="career-card">
+        <div class="career-hud-header">
+          <div class="career-hud-title"><h2 id="career-heading">YOUR CAREER STORY</h2></div>
+          <div class="career-points-panel"><span>POINTS</span><strong id="career-points" class="career-points">0 pt</strong></div>
+        </div>
+        <div class="career-scene-space" aria-hidden="true"></div>
+        <div class="career-bottom-ui">
+          <div class="career-stage-badges"><h3 id="career-title">未アサイン</h3><span id="career-stage-label" class="career-stage-label">キャリア 1/10</span></div>
+          <div class="career-message-window"><p id="career-room" class="career-room"></p><p id="career-story" class="career-story"></p></div>
+          <div class="career-progress-panel"><div class="career-progress-heading"><span>次のキャリア</span><p id="career-next" class="career-next"></p></div><div class="career-progress-track" id="career-progress" role="progressbar" aria-label="次の段階までの進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="career-progress-fill"></span></div></div>
+        </div>
+      </article>
     </section>
 
     <section id="history" class="history-section">
@@ -67,14 +100,30 @@
       <p class="section-copy">このブラウザ内に記録します。ログインや個人情報の登録は必要ありません。</p>
       <div class="history-grid">
         <article class="history-card"><span class="card-label">これまでの挑戦</span><strong id="total-sessions" class="big-number">0<span>回</span></strong><span id="total-questions" class="muted">回答した問題 0問</span></article>
-        <article class="history-card"><span class="card-label">最近の正答率</span><strong id="recent-accuracy" class="big-number">—<span>%</span></strong><span class="muted">直近5回の平均</span></article>
+        <article class="history-card accuracy-card"><span class="card-label">最近の正答率</span><div class="accuracy-stat-row"><strong id="recent-accuracy" class="big-number">—<span>%</span></strong><span id="accuracy-trend" class="accuracy-trend" aria-label="比較できる記録がありません">—</span></div><span class="muted">直近5回の平均</span></article>
       </div>
-      <article class="history-card chart-card"><div class="chart-heading"><div><h3>正答率の変化</h3><p class="muted">日付ごとの挑戦</p></div><div class="chart-keys"><span class="chart-key accuracy-key"><i></i> 正答率（左軸）</span><span class="chart-key time-key"><i></i> 平均回答時間（右軸）</span></div></div><div id="history-chart" class="history-chart"><p class="empty-state">まずは1回、ドリルに挑戦してみましょう。</p></div></article>
-      <article class="history-card log-card"><div class="chart-heading"><h3>最近の記録</h3><span id="history-count" class="muted">0件</span></div><div id="history-list" class="history-list"><p class="empty-state">まだ記録はありません。</p></div></article>
+      <article class="history-card chart-card"><div class="chart-heading"><div><h3>正答率の変化</h3><p class="muted">日付ごとの挑戦</p></div><div class="chart-keys"><span class="chart-key accuracy-key"><i></i> 正答率（左軸）</span><span class="chart-key time-key"><i></i> 正解した問題の平均回答時間（右軸）</span></div></div><div id="history-chart" class="history-chart"><p class="empty-state">まずは1回、ドリルに挑戦してみましょう。</p></div></article>
       <p class="privacy-note">※ 記録はこのブラウザ内に保存されます。別の端末・ブラウザとは共有されません。</p>
+    </section>
+
+    <section class="attendance-section" aria-labelledby="attendance-heading">
+      <div class="section-heading"><div><p class="eyebrow">YOUR PRACTICE CALENDAR</p><h2 id="attendance-heading">学習カレンダー</h2></div><span class="tiny-note">1問以上回答した日を記録</span></div>
+      <article class="attendance-card">
+        <div class="calendar-toolbar"><button id="attendance-prev" class="calendar-nav" type="button" aria-label="前の月">‹</button><h3 id="attendance-month" aria-live="polite"></h3><button id="attendance-next" class="calendar-nav" type="button" aria-label="次の月">›</button></div>
+        <div id="attendance-calendar" class="attendance-calendar" role="grid" aria-labelledby="attendance-month"></div>
+        <div class="calendar-footer"><span class="calendar-legend"><i aria-hidden="true"></i>回答した日</span><strong id="attendance-count">今月の回答日数 0日</strong></div>
+      </article>
+      <p class="privacy-note">※ 学習カレンダーはこのブラウザ内に保存され、学習履歴を消去しても残ります。</p>
     </section>
   </main>
   <div id="answer-flash" class="answer-flash" role="status" aria-live="assertive" aria-atomic="true" hidden><span class="answer-flash-mark" aria-hidden="true"></span><span class="answer-flash-label"></span></div>
+  <div id="daily-record-modal" class="modal-backdrop" hidden>
+    <section class="daily-record-dialog" role="dialog" aria-modal="true" aria-labelledby="daily-record-title">
+      <button id="daily-record-close" class="modal-close" type="button" aria-label="閉じる">×</button>
+      <p class="eyebrow">DAILY PRACTICE</p><h2 id="daily-record-title">その日の記録</h2>
+      <div id="daily-record-content" class="daily-record-content"></div>
+    </section>
+  </div>
   <div id="help-modal" class="modal-backdrop" hidden>
     <section class="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title">
       <button id="close-help" class="modal-close" aria-label="閉じる">×</button>
