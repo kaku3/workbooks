@@ -240,6 +240,8 @@
     const stages = state.careerConfig.stages;
     stages.forEach((stage, index) => { if (career.points >= stage.points) stageIndex = index; });
     const stage = stages[stageIndex], next = stages[stageIndex + 1];
+    const careerImage = `assets/career/${String(stageIndex + 1).padStart(2, '0')}.png`;
+    section.style.backgroundImage = `linear-gradient(180deg,transparent calc(100% - 3px),rgba(13,28,29,.5) 100%),url("${careerImage}")`;
     $('#career-stage-label').textContent = `キャリア ${stageIndex + 1}/${stages.length}`;
     $('#career-title').textContent = stage.title;
     $('#career-points').textContent = `${career.points} pt`;

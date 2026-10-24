@@ -84,14 +84,16 @@
     <section class="career-section" aria-labelledby="career-heading">
       <article class="career-card">
         <div class="career-hud-header">
-          <div class="career-hud-title"><h2 id="career-heading">YOUR CAREER STORY</h2></div>
-          <div class="career-points-panel"><span>POINTS</span><strong id="career-points" class="career-points">0 pt</strong></div>
+          <div class="career-hud-title"><h2 id="career-heading">YOUR CAREER STORY</h2><span id="career-stage-label" class="career-stage-label">キャリア 1/10</span></div>
+          <div class="career-score-stack">
+            <div class="career-points-panel"><span>POINTS</span><strong id="career-points" class="career-points">0 pt</strong></div>
+            <div class="career-progress-panel"><div class="career-progress-heading"><p id="career-next" class="career-next"></p></div><div class="career-progress-track" id="career-progress" role="progressbar" aria-label="次の段階までの進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="career-progress-fill"></span></div></div>
+          </div>
         </div>
         <div class="career-scene-space" aria-hidden="true"></div>
         <div class="career-bottom-ui">
-          <div class="career-stage-badges"><h3 id="career-title">未アサイン</h3><span id="career-stage-label" class="career-stage-label">キャリア 1/10</span></div>
+          <div class="career-stage-badges"><h3 id="career-title">未アサイン</h3></div>
           <div class="career-message-window"><p id="career-room" class="career-room"></p><p id="career-story" class="career-story"></p></div>
-          <div class="career-progress-panel"><div class="career-progress-heading"><span>次のキャリア</span><p id="career-next" class="career-next"></p></div><div class="career-progress-track" id="career-progress" role="progressbar" aria-label="次の段階までの進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="career-progress-fill"></span></div></div>
         </div>
       </article>
     </section>
