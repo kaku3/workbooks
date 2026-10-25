@@ -160,6 +160,9 @@ function renderQuestion() {
   $('#diagramCanvas').style.height = '';
   $('#editViewport').append($('#diagramCanvas'));
   $('#diagramPanel').hidden = false;
+  $('#answerSummary').hidden = true;
+  $('.prompt-hint-row').append($('#promptText'), $('#hintPanel'));
+  $('#feedback').hidden = true;
   $('#reviewArea').hidden = true;
   $('#workbench').classList.remove('is-reviewing');
   $('#questionTitle').textContent = current.title;
@@ -203,9 +206,11 @@ function renderQuestion() {
   $('#submitButton').hidden = false;
   $('#nextButton').hidden = true;
   $('#nextButton').textContent = questionIndex === session.length - 1 ? '結果を見る →' : '次の問題へ →';
-  $('#hintText').hidden = true;
-  $('#hintButton').textContent = 'ヒントを見る';
-  $('#hintButton').setAttribute('aria-expanded', 'false');
+  $('#hintText').hidden = false;
+  $('#hintText').textContent = current?.hint || '';
+  $('#hintBadge').textContent = 'ヒント';
+  $('#hintBadge').hidden = false;
+  $('#hintPanel').classList.remove('is-review-hint');
   shuffle(current.items).forEach(item => addNode(item.id, defaultPosition()));
   renderTrashList();
 }
@@ -339,8 +344,7 @@ function moveNodeTo(node, rawX, rawY, showGuides, ignoreSnap = false) {
   let x = Math.max(halfW + 4, Math.min(rect.width - halfW - 4, rawX));
   let y = Math.max(halfH + 4, Math.min(rect.height - halfH - 4, rawY));
   let snapX = null, snapY = null;
-  const snapToggle = $('#snapToggle');
-  if (snapToggle && snapToggle.checked && !ignoreSnap) {
+  if (!ignoreSnap) {
     x = Math.round(x / 20) * 20; y = Math.round(y / 20) * 20;
     for (const [id, other] of placed) {
       if (id === node.dataset.itemId) continue;
@@ -590,48 +594,112 @@ function assessComposition() {
   if (hasEqualSpacing) points++;
   details.push(hasEqualSpacing ? '等間隔あり' : '等間隔なし');
 
-  const groups = (current.groups || []).filter(group => group.itemIds.length > 1);
-  const visibleGroupLabels = [];
-  groups.forEach(group => {
-    const members = group.itemIds.map(id => nodes.find(node => node.id === id)).filter(Boolean);
-    if (members.length !== group.itemIds.length) return;
-    const outsiders = nodes.filter(node => !group.itemIds.includes(node.id));
-    if (!outsiders.length) return;
-    let withinTotal = 0, withinCount = 0;
-    for (let i = 0; i < members.length; i++) for (let j = i + 1; j < members.length; j++) {
-      withinTotal += Math.hypot(members[i].x - members[j].x, members[i].y - members[j].y); withinCount++;
-    }
-    const within = withinCount ? withinTotal / withinCount : 0;
-    const nearestOutside = members.reduce((sum, member) => sum + Math.min(...outsiders.map(outside => Math.hypot(member.x - outside.x, member.y - outside.y))), 0) / members.length;
-    if (within < nearestOutside * .78) visibleGroupLabels.push(group.label);
-  });
-  const visibleGroups = visibleGroupLabels.length;
-  const groupPoints = groups.length ? Math.round(2 * visibleGroups / groups.length) : 0;
-  points += groupPoints;
-  if (groups.length) details.push(`意味のまとまり ${visibleGroups}/${groups.length}${visibleGroups ? `（${visibleGroupLabels.join('、')}）` : '（未検出）'}`);
-  else details.push('意味グループ未設定');
-  return { points, maxPoints: 5, visibleGroups, totalGroups: groups.length, overlaps, details };
+  // 芸術点は、配置だけで客観的に判定しやすい3項目に限定する。
+  // 意味のまとまりは問題ごとの構造や配置意図に左右され、正解例でも不当に低得点になるため採点対象から外す。
+  points = (!overlaps && nodes.length > 1 ? 1 : 0) + (aligned ? 1 : 0) + (hasEqualSpacing ? 1 : 0);
+  return { points, maxPoints: 3, overlaps, aligned, hasEqualSpacing, details };
+
 }
 
 function renderFeedback(comparison, composition) {
   const feedback = $('#feedback'); feedback.replaceChildren(); feedback.hidden = false;
   feedback.className = `feedback ${comparison.correct ? 'is-correct' : 'is-incorrect'}`;
-  const mark = document.createElement('span'); mark.className = 'feedback-mark'; mark.textContent = comparison.correct ? '○' : '△';
-  const body = document.createElement('div');
-  const heading = document.createElement('h3'); heading.textContent = comparison.correct ? '必要な要素と関係が整理できています。' : '完成例と見比べて、関係を確認しましょう。';
-  const message = document.createElement('p'); message.textContent = comparison.correct
-    ? '要素の配置は自由です。必要な情報を選び、関係を正しくつなげられました。'
-    : '正解例では、必要なカードをすべて使い、不要なカードを除き、必要な関係だけをつなぎます。';
-  const craft = document.createElement('p'); craft.className = 'composition-feedback';
-  craft.textContent = `図の整いポイント（芸術点）：${composition.points} / ${composition.maxPoints}点${composition.details.length ? `　${composition.details.join(' ・ ')}` : ''}`;
-  body.append(heading, message, craft);
-  const notes = [];
-  if (comparison.missingItems.length) notes.push(`不足：${comparison.missingItems.map(labelFor).join('、')}`);
-  if (comparison.extraItems.length) notes.push(`図に含めない情報：${comparison.extraItems.map(labelFor).join('、')}`);
-  if (comparison.missingEdges.length) notes.push(`不足している接続：${comparison.missingEdges.map(labelForEdge).join('／')}`);
-  if (comparison.extraEdges.length) notes.push(`見直したい接続：${comparison.extraEdges.map(labelForEdge).join('／')}`);
-  if (notes.length) { const list = document.createElement('ul'); notes.forEach(note => { const item = document.createElement('li'); item.textContent = note; list.append(item); }); body.append(list); }
-  feedback.append(mark, body);
+  const heading = document.createElement('div'); heading.className = 'scoring-heading-row';
+  const headingText = document.createElement('h3');
+  headingText.textContent = comparison.correct ? '必要な要素と関係が整理できています。' : '完成例と見比べて、関係を確認しましょう。';
+  const helpButton = document.createElement('button'); helpButton.type = 'button'; helpButton.className = 'scoring-help-button';
+  helpButton.textContent = '?'; helpButton.setAttribute('aria-expanded', 'false'); helpButton.setAttribute('aria-label', '採点項目の説明を表示');
+  const helpPanel = document.createElement('div'); helpPanel.className = 'scoring-help-panel'; helpPanel.hidden = true;
+  const helpTable = document.createElement('table'); helpTable.className = 'scoring-help-table';
+  const helpRows = [
+    ['要素の選択', '必要なカードがすべてあり、不要なカードが入っていない', '正誤判定'],
+    ['矢印・関係', '接続先と矢印の向きが完成例と一致している', '正誤判定'],
+    ['重なり', 'カード同士が重なっていない', '芸術点 1点'],
+    ['中心整列', 'カードの中心が横または縦にそろっている', '芸術点 1点'],
+    ['等間隔', '同じ列・行のカードが一定の間隔で並んでいる', '芸術点 1点'],
+  ];
+  helpRows.forEach(([name, description, pointsLabel]) => { const tr = document.createElement('tr'); [name, description, pointsLabel].forEach((value, i) => { const cell = document.createElement(i === 0 ? 'th' : 'td'); cell.textContent = value; if (i === 0) cell.scope = 'row'; tr.append(cell); }); helpTable.append(tr); });
+  helpPanel.append(helpTable);
+  helpButton.addEventListener('click', () => { helpPanel.hidden = !helpPanel.hidden; helpButton.setAttribute('aria-expanded', String(!helpPanel.hidden)); });
+  heading.append(headingText, helpButton);
+  const table = document.createElement('table'); table.className = 'scoring-table';
+  const rows = [
+    ['要素の選択', comparison.missingItems.length || comparison.extraItems.length ? '要見直し' : 'OK', !(comparison.missingItems.length || comparison.extraItems.length), '一致していればOK'],
+    ['矢印・関係', comparison.missingEdges.length || comparison.extraEdges.length ? '要見直し' : 'OK', !(comparison.missingEdges.length || comparison.extraEdges.length), '接続先と向きが完成例と一致していればOK'],
+    ['重なり', composition.overlaps ? `${composition.overlaps}か所` : 'なし', !composition.overlaps, 'カード同士が重なっていなければ1点'],
+    ['中心整列', composition.details.some(x => x.includes('中心整列あり')) ? '加点あり' : '加点なし', composition.details.some(x => x.includes('中心整列あり')), 'カードの中心がそろっていれば1点'],
+    ['等間隔', composition.hasEqualSpacing ? '加点あり' : '加点なし', composition.hasEqualSpacing, 'カード間隔がそろっていれば1点'],
+    ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, '重なり・中心整列・等間隔の3項目で最大3点']
+  ];
+  const thead = document.createElement('thead'); const headerRow = document.createElement('tr');
+  rows.forEach(([label, , , description]) => { const th = document.createElement('th'); th.scope = 'col'; th.textContent = label; th.title = description; headerRow.append(th); });
+  thead.append(headerRow);
+  const tbody = document.createElement('tbody'); const valueRow = document.createElement('tr');
+  rows.forEach(([, value, good], index) => {
+    const td = document.createElement('td');
+    const status = document.createElement('span'); status.className = 'scoring-status';
+    if (good === null) { status.classList.add('is-score'); status.textContent = value; }
+    else if (good) { status.classList.add('is-good'); status.textContent = `○ ${value}`; }
+    else if (index < 2 || index === 2) { status.classList.add('is-bad'); status.textContent = `× ${value}`; }
+    else { status.classList.add('is-neutral'); status.textContent = `− ${value}`; }
+    td.append(status); if (index === rows.length - 1) td.className = 'scoring-total'; valueRow.append(td);
+  });
+  tbody.append(valueRow); table.append(thead, tbody);
+  feedback.append(heading, helpPanel, table);
+  const hintText = $('#hintText'); hintText.replaceChildren();
+  const intro = document.createElement('p'); intro.className = 'hint-review-intro'; intro.textContent = current.explanation;
+  hintText.append(intro);
+
+  // 不要情報は「図に入れなかった＝○」「図に入れた＝×」を候補ごとに表示する。
+  const excludedItems = current.items.filter(item => item.kind === 'extra');
+  const extraSection = document.createElement('div'); extraSection.className = 'reflection-item';
+  const extraTitle = document.createElement('h4'); extraTitle.textContent = '図に含めない情報'; extraSection.append(extraTitle);
+  if (excludedItems.length) {
+    const list = document.createElement('ul'); list.className = 'reflection-status-list';
+    excludedItems.forEach(itemData => {
+      const included = placed.has(itemData.id);
+      const li = document.createElement('li');
+      const mark = document.createElement('span'); mark.className = `reflection-mark ${included ? 'is-wrong' : 'is-right'}`; mark.textContent = included ? '×' : '○';
+      const label = document.createElement('span'); label.textContent = itemData.label;
+      li.append(mark, label); list.append(li);
+    });
+    extraSection.append(list);
+  } else {
+    const body = document.createElement('p'); body.textContent = '対象なし'; extraSection.append(body);
+  }
+  const edgeSection = document.createElement('div'); edgeSection.className = 'reflection-item reflection-edges';
+  const edgeTitle = document.createElement('h4'); edgeTitle.textContent = '不足している接続'; edgeSection.append(edgeTitle);
+  if (comparison.missingEdges.length) {
+    const edgeList = document.createElement('ul'); edgeList.className = 'reflection-edge-list';
+    comparison.missingEdges.forEach(edgeKey => {
+      const li = document.createElement('li'); li.textContent = labelForEdge(edgeKey); edgeList.append(li);
+    });
+    edgeSection.append(edgeList);
+  } else {
+    const edgeBody = document.createElement('p'); edgeBody.textContent = 'なし'; edgeSection.append(edgeBody);
+  }
+  hintText.append(edgeSection, extraSection);
+
+  if (comparison.missingItems.length) {
+    const item = document.createElement('div'); item.className = 'reflection-item';
+    const title = document.createElement('h4'); title.textContent = '不足している要素';
+    const body = document.createElement('p'); body.textContent = comparison.missingItems.map(labelFor).join('、');
+    item.append(title, body); hintText.append(item);
+  }
+  if (comparison.extraEdges.length) {
+    const item = document.createElement('div'); item.className = 'reflection-item';
+    const title = document.createElement('h4'); title.textContent = '見直したい接続';
+    const body = document.createElement('p'); body.textContent = comparison.extraEdges.map(labelForEdge).join('／');
+    item.append(title, body); hintText.append(item);
+  }
+  $('#hintBadge').hidden = true;
+  $('#hintPanel').classList.add('is-review-hint', 'attention-pulse');
+  window.setTimeout(() => $('#hintPanel')?.classList.remove('attention-pulse'), 1100);
+  $('#summaryQuestionSlot').append($('#promptText'));
+  $('#summaryScoringSlot').append(feedback);
+  $('#summaryReflectionSlot').append($('#hintPanel'));
+  $('#answerSummary').hidden = false;
+  $('#answerSummary').classList.remove('review-enter'); void $('#answerSummary').offsetWidth; $('#answerSummary').classList.add('review-enter');
 }
 
 function renderSolution() {
@@ -655,7 +723,7 @@ function renderSolution() {
   });
   normalizeNodeHeights([...nodeMap.values()]);
   window.requestAnimationFrame(() => drawSvgConnections(svg, layer, nodeMap, current.connections.map(([from, to]) => ({ from, to }))));
-  $('#explanationText').textContent = current.explanation;
+  $('#explanationText').textContent = ''; 
 }
 
 function submitAnswer() {
@@ -674,6 +742,9 @@ function submitAnswer() {
   $('#workbench').classList.add('is-reviewing');
   $('#diagramPanel').hidden = true;
   $('#reviewArea').hidden = false;
+  $('#reviewArea').classList.remove('review-enter');
+  void $('#reviewArea').offsetWidth;
+  $('#reviewArea').classList.add('review-enter');
   activeCanvas.style.width = `${reviewCanvasSize.width}px`;
   activeCanvas.style.height = `${reviewCanvasSize.height}px`;
   $('#answerCanvasSlot').append(activeCanvas);
@@ -689,6 +760,7 @@ function submitAnswer() {
   $('#trashToggle').disabled = true;
   $('#trashPanel').querySelectorAll('button').forEach(button => { button.disabled = true; });
   renderFeedback(comparison, composition); renderSolution();
+  $('#feedback').classList.add('feedback-enter');
   window.requestAnimationFrame(() => drawCurrentConnections());
 }
 
@@ -712,19 +784,22 @@ function drawSolutionConnections() {
 
 function showResults() {
   $('#quizView').hidden = true; $('#resultView').hidden = false;
+  $('#resultView').classList.remove('result-enter');
+  void $('#resultView').offsetWidth;
+  $('#resultView').classList.add('result-enter');
   $('#finalScore').textContent = `${score} / ${session.length}`;
   awardAndRecord();
   $('#resultMessage').textContent = score === session.length
     ? '必要な情報を選び、関係をつなぐ視点が身についてきました。'
     : '完成例と自分の図を見比べて、情報と関係の違いを振り返ってみましょう。';
   const compositionTotal = sessionResults.reduce((sum, result) => sum + result.compositionPoints, 0);
-  $('#finalCompositionScore').textContent = `${compositionTotal} / ${session.length * 5}点`;
+  $('#finalCompositionScore').textContent = `${compositionTotal} / ${session.length * 3}点`;
   $('#resultList').replaceChildren();
   sessionResults.forEach((result, index) => {
     const card = document.createElement('article'); card.className = 'result-item';
     const heading = document.createElement('strong'); heading.textContent = `${index + 1}. ${result.correct ? '○' : '△'} ${result.title}`;
     const explanation = document.createElement('p'); explanation.textContent = result.explanation;
-    const craft = document.createElement('p'); craft.className = 'result-craft-score'; craft.textContent = `図の整いポイント（芸術点）：${result.compositionPoints} / 5点`;
+    const craft = document.createElement('p'); craft.className = 'result-craft-score'; craft.textContent = `図の整いポイント（芸術点）：${result.compositionPoints} / 3点`;
     card.append(heading, craft, explanation); $('#resultList').append(card);
   });
   $('#progressBar').style.width = '100%';
@@ -771,11 +846,6 @@ async function init() {
   });
   $('#retryButton').addEventListener('click', () => startSession(lastSession.length, 'practice', lastSession));
   $('#homeButton').addEventListener('click', () => { $('#quizView').hidden = true; $('#resultView').hidden = true; $('#startView').hidden = false; sessionType = 'practice'; renderContinuity(); });
-  $('#hintButton').addEventListener('click', () => {
-    const hint = $('#hintText'), open = hint.hidden;
-    hint.hidden = !open; hint.textContent = current?.hint || '';
-    $('#hintButton').setAttribute('aria-expanded', String(open)); $('#hintButton').textContent = open ? 'ヒントを閉じる' : 'ヒントを見る';
-  });
   $('#clearLinks').addEventListener('click', () => { if (!locked) { connections = []; trashedConnections.clear(); linkStart = null; selectedConnection = null; updateConnectionStatus(); updateNodeStates(); drawCurrentConnections(); } });
   $('#trashToggle').addEventListener('click', event => {
     event.stopPropagation();

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="情報を見つけ、並べ、つなぐ。50問のカード操作で図に整理するPC向け練習ドリルです。">
+  <meta name="theme-color" content="#f6f4ed">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="図で整理ドリル｜情報を見つけて、並べて、つなぐ">
+  <meta property="og:description" content="カードを選び、配置し、関係を線でつなぐ。50問で図解の前に必要な整理力を練習します。">
+  <meta property="og:image" content="ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>図で整理ドリル｜情報を見つけて、並べて、つなぐ</title>
+  <meta name="twitter:image" content="https://kaku3.github.io/workbooks/organize-drill/assets/ogp.png">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./"><span class="brand-mark">図</span><span><strong>図で整理ドリル</strong><small>情報を見つけて、並べて、つなぐ</small></span></a>
+    <span class="desktop-label">PC向け</span>
+  </header>
+
+  <main class="page-shell">
+    <section class="intro">
+      <p class="eyebrow">WORKBOOKS / THINKING DRILL</p>
+      <h1>情報を見つけて、<br><em>図に組み立てる。</em></h1>
+      <p class="lead">必要な要素を選び、配置し、関係を線でつなぐ。<br>伝わる図をつくる前の「整理する力」を練習します。</p>
+      <div class="continuity" id="continuity" aria-label="学習の継続状況">
+        <div><span class="eyebrow">YOUR PROGRESS</span><strong id="pointsTotal">0 pt</strong><small id="careerStage">はじめの一歩</small></div>
+        <div class="progress-copy"><span id="recordSummary">これまでの挑戦 0回</span><span id="milestoneText">次の節目まで正解 10問</span></div>
+        <div class="career-track"><i id="careerBar"></i></div>
+      </div>
+    </section>
+
+    <section id="startView" class="panel start-panel">
+      <p class="eyebrow">A LITTLE PRACTICE</p>
+      <h2>情報の関係を整理して、図に組み立てよう</h2>
+      <p>カードは最初からキャンバスに並んでいます。必要な情報と関係を整理し、不要なカードはゴミ箱へ移してください。</p>
+      <div class="howto">
+        <article><b>1</b><span><strong>カードを整理する</strong><small>不要なカードはゴミ箱へ。あとから戻せます</small></span></article>
+        <article><b>2</b><span><strong>位置を整える</strong><small>カードをドラッグして読みやすく配置</small></span></article>
+        <article><b>3</b><span><strong>関係をつなぐ</strong><small>配置後、通る順に箱をクリック。選んだ箱から次の箱へ線が続きます</small></span></article>
+      </div>
+      <div class="start-options" aria-label="問題数を選んで開始">
+        <button id="start3" class="primary-button"><span>さらっと3問<small class="question-mix">初級・中級・上級</small></span><span aria-hidden="true">→</span></button>
+        <button id="start5" class="primary-button"><span>じっくり5問<small class="question-mix">初級・中級・初級・中級・上級</small></span><span aria-hidden="true">→</span></button>
+      </div>
+      <button id="dailyStart" class="daily-start" hidden>今日の1問に挑戦 →</button>
+      <p id="dailyStatus" class="daily-status">正解で基礎点を獲得。芸術点もキャリアポイントに加算します。</p>
+    </section>
+
+    <section id="quizView" class="panel quiz-panel" hidden>
+      <div class="quiz-header">
+        <div><p class="eyebrow" id="questionType">ORGANIZE THE INFORMATION</p><h2 id="questionTitle"></h2></div>
+        <div class="progress-meta"><span id="progressText">1 / 5</span><span id="scoreText">正解 0</span></div>
+      </div>
+      <div class="progress-track"><i id="progressBar"></i></div>
+      <div class="prompt-hint-row">
+        <p id="promptText" class="prompt-text"></p>
+        <div class="hint-row" id="hintPanel"><span class="hint-badge" id="hintBadge">ヒント</span><div id="hintText"></div></div>
+      </div>
+      <div id="answerSummary" class="answer-summary" hidden>
+        <section class="summary-column summary-question"><h3>問題文</h3><div id="summaryQuestionSlot"></div></section>
+        <section class="summary-column summary-reflection"><h3>解説</h3><div id="summaryReflectionSlot"></div></section>
+        <section class="summary-column summary-scoring"><h3>採点</h3><div id="summaryScoringSlot"></div></section>
+      </div>
+      <div id="workbench" class="workbench">
+        <section id="diagramPanel" class="diagram-panel" aria-label="図のキャンバス">
+          <div id="editViewport" class="canvas-viewport edit-viewport"><div id="diagramCanvas" class="diagram-canvas" aria-label="カードを配置して関係をつなぐキャンバス">
+            <svg id="connectionSvg" class="connection-svg" aria-hidden="true"><defs><marker id="arrowHead" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L7,3.5 L0,7 z" fill="#668a7a"></path></marker><marker id="arrowCorrect" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L7,3.5 L0,7 z" fill="#3976b8"></path></marker><marker id="arrowWrong" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L7,3.5 L0,7 z" fill="#b75c4f"></path></marker></defs><g id="alignmentGuides"></g><g id="connectionLayer"></g></svg>
+            <div id="edgeTools" class="edge-tools" aria-live="polite"></div>
+            <div class="canvas-empty" id="canvasEmpty"><span>＋</span><strong>キャンバスにカードがありません</strong><small>右下のゴミ箱からカードを戻せます</small></div>
+            <div class="trash-area">
+              <section id="trashPanel" class="trash-panel" hidden aria-label="ゴミ箱に入れた情報カード"></section>
+              <button id="trashToggle" class="trash-toggle" type="button" aria-expanded="false" aria-controls="trashPanel" aria-label="ゴミ箱を開く">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m3 3v7m6-7v7" /></svg>
+                <span class="trash-count" id="trashCount">0</span>
+              </button>
+            </div>
+          </div></div>
+          <div class="diagram-toolbar" aria-hidden="true"></div>
+        </section>
+        <section id="reviewArea" class="review-area" hidden aria-label="解答と正解の比較">
+          <div class="relation-legend"><span><i class="legend-line is-correct"></i>正しい関係</span><span><i class="legend-line is-wrong"></i>見直す関係</span></div>
+          <article class="review-column">
+            <div class="review-heading"><h3>解答</h3><span>あなたが組み立てた図</span></div>
+            <div id="answerViewport" class="canvas-viewport"><div id="answerCanvasSlot"></div></div>
+          </article>
+          <article class="review-column">
+            <div class="review-heading"><h3>正解例</h3><div class="zoom-controls"><button id="zoomOut" class="small-button" type="button" aria-label="縮小">−</button><span id="zoomLabel">100%</span><button id="zoomIn" class="small-button" type="button" aria-label="拡大">＋</button></div></div>
+            <div id="solutionViewport" class="canvas-viewport"><div id="solutionSlot"></div></div>
+            <p id="explanationText" class="explanation-text"></p>
+          </article>
+        </section>
+      </div>
+      <div id="itemBank" hidden></div><span id="bankCount" hidden></span>
+      <div id="feedback" class="feedback" hidden></div>
+      <div class="quiz-actions"><button id="clearLinks" class="small-button" type="button">すべての線を消す</button><div class="quiz-submit-group"><p class="assessment-note">判定するのはカードの選択と矢印です。配置位置は自由です。</p><button id="submitButton" class="primary-button" type="button">解答する <span aria-hidden="true">→</span></button></div><button id="nextButton" class="primary-button" type="button" hidden>次の問題へ <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section id="resultView" class="panel result-panel" hidden>
+      <p class="eyebrow">SESSION COMPLETE</p>
+      <h2>情報を整理する練習、おつかれさまでした。</h2>
+      <div class="result-stats"><div><small>正解</small><strong id="finalScore">0 / 5</strong></div><div><small>正答率</small><strong id="resultAccuracy">0%</strong></div><div><small>所要時間</small><strong id="resultTime">0:00</strong></div><div><small>今回の獲得ポイント</small><strong id="resultPoints">+0 pt</strong></div></div>
+      <p id="resultPointBreakdown" class="result-point-breakdown"></p>
+      <p class="result-composition-total">図の整いポイント（芸術点） <strong id="finalCompositionScore">0点</strong></p>
+      <p id="resultMessage" class="result-message"></p>
+      <div id="resultList" class="result-list"></div>
+      <div class="result-actions"><button id="retryButton" class="primary-button" type="button">同じ問題でもう一度 <span aria-hidden="true">↻</span></button><button id="homeButton" class="small-button" type="button">問題数を選び直す</button></div>
+    </section>
+
+    <section class="learning-record" aria-labelledby="recordTitle">
+      <div class="record-heading"><div><p class="eyebrow">YOUR LEARNING</p><h2 id="recordTitle">学習の記録</h2></div><span id="recordTotal">挑戦 0回</span></div>
+      <div class="record-grid">
+        <article class="record-card"><div class="calendar-heading"><button id="monthPrev" type="button" aria-label="前の月">‹</button><h3 id="calendarMonth"></h3><button id="monthNext" type="button" aria-label="次の月">›</button></div><div class="calendar-grid" id="calendarGrid" aria-label="学習カレンダー"></div><p id="calendarSummary" class="calendar-summary">挑戦した日がここに表示されます。</p><div id="calendarDetail" class="calendar-detail" aria-live="polite"></div></article>
+        <article class="record-card"><div class="chart-heading"><h3>最近の正答率</h3><span>直近10回</span></div><div id="accuracyChart" class="accuracy-chart" role="img" aria-label="最近の正答率グラフ"></div><p id="chartSummary" class="chart-summary">挑戦すると正答率の推移が表示されます。</p></article>
+      </div>
+    </section>
+
+    <p class="pc-note"><strong>PC向けのドリルです。</strong>カードのドラッグや、ノードを順にクリックして線をつなぐ操作にはマウスまたはトラックパッドを使います。選択したカードは矢印キーで微調整できます。</p>
+  </main>
+
+  <div id="mobileNotice" class="mobile-notice" hidden><div><span>PC</span><h1>PCでお試しください</h1><p>このドリルはカードを配置し、線でつなぐ操作を練習するため、PC向けに作っています。大きな画面でお試しください。</p></div></div>
+  <footer class="site-footer"><div class="footer-brand"><strong>WORKBOOKS</strong><span>小さな練習を、ひとつずつ。</span></div><nav class="footer-share" aria-label="このページをシェア"><span>シェア</span><a id="share-facebook" target="_blank" rel="noopener noreferrer">Facebook</a><a id="share-x" target="_blank" rel="noopener noreferrer">X</a><a id="share-line" target="_blank" rel="noopener noreferrer">LINE</a></nav><a class="workbooks-link" href="https://kaku3.github.io/workbooks/">エンジニアのためのお仕事問題集 ↗</a></footer>
+  <script src="app.js"></script>
+</body>
+</html>

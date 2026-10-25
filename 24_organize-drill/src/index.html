@@ -8,8 +8,11 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="図で整理ドリル｜情報を見つけて、並べて、つなぐ">
   <meta property="og:description" content="カードを選び、配置し、関係を線でつなぐ。50問で図解の前に必要な整理力を練習します。">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
   <title>図で整理ドリル｜情報を見つけて、並べて、つなぐ</title>
+  <meta name="twitter:image" content="https://kaku3.github.io/workbooks/organize-drill/assets/ogp.png">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -55,7 +58,12 @@
       <div class="progress-track"><i id="progressBar"></i></div>
       <div class="prompt-hint-row">
         <p id="promptText" class="prompt-text"></p>
-        <div class="hint-row"><button id="hintButton" class="hint-button" type="button" aria-expanded="false">ヒントを見る</button><p id="hintText" hidden></p></div>
+        <div class="hint-row" id="hintPanel"><span class="hint-badge" id="hintBadge">ヒント</span><div id="hintText"></div></div>
+      </div>
+      <div id="answerSummary" class="answer-summary" hidden>
+        <section class="summary-column summary-question"><h3>問題文</h3><div id="summaryQuestionSlot"></div></section>
+        <section class="summary-column summary-reflection"><h3>解説</h3><div id="summaryReflectionSlot"></div></section>
+        <section class="summary-column summary-scoring"><h3>採点</h3><div id="summaryScoringSlot"></div></section>
       </div>
       <div id="workbench" class="workbench">
         <section id="diagramPanel" class="diagram-panel" aria-label="図のキャンバス">
@@ -71,11 +79,7 @@
               </button>
             </div>
           </div></div>
-          <div class="diagram-toolbar">
-            <div class="diagram-tools">
-              <button id="clearLinks" class="small-button" type="button">すべての線を消す</button>
-            </div>
-          </div>
+          <div class="diagram-toolbar" aria-hidden="true"></div>
         </section>
         <section id="reviewArea" class="review-area" hidden aria-label="解答と正解の比較">
           <div class="relation-legend"><span><i class="legend-line is-correct"></i>正しい関係</span><span><i class="legend-line is-wrong"></i>見直す関係</span></div>
@@ -92,7 +96,7 @@
       </div>
       <div id="itemBank" hidden></div><span id="bankCount" hidden></span>
       <div id="feedback" class="feedback" hidden></div>
-      <div class="quiz-actions"><p class="assessment-note">判定するのはカードの選択と矢印です。配置位置は自由です。</p><button id="submitButton" class="primary-button" type="button">この図で回答する <span aria-hidden="true">→</span></button><button id="nextButton" class="primary-button" type="button" hidden>次の問題へ <span aria-hidden="true">→</span></button></div>
+      <div class="quiz-actions"><button id="clearLinks" class="small-button" type="button">すべての線を消す</button><div class="quiz-submit-group"><p class="assessment-note">判定するのはカードの選択と矢印です。配置位置は自由です。</p><button id="submitButton" class="primary-button" type="button">解答する <span aria-hidden="true">→</span></button></div><button id="nextButton" class="primary-button" type="button" hidden>次の問題へ <span aria-hidden="true">→</span></button></div>
     </section>
 
     <section id="resultView" class="panel result-panel" hidden>
@@ -100,7 +104,7 @@
       <h2>情報を整理する練習、おつかれさまでした。</h2>
       <div class="result-stats"><div><small>正解</small><strong id="finalScore">0 / 5</strong></div><div><small>正答率</small><strong id="resultAccuracy">0%</strong></div><div><small>所要時間</small><strong id="resultTime">0:00</strong></div><div><small>今回の獲得ポイント</small><strong id="resultPoints">+0 pt</strong></div></div>
       <p id="resultPointBreakdown" class="result-point-breakdown"></p>
-      <p class="result-composition-total">図の整いポイント（芸術点） <strong id="finalCompositionScore">0 / 25点</strong></p>
+      <p class="result-composition-total">図の整いポイント（芸術点） <strong id="finalCompositionScore">0点</strong></p>
       <p id="resultMessage" class="result-message"></p>
       <div id="resultList" class="result-list"></div>
       <div class="result-actions"><button id="retryButton" class="primary-button" type="button">同じ問題でもう一度 <span aria-hidden="true">↻</span></button><button id="homeButton" class="small-button" type="button">問題数を選び直す</button></div>
