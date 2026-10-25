@@ -21,3 +21,5 @@
 - `assets/ogp.png`: SNS共有用の1200×630px画像。ページのOGP・Xカードのメタデータから参照
 
 ローカルで確認する場合は`src/index.html`をLive ServerなどのローカルWebサーバーで開いてください。問題データを`fetch`で読み込むため、ファイルを直接開く方法では動作しません。
+
+GitHub Pagesの公開先は`docs/design-layer-drill/`です。ソースを変更したら、公開用ファイルも同じ内容に更新してください。Workbooks一覧のリンクとプレビュー画像はルートの`docs/index.html`で管理します。
