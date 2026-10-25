@@ -379,28 +379,66 @@
     const list = $('#review-list'); list.hidden = !list.hidden;
     $('#review-button').textContent = list.hidden ? '回答と解説を振り返る' : '振り返りを閉じる';
     if (list.hidden) return;
-    list.innerHTML = '<h4>回答一覧と解説</h4>';
-    state.answers.forEach((answer, index) => {
-      const item = document.createElement('article'); item.className = `review-item ${answer.correct ? 'review-correct' : 'review-incorrect'}`;
-      const heading = document.createElement('div'); heading.className = 'review-heading';
-      const status = document.createElement('span'); status.className = 'review-status'; status.textContent = answer.correct ? '○ 正解' : '× 不正解';
-      const title = document.createElement('strong'); title.textContent = `${index + 1}. ${answer.title}`;
-      heading.append(status, title);
-      const submitted = document.createElement('div'); submitted.className = 'answer-box user-answer-box';
-      const submittedLabel = document.createElement('p'); submittedLabel.className = 'answer-box-label'; submittedLabel.textContent = 'あなたの回答';
-      const submittedOrder = document.createElement('ol'); submittedOrder.className = 'answer-lines';
-      answer.submittedOrder.forEach(i => { const line = document.createElement('li'); line.textContent = answer.sentences[i].text; submittedOrder.appendChild(line); });
-      submitted.append(submittedLabel, submittedOrder);
-      const details = document.createElement('details'); details.className = 'review-explanation';
-      const summary = document.createElement('summary'); summary.textContent = '解説を見る';
-      const correctBox = document.createElement('div'); correctBox.className = 'answer-box correct-answer-box';
-      const correctLabel = document.createElement('p'); correctLabel.className = 'answer-box-label'; correctLabel.textContent = '正しい順番';
-      const correctOrder = document.createElement('ol'); correctOrder.className = 'answer-lines';
-      answer.correctOrder.forEach(i => { const line = document.createElement('li'); line.textContent = answer.sentences[i].text; correctOrder.appendChild(line); });
-      correctBox.append(correctLabel, correctOrder);
-      const explanation = document.createElement('p'); explanation.textContent = answer.explanation;
-      details.append(summary, correctBox, explanation); item.append(heading, submitted, details); list.appendChild(item);
-    });
+    list.innerHTML = '';
+    const header = document.createElement('div'); header.className = 'review-header';
+    const heading = document.createElement('h4'); heading.textContent = '回答一覧と解説'; header.appendChild(heading);
+    list.appendChild(header);
+    const hasIncorrect = state.answers.some(answer => !answer.correct);
+    let currentFilter = hasIncorrect ? 'incorrect' : 'all';
+    const renderItems = filter => {
+      const items = list.querySelectorAll('.review-item');
+      items.forEach(item => item.remove());
+      const filteredAnswers = filter === 'all' ? state.answers : state.answers.filter(answer => filter === 'correct' ? answer.correct : !answer.correct);
+      if (!filteredAnswers.length) {
+        const empty = document.createElement('p'); empty.className = 'review-empty'; empty.textContent = filter === 'correct' ? '正解した問題はありません。' : filter === 'incorrect' ? '不正解の問題はありません。' : '表示できる問題がありません。'; list.appendChild(empty); return;
+      }
+      filteredAnswers.forEach(answer => {
+        const item = document.createElement('article'); item.className = `review-item ${answer.correct ? 'review-correct' : 'review-incorrect'}`;
+        const heading = document.createElement('div'); heading.className = 'review-heading';
+        const status = document.createElement('span'); status.className = 'review-status'; status.textContent = answer.correct ? '○ 正解' : '× 不正解';
+        const title = document.createElement('strong'); title.textContent = `${state.answers.indexOf(answer) + 1}. ${answer.title}`;
+        heading.append(status, title);
+        const submitted = document.createElement('div'); submitted.className = 'answer-box user-answer-box';
+        const submittedLabel = document.createElement('p'); submittedLabel.className = 'answer-box-label'; submittedLabel.textContent = 'あなたの回答';
+        const submittedOrder = document.createElement('ol'); submittedOrder.className = 'answer-lines';
+        answer.submittedOrder.forEach(i => { const line = document.createElement('li'); line.textContent = answer.sentences[i].text; submittedOrder.appendChild(line); });
+        submitted.append(submittedLabel, submittedOrder);
+        const details = document.createElement('details'); details.className = 'review-explanation';
+        const summary = document.createElement('summary'); summary.textContent = '解説を見る';
+        const correctBox = document.createElement('div'); correctBox.className = 'answer-box correct-answer-box';
+        const correctLabel = document.createElement('p'); correctLabel.className = 'answer-box-label'; correctLabel.textContent = '正しい順番';
+        const correctOrder = document.createElement('ol'); correctOrder.className = 'answer-lines';
+        answer.correctOrder.forEach(i => { const line = document.createElement('li'); line.textContent = answer.sentences[i].text; correctOrder.appendChild(line); });
+        correctBox.append(correctLabel, correctOrder);
+        const explanation = document.createElement('p'); explanation.textContent = answer.explanation;
+        details.append(summary, correctBox, explanation); item.append(heading, submitted, details); list.appendChild(item);
+      });
+    };
+    if (hasIncorrect) {
+      const filterBar = document.createElement('div'); filterBar.className = 'review-filter-bar';
+      const filters = [
+        { value: 'all', label: 'すべて' },
+        { value: 'correct', label: '正解' },
+        { value: 'incorrect', label: '不正解' }
+      ];
+      filters.forEach(({ value, label }) => {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'review-filter-button'; button.dataset.filter = value;
+        if (value === currentFilter) button.classList.add('is-active');
+        button.textContent = label;
+        button.addEventListener('click', () => {
+          currentFilter = value;
+          filterBar.querySelectorAll('.review-filter-button').forEach(filterButton => {
+            filterButton.classList.toggle('is-active', filterButton.dataset.filter === value);
+          });
+          renderItems(currentFilter);
+        });
+        filterBar.appendChild(button);
+      });
+      header.appendChild(filterBar);
+      renderItems(currentFilter);
+      return;
+    }
+    renderItems(currentFilter);
   }
   function renderChart(history) {
     const target = $('#history-chart'); const points = history.slice(0, 10).reverse();
