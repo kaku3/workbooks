@@ -5,11 +5,11 @@
     "dailyCorrect": 5,
     "compositionPoint": 1,
     "milestones": [
-      { "correct": 10, "bonus": 10 },
-      { "correct": 50, "bonus": 20 },
-      { "correct": 100, "bonus": 30 },
-      { "correct": 250, "bonus": 50 },
-      { "correct": 500, "bonus": 100 }
+      { "points": 100, "bonus": 10 },
+      { "points": 300, "bonus": 20 },
+      { "points": 600, "bonus": 30 },
+      { "points": 1200, "bonus": 50 },
+      { "points": 2500, "bonus": 100 }
     ]
   },
   "stages": [

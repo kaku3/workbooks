@@ -60,9 +60,11 @@ function renderContinuity() {
   const si = stages.reduce((found, item, i) => c.points >= item.points ? i : found, 0), stage = stages[si], next = stages[si + 1];
   $('#pointsTotal').textContent = `${c.points} pt`; $('#careerStage').textContent = stage.title;
   $('#careerBar').style.width = next ? `${Math.min(100, (c.points - stage.points) / (next.points - stage.points) * 100)}%` : '100%';
-  const milestone = careerConfig.rewards.milestones.find(item => item.correct > c.correctCount);
-  $('#recordSummary').textContent = `これまでの挑戦 ${history.length}回`;
-  $('#milestoneText').textContent = milestone ? `次の節目まで正解 ${milestone.correct - c.correctCount}問` : 'すべての正解数の節目に到達';
+  const milestone = careerConfig.rewards.milestones.find(item => item.points > c.points);
+  $('#recordSummary').textContent = `累計挑戦 ${history.length}回`;
+  $('#milestoneText').textContent = next ? `次の昇進まであと ${next.points - c.points} pt` : '最高ステージ到達';
+  const bonusHint = milestone ? `次のボーナスまで ${milestone.points - c.points} pt` : 'ボーナス節目達成';
+  $('#milestoneText').title = bonusHint;
   const completed = c.dailyDates.includes(todayKey()); $('#dailyStart').hidden = !c.hasPlayed;
   $('#dailyStart').disabled = completed; $('#dailyStart').textContent = completed ? '今日の1問は完了しました' : '今日の1問に挑戦 →';
   $('#dailyStatus').textContent = completed
@@ -117,7 +119,7 @@ function awardAndRecord() {
   if (sessionType === 'daily') {
     if (!c.dailyDates.includes(date)) { c.dailyDates.push(date); if (correct) c.correctCount++; }
   } else { c.correctCount += correct; c.hasPlayed = true; }
-  careerConfig.rewards.milestones.forEach(m => { if (c.correctCount >= m.correct && !c.milestones.includes(m.correct)) { c.milestones.push(m.correct); bonusPoints += m.bonus; } });
+  careerConfig.rewards.milestones.forEach(m => { if (c.points + basePoints + compositionPoints >= m.points && !c.milestones.includes(m.points)) { c.milestones.push(m.points); bonusPoints += m.bonus; } });
   const points = basePoints + compositionPoints + bonusPoints;
   c.points += points; writeStore(CAREER_KEY, c);
   const duration = Math.max(0, Math.round((Date.now() - startedAt) / 1000)), accuracy = Math.round(correct / session.length * 100);
