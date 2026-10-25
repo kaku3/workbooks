@@ -174,15 +174,55 @@ function finish() {
   if (answers.length) { const history = readJSON(HISTORY_KEY, []); history.unshift(record); writeJSON(HISTORY_KEY, history.slice(0, 100)); }
   $('#resultScore').textContent = `${score} / ${questions.length}`; $('#resultAccuracy').textContent = `${accuracy}%`; $('#resultTime').textContent = `${Math.floor(duration / 60)}:${String(duration % 60).padStart(2, '0')}`; $('#resultPoints').textContent = `${earnedPoints > 0 ? '+' : ''}${earnedPoints} pt`;
   $('#resultMessage').textContent = accuracy === 100 ? '全問正解！情報の置き場所が見えてきましたね。' : accuracy >= 70 ? 'いい調子です。迷った問題の理由を振り返ってみましょう。' : '繰り返すうちに、少しずつ見えてきます。';
-  $('#reviewList').replaceChildren();
-  answers.forEach((answer, i) => {
-    const problem = questions[i], item = document.createElement('li'); item.className = answer.correct ? 'review-correct' : 'review-wrong';
-    const head = document.createElement('strong'); head.textContent = `問${i + 1}　${answer.correct ? '○ 正解' : answer.skipped ? '－ スキップ' : '× 不正解'}`;
-    const question = document.createElement('p'); question.textContent = problem.text;
-    const explanation = document.createElement('p'); explanation.className = 'review-explanation'; explanation.textContent = `正解：${problem.answer}。${problem.reason}`;
-    item.append(head, question, explanation); if (answer.selected) { const selected = document.createElement('small'); selected.textContent = `あなたの回答：${answer.selected}`; item.append(selected); }
-    $('#reviewList').append(item);
-  });
+  const reviewList = $('#reviewList'); const reviewRoot = reviewList.parentElement;
+  reviewRoot.querySelectorAll('.review-filter-bar').forEach(node => node.remove());
+  const hasIncorrect = answers.some(answer => !answer.correct);
+  if (!hasIncorrect) {
+    reviewList.replaceChildren();
+    answers.forEach((answer, index) => {
+      const problem = questions[index], item = document.createElement('li'); item.className = answer.correct ? 'review-correct' : 'review-wrong';
+      const head = document.createElement('strong'); head.textContent = `問${index + 1}　${answer.correct ? '○ 正解' : answer.skipped ? '－ スキップ' : '× 不正解'}`;
+      const question = document.createElement('p'); question.textContent = problem.text;
+      const explanation = document.createElement('p'); explanation.className = 'review-explanation'; explanation.textContent = `正解：${problem.answer}。${problem.reason}`;
+      item.append(head, question, explanation); if (answer.selected) { const selected = document.createElement('small'); selected.textContent = `あなたの回答：${answer.selected}`; item.append(selected); }
+      reviewList.append(item);
+    });
+  } else {
+    const reviewFilterBar = document.createElement('div'); reviewFilterBar.className = 'review-filter-bar';
+    let filter = 'incorrect';
+    const renderReview = currentFilter => {
+      reviewList.replaceChildren();
+      const filteredAnswers = currentFilter === 'all' ? answers : answers.filter(answer => currentFilter === 'correct' ? answer.correct : !answer.correct);
+      if (!filteredAnswers.length) {
+        const empty = document.createElement('li'); empty.className = 'review-empty'; empty.textContent = currentFilter === 'correct' ? '正解した問題はありません。' : '不正解の問題はありません。';
+        reviewList.append(empty); return;
+      }
+      filteredAnswers.forEach(answer => {
+        const index = answers.indexOf(answer); const problem = questions[index], item = document.createElement('li'); item.className = answer.correct ? 'review-correct' : 'review-wrong';
+        const head = document.createElement('strong'); head.textContent = `問${index + 1}　${answer.correct ? '○ 正解' : answer.skipped ? '－ スキップ' : '× 不正解'}`;
+        const question = document.createElement('p'); question.textContent = problem.text;
+        const explanation = document.createElement('p'); explanation.className = 'review-explanation'; explanation.textContent = `正解：${problem.answer}。${problem.reason}`;
+        item.append(head, question, explanation); if (answer.selected) { const selected = document.createElement('small'); selected.textContent = `あなたの回答：${answer.selected}`; item.append(selected); }
+        reviewList.append(item);
+      });
+    };
+    const filterButtons = [
+      { value: 'all', label: 'すべて' },
+      { value: 'correct', label: '正解' },
+      { value: 'incorrect', label: '不正解' }
+    ];
+    filterButtons.forEach(({ value, label }) => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'review-filter-button'; button.dataset.filter = value; button.textContent = label; if (value === filter) button.classList.add('is-active');
+      button.addEventListener('click', () => {
+        filter = value;
+        reviewFilterBar.querySelectorAll('.review-filter-button').forEach(item => item.classList.toggle('is-active', item.dataset.filter === value));
+        renderReview(value);
+      });
+      reviewFilterBar.append(button);
+    });
+    reviewRoot.insertBefore(reviewFilterBar, reviewList);
+    renderReview(filter);
+  }
   $('#again').hidden = sessionType === 'daily'; $('#home').textContent = sessionType === 'daily' ? '今日のドリルへ戻る' : '問題数を選び直す';
   $('#bar').style.width = '100%'; renderContinuity(); renderRecords(); $('.game').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
