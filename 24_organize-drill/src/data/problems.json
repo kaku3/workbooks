@@ -1,0 +1,5627 @@
+{
+  "version": 1,
+  "problems": [
+    {
+      "id": "order-flow",
+      "title": "ネット注文の流れを整理する",
+      "prompt": "利用者が商品を注文してから、発送の連絡を受け取るまでを図にします。必要な情報だけを選び、処理の順に矢印でつないでください。担当者の説明をまとめると、「利用者が注文内容を送信する」の次は「システムが在庫を確認する」です。 「システムが在庫を確認する」の次は「決済を処理する」です。 「決済を処理する」の次は「倉庫へ出荷を依頼する」です。 「倉庫へ出荷を依頼する」の次は「利用者へ発送を通知する」です。 同じ資料には「月次の売上を集計する」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「利用者が注文内容を送信する」です。 注文が届いてから発送されるまで、途中でどの処理が必要かを考えます。売上の集計は、この流れの一部でしょうか？",
+      "items": [
+        {
+          "id": "submit-order",
+          "label": "利用者が注文内容を送信する",
+          "kind": "required"
+        },
+        {
+          "id": "check-stock",
+          "label": "システムが在庫を確認する",
+          "kind": "required"
+        },
+        {
+          "id": "process-payment",
+          "label": "決済を処理する",
+          "kind": "required"
+        },
+        {
+          "id": "request-shipping",
+          "label": "倉庫へ出荷を依頼する",
+          "kind": "required"
+        },
+        {
+          "id": "notify-shipped",
+          "label": "利用者へ発送を通知する",
+          "kind": "required"
+        },
+        {
+          "id": "monthly-sales",
+          "label": "月次の売上を集計する",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "order-processing",
+          "label": "注文の処理",
+          "itemIds": [
+            "check-stock",
+            "process-payment",
+            "request-shipping"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "submit-order",
+          "check-stock"
+        ],
+        [
+          "check-stock",
+          "process-payment"
+        ],
+        [
+          "process-payment",
+          "request-shipping"
+        ],
+        [
+          "request-shipping",
+          "notify-shipped"
+        ]
+      ],
+      "layout": {
+        "submit-order": {
+          "x": 0.18,
+          "y": 0.27
+        },
+        "check-stock": {
+          "x": 0.5,
+          "y": 0.27
+        },
+        "process-payment": {
+          "x": 0.82,
+          "y": 0.27
+        },
+        "request-shipping": {
+          "x": 0.3,
+          "y": 0.73
+        },
+        "notify-shipped": {
+          "x": 0.7,
+          "y": 0.73
+        }
+      },
+      "explanation": "注文を受け付けた後、在庫を確かめ、決済し、出荷を依頼してから発送を知らせます。月次の売上集計は別の目的の業務なので、この注文処理の図には含めません。",
+      "difficulty": "easy"
+    },
+    {
+      "id": "support-flow",
+      "title": "問い合わせ対応を整理する",
+      "prompt": "利用者から届いた不具合の問い合わせに、担当者が対応して結果を伝えるまでを図にします。必要なカードを選んで、対応の流れをつないでください。担当者の説明をまとめると、「利用者が不具合を報告する」の次は「担当者が発生条件を確認する」です。 「担当者が発生条件を確認する」の次は「原因を切り分ける」です。 「原因を切り分ける」の次は「修正または回避策を行う」です。 「修正または回避策を行う」の次は「結果を利用者へ共有する」です。 同じ資料には「翌月の研修計画を作る」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「利用者が不具合を報告する」です。 状況を理解するために確認すること、その後に行う対応、最後に利用者へ伝えることを順に考えます。",
+      "items": [
+        {
+          "id": "report-issue",
+          "label": "利用者が不具合を報告する",
+          "kind": "required"
+        },
+        {
+          "id": "confirm-context",
+          "label": "担当者が発生条件を確認する",
+          "kind": "required"
+        },
+        {
+          "id": "isolate-cause",
+          "label": "原因を切り分ける",
+          "kind": "required"
+        },
+        {
+          "id": "apply-fix",
+          "label": "修正または回避策を行う",
+          "kind": "required"
+        },
+        {
+          "id": "share-result",
+          "label": "結果を利用者へ共有する",
+          "kind": "required"
+        },
+        {
+          "id": "plan-training",
+          "label": "翌月の研修計画を作る",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "intake",
+          "label": "問い合わせの受付",
+          "itemIds": [
+            "report-issue",
+            "confirm-context"
+          ]
+        },
+        {
+          "id": "resolution",
+          "label": "原因の調査と対処",
+          "itemIds": [
+            "isolate-cause",
+            "apply-fix"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "report-issue",
+          "confirm-context"
+        ],
+        [
+          "confirm-context",
+          "isolate-cause"
+        ],
+        [
+          "isolate-cause",
+          "apply-fix"
+        ],
+        [
+          "apply-fix",
+          "share-result"
+        ]
+      ],
+      "layout": {
+        "report-issue": {
+          "x": 0.18,
+          "y": 0.27
+        },
+        "confirm-context": {
+          "x": 0.5,
+          "y": 0.27
+        },
+        "isolate-cause": {
+          "x": 0.82,
+          "y": 0.27
+        },
+        "apply-fix": {
+          "x": 0.3,
+          "y": 0.73
+        },
+        "share-result": {
+          "x": 0.7,
+          "y": 0.73
+        }
+      },
+      "explanation": "問い合わせの内容を把握して発生条件を確かめ、原因を切り分けて対処します。対応した結果を利用者へ共有して一連の流れが完了します。研修計画は問い合わせ対応とは別の業務です。",
+      "difficulty": "easy"
+    },
+    {
+      "id": "expense-flow",
+      "title": "経費申請の確認を整理する",
+      "prompt": "経費申請の運用を見直す打ち合わせでは、申請が届いたあと上長の承認可否と、経理による領収書の不備確認を別々に進めることになりました。上長が承認した場合も領収書の確認が済むまでは振込依頼へ進まず、確認がそろって初めて振込を依頼し、最後に申請者へ結果を知らせます。上長が承認しない場合は却下理由を申請者へ通知し、領収書に不備があれば修正を依頼します。なお、同じ会議で人事の研修予定も話題に出ましたが、今回は経費申請の処理フローだけを図にします。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「申請者が経費を申請する」です。 分岐は「申請者が経費を申請する」からは「上長が承認可否を判定する」／「経理が領収書の不備を確認する」へ分かります。「上長が承認可否を判定する」からは「経理が振込を依頼する」／「申請者へ却下理由を通知する」へ分かります。「経理が領収書の不備を確認する」からは「経理が振込を依頼する」／「領収書の修正を依頼する」へ分かります。 合流は「経理が振込を依頼する」には「上長が承認可否を判定する」・「経理が領収書の不備を確認する」から入ります。 上長確認と領収書確認は並行して進められます。振込依頼は、どちらの確認が終わってからでしょうか？",
+      "items": [
+        {
+          "id": "submit-expense",
+          "label": "申請者が経費を申請する",
+          "kind": "required"
+        },
+        {
+          "id": "manager-approve",
+          "label": "上長が承認可否を判定する",
+          "kind": "required"
+        },
+        {
+          "id": "check-receipt",
+          "label": "経理が領収書の不備を確認する",
+          "kind": "required"
+        },
+        {
+          "id": "request-transfer",
+          "label": "経理が振込を依頼する",
+          "kind": "required"
+        },
+        {
+          "id": "notify-applicant",
+          "label": "申請者へ結果を通知する",
+          "kind": "required"
+        },
+        {
+          "id": "update-training",
+          "label": "人事が研修予定を更新する",
+          "kind": "extra"
+        },
+        {
+          "id": "manager-reject",
+          "label": "申請者へ却下理由を通知する",
+          "kind": "required"
+        },
+        {
+          "id": "receipt-correction",
+          "label": "領収書の修正を依頼する",
+          "kind": "required"
+        }
+      ],
+      "groups": [
+        {
+          "id": "parallel-checks",
+          "label": "並行する2つの確認",
+          "itemIds": [
+            "manager-approve",
+            "check-receipt"
+          ]
+        },
+        {
+          "id": "payment-close",
+          "label": "支払いと結果連絡",
+          "itemIds": [
+            "request-transfer",
+            "notify-applicant"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "submit-expense",
+          "manager-approve"
+        ],
+        [
+          "submit-expense",
+          "check-receipt"
+        ],
+        [
+          "manager-approve",
+          "request-transfer"
+        ],
+        [
+          "manager-approve",
+          "manager-reject"
+        ],
+        [
+          "check-receipt",
+          "request-transfer"
+        ],
+        [
+          "check-receipt",
+          "receipt-correction"
+        ],
+        [
+          "request-transfer",
+          "notify-applicant"
+        ]
+      ],
+      "layout": {
+        "submit-expense": {
+          "x": 0.16,
+          "y": 0.5
+        },
+        "manager-approve": {
+          "x": 0.42,
+          "y": 0.23
+        },
+        "check-receipt": {
+          "x": 0.42,
+          "y": 0.77
+        },
+        "request-transfer": {
+          "x": 0.62,
+          "y": 0.5
+        },
+        "notify-applicant": {
+          "x": 0.84,
+          "y": 0.5
+        },
+        "manager-reject": {
+          "x": 0.7,
+          "y": 0.88
+        },
+        "receipt-correction": {
+          "x": 0.12,
+          "y": 0.88
+        }
+      },
+      "explanation": "上長が承認し、領収書に不備がない場合に振込へ進みます。却下時は理由を申請者に知らせ、領収書に不備があれば修正を依頼します。人事の研修予定はこの処理に含めません。",
+      "difficulty": "hard"
+    },
+    {
+      "id": "release-flow",
+      "title": "サービス更新の流れを整理する",
+      "prompt": "サービスの更新を安全に公開するための流れを図にします。準備から公開後の確認までを、必要な情報でつないでください。担当者の説明をまとめると、「更新内容と公開手順を準備する」の次は「テストを実行する」です。 「テストを実行する」の次は「公開の承認を得る」です。 「公開の承認を得る」の次は「更新を本番環境へ公開する」です。 「更新を本番環境へ公開する」の次は「公開後の動作を確認する」です。 同じ資料には「チームの採用計画を立てる」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「更新内容と公開手順を準備する」です。 公開前に確認を終え、公開した後にも状態を確かめます。チーム採用の計画は更新公開の工程ではありません。",
+      "items": [
+        {
+          "id": "prepare-release",
+          "label": "更新内容と公開手順を準備する",
+          "kind": "required"
+        },
+        {
+          "id": "run-tests",
+          "label": "テストを実行する",
+          "kind": "required"
+        },
+        {
+          "id": "approve-release",
+          "label": "公開の承認を得る",
+          "kind": "required"
+        },
+        {
+          "id": "deploy-release",
+          "label": "更新を本番環境へ公開する",
+          "kind": "required"
+        },
+        {
+          "id": "monitor-release",
+          "label": "公開後の動作を確認する",
+          "kind": "required"
+        },
+        {
+          "id": "recruit-staff",
+          "label": "チームの採用計画を立てる",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "pre-release",
+          "label": "公開前の準備",
+          "itemIds": [
+            "prepare-release",
+            "run-tests",
+            "approve-release"
+          ]
+        },
+        {
+          "id": "post-release",
+          "label": "公開後の確認",
+          "itemIds": [
+            "deploy-release",
+            "monitor-release"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "prepare-release",
+          "run-tests"
+        ],
+        [
+          "run-tests",
+          "approve-release"
+        ],
+        [
+          "approve-release",
+          "deploy-release"
+        ],
+        [
+          "deploy-release",
+          "monitor-release"
+        ]
+      ],
+      "layout": {
+        "prepare-release": {
+          "x": 0.18,
+          "y": 0.27
+        },
+        "run-tests": {
+          "x": 0.5,
+          "y": 0.27
+        },
+        "approve-release": {
+          "x": 0.82,
+          "y": 0.27
+        },
+        "deploy-release": {
+          "x": 0.3,
+          "y": 0.73
+        },
+        "monitor-release": {
+          "x": 0.7,
+          "y": 0.73
+        }
+      },
+      "explanation": "更新を準備し、テストと承認を経て公開します。公開した後の動作確認までをつなぐと、更新作業全体が見える図になります。採用計画は別のテーマです。",
+      "difficulty": "easy"
+    },
+    {
+      "id": "learning-cycle",
+      "title": "学びを次につなげる",
+      "prompt": "新しい操作を身につける学習の流れを図にします。目標を決めて練習し、振り返りを次の目標に生かす関係をつないでください。担当者の説明をまとめると、「身につけたい操作を決める」の次は「操作を練習する」です。 「操作を練習する」の次は「できたことと課題を振り返る」です。 「できたことと課題を振り返る」の次は「振り返りから次の目標を決める」です。 「振り返りから次の目標を決める」の次は「次の目標に向けて練習する」です。 「次の目標に向けて練習する」の次は「できたことと課題を振り返る」です。 同じ資料には「共有フォルダーを整理する」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「身につけたい操作を決める」です。 合流は「できたことと課題を振り返る」には「操作を練習する」・「次の目標に向けて練習する」から入ります。 振り返りで見つけた課題は、次の目標になります。学習記録の保管は大切ですが、この循環の中心ではありません。",
+      "items": [
+        {
+          "id": "set-goal",
+          "label": "身につけたい操作を決める",
+          "kind": "required"
+        },
+        {
+          "id": "practice-skill",
+          "label": "操作を練習する",
+          "kind": "required"
+        },
+        {
+          "id": "review-progress",
+          "label": "できたことと課題を振り返る",
+          "kind": "required"
+        },
+        {
+          "id": "choose-next-goal",
+          "label": "振り返りから次の目標を決める",
+          "kind": "required"
+        },
+        {
+          "id": "practice-again",
+          "label": "次の目標に向けて練習する",
+          "kind": "required"
+        },
+        {
+          "id": "archive-files",
+          "label": "共有フォルダーを整理する",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "practice",
+          "label": "練習",
+          "itemIds": [
+            "practice-skill",
+            "practice-again"
+          ]
+        },
+        {
+          "id": "reflection-next-goal",
+          "label": "振り返りと次の目標",
+          "itemIds": [
+            "review-progress",
+            "choose-next-goal"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "set-goal",
+          "practice-skill"
+        ],
+        [
+          "practice-skill",
+          "review-progress"
+        ],
+        [
+          "review-progress",
+          "choose-next-goal"
+        ],
+        [
+          "choose-next-goal",
+          "practice-again"
+        ],
+        [
+          "practice-again",
+          "review-progress"
+        ]
+      ],
+      "layout": {
+        "set-goal": {
+          "x": 0.18,
+          "y": 0.25
+        },
+        "practice-skill": {
+          "x": 0.5,
+          "y": 0.25
+        },
+        "review-progress": {
+          "x": 0.82,
+          "y": 0.25
+        },
+        "choose-next-goal": {
+          "x": 0.68,
+          "y": 0.74
+        },
+        "practice-again": {
+          "x": 0.32,
+          "y": 0.74
+        }
+      },
+      "explanation": "目標を決めて練習し、できたことと課題を振り返ります。その振り返りから次の目標を決めてまた練習する循環です。共有フォルダーの整理はこの学習サイクルには含めません。",
+      "difficulty": "easy"
+    },
+    {
+      "id": "zukai-login",
+      "title": "ログインの流れ",
+      "prompt": "ログイン処理のメモは、認証の前後が混ざっていて読みづらい状態です。まず認証情報を受け取ったらアカウントが利用可能かを確認し、利用停止中ならその案内で終了、利用可能な場合だけシステム認証へ進みます。認証結果が成功ならホーム画面を表示し、失敗なら認証エラーを表示します。画面背景の画像や表示順ではなく、利用者がログインを試みてから結果が出るまでの処理を整理してください。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「認証情報を入力」です。 分岐は「アカウント状態を確認」からは「利用停止を案内」／「システムが認証」へ分かります。「システムが認証」からは「ホーム画面を表示」／「認証エラーを表示」へ分かります。 背景画像は処理の流れではありません。",
+      "items": [
+        {
+          "id": "zukai-login-n1",
+          "label": "認証情報を入力",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-login-n2",
+          "label": "システムが認証",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-login-n3",
+          "label": "ホーム画面を表示",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-login-x1",
+          "label": "ログイン画面の背景画像",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-login-n4",
+          "label": "アカウント状態を確認",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-login-n5",
+          "label": "利用停止を案内",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-login-n6",
+          "label": "認証エラーを表示",
+          "kind": "required"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-login-g1",
+          "label": "認証の流れ",
+          "itemIds": [
+            "zukai-login-n1",
+            "zukai-login-n2",
+            "zukai-login-n3"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-login-n1",
+          "zukai-login-n4"
+        ],
+        [
+          "zukai-login-n4",
+          "zukai-login-n5"
+        ],
+        [
+          "zukai-login-n4",
+          "zukai-login-n2"
+        ],
+        [
+          "zukai-login-n2",
+          "zukai-login-n3"
+        ],
+        [
+          "zukai-login-n2",
+          "zukai-login-n6"
+        ]
+      ],
+      "layout": {
+        "zukai-login-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-login-n2": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zukai-login-n3": {
+          "x": 0.87,
+          "y": 0.5
+        },
+        "zukai-login-n4": {
+          "x": 0.7,
+          "y": 0.88
+        },
+        "zukai-login-n5": {
+          "x": 0.3,
+          "y": 0.88
+        },
+        "zukai-login-n6": {
+          "x": 0.3,
+          "y": 0.16
+        }
+      },
+      "explanation": "アカウント状態の確認では、利用停止中なら案内を表示し、利用可能なら認証へ進みます。認証結果も成功時はホーム画面、失敗時はエラー表示に分岐します。",
+      "source": "20_zukai-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "zukai-profile-update",
+      "title": "プロフィール更新",
+      "prompt": "利用者が表示名を変更して保存し、完了するまでを図にしてください。今回は入力に問題がない場合を扱います。担当者の説明をまとめると、「表示名を編集して保存」の次は「文字数をチェック」です。 「文字数をチェック」の次は「データを保存」です。 「データを保存」の次は「完了メッセージを表示」です。 同じ資料には「将来の画像変更機能」、「保存ボタンの色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「表示名を編集して保存」です。 将来機能や画面の見た目は今回の処理に含めません。",
+      "items": [
+        {
+          "id": "zukai-profile-update-n1",
+          "label": "表示名を編集して保存",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-profile-update-n2",
+          "label": "文字数をチェック",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-profile-update-n3",
+          "label": "データを保存",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-profile-update-n4",
+          "label": "完了メッセージを表示",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-profile-update-x1",
+          "label": "将来の画像変更機能",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-profile-update-x2",
+          "label": "保存ボタンの色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-profile-update-g1",
+          "label": "入力から保存まで",
+          "itemIds": [
+            "zukai-profile-update-n1",
+            "zukai-profile-update-n2",
+            "zukai-profile-update-n3",
+            "zukai-profile-update-n4"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-profile-update-n1",
+          "zukai-profile-update-n2"
+        ],
+        [
+          "zukai-profile-update-n2",
+          "zukai-profile-update-n3"
+        ],
+        [
+          "zukai-profile-update-n3",
+          "zukai-profile-update-n4"
+        ]
+      ],
+      "layout": {
+        "zukai-profile-update-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-profile-update-n2": {
+          "x": 0.377,
+          "y": 0.5
+        },
+        "zukai-profile-update-n3": {
+          "x": 0.623,
+          "y": 0.5
+        },
+        "zukai-profile-update-n4": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、表示名を編集して保存 → 文字数をチェック → データを保存 → 完了メッセージを表示の関係を整理します。将来機能や画面の見た目は今回の処理に含めません。「将来の画像変更機能」「保存ボタンの色」は今回の流れに含めません。",
+      "source": "20_zukai-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "zukai-upload",
+      "title": "ファイルアップロードと検証",
+      "prompt": "アップロード担当者の説明では、PDFを受け取ってからサイズを確認し、10MB以内のものだけ拡張子の確認へ進めます。サイズ超過ならその時点でエラーです。拡張子がPDFなら保存して一覧へ反映し、PDFでなければ同じエラー表示へ進みます。つまり二つの検証は順番に行い、どちらか一方でも条件を満たさなければ保存しません。サーバーのディスク監視は別の運用メモとして載っていますが、今回の図はファイル受付から結果表示までです。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「PDFをアップロード」です。 分岐は「サイズ上限10MBを確認」からは「拡張子がPDFか確認」／「エラーを表示」へ分かります。「拡張子がPDFか確認」からは「ファイルを保存」／「エラーを表示」へ分かります。 合流は「エラーを表示」には「サイズ上限10MBを確認」・「拡張子がPDFか確認」から入ります。 サイズ・形式のどちらかが不適合ならエラーへ進みます。",
+      "items": [
+        {
+          "id": "zukai-upload-n1",
+          "label": "PDFをアップロード",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-upload-n2",
+          "label": "サイズ上限10MBを確認",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-upload-n3",
+          "label": "拡張子がPDFか確認",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-upload-n4",
+          "label": "ファイルを保存",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-upload-n5",
+          "label": "一覧に反映",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-upload-n6",
+          "label": "エラーを表示",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-upload-x1",
+          "label": "サーバーのディスク容量監視",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-upload-g1",
+          "label": "アップロードと検証",
+          "itemIds": [
+            "zukai-upload-n1",
+            "zukai-upload-n2",
+            "zukai-upload-n3"
+          ]
+        },
+        {
+          "id": "zukai-upload-g2",
+          "label": "検証後の結果",
+          "itemIds": [
+            "zukai-upload-n4",
+            "zukai-upload-n5",
+            "zukai-upload-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-upload-n1",
+          "zukai-upload-n2"
+        ],
+        [
+          "zukai-upload-n2",
+          "zukai-upload-n3"
+        ],
+        [
+          "zukai-upload-n2",
+          "zukai-upload-n6"
+        ],
+        [
+          "zukai-upload-n3",
+          "zukai-upload-n4"
+        ],
+        [
+          "zukai-upload-n3",
+          "zukai-upload-n6"
+        ],
+        [
+          "zukai-upload-n4",
+          "zukai-upload-n5"
+        ]
+      ],
+      "layout": {
+        "zukai-upload-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-upload-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "zukai-upload-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zukai-upload-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "zukai-upload-n6": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "zukai-upload-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、PDFをアップロード → サイズ上限10MBを確認 → 拡張子がPDFか確認 → ファイルを保存 → 一覧に反映 → エラーを表示の関係を整理します。サイズ・形式のどちらかが不適合ならエラーへ進みます。「サーバーのディスク容量監視」は今回の流れに含めません。",
+      "source": "20_zukai-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "zukai-stock-sync",
+      "title": "在庫連携バッチ",
+      "prompt": "毎時の在庫連携で、自社システムと外部倉庫がデータを送受信します。結果に応じた記録と通知までを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「毎時バッチを開始」の次は「在庫CSVを送信」です。 「在庫CSVを送信」の次は「処理結果CSVを受信」です。 「処理結果CSVを受信」から先は「成功時刻を記録」と「失敗行を担当者へ通知」に分かれます。 同じ資料には「CSVの列順の詳細」、「実行サーバー名」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「毎時バッチを開始」です。 分岐は「処理結果CSVを受信」からは「成功時刻を記録」／「失敗行を担当者へ通知」へ分かります。 CSVの列順などの詳細設定は今回の処理の流れから分けます。",
+      "items": [
+        {
+          "id": "zukai-stock-sync-n1",
+          "label": "毎時バッチを開始",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-stock-sync-n2",
+          "label": "在庫CSVを送信",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-stock-sync-n3",
+          "label": "処理結果CSVを受信",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-stock-sync-n4",
+          "label": "成功時刻を記録",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-stock-sync-n5",
+          "label": "失敗行を担当者へ通知",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-stock-sync-x1",
+          "label": "CSVの列順の詳細",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-stock-sync-x2",
+          "label": "実行サーバー名",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-stock-sync-g1",
+          "label": "外部連携",
+          "itemIds": [
+            "zukai-stock-sync-n2",
+            "zukai-stock-sync-n3"
+          ]
+        },
+        {
+          "id": "zukai-stock-sync-g2",
+          "label": "結果処理",
+          "itemIds": [
+            "zukai-stock-sync-n4",
+            "zukai-stock-sync-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-stock-sync-n1",
+          "zukai-stock-sync-n2"
+        ],
+        [
+          "zukai-stock-sync-n2",
+          "zukai-stock-sync-n3"
+        ],
+        [
+          "zukai-stock-sync-n3",
+          "zukai-stock-sync-n4"
+        ],
+        [
+          "zukai-stock-sync-n3",
+          "zukai-stock-sync-n5"
+        ]
+      ],
+      "layout": {
+        "zukai-stock-sync-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-stock-sync-n2": {
+          "x": 0.377,
+          "y": 0.5
+        },
+        "zukai-stock-sync-n3": {
+          "x": 0.623,
+          "y": 0.5
+        },
+        "zukai-stock-sync-n4": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "zukai-stock-sync-n5": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、毎時バッチを開始 → 在庫CSVを送信 → 処理結果CSVを受信 → 成功時刻を記録 → 失敗行を担当者へ通知の関係を整理します。CSVの列順などの詳細設定は今回の処理の流れから分けます。「CSVの列順の詳細」「実行サーバー名」は今回の流れに含めません。",
+      "source": "20_zukai-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "zukai-payment-auth",
+      "title": "決済オーソリ",
+      "prompt": "購入確定の処理について、運用メモには「先に決済へ送る」と読める箇所もありますが、実際には購入内容の検証が先です。内容に問題があれば修正を依頼して終了し、問題がなければ決済代行へ承認を要求します。返答を受けて承認結果を判定し、承認された場合は注文を確定して注文番号を表示、承認されなかった場合は支払い方法の再入力を求めます。配送先住所の表示順も同じ資料に記されていますが、今回は入力検証から決済結果までの流れだけを組み立てます。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「購入確定を実行」です。 分岐は「購入内容を検証」からは「決済代行へ承認要求」／「購入内容の修正を依頼」へ分かります。「承認結果を判定」からは「注文を確定」／「支払い方法を再入力」へ分かります。 承認時と非承認時の行き先を分けます。",
+      "items": [
+        {
+          "id": "zukai-payment-auth-n1",
+          "label": "購入確定を実行",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-payment-auth-n2",
+          "label": "決済代行へ承認要求",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-payment-auth-n3",
+          "label": "承認結果を判定",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-payment-auth-n4",
+          "label": "注文を確定",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-payment-auth-n5",
+          "label": "注文番号を表示",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-payment-auth-n6",
+          "label": "支払い方法を再入力",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-payment-auth-x1",
+          "label": "配送先住所の表示順",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-payment-auth-n7",
+          "label": "購入内容を検証",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-payment-auth-n8",
+          "label": "購入内容の修正を依頼",
+          "kind": "required"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-payment-auth-g1",
+          "label": "決済要求と判定",
+          "itemIds": [
+            "zukai-payment-auth-n1",
+            "zukai-payment-auth-n2",
+            "zukai-payment-auth-n3"
+          ]
+        },
+        {
+          "id": "zukai-payment-auth-g2",
+          "label": "承認後の完了",
+          "itemIds": [
+            "zukai-payment-auth-n4",
+            "zukai-payment-auth-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-payment-auth-n1",
+          "zukai-payment-auth-n7"
+        ],
+        [
+          "zukai-payment-auth-n7",
+          "zukai-payment-auth-n2"
+        ],
+        [
+          "zukai-payment-auth-n7",
+          "zukai-payment-auth-n8"
+        ],
+        [
+          "zukai-payment-auth-n2",
+          "zukai-payment-auth-n3"
+        ],
+        [
+          "zukai-payment-auth-n3",
+          "zukai-payment-auth-n4"
+        ],
+        [
+          "zukai-payment-auth-n4",
+          "zukai-payment-auth-n5"
+        ],
+        [
+          "zukai-payment-auth-n3",
+          "zukai-payment-auth-n6"
+        ]
+      ],
+      "layout": {
+        "zukai-payment-auth-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-payment-auth-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "zukai-payment-auth-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zukai-payment-auth-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "zukai-payment-auth-n6": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "zukai-payment-auth-n5": {
+          "x": 0.87,
+          "y": 0.5
+        },
+        "zukai-payment-auth-n7": {
+          "x": 0.3,
+          "y": 0.88
+        },
+        "zukai-payment-auth-n8": {
+          "x": 0.88,
+          "y": 0.88
+        }
+      },
+      "explanation": "購入内容の検証で問題が見つかった場合は修正を依頼し、問題がなければ決済代行へ承認を要求します。承認時は注文と注文番号を確定し、非承認時は支払い方法の再入力へ進みます。",
+      "source": "20_zukai-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "zukai-refund",
+      "title": "注文キャンセルと返金",
+      "prompt": "キャンセル後の返金処理は、対象外の注文をAPIへ送らないことが前提です。担当者が注文をキャンセルしたら返金対象かを判定し、対象外ならその旨を担当者へ通知します。対象の場合だけ決済代行へ返金APIを送り、成功時は返金済みに更新、失敗時は再試行キューへ登録してから担当者へ失敗を知らせます。対象判定とAPI応答という二段階の判断があり、注文メモの文字数制限は今回の処理とは別の話です。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「担当者が注文をキャンセル」です。 分岐は「返金対象か判定」からは「決済代行へ返金API」／「返金対象外を担当者へ通知」へ分かります。「決済代行へ返金API」からは「成功時に返金済みへ更新」／「失敗時に再試行キューへ登録」へ分かります。 返金対象外の後続処理は仕様にないので図へ追加しません。",
+      "items": [
+        {
+          "id": "zukai-refund-n1",
+          "label": "担当者が注文をキャンセル",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-refund-n2",
+          "label": "返金対象か判定",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-refund-n3",
+          "label": "決済代行へ返金API",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-refund-n4",
+          "label": "成功時に返金済みへ更新",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-refund-n5",
+          "label": "失敗時に再試行キューへ登録",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-refund-n6",
+          "label": "担当者へ失敗を通知",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-refund-x1",
+          "label": "注文メモの文字数上限",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-refund-n7",
+          "label": "返金対象外を担当者へ通知",
+          "kind": "required"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-refund-g1",
+          "label": "返金処理",
+          "itemIds": [
+            "zukai-refund-n1",
+            "zukai-refund-n2",
+            "zukai-refund-n3"
+          ]
+        },
+        {
+          "id": "zukai-refund-g2",
+          "label": "API結果の処理",
+          "itemIds": [
+            "zukai-refund-n4",
+            "zukai-refund-n5",
+            "zukai-refund-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-refund-n1",
+          "zukai-refund-n2"
+        ],
+        [
+          "zukai-refund-n2",
+          "zukai-refund-n3"
+        ],
+        [
+          "zukai-refund-n2",
+          "zukai-refund-n7"
+        ],
+        [
+          "zukai-refund-n3",
+          "zukai-refund-n4"
+        ],
+        [
+          "zukai-refund-n3",
+          "zukai-refund-n5"
+        ],
+        [
+          "zukai-refund-n5",
+          "zukai-refund-n6"
+        ]
+      ],
+      "layout": {
+        "zukai-refund-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-refund-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "zukai-refund-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zukai-refund-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "zukai-refund-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "zukai-refund-n6": {
+          "x": 0.87,
+          "y": 0.5
+        },
+        "zukai-refund-n7": {
+          "x": 0.3,
+          "y": 0.88
+        }
+      },
+      "explanation": "返金対象外なら担当者へ通知し、対象なら返金APIを実行します。API成功時は返金済みに更新し、失敗時は再試行キューへ登録して担当者へ知らせます。",
+      "source": "20_zukai-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "zukai-shipping-api",
+      "title": "出荷依頼API連携",
+      "prompt": "出荷依頼の記録は、受付時の応答と後から届くWebhookを一続きに書いてしまい、順序が分かりにくくなっています。まずAPIを送信し、受付IDを受け取れた場合は出荷依頼中へ更新してWebhookを待ちます。API受付そのものに失敗した場合は失敗を記録し担当者へ通知します。後日Webhookを受け取ったら、成功なら出荷済み、失敗なら出荷保留へ更新します。署名方式の詳細ではなく、この二段階の結果判定と状態遷移を図にしてください。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「出荷依頼APIを送信」です。 分岐は「出荷依頼APIを送信」からは「受付IDを受領」／「受付失敗を記録して担当者へ通知」へ分かります。「Webhookで結果を受信」からは「成功時に出荷済みへ更新」／「失敗時に出荷保留へ更新」へ分かります。 受付応答と後から届く結果通知は別の段階です。",
+      "items": [
+        {
+          "id": "zukai-shipping-api-n1",
+          "label": "出荷依頼APIを送信",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-shipping-api-n2",
+          "label": "受付IDを受領",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-shipping-api-n3",
+          "label": "出荷依頼中へ更新",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-shipping-api-n4",
+          "label": "Webhookで結果を受信",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-shipping-api-n5",
+          "label": "成功時に出荷済みへ更新",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-shipping-api-n6",
+          "label": "失敗時に出荷保留へ更新",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-shipping-api-x1",
+          "label": "Webhook署名方式の詳細",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-shipping-api-n7",
+          "label": "受付失敗を記録して担当者へ通知",
+          "kind": "required"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-shipping-api-g1",
+          "label": "受付時の処理",
+          "itemIds": [
+            "zukai-shipping-api-n1",
+            "zukai-shipping-api-n2",
+            "zukai-shipping-api-n3"
+          ]
+        },
+        {
+          "id": "zukai-shipping-api-g2",
+          "label": "後続結果の処理",
+          "itemIds": [
+            "zukai-shipping-api-n4",
+            "zukai-shipping-api-n5",
+            "zukai-shipping-api-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-shipping-api-n1",
+          "zukai-shipping-api-n2"
+        ],
+        [
+          "zukai-shipping-api-n1",
+          "zukai-shipping-api-n7"
+        ],
+        [
+          "zukai-shipping-api-n2",
+          "zukai-shipping-api-n3"
+        ],
+        [
+          "zukai-shipping-api-n3",
+          "zukai-shipping-api-n4"
+        ],
+        [
+          "zukai-shipping-api-n4",
+          "zukai-shipping-api-n5"
+        ],
+        [
+          "zukai-shipping-api-n4",
+          "zukai-shipping-api-n6"
+        ]
+      ],
+      "layout": {
+        "zukai-shipping-api-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-shipping-api-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "zukai-shipping-api-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "zukai-shipping-api-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "zukai-shipping-api-n5": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "zukai-shipping-api-n6": {
+          "x": 0.87,
+          "y": 0.78
+        },
+        "zukai-shipping-api-n7": {
+          "x": 0.3,
+          "y": 0.88
+        }
+      },
+      "explanation": "API受付が成功すると受付IDを受け取り、出荷依頼中へ更新します。受付自体が失敗した場合は記録して担当者に通知します。Webhook受信後も成功なら出荷済み、失敗なら出荷保留へ分岐します。",
+      "source": "20_zukai-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "zukai-expense-redesign",
+      "title": "経費精算フローの再設計",
+      "prompt": "Web申請を導入する経費精算で、入力確認から承認、支払い、進捗確認までの新しい流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「申請者がWeb申請」から先は「入力内容をチェック」と「進捗をWebで確認」に分かれます。 「入力内容をチェック」から先は「不備を差し戻す」と「部門長へ承認依頼」に分かれます。 「部門長へ承認依頼」の次は「承認後に支払い」です。 同じ資料には「経理担当者の異動予定」、「申請集中の現状」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「申請者がWeb申請」です。 分岐は「申請者がWeb申請」からは「入力内容をチェック」／「進捗をWebで確認」へ分かります。「入力内容をチェック」からは「不備を差し戻す」／「部門長へ承認依頼」へ分かります。 現行の課題や人員事情は背景情報で、新方式の処理と分けます。",
+      "items": [
+        {
+          "id": "zukai-expense-redesign-n1",
+          "label": "申請者がWeb申請",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-expense-redesign-n2",
+          "label": "入力内容をチェック",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-expense-redesign-n3",
+          "label": "不備を差し戻す",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-expense-redesign-n4",
+          "label": "部門長へ承認依頼",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-expense-redesign-n5",
+          "label": "承認後に支払い",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-expense-redesign-n6",
+          "label": "進捗をWebで確認",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-expense-redesign-x1",
+          "label": "経理担当者の異動予定",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-expense-redesign-x2",
+          "label": "申請集中の現状",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-expense-redesign-g1",
+          "label": "申請と確認",
+          "itemIds": [
+            "zukai-expense-redesign-n1",
+            "zukai-expense-redesign-n2",
+            "zukai-expense-redesign-n3"
+          ]
+        },
+        {
+          "id": "zukai-expense-redesign-g2",
+          "label": "承認と支払い",
+          "itemIds": [
+            "zukai-expense-redesign-n4",
+            "zukai-expense-redesign-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-expense-redesign-n1",
+          "zukai-expense-redesign-n2"
+        ],
+        [
+          "zukai-expense-redesign-n2",
+          "zukai-expense-redesign-n3"
+        ],
+        [
+          "zukai-expense-redesign-n2",
+          "zukai-expense-redesign-n4"
+        ],
+        [
+          "zukai-expense-redesign-n4",
+          "zukai-expense-redesign-n5"
+        ],
+        [
+          "zukai-expense-redesign-n1",
+          "zukai-expense-redesign-n6"
+        ]
+      ],
+      "layout": {
+        "zukai-expense-redesign-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-expense-redesign-n2": {
+          "x": 0.377,
+          "y": 0.22
+        },
+        "zukai-expense-redesign-n6": {
+          "x": 0.377,
+          "y": 0.78
+        },
+        "zukai-expense-redesign-n3": {
+          "x": 0.623,
+          "y": 0.22
+        },
+        "zukai-expense-redesign-n4": {
+          "x": 0.623,
+          "y": 0.78
+        },
+        "zukai-expense-redesign-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、申請者がWeb申請 → 入力内容をチェック → 不備を差し戻す → 部門長へ承認依頼 → 承認後に支払い → 進捗をWebで確認の関係を整理します。現行の課題や人員事情は背景情報で、新方式の処理と分けます。「経理担当者の異動予定」「申請集中の現状」は今回の流れに含めません。",
+      "source": "20_zukai-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "zukai-contact-improvement",
+      "title": "問い合わせ対応の設計改善",
+      "prompt": "問い合わせを受けて回答し、過去回答を次回に活用する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「類似問い合わせを検索」の次は「過去回答候補を表示」です。 「担当者が回答を作成」の次は「顧客へ回答」です。 「顧客へ回答」の次は「回答を履歴として保存」です。 「過去回答候補を表示」の次は「担当者が回答を作成」です。 「問い合わせを受け付ける」の次は「類似問い合わせを検索」です。 同じ資料には「座席レイアウト変更」、「担当者の所属一覧」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「問い合わせを受け付ける」です。 検索候補を使って回答し、回答を履歴へ残す循環を示します。",
+      "items": [
+        {
+          "id": "zukai-contact-improvement-n1",
+          "label": "問い合わせを受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-contact-improvement-n2",
+          "label": "類似問い合わせを検索",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-contact-improvement-n3",
+          "label": "過去回答候補を表示",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-contact-improvement-n4",
+          "label": "担当者が回答を作成",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-contact-improvement-n5",
+          "label": "顧客へ回答",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-contact-improvement-n6",
+          "label": "回答を履歴として保存",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-contact-improvement-x1",
+          "label": "座席レイアウト変更",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-contact-improvement-x2",
+          "label": "担当者の所属一覧",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-contact-improvement-g1",
+          "label": "検索支援",
+          "itemIds": [
+            "zukai-contact-improvement-n2",
+            "zukai-contact-improvement-n3"
+          ]
+        },
+        {
+          "id": "zukai-contact-improvement-g2",
+          "label": "回答と蓄積",
+          "itemIds": [
+            "zukai-contact-improvement-n4",
+            "zukai-contact-improvement-n5",
+            "zukai-contact-improvement-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-contact-improvement-n1",
+          "zukai-contact-improvement-n2"
+        ],
+        [
+          "zukai-contact-improvement-n2",
+          "zukai-contact-improvement-n3"
+        ],
+        [
+          "zukai-contact-improvement-n3",
+          "zukai-contact-improvement-n4"
+        ],
+        [
+          "zukai-contact-improvement-n4",
+          "zukai-contact-improvement-n5"
+        ],
+        [
+          "zukai-contact-improvement-n5",
+          "zukai-contact-improvement-n6"
+        ]
+      ],
+      "layout": {
+        "zukai-contact-improvement-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "zukai-contact-improvement-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "zukai-contact-improvement-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "zukai-contact-improvement-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "zukai-contact-improvement-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "zukai-contact-improvement-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、問い合わせを受け付ける → 類似問い合わせを検索 → 過去回答候補を表示 → 担当者が回答を作成 → 顧客へ回答 → 回答を履歴として保存の関係を整理します。検索候補を使って回答し、回答を履歴へ残す循環を示します。「座席レイアウト変更」「担当者の所属一覧」は今回の流れに含めません。",
+      "source": "20_zukai-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "zukai-attendance-role",
+      "title": "勤怠システムの責務分離",
+      "prompt": "勤怠の打刻から勤務データを給与計算へ連携するまでを図にしてください。休暇申請と承認も含めます。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「社員が出退勤を打刻」の次は「システムが勤務時間を算出」です。 「上長が休暇を承認」の次は「人事が勤怠を確認」です。 「人事が勤怠を確認」の次は「給与計算へ勤務データを連携」です。 「社員が休暇を申請」の次は「上長が休暇を承認」です。 「システムが勤務時間を算出」の次は「人事が勤怠を確認」です。 同じ資料には「Excelへの二重転記」、「部署ごとの休憩ルール詳細」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「社員が出退勤を打刻」「社員が休暇を申請」です。 合流は「人事が勤怠を確認」には「システムが勤務時間を算出」・「上長が休暇を承認」から入ります。 社員・上長・システム・人事の担当範囲を意識します。",
+      "items": [
+        {
+          "id": "zukai-attendance-role-n1",
+          "label": "社員が出退勤を打刻",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-attendance-role-n2",
+          "label": "システムが勤務時間を算出",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-attendance-role-n3",
+          "label": "社員が休暇を申請",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-attendance-role-n4",
+          "label": "上長が休暇を承認",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-attendance-role-n5",
+          "label": "人事が勤怠を確認",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-attendance-role-n6",
+          "label": "給与計算へ勤務データを連携",
+          "kind": "required"
+        },
+        {
+          "id": "zukai-attendance-role-x1",
+          "label": "Excelへの二重転記",
+          "kind": "extra"
+        },
+        {
+          "id": "zukai-attendance-role-x2",
+          "label": "部署ごとの休憩ルール詳細",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "zukai-attendance-role-g1",
+          "label": "打刻と休暇承認",
+          "itemIds": [
+            "zukai-attendance-role-n1",
+            "zukai-attendance-role-n2",
+            "zukai-attendance-role-n3",
+            "zukai-attendance-role-n4"
+          ]
+        },
+        {
+          "id": "zukai-attendance-role-g2",
+          "label": "確認と連携",
+          "itemIds": [
+            "zukai-attendance-role-n5",
+            "zukai-attendance-role-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "zukai-attendance-role-n1",
+          "zukai-attendance-role-n2"
+        ],
+        [
+          "zukai-attendance-role-n3",
+          "zukai-attendance-role-n4"
+        ],
+        [
+          "zukai-attendance-role-n2",
+          "zukai-attendance-role-n5"
+        ],
+        [
+          "zukai-attendance-role-n4",
+          "zukai-attendance-role-n5"
+        ],
+        [
+          "zukai-attendance-role-n5",
+          "zukai-attendance-role-n6"
+        ]
+      ],
+      "layout": {
+        "zukai-attendance-role-n1": {
+          "x": 0.13,
+          "y": 0.22
+        },
+        "zukai-attendance-role-n3": {
+          "x": 0.13,
+          "y": 0.78
+        },
+        "zukai-attendance-role-n2": {
+          "x": 0.377,
+          "y": 0.22
+        },
+        "zukai-attendance-role-n4": {
+          "x": 0.377,
+          "y": 0.78
+        },
+        "zukai-attendance-role-n5": {
+          "x": 0.623,
+          "y": 0.5
+        },
+        "zukai-attendance-role-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、社員が出退勤を打刻 → システムが勤務時間を算出 → 社員が休暇を申請 → 上長が休暇を承認 → 人事が勤怠を確認 → 給与計算へ勤務データを連携の関係を整理します。社員・上長・システム・人事の担当範囲を意識します。「Excelへの二重転記」「部署ごとの休憩ルール詳細」は今回の流れに含めません。",
+      "source": "20_zukai-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "password-reset",
+      "title": "パスワード再設定",
+      "prompt": "利用者が再設定を申請し、本人確認後に新しいパスワードを登録するまでを図にしてください。担当者の説明をまとめると、「再設定を申請」の次は「登録メールへ確認リンクを送信」です。 「登録メールへ確認リンクを送信」の次は「確認リンクを開く」です。 「確認リンクを開く」の次は「新しいパスワードを登録」です。 「新しいパスワードを登録」の次は「完了を通知」です。 同じ資料には「パスワードの保存ハッシュ方式」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「再設定を申請」です。 内部の暗号化方式は処理手順と分けます。",
+      "items": [
+        {
+          "id": "password-reset-n1",
+          "label": "再設定を申請",
+          "kind": "required"
+        },
+        {
+          "id": "password-reset-n2",
+          "label": "登録メールへ確認リンクを送信",
+          "kind": "required"
+        },
+        {
+          "id": "password-reset-n3",
+          "label": "確認リンクを開く",
+          "kind": "required"
+        },
+        {
+          "id": "password-reset-n4",
+          "label": "新しいパスワードを登録",
+          "kind": "required"
+        },
+        {
+          "id": "password-reset-n5",
+          "label": "完了を通知",
+          "kind": "required"
+        },
+        {
+          "id": "password-reset-x1",
+          "label": "パスワードの保存ハッシュ方式",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "password-reset-g1",
+          "label": "本人確認",
+          "itemIds": [
+            "password-reset-n1",
+            "password-reset-n2",
+            "password-reset-n3"
+          ]
+        },
+        {
+          "id": "password-reset-g2",
+          "label": "再設定完了",
+          "itemIds": [
+            "password-reset-n4",
+            "password-reset-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "password-reset-n1",
+          "password-reset-n2"
+        ],
+        [
+          "password-reset-n2",
+          "password-reset-n3"
+        ],
+        [
+          "password-reset-n3",
+          "password-reset-n4"
+        ],
+        [
+          "password-reset-n4",
+          "password-reset-n5"
+        ]
+      ],
+      "layout": {
+        "password-reset-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "password-reset-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "password-reset-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "password-reset-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "password-reset-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、再設定を申請 → 登録メールへ確認リンクを送信 → 確認リンクを開く → 新しいパスワードを登録 → 完了を通知の関係を整理します。内部の暗号化方式は処理手順と分けます。「パスワードの保存ハッシュ方式」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "account-registration",
+      "title": "アカウント登録",
+      "prompt": "利用者がアカウントを登録し、メール確認が完了して利用開始するまでを整理してください。担当者の説明をまとめると、「登録情報を入力」の次は「入力内容を検証」です。 「入力内容を検証」の次は「確認メールを送信」です。 「確認メールを送信」の次は「確認リンクを開く」です。 「確認リンクを開く」の次は「アカウントを有効化」です。 同じ資料には「登録画面のロゴ」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「登録情報を入力」です。 メール確認が終わる前にアカウントを有効化しません。",
+      "items": [
+        {
+          "id": "account-registration-n1",
+          "label": "登録情報を入力",
+          "kind": "required"
+        },
+        {
+          "id": "account-registration-n2",
+          "label": "入力内容を検証",
+          "kind": "required"
+        },
+        {
+          "id": "account-registration-n3",
+          "label": "確認メールを送信",
+          "kind": "required"
+        },
+        {
+          "id": "account-registration-n4",
+          "label": "確認リンクを開く",
+          "kind": "required"
+        },
+        {
+          "id": "account-registration-n5",
+          "label": "アカウントを有効化",
+          "kind": "required"
+        },
+        {
+          "id": "account-registration-x1",
+          "label": "登録画面のロゴ",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "account-registration-g1",
+          "label": "登録受付",
+          "itemIds": [
+            "account-registration-n1",
+            "account-registration-n2",
+            "account-registration-n3"
+          ]
+        },
+        {
+          "id": "account-registration-g2",
+          "label": "利用開始",
+          "itemIds": [
+            "account-registration-n4",
+            "account-registration-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "account-registration-n1",
+          "account-registration-n2"
+        ],
+        [
+          "account-registration-n2",
+          "account-registration-n3"
+        ],
+        [
+          "account-registration-n3",
+          "account-registration-n4"
+        ],
+        [
+          "account-registration-n4",
+          "account-registration-n5"
+        ]
+      ],
+      "layout": {
+        "account-registration-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "account-registration-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "account-registration-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "account-registration-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "account-registration-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、登録情報を入力 → 入力内容を検証 → 確認メールを送信 → 確認リンクを開く → アカウントを有効化の関係を整理します。メール確認が終わる前にアカウントを有効化しません。「登録画面のロゴ」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "reservation-booking",
+      "title": "会議室の予約",
+      "prompt": "社員が日時と会議室を指定し、空き状況に応じて予約確定または別日時の選択へ進みます。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「空き状況を確認」から先は「予約を確定」と「別日時を選び直す」に分かれます。 「予約を確定」の次は「予約完了を通知」です。 「日時と会議室を選択」の次は「空き状況を確認」です。 同じ資料には「会議室の壁紙」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「日時と会議室を選択」です。 分岐は「空き状況を確認」からは「予約を確定」／「別日時を選び直す」へ分かります。 空きがない場合と空いている場合を分けます。",
+      "items": [
+        {
+          "id": "reservation-booking-n1",
+          "label": "日時と会議室を選択",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-booking-n2",
+          "label": "空き状況を確認",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-booking-n3",
+          "label": "予約を確定",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-booking-n4",
+          "label": "予約完了を通知",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-booking-n5",
+          "label": "別日時を選び直す",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-booking-x1",
+          "label": "会議室の壁紙",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "reservation-booking-g1",
+          "label": "予約条件の確認",
+          "itemIds": [
+            "reservation-booking-n1",
+            "reservation-booking-n2"
+          ]
+        },
+        {
+          "id": "reservation-booking-g2",
+          "label": "確認結果",
+          "itemIds": [
+            "reservation-booking-n3",
+            "reservation-booking-n4",
+            "reservation-booking-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "reservation-booking-n1",
+          "reservation-booking-n2"
+        ],
+        [
+          "reservation-booking-n2",
+          "reservation-booking-n3"
+        ],
+        [
+          "reservation-booking-n3",
+          "reservation-booking-n4"
+        ],
+        [
+          "reservation-booking-n2",
+          "reservation-booking-n5"
+        ]
+      ],
+      "layout": {
+        "reservation-booking-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "reservation-booking-n2": {
+          "x": 0.377,
+          "y": 0.5
+        },
+        "reservation-booking-n3": {
+          "x": 0.623,
+          "y": 0.22
+        },
+        "reservation-booking-n5": {
+          "x": 0.623,
+          "y": 0.78
+        },
+        "reservation-booking-n4": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、日時と会議室を選択 → 空き状況を確認 → 予約を確定 → 予約完了を通知 → 別日時を選び直すの関係を整理します。空きがない場合と空いている場合を分けます。「会議室の壁紙」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "reservation-cancel",
+      "title": "予約キャンセル待ち",
+      "prompt": "予約が満席の場合、キャンセル待ちを登録して空きが出た利用者へ案内する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「満席を確認」の次は「キャンセル待ちを登録」です。 「待ち順の先頭を確認」の次は「空席案内を送信」です。 「空席案内を送信」の次は「利用者が予約を確定」です。 「キャンセル待ちを登録」の次は「予約の取消を受け付ける」です。 「予約の取消を受け付ける」の次は「待ち順の先頭を確認」です。 同じ資料には「施設の外観写真」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「満席を確認」です。 満席時の登録と、後日空席が出た後の処理をつなぎます。",
+      "items": [
+        {
+          "id": "reservation-cancel-n1",
+          "label": "満席を確認",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-cancel-n2",
+          "label": "キャンセル待ちを登録",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-cancel-n3",
+          "label": "予約の取消を受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-cancel-n4",
+          "label": "待ち順の先頭を確認",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-cancel-n5",
+          "label": "空席案内を送信",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-cancel-n6",
+          "label": "利用者が予約を確定",
+          "kind": "required"
+        },
+        {
+          "id": "reservation-cancel-x1",
+          "label": "施設の外観写真",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "reservation-cancel-g1",
+          "label": "待ち登録",
+          "itemIds": [
+            "reservation-cancel-n1",
+            "reservation-cancel-n2"
+          ]
+        },
+        {
+          "id": "reservation-cancel-g2",
+          "label": "空席案内",
+          "itemIds": [
+            "reservation-cancel-n3",
+            "reservation-cancel-n4",
+            "reservation-cancel-n5",
+            "reservation-cancel-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "reservation-cancel-n1",
+          "reservation-cancel-n2"
+        ],
+        [
+          "reservation-cancel-n2",
+          "reservation-cancel-n3"
+        ],
+        [
+          "reservation-cancel-n3",
+          "reservation-cancel-n4"
+        ],
+        [
+          "reservation-cancel-n4",
+          "reservation-cancel-n5"
+        ],
+        [
+          "reservation-cancel-n5",
+          "reservation-cancel-n6"
+        ]
+      ],
+      "layout": {
+        "reservation-cancel-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "reservation-cancel-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "reservation-cancel-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "reservation-cancel-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "reservation-cancel-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "reservation-cancel-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、満席を確認 → キャンセル待ちを登録 → 予約の取消を受け付ける → 待ち順の先頭を確認 → 空席案内を送信 → 利用者が予約を確定の関係を整理します。満席時の登録と、後日空席が出た後の処理をつなぎます。「施設の外観写真」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "stock-reorder",
+      "title": "在庫不足の補充",
+      "prompt": "在庫数が基準を下回った商品について発注し、入荷後に在庫を更新する流れを示してください。担当者の説明をまとめると、「在庫数を確認」の次は「補充基準と比較」です。 「補充基準と比較」の次は「仕入先へ発注」です。 「仕入先へ発注」の次は「入荷を確認」です。 「入荷を確認」の次は「在庫数を更新」です。 同じ資料には「倉庫の所在地」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「在庫数を確認」です。 在庫確認から発注、入荷後の反映を順に整理します。",
+      "items": [
+        {
+          "id": "stock-reorder-n1",
+          "label": "在庫数を確認",
+          "kind": "required"
+        },
+        {
+          "id": "stock-reorder-n2",
+          "label": "補充基準と比較",
+          "kind": "required"
+        },
+        {
+          "id": "stock-reorder-n3",
+          "label": "仕入先へ発注",
+          "kind": "required"
+        },
+        {
+          "id": "stock-reorder-n4",
+          "label": "入荷を確認",
+          "kind": "required"
+        },
+        {
+          "id": "stock-reorder-n5",
+          "label": "在庫数を更新",
+          "kind": "required"
+        },
+        {
+          "id": "stock-reorder-x1",
+          "label": "倉庫の所在地",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "stock-reorder-g1",
+          "label": "補充判断",
+          "itemIds": [
+            "stock-reorder-n1",
+            "stock-reorder-n2",
+            "stock-reorder-n3"
+          ]
+        },
+        {
+          "id": "stock-reorder-g2",
+          "label": "入荷反映",
+          "itemIds": [
+            "stock-reorder-n4",
+            "stock-reorder-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "stock-reorder-n1",
+          "stock-reorder-n2"
+        ],
+        [
+          "stock-reorder-n2",
+          "stock-reorder-n3"
+        ],
+        [
+          "stock-reorder-n3",
+          "stock-reorder-n4"
+        ],
+        [
+          "stock-reorder-n4",
+          "stock-reorder-n5"
+        ]
+      ],
+      "layout": {
+        "stock-reorder-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "stock-reorder-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "stock-reorder-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "stock-reorder-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "stock-reorder-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、在庫数を確認 → 補充基準と比較 → 仕入先へ発注 → 入荷を確認 → 在庫数を更新の関係を整理します。在庫確認から発注、入荷後の反映を順に整理します。「倉庫の所在地」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "coupon-application",
+      "title": "クーポン適用",
+      "prompt": "クーポン適用の問い合わせでは、コードを入力した後に有効期限を調べ、期限内のものに限って対象商品かを確認する、という順序が共有されました。期限切れなら利用不可の理由を表示します。対象商品であれば割引を適用し、対象外なら同じく利用不可の理由を表示します。期限確認と商品確認の両方に分岐があり、どちらかで条件を満たさなければ割引へは進みません。キャンペーンバナーの配色は販促資料の話題で、今回の処理フローには含めません。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「クーポンコードを入力」です。 分岐は「有効期限を確認」からは「対象商品を確認」／「利用できない理由を表示」へ分かります。「対象商品を確認」からは「割引を適用」／「利用できない理由を表示」へ分かります。 合流は「利用できない理由を表示」には「有効期限を確認」・「対象商品を確認」から入ります。 期限と対象商品の両方を満たす場合だけ割引します。",
+      "items": [
+        {
+          "id": "coupon-application-n1",
+          "label": "クーポンコードを入力",
+          "kind": "required"
+        },
+        {
+          "id": "coupon-application-n2",
+          "label": "有効期限を確認",
+          "kind": "required"
+        },
+        {
+          "id": "coupon-application-n3",
+          "label": "対象商品を確認",
+          "kind": "required"
+        },
+        {
+          "id": "coupon-application-n4",
+          "label": "割引を適用",
+          "kind": "required"
+        },
+        {
+          "id": "coupon-application-n5",
+          "label": "利用できない理由を表示",
+          "kind": "required"
+        },
+        {
+          "id": "coupon-application-x1",
+          "label": "キャンペーンバナーの色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "coupon-application-g1",
+          "label": "適用条件の確認",
+          "itemIds": [
+            "coupon-application-n1",
+            "coupon-application-n2",
+            "coupon-application-n3"
+          ]
+        },
+        {
+          "id": "coupon-application-g2",
+          "label": "判定結果",
+          "itemIds": [
+            "coupon-application-n4",
+            "coupon-application-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "coupon-application-n1",
+          "coupon-application-n2"
+        ],
+        [
+          "coupon-application-n2",
+          "coupon-application-n3"
+        ],
+        [
+          "coupon-application-n2",
+          "coupon-application-n5"
+        ],
+        [
+          "coupon-application-n3",
+          "coupon-application-n4"
+        ],
+        [
+          "coupon-application-n3",
+          "coupon-application-n5"
+        ]
+      ],
+      "layout": {
+        "coupon-application-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "coupon-application-n2": {
+          "x": 0.377,
+          "y": 0.5
+        },
+        "coupon-application-n3": {
+          "x": 0.623,
+          "y": 0.5
+        },
+        "coupon-application-n4": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "coupon-application-n5": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、クーポンコードを入力 → 有効期限を確認 → 対象商品を確認 → 割引を適用 → 利用できない理由を表示の関係を整理します。期限と対象商品の両方を満たす場合だけ割引します。「キャンペーンバナーの色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "return-exchange",
+      "title": "返品・交換の受付",
+      "prompt": "利用者の返品申請を確認し、返品条件に応じて返送案内または対象外通知を行う流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「購入情報を確認」の次は「返品条件を判定」です。 「返送方法を案内」の次は「返送品を受領」です。 「返送品を受領」の次は「返金または交換を処理」です。 「返品条件を判定」から先は「返送方法を案内」と「対象外の理由を通知」に分かれます。 「返品を申請」の次は「購入情報を確認」です。 同じ資料には「返品受付画面の配色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「返品を申請」です。 分岐は「返品条件を判定」からは「返送方法を案内」／「対象外の理由を通知」へ分かります。 返品条件の判定後に案内を分岐します。",
+      "items": [
+        {
+          "id": "return-exchange-n1",
+          "label": "返品を申請",
+          "kind": "required"
+        },
+        {
+          "id": "return-exchange-n2",
+          "label": "購入情報を確認",
+          "kind": "required"
+        },
+        {
+          "id": "return-exchange-n3",
+          "label": "返品条件を判定",
+          "kind": "required"
+        },
+        {
+          "id": "return-exchange-n4",
+          "label": "返送方法を案内",
+          "kind": "required"
+        },
+        {
+          "id": "return-exchange-n5",
+          "label": "対象外の理由を通知",
+          "kind": "required"
+        },
+        {
+          "id": "return-exchange-n6",
+          "label": "返送品を受領",
+          "kind": "required"
+        },
+        {
+          "id": "return-exchange-n7",
+          "label": "返金または交換を処理",
+          "kind": "required"
+        },
+        {
+          "id": "return-exchange-x1",
+          "label": "返品受付画面の配色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "return-exchange-g1",
+          "label": "申請と条件確認",
+          "itemIds": [
+            "return-exchange-n1",
+            "return-exchange-n2",
+            "return-exchange-n3"
+          ]
+        },
+        {
+          "id": "return-exchange-g2",
+          "label": "返品後の処理",
+          "itemIds": [
+            "return-exchange-n4",
+            "return-exchange-n6",
+            "return-exchange-n7"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "return-exchange-n1",
+          "return-exchange-n2"
+        ],
+        [
+          "return-exchange-n2",
+          "return-exchange-n3"
+        ],
+        [
+          "return-exchange-n3",
+          "return-exchange-n4"
+        ],
+        [
+          "return-exchange-n3",
+          "return-exchange-n5"
+        ],
+        [
+          "return-exchange-n4",
+          "return-exchange-n6"
+        ],
+        [
+          "return-exchange-n6",
+          "return-exchange-n7"
+        ]
+      ],
+      "layout": {
+        "return-exchange-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "return-exchange-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "return-exchange-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "return-exchange-n4": {
+          "x": 0.574,
+          "y": 0.22
+        },
+        "return-exchange-n5": {
+          "x": 0.574,
+          "y": 0.78
+        },
+        "return-exchange-n6": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "return-exchange-n7": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、返品を申請 → 購入情報を確認 → 返品条件を判定 → 返送方法を案内 → 対象外の理由を通知 → 返送品を受領 → 返金または交換を処理の関係を整理します。返品条件の判定後に案内を分岐します。「返品受付画面の配色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "invoice-payment",
+      "title": "請求書の支払い",
+      "prompt": "請求書を受領して内容を確認し、承認後に支払い、記録を残すまでを図にしてください。担当者の説明をまとめると、「請求書を受領」の次は「金額と明細を照合」です。 「金額と明細を照合」の次は「承認を依頼」です。 「承認を依頼」の次は「承認後に振込」です。 「承認後に振込」の次は「支払記録を保存」です。 同じ資料には「請求書の紙色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「請求書を受領」です。 明細に問題がある場合は承認へ回さず差し戻します。",
+      "items": [
+        {
+          "id": "invoice-payment-n1",
+          "label": "請求書を受領",
+          "kind": "required"
+        },
+        {
+          "id": "invoice-payment-n2",
+          "label": "金額と明細を照合",
+          "kind": "required"
+        },
+        {
+          "id": "invoice-payment-n3",
+          "label": "承認を依頼",
+          "kind": "required"
+        },
+        {
+          "id": "invoice-payment-n4",
+          "label": "承認後に振込",
+          "kind": "required"
+        },
+        {
+          "id": "invoice-payment-n5",
+          "label": "支払記録を保存",
+          "kind": "required"
+        },
+        {
+          "id": "invoice-payment-x1",
+          "label": "請求書の紙色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "invoice-payment-g1",
+          "label": "受領と照合",
+          "itemIds": [
+            "invoice-payment-n1",
+            "invoice-payment-n2"
+          ]
+        },
+        {
+          "id": "invoice-payment-g2",
+          "label": "承認と支払い",
+          "itemIds": [
+            "invoice-payment-n3",
+            "invoice-payment-n4",
+            "invoice-payment-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "invoice-payment-n1",
+          "invoice-payment-n2"
+        ],
+        [
+          "invoice-payment-n2",
+          "invoice-payment-n3"
+        ],
+        [
+          "invoice-payment-n3",
+          "invoice-payment-n4"
+        ],
+        [
+          "invoice-payment-n4",
+          "invoice-payment-n5"
+        ]
+      ],
+      "layout": {
+        "invoice-payment-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "invoice-payment-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "invoice-payment-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "invoice-payment-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "invoice-payment-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、請求書を受領 → 金額と明細を照合 → 承認を依頼 → 承認後に振込 → 支払記録を保存の関係を整理します。明細に問題がある場合は承認へ回さず差し戻します。「請求書の紙色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "purchase-approval",
+      "title": "備品購入の承認",
+      "prompt": "社員の購入申請を上長が確認し、金額条件に応じて発注または差し戻す流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「社員が購入申請」の次は「上長が内容を確認」です。 「備品を発注」の次は「申請者へ結果を通知」です。 「申請を差し戻す」の次は「申請者へ結果を通知」です。 「上長が内容を確認」の次は「予算内か判定」です。 「予算内か判定」から先は「備品を発注」と「申請を差し戻す」に分かれます。 同じ資料には「備品カタログの表紙」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「社員が購入申請」です。 分岐は「予算内か判定」からは「備品を発注」／「申請を差し戻す」へ分かります。 合流は「申請者へ結果を通知」には「備品を発注」・「申請を差し戻す」から入ります。 予算内の場合と超過時の処理を分けます。",
+      "items": [
+        {
+          "id": "purchase-approval-n1",
+          "label": "社員が購入申請",
+          "kind": "required"
+        },
+        {
+          "id": "purchase-approval-n2",
+          "label": "上長が内容を確認",
+          "kind": "required"
+        },
+        {
+          "id": "purchase-approval-n3",
+          "label": "予算内か判定",
+          "kind": "required"
+        },
+        {
+          "id": "purchase-approval-n4",
+          "label": "備品を発注",
+          "kind": "required"
+        },
+        {
+          "id": "purchase-approval-n5",
+          "label": "申請を差し戻す",
+          "kind": "required"
+        },
+        {
+          "id": "purchase-approval-n6",
+          "label": "申請者へ結果を通知",
+          "kind": "required"
+        },
+        {
+          "id": "purchase-approval-x1",
+          "label": "備品カタログの表紙",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "purchase-approval-g1",
+          "label": "申請と判断",
+          "itemIds": [
+            "purchase-approval-n1",
+            "purchase-approval-n2",
+            "purchase-approval-n3"
+          ]
+        },
+        {
+          "id": "purchase-approval-g2",
+          "label": "判断後の処理",
+          "itemIds": [
+            "purchase-approval-n4",
+            "purchase-approval-n5",
+            "purchase-approval-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "purchase-approval-n1",
+          "purchase-approval-n2"
+        ],
+        [
+          "purchase-approval-n2",
+          "purchase-approval-n3"
+        ],
+        [
+          "purchase-approval-n3",
+          "purchase-approval-n4"
+        ],
+        [
+          "purchase-approval-n3",
+          "purchase-approval-n5"
+        ],
+        [
+          "purchase-approval-n4",
+          "purchase-approval-n6"
+        ],
+        [
+          "purchase-approval-n5",
+          "purchase-approval-n6"
+        ]
+      ],
+      "layout": {
+        "purchase-approval-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "purchase-approval-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "purchase-approval-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "purchase-approval-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "purchase-approval-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "purchase-approval-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、社員が購入申請 → 上長が内容を確認 → 予算内か判定 → 備品を発注 → 申請を差し戻す → 申請者へ結果を通知の関係を整理します。予算内の場合と超過時の処理を分けます。「備品カタログの表紙」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "leave-request",
+      "title": "休暇申請",
+      "prompt": "休暇申請では、上長に回す前に申請日数の上限を確認します。上限を超える申請は日数の修正を依頼し、範囲内なら上長が内容を確認します。上長が承認した場合は休暇予定を登録し、承認しない場合は却下理由を通知します。登録・却下のどちらの結果も申請者へ知らせます。上限の確認と上長の承認は別の判断なので、ひとつの分岐としてまとめないでください。社内カレンダーの色は今回の対象外です。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「社員が休暇を申請」です。 分岐は「休暇日数の上限を確認」からは「上長が申請を確認」／「申請日数の修正を依頼」へ分かります。「承認するか判定」からは「休暇予定を登録」／「却下理由を通知」へ分かります。 合流は「申請者へ結果を通知」には「休暇予定を登録」・「却下理由を通知」から入ります。 承認時のみ休暇予定を登録します。",
+      "items": [
+        {
+          "id": "leave-request-n1",
+          "label": "社員が休暇を申請",
+          "kind": "required"
+        },
+        {
+          "id": "leave-request-n2",
+          "label": "上長が申請を確認",
+          "kind": "required"
+        },
+        {
+          "id": "leave-request-n3",
+          "label": "承認するか判定",
+          "kind": "required"
+        },
+        {
+          "id": "leave-request-n4",
+          "label": "休暇予定を登録",
+          "kind": "required"
+        },
+        {
+          "id": "leave-request-n5",
+          "label": "却下理由を通知",
+          "kind": "required"
+        },
+        {
+          "id": "leave-request-n6",
+          "label": "申請者へ結果を通知",
+          "kind": "required"
+        },
+        {
+          "id": "leave-request-x1",
+          "label": "社内カレンダーの色",
+          "kind": "extra"
+        },
+        {
+          "id": "leave-request-n7",
+          "label": "休暇日数の上限を確認",
+          "kind": "required"
+        },
+        {
+          "id": "leave-request-n8",
+          "label": "申請日数の修正を依頼",
+          "kind": "required"
+        }
+      ],
+      "groups": [
+        {
+          "id": "leave-request-g1",
+          "label": "申請と判断",
+          "itemIds": [
+            "leave-request-n1",
+            "leave-request-n2",
+            "leave-request-n3"
+          ]
+        },
+        {
+          "id": "leave-request-g2",
+          "label": "承認結果",
+          "itemIds": [
+            "leave-request-n4",
+            "leave-request-n5",
+            "leave-request-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "leave-request-n1",
+          "leave-request-n7"
+        ],
+        [
+          "leave-request-n7",
+          "leave-request-n2"
+        ],
+        [
+          "leave-request-n7",
+          "leave-request-n8"
+        ],
+        [
+          "leave-request-n2",
+          "leave-request-n3"
+        ],
+        [
+          "leave-request-n3",
+          "leave-request-n4"
+        ],
+        [
+          "leave-request-n3",
+          "leave-request-n5"
+        ],
+        [
+          "leave-request-n4",
+          "leave-request-n6"
+        ],
+        [
+          "leave-request-n5",
+          "leave-request-n6"
+        ]
+      ],
+      "layout": {
+        "leave-request-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "leave-request-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "leave-request-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "leave-request-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "leave-request-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "leave-request-n6": {
+          "x": 0.87,
+          "y": 0.5
+        },
+        "leave-request-n7": {
+          "x": 0.3,
+          "y": 0.88
+        },
+        "leave-request-n8": {
+          "x": 0.88,
+          "y": 0.88
+        }
+      },
+      "explanation": "日数が上限を超える場合は申請日数の修正を依頼し、範囲内なら上長確認へ進みます。上長の承認時は休暇予定を登録し、却下時は理由を通知します。どちらの結果も申請者へ知らせます。",
+      "source": "24_organize-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "employee-onboarding",
+      "title": "新入社員の受け入れ",
+      "prompt": "入社が決まった後、アカウントや備品を準備し、初日の案内を送るまでを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「アカウントを発行」の次は「利用権限を設定」です。 「利用権限を設定」の次は「初日の案内を送信」です。 「端末と備品を準備」の次は「初日の案内を送信」です。 「入社情報を受領」から先は「アカウントを発行」と「端末と備品を準備」に分かれます。 同じ資料には「オフィスの座席写真」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「入社情報を受領」です。 分岐は「入社情報を受領」からは「アカウントを発行」／「端末と備品を準備」へ分かります。 合流は「初日の案内を送信」には「端末と備品を準備」・「利用権限を設定」から入ります。 アカウントと備品の準備は並行し、必要な準備後に案内します。",
+      "items": [
+        {
+          "id": "employee-onboarding-n1",
+          "label": "入社情報を受領",
+          "kind": "required"
+        },
+        {
+          "id": "employee-onboarding-n2",
+          "label": "アカウントを発行",
+          "kind": "required"
+        },
+        {
+          "id": "employee-onboarding-n3",
+          "label": "端末と備品を準備",
+          "kind": "required"
+        },
+        {
+          "id": "employee-onboarding-n4",
+          "label": "利用権限を設定",
+          "kind": "required"
+        },
+        {
+          "id": "employee-onboarding-n5",
+          "label": "初日の案内を送信",
+          "kind": "required"
+        },
+        {
+          "id": "employee-onboarding-x1",
+          "label": "オフィスの座席写真",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "employee-onboarding-g1",
+          "label": "受け入れ準備",
+          "itemIds": [
+            "employee-onboarding-n1",
+            "employee-onboarding-n2",
+            "employee-onboarding-n3",
+            "employee-onboarding-n4"
+          ]
+        },
+        {
+          "id": "employee-onboarding-g2",
+          "label": "初日案内",
+          "itemIds": [
+            "employee-onboarding-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "employee-onboarding-n1",
+          "employee-onboarding-n2"
+        ],
+        [
+          "employee-onboarding-n1",
+          "employee-onboarding-n3"
+        ],
+        [
+          "employee-onboarding-n2",
+          "employee-onboarding-n4"
+        ],
+        [
+          "employee-onboarding-n3",
+          "employee-onboarding-n5"
+        ],
+        [
+          "employee-onboarding-n4",
+          "employee-onboarding-n5"
+        ]
+      ],
+      "layout": {
+        "employee-onboarding-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "employee-onboarding-n2": {
+          "x": 0.377,
+          "y": 0.22
+        },
+        "employee-onboarding-n3": {
+          "x": 0.377,
+          "y": 0.78
+        },
+        "employee-onboarding-n4": {
+          "x": 0.623,
+          "y": 0.5
+        },
+        "employee-onboarding-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、入社情報を受領 → アカウントを発行 → 端末と備品を準備 → 利用権限を設定 → 初日の案内を送信の関係を整理します。アカウントと備品の準備は並行し、必要な準備後に案内します。「オフィスの座席写真」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "recruiting",
+      "title": "採用選考",
+      "prompt": "応募から書類確認、面接、選考結果の連絡までを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「応募書類を確認」の次は「面接を実施」です。 「採用可否を判定」から先は「採用を通知」と「不採用を通知」に分かれます。 「面接を実施」の次は「採用可否を判定」です。 「応募を受け付ける」の次は「応募書類を確認」です。 同じ資料には「面接室の場所」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「応募を受け付ける」です。 分岐は「採用可否を判定」からは「採用を通知」／「不採用を通知」へ分かります。 判定後の結果連絡を採用・不採用に分けます。",
+      "items": [
+        {
+          "id": "recruiting-n1",
+          "label": "応募を受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "recruiting-n2",
+          "label": "応募書類を確認",
+          "kind": "required"
+        },
+        {
+          "id": "recruiting-n3",
+          "label": "面接を実施",
+          "kind": "required"
+        },
+        {
+          "id": "recruiting-n4",
+          "label": "採用可否を判定",
+          "kind": "required"
+        },
+        {
+          "id": "recruiting-n5",
+          "label": "採用を通知",
+          "kind": "required"
+        },
+        {
+          "id": "recruiting-n6",
+          "label": "不採用を通知",
+          "kind": "required"
+        },
+        {
+          "id": "recruiting-x1",
+          "label": "面接室の場所",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "recruiting-g1",
+          "label": "応募から選考",
+          "itemIds": [
+            "recruiting-n1",
+            "recruiting-n2",
+            "recruiting-n3",
+            "recruiting-n4"
+          ]
+        },
+        {
+          "id": "recruiting-g2",
+          "label": "結果連絡",
+          "itemIds": [
+            "recruiting-n5",
+            "recruiting-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "recruiting-n1",
+          "recruiting-n2"
+        ],
+        [
+          "recruiting-n2",
+          "recruiting-n3"
+        ],
+        [
+          "recruiting-n3",
+          "recruiting-n4"
+        ],
+        [
+          "recruiting-n4",
+          "recruiting-n5"
+        ],
+        [
+          "recruiting-n4",
+          "recruiting-n6"
+        ]
+      ],
+      "layout": {
+        "recruiting-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "recruiting-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "recruiting-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "recruiting-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "recruiting-n5": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "recruiting-n6": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、応募を受け付ける → 応募書類を確認 → 面接を実施 → 採用可否を判定 → 採用を通知 → 不採用を通知の関係を整理します。判定後の結果連絡を採用・不採用に分けます。「面接室の場所」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "task-review",
+      "title": "作業依頼のレビュー",
+      "prompt": "作業依頼を受けて内容を確認し、不足があれば依頼者へ戻し、十分なら担当へ割り当てる流れを示してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「必要情報を確認」の次は「情報が十分か判定」です。 「担当者へ割り当て」の次は「着手予定を通知」です。 「情報が十分か判定」から先は「不足情報を依頼者へ確認」と「担当者へ割り当て」に分かれます。 「作業依頼を受け付ける」の次は「必要情報を確認」です。 同じ資料には「依頼フォームの背景色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「作業依頼を受け付ける」です。 分岐は「情報が十分か判定」からは「不足情報を依頼者へ確認」／「担当者へ割り当て」へ分かります。 不足情報がある依頼は割り当て前に確認します。",
+      "items": [
+        {
+          "id": "task-review-n1",
+          "label": "作業依頼を受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "task-review-n2",
+          "label": "必要情報を確認",
+          "kind": "required"
+        },
+        {
+          "id": "task-review-n3",
+          "label": "情報が十分か判定",
+          "kind": "required"
+        },
+        {
+          "id": "task-review-n4",
+          "label": "不足情報を依頼者へ確認",
+          "kind": "required"
+        },
+        {
+          "id": "task-review-n5",
+          "label": "担当者へ割り当て",
+          "kind": "required"
+        },
+        {
+          "id": "task-review-n6",
+          "label": "着手予定を通知",
+          "kind": "required"
+        },
+        {
+          "id": "task-review-x1",
+          "label": "依頼フォームの背景色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "task-review-g1",
+          "label": "依頼受付と確認",
+          "itemIds": [
+            "task-review-n1",
+            "task-review-n2",
+            "task-review-n3"
+          ]
+        },
+        {
+          "id": "task-review-g2",
+          "label": "確認結果",
+          "itemIds": [
+            "task-review-n4",
+            "task-review-n5",
+            "task-review-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "task-review-n1",
+          "task-review-n2"
+        ],
+        [
+          "task-review-n2",
+          "task-review-n3"
+        ],
+        [
+          "task-review-n3",
+          "task-review-n4"
+        ],
+        [
+          "task-review-n3",
+          "task-review-n5"
+        ],
+        [
+          "task-review-n5",
+          "task-review-n6"
+        ]
+      ],
+      "layout": {
+        "task-review-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "task-review-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "task-review-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "task-review-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "task-review-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "task-review-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、作業依頼を受け付ける → 必要情報を確認 → 情報が十分か判定 → 不足情報を依頼者へ確認 → 担当者へ割り当て → 着手予定を通知の関係を整理します。不足情報がある依頼は割り当て前に確認します。「依頼フォームの背景色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "document-revision",
+      "title": "文書の改訂",
+      "prompt": "文書の改訂案を作成し、レビューと承認を経て公開版を更新する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「改訂案を作成」の次は「関係者がレビュー」です。 「承認を確認」の次は「公開版を更新」です。 「公開版を更新」の次は「改訂履歴を記録」です。 「関係者がレビュー」から先は「指摘を反映」と「承認を確認」に分かれます。 「指摘を反映」の次は「関係者がレビュー」です。 同じ資料には「文書テンプレートの色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「改訂案を作成」です。 分岐は「関係者がレビュー」からは「指摘を反映」／「承認を確認」へ分かります。 合流は「関係者がレビュー」には「改訂案を作成」・「指摘を反映」から入ります。 レビュー指摘がある場合は修正して再確認します。",
+      "items": [
+        {
+          "id": "document-revision-n1",
+          "label": "改訂案を作成",
+          "kind": "required"
+        },
+        {
+          "id": "document-revision-n2",
+          "label": "関係者がレビュー",
+          "kind": "required"
+        },
+        {
+          "id": "document-revision-n3",
+          "label": "指摘を反映",
+          "kind": "required"
+        },
+        {
+          "id": "document-revision-n4",
+          "label": "承認を確認",
+          "kind": "required"
+        },
+        {
+          "id": "document-revision-n5",
+          "label": "公開版を更新",
+          "kind": "required"
+        },
+        {
+          "id": "document-revision-n6",
+          "label": "改訂履歴を記録",
+          "kind": "required"
+        },
+        {
+          "id": "document-revision-x1",
+          "label": "文書テンプレートの色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "document-revision-g1",
+          "label": "改訂とレビュー",
+          "itemIds": [
+            "document-revision-n1",
+            "document-revision-n2",
+            "document-revision-n3"
+          ]
+        },
+        {
+          "id": "document-revision-g2",
+          "label": "承認と公開",
+          "itemIds": [
+            "document-revision-n4",
+            "document-revision-n5",
+            "document-revision-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "document-revision-n1",
+          "document-revision-n2"
+        ],
+        [
+          "document-revision-n2",
+          "document-revision-n3"
+        ],
+        [
+          "document-revision-n3",
+          "document-revision-n2"
+        ],
+        [
+          "document-revision-n2",
+          "document-revision-n4"
+        ],
+        [
+          "document-revision-n4",
+          "document-revision-n5"
+        ],
+        [
+          "document-revision-n5",
+          "document-revision-n6"
+        ]
+      ],
+      "layout": {
+        "document-revision-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "document-revision-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "document-revision-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "document-revision-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "document-revision-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "document-revision-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、改訂案を作成 → 関係者がレビュー → 指摘を反映 → 承認を確認 → 公開版を更新 → 改訂履歴を記録の関係を整理します。レビュー指摘がある場合は修正して再確認します。「文書テンプレートの色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "support-escalation",
+      "title": "問い合わせのエスカレーション",
+      "prompt": "窓口で解決できない問い合わせを専門部署へ引き継ぎ、回答後に利用者へ伝える流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「問い合わせを受け付ける」の次は「窓口で内容を確認」です。 「専門部署へ引き継ぐ」の次は「専門部署が回答を作成」です。 「専門部署が回答を作成」の次は「利用者へ回答する」です。 「窓口で内容を確認」の次は「窓口で解決可能か判定」です。 「窓口で解決可能か判定」から先は「利用者へ回答する」と「専門部署へ引き継ぐ」に分かれます。 同じ資料には「担当者の座席配置」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「問い合わせを受け付ける」です。 分岐は「窓口で解決可能か判定」からは「利用者へ回答する」／「専門部署へ引き継ぐ」へ分かります。 合流は「利用者へ回答する」には「窓口で解決可能か判定」・「専門部署が回答を作成」から入ります。 窓口で解決できる場合と、専門部署へ引き継ぐ場合を分けます。",
+      "items": [
+        {
+          "id": "support-escalation-n1",
+          "label": "問い合わせを受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "support-escalation-n2",
+          "label": "窓口で内容を確認",
+          "kind": "required"
+        },
+        {
+          "id": "support-escalation-n3",
+          "label": "窓口で解決可能か判定",
+          "kind": "required"
+        },
+        {
+          "id": "support-escalation-n4",
+          "label": "専門部署へ引き継ぐ",
+          "kind": "required"
+        },
+        {
+          "id": "support-escalation-n5",
+          "label": "専門部署が回答を作成",
+          "kind": "required"
+        },
+        {
+          "id": "support-escalation-n6",
+          "label": "利用者へ回答する",
+          "kind": "required"
+        },
+        {
+          "id": "support-escalation-x1",
+          "label": "担当者の座席配置",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "support-escalation-g1",
+          "label": "受付と切り分け",
+          "itemIds": [
+            "support-escalation-n1",
+            "support-escalation-n2",
+            "support-escalation-n3"
+          ]
+        },
+        {
+          "id": "support-escalation-g2",
+          "label": "専門対応",
+          "itemIds": [
+            "support-escalation-n4",
+            "support-escalation-n5",
+            "support-escalation-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "support-escalation-n1",
+          "support-escalation-n2"
+        ],
+        [
+          "support-escalation-n2",
+          "support-escalation-n3"
+        ],
+        [
+          "support-escalation-n3",
+          "support-escalation-n6"
+        ],
+        [
+          "support-escalation-n3",
+          "support-escalation-n4"
+        ],
+        [
+          "support-escalation-n4",
+          "support-escalation-n5"
+        ],
+        [
+          "support-escalation-n5",
+          "support-escalation-n6"
+        ]
+      ],
+      "layout": {
+        "support-escalation-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "support-escalation-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "support-escalation-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "support-escalation-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "support-escalation-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "support-escalation-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、問い合わせを受け付ける → 窓口で内容を確認 → 窓口で解決可能か判定 → 専門部署へ引き継ぐ → 専門部署が回答を作成 → 利用者へ回答するの関係を整理します。窓口で解決できる場合と、専門部署へ引き継ぐ場合を分けます。「担当者の座席配置」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "incident-response",
+      "title": "障害発生時の初動",
+      "prompt": "監視アラートを受けて影響を確認し、復旧対応と利用者への告知を行う初動を図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「影響範囲を確認」の次は「緊急度を判定」です。 「担当チームへ連絡」の次は「回避策を実施」です。 「回避策を実施」の次は「状況を利用者へ告知」です。 「緊急度を判定」の次は「担当チームへ連絡」です。 「障害アラートを受信」の次は「影響範囲を確認」です。 同じ資料には「当番表の印刷方法」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「障害アラートを受信」です。 影響と緊急度を確認してから担当へ連絡します。",
+      "items": [
+        {
+          "id": "incident-response-n1",
+          "label": "障害アラートを受信",
+          "kind": "required"
+        },
+        {
+          "id": "incident-response-n2",
+          "label": "影響範囲を確認",
+          "kind": "required"
+        },
+        {
+          "id": "incident-response-n3",
+          "label": "緊急度を判定",
+          "kind": "required"
+        },
+        {
+          "id": "incident-response-n4",
+          "label": "担当チームへ連絡",
+          "kind": "required"
+        },
+        {
+          "id": "incident-response-n5",
+          "label": "回避策を実施",
+          "kind": "required"
+        },
+        {
+          "id": "incident-response-n6",
+          "label": "状況を利用者へ告知",
+          "kind": "required"
+        },
+        {
+          "id": "incident-response-x1",
+          "label": "当番表の印刷方法",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "incident-response-g1",
+          "label": "検知と判断",
+          "itemIds": [
+            "incident-response-n1",
+            "incident-response-n2",
+            "incident-response-n3"
+          ]
+        },
+        {
+          "id": "incident-response-g2",
+          "label": "初動対応",
+          "itemIds": [
+            "incident-response-n4",
+            "incident-response-n5",
+            "incident-response-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "incident-response-n1",
+          "incident-response-n2"
+        ],
+        [
+          "incident-response-n2",
+          "incident-response-n3"
+        ],
+        [
+          "incident-response-n3",
+          "incident-response-n4"
+        ],
+        [
+          "incident-response-n4",
+          "incident-response-n5"
+        ],
+        [
+          "incident-response-n5",
+          "incident-response-n6"
+        ]
+      ],
+      "layout": {
+        "incident-response-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "incident-response-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "incident-response-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "incident-response-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "incident-response-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "incident-response-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、障害アラートを受信 → 影響範囲を確認 → 緊急度を判定 → 担当チームへ連絡 → 回避策を実施 → 状況を利用者へ告知の関係を整理します。影響と緊急度を確認してから担当へ連絡します。「当番表の印刷方法」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "backup-restore",
+      "title": "バックアップからの復旧",
+      "prompt": "復旧依頼を受けて対象データを確認し、バックアップを復元して利用者に結果を伝える流れを示してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「復旧依頼を受け付ける」の次は「対象データと時点を確認」です。 「データを復元」の次は「復元結果を検証」です。 「復元結果を検証」の次は「依頼者へ完了を通知」です。 「対象データと時点を確認」の次は「バックアップを選択」です。 「バックアップを選択」の次は「データを復元」です。 同じ資料には「バックアップ媒体の外観」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「復旧依頼を受け付ける」です。 対象と復元時点を確認してから復元します。",
+      "items": [
+        {
+          "id": "backup-restore-n1",
+          "label": "復旧依頼を受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "backup-restore-n2",
+          "label": "対象データと時点を確認",
+          "kind": "required"
+        },
+        {
+          "id": "backup-restore-n3",
+          "label": "バックアップを選択",
+          "kind": "required"
+        },
+        {
+          "id": "backup-restore-n4",
+          "label": "データを復元",
+          "kind": "required"
+        },
+        {
+          "id": "backup-restore-n5",
+          "label": "復元結果を検証",
+          "kind": "required"
+        },
+        {
+          "id": "backup-restore-n6",
+          "label": "依頼者へ完了を通知",
+          "kind": "required"
+        },
+        {
+          "id": "backup-restore-x1",
+          "label": "バックアップ媒体の外観",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "backup-restore-g1",
+          "label": "依頼と復元準備",
+          "itemIds": [
+            "backup-restore-n1",
+            "backup-restore-n2",
+            "backup-restore-n3"
+          ]
+        },
+        {
+          "id": "backup-restore-g2",
+          "label": "復元と確認",
+          "itemIds": [
+            "backup-restore-n4",
+            "backup-restore-n5",
+            "backup-restore-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "backup-restore-n1",
+          "backup-restore-n2"
+        ],
+        [
+          "backup-restore-n2",
+          "backup-restore-n3"
+        ],
+        [
+          "backup-restore-n3",
+          "backup-restore-n4"
+        ],
+        [
+          "backup-restore-n4",
+          "backup-restore-n5"
+        ],
+        [
+          "backup-restore-n5",
+          "backup-restore-n6"
+        ]
+      ],
+      "layout": {
+        "backup-restore-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "backup-restore-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "backup-restore-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "backup-restore-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "backup-restore-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "backup-restore-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、復旧依頼を受け付ける → 対象データと時点を確認 → バックアップを選択 → データを復元 → 復元結果を検証 → 依頼者へ完了を通知の関係を整理します。対象と復元時点を確認してから復元します。「バックアップ媒体の外観」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "data-import",
+      "title": "顧客データの一括取込",
+      "prompt": "CSVを受け付け、形式と各行を検証して、問題のないデータだけを登録する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「列構成を検証」の次は「各行の必須項目を検証」です。 「各行の必須項目を検証」から先は「有効行を登録」と「不備行をエラー一覧に出力」に分かれます。 「CSVを受け付ける」の次は「列構成を検証」です。 同じ資料には「取込担当者の部署名」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「CSVを受け付ける」です。 分岐は「各行の必須項目を検証」からは「有効行を登録」／「不備行をエラー一覧に出力」へ分かります。 ファイル全体の形式確認と行単位の検証を分けます。",
+      "items": [
+        {
+          "id": "data-import-n1",
+          "label": "CSVを受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "data-import-n2",
+          "label": "列構成を検証",
+          "kind": "required"
+        },
+        {
+          "id": "data-import-n3",
+          "label": "各行の必須項目を検証",
+          "kind": "required"
+        },
+        {
+          "id": "data-import-n4",
+          "label": "有効行を登録",
+          "kind": "required"
+        },
+        {
+          "id": "data-import-n5",
+          "label": "不備行をエラー一覧に出力",
+          "kind": "required"
+        },
+        {
+          "id": "data-import-x1",
+          "label": "取込担当者の部署名",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "data-import-g1",
+          "label": "ファイルと行の検証",
+          "itemIds": [
+            "data-import-n1",
+            "data-import-n2",
+            "data-import-n3"
+          ]
+        },
+        {
+          "id": "data-import-g2",
+          "label": "取込結果",
+          "itemIds": [
+            "data-import-n4",
+            "data-import-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "data-import-n1",
+          "data-import-n2"
+        ],
+        [
+          "data-import-n2",
+          "data-import-n3"
+        ],
+        [
+          "data-import-n3",
+          "data-import-n4"
+        ],
+        [
+          "data-import-n3",
+          "data-import-n5"
+        ]
+      ],
+      "layout": {
+        "data-import-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "data-import-n2": {
+          "x": 0.377,
+          "y": 0.5
+        },
+        "data-import-n3": {
+          "x": 0.623,
+          "y": 0.5
+        },
+        "data-import-n4": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "data-import-n5": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、CSVを受け付ける → 列構成を検証 → 各行の必須項目を検証 → 有効行を登録 → 不備行をエラー一覧に出力の関係を整理します。ファイル全体の形式確認と行単位の検証を分けます。「取込担当者の部署名」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "account-suspension",
+      "title": "アカウントの一時停止",
+      "prompt": "不審な利用を検知した後にアカウントを停止し、本人確認後に再開する流れを示してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「不審な利用を検知」の次は「本人へ確認を依頼」です。 「本人確認を完了」の次は「アカウントを再開」です。 「本人へ確認を依頼」から先は「確認期限まで応答を待つ」と「本人確認を完了」に分かれます。 「確認期限まで応答を待つ」の次は「アカウントを一時停止」です。 同じ資料には「アカウント画面のテーマ色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「不審な利用を検知」です。 分岐は「本人へ確認を依頼」からは「確認期限まで応答を待つ」／「本人確認を完了」へ分かります。 応答がない場合の停止と、確認完了後の再開を分けます。",
+      "items": [
+        {
+          "id": "account-suspension-n1",
+          "label": "不審な利用を検知",
+          "kind": "required"
+        },
+        {
+          "id": "account-suspension-n2",
+          "label": "本人へ確認を依頼",
+          "kind": "required"
+        },
+        {
+          "id": "account-suspension-n3",
+          "label": "確認期限まで応答を待つ",
+          "kind": "required"
+        },
+        {
+          "id": "account-suspension-n4",
+          "label": "アカウントを一時停止",
+          "kind": "required"
+        },
+        {
+          "id": "account-suspension-n5",
+          "label": "本人確認を完了",
+          "kind": "required"
+        },
+        {
+          "id": "account-suspension-n6",
+          "label": "アカウントを再開",
+          "kind": "required"
+        },
+        {
+          "id": "account-suspension-x1",
+          "label": "アカウント画面のテーマ色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "account-suspension-g1",
+          "label": "検知と確認",
+          "itemIds": [
+            "account-suspension-n1",
+            "account-suspension-n2",
+            "account-suspension-n3"
+          ]
+        },
+        {
+          "id": "account-suspension-g2",
+          "label": "停止と再開",
+          "itemIds": [
+            "account-suspension-n4",
+            "account-suspension-n5",
+            "account-suspension-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "account-suspension-n1",
+          "account-suspension-n2"
+        ],
+        [
+          "account-suspension-n2",
+          "account-suspension-n3"
+        ],
+        [
+          "account-suspension-n3",
+          "account-suspension-n4"
+        ],
+        [
+          "account-suspension-n2",
+          "account-suspension-n5"
+        ],
+        [
+          "account-suspension-n5",
+          "account-suspension-n6"
+        ]
+      ],
+      "layout": {
+        "account-suspension-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "account-suspension-n2": {
+          "x": 0.377,
+          "y": 0.5
+        },
+        "account-suspension-n3": {
+          "x": 0.623,
+          "y": 0.22
+        },
+        "account-suspension-n5": {
+          "x": 0.623,
+          "y": 0.78
+        },
+        "account-suspension-n4": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "account-suspension-n6": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、不審な利用を検知 → 本人へ確認を依頼 → 確認期限まで応答を待つ → アカウントを一時停止 → 本人確認を完了 → アカウントを再開の関係を整理します。応答がない場合の停止と、確認完了後の再開を分けます。「アカウント画面のテーマ色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "notification-preference",
+      "title": "通知設定の変更",
+      "prompt": "利用者が通知方法を変更し、設定を保存して次回通知へ反映する流れを図にしてください。担当者の説明をまとめると、「通知設定を開く」の次は「通知方法を選ぶ」です。 「通知方法を選ぶ」の次は「設定内容を検証」です。 「設定内容を検証」の次は「通知設定を保存」です。 「通知設定を保存」の次は「次回通知から反映」です。 同じ資料には「設定画面のアイコン」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「通知設定を開く」です。 選択内容を確認してから保存し、以降の通知に反映します。",
+      "items": [
+        {
+          "id": "notification-preference-n1",
+          "label": "通知設定を開く",
+          "kind": "required"
+        },
+        {
+          "id": "notification-preference-n2",
+          "label": "通知方法を選ぶ",
+          "kind": "required"
+        },
+        {
+          "id": "notification-preference-n3",
+          "label": "設定内容を検証",
+          "kind": "required"
+        },
+        {
+          "id": "notification-preference-n4",
+          "label": "通知設定を保存",
+          "kind": "required"
+        },
+        {
+          "id": "notification-preference-n5",
+          "label": "次回通知から反映",
+          "kind": "required"
+        },
+        {
+          "id": "notification-preference-x1",
+          "label": "設定画面のアイコン",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "notification-preference-g1",
+          "label": "設定変更",
+          "itemIds": [
+            "notification-preference-n1",
+            "notification-preference-n2",
+            "notification-preference-n3"
+          ]
+        },
+        {
+          "id": "notification-preference-g2",
+          "label": "保存と反映",
+          "itemIds": [
+            "notification-preference-n4",
+            "notification-preference-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "notification-preference-n1",
+          "notification-preference-n2"
+        ],
+        [
+          "notification-preference-n2",
+          "notification-preference-n3"
+        ],
+        [
+          "notification-preference-n3",
+          "notification-preference-n4"
+        ],
+        [
+          "notification-preference-n4",
+          "notification-preference-n5"
+        ]
+      ],
+      "layout": {
+        "notification-preference-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "notification-preference-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "notification-preference-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "notification-preference-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "notification-preference-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、通知設定を開く → 通知方法を選ぶ → 設定内容を検証 → 通知設定を保存 → 次回通知から反映の関係を整理します。選択内容を確認してから保存し、以降の通知に反映します。「設定画面のアイコン」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "subscription-renewal",
+      "title": "サブスクリプション更新",
+      "prompt": "更新日に契約状態と決済結果を確認し、継続または利用停止へ進む流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「契約状態を確認」の次は「更新料金を決済」です。 「決済失敗を通知」の次は「利用を一時停止」です。 「更新料金を決済」から先は「継続期間を更新」と「決済失敗を通知」に分かれます。 「更新日を迎える」の次は「契約状態を確認」です。 同じ資料には「料金表の表示色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「更新日を迎える」です。 分岐は「更新料金を決済」からは「継続期間を更新」／「決済失敗を通知」へ分かります。 決済成功時と失敗時の処理を分けます。",
+      "items": [
+        {
+          "id": "subscription-renewal-n1",
+          "label": "更新日を迎える",
+          "kind": "required"
+        },
+        {
+          "id": "subscription-renewal-n2",
+          "label": "契約状態を確認",
+          "kind": "required"
+        },
+        {
+          "id": "subscription-renewal-n3",
+          "label": "更新料金を決済",
+          "kind": "required"
+        },
+        {
+          "id": "subscription-renewal-n4",
+          "label": "継続期間を更新",
+          "kind": "required"
+        },
+        {
+          "id": "subscription-renewal-n5",
+          "label": "決済失敗を通知",
+          "kind": "required"
+        },
+        {
+          "id": "subscription-renewal-n6",
+          "label": "利用を一時停止",
+          "kind": "required"
+        },
+        {
+          "id": "subscription-renewal-x1",
+          "label": "料金表の表示色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "subscription-renewal-g1",
+          "label": "更新処理",
+          "itemIds": [
+            "subscription-renewal-n1",
+            "subscription-renewal-n2",
+            "subscription-renewal-n3"
+          ]
+        },
+        {
+          "id": "subscription-renewal-g2",
+          "label": "決済結果",
+          "itemIds": [
+            "subscription-renewal-n4",
+            "subscription-renewal-n5",
+            "subscription-renewal-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "subscription-renewal-n1",
+          "subscription-renewal-n2"
+        ],
+        [
+          "subscription-renewal-n2",
+          "subscription-renewal-n3"
+        ],
+        [
+          "subscription-renewal-n3",
+          "subscription-renewal-n4"
+        ],
+        [
+          "subscription-renewal-n3",
+          "subscription-renewal-n5"
+        ],
+        [
+          "subscription-renewal-n5",
+          "subscription-renewal-n6"
+        ]
+      ],
+      "layout": {
+        "subscription-renewal-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "subscription-renewal-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "subscription-renewal-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "subscription-renewal-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "subscription-renewal-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "subscription-renewal-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、更新日を迎える → 契約状態を確認 → 更新料金を決済 → 継続期間を更新 → 決済失敗を通知 → 利用を一時停止の関係を整理します。決済成功時と失敗時の処理を分けます。「料金表の表示色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "trial-upgrade",
+      "title": "無料試用から有料プランへ",
+      "prompt": "試用期間の終了前に利用者がプランを選び、決済成功後に有料機能を有効化する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「試用終了が近づく」の次は「プラン選択を案内」です。 「決済を実行」から先は「有料機能を有効化」と「決済失敗を案内」に分かれます。 「プラン選択を案内」の次は「利用者がプランを選択」です。 「利用者がプランを選択」の次は「決済を実行」です。 同じ資料には「料金ページの写真」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「試用終了が近づく」です。 分岐は「決済を実行」からは「有料機能を有効化」／「決済失敗を案内」へ分かります。 決済が完了した場合だけ有料機能を有効にします。",
+      "items": [
+        {
+          "id": "trial-upgrade-n1",
+          "label": "試用終了が近づく",
+          "kind": "required"
+        },
+        {
+          "id": "trial-upgrade-n2",
+          "label": "プラン選択を案内",
+          "kind": "required"
+        },
+        {
+          "id": "trial-upgrade-n3",
+          "label": "利用者がプランを選択",
+          "kind": "required"
+        },
+        {
+          "id": "trial-upgrade-n4",
+          "label": "決済を実行",
+          "kind": "required"
+        },
+        {
+          "id": "trial-upgrade-n5",
+          "label": "有料機能を有効化",
+          "kind": "required"
+        },
+        {
+          "id": "trial-upgrade-n6",
+          "label": "決済失敗を案内",
+          "kind": "required"
+        },
+        {
+          "id": "trial-upgrade-x1",
+          "label": "料金ページの写真",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "trial-upgrade-g1",
+          "label": "プラン選択",
+          "itemIds": [
+            "trial-upgrade-n1",
+            "trial-upgrade-n2",
+            "trial-upgrade-n3"
+          ]
+        },
+        {
+          "id": "trial-upgrade-g2",
+          "label": "決済結果",
+          "itemIds": [
+            "trial-upgrade-n4",
+            "trial-upgrade-n5",
+            "trial-upgrade-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "trial-upgrade-n1",
+          "trial-upgrade-n2"
+        ],
+        [
+          "trial-upgrade-n2",
+          "trial-upgrade-n3"
+        ],
+        [
+          "trial-upgrade-n3",
+          "trial-upgrade-n4"
+        ],
+        [
+          "trial-upgrade-n4",
+          "trial-upgrade-n5"
+        ],
+        [
+          "trial-upgrade-n4",
+          "trial-upgrade-n6"
+        ]
+      ],
+      "layout": {
+        "trial-upgrade-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "trial-upgrade-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "trial-upgrade-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "trial-upgrade-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "trial-upgrade-n5": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "trial-upgrade-n6": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、試用終了が近づく → プラン選択を案内 → 利用者がプランを選択 → 決済を実行 → 有料機能を有効化 → 決済失敗を案内の関係を整理します。決済が完了した場合だけ有料機能を有効にします。「料金ページの写真」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "access-request",
+      "title": "システム権限の申請",
+      "prompt": "社員が業務システムの権限を申請し、上長と管理者の確認後に権限を付与する流れを整理してください。担当者の説明をまとめると、「社員が権限を申請」の次は「上長が必要性を確認」です。 「上長が必要性を確認」の次は「管理者が権限範囲を確認」です。 「管理者が権限範囲を確認」の次は「権限を付与」です。 「権限を付与」の次は「申請者へ結果を通知」です。 同じ資料には「権限画面の配色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「社員が権限を申請」です。 業務上の必要性と技術的な権限範囲を別々に確認します。",
+      "items": [
+        {
+          "id": "access-request-n1",
+          "label": "社員が権限を申請",
+          "kind": "required"
+        },
+        {
+          "id": "access-request-n2",
+          "label": "上長が必要性を確認",
+          "kind": "required"
+        },
+        {
+          "id": "access-request-n3",
+          "label": "管理者が権限範囲を確認",
+          "kind": "required"
+        },
+        {
+          "id": "access-request-n4",
+          "label": "権限を付与",
+          "kind": "required"
+        },
+        {
+          "id": "access-request-n5",
+          "label": "申請者へ結果を通知",
+          "kind": "required"
+        },
+        {
+          "id": "access-request-x1",
+          "label": "権限画面の配色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "access-request-g1",
+          "label": "申請と確認",
+          "itemIds": [
+            "access-request-n1",
+            "access-request-n2",
+            "access-request-n3"
+          ]
+        },
+        {
+          "id": "access-request-g2",
+          "label": "付与と連絡",
+          "itemIds": [
+            "access-request-n4",
+            "access-request-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "access-request-n1",
+          "access-request-n2"
+        ],
+        [
+          "access-request-n2",
+          "access-request-n3"
+        ],
+        [
+          "access-request-n3",
+          "access-request-n4"
+        ],
+        [
+          "access-request-n4",
+          "access-request-n5"
+        ]
+      ],
+      "layout": {
+        "access-request-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "access-request-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "access-request-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "access-request-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "access-request-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、社員が権限を申請 → 上長が必要性を確認 → 管理者が権限範囲を確認 → 権限を付与 → 申請者へ結果を通知の関係を整理します。業務上の必要性と技術的な権限範囲を別々に確認します。「権限画面の配色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "audit-review",
+      "title": "操作ログの定期確認",
+      "prompt": "管理者が操作ログを抽出し、異常な操作があれば調査依頼を行い、確認結果を記録する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「操作ログを抽出」の次は「異常な操作を確認」です。 「問題の有無を判定」から先は「必要時に調査を依頼」と「確認結果を記録」に分かれます。 「必要時に調査を依頼」の次は「確認結果を記録」です。 「異常な操作を確認」の次は「問題の有無を判定」です。 「確認対象期間を決める」の次は「操作ログを抽出」です。 同じ資料には「ログ画面の列幅」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「確認対象期間を決める」です。 分岐は「問題の有無を判定」からは「必要時に調査を依頼」／「確認結果を記録」へ分かります。 合流は「確認結果を記録」には「問題の有無を判定」・「必要時に調査を依頼」から入ります。 確認結果によって調査依頼の有無が分かれます。",
+      "items": [
+        {
+          "id": "audit-review-n1",
+          "label": "確認対象期間を決める",
+          "kind": "required"
+        },
+        {
+          "id": "audit-review-n2",
+          "label": "操作ログを抽出",
+          "kind": "required"
+        },
+        {
+          "id": "audit-review-n3",
+          "label": "異常な操作を確認",
+          "kind": "required"
+        },
+        {
+          "id": "audit-review-n4",
+          "label": "問題の有無を判定",
+          "kind": "required"
+        },
+        {
+          "id": "audit-review-n5",
+          "label": "必要時に調査を依頼",
+          "kind": "required"
+        },
+        {
+          "id": "audit-review-n6",
+          "label": "確認結果を記録",
+          "kind": "required"
+        },
+        {
+          "id": "audit-review-x1",
+          "label": "ログ画面の列幅",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "audit-review-g1",
+          "label": "ログ抽出と確認",
+          "itemIds": [
+            "audit-review-n1",
+            "audit-review-n2",
+            "audit-review-n3",
+            "audit-review-n4"
+          ]
+        },
+        {
+          "id": "audit-review-g2",
+          "label": "判定後の記録",
+          "itemIds": [
+            "audit-review-n5",
+            "audit-review-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "audit-review-n1",
+          "audit-review-n2"
+        ],
+        [
+          "audit-review-n2",
+          "audit-review-n3"
+        ],
+        [
+          "audit-review-n3",
+          "audit-review-n4"
+        ],
+        [
+          "audit-review-n4",
+          "audit-review-n5"
+        ],
+        [
+          "audit-review-n4",
+          "audit-review-n6"
+        ],
+        [
+          "audit-review-n5",
+          "audit-review-n6"
+        ]
+      ],
+      "layout": {
+        "audit-review-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "audit-review-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "audit-review-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "audit-review-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "audit-review-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "audit-review-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、確認対象期間を決める → 操作ログを抽出 → 異常な操作を確認 → 問題の有無を判定 → 必要時に調査を依頼 → 確認結果を記録の関係を整理します。確認結果によって調査依頼の有無が分かれます。「ログ画面の列幅」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "ci-deploy",
+      "title": "テストから本番公開",
+      "prompt": "リリースの議事録は、公開前のテスト失敗と公開後の異常が「失敗」と一括りにされていました。変更を取り込んで自動テストを行い、成功なら本番公開、失敗なら開発者へ内容を知らせて修正し、テストへ戻します。公開後は別途ヘルスチェックを行い、正常なら公開完了を通知、異常なら前バージョンへ戻します。テスト結果と公開後監視の二つの判断を区別してください。開発端末の機種名は環境メモで、処理の一部ではありません。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「変更を取り込む」です。 分岐は「テスト結果を判定」からは「本番環境へ公開」／「失敗内容を開発者へ通知」へ分かります。「公開後のヘルスチェック」からは「公開完了を通知」／「前バージョンへ戻す」へ分かります。 合流は「自動テストを実行」には「変更を取り込む」・「修正して再実行」から入ります。 テスト成功時だけ公開し、失敗時は修正後に再実行します。",
+      "items": [
+        {
+          "id": "ci-deploy-n1",
+          "label": "変更を取り込む",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-n2",
+          "label": "自動テストを実行",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-n3",
+          "label": "テスト結果を判定",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-n4",
+          "label": "本番環境へ公開",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-n5",
+          "label": "失敗内容を開発者へ通知",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-n6",
+          "label": "修正して再実行",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-x1",
+          "label": "開発端末の機種名",
+          "kind": "extra"
+        },
+        {
+          "id": "ci-deploy-n7",
+          "label": "公開後のヘルスチェック",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-n8",
+          "label": "公開完了を通知",
+          "kind": "required"
+        },
+        {
+          "id": "ci-deploy-n9",
+          "label": "前バージョンへ戻す",
+          "kind": "required"
+        }
+      ],
+      "groups": [
+        {
+          "id": "ci-deploy-g1",
+          "label": "検証と判定",
+          "itemIds": [
+            "ci-deploy-n1",
+            "ci-deploy-n2",
+            "ci-deploy-n3"
+          ]
+        },
+        {
+          "id": "ci-deploy-g2",
+          "label": "結果への対応",
+          "itemIds": [
+            "ci-deploy-n4",
+            "ci-deploy-n5",
+            "ci-deploy-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "ci-deploy-n1",
+          "ci-deploy-n2"
+        ],
+        [
+          "ci-deploy-n2",
+          "ci-deploy-n3"
+        ],
+        [
+          "ci-deploy-n3",
+          "ci-deploy-n4"
+        ],
+        [
+          "ci-deploy-n3",
+          "ci-deploy-n5"
+        ],
+        [
+          "ci-deploy-n5",
+          "ci-deploy-n6"
+        ],
+        [
+          "ci-deploy-n6",
+          "ci-deploy-n2"
+        ],
+        [
+          "ci-deploy-n4",
+          "ci-deploy-n7"
+        ],
+        [
+          "ci-deploy-n7",
+          "ci-deploy-n8"
+        ],
+        [
+          "ci-deploy-n7",
+          "ci-deploy-n9"
+        ]
+      ],
+      "layout": {
+        "ci-deploy-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "ci-deploy-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "ci-deploy-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "ci-deploy-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "ci-deploy-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "ci-deploy-n6": {
+          "x": 0.87,
+          "y": 0.5
+        },
+        "ci-deploy-n7": {
+          "x": 0.5,
+          "y": 0.88
+        },
+        "ci-deploy-n8": {
+          "x": 0.12,
+          "y": 0.88
+        },
+        "ci-deploy-n9": {
+          "x": 0.88,
+          "y": 0.88
+        }
+      },
+      "explanation": "テスト成功時だけ本番公開し、失敗時は修正してテストをやり直します。公開後のヘルスチェックが正常なら完了を通知し、異常なら前バージョンへ戻します。",
+      "source": "24_organize-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "feature-flag",
+      "title": "機能フラグの段階公開",
+      "prompt": "新機能を限定した利用者へ公開し、問題がなければ対象を広げ、問題時には停止する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「機能フラグを有効化」の次は「限定利用者へ公開」です。 「問題の有無を判定」から先は「対象範囲を拡大」と「問題時に機能を停止」に分かれます。 「限定利用者へ公開」の次は「利用状況を監視」です。 「利用状況を監視」の次は「問題の有無を判定」です。 同じ資料には「フラグ管理画面の色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「機能フラグを有効化」です。 分岐は「問題の有無を判定」からは「対象範囲を拡大」／「問題時に機能を停止」へ分かります。 監視結果に応じて拡大または停止します。",
+      "items": [
+        {
+          "id": "feature-flag-n1",
+          "label": "機能フラグを有効化",
+          "kind": "required"
+        },
+        {
+          "id": "feature-flag-n2",
+          "label": "限定利用者へ公開",
+          "kind": "required"
+        },
+        {
+          "id": "feature-flag-n3",
+          "label": "利用状況を監視",
+          "kind": "required"
+        },
+        {
+          "id": "feature-flag-n4",
+          "label": "問題の有無を判定",
+          "kind": "required"
+        },
+        {
+          "id": "feature-flag-n5",
+          "label": "対象範囲を拡大",
+          "kind": "required"
+        },
+        {
+          "id": "feature-flag-n6",
+          "label": "問題時に機能を停止",
+          "kind": "required"
+        },
+        {
+          "id": "feature-flag-x1",
+          "label": "フラグ管理画面の色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "feature-flag-g1",
+          "label": "限定公開と監視",
+          "itemIds": [
+            "feature-flag-n1",
+            "feature-flag-n2",
+            "feature-flag-n3",
+            "feature-flag-n4"
+          ]
+        },
+        {
+          "id": "feature-flag-g2",
+          "label": "判定後の操作",
+          "itemIds": [
+            "feature-flag-n5",
+            "feature-flag-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "feature-flag-n1",
+          "feature-flag-n2"
+        ],
+        [
+          "feature-flag-n2",
+          "feature-flag-n3"
+        ],
+        [
+          "feature-flag-n3",
+          "feature-flag-n4"
+        ],
+        [
+          "feature-flag-n4",
+          "feature-flag-n5"
+        ],
+        [
+          "feature-flag-n4",
+          "feature-flag-n6"
+        ]
+      ],
+      "layout": {
+        "feature-flag-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "feature-flag-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "feature-flag-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "feature-flag-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "feature-flag-n5": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "feature-flag-n6": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、機能フラグを有効化 → 限定利用者へ公開 → 利用状況を監視 → 問題の有無を判定 → 対象範囲を拡大 → 問題時に機能を停止の関係を整理します。監視結果に応じて拡大または停止します。「フラグ管理画面の色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "rate-limit",
+      "title": "API利用上限の超過",
+      "prompt": "APIの利用量を確認し、上限内なら処理を続け、超過時は待ち時間を含む応答を返す流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「利用量を集計」の次は「上限内か判定」です。 「上限内か判定」から先は「通常処理を実行」と「上限超過の応答を返す」に分かれます。 「APIリクエストを受信」の次は「利用量を集計」です。 同じ資料には「API仕様書の表紙」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「APIリクエストを受信」です。 分岐は「上限内か判定」からは「通常処理を実行」／「上限超過の応答を返す」へ分かります。 上限内と超過で応答を分けます。",
+      "items": [
+        {
+          "id": "rate-limit-n1",
+          "label": "APIリクエストを受信",
+          "kind": "required"
+        },
+        {
+          "id": "rate-limit-n2",
+          "label": "利用量を集計",
+          "kind": "required"
+        },
+        {
+          "id": "rate-limit-n3",
+          "label": "上限内か判定",
+          "kind": "required"
+        },
+        {
+          "id": "rate-limit-n4",
+          "label": "通常処理を実行",
+          "kind": "required"
+        },
+        {
+          "id": "rate-limit-n5",
+          "label": "上限超過の応答を返す",
+          "kind": "required"
+        },
+        {
+          "id": "rate-limit-x1",
+          "label": "API仕様書の表紙",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "rate-limit-g1",
+          "label": "利用量の判定",
+          "itemIds": [
+            "rate-limit-n1",
+            "rate-limit-n2",
+            "rate-limit-n3"
+          ]
+        },
+        {
+          "id": "rate-limit-g2",
+          "label": "応答分岐",
+          "itemIds": [
+            "rate-limit-n4",
+            "rate-limit-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "rate-limit-n1",
+          "rate-limit-n2"
+        ],
+        [
+          "rate-limit-n2",
+          "rate-limit-n3"
+        ],
+        [
+          "rate-limit-n3",
+          "rate-limit-n4"
+        ],
+        [
+          "rate-limit-n3",
+          "rate-limit-n5"
+        ]
+      ],
+      "layout": {
+        "rate-limit-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "rate-limit-n2": {
+          "x": 0.377,
+          "y": 0.5
+        },
+        "rate-limit-n3": {
+          "x": 0.623,
+          "y": 0.5
+        },
+        "rate-limit-n4": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "rate-limit-n5": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、APIリクエストを受信 → 利用量を集計 → 上限内か判定 → 通常処理を実行 → 上限超過の応答を返すの関係を整理します。上限内と超過で応答を分けます。「API仕様書の表紙」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "batch-retry",
+      "title": "バッチ処理の再試行",
+      "prompt": "定期バッチの障害記録には「失敗したら再試行」とだけあり、いつ通知するのか抜けていました。実際の流れは、バッチ開始後に外部連携を実行し、その結果が成功ならデータを記録します。失敗の場合は再試行回数を確認し、規定回数内なら外部連携へ戻って再実行、上限に達していたら担当者へ通知します。結果判定と再試行上限の二段階を読み分けてください。実行サーバーの型番は運用台帳の情報です。関係者の説明には背景や言い直しも混ざっています。判断点ごとに条件と行き先を分け、実際に処理が続く向きだけを図にしてください。",
+      "hint": "起点は「定期バッチを開始」です。 分岐は「結果を判定」からは「成功データを記録」／「規定回数内なら再試行」へ分かります。「規定回数内なら再試行」からは「外部連携を実行」／「上限到達時に担当者へ通知」へ分かります。 合流は「外部連携を実行」には「定期バッチを開始」・「規定回数内なら再試行」から入ります。 失敗しても再試行上限に達するまでは繰り返します。",
+      "items": [
+        {
+          "id": "batch-retry-n1",
+          "label": "定期バッチを開始",
+          "kind": "required"
+        },
+        {
+          "id": "batch-retry-n2",
+          "label": "外部連携を実行",
+          "kind": "required"
+        },
+        {
+          "id": "batch-retry-n3",
+          "label": "結果を判定",
+          "kind": "required"
+        },
+        {
+          "id": "batch-retry-n4",
+          "label": "成功データを記録",
+          "kind": "required"
+        },
+        {
+          "id": "batch-retry-n5",
+          "label": "規定回数内なら再試行",
+          "kind": "required"
+        },
+        {
+          "id": "batch-retry-n6",
+          "label": "上限到達時に担当者へ通知",
+          "kind": "required"
+        },
+        {
+          "id": "batch-retry-x1",
+          "label": "バッチ実行サーバーの型番",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "batch-retry-g1",
+          "label": "実行と判定",
+          "itemIds": [
+            "batch-retry-n1",
+            "batch-retry-n2",
+            "batch-retry-n3"
+          ]
+        },
+        {
+          "id": "batch-retry-g2",
+          "label": "成功と失敗の処理",
+          "itemIds": [
+            "batch-retry-n4",
+            "batch-retry-n5",
+            "batch-retry-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "batch-retry-n1",
+          "batch-retry-n2"
+        ],
+        [
+          "batch-retry-n2",
+          "batch-retry-n3"
+        ],
+        [
+          "batch-retry-n3",
+          "batch-retry-n4"
+        ],
+        [
+          "batch-retry-n3",
+          "batch-retry-n5"
+        ],
+        [
+          "batch-retry-n5",
+          "batch-retry-n2"
+        ],
+        [
+          "batch-retry-n5",
+          "batch-retry-n6"
+        ]
+      ],
+      "layout": {
+        "batch-retry-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "batch-retry-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "batch-retry-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "batch-retry-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "batch-retry-n5": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "batch-retry-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、定期バッチを開始 → 外部連携を実行 → 結果を判定 → 成功データを記録 → 規定回数内なら再試行 → 上限到達時に担当者へ通知の関係を整理します。失敗しても再試行上限に達するまでは繰り返します。「バッチ実行サーバーの型番」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "hard"
+    },
+    {
+      "id": "suspicious-login",
+      "title": "不審なログインの確認",
+      "prompt": "通常と異なるログインを検知し、追加認証の結果に応じてログイン継続または一時ロックする流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「通常と異なるログインを検知」の次は「追加認証を要求」です。 「アカウントを一時ロック」の次は「本人へ通知」です。 「追加認証を要求」の次は「認証結果を確認」です。 「認証結果を確認」から先は「ログインを許可」と「アカウントを一時ロック」に分かれます。 同じ資料には「ログイン画面の背景」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「通常と異なるログインを検知」です。 分岐は「認証結果を確認」からは「ログインを許可」／「アカウントを一時ロック」へ分かります。 追加認証の成功・失敗で次の処理を分けます。",
+      "items": [
+        {
+          "id": "suspicious-login-n1",
+          "label": "通常と異なるログインを検知",
+          "kind": "required"
+        },
+        {
+          "id": "suspicious-login-n2",
+          "label": "追加認証を要求",
+          "kind": "required"
+        },
+        {
+          "id": "suspicious-login-n3",
+          "label": "認証結果を確認",
+          "kind": "required"
+        },
+        {
+          "id": "suspicious-login-n4",
+          "label": "ログインを許可",
+          "kind": "required"
+        },
+        {
+          "id": "suspicious-login-n5",
+          "label": "アカウントを一時ロック",
+          "kind": "required"
+        },
+        {
+          "id": "suspicious-login-n6",
+          "label": "本人へ通知",
+          "kind": "required"
+        },
+        {
+          "id": "suspicious-login-x1",
+          "label": "ログイン画面の背景",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "suspicious-login-g1",
+          "label": "検知と追加認証",
+          "itemIds": [
+            "suspicious-login-n1",
+            "suspicious-login-n2",
+            "suspicious-login-n3"
+          ]
+        },
+        {
+          "id": "suspicious-login-g2",
+          "label": "認証結果",
+          "itemIds": [
+            "suspicious-login-n4",
+            "suspicious-login-n5",
+            "suspicious-login-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "suspicious-login-n1",
+          "suspicious-login-n2"
+        ],
+        [
+          "suspicious-login-n2",
+          "suspicious-login-n3"
+        ],
+        [
+          "suspicious-login-n3",
+          "suspicious-login-n4"
+        ],
+        [
+          "suspicious-login-n3",
+          "suspicious-login-n5"
+        ],
+        [
+          "suspicious-login-n5",
+          "suspicious-login-n6"
+        ]
+      ],
+      "layout": {
+        "suspicious-login-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "suspicious-login-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "suspicious-login-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "suspicious-login-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "suspicious-login-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "suspicious-login-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、通常と異なるログインを検知 → 追加認証を要求 → 認証結果を確認 → ログインを許可 → アカウントを一時ロック → 本人へ通知の関係を整理します。追加認証の成功・失敗で次の処理を分けます。「ログイン画面の背景」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "personal-data-export",
+      "title": "個人データの開示請求",
+      "prompt": "本人からデータ開示請求を受け付け、本人確認後に対象データを作成して安全に案内する流れを図にしてください。担当者の説明をまとめると、「開示請求を受け付ける」の次は「本人確認を行う」です。 「本人確認を行う」の次は「対象データを抽出」です。 「対象データを抽出」の次は「データファイルを作成」です。 「データファイルを作成」の次は「本人へ受取方法を案内」です。 同じ資料には「データ保管場所の詳細」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。",
+      "hint": "起点は「開示請求を受け付ける」です。 本人確認が終わってからデータを抽出します。",
+      "items": [
+        {
+          "id": "personal-data-export-n1",
+          "label": "開示請求を受け付ける",
+          "kind": "required"
+        },
+        {
+          "id": "personal-data-export-n2",
+          "label": "本人確認を行う",
+          "kind": "required"
+        },
+        {
+          "id": "personal-data-export-n3",
+          "label": "対象データを抽出",
+          "kind": "required"
+        },
+        {
+          "id": "personal-data-export-n4",
+          "label": "データファイルを作成",
+          "kind": "required"
+        },
+        {
+          "id": "personal-data-export-n5",
+          "label": "本人へ受取方法を案内",
+          "kind": "required"
+        },
+        {
+          "id": "personal-data-export-x1",
+          "label": "データ保管場所の詳細",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "personal-data-export-g1",
+          "label": "請求と本人確認",
+          "itemIds": [
+            "personal-data-export-n1",
+            "personal-data-export-n2"
+          ]
+        },
+        {
+          "id": "personal-data-export-g2",
+          "label": "データ準備",
+          "itemIds": [
+            "personal-data-export-n3",
+            "personal-data-export-n4",
+            "personal-data-export-n5"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "personal-data-export-n1",
+          "personal-data-export-n2"
+        ],
+        [
+          "personal-data-export-n2",
+          "personal-data-export-n3"
+        ],
+        [
+          "personal-data-export-n3",
+          "personal-data-export-n4"
+        ],
+        [
+          "personal-data-export-n4",
+          "personal-data-export-n5"
+        ]
+      ],
+      "layout": {
+        "personal-data-export-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "personal-data-export-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "personal-data-export-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "personal-data-export-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "personal-data-export-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、開示請求を受け付ける → 本人確認を行う → 対象データを抽出 → データファイルを作成 → 本人へ受取方法を案内の関係を整理します。本人確認が終わってからデータを抽出します。「データ保管場所の詳細」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "easy"
+    },
+    {
+      "id": "survey-publish",
+      "title": "アンケート結果の公開",
+      "prompt": "回答期間終了後に回答を集計し、個人が特定されないことを確認してから結果を公開する流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「回答データを集計」の次は「個人特定の可能性を確認」です。 「公開可能か判定」から先は「集計結果を公開」と「公開不可の箇所を除外」に分かれます。 「公開不可の箇所を除外」の次は「集計結果を公開」です。 「個人特定の可能性を確認」の次は「公開可能か判定」です。 「回答期間を終了」の次は「回答データを集計」です。 同じ資料には「アンケート画面のデザイン」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「回答期間を終了」です。 分岐は「公開可能か判定」からは「集計結果を公開」／「公開不可の箇所を除外」へ分かります。 合流は「集計結果を公開」には「公開可能か判定」・「公開不可の箇所を除外」から入ります。 個人が特定される箇所は除外してから公開します。",
+      "items": [
+        {
+          "id": "survey-publish-n1",
+          "label": "回答期間を終了",
+          "kind": "required"
+        },
+        {
+          "id": "survey-publish-n2",
+          "label": "回答データを集計",
+          "kind": "required"
+        },
+        {
+          "id": "survey-publish-n3",
+          "label": "個人特定の可能性を確認",
+          "kind": "required"
+        },
+        {
+          "id": "survey-publish-n4",
+          "label": "公開可能か判定",
+          "kind": "required"
+        },
+        {
+          "id": "survey-publish-n5",
+          "label": "集計結果を公開",
+          "kind": "required"
+        },
+        {
+          "id": "survey-publish-n6",
+          "label": "公開不可の箇所を除外",
+          "kind": "required"
+        },
+        {
+          "id": "survey-publish-x1",
+          "label": "アンケート画面のデザイン",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "survey-publish-g1",
+          "label": "集計と確認",
+          "itemIds": [
+            "survey-publish-n1",
+            "survey-publish-n2",
+            "survey-publish-n3",
+            "survey-publish-n4"
+          ]
+        },
+        {
+          "id": "survey-publish-g2",
+          "label": "公開処理",
+          "itemIds": [
+            "survey-publish-n5",
+            "survey-publish-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "survey-publish-n1",
+          "survey-publish-n2"
+        ],
+        [
+          "survey-publish-n2",
+          "survey-publish-n3"
+        ],
+        [
+          "survey-publish-n3",
+          "survey-publish-n4"
+        ],
+        [
+          "survey-publish-n4",
+          "survey-publish-n5"
+        ],
+        [
+          "survey-publish-n4",
+          "survey-publish-n6"
+        ],
+        [
+          "survey-publish-n6",
+          "survey-publish-n5"
+        ]
+      ],
+      "layout": {
+        "survey-publish-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "survey-publish-n2": {
+          "x": 0.278,
+          "y": 0.5
+        },
+        "survey-publish-n3": {
+          "x": 0.426,
+          "y": 0.5
+        },
+        "survey-publish-n4": {
+          "x": 0.574,
+          "y": 0.5
+        },
+        "survey-publish-n6": {
+          "x": 0.722,
+          "y": 0.5
+        },
+        "survey-publish-n5": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、回答期間を終了 → 回答データを集計 → 個人特定の可能性を確認 → 公開可能か判定 → 集計結果を公開 → 公開不可の箇所を除外の関係を整理します。個人が特定される箇所は除外してから公開します。「アンケート画面のデザイン」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "facility-reservation",
+      "title": "施設利用の予約",
+      "prompt": "社員が施設を予約し、承認が必要な場合は管理者の確認後に確定する流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「空き状況を確認」の次は「承認が必要か判定」です。 「管理者が承認」の次は「承認後に予約確定」です。 「承認が必要か判定」から先は「予約を確定」と「管理者が承認」に分かれます。 「利用日時を選ぶ」の次は「空き状況を確認」です。 同じ資料には「施設の案内写真」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「利用日時を選ぶ」です。 分岐は「承認が必要か判定」からは「予約を確定」／「管理者が承認」へ分かります。 承認不要ならすぐ確定し、必要な場合は承認後に確定します。",
+      "items": [
+        {
+          "id": "facility-reservation-n1",
+          "label": "利用日時を選ぶ",
+          "kind": "required"
+        },
+        {
+          "id": "facility-reservation-n2",
+          "label": "空き状況を確認",
+          "kind": "required"
+        },
+        {
+          "id": "facility-reservation-n3",
+          "label": "承認が必要か判定",
+          "kind": "required"
+        },
+        {
+          "id": "facility-reservation-n4",
+          "label": "予約を確定",
+          "kind": "required"
+        },
+        {
+          "id": "facility-reservation-n5",
+          "label": "管理者が承認",
+          "kind": "required"
+        },
+        {
+          "id": "facility-reservation-n6",
+          "label": "承認後に予約確定",
+          "kind": "required"
+        },
+        {
+          "id": "facility-reservation-x1",
+          "label": "施設の案内写真",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "facility-reservation-g1",
+          "label": "日時と空き確認",
+          "itemIds": [
+            "facility-reservation-n1",
+            "facility-reservation-n2",
+            "facility-reservation-n3"
+          ]
+        },
+        {
+          "id": "facility-reservation-g2",
+          "label": "予約確定",
+          "itemIds": [
+            "facility-reservation-n4",
+            "facility-reservation-n5",
+            "facility-reservation-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "facility-reservation-n1",
+          "facility-reservation-n2"
+        ],
+        [
+          "facility-reservation-n2",
+          "facility-reservation-n3"
+        ],
+        [
+          "facility-reservation-n3",
+          "facility-reservation-n4"
+        ],
+        [
+          "facility-reservation-n3",
+          "facility-reservation-n5"
+        ],
+        [
+          "facility-reservation-n5",
+          "facility-reservation-n6"
+        ]
+      ],
+      "layout": {
+        "facility-reservation-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "facility-reservation-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "facility-reservation-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "facility-reservation-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "facility-reservation-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "facility-reservation-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、利用日時を選ぶ → 空き状況を確認 → 承認が必要か判定 → 予約を確定 → 管理者が承認 → 承認後に予約確定の関係を整理します。承認不要ならすぐ確定し、必要な場合は承認後に確定します。「施設の案内写真」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "workshop-registration",
+      "title": "研修への参加登録",
+      "prompt": "社員が研修へ申し込み、定員と上長承認の条件に応じて参加確定またはキャンセル待ちになる流れを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「研修に申し込む」の次は「定員に空きがあるか確認」です。 「参加を確定」の次は「申込者へ結果を通知」です。 「キャンセル待ちへ登録」の次は「申込者へ結果を通知」です。 「定員に空きがあるか確認」から先は「上長承認が必要か確認」と「キャンセル待ちへ登録」に分かれます。 「上長承認が必要か確認」の次は「参加を確定」です。 同じ資料には「研修会場の写真」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「研修に申し込む」です。 分岐は「定員に空きがあるか確認」からは「上長承認が必要か確認」／「キャンセル待ちへ登録」へ分かります。 合流は「申込者へ結果を通知」には「参加を確定」・「キャンセル待ちへ登録」から入ります。 空席と承認の条件を確認して参加可否を決めます。",
+      "items": [
+        {
+          "id": "workshop-registration-n1",
+          "label": "研修に申し込む",
+          "kind": "required"
+        },
+        {
+          "id": "workshop-registration-n2",
+          "label": "定員に空きがあるか確認",
+          "kind": "required"
+        },
+        {
+          "id": "workshop-registration-n3",
+          "label": "上長承認が必要か確認",
+          "kind": "required"
+        },
+        {
+          "id": "workshop-registration-n4",
+          "label": "参加を確定",
+          "kind": "required"
+        },
+        {
+          "id": "workshop-registration-n5",
+          "label": "キャンセル待ちへ登録",
+          "kind": "required"
+        },
+        {
+          "id": "workshop-registration-n6",
+          "label": "申込者へ結果を通知",
+          "kind": "required"
+        },
+        {
+          "id": "workshop-registration-x1",
+          "label": "研修会場の写真",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "workshop-registration-g1",
+          "label": "申込条件の確認",
+          "itemIds": [
+            "workshop-registration-n1",
+            "workshop-registration-n2",
+            "workshop-registration-n3"
+          ]
+        },
+        {
+          "id": "workshop-registration-g2",
+          "label": "申込結果",
+          "itemIds": [
+            "workshop-registration-n4",
+            "workshop-registration-n5",
+            "workshop-registration-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "workshop-registration-n1",
+          "workshop-registration-n2"
+        ],
+        [
+          "workshop-registration-n2",
+          "workshop-registration-n3"
+        ],
+        [
+          "workshop-registration-n2",
+          "workshop-registration-n5"
+        ],
+        [
+          "workshop-registration-n3",
+          "workshop-registration-n4"
+        ],
+        [
+          "workshop-registration-n4",
+          "workshop-registration-n6"
+        ],
+        [
+          "workshop-registration-n5",
+          "workshop-registration-n6"
+        ]
+      ],
+      "layout": {
+        "workshop-registration-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "workshop-registration-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "workshop-registration-n3": {
+          "x": 0.5,
+          "y": 0.22
+        },
+        "workshop-registration-n5": {
+          "x": 0.5,
+          "y": 0.78
+        },
+        "workshop-registration-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "workshop-registration-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、研修に申し込む → 定員に空きがあるか確認 → 上長承認が必要か確認 → 参加を確定 → キャンセル待ちへ登録 → 申込者へ結果を通知の関係を整理します。空席と承認の条件を確認して参加可否を決めます。「研修会場の写真」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "learning-completion",
+      "title": "オンライン学習の修了",
+      "prompt": "受講者の学習完了後に確認テストを採点し、基準点に応じて修了証の発行または再受講へ進む流れを図にしてください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「教材を受講」の次は「確認テストを提出」です。 「基準点以上か判定」から先は「修了証を発行」と「再受講を案内」に分かれます。 「確認テストを提出」の次は「テストを採点」です。 「テストを採点」の次は「基準点以上か判定」です。 同じ資料には「教材ページの背景色」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「教材を受講」です。 分岐は「基準点以上か判定」からは「修了証を発行」／「再受講を案内」へ分かります。 基準点を満たす場合だけ修了証を発行します。",
+      "items": [
+        {
+          "id": "learning-completion-n1",
+          "label": "教材を受講",
+          "kind": "required"
+        },
+        {
+          "id": "learning-completion-n2",
+          "label": "確認テストを提出",
+          "kind": "required"
+        },
+        {
+          "id": "learning-completion-n3",
+          "label": "テストを採点",
+          "kind": "required"
+        },
+        {
+          "id": "learning-completion-n4",
+          "label": "基準点以上か判定",
+          "kind": "required"
+        },
+        {
+          "id": "learning-completion-n5",
+          "label": "修了証を発行",
+          "kind": "required"
+        },
+        {
+          "id": "learning-completion-n6",
+          "label": "再受講を案内",
+          "kind": "required"
+        },
+        {
+          "id": "learning-completion-x1",
+          "label": "教材ページの背景色",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "learning-completion-g1",
+          "label": "受講と採点",
+          "itemIds": [
+            "learning-completion-n1",
+            "learning-completion-n2",
+            "learning-completion-n3",
+            "learning-completion-n4"
+          ]
+        },
+        {
+          "id": "learning-completion-g2",
+          "label": "採点結果",
+          "itemIds": [
+            "learning-completion-n5",
+            "learning-completion-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "learning-completion-n1",
+          "learning-completion-n2"
+        ],
+        [
+          "learning-completion-n2",
+          "learning-completion-n3"
+        ],
+        [
+          "learning-completion-n3",
+          "learning-completion-n4"
+        ],
+        [
+          "learning-completion-n4",
+          "learning-completion-n5"
+        ],
+        [
+          "learning-completion-n4",
+          "learning-completion-n6"
+        ]
+      ],
+      "layout": {
+        "learning-completion-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "learning-completion-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "learning-completion-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "learning-completion-n4": {
+          "x": 0.685,
+          "y": 0.5
+        },
+        "learning-completion-n5": {
+          "x": 0.87,
+          "y": 0.22
+        },
+        "learning-completion-n6": {
+          "x": 0.87,
+          "y": 0.78
+        }
+      },
+      "explanation": "この図では、教材を受講 → 確認テストを提出 → テストを採点 → 基準点以上か判定 → 修了証を発行 → 再受講を案内の関係を整理します。基準点を満たす場合だけ修了証を発行します。「教材ページの背景色」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    },
+    {
+      "id": "reimbursement",
+      "title": "出張経費の精算",
+      "prompt": "社員が出張経費を申請し、証憑と金額を確認して承認・支払いするまでを整理してください。ただし議事メモは実施順ではなく、確認事項や後工程の話が前後して記録されています。「領収書を添付」の次は「経理が金額を確認」です。 「上長が承認」の次は「経費を支払う」です。 「経理が金額を確認」から先は「不備を差し戻す」と「上長が承認」に分かれます。 「社員が経費を申請」の次は「領収書を添付」です。 同じ資料には「出張先の観光情報」の記述も紛れていますが、これは今回整理する処理の前後関係とは別の話題です。カードを並べる際は、メモに書かれた順番ではなく、処理どうしの前後関係を読み取ってください。",
+      "hint": "起点は「社員が経費を申請」です。 分岐は「経理が金額を確認」からは「不備を差し戻す」／「上長が承認」へ分かります。 証憑や金額に不備があれば承認前に差し戻します。",
+      "items": [
+        {
+          "id": "reimbursement-n1",
+          "label": "社員が経費を申請",
+          "kind": "required"
+        },
+        {
+          "id": "reimbursement-n2",
+          "label": "領収書を添付",
+          "kind": "required"
+        },
+        {
+          "id": "reimbursement-n3",
+          "label": "経理が金額を確認",
+          "kind": "required"
+        },
+        {
+          "id": "reimbursement-n4",
+          "label": "不備を差し戻す",
+          "kind": "required"
+        },
+        {
+          "id": "reimbursement-n5",
+          "label": "上長が承認",
+          "kind": "required"
+        },
+        {
+          "id": "reimbursement-n6",
+          "label": "経費を支払う",
+          "kind": "required"
+        },
+        {
+          "id": "reimbursement-x1",
+          "label": "出張先の観光情報",
+          "kind": "extra"
+        }
+      ],
+      "groups": [
+        {
+          "id": "reimbursement-g1",
+          "label": "申請と確認",
+          "itemIds": [
+            "reimbursement-n1",
+            "reimbursement-n2",
+            "reimbursement-n3"
+          ]
+        },
+        {
+          "id": "reimbursement-g2",
+          "label": "確認後の処理",
+          "itemIds": [
+            "reimbursement-n4",
+            "reimbursement-n5",
+            "reimbursement-n6"
+          ]
+        }
+      ],
+      "connections": [
+        [
+          "reimbursement-n1",
+          "reimbursement-n2"
+        ],
+        [
+          "reimbursement-n2",
+          "reimbursement-n3"
+        ],
+        [
+          "reimbursement-n3",
+          "reimbursement-n4"
+        ],
+        [
+          "reimbursement-n3",
+          "reimbursement-n5"
+        ],
+        [
+          "reimbursement-n5",
+          "reimbursement-n6"
+        ]
+      ],
+      "layout": {
+        "reimbursement-n1": {
+          "x": 0.13,
+          "y": 0.5
+        },
+        "reimbursement-n2": {
+          "x": 0.315,
+          "y": 0.5
+        },
+        "reimbursement-n3": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "reimbursement-n4": {
+          "x": 0.685,
+          "y": 0.22
+        },
+        "reimbursement-n5": {
+          "x": 0.685,
+          "y": 0.78
+        },
+        "reimbursement-n6": {
+          "x": 0.87,
+          "y": 0.5
+        }
+      },
+      "explanation": "この図では、社員が経費を申請 → 領収書を添付 → 経理が金額を確認 → 不備を差し戻す → 上長が承認 → 経費を支払うの関係を整理します。証憑や金額に不備があれば承認前に差し戻します。「出張先の観光情報」は今回の流れに含めません。",
+      "source": "24_organize-drill",
+      "difficulty": "normal"
+    }
+  ]
+}
