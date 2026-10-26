@@ -127,3 +127,7 @@
 @media (prefers-reduced-motion: reduce) {
   .sentence-card.note-arrive { animation: none; opacity: 1; transform: none; }
 }
+
+/* WORKBOOKS footer and related drill link */
+.site-footer-brand{display:grid;gap:2px;justify-items:start}.workbooks-brand-link{color:var(--green);font-size:11px;font-weight:800;letter-spacing:.08em;text-decoration:none}.workbooks-brand-link:hover{text-decoration:underline}.site-footer-brand small{color:var(--muted);font-size:10px}.layer-drill-link{text-decoration:none;white-space:nowrap}.layer-drill-link:hover{background:#e3eadf}.layer-drill-icon{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:var(--green);color:#fffdf8;font-family:'Kiwi Maru',serif;font-size:13px;transform:rotate(-4deg)}
+@media(max-width:600px){.site-footer-brand{justify-items:center}.layer-drill-link{width:100%}}
