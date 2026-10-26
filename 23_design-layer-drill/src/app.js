@@ -23,7 +23,10 @@ function renderContinuity() {
   const completed = c.dailyDates.includes(today());
   $('#dailyStart').disabled = completed;
   const resultDaily = $('#resultDaily');
-  if (resultDaily) resultDaily.hidden = !(c.hasPlayed && !completed);
+  if (resultDaily) {
+    resultDaily.hidden = !(c.hasPlayed && !completed);
+    resultDaily.parentElement.classList.toggle('has-daily', !resultDaily.hidden);
+  }
   $('#dailyStart').textContent = completed ? '今日の1問は完了しました' : '今日の1問に挑戦 →';
   $('#dailyStatus').textContent = completed ? '今日の挑戦は記録済みです。明日また挑戦できます。' : `正解1問につき${careerConfig.rewards.practiceCorrect}pt。今日の1問は正解で${careerConfig.rewards.dailyCorrect}pt。`;
 }
