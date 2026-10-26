@@ -278,7 +278,7 @@
   function renderQuestion() {
     const q = state.questions[state.index]; state.order = shuffle(q.sentences.map((_, i) => i)); state.dragIndex = null; state.questionStartedAt = Date.now();
     $('#question-counter').textContent = `問題 ${state.index + 1} / ${state.questions.length}`; $('#progress-bar').style.width = `${state.index / state.questions.length * 100}%`;
-    $('#question-title').textContent = q.title; $('#feedback').hidden = true; $('#submit-answer').hidden = false; $('#reset-order').hidden = false; $('#quiz-actions').hidden = false;
+    $('#question-title').textContent = q.title; $('#feedback').hidden = true; $('#submit-answer').hidden = false; $('#submit-answer').disabled = false; $('#reset-order').hidden = false; $('#reset-order').disabled = false; $('#quiz-actions').hidden = false;
     state.hintUsed = false;
     $('#hint-button').disabled = false; $('#hint-button').setAttribute('aria-expanded', 'false'); $('#hint-button').title = 'ヒント（使用すると-1 pt）';
     $('#hint-content').textContent = ''; $('#hint-content').hidden = true;
@@ -311,10 +311,10 @@
       state.earnedPoints -= 1; renderCareer();
     }
   }
-  function renderOrder() {
+  function renderOrder(animate = true) {
     const q = state.questions[state.index]; const list = $('#sentence-list'); list.innerHTML = '';
     state.order.forEach((sentenceIndex, position) => {
-      const sentence = q.sentences[sentenceIndex]; const li = document.createElement('li'); li.className = 'sentence-card'; li.draggable = true; li.dataset.position = String(position); li.tabIndex = 0;
+      const sentence = q.sentences[sentenceIndex]; const li = document.createElement('li'); li.className = `sentence-card${animate ? ' note-arrive' : ''}`; li.style.setProperty('--note-index', position); li.draggable = true; li.dataset.position = String(position); li.tabIndex = 0;
       li.innerHTML = `<span class="order-number">${position + 1}</span><span class="sentence-text"></span><span class="drag-handle" aria-hidden="true">⠿</span><span class="move-buttons"><button class="move-button" data-move="-1" aria-label="${position + 1}番目の文章を上へ移動" ${position === 0 ? 'disabled' : ''}>↑</button><button class="move-button" data-move="1" aria-label="${position + 1}番目の文章を下へ移動" ${position === state.order.length - 1 ? 'disabled' : ''}>↓</button></span>`;
       li.querySelector('.sentence-text').textContent = sentence.text;
       li.addEventListener('dragstart', event => { state.dragIndex = position; li.classList.add('dragging'); event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', String(position)); });
@@ -327,7 +327,7 @@
       list.appendChild(li);
     });
   }
-  function moveItem(from, to) { if (from == null || to < 0 || to >= state.order.length || from === to) return; const next = [...state.order]; const [item] = next.splice(from, 1); next.splice(to, 0, item); state.order = next; renderOrder(); }
+  function moveItem(from, to) { if (from == null || to < 0 || to >= state.order.length || from === to) return; const next = [...state.order]; const [item] = next.splice(from, 1); next.splice(to, 0, item); state.order = next; renderOrder(false); }
   function submitAnswer() {
     const q = state.questions[state.index];
     const correct = state.order.every((sentenceIndex, position) => sentenceIndex === position);
@@ -340,7 +340,7 @@
     });
     state.earnedPoints += reward.points;
     state.earnedMilestones.push(...reward.milestones);
-    $('#submit-answer').hidden = true; $('#reset-order').hidden = true; $('#quiz-actions').hidden = true; $('#hint-button').disabled = true;
+    $('#submit-answer').disabled = true; $('#reset-order').disabled = true; $('#hint-button').disabled = true;
     const hintPenalty = state.hintUsed && state.careerConfig ? 1 : 0;
     showAnswerFlash(correct, reward.points - hintPenalty);
     $('#feedback').hidden = true;
@@ -369,19 +369,24 @@
     const milestoneNote = state.earnedMilestones.length ? '（節目ボーナスを含む）' : '';
     const pointBalance = `${state.earnedPoints > 0 ? '+' : ''}${state.earnedPoints} pt`;
     $('#reward-summary').textContent = `今回のポイント収支：${pointBalance}${state.hintsUsed ? `（ヒント${state.hintsUsed}回：-${state.hintsUsed} pt）` : ''}${milestoneNote}`;
-    $('#again-button').hidden = state.sessionType === 'daily';
+    $('#again-button').hidden = state.sessionType === 'daily'; $('#same-again-button').hidden = state.sessionType === 'daily';
     $('#daily-return-button').hidden = state.sessionType !== 'daily';
     $('#result-message').textContent = record.accuracy === 100 ? '全問正解！順番の感覚がつかめてきましたね。' : record.accuracy >= 70 ? 'いい調子です。迷った問題を、また後で解いてみましょう。' : '繰り返すうちに、少しずつ見えてきます。同じ問題でもう一度どうぞ。';
     setCountControlsDisabled(false);
-    $('#review-list').hidden = true; $('#review-list').innerHTML = ''; $('#review-button').textContent = '回答と解説を振り返る'; setView('result'); showReview(); renderHistory(); $('#progress-bar').style.width = '100%';
+    $('#review-list').hidden = true; $('#review-list').innerHTML = ''; updateReviewToggle(); setView('result'); renderHistory(); $('#progress-bar').style.width = '100%';
+  }
+  function updateReviewToggle() {
+    const list = $('#review-list');
+    $('#review-button').setAttribute('aria-expanded', String(!list.hidden));
+    $('#review-chevron').textContent = list.hidden ? '›' : '⌄';
   }
   function showReview() {
     const list = $('#review-list'); list.hidden = !list.hidden;
-    $('#review-button').textContent = list.hidden ? '回答と解説を振り返る' : '振り返りを閉じる';
+    updateReviewToggle();
     if (list.hidden) return;
     list.innerHTML = '';
     const header = document.createElement('div'); header.className = 'review-header';
-    const heading = document.createElement('h4'); heading.textContent = '回答一覧と解説'; header.appendChild(heading);
+    const heading = document.createElement('h4'); heading.textContent = '解答一覧と解説'; header.appendChild(heading);
     list.appendChild(header);
     const hasIncorrect = state.answers.some(answer => !answer.correct);
     let currentFilter = hasIncorrect ? 'incorrect' : 'all';
@@ -518,7 +523,7 @@
     $('#daily-record-close').addEventListener('click', closeDailyRecords);
     $('#daily-record-modal').addEventListener('click', event => { if (event.target === $('#daily-record-modal')) closeDailyRecords(); });
     $('#reset-order').addEventListener('click', () => { state.order = state.order.sort((a,b)=>a-b); renderOrder(); });
-    $('#again-button').addEventListener('click', () => startSession(state.questions)); $('#review-button').addEventListener('click', showReview);
+    $('#same-again-button').addEventListener('click', () => startSession(state.questions)); $('#again-button').addEventListener('click', () => startSession()); $('#review-button').addEventListener('click', showReview);
     $('#daily-return-button').addEventListener('click', () => {
       $('#setup-row').hidden = false;
       setView('start');

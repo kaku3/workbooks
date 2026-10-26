@@ -112,3 +112,18 @@
 .answer-flash-points{position:relative;z-index:1;margin-top:5px;font-size:clamp(16px,4vw,22px);font-weight:700;letter-spacing:.04em;text-shadow:0 3px 14px #17201940}.answer-flash.is-correct .answer-flash-points{animation:answer-content-correct .85s ease both}@media(prefers-reduced-motion:reduce){.answer-flash.is-correct .answer-flash-points{animation:none;opacity:1}}
 .hint-control{position:relative;display:flex;flex:0 0 auto;flex-direction:column;align-items:center;gap:3px}.answer-points{color:var(--green-dark);font-size:16pt;font-weight:700;line-height:1.3;white-space:nowrap;font-variant-numeric:tabular-nums;flex:0 0 auto;text-align:right}.hint-penalty-flash{position:absolute;top:-11px;left:50%;z-index:2;color:var(--red);font-size:11px;font-weight:700;line-height:1.2;white-space:nowrap;opacity:0;pointer-events:none;transform:translate(-50%,0)}.hint-penalty-flash.is-visible{animation:hint-penalty-rise .8s ease-out both}@keyframes hint-penalty-rise{0%{opacity:0;transform:translate(-50%,4px)}18%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-25px)}}@media(prefers-reduced-motion:reduce){.hint-penalty-flash.is-visible{animation:hint-penalty-rise .35s linear both}}
 .task-prompt-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 6px}.task-prompt-row .task-prompt{margin:0}
+
+/* 付箋が左上から順に貼られるような出題時アニメーション */
+.sentence-card.note-arrive {
+  transform-origin: 12% 18%;
+  animation: sticky-note-arrive .42s cubic-bezier(.2,.75,.25,1.12) both;
+  animation-delay: calc(var(--note-index, 0) * 105ms);
+}
+@keyframes sticky-note-arrive {
+  0% { opacity: 0; transform: translate(-24px, -18px) rotate(-3deg) scale(.96); }
+  72% { opacity: 1; transform: translate(2px, 1px) rotate(.6deg) scale(1.005); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sentence-card.note-arrive { animation: none; opacity: 1; transform: none; }
+}

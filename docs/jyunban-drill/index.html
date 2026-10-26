@@ -68,7 +68,7 @@
         <p id="hint-content" class="hint-content" hidden></p>
         
         <ol id="sentence-list" class="sentence-list" aria-label="並べ替える文章"></ol>
-        <div id="quiz-actions" class="quiz-actions"><button id="reset-order" class="text-button">順番をリセット</button><button id="submit-answer" class="primary-button">この順番で回答 <span aria-hidden="true">→</span></button></div>
+        <div id="quiz-actions" class="quiz-actions"><button id="reset-order" class="text-button">順番をリセット</button><button id="submit-answer" class="primary-button">解答する <span aria-hidden="true">→</span></button></div>
         <div id="feedback" class="feedback" aria-live="polite" hidden></div>
       </div>
 
@@ -77,7 +77,7 @@
         <div class="result-stats"><div><span>正答率</span><strong id="result-accuracy">—</strong></div><div><span>所要時間</span><strong id="result-time">—</strong></div><div><span>平均回答時間</span><strong id="result-average">—</strong></div></div>
         <p id="result-message" class="result-message"></p>
         <p id="reward-summary" class="reward-summary" aria-live="polite"></p>
-        <div class="result-actions"><button id="review-button" class="secondary-button">回答と解説を振り返る</button><button id="daily-return-button" class="primary-button" hidden>ドリル <span aria-hidden="true">→</span></button><button id="again-button" class="primary-button">同じセットでもう一度 <span aria-hidden="true">↻</span></button></div>
+        <div class="result-actions"><button id="review-button" class="secondary-button" type="button" aria-expanded="false" aria-controls="review-list">解答一覧と解説 <span id="review-chevron" aria-hidden="true">›</span></button><button id="daily-return-button" class="primary-button" hidden>ドリル <span aria-hidden="true">→</span></button><button id="same-again-button" class="secondary-button" type="button">同じ問題でもう一度 <span aria-hidden="true">↻</span></button><button id="again-button" class="primary-button" type="button">もう一度 <span aria-hidden="true">→</span></button></div>
         <div id="review-list" class="review-list" hidden></div>
       </div>
     </section>
@@ -132,7 +132,7 @@
     <section class="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title">
       <button id="close-help" class="modal-close" aria-label="閉じる">×</button>
       <p class="eyebrow">HOW TO PLAY</p><h2 id="help-title">並べ替えの操作方法</h2>
-      <ul><li>カードをドラッグして、移動したい位置に置きます。</li><li>スマートフォンでは、カード右側の上下の矢印で並べ替えます。</li><li>並べ替えが終わったら「この順番で回答」を押します。</li><li>解説はタイムアタック終了後、結果画面でまとめて確認できます。</li></ul>
+      <ul><li>カードをドラッグして、移動したい位置に置きます。</li><li>スマートフォンでは、カード右側の上下の矢印で並べ替えます。</li><li>並べ替えが終わったら「解答する」を押します。</li><li>解説はタイムアタック終了後、結果画面でまとめて確認できます。</li></ul>
       <button id="close-help-bottom" class="primary-button">わかりました</button>
     </section>
   </div>
