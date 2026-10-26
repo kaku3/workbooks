@@ -25,7 +25,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><a href="./" class="brand">WORKBOOKS <span>/ 設計の階層ドリル</span></a><small>1問ずつ、手を動かして考える</small></header>
+<header>
+  <a href="./" class="brand" aria-label="設計の階層ドリル トップ">
+    <span class="brand-icon" aria-hidden="true">階</span>
+    <span class="brand-copy"><span class="brand-workbooks">WORKBOOKS</span><span class="brand-title">設計の階層ドリル</span></span>
+  </a>
+  <small>1問ずつ、手を動かして考える</small>
+</header>
 <main>
   <section class="hero">
     <p class="eyebrow">SPECIFICATION STRUCTURE PRACTICE</p><h1>その文章、<br>どこに置く？</h1>
@@ -68,7 +74,11 @@
       <p class="eyebrow">SESSION COMPLETE</p><h2>今回の結果</h2>
       <div class="result-stats"><div><small>正解</small><strong id="resultScore">0 / 10</strong></div><div><small>正答率</small><strong id="resultAccuracy">0%</strong></div><div><small>所要時間</small><strong id="resultTime">0:00</strong></div><div><small>獲得ポイント</small><strong id="resultPoints">0 pt</strong></div></div>
       <p id="resultMessage" class="result-message"></p>
-      <div class="result-actions"><button id="again" class="primary">同じ問題でもう一度</button><button id="home" class="secondary">問題数を選び直す</button></div>
+      <div class="result-actions result-actions-stack">
+        <button id="again" class="primary result-again">同じ問題でもう一度</button>
+        <div class="result-quick-actions"><button id="resultDaily" class="secondary" hidden>今日の1問</button><button id="result5" class="secondary">さらっと5問</button><button id="result10" class="secondary">じっくり10問</button></div>
+        <a class="result-related-link" href="https://kaku3.github.io/workbooks/jyunban-drill/"><span class="related-mark">順</span><span>順番のセンス</span><span aria-hidden="true">↗</span></a>
+      </div>
       <details class="review"><summary>回答と解説を振り返る</summary><ol id="reviewList"></ol></details>
     </section>
   </section>
@@ -91,6 +101,6 @@
 
 </main>
 <div id="answerFlash" class="answer-flash" aria-live="assertive" hidden><span class="flash-mark"></span><strong class="flash-label"></strong></div>
-<footer class="site-footer"><div class="footer-brand"><strong>WORKBOOKS</strong><span>小さな練習を、ひとつずつ。</span></div><nav class="footer-share" aria-label="このページをシェア"><span>シェア</span><a id="share-facebook" target="_blank" rel="noopener noreferrer">Facebook</a><a id="share-x" target="_blank" rel="noopener noreferrer">X</a><a id="share-line" target="_blank" rel="noopener noreferrer">LINE</a></nav><a class="workbooks-link" href="https://kaku3.github.io/workbooks/">エンジニアのためのお仕事問題集 <span>↗</span></a></footer>
+<footer class="site-footer"><div class="footer-brand"><a href="https://kaku3.github.io/workbooks/" aria-label="WORKBOOKS トップページ"><strong>WORKBOOKS</strong></a><span>小さな練習を、ひとつずつ。</span></div><nav class="footer-share" aria-label="このページをシェア"><span>シェア</span><a id="share-facebook" target="_blank" rel="noopener noreferrer">Facebook</a><a id="share-x" target="_blank" rel="noopener noreferrer">X</a><a id="share-line" target="_blank" rel="noopener noreferrer">LINE</a></nav><a class="workbooks-link" href="https://kaku3.github.io/workbooks/">エンジニアのためのお仕事問題集 <span>↗</span></a></footer>
 <script src="app.js"></script>
 </body></html>

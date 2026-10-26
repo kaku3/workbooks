@@ -22,6 +22,8 @@ function renderContinuity() {
   $('#dailyStart').hidden = !c.hasPlayed;
   const completed = c.dailyDates.includes(today());
   $('#dailyStart').disabled = completed;
+  const resultDaily = $('#resultDaily');
+  if (resultDaily) resultDaily.hidden = !(c.hasPlayed && !completed);
   $('#dailyStart').textContent = completed ? '今日の1問は完了しました' : '今日の1問に挑戦 →';
   $('#dailyStatus').textContent = completed ? '今日の挑戦は記録済みです。明日また挑戦できます。' : `正解1問につき${careerConfig.rewards.practiceCorrect}pt。今日の1問は正解で${careerConfig.rewards.dailyCorrect}pt。`;
 }
@@ -98,6 +100,15 @@ function loadQuestion() {
   card.addEventListener('pointerdown', startDrag);
   card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); $('#zones .zone').item(0).focus(); } });
   $('#tray').replaceChildren(card);
+  card.classList.remove('note-arrive');
+  void card.offsetWidth;
+  card.classList.add('note-arrive');
+  $('#zones').querySelectorAll('.zone').forEach((zone, index) => {
+    zone.classList.remove('zone-arrive');
+    zone.style.setProperty('--arrival-order', index);
+    void zone.offsetWidth;
+    zone.classList.add('zone-arrive');
+  });
   $('#zones').querySelectorAll('.zone').forEach(zone => { zone.classList.remove('correct', 'wrong', 'over'); zone.querySelector('.mark').textContent = 'ここに置く'; });
   $('#feedback').className = 'feedback'; $('#feedback').innerHTML = '<span class="hint-badge">✦ ヒント</span><p>「何が書かれているか」だけでなく、「この文章で何を決めようとしているか」に注目しましょう。</p>';
   $('#skip').disabled = false;
@@ -223,7 +234,7 @@ function finish() {
     reviewRoot.insertBefore(reviewFilterBar, reviewList);
     renderReview(filter);
   }
-  $('#again').hidden = sessionType === 'daily'; $('#home').textContent = sessionType === 'daily' ? '今日のドリルへ戻る' : '問題数を選び直す';
+  $('#again').hidden = false;
   $('#bar').style.width = '100%'; renderContinuity(); renderRecords(); $('.game').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function resetHome() { $('#resultView').hidden = true; $('#quizView').hidden = true; $('#startView').hidden = false; sessionType = 'practice'; renderContinuity(); $('.game').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
@@ -239,7 +250,9 @@ async function init() {
   $('#dailyStart').addEventListener('click', () => { const c = career(); if (c.dailyDates.includes(today())) return; const number = Number(today().replaceAll('-', '')); const question = data.problems[number % data.problems.length]; startSession([question], 'daily'); });
   $('#skip').addEventListener('click', skipQuestion);
   $('#again').addEventListener('click', () => startSession(lastQuestions, 'practice'));
-  $('#home').addEventListener('click', resetHome);
+  $('#result5').addEventListener('click', () => startSession(shuffle(data.problems).slice(0, 5)));
+  $('#result10').addEventListener('click', () => startSession(shuffle(data.problems).slice(0, 10)));
+  $('#resultDaily').addEventListener('click', () => { const c = career(); if (c.dailyDates.includes(today())) return; const number = Number(today().replaceAll('-', '')); const question = data.problems[number % data.problems.length]; startSession([question], 'daily'); });
   const url = new URL(location.href); url.hash = ''; const shareUrl = encodeURIComponent(url.href), shareText = encodeURIComponent(document.title);
   $('#share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
   $('#share-x').href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`;
