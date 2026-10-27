@@ -186,8 +186,8 @@ function finish() {
   const accuracy = questions.length ? Math.round(score / questions.length * 100) : 0;
   const record = { date: new Date().toISOString(), type: sessionType, count: questions.length, correct: score, accuracy, duration, answers: answers.map(answer => ({ id: answer.id, correct: answer.correct, selected: answer.selected, skipped: answer.skipped })) };
   if (answers.length) { const history = readJSON(HISTORY_KEY, []); history.unshift(record); writeJSON(HISTORY_KEY, history.slice(0, 100)); }
-  $('#resultScore').textContent = `${score} / ${questions.length}`; $('#resultAccuracy').textContent = `${accuracy}%`; $('#resultTime').textContent = `${Math.floor(duration / 60)}:${String(duration % 60).padStart(2, '0')}`; $('#resultPoints').textContent = `${earnedPoints > 0 ? '+' : ''}${earnedPoints} pt`;
-  $('#resultMessage').textContent = accuracy === 100 ? '全問正解！情報の置き場所が見えてきましたね。' : accuracy >= 70 ? 'いい調子です。迷った問題の理由を振り返ってみましょう。' : '繰り返すうちに、少しずつ見えてきます。';
+  $('#resultAccuracy').textContent = `${accuracy}%`; $('#resultTime').textContent = `${Math.floor(duration / 60)}:${String(duration % 60).padStart(2, '0')}`; const average = questions.length ? Math.round(duration / questions.length) : 0; $('#resultAverage').textContent = `${average}秒`; $('#resultPoints').textContent = `${earnedPoints > 0 ? '+' : ''}${earnedPoints} pt`;
+  $('#resultMessage').textContent = '繰り返すうちに、少しずつ見えてきます。';
   const reviewList = $('#reviewList'); const reviewRoot = reviewList.parentElement;
   reviewRoot.querySelectorAll('.review-filter-bar').forEach(node => node.remove());
   const hasIncorrect = answers.some(answer => !answer.correct);

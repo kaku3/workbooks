@@ -40,23 +40,17 @@
 
     <section class="practice panel category-explanation count-five" aria-labelledby="practice-title">
       <div class="section-heading"><div><p class="eyebrow">PRACTICE</p><h2 id="practice-title">ドリル</h2></div><span class="tiny-note">同じ問題を何度解いてもOK</span></div>
-      <div id="setup-row" class="setup-row">
-        <div class="mode-tabs" role="tablist" aria-label="問題の種類">
-          <button class="mode-tab active" data-category="説明の順番" role="tab" aria-selected="true">説明の順番</button>
-          <button class="mode-tab" data-category="文章の順番" role="tab" aria-selected="false">文章の順番</button>
-        </div>
-        <div class="count-switch" aria-label="問題数">
-          <button data-count="5" class="count-button active">5問</button>
-          <button data-count="10" class="count-button">10問</button>
-        </div>
-      </div>
+      <div id="setup-row" class="setup-row" hidden></div>
 
       <div id="start-view" class="start-view">
         <div class="start-illustration" aria-hidden="true"><span>あ</span><span>い</span><span>う</span><span>え</span><i>↕</i></div>
-        <h3 id="start-title">説明の順番を整える</h3>
-        <p id="start-description">目的から詳細へ。読み手が迷わない説明の流れを考えます。</p>
+        <h3 id="start-title">文章の順番を整える</h3>
+        <p id="start-description">説明の流れや、出来事・処理のつながりを読み取り、伝わる順番を考えます。</p>
         <div class="start-meta"><span>◷ 時間を計測</span><span>↻ 履歴を保存</span><span>▤ 4行を並べ替え</span></div>
-        <button id="start-button" class="primary-button">さらっと5問に挑戦 <span aria-hidden="true">→</span></button>
+        <div class="start-options" aria-label="問題数を選んで開始">
+          <button id="start5-button" class="primary-button start-five">さらっと5問 <span aria-hidden="true">→</span></button>
+          <button id="start10-button" class="primary-button start-ten">じっくり10問 <span aria-hidden="true">→</span></button>
+        </div>
         <p id="milestone-prompt" class="milestone-prompt" hidden></p>
       </div>
 
@@ -74,10 +68,18 @@
 
       <div id="result-view" class="result-view" hidden>
         <p class="eyebrow">SESSION COMPLETE</p><h3>おつかれさまでした。</h3>
-        <div class="result-stats"><div><span>正答率</span><strong id="result-accuracy">—</strong></div><div><span>所要時間</span><strong id="result-time">—</strong></div><div><span>平均回答時間</span><strong id="result-average">—</strong></div></div>
-        <p id="result-message" class="result-message"></p>
-        <p id="reward-summary" class="reward-summary" aria-live="polite"></p>
-        <div class="result-actions"><button id="review-button" class="secondary-button" type="button" aria-expanded="false" aria-controls="review-list">解答一覧と解説 <span id="review-chevron" aria-hidden="true">›</span></button><button id="daily-return-button" class="primary-button" hidden>ドリル <span aria-hidden="true">→</span></button><button id="same-again-button" class="secondary-button" type="button">同じ問題でもう一度 <span aria-hidden="true">↻</span></button><button id="again-button" class="primary-button" type="button">もう一度 <span aria-hidden="true">→</span></button><a class="secondary-button layer-drill-link" href="https://kaku3.github.io/workbooks/design-layer-drill/"><span class="layer-drill-icon" aria-hidden="true">階</span>設計の階層ドリル <span aria-hidden="true">↗</span></a></div>
+        <div class="result-stats"><div><span>所要時間</span><strong id="result-time">—</strong></div><div><span>平均解答時間</span><strong id="result-average">—</strong></div><div><span>正答率</span><strong id="result-accuracy">—</strong></div><div><span>獲得ポイント</span><strong id="result-points">—</strong></div></div>
+        <p id="result-message" class="result-message">繰り返すうちに、少しずつ見えてきます。</p>
+        <div class="result-actions result-actions-stack">
+          <button id="same-again-button" class="primary-button result-again" type="button">同じ問題でもう一度</button>
+          <div class="result-quick-actions">
+            <button id="result-daily-button" class="secondary-button" type="button">今日の1問</button>
+            <button id="again-button" class="secondary-button" type="button">さらっと5問</button>
+            <button id="again10-button" class="secondary-button" type="button">じっくり10問</button>
+          </div>
+          <a class="secondary-button layer-drill-link" href="https://kaku3.github.io/workbooks/design-layer-drill/"><span class="layer-drill-icon" aria-hidden="true">階</span>設計の階層ドリル <span aria-hidden="true">↗</span></a>
+        </div>
+        <button id="review-button" class="review-toggle secondary-button" type="button" aria-expanded="false" aria-controls="review-list">解答と解説を振り返る <span id="review-chevron" aria-hidden="true">›</span></button>
         <div id="review-list" class="review-list" hidden></div>
       </div>
     </section>

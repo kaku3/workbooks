@@ -5,7 +5,7 @@
   const ATTENDANCE_STORAGE_KEY = 'junban-drill-attendance-v1';
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
-  const state = { problems: [], careerConfig: null, attendanceDays: [], calendarYear: new Date().getFullYear(), calendarMonth: new Date().getMonth(), category: '説明の順番', count: 5, questions: [], index: 0, startedAt: 0, questionStartedAt: 0, timerId: null, order: [], answers: [], dragIndex: null, finished: false, sessionType: 'practice', sessionId: '', dailyDate: '', earnedPoints: 0, earnedMilestones: [], hintsUsed: 0, hintUsed: false };
+  const state = { problems: [], careerConfig: null, attendanceDays: [], calendarYear: new Date().getFullYear(), calendarMonth: new Date().getMonth(), category: 'すべて', count: 5, questions: [], index: 0, startedAt: 0, questionStartedAt: 0, timerId: null, order: [], answers: [], dragIndex: null, finished: false, sessionType: 'practice', sessionId: '', dailyDate: '', earnedPoints: 0, earnedMilestones: [], hintsUsed: 0, hintUsed: false };
   const views = { start: $('#start-view'), quiz: $('#quiz-view'), result: $('#result-view') };
   const descriptions = {
     '説明の順番': ['説明の順番を整える', '目的から詳細へ。読み手が迷わない説明の流れを考えます。'],
@@ -197,18 +197,14 @@
   }
   function setView(name) { Object.entries(views).forEach(([key, el]) => { el.hidden = key !== name; }); }
   function updateSetup() {
-    const [title, description] = descriptions[state.category]; $('#start-title').textContent = title; $('#start-description').textContent = description;
-    $('#start-button').innerHTML = `${state.count === 5 ? 'さらっと5問に挑戦' : 'じっくり10問に挑戦'} <span aria-hidden="true">→</span>`;
     const practice = $('.practice');
-    practice.classList.toggle('category-explanation', state.category === '説明の順番');
-    practice.classList.toggle('category-text', state.category === '文章の順番');
+    practice.classList.remove('category-explanation', 'category-text');
     practice.classList.toggle('count-five', state.count === 5);
     practice.classList.toggle('count-ten', state.count === 10);
-    $$('.mode-tab').forEach(button => { const active = button.dataset.category === state.category; button.classList.toggle('active', active); button.setAttribute('aria-selected', String(active)); });
-    $$('.count-button').forEach(button => button.classList.toggle('active', Number(button.dataset.count) === state.count));
   }
   function setCountControlsDisabled(disabled) {
-    $$('.count-button').forEach(button => { button.disabled = disabled; });
+    $('#start5-button').disabled = disabled;
+    $('#start10-button').disabled = disabled;
   }
   function renderDailyChallenge() {
     const section = $('#daily-challenge');
@@ -253,7 +249,7 @@
     $('#career-next').textContent = next ? `次のキャリアまであと${next.points - career.points} pt` : 'これまでのキャリアがすべて開きました。ポイントはこれからも積み重なります。';
   }
   function buildQuestionSet() {
-    const pool = state.problems.filter(p => p.category === state.category);
+    const pool = state.problems;
     const levels = [1, 2, 3].map(level => shuffle(pool.filter(p => (p.difficulty || 2) === level)));
     const distribution = state.count === 5 ? [2, 2, 1] : [4, 4, 2];
     const selected = levels.flatMap((items, index) => items.slice(0, distribution[index]));
@@ -361,17 +357,14 @@
     clearInterval(state.timerId); state.finished = true; const total = state.answers.length; const correct = state.answers.filter(a => a.correct).length; const duration = Math.round(elapsed());
     const correctAnswers = state.answers.filter(answer => answer.correct);
     const averageCorrect = correctAnswers.length ? Math.round(correctAnswers.reduce((sum, answer) => sum + answer.duration, 0) / correctAnswers.length) : null;
-    const record = { date: new Date().toISOString(), category: state.questions[0]?.category || state.category, count: total, correct, accuracy: Math.round(correct / total * 100), duration, average: averageCorrect, answers: state.answers.map(a => ({ id: a.id, correct: a.correct, duration: a.duration, hintUsed: a.hintUsed })) };
+    const record = { date: new Date().toISOString(), category: '説明・文章の順番', count: total, correct, accuracy: Math.round(correct / total * 100), duration, average: averageCorrect, answers: state.answers.map(a => ({ id: a.id, correct: a.correct, duration: a.duration, hintUsed: a.hintUsed })) };
     saveHistory(record);
     if (state.sessionType === 'practice' && state.careerConfig) { const career = getCareer(); career.hasPlayed = true; saveCareer(career); }
     renderDailyChallenge(); renderCareer();
     $('#result-accuracy').textContent = `${record.accuracy}%`; $('#result-time').textContent = formatTime(duration); $('#result-average').textContent = averageCorrect == null ? '—' : `${averageCorrect}秒`;
-    const milestoneNote = state.earnedMilestones.length ? '（節目ボーナスを含む）' : '';
-    const pointBalance = `${state.earnedPoints > 0 ? '+' : ''}${state.earnedPoints} pt`;
-    $('#reward-summary').textContent = `今回のポイント収支：${pointBalance}${state.hintsUsed ? `（ヒント${state.hintsUsed}回：-${state.hintsUsed} pt）` : ''}${milestoneNote}`;
-    $('#again-button').hidden = state.sessionType === 'daily'; $('#same-again-button').hidden = state.sessionType === 'daily';
-    $('#daily-return-button').hidden = state.sessionType !== 'daily';
-    $('#result-message').textContent = record.accuracy === 100 ? '全問正解！順番の感覚がつかめてきましたね。' : record.accuracy >= 70 ? 'いい調子です。迷った問題を、また後で解いてみましょう。' : '繰り返すうちに、少しずつ見えてきます。同じ問題でもう一度どうぞ。';
+    $('#result-points').textContent = `${state.earnedPoints > 0 ? '+' : ''}${state.earnedPoints} pt`;
+    $('#again-button').hidden = state.sessionType === 'daily'; $('#again10-button').hidden = state.sessionType === 'daily'; $('#same-again-button').hidden = state.sessionType === 'daily';
+    $('#result-message').textContent = '繰り返すうちに、少しずつ見えてきます。';
     setCountControlsDisabled(false);
     $('#review-list').hidden = true; $('#review-list').innerHTML = ''; updateReviewToggle(); setView('result'); renderHistory(); $('#progress-bar').style.width = '100%';
   }
@@ -500,7 +493,7 @@
   }
   async function init() {
     try { const response = await fetch('data/problems.json'); if (!response.ok) throw new Error('問題データを読み込めませんでした'); const data = await response.json(); state.problems = data.problems || []; }
-    catch (error) { $('#start-description').textContent = '問題データを読み込めませんでした。GitHub Pages の公開設定と data/problems.json を確認してください。'; $('#start-button').disabled = true; console.error(error); return; }
+    catch (error) { $('#start-description').textContent = '問題データを読み込めませんでした。GitHub Pages の公開設定と data/problems.json を確認してください。'; $('#start5-button').disabled = true; $('#start10-button').disabled = true; console.error(error); return; }
     try {
       const response = await fetch('data/career.json');
       if (!response.ok) throw new Error('キャリアデータを読み込めませんでした');
@@ -508,9 +501,8 @@
       if (data.version !== 1 || !Array.isArray(data.stages) || !data.stages.length || !data.rewards || !Number.isFinite(data.rewards.practiceCorrect) || !Number.isFinite(data.rewards.dailyCorrect) || !Array.isArray(data.rewards.milestones) || data.rewards.milestones.some(item => !Number.isFinite(item.correct) || !Number.isFinite(item.bonus)) || data.stages.some(stage => !Number.isFinite(stage.points) || !stage.title || !stage.story || !stage.room)) throw new Error('キャリアデータの形式が正しくありません');
       state.careerConfig = data;
     } catch (error) { console.error(error); }
-    $$('.mode-tab').forEach(button => button.addEventListener('click', () => { if (!views.quiz.hidden) return; state.category = button.dataset.category; updateSetup(); }));
-    $$('.count-button').forEach(button => button.addEventListener('click', () => { state.count = Number(button.dataset.count); updateSetup(); }));
-    $('#start-button').addEventListener('click', () => startSession()); $('#submit-answer').addEventListener('click', submitAnswer); $('#hint-button').addEventListener('click', showHint);
+    $('#start5-button').addEventListener('click', () => { state.count = 5; startSession(); });
+    $('#start10-button').addEventListener('click', () => { state.count = 10; startSession(); }); $('#submit-answer').addEventListener('click', submitAnswer); $('#hint-button').addEventListener('click', showHint);
     const helpModal = $('#help-modal');
     const closeHelp = () => { helpModal.hidden = true; };
     $('#help-button').addEventListener('click', () => { helpModal.hidden = false; $('#close-help-bottom').focus(); });
@@ -523,13 +515,7 @@
     $('#daily-record-close').addEventListener('click', closeDailyRecords);
     $('#daily-record-modal').addEventListener('click', event => { if (event.target === $('#daily-record-modal')) closeDailyRecords(); });
     $('#reset-order').addEventListener('click', () => { state.order = state.order.sort((a,b)=>a-b); renderOrder(); });
-    $('#same-again-button').addEventListener('click', () => startSession(state.questions)); $('#again-button').addEventListener('click', () => startSession()); $('#review-button').addEventListener('click', showReview);
-    $('#daily-return-button').addEventListener('click', () => {
-      $('#setup-row').hidden = false;
-      setView('start');
-      renderDailyChallenge();
-      $('#practice-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    $('#same-again-button').addEventListener('click', () => startSession(state.questions)); $('#again-button').addEventListener('click', () => { state.count = 5; startSession(); }); $('#again10-button').addEventListener('click', () => { state.count = 10; startSession(); }); $('#result-daily-button').addEventListener('click', () => { const date = localDateKey(), question = getDailyQuestion(date); if (question && !getCareer().dailyCompletedDates.includes(date)) startSession([question], 'daily', date); else { setView('start'); renderDailyChallenge(); } }); $('#review-button').addEventListener('click', showReview);
     $('#daily-start-button').addEventListener('click', () => {
       const date = localDateKey(), question = getDailyQuestion(date);
       if (question && !getCareer().dailyCompletedDates.includes(date)) startSession([question], 'daily', date);
