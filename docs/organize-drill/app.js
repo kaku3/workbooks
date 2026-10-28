@@ -142,6 +142,47 @@ function defaultPosition() {
   return point;
 }
 
+function renderPrompt(prompt) {
+  const root = $('#promptText');
+  root.replaceChildren();
+  const instruction = $('#promptInstruction');
+  if (typeof prompt === 'string') {
+    instruction.textContent = prompt;
+    root.classList.add('is-legacy-prompt');
+    return;
+  }
+  root.classList.remove('is-legacy-prompt');
+  instruction.textContent = [prompt.intro, prompt.task].filter(Boolean).join(' ')
+    || '図に必要な付箋を選び、処理の流れを矢印でつないでください。';
+  const sections = [
+    ['requirements', '要求仕様'],
+    ['conditions', '要件'],
+    ['externalDesign', '外部設計'],
+    ['detailedDesign', '詳細設計']
+  ];
+  const board = document.createElement('div');
+  board.className = 'prompt-sticky-board';
+  sections.forEach(([key, label]) => {
+    const notes = prompt[key] || [];
+    if (!notes.length) return;
+    const section = document.createElement('section');
+    section.className = `prompt-layer prompt-layer-${key}`;
+    const heading = document.createElement('h3');
+    heading.textContent = label;
+    const cards = document.createElement('div');
+    cards.className = 'prompt-sticky-notes';
+    notes.forEach((text, index) => {
+      const note = document.createElement('div');
+      note.className = `prompt-sticky-note note-tilt-${index % 3}`;
+      note.textContent = text;
+      cards.append(note);
+    });
+    section.append(heading, cards);
+    board.append(section);
+  });
+  root.append(board);
+}
+
 function renderQuestion() {
   current = session[questionIndex];
   reviewZoom = 1;
@@ -162,14 +203,17 @@ function renderQuestion() {
   $('#diagramCanvas').style.height = '';
   $('#editViewport').append($('#diagramCanvas'));
   $('#diagramPanel').hidden = false;
-  $('#answerSummary').hidden = true;
-  $('.prompt-hint-row').append($('#promptText'), $('#hintPanel'));
+  $('#promptBoardPanel').hidden = false;
+  $('.prompt-hint-row').append($('#hintPanel'));
   $('#feedback').hidden = true;
+  $('#quizView').querySelector('.quiz-panel');
+  $('#quizView').append($('#feedback'));
+  $('#reviewExplanation').hidden = true;
   $('#reviewArea').hidden = true;
   $('#workbench').classList.remove('is-reviewing');
   $('#questionTitle').textContent = current.title;
   $('#questionType').textContent = `${sessionType === 'daily' ? '今日の1問' : '問題'} ・ ${difficultyName[current.difficulty] || '難易度未設定'}`;
-  $('#promptText').textContent = current.prompt;
+  renderPrompt(current.prompt);
   $('#progressText').textContent = `${questionIndex + 1} / ${session.length}`;
   $('#scoreText').textContent = `正解 ${score}`;
   $('#progressBar').style.width = `${questionIndex / session.length * 100}%`;
@@ -291,7 +335,7 @@ function normalizeNodeHeights(nodes = [...placed.values()]) {
 
 function renderTrashList() {
   const panel = $('#trashPanel'), toggle = $('#trashToggle');
-  $('#trashCount').textContent = String(trashed.size);
+  $('#trashCount').textContent = String(trashed.size); $('#trashCount').hidden = trashed.size === 0;
   toggle.setAttribute('aria-label', `ゴミ箱を${panel.hidden ? '開く' : '閉じる'}。${trashed.size}枚`);
   panel.replaceChildren();
   const heading = document.createElement('div'); heading.className = 'trash-heading';
@@ -364,11 +408,35 @@ function moveNodeTo(node, rawX, rawY, showGuides, ignoreSnap = false) {
       const evenY = findEqualSpacingSnap('y', y, x, node.dataset.itemId, rect);
       if (evenY) { y = evenY.value; snapY = y; if (snapX == null && Math.abs(x - evenY.cross) <= 14) { x = evenY.cross; snapX = x; } }
     }
+    if (snapX == null) { const gapX = findGapSnap('x', x, y, node, rect); if (gapX != null) x = gapX; }
+    if (snapY == null) { const gapY = findGapSnap('y', y, x, node, rect); if (gapY != null) y = gapY; }
   }
   x = Math.max(halfW + 4, Math.min(rect.width - halfW - 4, x));
   y = Math.max(halfH + 4, Math.min(rect.height - halfH - 4, y));
   setNodePosition(node, x / rect.width, y / rect.height);
   if (showGuides) renderAlignmentGuides(snapX, snapY);
+}
+
+const GAP_V = 28, GAP_H = 48, GAP_SNAP_RANGE = 16;
+// 近くのカードと辺どうしの間隔が GAP になる位置へ吸着する。縦に動かすときは縦間隔、横に動かすときは横間隔。
+// 動かす向きと直交する向きで重なっているカードだけを対象にする（斜め上のカードには反応しない）。
+function findGapSnap(axis, value, cross, node, canvasRect) {
+  const horizontal = axis === 'x', gap = horizontal ? GAP_H : GAP_V;
+  const mainHalf = (horizontal ? node.offsetWidth : node.offsetHeight) / 2, crossHalf = (horizontal ? node.offsetHeight : node.offsetWidth) / 2;
+  let best = null;
+  for (const [id, other] of placed) {
+    if (id === node.dataset.itemId) continue;
+    const box = other.getBoundingClientRect();
+    const otherMain = horizontal ? box.left - canvasRect.left + box.width / 2 : box.top - canvasRect.top + box.height / 2;
+    const otherCross = horizontal ? box.top - canvasRect.top + box.height / 2 : box.left - canvasRect.left + box.width / 2;
+    const otherMainHalf = (horizontal ? box.width : box.height) / 2, otherCrossHalf = (horizontal ? box.height : box.width) / 2;
+    if (Math.abs(cross - otherCross) >= crossHalf + otherCrossHalf) continue;
+    for (const dir of [-1, 1]) {
+      const target = otherMain + dir * (otherMainHalf + gap + mainHalf), distance = Math.abs(value - target);
+      if (distance <= GAP_SNAP_RANGE && (!best || distance < best.distance)) best = { value: target, distance };
+    }
+  }
+  return best ? best.value : null;
 }
 
 function findEqualSpacingSnap(axis, value, crossValue, movingId, canvasRect) {
@@ -633,20 +701,21 @@ function renderFeedback(comparison, composition) {
     ['等間隔', composition.hasEqualSpacing ? '加点あり' : '加点なし', composition.hasEqualSpacing, 'カード間隔がそろっていれば1点'],
     ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, '重なり・中心整列・等間隔の3項目で最大3点']
   ];
-  const thead = document.createElement('thead'); const headerRow = document.createElement('tr');
-  rows.forEach(([label, , , description]) => { const th = document.createElement('th'); th.scope = 'col'; th.textContent = label; th.title = description; headerRow.append(th); });
-  thead.append(headerRow);
-  const tbody = document.createElement('tbody'); const valueRow = document.createElement('tr');
-  rows.forEach(([, value, good], index) => {
+  const tbody = document.createElement('tbody');
+  rows.forEach(([label, value, good, description], index) => {
+    const row = document.createElement('tr');
+    const th = document.createElement('th'); th.scope = 'row'; th.textContent = label; th.title = description;
     const td = document.createElement('td');
     const status = document.createElement('span'); status.className = 'scoring-status';
     if (good === null) { status.classList.add('is-score'); status.textContent = value; }
     else if (good) { status.classList.add('is-good'); status.textContent = `○ ${value}`; }
-    else if (index < 2 || index === 2) { status.classList.add('is-bad'); status.textContent = `× ${value}`; }
+    else if (index < 3) { status.classList.add('is-bad'); status.textContent = `× ${value}`; }
     else { status.classList.add('is-neutral'); status.textContent = `− ${value}`; }
-    td.append(status); if (index === rows.length - 1) td.className = 'scoring-total'; valueRow.append(td);
+    td.append(status);
+    if (index === rows.length - 1) { row.classList.add('scoring-total-row'); th.classList.add('scoring-total'); td.classList.add('scoring-total'); }
+    row.append(th, td); tbody.append(row);
   });
-  tbody.append(valueRow); table.append(thead, tbody);
+  table.append(tbody);
   feedback.append(heading, helpPanel, table);
   const hintText = $('#hintText'); hintText.replaceChildren();
   const intro = document.createElement('p'); intro.className = 'hint-review-intro'; intro.textContent = current.explanation;
@@ -697,11 +766,58 @@ function renderFeedback(comparison, composition) {
   $('#hintBadge').hidden = true;
   $('#hintPanel').classList.add('is-review-hint', 'attention-pulse');
   window.setTimeout(() => $('#hintPanel')?.classList.remove('attention-pulse'), 1100);
-  $('#summaryQuestionSlot').append($('#promptText'));
-  $('#summaryScoringSlot').append(feedback);
-  $('#summaryReflectionSlot').append($('#hintPanel'));
-  $('#answerSummary').hidden = false;
-  $('#answerSummary').classList.remove('review-enter'); void $('#answerSummary').offsetWidth; $('#answerSummary').classList.add('review-enter');
+  $('#hintPanel').classList.add('is-review-hint');
+  $('#workbench').append($('#hintPanel'));
+}
+
+// 正解例を詰めて配置する。かたまり内は上から下へ、かたまり同士は左から右へ。
+// 入る余地がないときは、問題データの layout をそのまま使う。
+function applyCompactSolutionLayout(nodeMap, canvasW, canvasH) {
+  const ids = [...nodeMap.keys()], index = new Map(ids.map((id, i) => [id, i]));
+  const edges = current.connections.filter(([a, b]) => nodeMap.has(a) && nodeMap.has(b));
+  const groupOf = new Map();
+  (current.groups || []).forEach((group, gi) => group.itemIds.forEach(id => { if (nodeMap.has(id) && !groupOf.has(id)) groupOf.set(id, gi); }));
+  let nextGroup = (current.groups || []).length;
+  for (let pass = 0; pass < ids.length; pass++) ids.forEach(id => {
+    if (groupOf.has(id)) return;
+    const from = edges.find(([a, b]) => b === id && groupOf.has(a));
+    if (from) groupOf.set(id, groupOf.get(from[0]));
+  });
+  ids.forEach(id => { if (!groupOf.has(id)) groupOf.set(id, nextGroup++); });
+  const groups = [...new Set(ids.map(id => groupOf.get(id)))].sort((a, b) => a - b);
+  // かたまりの列: 宣言順で前向きの接続だけを数えて最長経路を取る（戻る矢印は無視）
+  const column = new Map(groups.map(g => [g, 0]));
+  for (let pass = 0; pass < groups.length; pass++) edges.forEach(([a, b]) => {
+    const ga = groupOf.get(a), gb = groupOf.get(b);
+    if (ga < gb && column.get(gb) < column.get(ga) + 1) column.set(gb, column.get(ga) + 1);
+  });
+  const row = new Map(), columnBottom = new Map();
+  groups.slice().sort((a, b) => column.get(a) - column.get(b) || a - b).forEach(g => {
+    const members = ids.filter(id => groupOf.get(id) === g);
+    const depth = new Map(members.map(id => [id, 0]));
+    for (let pass = 0; pass < members.length; pass++) edges.forEach(([a, b]) => {
+      if (depth.has(a) && depth.has(b) && index.get(a) < index.get(b) && depth.get(b) < depth.get(a) + 1) depth.set(b, depth.get(a) + 1);
+    });
+    members.sort((a, b) => depth.get(a) - depth.get(b) || index.get(a) - index.get(b));
+    // 手前のかたまりから入ってくるカードの行に、このかたまりの入口を合わせて横矢印にする
+    let offset = 0;
+    const entry = members.findIndex(id => edges.some(([a, b]) => b === id && groupOf.get(a) < g && row.has(a)));
+    if (entry >= 0) { const pred = edges.find(([a, b]) => b === members[entry] && groupOf.get(a) < g && row.has(a)); offset = Math.max(0, row.get(pred[0]) - entry); }
+    offset = Math.max(offset, columnBottom.get(column.get(g)) ?? 0);
+    members.forEach((id, i) => row.set(id, offset + i));
+    columnBottom.set(column.get(g), offset + members.length + 1);
+  });
+  const nodes = [...nodeMap.values()];
+  const w = Math.max(...nodes.map(n => n.offsetWidth)), h = Math.max(...nodes.map(n => n.offsetHeight));
+  const colCount = Math.max(...column.values()) + 1, rowCount = Math.max(...row.values()) + 1;
+  const totalW = colCount * w + (colCount - 1) * GAP_H, totalH = rowCount * h + (rowCount - 1) * GAP_V;
+  if (totalW + 24 > canvasW || totalH + 24 > canvasH) return;
+  // 正解例は左上を起点に配置し、読み始める位置を直感的にする。
+  const left = 44 + w / 2, top = 44 + h / 2;
+  nodeMap.forEach((node, id) => {
+    node.style.left = `${left + column.get(groupOf.get(id)) * (w + GAP_H)}px`;
+    node.style.top = `${top + row.get(id) * (h + GAP_V)}px`;
+  });
 }
 
 function renderSolution() {
@@ -724,8 +840,134 @@ function renderSolution() {
     container.append(node); nodeMap.set(item.id, node);
   });
   normalizeNodeHeights([...nodeMap.values()]);
+  applyCompactSolutionLayout(nodeMap, reviewCanvasSize.width, reviewCanvasSize.height);
   window.requestAnimationFrame(() => drawSvgConnections(svg, layer, nodeMap, current.connections.map(([from, to]) => ({ from, to }))));
   $('#explanationText').textContent = ''; 
+}
+
+function alignReviewFirstCard() {
+  const answerCanvas = $('#answerCanvasSlot').querySelector('.diagram-canvas');
+  const solutionCanvas = $('#solutionCanvas');
+  const answerViewport = $('#answerViewport');
+  const solutionViewport = $('#solutionViewport');
+  if (!answerCanvas || !solutionCanvas) return;
+
+  const answerNodes = [...answerCanvas.querySelectorAll('.diagram-node')];
+  const solutionNodes = [...solutionCanvas.querySelectorAll('.diagram-node')];
+  if (!answerNodes.length || !solutionNodes.length) return;
+
+  // 各図の外接矩形を求め、先頭カードではなく図全体の中心を合わせる。
+  const getBounds = nodes => {
+    const rects = nodes.map(node => ({
+      left: node.offsetLeft - node.offsetWidth / 2,
+      top: node.offsetTop - node.offsetHeight / 2,
+      right: node.offsetLeft + node.offsetWidth / 2,
+      bottom: node.offsetTop + node.offsetHeight / 2
+    }));
+    return {
+      minX: Math.min(...rects.map(r => r.left)), minY: Math.min(...rects.map(r => r.top)),
+      maxX: Math.max(...rects.map(r => r.right)), maxY: Math.max(...rects.map(r => r.bottom))
+    };
+  };
+  const center = box => ({ x: (box.minX + box.maxX) / 2, y: (box.minY + box.maxY) / 2 });
+  const answerCenter = center(getBounds(answerNodes));
+  const solutionCenter = center(getBounds(solutionNodes));
+  const dx = solutionCenter.x - answerCenter.x;
+  const dy = solutionCenter.y - answerCenter.y;
+  // 全カードを同じ量だけ動かすため、解答内の相対配置・接続関係は変わらない。
+  answerNodes.forEach(node => {
+    node.style.left = `${node.offsetLeft + dx}px`;
+    node.style.top = `${node.offsetTop + dy}px`;
+  });
+
+  // 移動後の両図の外接矩形から、共通キャンバス寸法を決める。
+  const allNodes = [...answerNodes, ...solutionNodes];
+  const padding = 44;
+  let box = getBounds(allNodes);
+  const shiftX = padding - box.minX;
+  const shiftY = padding - box.minY;
+  if (shiftX || shiftY) {
+    allNodes.forEach(node => {
+      node.style.left = `${node.offsetLeft + shiftX}px`;
+      node.style.top = `${node.offsetTop + shiftY}px`;
+    });
+    box = getBounds(allNodes);
+  }
+  const width = Math.ceil(box.maxX + padding);
+  const height = Math.ceil(box.maxY + padding);
+  [answerCanvas, solutionCanvas].forEach(canvas => {
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+  });
+  reviewCanvasSize = { width, height };
+
+  // 図全体がなるべく同じ表示範囲に収まる倍率を自動設定。手動ズームは引き続き利用可能。
+  const viewports = [answerViewport, solutionViewport].filter(Boolean);
+  const availableW = Math.min(...viewports.map(v => v.clientWidth || 1)) - 28;
+  const availableH = Math.min(...viewports.map(v => v.clientHeight || 1)) - 28;
+  const fitZoom = Math.min(1, availableW / width, availableH / height);
+  reviewZoom = Math.max(.35, Math.floor(fitZoom * 10) / 10);
+  applyReviewZoom(reviewZoom);
+  viewports.forEach(viewport => { viewport.scrollLeft = 0; viewport.scrollTop = 0; });
+  window.requestAnimationFrame(() => {
+    drawCurrentConnections();
+    drawSolutionConnections();
+    viewports.forEach(viewport => { viewport.scrollLeft = 0; viewport.scrollTop = 0; });
+  });
+}
+
+function showAnswerCelebration(comparison, composition) {
+  const elementsCorrect = !comparison.missingItems.length && !comparison.extraItems.length;
+  const connectionsCorrect = !comparison.missingEdges.length && !comparison.extraEdges.length;
+  let tier = 'bad';
+  let label = 'Bad';
+  let subtitle = '要素とつながりを見直してみよう';
+  if (elementsCorrect && connectionsCorrect) {
+    tier = composition.points >= 3 ? 'excellent' : composition.points === 2 ? 'great' : composition.points === 1 ? 'cool' : 'good';
+    label = ({ good: 'Good', cool: 'Cool', great: 'Great', excellent: 'Excellent' })[tier];
+    subtitle = composition.points ? `正解！ ＋芸術点 ${composition.points}` : '必要な要素とつながりが正解';
+  } else if (elementsCorrect || connectionsCorrect) {
+    tier = 'not-good'; label = 'Not Good';
+    subtitle = elementsCorrect ? '要素はOK。矢印のつながりを見直そう' : '矢印はOK。必要な要素と不要な要素を見直そう';
+  } else {
+    subtitle = '必要な要素の選択と矢印の両方を見直そう';
+  }
+
+  document.querySelector('.answer-celebration')?.remove();
+  const overlay = document.createElement('div');
+  overlay.className = `answer-celebration tier-${tier}`;
+  overlay.setAttribute('role', 'status');
+  overlay.setAttribute('aria-live', 'polite');
+  const content = document.createElement('div'); content.className = 'celebration-content';
+  const mark = document.createElement('div'); mark.className = 'celebration-mark';
+  mark.textContent = ({ bad: '×', 'not-good': '!', good: '✓', cool: '★', great: '★★', excellent: '✦' })[tier];
+  const title = document.createElement('strong'); title.className = 'celebration-title'; title.textContent = label;
+  const text = document.createElement('span'); text.className = 'celebration-subtitle'; text.textContent = subtitle;
+  content.append(mark, title, text); overlay.append(content);
+
+  const confettiCount = tier === 'excellent' ? 100 : tier === 'great' ? 64 : tier === 'cool' ? 36 : 0;
+  for (let i = 0; i < confettiCount; i++) {
+    const piece = document.createElement('i'); piece.className = 'celebration-confetti';
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.setProperty('--fall-duration', `${1.15 + Math.random() * 1.1}s`);
+    piece.style.setProperty('--fall-delay', `${Math.random() * .35}s`);
+    piece.style.setProperty('--spin', `${Math.round(Math.random() * 720 - 360)}deg`);
+    overlay.append(piece);
+  }
+  if (tier === 'excellent' || tier === 'great') {
+    for (let burstIndex = 0; burstIndex < (tier === 'excellent' ? 4 : 2); burstIndex++) {
+      const burst = document.createElement('div'); burst.className = 'celebration-burst';
+      burst.style.left = `${22 + burstIndex * (tier === 'excellent' ? 18 : 42)}%`;
+      burst.style.top = `${24 + (burstIndex % 2) * 20}%`;
+      for (let i = 0; i < 18; i++) {
+        const spark = document.createElement('i'); spark.style.setProperty('--angle', `${i * 20}deg`); burst.append(spark);
+      }
+      overlay.append(burst);
+    }
+  }
+  document.body.append(overlay);
+  window.setTimeout(() => overlay.classList.add('is-leaving'), 1650);
+  window.setTimeout(() => overlay.remove(), 2050);
 }
 
 function submitAnswer() {
@@ -742,6 +984,9 @@ function submitAnswer() {
   $('#progressBar').style.width = `${(questionIndex + 1) / session.length * 100}%`;
   $('#diagramCanvas').classList.add('is-locked');
   $('#workbench').classList.add('is-reviewing');
+  $('#feedback').hidden = true;
+  $('#workbench').append($('#feedback'));
+  $('#reviewExplanation').hidden = true;
   $('#diagramPanel').hidden = true;
   $('#reviewArea').hidden = false;
   $('#reviewArea').classList.remove('review-enter');
@@ -761,13 +1006,14 @@ function submitAnswer() {
   $('#submitButton').hidden = true; $('#nextButton').hidden = false;
   $('#trashToggle').disabled = true;
   $('#trashPanel').querySelectorAll('button').forEach(button => { button.disabled = true; });
-  renderFeedback(comparison, composition); renderSolution();
+  renderFeedback(comparison, composition); renderSolution(); $('#explanationText').textContent = current.explanation || ''; alignReviewFirstCard();
   $('#feedback').classList.add('feedback-enter');
+  showAnswerCelebration(comparison, composition);
   window.requestAnimationFrame(() => drawCurrentConnections());
 }
 
 function applyReviewZoom(value) {
-  reviewZoom = Math.max(.6, Math.min(1.4, Math.round(value * 10) / 10));
+  reviewZoom = Math.max(.35, Math.min(1.4, Math.round(value * 10) / 10));
   $('#diagramCanvas').style.zoom = String(reviewZoom);
   const solution = $('#solutionCanvas');
   if (solution) solution.style.zoom = String(reviewZoom);

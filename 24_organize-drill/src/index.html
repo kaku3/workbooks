@@ -57,15 +57,11 @@
       </div>
       <div class="progress-track"><i id="progressBar"></i></div>
       <div class="prompt-hint-row">
-        <p id="promptText" class="prompt-text"></p>
+        <div id="promptInstruction" class="prompt-text">図に必要な付箋を選び、処理の流れを矢印でつないでください。</div>
         <div class="hint-row" id="hintPanel"><span class="hint-badge" id="hintBadge">ヒント</span><div id="hintText"></div></div>
       </div>
-      <div id="answerSummary" class="answer-summary" hidden>
-        <section class="summary-column summary-question"><h3>問題文</h3><div id="summaryQuestionSlot"></div></section>
-        <section class="summary-column summary-reflection"><h3>解説</h3><div id="summaryReflectionSlot"></div></section>
-        <section class="summary-column summary-scoring"><h3>採点</h3><div id="summaryScoringSlot"></div></section>
-      </div>
       <div id="workbench" class="workbench">
+        <section id="promptBoardPanel" class="prompt-board-panel" aria-label="出題付箋ボード"><div class="board-panel-heading"><h3>出題付箋ボード</h3><span>必要な情報を選ぼう</span></div><div id="promptText" class="prompt-text"></div></section>
         <section id="diagramPanel" class="diagram-panel" aria-label="図のキャンバス">
           <div id="editViewport" class="canvas-viewport edit-viewport"><div id="diagramCanvas" class="diagram-canvas" aria-label="カードを配置して関係をつなぐキャンバス">
             <svg id="connectionSvg" class="connection-svg" aria-hidden="true"><defs><marker id="arrowHead" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L7,3.5 L0,7 z" fill="#668a7a"></path></marker><marker id="arrowCorrect" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L7,3.5 L0,7 z" fill="#3976b8"></path></marker><marker id="arrowWrong" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L7,3.5 L0,7 z" fill="#b75c4f"></path></marker></defs><g id="alignmentGuides"></g><g id="connectionLayer"></g></svg>
@@ -75,7 +71,7 @@
               <section id="trashPanel" class="trash-panel" hidden aria-label="ゴミ箱に入れた情報カード"></section>
               <button id="trashToggle" class="trash-toggle" type="button" aria-expanded="false" aria-controls="trashPanel" aria-label="ゴミ箱を開く">
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m3 3v7m6-7v7" /></svg>
-                <span class="trash-count" id="trashCount">0</span>
+                <span class="trash-count" id="trashCount" hidden>0</span>
               </button>
             </div>
           </div></div>
@@ -90,12 +86,12 @@
           <article class="review-column">
             <div class="review-heading"><h3>正解例</h3><div class="zoom-controls"><button id="zoomOut" class="small-button" type="button" aria-label="縮小">−</button><span id="zoomLabel">100%</span><button id="zoomIn" class="small-button" type="button" aria-label="拡大">＋</button></div></div>
             <div id="solutionViewport" class="canvas-viewport"><div id="solutionSlot"></div></div>
-            <p id="explanationText" class="explanation-text"></p>
           </article>
         </section>
+        <section id="reviewExplanation" class="review-explanation" hidden><h3>解説</h3><p id="explanationText" class="explanation-text"></p></section>
+        <div id="feedback" class="feedback" hidden></div>
       </div>
       <div id="itemBank" hidden></div><span id="bankCount" hidden></span>
-      <div id="feedback" class="feedback" hidden></div>
       <div class="quiz-actions"><button id="clearLinks" class="small-button" type="button">すべての線を消す</button><div class="quiz-submit-group"><p class="assessment-note">判定するのはカードの選択と矢印です。配置位置は自由です。</p><button id="submitButton" class="primary-button" type="button">解答する <span aria-hidden="true">→</span></button></div><button id="nextButton" class="primary-button" type="button" hidden>次の問題へ <span aria-hidden="true">→</span></button></div>
     </section>
 
