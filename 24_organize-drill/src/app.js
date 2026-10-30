@@ -50,6 +50,7 @@ let reviewExpectedEdges = new Set();
 let careerConfig, sessionType = 'practice', lastSession = [], startedAt = 0;
 let calendarYear = new Date().getFullYear(), calendarMonth = new Date().getMonth();
 let selectedCalendarDate = '';
+let userEdited = false, initializingNodes = false, staticDiagramSeq = 0;
 
 const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 function readStore(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } }
@@ -188,7 +189,7 @@ function renderQuestion() {
   reviewZoom = 1;
   placed = new Map(); positions = new Map(); trashed = new Set(); trashedPositions = new Map(); trashedConnections = new Map(); connections = []; linkStart = null; selectedConnection = null;
   reviewExpectedEdges = new Set();
-  defaultPositionIndex = 0; locked = false;
+  defaultPositionIndex = 0; locked = false; userEdited = false;
   positionSlots = shuffle([
     { x: .20, y: .24 }, { x: .50, y: .24 }, { x: .80, y: .24 },
     { x: .20, y: .53 }, { x: .50, y: .53 }, { x: .80, y: .53 },
@@ -257,7 +258,9 @@ function renderQuestion() {
   $('#hintBadge').textContent = 'ヒント';
   $('#hintBadge').hidden = false;
   $('#hintPanel').classList.remove('is-review-hint');
+  initializingNodes = true;
   shuffle(current.items).forEach(item => addNode(item.id, defaultPosition()));
+  initializingNodes = false;
   renderTrashList();
 }
 
@@ -265,6 +268,7 @@ function addNode(itemId, point = null) {
   if (locked || placed.has(itemId)) return;
   const item = current.items.find(entry => entry.id === itemId);
   if (!item) return;
+  if (!initializingNodes) userEdited = true;
   point ||= trashedPositions.get(itemId) || defaultPosition();
   const node = document.createElement('div');
   node.className = 'diagram-node'; node.dataset.itemId = item.id;
@@ -293,7 +297,7 @@ function addNode(itemId, point = null) {
       if (event.key === 'ArrowRight') x += step;
       if (event.key === 'ArrowUp') y -= step;
       if (event.key === 'ArrowDown') y += step;
-      moveNodeTo(node, x, y, false, event.shiftKey); drawCurrentConnections();
+      userEdited = true; moveNodeTo(node, x, y, false, event.shiftKey); drawCurrentConnections();
     }
     if ((event.key === 'Delete' || event.key === 'Backspace') && !locked) { event.preventDefault(); removeNode(item.id); }
   });
@@ -315,6 +319,7 @@ function removeNode(itemId) {
   if (locked) return;
   const node = placed.get(itemId);
   if (!node) return;
+  userEdited = true;
   trashedPositions.set(itemId, { ...positions.get(itemId) });
   connections.filter(edge => edge.from === itemId || edge.to === itemId).forEach(edge => trashedConnections.set(`${edge.from}->${edge.to}`, { ...edge }));
   node.remove(); placed.delete(itemId); positions.delete(itemId);
@@ -377,7 +382,7 @@ function moveNodeDrag(event) {
   if (!pointerDrag || pointerDrag.id !== event.currentTarget.dataset.itemId || pointerDrag.pointerId !== event.pointerId) return;
   const canvas = $('#diagramCanvas'), rect = canvas.getBoundingClientRect(), node = event.currentTarget;
   if (!pointerDrag.moved && Math.hypot(event.clientX - pointerDrag.startX, event.clientY - pointerDrag.startY) > 4) {
-    pointerDrag.moved = true; node.classList.add('is-dragging');
+    pointerDrag.moved = true; userEdited = true; node.classList.add('is-dragging');
   }
   if (!pointerDrag.moved) return;
   moveNodeTo(node, event.clientX - rect.left, event.clientY - rect.top, true);
@@ -514,7 +519,7 @@ function selectConnectionNode(itemId) {
   else if (linkStart === itemId) linkStart = null;
   else {
     const exists = connections.some(edge => edge.from === linkStart && edge.to === itemId);
-    if (!exists) connections.push({ from: linkStart, to: itemId });
+    if (!exists) { connections.push({ from: linkStart, to: itemId }); userEdited = true; }
     // 接続先を次の始点にして、通る順にクリックするだけで連続した線を作れるようにする。
     linkStart = itemId;
   }
@@ -535,7 +540,7 @@ function updateConnectionStatus() {
       : 'カードを並べ終えたら、通る順に箱をクリック。線をクリックすると×で個別に削除できます。';
 }
 
-function drawSvgConnections(svg, layer, nodeMap, edges, allowRemove = false) {
+function drawSvgConnections(svg, layer, nodeMap, edges, allowRemove = false, classify = null) {
   const canvas = svg.parentElement, canvasRect = canvas.getBoundingClientRect();
   if (!canvasRect.width || !canvasRect.height) return;
   const zoom = Number.parseFloat(canvas.style.zoom) || 1;
@@ -545,23 +550,42 @@ function drawSvgConnections(svg, layer, nodeMap, edges, allowRemove = false) {
     const from = nodeMap.get(edge.from), to = nodeMap.get(edge.to);
     if (!from || !to) return;
     const a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+    const aw = a.width / zoom, ah = a.height / zoom, bw = b.width / zoom, bh = b.height / zoom;
     const ax = (a.left - canvasRect.left + a.width / 2) / zoom, ay = (a.top - canvasRect.top + a.height / 2) / zoom;
     const bx = (b.left - canvasRect.left + b.width / 2) / zoom, by = (b.top - canvasRect.top + b.height / 2) / zoom;
     const dx = bx - ax, dy = by - ay;
     if (!dx && !dy) return;
-    const scaleA = 1 / Math.max(Math.abs(dx) / (a.width / 2), Math.abs(dy) / (a.height / 2));
-    const scaleB = 1 / Math.max(Math.abs(dx) / (b.width / 2), Math.abs(dy) / (b.height / 2));
+    const scaleA = 1 / Math.max(Math.abs(dx) / (aw / 2), Math.abs(dy) / (ah / 2));
+    const scaleB = 1 / Math.max(Math.abs(dx) / (bw / 2), Math.abs(dy) / (bh / 2));
+    const len = Math.hypot(dx, dy), pull = Math.min(2, len / 4) / len; // 矢じりの先端を矩形の縁に合わせる
     const line = document.createElementNS(NS, 'line');
     line.setAttribute('x1', ax + dx * scaleA); line.setAttribute('y1', ay + dy * scaleA);
-    line.setAttribute('x2', bx - dx * scaleB); line.setAttribute('y2', by - dy * scaleB);
+    const staticArrow = Boolean(svg.dataset.markerPrefix);
+    if (staticArrow) {
+      const tipX = bx - dx * scaleB, tipY = by - dy * scaleB, ux = dx / len, uy = dy / len, head = Math.min(10, len / 3);
+      const baseX = tipX - ux * head, baseY = tipY - uy * head;
+      line.setAttribute('x2', baseX + ux); line.setAttribute('y2', baseY + uy);
+      var arrowHead = document.createElementNS(NS, 'polygon');
+      arrowHead.setAttribute('points', `${tipX},${tipY} ${baseX - uy * 4.5},${baseY + ux * 4.5} ${baseX + uy * 4.5},${baseY - ux * 4.5}`);
+    } else {
+      line.setAttribute('x2', bx - dx * (scaleB + pull)); line.setAttribute('y2', by - dy * (scaleB + pull));
+    }
     line.setAttribute('class', 'connection-line');
     let markerId = svg.dataset.markerId || 'arrowHead';
-    if (locked && allowRemove) {
+    const kind = classify ? classify(edge) : null;
+    if (kind) {
+      line.classList.add(kind === 'ok' ? 'is-answer-correct' : 'is-answer-incorrect');
+      markerId = svg.dataset.markerPrefix ? `${svg.dataset.markerPrefix}-${kind}` : (kind === 'ok' ? 'arrowCorrect' : 'arrowWrong');
+    } else if (locked && allowRemove) {
       const isExpected = reviewExpectedEdges.has(`${edge.from}->${edge.to}`);
       line.classList.add(isExpected ? 'is-answer-correct' : 'is-answer-incorrect');
       markerId = isExpected ? 'arrowCorrect' : 'arrowWrong';
     }
-    line.setAttribute('marker-end', `url(#${markerId})`);
+    if (arrowHead) {
+      arrowHead.setAttribute('fill', kind === 'ok' ? '#3976b8' : kind === 'ng' ? '#b75c4f' : '#668a7a');
+      arrowHead.setAttribute('class', 'connection-arrowhead');
+      line.setAttribute('marker-end', 'none');
+    } else line.setAttribute('marker-end', `url(#${markerId})`);
     if (allowRemove) line.addEventListener('click', event => {
       event.stopPropagation();
       if (locked) return;
@@ -570,6 +594,7 @@ function drawSvgConnections(svg, layer, nodeMap, edges, allowRemove = false) {
     });
     if (allowRemove && selectedConnection?.from === edge.from && selectedConnection?.to === edge.to) line.classList.add('is-selected');
     layer.append(line);
+    if (arrowHead) layer.append(arrowHead);
   });
 }
 
@@ -621,6 +646,8 @@ function labelFor(itemId) { return current.items.find(item => item.id === itemId
 function labelForEdge(edgeKey) { const [from, to] = edgeKey.split('->'); return `${labelFor(from)} → ${labelFor(to)}`; }
 
 function assessComposition() {
+  // 初期配置のままでは整っているように見えるため、何も操作していない解答には芸術点を与えない。
+  if (!userEdited) return { points: 0, maxPoints: 3, overlaps: 0, aligned: false, hasEqualSpacing: false, untouched: true, details: ['操作なし'] };
   const canvas = $('#diagramCanvas').getBoundingClientRect();
   const nodes = [...placed.entries()].map(([id, node]) => {
     const box = node.getBoundingClientRect();
@@ -696,10 +723,10 @@ function renderFeedback(comparison, composition) {
   const rows = [
     ['要素の選択', comparison.missingItems.length || comparison.extraItems.length ? '要見直し' : 'OK', !(comparison.missingItems.length || comparison.extraItems.length), '一致していればOK'],
     ['矢印・関係', comparison.missingEdges.length || comparison.extraEdges.length ? '要見直し' : 'OK', !(comparison.missingEdges.length || comparison.extraEdges.length), '接続先と向きが完成例と一致していればOK'],
-    ['重なり', composition.overlaps ? `${composition.overlaps}か所` : 'なし', !composition.overlaps, 'カード同士が重なっていなければ1点'],
-    ['中心整列', composition.details.some(x => x.includes('中心整列あり')) ? '加点あり' : '加点なし', composition.details.some(x => x.includes('中心整列あり')), 'カードの中心がそろっていれば1点'],
-    ['等間隔', composition.hasEqualSpacing ? '加点あり' : '加点なし', composition.hasEqualSpacing, 'カード間隔がそろっていれば1点'],
-    ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, '重なり・中心整列・等間隔の3項目で最大3点']
+    ['重なり', composition.untouched ? '操作なし' : composition.overlaps ? `${composition.overlaps}か所` : 'なし', !composition.untouched && !composition.overlaps, 'カード同士が重なっていなければ1点'],
+    ['中心整列', !composition.untouched && composition.aligned ? '加点あり' : composition.untouched ? '操作なし' : '加点なし', !composition.untouched && composition.aligned, 'カードの中心がそろっていれば1点'],
+    ['等間隔', composition.untouched ? '操作なし' : composition.hasEqualSpacing ? '加点あり' : '加点なし', !composition.untouched && composition.hasEqualSpacing, 'カード間隔がそろっていれば1点'],
+    ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, composition.untouched ? 'カードやつなぎを操作していないため0点' : '重なり・中心整列・等間隔の3項目で最大3点']
   ];
   const tbody = document.createElement('tbody');
   rows.forEach(([label, value, good, description], index) => {
@@ -772,12 +799,12 @@ function renderFeedback(comparison, composition) {
 
 // 正解例を詰めて配置する。かたまり内は上から下へ、かたまり同士は左から右へ。
 // 入る余地がないときは、問題データの layout をそのまま使う。
-function applyCompactSolutionLayout(nodeMap, canvasW, canvasH) {
+function applyCompactSolutionLayout(nodeMap, canvasW, canvasH, problem = current) {
   const ids = [...nodeMap.keys()], index = new Map(ids.map((id, i) => [id, i]));
-  const edges = current.connections.filter(([a, b]) => nodeMap.has(a) && nodeMap.has(b));
+  const edges = problem.connections.filter(([a, b]) => nodeMap.has(a) && nodeMap.has(b));
   const groupOf = new Map();
-  (current.groups || []).forEach((group, gi) => group.itemIds.forEach(id => { if (nodeMap.has(id) && !groupOf.has(id)) groupOf.set(id, gi); }));
-  let nextGroup = (current.groups || []).length;
+  (problem.groups || []).forEach((group, gi) => group.itemIds.forEach(id => { if (nodeMap.has(id) && !groupOf.has(id)) groupOf.set(id, gi); }));
+  let nextGroup = (problem.groups || []).length;
   for (let pass = 0; pass < ids.length; pass++) ids.forEach(id => {
     if (groupOf.has(id)) return;
     const from = edges.find(([a, b]) => b === id && groupOf.has(a));
@@ -979,7 +1006,12 @@ function submitAnswer() {
   const composition = assessComposition();
   reviewExpectedEdges = new Set(comparison.expectedEdges);
   if (comparison.correct) score++;
-  sessionResults.push({ id: current.id, title: current.title, correct: comparison.correct, explanation: current.explanation, compositionPoints: composition.points });
+  const snapshot = {
+    width: reviewCanvasSize.width, height: reviewCanvasSize.height,
+    nodes: [...placed.keys()].map(id => ({ id, label: labelFor(id), x: positions.get(id).x, y: positions.get(id).y, extra: current.items.find(item => item.id === id)?.kind === 'extra' })),
+    edges: connections.map(edge => ({ from: edge.from, to: edge.to, ok: comparison.expectedEdges.includes(`${edge.from}->${edge.to}`) }))
+  };
+  sessionResults.push({ id: current.id, title: current.title, correct: comparison.correct, explanation: current.explanation, compositionPoints: composition.points, untouched: Boolean(composition.untouched), snapshot, problem: current });
   $('#scoreText').textContent = `正解 ${score}`;
   $('#progressBar').style.width = `${(questionIndex + 1) / session.length * 100}%`;
   $('#diagramCanvas').classList.add('is-locked');
@@ -1042,24 +1074,175 @@ function showResults() {
     : '完成例と自分の図を見比べて、情報と関係の違いを振り返ってみましょう。';
   const compositionTotal = sessionResults.reduce((sum, result) => sum + result.compositionPoints, 0);
   $('#finalCompositionScore').textContent = `${compositionTotal} / ${session.length * 3}点`;
-  $('#resultList').replaceChildren();
-  sessionResults.forEach((result, index) => {
-    const card = document.createElement('article'); card.className = 'result-item';
-    const heading = document.createElement('strong'); heading.textContent = `${index + 1}. ${result.correct ? '○' : '△'} ${result.title}`;
-    const explanation = document.createElement('p'); explanation.textContent = result.explanation;
-    const craft = document.createElement('p'); craft.className = 'result-craft-score'; craft.textContent = `図の整いポイント（芸術点）：${result.compositionPoints} / 3点`;
-    card.append(heading, craft, explanation); $('#resultList').append(card);
-  });
   $('#progressBar').style.width = '100%';
-  $('#retryButton').hidden = sessionType === 'daily';
-  $('#homeButton').textContent = sessionType === 'daily' ? '今日のドリルへ戻る' : '問題数を選び直す';
+  updateResultActions();
+  $('#reviewList').hidden = true; $('#reviewList').replaceChildren(); updateReviewToggle();
   $('#resultView').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function h(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function startDailyChallenge() {
+  const c = getCareer(), date = todayKey(); if (c.dailyDates.includes(date)) return;
+  let selected = readStore(DAILY_QUESTION_KEY, {});
+  if (selected.date !== date || !problems.some(problem => problem.id === selected.id)) {
+    selected = { date, id: shuffle(problems)[0].id }; writeStore(DAILY_QUESTION_KEY, selected);
+  }
+  startSession(1, 'daily', [problems.find(problem => problem.id === selected.id)]);
+}
+
+function updateResultActions() {
+  const c = getCareer();
+  $('#retryButton').hidden = sessionType === 'daily';
+  // 今日の1問は、挑戦可能なとき（練習済みで、今日まだ未挑戦）だけ表示する。
+  $('#resultDailyButton').hidden = !(c.hasPlayed && !c.dailyDates.includes(todayKey()));
+}
+
+function updateReviewToggle() {
+  const list = $('#reviewList');
+  $('#reviewButton').setAttribute('aria-expanded', String(!list.hidden));
+  $('#reviewChevron').textContent = list.hidden ? '›' : '⌄';
+}
+
+// 解答時点の図（snapshot）と正解例を、操作できない図として描画する。
+function enablePanScroll(viewport) {
+  let pan = null;
+  viewport.addEventListener('pointerdown', event => {
+    if (event.button > 0 || !viewport.classList.contains('is-pannable')) return;
+    pan = { x: event.clientX, y: event.clientY, left: viewport.scrollLeft, top: viewport.scrollTop };
+    viewport.setPointerCapture(event.pointerId); viewport.classList.add('is-panning'); event.preventDefault();
+  });
+  viewport.addEventListener('pointermove', event => {
+    if (!pan) return;
+    viewport.scrollLeft = pan.left - (event.clientX - pan.x);
+    viewport.scrollTop = pan.top - (event.clientY - pan.y);
+  });
+  const end = () => { pan = null; viewport.classList.remove('is-panning'); };
+  viewport.addEventListener('pointerup', end); viewport.addEventListener('pointercancel', end);
+}
+
+function renderStaticDiagram(slot, { nodes, edges, width, height, compact = false, classify = null, problem = null }) {
+  slot.replaceChildren();
+  if (!nodes.length) { slot.append(h('p', 'review-empty', 'カードが配置されていません。')); return; }
+  const tag = `static-${++staticDiagramSeq}`;
+  const canvas = h('div', 'diagram-canvas static-canvas');
+  canvas.style.width = `${width}px`; canvas.style.height = `${height}px`;
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'connection-svg');
+  svg.dataset.markerPrefix = tag; svg.dataset.markerId = `${tag}-n`;
+  const defs = document.createElementNS(NS, 'defs');
+  [['n', '#668a7a'], ['ok', '#4d8064'], ['ng', '#b75c4f']].forEach(([key, color]) => {
+    const marker = document.createElementNS(NS, 'marker'); marker.id = `${tag}-${key}`;
+    marker.setAttribute('markerWidth', '7'); marker.setAttribute('markerHeight', '7');
+    marker.setAttribute('refX', '6'); marker.setAttribute('refY', '3.5'); marker.setAttribute('orient', 'auto'); marker.setAttribute('markerUnits', 'strokeWidth');
+    const arrow = document.createElementNS(NS, 'path'); arrow.setAttribute('d', 'M0,0 L7,3.5 L0,7 z'); arrow.setAttribute('fill', color);
+    marker.append(arrow); defs.append(marker);
+  });
+  const layer = document.createElementNS(NS, 'g'); svg.append(defs, layer); canvas.append(svg);
+  const nodeMap = new Map();
+  nodes.forEach(item => {
+    const node = h('div', `diagram-node static-node${item.extra ? ' is-extra-placed' : ''}`); node.dataset.itemId = item.id;
+    node.append(h('span', 'node-label', item.label));
+    node.style.left = `${item.x * 100}%`; node.style.top = `${item.y * 100}%`;
+    canvas.append(node); nodeMap.set(item.id, node);
+  });
+  slot.append(canvas);
+  normalizeNodeHeights([...nodeMap.values()]);
+  if (compact) applyCompactSolutionLayout(nodeMap, width, height, problem);
+  // 図の外接矩形に切り詰めて、狭い欄でも読める大きさで表示する。
+  const pad = 24;
+  const boxes = [...nodeMap.values()].map(node => ({ node, left: node.offsetLeft - node.offsetWidth / 2, top: node.offsetTop - node.offsetHeight / 2, right: node.offsetLeft + node.offsetWidth / 2, bottom: node.offsetTop + node.offsetHeight / 2, cx: node.offsetLeft, cy: node.offsetTop }));
+  const minX = Math.min(...boxes.map(b => b.left)), minY = Math.min(...boxes.map(b => b.top));
+  const maxX = Math.max(...boxes.map(b => b.right)), maxY = Math.max(...boxes.map(b => b.bottom));
+  boxes.forEach(b => { b.node.style.left = `${b.cx - minX + pad}px`; b.node.style.top = `${b.cy - minY + pad}px`; });
+  const canvasW = maxX - minX + pad * 2, canvasH = maxY - minY + pad * 2;
+  canvas.style.width = `${canvasW}px`; canvas.style.height = `${canvasH}px`;
+  const zoom = Math.max(.55, Math.min(1, (slot.clientWidth - 2) / canvasW));
+  canvas.style.zoom = String(Math.round(zoom * 100) / 100);
+  window.requestAnimationFrame(() => {
+    drawSvgConnections(svg, layer, nodeMap, edges, false, classify);
+    slot.classList.toggle('is-pannable', slot.scrollWidth > slot.clientWidth + 1 || slot.scrollHeight > slot.clientHeight + 1);
+  });
+}
+
+function buildReviewItem(result, index) {
+  const item = h('article', `review-item ${result.correct ? 'review-correct' : 'review-incorrect'}`);
+  const heading = h('div', 'review-item-heading');
+  heading.append(
+    h('span', 'review-status', result.correct ? '○ 正解' : '× 不正解'),
+    h('strong', '', `${index + 1}. ${result.title}`),
+    h('span', 'review-craft', result.untouched ? '芸術点 0 / 3点（操作なし）' : `芸術点 ${result.compositionPoints} / 3点`)
+  );
+  const compare = h('div', 'review-compare');
+  [['あなたの図', '実際に書いた図'], ['正解例', '正しい関係']].forEach(([title, note]) => {
+    const pane = h('section', 'review-pane');
+    const paneHeading = h('h5', '', title); paneHeading.append(h('span', '', note));
+    pane.append(paneHeading, h('div', 'review-viewport'));
+    compare.append(pane);
+  });
+  item.append(heading, compare);
+  if (result.explanation) item.append(h('p', 'review-explanation-text', result.explanation));
+  return item;
+}
+
+function fillReviewDiagrams(item, result) {
+  const [mine, answer] = item.querySelectorAll('.review-viewport');
+  [mine, answer].forEach(enablePanScroll);
+  const s = result.snapshot, p = result.problem;
+  renderStaticDiagram(mine, { nodes: s.nodes, edges: s.edges, width: s.width, height: s.height, classify: edge => edge.ok ? 'ok' : 'ng' });
+  renderStaticDiagram(answer, {
+    nodes: p.items.filter(i => i.kind === 'required').map(i => ({ id: i.id, label: i.label, x: (p.layout[i.id] || { x: .5 }).x, y: (p.layout[i.id] || { y: .5 }).y })),
+    edges: p.connections.map(([from, to]) => ({ from, to })), width: 2400, height: 1800, compact: true, problem: p
+  });
+}
+
+function showReview() {
+  const list = $('#reviewList'); list.hidden = !list.hidden;
+  updateReviewToggle();
+  if (list.hidden) return;
+  list.replaceChildren();
+  window.setTimeout(() => list.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+  const header = h('div', 'review-header'); header.append(h('h4', '', '解答一覧と解説'));
+  const legend = h('div', 'relation-legend');
+  legend.innerHTML = '<span><i class="legend-line is-correct"></i>正しい関係</span><span><i class="legend-line is-wrong"></i>見直す関係</span>';
+  const itemsBox = h('div', 'review-items');
+  list.append(header, legend, itemsBox);
+  const hasIncorrect = sessionResults.some(result => !result.correct);
+  let currentFilter = hasIncorrect ? 'incorrect' : 'all';
+  const renderItems = filter => {
+    itemsBox.replaceChildren();
+    const filtered = sessionResults.filter(result => filter === 'all' || (filter === 'correct' ? result.correct : !result.correct));
+    if (!filtered.length) { itemsBox.append(h('p', 'review-empty', filter === 'correct' ? '正解した問題はありません。' : '不正解の問題はありません。')); return; }
+    filtered.forEach(result => {
+      const item = buildReviewItem(result, sessionResults.indexOf(result));
+      itemsBox.append(item); fillReviewDiagrams(item, result);
+    });
+  };
+  // 不正解が1問でもあるときだけフィルターを出し、全問正解なら出さない。
+  if (hasIncorrect) {
+    const filterBar = h('div', 'review-filter-bar');
+    [['all', 'すべて'], ['correct', '正解'], ['incorrect', '不正解']].forEach(([value, label]) => {
+      const button = h('button', 'review-filter-button' + (value === currentFilter ? ' is-active' : ''), label); button.type = 'button';
+      button.addEventListener('click', () => {
+        currentFilter = value;
+        filterBar.querySelectorAll('.review-filter-button').forEach(b => b.classList.toggle('is-active', b === button));
+        renderItems(currentFilter);
+      });
+      filterBar.append(button);
+    });
+    header.append(filterBar);
+  }
+  renderItems(currentFilter);
 }
 
 function startSession(count = 5, type = 'practice', selected = null) {
   session = selected || selectSessionQuestions(count); lastSession = [...session]; sessionType = type; startedAt = Date.now();
   questionIndex = 0; score = 0; sessionResults = [];
-  $('#startView').hidden = true; $('#resultView').hidden = true; $('#quizView').hidden = false;
+  $('#startView').hidden = true; $('#resultView').hidden = true; $('#reviewList').hidden = true; $('#quizView').hidden = false;
   renderQuestion(); $('#quizView').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -1078,14 +1261,7 @@ async function init() {
   careerConfig = careerData;
   $('#start3').addEventListener('click', () => startSession(3));
   $('#start5').addEventListener('click', () => startSession(5));
-  $('#dailyStart').addEventListener('click', () => {
-    const c = getCareer(), date = todayKey(); if (c.dailyDates.includes(date)) return;
-    let selected = readStore(DAILY_QUESTION_KEY, {});
-    if (selected.date !== date || !problems.some(problem => problem.id === selected.id)) {
-      selected = { date, id: shuffle(problems)[0].id }; writeStore(DAILY_QUESTION_KEY, selected);
-    }
-    startSession(1, 'daily', [problems.find(problem => problem.id === selected.id)]);
-  });
+  $('#dailyStart').addEventListener('click', startDailyChallenge);
   $('#submitButton').addEventListener('click', submitAnswer);
   $('#nextButton').addEventListener('click', () => {
     if (!locked) return;
@@ -1093,7 +1269,10 @@ async function init() {
     else { questionIndex++; $('#diagramCanvas').classList.remove('is-locked'); renderQuestion(); $('#quizView').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
   $('#retryButton').addEventListener('click', () => startSession(lastSession.length, 'practice', lastSession));
-  $('#homeButton').addEventListener('click', () => { $('#quizView').hidden = true; $('#resultView').hidden = true; $('#startView').hidden = false; sessionType = 'practice'; renderContinuity(); });
+  $('#resultDailyButton').addEventListener('click', startDailyChallenge);
+  $('#resultStart3').addEventListener('click', () => startSession(3));
+  $('#resultStart5').addEventListener('click', () => startSession(5));
+  $('#reviewButton').addEventListener('click', showReview);
   $('#clearLinks').addEventListener('click', () => { if (!locked) { connections = []; trashedConnections.clear(); linkStart = null; selectedConnection = null; updateConnectionStatus(); updateNodeStates(); drawCurrentConnections(); } });
   $('#trashToggle').addEventListener('click', event => {
     event.stopPropagation();

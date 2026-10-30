@@ -102,9 +102,21 @@
       <p id="resultPointBreakdown" class="result-point-breakdown"></p>
       <p class="result-composition-total">図の整いポイント（芸術点） <strong id="finalCompositionScore">0点</strong></p>
       <p id="resultMessage" class="result-message"></p>
-      <div id="resultList" class="result-list"></div>
-      <div class="result-actions"><button id="retryButton" class="primary-button" type="button">同じ問題でもう一度 <span aria-hidden="true">↻</span></button><button id="homeButton" class="small-button" type="button">問題数を選び直す</button></div>
+      <div class="result-actions result-actions-stack">
+        <button id="retryButton" class="primary-button result-again" type="button">同じ問題でもう一度 <span aria-hidden="true">↻</span></button>
+        <div class="result-quick-actions">
+          <button id="resultDailyButton" class="secondary-button" type="button" hidden>今日の1問</button>
+          <button id="resultStart3" class="secondary-button" type="button">さらっと3問</button>
+          <button id="resultStart5" class="secondary-button" type="button">じっくり5問</button>
+        </div>
+        <div class="result-links">
+          <a class="secondary-button drill-link" href="https://kaku3.github.io/workbooks/jyunban-drill/"><span class="drill-link-icon" aria-hidden="true">順</span>順番のセンス <span aria-hidden="true">↗</span></a>
+          <a class="secondary-button drill-link" href="https://kaku3.github.io/workbooks/design-layer-drill/"><span class="drill-link-icon" aria-hidden="true">階</span>設計の階層ドリル <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <button id="reviewButton" class="review-toggle secondary-button" type="button" aria-expanded="false" aria-controls="reviewList">解答と解説を振り返る <span id="reviewChevron" aria-hidden="true">›</span></button>
     </section>
+    <section id="reviewList" class="review-list" aria-label="解答と解説" hidden></section>
 
     <section class="learning-record" aria-labelledby="recordTitle">
       <div class="record-heading"><div><p class="eyebrow">YOUR LEARNING</p><h2 id="recordTitle">学習の記録</h2></div><span id="recordTotal">挑戦 0回</span></div>
