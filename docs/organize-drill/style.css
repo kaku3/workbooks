@@ -377,3 +377,5 @@
 .workbench.is-reviewing #feedback .scoring-table .scoring-total{background:#f2f6fb;color:#3976b8;font-weight:850}
 .workbench.is-reviewing #feedback .scoring-table th:last-child,.workbench.is-reviewing #feedback .scoring-table td:last-child,.workbench.is-reviewing #feedback .scoring-help-table th:last-child,.workbench.is-reviewing #feedback .scoring-help-table td:last-child{border-right:0}
 @media(max-width:700px){.workbench.is-reviewing #feedback{grid-row:auto}}
+
+.workbooks-brand-link{color:inherit;text-decoration:none}.workbooks-brand-link:hover{text-decoration:underline;text-underline-offset:3px}
