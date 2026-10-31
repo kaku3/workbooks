@@ -46,7 +46,7 @@ function keepReviewNotes(file) {
 
 function render(problem, reviewNotes) {
   const label = new Map(problem.items.map(item => [item.id, item.label]));
-  const { intro, task, documents } = problem.prompt;
+  const { requirements, task, documents } = problem.prompt;
   const lines = [];
   lines.push(`# ${problem.title}`, '');
   lines.push(`- 問題ID：\`${problem.id}\``);
@@ -54,17 +54,20 @@ function render(problem, reviewNotes) {
   lines.push(`- 難易度：${problem.difficulty}`);
   lines.push('- 出典：`src/data/problems.json`', '');
 
-  lines.push('## 問題文', '', intro, '', '### 課題', '', task, '');
+  lines.push('## 要求仕様', '', requirements, '', '### 操作', '', task, '');
 
   lines.push('## 段階開示資料', '');
-  lines.push('左側のホワイトボードに付箋として表示します。最初は外部設計1枚＋スコープ外2枚。「（ヒントを見る）」を押すたびに追加資料を1枚開示し、開くたびに1点減点します。追加資料は必要な情報とスコープ外の情報が混ざっており、開示順は毎回ランダムです。付箋はドラッグで自由に動かせます。', '');
+  lines.push('左側にはヒアリングメモを本文だけの付箋で表示します。最初は3枚で、判断の根拠も含みます。「（他のメモも見る）」で追加メモをランダムに1枚開示し、1点減点します。付箋は移動・ゴミ箱への整理・復元ができます。復元による再減点はありません。以下の種別と正解接続はレビュー用の内部情報です。', '');
   lines.push('### 最初に表示する3枚', '');
-  documents.initial.forEach((doc, i) => lines.push(`${i + 1}. ${doc.title}（${kindLabel[doc.kind] || doc.kind}）：${doc.text}`));
+  documents.initial.forEach((doc, i) => {
+    const covers = (doc.covers || []).map(edge => edge.split('->').map(id => label.get(id)).join(' → ')).join('、');
+    lines.push(`${i + 1}. ${doc.text}（内部種別：${kindLabel[doc.kind] || doc.kind}／根拠：${covers || '対象外'}）`);
+  });
   lines.push('', '### 追加で開示する資料（順不同）', '');
   lines.push('| 資料 | 内容 | 種別 | 根拠になる正解接続 |', '|---|---|---|---|');
   documents.additional.forEach(doc => {
     const covers = (doc.covers || []).map(edge => { const [from, to] = edge.split('->'); return `${label.get(from)} → ${label.get(to)}`; }).join('<br>');
-    lines.push(`| ${cell(doc.title)} | ${cell(doc.text)} | ${kindLabel[doc.kind] || doc.kind} | ${cell(covers || '—（図に含めない）')} |`);
+    lines.push(`| ${cell(doc.id)} | ${cell(doc.text)} | ${kindLabel[doc.kind] || doc.kind} | ${cell(covers || '—（図に含めない）')} |`);
   });
   lines.push('');
 

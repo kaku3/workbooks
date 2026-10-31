@@ -1,8 +1,8 @@
 {
   "version": 1,
   "rewards": {
-    "practiceCorrect": 2,
-    "dailyCorrect": 5,
+    "practiceCorrect": 10,
+    "dailyCorrect": 20,
     "compositionPoint": 1,
     "milestones": [
       { "points": 100, "bonus": 10 },
@@ -15,8 +15,9 @@
   "stages": [
     { "points": 0, "title": "未経験" },
     { "points": 20, "title": "駆け出し" },
-    { "points": 60, "title": "PMO" },
-    { "points": 130, "title": "SE" },
-    { "points": 400, "title": "SSE" }
+    { "points": 200, "title": "PMO" },
+    { "points": 500, "title": "SE" },
+    { "points": 1000, "title": "SSE" },
+    { "points": 2000, "title": "FDE" }
   ]
 }

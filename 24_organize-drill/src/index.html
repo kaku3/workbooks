@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="情報を見つけ、並べ、つなぐ。50問のカード操作で図に整理するPC向け練習ドリルです。">
+  <meta name="description" content="メモから必要な情報を集めて、並べて、つなぐ。散らばった情報を整理しながら、考える力を少しずつ身につけるドリル。">
   <meta name="theme-color" content="#f6f4ed">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="図で整理ドリル｜情報を見つけて、並べて、つなぐ">
-  <meta property="og:description" content="カードを選び、配置し、関係を線でつなぐ。50問で図解の前に必要な整理力を練習します。">
+  <meta property="og:title" content="図で整理ドリル｜散らかった頭の中を、図でととのえる。">
+  <meta property="og:description" content="メモから必要な情報を集めて、並べて、つなぐ。散らばった情報を整理しながら、考える力を少しずつ身につけるドリル。">
   <meta property="og:image" content="ogp.png">
   <meta name="twitter:card" content="summary_large_image">
-  <title>図で整理ドリル｜情報を見つけて、並べて、つなぐ</title>
+  <title>図で整理ドリル｜散らかった頭の中を、図でととのえる。</title>
   <meta name="twitter:image" content="https://kaku3.github.io/workbooks/organize-drill/assets/ogp.png">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <link rel="stylesheet" href="style.css">
@@ -24,8 +24,8 @@
   <main class="page-shell">
     <section class="intro">
       <p class="eyebrow">WORKBOOKS / THINKING DRILL</p>
-      <h1>情報を見つけて、<br><em>図に組み立てる。</em></h1>
-      <p class="lead">必要な要素を選び、配置し、関係を線でつなぐ。<br>伝わる図をつくる前の「整理する力」を練習します。</p>
+      <h1>散らかった頭の中を、<br><em>図でととのえる。</em></h1>
+      <p class="lead">メモから必要な情報を集めて、並べて、つなぐ。<br>散らばった情報を整理しながら、考える力を少しずつ身につけるドリル。</p>
       <div class="continuity" id="continuity" aria-label="学習の継続状況">
         <div><span class="eyebrow">YOUR PROGRESS</span><strong id="pointsTotal">0 pt</strong><small id="careerStage">はじめの一歩</small></div>
         <div class="progress-copy"><span id="recordSummary">累計挑戦 0回</span><span id="milestoneText">次の昇進まであと 20 pt</span></div>
@@ -36,11 +36,12 @@
     <section id="startView" class="panel start-panel">
       <p class="eyebrow">A LITTLE PRACTICE</p>
       <h2>情報の関係を整理して、図に組み立てよう</h2>
-      <p>カードは最初からキャンバスに並んでいます。必要な情報と関係を整理し、不要なカードはゴミ箱へ移してください。</p>
+      <p>要求仕様と左側の付箋メモを読み、右側のカードで図を作ります。必要なカードを選んで、並べて、関係をつないでみましょう。</p>
       <div class="howto">
-        <article><b>1</b><span><strong>カードを整理する</strong><small>不要なカードはゴミ箱へ。あとから戻せます</small></span></article>
-        <article><b>2</b><span><strong>位置を整える</strong><small>カードをドラッグして読みやすく配置</small></span></article>
-        <article><b>3</b><span><strong>関係をつなぐ</strong><small>配置後、通る順に箱をクリック。選んだ箱から次の箱へ線が続きます</small></span></article>
+        <article><b>1</b><span><strong>付箋メモを読む</strong><small>要求仕様とメモから、必要な情報を集める</small></span></article>
+        <article><b>2</b><span><strong>カードを選ぶ</strong><small>図に使わないカードはゴミ箱へ。あとから戻せます</small></span></article>
+        <article><b>3</b><span><strong>位置を整える</strong><small>カードをドラッグして読みやすく並べる</small></span></article>
+        <article><b>4</b><span><strong>関係をつなぐ</strong><small>カードを順にクリックして、矢印でつなぐ</small></span></article>
       </div>
       <div class="start-options" aria-label="問題数を選んで開始">
         <button id="start3" class="primary-button"><span>さらっと3問<small class="question-mix">初級・中級・上級</small></span><span aria-hidden="true">→</span></button>
@@ -57,7 +58,7 @@
       </div>
       <div class="progress-track"><i id="progressBar"></i></div>
       <div class="prompt-hint-row">
-        <div id="promptInstruction" class="prompt-text">図に必要な付箋を選び、処理の流れを矢印でつないでください。</div>
+        <div id="promptInstruction" class="prompt-text" aria-label="要求仕様"></div>
         <div class="hint-row" id="hintPanel"><span class="hint-badge" id="hintBadge">ヒント</span><div id="hintText"></div></div>
       </div>
       <div id="workbench" class="workbench">
@@ -73,6 +74,7 @@
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m3 3v7m6-7v7" /></svg>
                 <span class="trash-count" id="trashCount" hidden>0</span>
               </button>
+              <button id="clearLinks" class="small-button" type="button">すべての線を消す</button>
             </div>
           </div></div>
           <div class="diagram-toolbar" aria-hidden="true"></div>
@@ -92,7 +94,7 @@
         <div id="feedback" class="feedback" hidden></div>
       </div>
       <div id="itemBank" hidden></div><span id="bankCount" hidden></span>
-      <div class="quiz-actions"><button id="clearLinks" class="small-button" type="button">すべての線を消す</button><div class="quiz-submit-group"><p class="assessment-note">判定するのはカードの選択と矢印です。配置位置は自由です。</p><button id="submitButton" class="primary-button" type="button">解答する <span aria-hidden="true">→</span></button></div><button id="nextButton" class="primary-button" type="button" hidden>次の問題へ <span aria-hidden="true">→</span></button></div>
+      <div class="quiz-actions"><div class="quiz-submit-group"><p class="assessment-note">判定するのはカードの選択と矢印です。配置位置は自由です。</p><button id="submitButton" class="primary-button" type="button">解答する <span aria-hidden="true">→</span></button></div><button id="nextButton" class="primary-button" type="button" hidden>次の問題へ <span aria-hidden="true">→</span></button></div>
     </section>
 
     <section id="resultView" class="panel result-panel" hidden>

@@ -143,7 +143,7 @@ function defaultPosition() {
   return point;
 }
 
-// 左のホワイトボードに資料の付箋を並べる。最初は外部設計1枚＋スコープ外2枚。
+// 左のホワイトボードにヒアリングメモを並べる。解答カードとは独立して整理する。
 // 「（ヒントを見る）」を押すたびに追加資料を1枚開き、開示ごとに1点減点する（assessCompositionで集計）。
 let hintDocumentsOpened = 0;
 const NOTE_TILTS = [-1.2, .8, -.5, 1.1, -.9, .4];
@@ -152,8 +152,16 @@ function renderPrompt(prompt) {
   const root = $('#promptText');
   root.replaceChildren();
   root.classList.remove('is-legacy-prompt');
-  $('#promptInstruction').textContent = [prompt.intro, prompt.task].filter(Boolean).join(' ')
-    || '図に必要な付箋を選び、処理の流れを矢印でつないでください。';
+  const instruction = $('#promptInstruction');
+  const scopeLabel = '今回の図の対象';
+  const scopeStart = prompt.requirements.indexOf(`${scopeLabel}：`);
+  instruction.replaceChildren();
+  if (scopeStart < 0) instruction.textContent = prompt.requirements;
+  else {
+    const scope = h('div', 'prompt-scope');
+    scope.append(h('span', 'prompt-scope-badge', scopeLabel), h('span', 'prompt-scope-text', prompt.requirements.slice(scopeStart + scopeLabel.length + 1).trimStart()));
+    instruction.append(h('div', 'prompt-requirements', prompt.requirements.slice(0, scopeStart)), scope);
+  }
   const documents = prompt.documents;
   if (!documents?.initial?.length) throw new Error(`問題「${current.id}」に段階開示資料がありません`);
 
@@ -162,19 +170,88 @@ function renderPrompt(prompt) {
   const surface = h('div', 'prompt-doc-surface');
   const reveal = h('button', 'prompt-sticky-note prompt-reveal-note');
   reveal.type = 'button';
-  board.append(surface, reveal);
+  const trashArea = h('div', 'prompt-trash-area');
+  const trashToggle = h('button', 'trash-toggle prompt-trash-toggle');
+  trashToggle.type = 'button';
+  trashToggle.id = 'promptTrashToggle';
+  trashToggle.setAttribute('aria-controls', 'promptTrashPanel');
+  const trashCount = h('span', 'trash-count');
+  trashCount.id = 'promptTrashCount';
+  trashToggle.append($('#trashToggle svg').cloneNode(true), trashCount);
+  const trashPanel = h('section', 'trash-panel prompt-trash-panel');
+  trashPanel.id = 'promptTrashPanel';
+  trashPanel.hidden = true;
+  trashPanel.setAttribute('aria-label', '出題付箋のゴミ箱');
+  trashArea.append(trashPanel, trashToggle);
+  const boardActions = h('div', 'prompt-board-actions');
+  boardActions.append(reveal, trashArea);
+  board.append(surface, boardActions);
   root.append(board);
 
   // 問題データを書き換えないよう複製して使う（同じ問題の再挑戦でも初期状態に戻る）。
   const remaining = shuffle(documents.additional.map(doc => ({ ...doc })));
   const total = remaining.length;
   let opened = 0, topLayer = 1, noteCount = 0;
+  const discarded = new Map();
+
+  const updateTrash = () => {
+    trashCount.textContent = String(discarded.size);
+    trashCount.hidden = discarded.size === 0;
+    trashToggle.setAttribute('aria-expanded', String(!trashPanel.hidden));
+    trashToggle.setAttribute('aria-label', `出題付箋のゴミ箱を${trashPanel.hidden ? '開く' : '閉じる'}。${discarded.size}枚`);
+    trashPanel.replaceChildren(h('strong', 'trash-heading', '出題付箋のゴミ箱'));
+    if (!discarded.size) trashPanel.append(h('p', 'trash-empty', '捨てた付箋はありません。'));
+    const list = h('ul', 'trash-list');
+    discarded.forEach(({ note, doc }, id) => {
+      const row = h('li');
+      const restore = h('button', 'trash-restore', '戻す');
+      restore.type = 'button';
+      restore.disabled = locked;
+      restore.setAttribute('aria-label', `${doc.text}を出題付箋ボードに戻す`);
+      restore.addEventListener('click', () => {
+        if (locked) return;
+        surface.append(note);
+        const overlaps = [...surface.querySelectorAll('.prompt-document-note')].some(other => other !== note
+          && note.offsetLeft < other.offsetLeft + other.offsetWidth + 5 && note.offsetLeft + note.offsetWidth + 5 > other.offsetLeft
+          && note.offsetTop < other.offsetTop + other.offsetHeight + 5 && note.offsetTop + note.offsetHeight + 5 > other.offsetTop);
+        if (overlaps) {
+          const spot = findFreeNoteSpot(surface, note);
+          note.style.left = `${spot.left / Math.max(1, surface.clientWidth) * 100}%`;
+          note.style.top = `${spot.top}px`;
+        }
+        discarded.delete(id);
+        fitNoteSurface(surface);
+        updateTrash();
+        note.querySelector('button').focus();
+      });
+      row.append(h('span', '', doc.text), restore);
+      list.append(row);
+    });
+    trashPanel.append(list);
+  };
+  trashToggle.addEventListener('click', () => {
+    if (locked) return;
+    trashPanel.hidden = !trashPanel.hidden;
+    updateTrash();
+  });
 
   const addNote = (doc, isNew) => {
-    const note = h('article', `prompt-sticky-note prompt-document-note prompt-document-${doc.kind || 'external'}`);
+    const note = h('article', `prompt-sticky-note prompt-document-note prompt-note-color-${Math.floor(Math.random() * 4)}`);
     note.dataset.documentId = doc.id;
     note.style.setProperty('--tilt', `${NOTE_TILTS[noteCount++ % NOTE_TILTS.length]}deg`);
-    note.append(h('strong', 'prompt-document-title', doc.title || '資料'), h('span', 'prompt-document-body', doc.text));
+    const remove = h('button', 'prompt-note-remove', '×');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', `${doc.text}を出題付箋のゴミ箱へ移動`);
+    remove.title = '出題付箋のゴミ箱へ移動';
+    remove.addEventListener('click', () => {
+      if (locked) return;
+      discarded.set(doc.id, { note, doc });
+      note.remove();
+      fitNoteSurface(surface);
+      updateTrash();
+      trashToggle.focus();
+    });
+    note.append(remove, h('span', 'prompt-document-body', doc.text));
     note.style.visibility = 'hidden';
     surface.append(note);
     const spot = findFreeNoteSpot(surface, note);
@@ -189,10 +266,10 @@ function renderPrompt(prompt) {
 
   const updateReveal = () => {
     reveal.disabled = !remaining.length;
-    reveal.replaceChildren(h('span', 'prompt-reveal-label', remaining.length ? '（ヒントを見る）' : '資料はすべて確認しました'));
+    reveal.replaceChildren(h('span', 'prompt-reveal-label', remaining.length ? '（他のメモも見る）' : 'すべてのメモを確認しました'));
     reveal.append(h('small', 'prompt-reveal-cost', remaining.length
-      ? `1枚開くごとに1点減点（開示 ${opened}/${total}枚）`
-      : `追加資料 ${total}枚を開示（-${opened}点）`));
+      ? `1枚ごとに1点減点（${opened}/${total}枚）`
+      : `（-${opened}点）`));
   };
 
   reveal.addEventListener('click', () => {
@@ -206,6 +283,7 @@ function renderPrompt(prompt) {
 
   documents.initial.forEach(doc => addNote(doc, false));
   updateReveal();
+  updateTrash();
 }
 
 // 既にある付箋（ドラッグで動かした位置も含む）と重ならない、いちばん上・左の空きを返す。
@@ -232,7 +310,7 @@ function fitNoteSurface(surface) {
 function enablePromptNoteDrag(note, surface, nextLayer) {
   let drag = null;
   note.addEventListener('pointerdown', event => {
-    if (event.button !== 0) return;
+    if (locked || event.button !== 0 || event.target.closest('button')) return;
     drag = { x: event.clientX, y: event.clientY, left: note.offsetLeft, top: note.offsetTop };
     note.style.zIndex = String(nextLayer());
     note.classList.add('is-dragging');
@@ -240,7 +318,7 @@ function enablePromptNoteDrag(note, surface, nextLayer) {
     event.preventDefault();
   });
   note.addEventListener('pointermove', event => {
-    if (!drag) return;
+    if (!drag || locked) return;
     const maxLeft = Math.max(0, surface.clientWidth - note.offsetWidth);
     const left = Math.max(0, Math.min(maxLeft, drag.left + event.clientX - drag.x));
     const top = Math.max(0, drag.top + event.clientY - drag.y);
@@ -716,61 +794,73 @@ function compareAnswer() {
 function labelFor(itemId) { return current.items.find(item => item.id === itemId)?.label || itemId; }
 function labelForEdge(edgeKey) { const [from, to] = edgeKey.split('->'); return `${labelFor(from)} → ${labelFor(to)}`; }
 
+// DOMから独立した配置の採点。隣接関係を数え、同じまとまり内の重複加点を避ける。
+function scorePlacement(nodes, edited, hintPenalty) {
+  const limit = Math.max(0, nodes.length - 1);
+  const maxPoints = nodes.length > 1 ? 1 + limit * 2 : 0;
+  if (!edited) return { points: 0, maxPoints, overlaps: 0, alignmentPoints: 0, spacingPoints: 0, aligned: false, hasEqualSpacing: false, untouched: true, hintPenalty, details: ['操作なし', `追加資料の開示 -${hintPenalty}点`] };
+  const overlapsPair = (a, b) => a.left < b.right - 6 && a.right > b.left + 6 && a.top < b.bottom - 6 && a.bottom > b.top + 6;
+  let overlaps = 0;
+  for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) if (overlapsPair(nodes[i], nodes[j])) overlaps++;
+  // 森に含まれる接続数を数える。格子配置でも横・縦を合わせて最大 N-1 点。
+  const counter = () => {
+    const parent = nodes.map((_, i) => i);
+    const root = i => { while (parent[i] !== i) { parent[i] = parent[parent[i]]; i = parent[i]; } return i; };
+    let points = 0;
+    return {
+      add(a, b) {
+        if (overlapsPair(a, b)) return;
+        const ra = root(nodes.indexOf(a)), rb = root(nodes.indexOf(b));
+        if (ra !== rb) { parent[ra] = rb; points++; }
+      },
+      get points() { return points; }
+    };
+  };
+  const alignment = counter(), spacing = counter();
+  for (const axis of ['x', 'y']) {
+    const cross = axis === 'x' ? 'y' : 'x';
+    const rows = [];
+    [...nodes].sort((a, b) => a[cross] - b[cross]).forEach(node => {
+      let row = rows.find(group => Math.abs(group[0][cross] - node[cross]) <= 12);
+      if (!row) { row = []; rows.push(row); }
+      row.push(node);
+    });
+    for (const row of rows) {
+      row.sort((a, b) => a[axis] - b[axis]);
+      const gaps = row.slice(1).map((node, i) => node[axis] - row[i][axis]);
+      const equalGaps = new Set();
+      if (row.length === 2) {
+        const standard = (axis === 'x' ? row[0].right - row[0].left : row[0].bottom - row[0].top) + 28;
+        if (Math.abs(gaps[0] - standard) <= 14) equalGaps.add(0);
+      } else {
+        for (let i = 1; i < gaps.length; i++) {
+          const mean = (gaps[i - 1] + gaps[i]) / 2;
+          if (mean > 0 && Math.max(Math.abs(gaps[i - 1] - mean), Math.abs(gaps[i] - mean)) / mean <= .12) {
+            equalGaps.add(i - 1); equalGaps.add(i);
+          }
+        }
+      }
+      for (let i = 0; i < gaps.length; i++) {
+        alignment.add(row[i], row[i + 1]);
+        if (equalGaps.has(i)) spacing.add(row[i], row[i + 1]);
+      }
+    }
+  }
+  const alignmentPoints = alignment.points, spacingPoints = spacing.points;
+  const points = Math.max(0, (nodes.length > 1 && !overlaps ? 1 : 0) + alignmentPoints + spacingPoints - hintPenalty);
+  return { points, maxPoints, overlaps, alignmentPoints, spacingPoints, aligned: alignmentPoints > 0, hasEqualSpacing: spacingPoints > 0, hintPenalty,
+    details: [overlaps ? `カードの重なり ${overlaps}組` : nodes.length > 1 ? '重なりなし' : '配置カードが少なく重なりを判定できない', `中心整列 ${alignmentPoints}点`, `等間隔 ${spacingPoints}点`, `追加資料の開示 -${hintPenalty}点`] };
+}
+
 function assessComposition() {
-  // 初期配置のままでは整っているように見えるため、何も操作していない解答には芸術点を与えない。
-  if (!userEdited) return { points: 0, maxPoints: 3, overlaps: 0, aligned: false, hasEqualSpacing: false, untouched: true, hintPenalty: hintDocumentsOpened, details: ['操作なし', `追加資料の開示 -${hintDocumentsOpened}点`] };
   const canvas = $('#diagramCanvas').getBoundingClientRect();
   const nodes = [...placed.entries()].map(([id, node]) => {
     const box = node.getBoundingClientRect();
     return { id, x: box.left - canvas.left + box.width / 2, y: box.top - canvas.top + box.height / 2, left: box.left - canvas.left, right: box.right - canvas.left, top: box.top - canvas.top, bottom: box.bottom - canvas.top };
   });
-  let points = 0;
-  const details = [];
-  let overlaps = 0;
-  for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
-    if (nodes[i].left < nodes[j].right - 6 && nodes[i].right > nodes[j].left + 6 && nodes[i].top < nodes[j].bottom - 6 && nodes[i].bottom > nodes[j].top + 6) overlaps++;
-  }
-  if (!overlaps && nodes.length > 1) points++;
-  details.push(overlaps ? `カードの重なり ${overlaps}組` : nodes.length > 1 ? '重なりなし' : '配置カードが少なく重なりを判定できない');
-
-  const aligned = nodes.some((a, i) => nodes.slice(i + 1).some(b => Math.abs(a.x - b.x) <= 12 || Math.abs(a.y - b.y) <= 12));
-  if (aligned) points++;
-  details.push(aligned ? '中心整列あり' : '中心整列なし');
-
-  const hasEqualSpacing = ['x', 'y'].some(axis => {
-    const cross = axis === 'x' ? 'y' : 'x';
-    const sorted = [...nodes].sort((a, b) => a[cross] - b[cross]);
-    const rows = [];
-    sorted.forEach(node => {
-      let row = rows.find(group => Math.abs(group[0][cross] - node[cross]) <= 14);
-      if (!row) { row = []; rows.push(row); }
-      row.push(node);
-    });
-    return rows.some(row => {
-      if (row.length < 2) return false;
-      const positions = row.map(node => node[axis]).sort((a, b) => a - b);
-      const gaps = positions.slice(1).map((position, index) => position - positions[index]);
-      if (row.length === 2) {
-        const node = placed.get(row[0].id);
-        const standardGap = (axis === 'x' ? node?.offsetWidth : node?.offsetHeight) + 28;
-        return Math.abs(gaps[0] - standardGap) <= 14;
-      }
-      const mean = gaps.reduce((sum, gap) => sum + gap, 0) / gaps.length;
-      return mean > 0 && Math.max(...gaps.map(gap => Math.abs(gap - mean))) / mean <= .12;
-    });
-  });
-  if (hasEqualSpacing) points++;
-  details.push(hasEqualSpacing ? '等間隔あり' : '等間隔なし');
-
-  // 芸術点は、配置だけで客観的に判定しやすい3項目に限定する。
-  // 意味のまとまりは問題ごとの構造や配置意図に左右され、正解例でも不当に低得点になるため採点対象から外す。
-  points = (!overlaps && nodes.length > 1 ? 1 : 0) + (aligned ? 1 : 0) + (hasEqualSpacing ? 1 : 0);
-  const hintPenalty = hintDocumentsOpened;
-  points = Math.max(0, points - hintPenalty);
-  details.push(`追加資料の開示 -${hintPenalty}点`);
-  return { points, maxPoints: 3, overlaps, aligned, hasEqualSpacing, hintPenalty, details };
-
+  return scorePlacement(nodes, userEdited, hintDocumentsOpened);
 }
+
 
 function renderFeedback(comparison, composition) {
   const feedback = $('#feedback'); feedback.replaceChildren(); feedback.hidden = false;
@@ -786,8 +876,8 @@ function renderFeedback(comparison, composition) {
     ['要素の選択', '必要なカードがすべてあり、不要なカードが入っていない', '正誤判定'],
     ['矢印・関係', '接続先と矢印の向きが完成例と一致している', '正誤判定'],
     ['重なり', 'カード同士が重なっていない', '芸術点 1点'],
-    ['中心整列', 'カードの中心が横または縦にそろっている', '芸術点 1点'],
-    ['等間隔', '同じ列・行のカードが一定の間隔で並んでいる', '芸術点 1点'],
+    ['中心整列', '同じ行・列で隣り合うカードの中心がそろっている', '1組1点、最大カード数−1点'],
+    ['等間隔', '同じ行・列で隣り合う間隔がそろっている', '1間隔1点、最大カード数−1点'],
     ['追加資料の開示', '追加資料を初めて開くごとに1点減点', '開示1枚につき -1点'],
   ];
   helpRows.forEach(([name, description, pointsLabel]) => { const tr = document.createElement('tr'); [name, description, pointsLabel].forEach((value, i) => { const cell = document.createElement(i === 0 ? 'th' : 'td'); cell.textContent = value; if (i === 0) cell.scope = 'row'; tr.append(cell); }); helpTable.append(tr); });
@@ -799,10 +889,10 @@ function renderFeedback(comparison, composition) {
     ['要素の選択', comparison.missingItems.length || comparison.extraItems.length ? '要見直し' : 'OK', !(comparison.missingItems.length || comparison.extraItems.length), '一致していればOK'],
     ['矢印・関係', comparison.missingEdges.length || comparison.extraEdges.length ? '要見直し' : 'OK', !(comparison.missingEdges.length || comparison.extraEdges.length), '接続先と向きが完成例と一致していればOK'],
     ['重なり', composition.untouched ? '操作なし' : composition.overlaps ? `${composition.overlaps}か所` : 'なし', !composition.untouched && !composition.overlaps, 'カード同士が重なっていなければ1点'],
-    ['中心整列', !composition.untouched && composition.aligned ? '加点あり' : composition.untouched ? '操作なし' : '加点なし', !composition.untouched && composition.aligned, 'カードの中心がそろっていれば1点'],
-    ['等間隔', composition.untouched ? '操作なし' : composition.hasEqualSpacing ? '加点あり' : '加点なし', !composition.untouched && composition.hasEqualSpacing, 'カード間隔がそろっていれば1点'],
+    ['中心整列', composition.untouched ? '操作なし' : `${composition.alignmentPoints}点`, !composition.untouched && composition.aligned, '整列した隣接カード1組につき1点、最大カード数−1点'],
+    ['等間隔', composition.untouched ? '操作なし' : `${composition.spacingPoints}点`, !composition.untouched && composition.hasEqualSpacing, 'そろった間隔1個につき1点、最大カード数−1点'],
     ['追加資料の開示', composition.hintPenalty ? `-${composition.hintPenalty}点` : '減点なし', composition.hintPenalty === 0, '追加資料を初めて開くごとに1点減点'],
-    ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, composition.untouched ? 'カードやつなぎを操作していないため0点' : '重なり・中心整列・等間隔の3項目で最大3点']
+    ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, composition.untouched ? 'カードやつなぎを操作していないため0点' : '重なりなし1点＋中心整列の組数＋等間隔の個数。追加メモの減点後、下限0点']
   ];
   const tbody = document.createElement('tbody');
   rows.forEach(([label, value, good, description], index) => {
@@ -1087,7 +1177,7 @@ function submitAnswer() {
     nodes: [...placed.keys()].map(id => ({ id, label: labelFor(id), x: positions.get(id).x, y: positions.get(id).y, extra: current.items.find(item => item.id === id)?.kind === 'extra' })),
     edges: connections.map(edge => ({ from: edge.from, to: edge.to, ok: comparison.expectedEdges.includes(`${edge.from}->${edge.to}`) }))
   };
-  sessionResults.push({ id: current.id, title: current.title, correct: comparison.correct, explanation: current.explanation, compositionPoints: composition.points, untouched: Boolean(composition.untouched), snapshot, problem: current });
+  sessionResults.push({ id: current.id, title: current.title, correct: comparison.correct, explanation: current.explanation, compositionPoints: composition.points, compositionMaxPoints: composition.maxPoints, untouched: Boolean(composition.untouched), snapshot, problem: current });
   $('#scoreText').textContent = `正解 ${score}`;
   $('#progressBar').style.width = `${(questionIndex + 1) / session.length * 100}%`;
   $('#diagramCanvas').classList.add('is-locked');
@@ -1113,6 +1203,9 @@ function submitAnswer() {
   $('#clearLinks').disabled = true;
   $('#submitButton').hidden = true; $('#nextButton').hidden = false;
   $('#trashToggle').disabled = true;
+  $('#promptText').querySelectorAll('button').forEach(button => { button.disabled = true; });
+  $('#promptTrashPanel').hidden = true;
+  $('#promptTrashToggle').setAttribute('aria-expanded', 'false');
   $('#trashPanel').querySelectorAll('button').forEach(button => { button.disabled = true; });
   renderFeedback(comparison, composition); renderSolution(); $('#explanationText').textContent = current.explanation || ''; alignReviewFirstCard();
   $('#feedback').classList.add('feedback-enter');
@@ -1149,7 +1242,8 @@ function showResults() {
     ? '必要な情報を選び、関係をつなぐ視点が身についてきました。'
     : '完成例と自分の図を見比べて、情報と関係の違いを振り返ってみましょう。';
   const compositionTotal = sessionResults.reduce((sum, result) => sum + result.compositionPoints, 0);
-  $('#finalCompositionScore').textContent = `${compositionTotal} / ${session.length * 3}点`;
+  const compositionMaxTotal = sessionResults.reduce((sum, result) => sum + result.compositionMaxPoints, 0);
+  $('#finalCompositionScore').textContent = `${compositionTotal} / ${compositionMaxTotal}点`;
   $('#progressBar').style.width = '100%';
   updateResultActions();
   $('#reviewList').hidden = true; $('#reviewList').replaceChildren(); updateReviewToggle();
@@ -1251,7 +1345,7 @@ function buildReviewItem(result, index) {
   heading.append(
     h('span', 'review-status', result.correct ? '○ 正解' : '× 不正解'),
     h('strong', '', `${index + 1}. ${result.title}`),
-    h('span', 'review-craft', result.untouched ? '芸術点 0 / 3点（操作なし）' : `芸術点 ${result.compositionPoints} / 3点`)
+    h('span', 'review-craft', `芸術点 ${result.compositionPoints} / ${result.compositionMaxPoints}点${result.untouched ? '（操作なし）' : ''}`)
   );
   const compare = h('div', 'review-compare');
   [['あなたの図', '実際に書いた図'], ['正解例', '正しい関係']].forEach(([title, note]) => {
@@ -1333,6 +1427,7 @@ async function init() {
     return [...outgoing.values()].filter(count => count > 1).length < 2;
   })) throw new Error('難しい問題には複数の条件分岐が必要です');
   if (data.problems.some(problem => !problem.prompt?.documents?.initial?.length || !problem.prompt.documents.additional?.length)) throw new Error('各問題に段階開示資料（最初の資料と追加資料）が必要です');
+  if (data.problems.some(problem => !problem.prompt.requirements?.trim())) throw new Error('各問題に要求仕様が必要です');
   if (careerData.version !== 1 || !careerData.rewards || !Array.isArray(careerData.rewards.milestones) || !Array.isArray(careerData.stages)) throw new Error('継続設定データの形式が正しくありません');
   problems = data.problems;
   careerConfig = careerData;

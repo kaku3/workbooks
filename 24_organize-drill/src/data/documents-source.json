@@ -1,240 +1,2363 @@
 {
-  "version": 1,
-  "note": "段階開示資料の手書き部分。overview=最初に見せる外部設計1枚の本文、scope=extraカード（図に含めない候補）ごとのスコープ外資料 [タイトル, 本文]、parallel=分岐ではなく並行して進む起点のラベル、documents=自動生成せずそのまま使う手書きの資料一式。必要な資料（正解接続の根拠）は build-documents.mjs が connections から生成する。",
+  "version": 2,
+  "note": "要求仕様とヒアリングメモの原稿。本文は手書き。coversは正解接続の根拠、scopeのitemIdsは図の対象外となる候補。initialは初期3枚、additionalは追加開示。画面では本文のみを表示し、kindやcoversを見せない。",
   "problems": {
     "order-flow": {
-      "overview": "ネット注文を受け付けてから、利用者へ発送を知らせるまでの一連の業務を見直す。注文1件ごとに繰り返される流れが対象。",
-      "scope": { "月次の売上を集計する": ["経理メモ", "月次の売上を集計する作業は、経理が月末に別の業務として行っている。"] }
+      "requirements": "注文者が安心して商品を受け取れるよう、受付から発送連絡までを管理したい。 今回の図の対象：ネット注文を受け付けてから、利用者へ発送を知らせるまでの一連の業務を見直す。注文1件ごとに繰り返される流れが対象。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "注文者から届く品目と数量が、在庫を調べるための情報になる。",
+            "covers": [
+              "submit-order->check-stock"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "代金を請求できるのは、注文分の在庫を確保できる場合とする。",
+            "covers": [
+              "check-stock->process-payment"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "経理は月ごとの売上を商品別に比較し、次月の販売計画に使いたい。",
+            "itemIds": [
+              "monthly-sales"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "倉庫には支払いが済んだ注文だけを渡し、未決済の品を発送しないようにしたい。",
+            "covers": [
+              "process-payment->request-shipping"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "発送連絡には倉庫へ渡した出荷依頼の情報を使う。",
+            "covers": [
+              "request-shipping->notify-shipped"
+            ]
+          }
+        ]
+      }
     },
     "support-flow": {
-      "overview": "利用者から不具合の報告を受けてから、対応結果を伝えるまでの問い合わせ対応を見直す。",
-      "scope": { "翌月の研修計画を作る": ["運営メモ", "翌月の研修計画を作る作業は、サポートチームの別の会議で進めている。"] }
+      "requirements": "利用者の不具合報告について、状況を把握して対処し、対応結果を本人に伝えたい。 今回の図の対象：利用者から不具合の報告を受けてから、対応結果を伝えるまでの問い合わせ対応を見直す。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "報告だけでは再現できないことがある。担当者は利用者に操作や利用環境を聞き取る。",
+            "covers": [
+              "report-issue->confirm-context"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "原因の調査には、聞き取った発生条件と再現状況を使う。",
+            "covers": [
+              "confirm-context->isolate-cause"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "サポート責任者は、問い合わせの多い操作を翌月の研修で取り上げたい。",
+            "itemIds": [
+              "plan-training"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "対処は特定した原因に合わせる。恒久修正が難しい場合は回避策を選ぶ。",
+            "covers": [
+              "isolate-cause->apply-fix"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "利用者に伝えるのは調査中の推測ではなく、実施した対処とその結果にしたい。",
+            "covers": [
+              "apply-fix->share-result"
+            ]
+          }
+        ]
+      }
     },
     "expense-flow": {
-      "overview": "申請された経費が、確認と承認を経て、申請者へ結果が伝わるまでの流れを見直す。",
-      "parallel": ["申請者が経費を申請する"],
-      "scope": { "人事が研修予定を更新する": ["人事メモ", "人事が研修予定を更新する作業は、人事部門の別の台帳で行われている。"] }
+      "requirements": "経費申請を確認し、承認と証憑がそろったものを支払いたい。不承認や不備の理由も申請者に伝える。 今回の図の対象：申請された経費が、確認と承認を経て、申請者へ結果が伝わるまでの流れを見直す。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "申請内容は上長と経理に同時に渡す。上長の判断を待たずに領収書の確認を始めてよい。",
+            "covers": [
+              "submit-expense->manager-approve",
+              "submit-expense->check-receipt"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "上長が認めた申請は振込候補にする。認められない場合は、その理由を申請者が分かるようにする。",
+            "covers": [
+              "manager-approve->request-transfer",
+              "manager-approve->manager-reject"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "人事担当者は、新任者が申請方法を学べる研修予定を社内で共有したい。",
+            "itemIds": [
+              "update-training"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "領収書に不備があるときは修正を求める。振込に回せるのは、上長の承認があり、証憑にも不備がない申請だけ。",
+            "covers": [
+              "check-receipt->request-transfer",
+              "check-receipt->receipt-correction"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "申請者への支払結果の連絡には、経理が依頼した振込の内容を載せる。",
+            "covers": [
+              "request-transfer->notify-applicant"
+            ]
+          }
+        ]
+      }
     },
     "release-flow": {
-      "overview": "サービスの更新を、準備から本番への公開、公開後の確認まで安全に進める流れを見直す。",
-      "scope": { "チームの採用計画を立てる": ["チームメモ", "チームの採用計画を立てる作業は、四半期ごとに別途行っている。"] }
+      "requirements": "サービス更新を安全に公開し、公開後に利用できることまで確認したい。 今回の図の対象：サービスの更新を、準備から本番への公開、公開後の確認まで安全に進める流れを見直す。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "テストには今回の更新内容と公開手順を使う。準備できていない更新は検証対象にしない。",
+            "covers": [
+              "prepare-release->run-tests"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "公開を判断する人には、更新内容だけでなくテストの実行結果も渡す。",
+            "covers": [
+              "run-tests->approve-release"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "チーム責任者は、運用を担当できる人を増やすため四半期ごとの採用計画を立てたい。",
+            "itemIds": [
+              "recruit-staff"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "本番への反映作業は、公開の承認が取れた更新に限る。",
+            "covers": [
+              "approve-release->deploy-release"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "検証環境での成功だけでは完了にしない。本番に反映した更新が動くことを確認する。",
+            "covers": [
+              "deploy-release->monitor-release"
+            ]
+          }
+        ]
+      }
     },
     "learning-cycle": {
-      "overview": "新しい操作を身につけるために、練習と振り返りを繰り返しながら目標を更新していく流れを整理する。",
-      "scope": { "共有フォルダーを整理する": ["環境メモ", "共有フォルダーを整理する作業は、年度末にまとめて行っている。"] }
+      "requirements": "身につけたい操作を練習し、振り返りを次の練習に生かす習慣を作りたい。 今回の図の対象：新しい操作を身につけるために、練習と振り返りを繰り返しながら目標を更新していく流れを整理する。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "練習する操作は、その回に身につけたいことに合わせて選ぶ。",
+            "covers": [
+              "set-goal->practice-skill"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "できたことと難しかったことは、実際に操作した経験から書き出す。",
+            "covers": [
+              "practice-skill->review-progress"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "学習資料を探しやすくするため、共有フォルダーを教材の種類別に整理したい。",
+            "itemIds": [
+              "archive-files"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "次の目標は、振り返りで残った課題をもとに決める。",
+            "covers": [
+              "review-progress->choose-next-goal"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "目標を決めるだけで終わらせず、次の練習で試す内容にする。",
+            "covers": [
+              "choose-next-goal->practice-again"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "次の目標で練習した結果も、同じ振り返りに持ち寄る。練習と振り返りを繰り返したい。",
+            "covers": [
+              "practice-again->review-progress"
+            ]
+          }
+        ]
+      }
     },
     "zukai-login": {
-      "overview": "利用者がログインしてホーム画面に進むまでの流れ。アカウントの状態と認証の結果によって、行き先が変わる。",
-      "scope": { "ログイン画面の背景画像": ["画面仕様メモ", "ログイン画面の背景画像は、季節ごとにデザイナーが差し替える。"] }
+      "requirements": "利用可能なアカウントの本人だけがホーム画面に入れるようにしたい。停止中と認証失敗では案内を分ける。 今回の図の対象：利用者がログインしてホーム画面に進むまでの流れ。アカウントの状態と認証の結果によって、行き先が変わる。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "入力されたアカウントを使い、まず利用できる状態か調べる。",
+            "covers": [
+              "zukai-login-n1->zukai-login-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "停止中なら利用停止の案内を出し、認証には進めない。利用可能なアカウントだけを本人確認の対象にする。",
+            "covers": [
+              "zukai-login-n4->zukai-login-n5",
+              "zukai-login-n4->zukai-login-n2"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "ログイン画面の背景画像は、文字の読みやすさを保ちつつ季節ごとに変えたい。",
+            "itemIds": [
+              "zukai-login-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "本人確認に成功した利用者にはホームを見せる。情報が一致しなければ、認証に失敗したことを伝える。",
+            "covers": [
+              "zukai-login-n2->zukai-login-n3",
+              "zukai-login-n2->zukai-login-n6"
+            ]
+          }
+        ]
+      }
     },
     "zukai-profile-update": {
-      "overview": "利用者が表示名を変更して保存を終えるまでの流れ。今回は入力に問題がない場合を扱う。",
-      "scope": {
-        "将来の画像変更機能": ["未決事項", "将来の画像変更機能は、次期の検討事項として保留している。"],
-        "保存ボタンの色": ["共通デザインメモ", "保存ボタンの色は、共通スタイルの基本色を使う。"]
+      "requirements": "利用者が自分の表示名を変更し、保存できたことを画面で確認できるようにしたい。今回は正常に保存できる場合の流れを整理する。 今回の図の対象：利用者が表示名を変更して保存を終えるまでの流れ。今回は入力に問題がない場合を扱う。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "保存操作で送られる表示名は、文字数の確認対象になる。",
+            "covers": [
+              "zukai-profile-update-n1->zukai-profile-update-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "記録する表示名は、文字数の条件を満たしたものに限る。今回は条件内の入力を扱う。",
+            "covers": [
+              "zukai-profile-update-n2->zukai-profile-update-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "将来は表示名だけでなく、本人のプロフィール画像も変更できるようにしたい。",
+            "itemIds": [
+              "zukai-profile-update-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "完了の表示で、実際には保存されていない名前を保存済みと誤解させたくない。",
+            "covers": [
+              "zukai-profile-update-n3->zukai-profile-update-n4"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "保存ボタンは他の画面と同じ色にし、主操作だと見分けられるようにしたい。",
+            "itemIds": [
+              "zukai-profile-update-x2"
+            ]
+          }
+        ]
       }
     },
     "zukai-upload": {
-      "overview": "利用者がPDFをアップロードし、条件を満たすものだけを保存して一覧に反映する流れ。条件を満たさない場合の扱いも含む。",
-      "scope": { "サーバーのディスク容量監視": ["運用メモ", "サーバーのディスク容量監視は、運用チームが別の仕組みで行っている。"] }
+      "requirements": "10MB以内のPDFを受け付けて一覧で使えるようにしたい。条件に合わないファイルは保存せず、エラーを伝える。 今回の図の対象：利用者がPDFをアップロードし、条件を満たすものだけを保存して一覧に反映する流れ。条件を満たさない場合の扱いも含む。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "受け取ったファイルは容量の検査対象になる。",
+            "covers": [
+              "zukai-upload-n1->zukai-upload-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "10MBを超えるものはエラーとし、拡張子の検査には回さない。容量内ならPDF形式かを調べる。",
+            "covers": [
+              "zukai-upload-n2->zukai-upload-n3",
+              "zukai-upload-n2->zukai-upload-n6"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "運用担当者は、ファイル保存領域の残容量が少なくなったことを監視画面で把握したい。",
+            "itemIds": [
+              "zukai-upload-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "容量内でも拡張子がPDFでなければエラーにする。両方の条件を満たしたファイルだけを保存したい。",
+            "covers": [
+              "zukai-upload-n3->zukai-upload-n4",
+              "zukai-upload-n3->zukai-upload-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "一覧で選べるのは、保存が終わっているファイルだけ。",
+            "covers": [
+              "zukai-upload-n4->zukai-upload-n5"
+            ]
+          }
+        ]
+      }
     },
     "zukai-stock-sync": {
-      "overview": "毎時の在庫連携で、自社システムと外部倉庫がデータをやり取りし、結果を記録または通知する流れ。",
-      "scope": {
-        "CSVの列順の詳細": ["連携仕様メモ", "CSVの列順の詳細は、別紙のインターフェース定義に従う。"],
-        "実行サーバー名": ["運用メモ", "実行サーバー名は、運用手順書に記載している。"]
+      "requirements": "毎時、外部倉庫と在庫を連携し、成功の記録または失敗行の連絡を残したい。 今回の図の対象：毎時の在庫連携で、自社システムと外部倉庫がデータをやり取りし、結果を記録または通知する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "在庫連携の起動時刻は毎時とし、その回の在庫データを倉庫へCSVで渡す。",
+            "covers": [
+              "zukai-stock-sync-n1->zukai-stock-sync-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "倉庫から返る処理結果CSVは、送った在庫CSVに対する結果として照合する。",
+            "covers": [
+              "zukai-stock-sync-n2->zukai-stock-sync-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "CSVの列は商品コード、倉庫コード、在庫数の順に統一し、倉庫側で取り込みやすくしたい。",
+            "itemIds": [
+              "zukai-stock-sync-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "全件成功なら成功時刻を残す。失敗行があれば、その行を担当者に知らせる。",
+            "covers": [
+              "zukai-stock-sync-n3->zukai-stock-sync-n4",
+              "zukai-stock-sync-n3->zukai-stock-sync-n5"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "運用担当者は、実行サーバー名からどの在庫連携環境かを見分けたい。",
+            "itemIds": [
+              "zukai-stock-sync-x2"
+            ]
+          }
+        ]
       }
     },
     "zukai-payment-auth": {
-      "task": "購入確定から、決済結果に応じた次の処理までを図に整理してください。",
+      "requirements": "購入内容が妥当で決済の承認が得られた注文を確定したい。不備や承認失敗は、利用者が修正できるように案内する。 今回の図の対象：購入確定の操作から、内容検証と決済結果に応じた注文の扱いまでを対象とする。",
       "documents": {
         "initial": [
-          { "id": "pay-doc-01", "kind": "external", "title": "外部設計｜処理概要", "text": "購入を確定する前に内容を確認し、問題がなければ決済へ進む。決済結果を受けて、注文の扱いを決める。" },
-          { "id": "pay-doc-02", "kind": "scope", "title": "画面仕様メモ", "text": "配送先住所の表示順は、現行画面の並びを踏襲する。" },
-          { "id": "pay-doc-03", "kind": "scope", "title": "共通デザインメモ", "text": "エラー表示の色は共通スタイルに合わせる。" }
+          {
+            "kind": "requirement",
+            "text": "購入確定の操作で送られた内容を、決済に回せるか検証する。",
+            "covers": [
+              "zukai-payment-auth-n1->zukai-payment-auth-n7"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "不備がある購入内容は修正を依頼する。決済代行に渡せるのは検証済みの内容だけ。",
+            "covers": [
+              "zukai-payment-auth-n7->zukai-payment-auth-n2",
+              "zukai-payment-auth-n7->zukai-payment-auth-n8"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "配送先の表示は、郵便番号、住所、宛名の順にそろえ、利用者が確認しやすくしたい。",
+            "itemIds": [
+              "zukai-payment-auth-x1"
+            ]
+          }
         ],
         "additional": [
-          { "id": "pay-doc-04", "kind": "requirement", "title": "要件メモ", "text": "購入内容を検証し、不備があれば購入内容の修正を依頼する。問題がなければ決済代行へ承認を要求する。", "covers": ["zukai-payment-auth-n7->zukai-payment-auth-n2", "zukai-payment-auth-n7->zukai-payment-auth-n8"] },
-          { "id": "pay-doc-05", "kind": "external", "title": "外部設計｜処理順序", "text": "購入確定を実行した後に、購入内容を検証する。", "covers": ["zukai-payment-auth-n1->zukai-payment-auth-n7"] },
-          { "id": "pay-doc-06", "kind": "external", "title": "外部設計｜決済連携", "text": "決済代行へ承認要求を行った後、承認結果を判定する。", "covers": ["zukai-payment-auth-n2->zukai-payment-auth-n3"] },
-          { "id": "pay-doc-07", "kind": "external", "title": "外部設計｜結果の扱い", "text": "承認結果に応じて、注文を確定するか、支払い方法の再入力を依頼する。", "covers": ["zukai-payment-auth-n3->zukai-payment-auth-n4", "zukai-payment-auth-n3->zukai-payment-auth-n6"] },
-          { "id": "pay-doc-08", "kind": "scope", "title": "運用メモ", "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。" },
-          { "id": "pay-doc-09", "kind": "scope", "title": "未決事項", "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。" },
-          { "id": "pay-doc-10", "kind": "external", "title": "外部設計｜完了後の表示", "text": "注文を確定した後、注文番号を表示する。", "covers": ["zukai-payment-auth-n4->zukai-payment-auth-n5"] }
+          {
+            "kind": "requirement",
+            "text": "注文の確定に使う承認結果は、今回の決済代行への要求に対する応答で確認する。",
+            "covers": [
+              "zukai-payment-auth-n2->zukai-payment-auth-n3"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "決済の承認が得られれば注文を成立させる。承認されない場合は支払い方法を入力し直してもらう。",
+            "covers": [
+              "zukai-payment-auth-n3->zukai-payment-auth-n4",
+              "zukai-payment-auth-n3->zukai-payment-auth-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "利用者に表示する注文番号は、成立した注文に発行された番号とする。",
+            "covers": [
+              "zukai-payment-auth-n4->zukai-payment-auth-n5"
+            ]
+          }
         ]
-      },
-      "scope": { "配送先住所の表示順": ["画面仕様メモ", "配送先住所の表示順は、現行画面の並びを踏襲する。"] }
+      }
     },
     "zukai-refund": {
-      "overview": "担当者が注文をキャンセルしたあと、返金の可否と決済代行からの結果に応じて対応を進める流れ。",
-      "scope": { "注文メモの文字数上限": ["画面仕様メモ", "注文メモの文字数上限は、現行画面の仕様を踏襲する。"] }
+      "requirements": "注文のキャンセルを受けて返金可否を確認し、返金結果を管理したい。失敗分は再試行できるようにする。 今回の図の対象：担当者が注文をキャンセルしたあと、返金の可否と決済代行からの結果に応じて対応を進める流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "返金の確認対象は、担当者がキャンセルした注文とする。",
+            "covers": [
+              "zukai-refund-n1->zukai-refund-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "返金対象の注文だけを決済代行に送る。対象でなければ、その旨を担当者に知らせる。",
+            "covers": [
+              "zukai-refund-n2->zukai-refund-n3",
+              "zukai-refund-n2->zukai-refund-n7"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "注文メモは200文字まで入力できるようにし、残り文字数も確認したい。",
+            "itemIds": [
+              "zukai-refund-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "返金成功の応答があれば返金済みにする。失敗した要求は再試行の対象としてキューに残す。",
+            "covers": [
+              "zukai-refund-n3->zukai-refund-n4",
+              "zukai-refund-n3->zukai-refund-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "担当者への失敗連絡では、再試行キューに登録された返金を特定できるようにする。",
+            "covers": [
+              "zukai-refund-n5->zukai-refund-n6"
+            ]
+          }
+        ]
+      }
     },
     "zukai-shipping-api": {
-      "overview": "注文確定後の出荷依頼を外部へ送り、受付時の応答と、あとから届く結果で注文の状態を更新する流れ。結果は非同期で届く。",
-      "scope": { "Webhook署名方式の詳細": ["セキュリティメモ", "Webhook署名方式の詳細は、別途セキュリティ担当と詰める。"] }
+      "requirements": "出荷依頼の受付と出荷の完了を区別して管理したい。外部の受付応答と非同期の結果から、注文の状態を更新する。 今回の図の対象：注文確定後の出荷依頼を外部へ送り、受付時の応答と、あとから届く結果で注文の状態を更新する流れ。結果は非同期で届く。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "外部への出荷依頼で受付に成功するとIDが返る。受付自体に失敗した場合は記録を残し、担当者に知らせる。",
+            "covers": [
+              "zukai-shipping-api-n1->zukai-shipping-api-n2",
+              "zukai-shipping-api-n1->zukai-shipping-api-n7"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "受付IDがある依頼を「出荷依頼中」として管理する。受付だけでは出荷済みにしない。",
+            "covers": [
+              "zukai-shipping-api-n2->zukai-shipping-api-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "受信したWebhookが正規の倉庫から届いたものか、署名と共有鍵で検証したい。",
+            "itemIds": [
+              "zukai-shipping-api-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "出荷依頼中の注文は、後からWebhookで届く結果を待つ。",
+            "covers": [
+              "zukai-shipping-api-n3->zukai-shipping-api-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "Webhookの成功結果で出荷済みとする。失敗結果なら出荷保留にして対応できるようにする。",
+            "covers": [
+              "zukai-shipping-api-n4->zukai-shipping-api-n5",
+              "zukai-shipping-api-n4->zukai-shipping-api-n6"
+            ]
+          }
+        ]
+      }
     },
     "zukai-expense-redesign": {
-      "overview": "Web申請を導入する経費精算で、入力の確認から承認、支払い、進捗の確認までを新しい流れに整理する。",
-      "parallel": ["申請者がWeb申請"],
-      "scope": {
-        "経理担当者の異動予定": ["人事メモ", "経理担当者の異動予定は、来期の体制検討の中で扱っている。"],
-        "申請集中の現状": ["現状メモ", "申請集中の現状は、運用改善の課題として別に整理している。"]
+      "requirements": "経費をWebで申請し、不備の修正や承認を経て支払いたい。申請者は自分の進捗をWebで確認できること。 今回の図の対象：Web申請を導入する経費精算で、入力の確認から承認、支払い、進捗の確認までを新しい流れに整理する。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "Webで受け付けた申請は入力確認の対象になる。同時に申請者向けの進捗確認も可能にしたい。",
+            "covers": [
+              "zukai-expense-redesign-n1->zukai-expense-redesign-n2",
+              "zukai-expense-redesign-n1->zukai-expense-redesign-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "不備があれば申請者に差し戻す。部門長に判断を求めるのは、入力がそろった申請とする。",
+            "covers": [
+              "zukai-expense-redesign-n2->zukai-expense-redesign-n3",
+              "zukai-expense-redesign-n2->zukai-expense-redesign-n4"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "経理担当者の異動後も申請内容を参照できるよう、担当の引継先を一覧にしたい。",
+            "itemIds": [
+              "zukai-expense-redesign-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "支払いの対象は、部門長が承認した申請だけ。",
+            "covers": [
+              "zukai-expense-redesign-n4->zukai-expense-redesign-n5"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "月末に申請が集中しても、通常時と同じ操作で入力できる応答速度を保ちたい。",
+            "itemIds": [
+              "zukai-expense-redesign-x2"
+            ]
+          }
+        ]
       }
     },
     "zukai-contact-improvement": {
-      "overview": "問い合わせへの回答を、過去の回答を活用しながら作成し、次回にも生かせるようにする流れ。",
-      "scope": {
-        "座席レイアウト変更": ["総務メモ", "座席レイアウト変更は、総務が別途進めている。"],
-        "担当者の所属一覧": ["名簿メモ", "担当者の所属一覧は、人事の名簿を参照する。"]
+      "requirements": "問い合わせ対応で過去の回答を活用したい。担当者が回答を作り、顧客に伝えた内容を次回の対応にも使えるようにする。 今回の図の対象：問い合わせへの回答を、過去の回答を活用しながら作成し、次回にも生かせるようにする流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "受け付けた問い合わせの内容を、過去事例を探す検索条件にする。",
+            "covers": [
+              "zukai-contact-improvement-n1->zukai-contact-improvement-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "担当者に見せる候補は、今回の問い合わせに類似すると検索された回答とする。",
+            "covers": [
+              "zukai-contact-improvement-n2->zukai-contact-improvement-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "窓口担当者が相談しやすいよう、チームごとに座席をまとめたい。",
+            "itemIds": [
+              "zukai-contact-improvement-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "回答候補は参考資料として担当者に見せる。顧客へ送る文章は担当者が作成する。",
+            "covers": [
+              "zukai-contact-improvement-n3->zukai-contact-improvement-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "顧客に伝えるのは、担当者が内容を確認して作った回答とする。",
+            "covers": [
+              "zukai-contact-improvement-n4->zukai-contact-improvement-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "履歴には下書きではなく、顧客へ実際に伝えた回答を保存したい。",
+            "covers": [
+              "zukai-contact-improvement-n5->zukai-contact-improvement-n6"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "担当者の一覧では、所属部署と専門分野を検索できるようにしたい。",
+            "itemIds": [
+              "zukai-contact-improvement-x2"
+            ]
+          }
+        ]
       }
     },
     "zukai-attendance-role": {
-      "overview": "勤怠の打刻と休暇の申請を、人事の確認を経て給与計算へ渡すまでの役割分担を整理する。",
-      "scope": {
-        "Excelへの二重転記": ["現状メモ", "Excelへの二重転記は現在も残っているが、解消は別の課題として扱う。"],
-        "部署ごとの休憩ルール詳細": ["就業規則メモ", "部署ごとの休憩ルール詳細は、就業規則に従う。"]
+      "requirements": "打刻と休暇申請を勤怠に反映し、人事の確認した勤務データを給与計算へ渡したい。 今回の図の対象：勤怠の打刻と休暇の申請を、人事の確認を経て給与計算へ渡すまでの役割分担を整理する。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "勤務時間の算出には、社員が記録した出勤・退勤の時刻を使う。",
+            "covers": [
+              "zukai-attendance-role-n1->zukai-attendance-role-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "休暇の承認対象は、社員本人から届いた申請とする。",
+            "covers": [
+              "zukai-attendance-role-n3->zukai-attendance-role-n4"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "現在のExcelへの二重転記を減らし、月次集計の入力負担を小さくしたい。",
+            "itemIds": [
+              "zukai-attendance-role-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "人事はシステムが算出した勤務時間を勤怠確認に使う。",
+            "covers": [
+              "zukai-attendance-role-n2->zukai-attendance-role-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "人事が確認する勤怠には、上長が承認した休暇も反映する。勤務時間と休暇の両方をそろえたい。",
+            "covers": [
+              "zukai-attendance-role-n4->zukai-attendance-role-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "給与計算に渡すのは、人事が確認を終えた勤務データだけ。",
+            "covers": [
+              "zukai-attendance-role-n5->zukai-attendance-role-n6"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "部署ごとに異なる休憩時間の計算条件を設定で変更できるようにしたい。",
+            "itemIds": [
+              "zukai-attendance-role-x2"
+            ]
+          }
+        ]
       }
     },
     "password-reset": {
-      "overview": "パスワードを忘れた利用者が、本人確認を経て新しいパスワードを登録するまでの流れ。",
-      "scope": { "パスワードの保存ハッシュ方式": ["セキュリティメモ", "パスワードの保存ハッシュ方式は、社内のセキュリティ基準に従う。"] }
+      "requirements": "パスワードを忘れた利用者が、登録メールを使って安全に再設定できるようにしたい。 今回の図の対象：パスワードを忘れた利用者が、本人確認を経て新しいパスワードを登録するまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "再設定の依頼を受けたアカウントの登録メールに、確認用のリンクを送る。",
+            "covers": [
+              "password-reset-n1->password-reset-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "利用者は届いたメールのリンクから再設定の手続きを行う。",
+            "covers": [
+              "password-reset-n2->password-reset-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "保存したパスワードから元の文字列を読み出せないよう、ソルト付きのハッシュを使いたい。",
+            "itemIds": [
+              "password-reset-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "新しいパスワードを登録できるのは、確認リンクからアクセスした利用者とする。",
+            "covers": [
+              "password-reset-n3->password-reset-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "完了連絡では、新しいパスワードが登録されたことを伝える。",
+            "covers": [
+              "password-reset-n4->password-reset-n5"
+            ]
+          }
+        ]
+      }
     },
     "account-registration": {
-      "overview": "利用者がアカウントを登録し、メールでの確認を経て利用を始められるようになるまでの流れ。",
-      "scope": { "登録画面のロゴ": ["画面仕様メモ", "登録画面のロゴは、最新のブランドガイドラインに合わせる。"] }
+      "requirements": "入力情報とメールアドレスを確認した利用者が、アカウントを使い始められるようにしたい。 今回の図の対象：利用者がアカウントを登録し、メールでの確認を経て利用を始められるようになるまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "登録フォームから届いた情報を、入力検証の対象にする。",
+            "covers": [
+              "account-registration-n1->account-registration-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "確認用のメールは、入力が妥当な登録先だけに送る。",
+            "covers": [
+              "account-registration-n2->account-registration-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "登録画面のロゴから運営会社が分かるようにし、スマートフォンでも読める大きさにしたい。",
+            "itemIds": [
+              "account-registration-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "利用者には届いたメール内の確認リンクを開いてもらう。",
+            "covers": [
+              "account-registration-n3->account-registration-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "メールの持ち主と確認できた登録だけを有効にする。",
+            "covers": [
+              "account-registration-n4->account-registration-n5"
+            ]
+          }
+        ]
+      }
     },
     "reservation-booking": {
-      "overview": "社員が会議室を予約する流れ。空き状況によって、予約が確定するか、選び直しになるかが変わる。",
-      "scope": { "会議室の壁紙": ["総務メモ", "会議室の壁紙は、総務が年度内に張り替えを予定している。"] }
+      "requirements": "空いている会議室を予約し、予約結果を利用者に伝えたい。満室なら別日時を選べるようにする。 今回の図の対象：社員が会議室を予約する流れ。空き状況によって、予約が確定するか、選び直しになるかが変わる。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "空き状況は、利用者が選んだ日時と会議室を組み合わせて調べる。",
+            "covers": [
+              "reservation-booking-n1->reservation-booking-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "空きがあれば予約できる。埋まっている場合は別日時の選び直しを案内する。",
+            "covers": [
+              "reservation-booking-n2->reservation-booking-n3",
+              "reservation-booking-n2->reservation-booking-n5"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "会議室の壁紙はオンライン会議の背景に映っても文字が見づらくならない柄にしたい。",
+            "itemIds": [
+              "reservation-booking-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "予約の通知には確定した部屋と日時を載せる。",
+            "covers": [
+              "reservation-booking-n3->reservation-booking-n4"
+            ]
+          }
+        ]
+      }
     },
     "reservation-cancel": {
-      "overview": "満席の予約に対してキャンセル待ちを受け付け、空きが出たときに利用者へ案内する流れ。",
-      "scope": { "施設の外観写真": ["広報メモ", "施設の外観写真は、広報が案内ページ用に撮り直している。"] }
+      "requirements": "満席の施設でキャンセル待ちを受け付け、空席が出たら待ち順に予約を案内したい。 今回の図の対象：満席の予約に対してキャンセル待ちを受け付け、空きが出たときに利用者へ案内する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "キャンセル待ちの登録対象は、満席で予約できなかった利用者とする。",
+            "covers": [
+              "reservation-cancel-n1->reservation-cancel-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "待ち登録がある状態で既存予約の取消を受けることを、空席案内のきっかけにする。",
+            "covers": [
+              "reservation-cancel-n2->reservation-cancel-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "利用者が訪問先を見つけやすいよう、施設の外観写真を案内ページに載せたい。",
+            "itemIds": [
+              "reservation-cancel-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "取消で空いた枠の案内先は、待ち順の先頭から調べる。",
+            "covers": [
+              "reservation-cancel-n3->reservation-cancel-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "空席の連絡は、先頭として確認できた利用者に送る。",
+            "covers": [
+              "reservation-cancel-n4->reservation-cancel-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "案内を受け取った利用者が予約を確定する。案内だけでは予約済みにしない。",
+            "covers": [
+              "reservation-cancel-n5->reservation-cancel-n6"
+            ]
+          }
+        ]
+      }
     },
     "stock-reorder": {
-      "overview": "在庫数が基準を下回った商品を補充し、在庫数に反映するまでの流れ。",
-      "scope": { "倉庫の所在地": ["拠点メモ", "倉庫の所在地は、拠点一覧に記載している。"] }
+      "requirements": "在庫不足を補充基準で判断し、発注から入荷後の在庫更新まで管理したい。今回は補充が必要な場合を整理する。 今回の図の対象：在庫数が基準を下回った商品を補充し、在庫数に反映するまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "補充の判断には、実際に確認した在庫数を使う。",
+            "covers": [
+              "stock-reorder-n1->stock-reorder-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "補充基準を下回った品目を仕入先への発注対象にする。",
+            "covers": [
+              "stock-reorder-n2->stock-reorder-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "倉庫の所在地を地図で確認し、納品業者が搬入口まで迷わず来られるようにしたい。",
+            "itemIds": [
+              "stock-reorder-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "届いた商品は発注内容と照合し、入荷を確認する。",
+            "covers": [
+              "stock-reorder-n3->stock-reorder-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "在庫に加算するのは、実際に入荷を確認できた数量だけ。",
+            "covers": [
+              "stock-reorder-n4->stock-reorder-n5"
+            ]
+          }
+        ]
+      }
     },
     "coupon-application": {
-      "overview": "利用者がクーポンを使うときに、条件を確認して割引を適用する流れ。条件を満たさない場合の扱いも含む。",
-      "scope": { "キャンペーンバナーの色": ["共通デザインメモ", "キャンペーンバナーの色は、季節の配色に合わせて決める。"] }
+      "requirements": "期限と対象商品の条件を満たすクーポンだけを使えるようにし、使えない場合は理由を表示したい。 今回の図の対象：利用者がクーポンを使うときに、条件を確認して割引を適用する流れ。条件を満たさない場合の扱いも含む。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "入力されたコードのクーポンを特定し、有効期限を調べる。",
+            "covers": [
+              "coupon-application-n1->coupon-application-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "期限切れなら利用できない理由を出す。有効なクーポンは、購入商品が対象かも確認する。",
+            "covers": [
+              "coupon-application-n2->coupon-application-n3",
+              "coupon-application-n2->coupon-application-n5"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "キャンペーンバナーは割引額の文字が読みやすい配色にしたい。",
+            "itemIds": [
+              "coupon-application-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "期限内でも対象商品が含まれなければ理由を出す。両条件を満たす場合に割引を適用する。",
+            "covers": [
+              "coupon-application-n3->coupon-application-n4",
+              "coupon-application-n3->coupon-application-n5"
+            ]
+          }
+        ]
+      }
     },
     "return-exchange": {
-      "overview": "利用者からの返品・交換の申請を受け付け、条件に応じて対応を案内する流れ。",
-      "scope": { "返品受付画面の配色": ["画面仕様メモ", "返品受付画面の配色は、共通スタイルに合わせる。"] }
+      "requirements": "返品の可否を購入情報から確認し、対象品の返送と返金または交換を受け付けたい。 今回の図の対象：利用者からの返品・交換の申請を受け付け、条件に応じて対応を案内する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "返品申請に記載された注文を使って、購入時の情報を照合する。",
+            "covers": [
+              "return-exchange-n1->return-exchange-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "返品条件の判定には、確認できた購入日や商品情報を使う。",
+            "covers": [
+              "return-exchange-n2->return-exchange-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "返品受付画面では入力欄と説明欄を色でも見分けられるようにしたい。",
+            "itemIds": [
+              "return-exchange-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "条件を満たす場合は返送方法を伝える。対象外なら理由を通知し、返送は依頼しない。",
+            "covers": [
+              "return-exchange-n3->return-exchange-n4",
+              "return-exchange-n3->return-exchange-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "案内した返送品を受け取り、申請と対応づける。",
+            "covers": [
+              "return-exchange-n4->return-exchange-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "返金や交換を処理できるのは、返送品の受領を確認した申請とする。",
+            "covers": [
+              "return-exchange-n6->return-exchange-n7"
+            ]
+          }
+        ]
+      }
     },
     "invoice-payment": {
-      "overview": "届いた請求書を確認し、承認を得て支払い、記録を残すまでの流れ。",
-      "scope": { "請求書の紙色": ["備品メモ", "請求書の紙色は、取引先ごとのフォーマットに任せている。"] }
+      "requirements": "請求書の内容を照合して承認を得た支払いを行い、支払実績を残したい。 今回の図の対象：届いた請求書を確認し、承認を得て支払い、記録を残すまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "受領した請求書の金額と明細を、発注や納品の内容と照合する。",
+            "covers": [
+              "invoice-payment-n1->invoice-payment-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "承認者には、照合を終えた請求内容を渡す。",
+            "covers": [
+              "invoice-payment-n2->invoice-payment-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "紙の請求書は他の帳票と混ざっても分かるよう、用紙の色をそろえたい。",
+            "itemIds": [
+              "invoice-payment-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "振込の対象は、支払いを承認された請求だけ。",
+            "covers": [
+              "invoice-payment-n3->invoice-payment-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "支払記録は請求予定ではなく、実施した振込の内容として残す。",
+            "covers": [
+              "invoice-payment-n4->invoice-payment-n5"
+            ]
+          }
+        ]
+      }
     },
     "purchase-approval": {
-      "overview": "社員の備品購入の申請を、上長が確認して発注または差し戻しにするまでの流れ。結果は申請者に伝える。",
-      "scope": { "備品カタログの表紙": ["総務メモ", "備品カタログの表紙は、年度ごとに差し替わる。"] }
+      "requirements": "社員の備品購入を内容と予算から判断し、発注または差し戻しの結果を本人に伝えたい。 今回の図の対象：社員の備品購入の申請を、上長が確認して発注または差し戻しにするまでの流れ。結果は申請者に伝える。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "社員が購入したい備品と理由を上長に提出する。",
+            "covers": [
+              "purchase-approval-n1->purchase-approval-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "予算の確認対象は、上長が購入内容を確認した申請とする。",
+            "covers": [
+              "purchase-approval-n2->purchase-approval-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "備品カタログの表紙には年度を大きく載せ、古い版を使わないようにしたい。",
+            "itemIds": [
+              "purchase-approval-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "予算に収まる申請を発注対象にする。超えるものは申請者に差し戻す。",
+            "covers": [
+              "purchase-approval-n3->purchase-approval-n4",
+              "purchase-approval-n3->purchase-approval-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "発注した場合、申請者には発注結果を知らせる。",
+            "covers": [
+              "purchase-approval-n4->purchase-approval-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "差し戻した場合も、申請者への結果連絡が必要になる。",
+            "covers": [
+              "purchase-approval-n5->purchase-approval-n6"
+            ]
+          }
+        ]
+      }
     },
     "leave-request": {
-      "overview": "社員の休暇申請を、日数の上限の確認と上長の判断を経て、予定の登録または通知につなげる流れ。",
-      "scope": { "社内カレンダーの色": ["画面仕様メモ", "社内カレンダーの色は、部署ごとの運用に任せている。"] }
+      "requirements": "休暇日数と上長の判断に基づいて休暇を登録したい。日数の不備や却下を含め、申請者が結果を把握できること。 今回の図の対象：社員の休暇申請を、日数の上限の確認と上長の判断を経て、予定の登録または通知につなげる流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "提出された休暇申請を、申請日数の上限確認の対象にする。",
+            "covers": [
+              "leave-request-n1->leave-request-n7"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "上限内の申請を上長の確認対象とする。超過している場合は日数の修正を求める。",
+            "covers": [
+              "leave-request-n7->leave-request-n2",
+              "leave-request-n7->leave-request-n8"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "社内カレンダーでは休日と勤務日を文字と色で区別したい。",
+            "itemIds": [
+              "leave-request-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "休暇の可否は、上長が確認した申請内容に基づいて判断する。",
+            "covers": [
+              "leave-request-n2->leave-request-n3"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "承認された休暇だけを予定に登録する。認められない場合は却下理由を伝える。",
+            "covers": [
+              "leave-request-n3->leave-request-n4",
+              "leave-request-n3->leave-request-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "申請者には、登録された休暇予定を結果として知らせる。",
+            "covers": [
+              "leave-request-n4->leave-request-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "却下理由を伝えた場合も、その申請の結果通知として扱う。",
+            "covers": [
+              "leave-request-n5->leave-request-n6"
+            ]
+          }
+        ]
+      }
     },
     "employee-onboarding": {
-      "overview": "入社が決まった社員が初日を迎えられるように、アカウントや備品を準備して案内を送るまでの流れ。",
-      "parallel": ["入社情報を受領"],
-      "scope": { "オフィスの座席写真": ["総務メモ", "オフィスの座席写真は、入社案内の冊子に載せる予定。"] }
+      "requirements": "新入社員が初日から働けるよう、アカウント・権限と端末をそろえて案内したい。 今回の図の対象：入社が決まった社員が初日を迎えられるように、アカウントや備品を準備して案内を送るまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "入社情報はアカウントの発行担当と端末の準備担当に同時に渡す。どちらも相手の完了を待たずに始めてよい。",
+            "covers": [
+              "employee-onboarding-n1->employee-onboarding-n2",
+              "employee-onboarding-n1->employee-onboarding-n3"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "利用権限は、発行済みのアカウントに設定する。",
+            "covers": [
+              "employee-onboarding-n2->employee-onboarding-n4"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "新入社員が席を見つけられるよう、オフィスの座席写真を案内資料に載せたい。",
+            "itemIds": [
+              "employee-onboarding-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "初日の案内を送るには端末・備品の準備が済んでいる必要がある。",
+            "covers": [
+              "employee-onboarding-n3->employee-onboarding-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "案内の送信条件には権限の設定完了も含める。端末だけ、アカウントだけでは案内を送らない。",
+            "covers": [
+              "employee-onboarding-n4->employee-onboarding-n5"
+            ]
+          }
+        ]
+      }
     },
     "recruiting": {
-      "overview": "応募を受けてから、書類の確認と面接を経て、選考結果を伝えるまでの流れ。",
-      "scope": { "面接室の場所": ["総務メモ", "面接室の場所は、フロア案内に従う。"] }
+      "requirements": "応募者の書類と面接をもとに採用可否を判断し、本人に結果を伝えたい。今回は書類確認を通過した応募を扱う。 今回の図の対象：応募を受けてから、書類の確認と面接を経て、選考結果を伝えるまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "応募受付時に届く書類を、選考の確認対象にする。",
+            "covers": [
+              "recruiting-n1->recruiting-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "面接担当には、確認を終えた応募書類を渡す。",
+            "covers": [
+              "recruiting-n2->recruiting-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "面接室の場所を地図で確認し、受付からの道順も見られるようにしたい。",
+            "itemIds": [
+              "recruiting-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "採用の判断には、実施した面接の結果を使う。",
+            "covers": [
+              "recruiting-n3->recruiting-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "採用と決まった応募者には採用の連絡を送り、見送りなら不採用の連絡を送る。",
+            "covers": [
+              "recruiting-n4->recruiting-n5",
+              "recruiting-n4->recruiting-n6"
+            ]
+          }
+        ]
+      }
     },
     "task-review": {
-      "overview": "作業依頼を受け付け、情報の過不足に応じて、依頼者への確認または担当者への割り当てを行う流れ。",
-      "scope": { "依頼フォームの背景色": ["画面仕様メモ", "依頼フォームの背景色は、共通スタイルに合わせる。"] }
+      "requirements": "作業依頼の情報がそろっているか確認し、担当を割り当てて着手予定を伝えたい。不足があれば依頼者に確認する。 今回の図の対象：作業依頼を受け付け、情報の過不足に応じて、依頼者への確認または担当者への割り当てを行う流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "受け付けた依頼に、目的や期限など着手に必要な情報があるか確認する。",
+            "covers": [
+              "task-review-n1->task-review-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "情報が十分かの判断は、確認した項目の内容に基づいて行う。",
+            "covers": [
+              "task-review-n2->task-review-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "依頼フォームの背景色は、長時間入力しても目が疲れにくいものにしたい。",
+            "itemIds": [
+              "task-review-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "不足があれば依頼者に質問する。十分なら担当者を決めることができる。",
+            "covers": [
+              "task-review-n3->task-review-n4",
+              "task-review-n3->task-review-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "着手予定の連絡には、割り当てた担当者の予定を使う。",
+            "covers": [
+              "task-review-n5->task-review-n6"
+            ]
+          }
+        ]
+      }
     },
     "document-revision": {
-      "overview": "文書の改訂案を作り、レビューと承認を経て公開版に反映し、履歴を残す流れ。",
-      "scope": { "文書テンプレートの色": ["共通デザインメモ", "文書テンプレートの色は、ブランドガイドラインに従う。"] }
+      "requirements": "関係者の指摘を反映して承認された文書を公開し、改訂履歴を残したい。 今回の図の対象：文書の改訂案を作り、レビューと承認を経て公開版に反映し、履歴を残す流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "レビューに渡す対象は、作成した改訂案とする。",
+            "covers": [
+              "document-revision-n1->document-revision-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "指摘が残る改訂案は修正する。指摘が解消した案は承認の確認対象にできる。",
+            "covers": [
+              "document-revision-n2->document-revision-n3",
+              "document-revision-n2->document-revision-n4"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "文書テンプレートは見出しと本文を色でも区別し、読みやすくしたい。",
+            "itemIds": [
+              "document-revision-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "修正しただけではレビュー済みにしない。指摘を反映した案も関係者に確認してもらう。",
+            "covers": [
+              "document-revision-n3->document-revision-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "公開版にできるのは承認を確認できた文書だけ。",
+            "covers": [
+              "document-revision-n4->document-revision-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "改訂履歴には、実際に公開版として更新した内容を記録する。",
+            "covers": [
+              "document-revision-n5->document-revision-n6"
+            ]
+          }
+        ]
+      }
     },
     "support-escalation": {
-      "overview": "窓口に届いた問い合わせについて、窓口で解決するか専門部署へ引き継ぐかを判断し、利用者へ回答する流れ。",
-      "scope": { "担当者の座席配置": ["総務メモ", "担当者の座席配置は、四半期ごとに見直している。"] }
+      "requirements": "問い合わせを窓口で確認し、必要なら専門部署の協力を得て利用者に回答したい。 今回の図の対象：窓口に届いた問い合わせについて、窓口で解決するか専門部署へ引き継ぐかを判断し、利用者へ回答する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "窓口の確認担当は、受け付けた問い合わせの内容を読む。",
+            "covers": [
+              "support-escalation-n1->support-escalation-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "窓口で解決できるかは、内容を確認してから判断する。",
+            "covers": [
+              "support-escalation-n2->support-escalation-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "担当者の座席配置では、窓口から専門担当へ声をかけやすいようにしたい。",
+            "itemIds": [
+              "support-escalation-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "窓口で解決できる内容はそのまま利用者へ回答する。難しい内容だけを専門部署へ引き継ぐ。",
+            "covers": [
+              "support-escalation-n3->support-escalation-n6",
+              "support-escalation-n3->support-escalation-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "専門部署には、引き継がれた問い合わせについて回答を作ってもらう。",
+            "covers": [
+              "support-escalation-n4->support-escalation-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "専門部署が作った回答も、利用者への回答として届ける。",
+            "covers": [
+              "support-escalation-n5->support-escalation-n6"
+            ]
+          }
+        ]
+      }
     },
     "incident-response": {
-      "overview": "障害のアラートを受けてから、影響を確認して対応し、利用者へ知らせるまでの初動の流れ。",
-      "scope": { "当番表の印刷方法": ["運用メモ", "当番表の印刷方法は、運用手順書の付録に記載している。"] }
+      "requirements": "障害の影響と緊急度を把握し、担当チームによる回避策と利用者への状況案内を行いたい。 今回の図の対象：障害のアラートを受けてから、影響を確認して対応し、利用者へ知らせるまでの初動の流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "影響の調査では、受信したアラートが示すサービスと時刻を手がかりにする。",
+            "covers": [
+              "incident-response-n1->incident-response-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "緊急度は影響を受ける利用者や業務の範囲から判断する。",
+            "covers": [
+              "incident-response-n2->incident-response-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "当番表は印刷しても名前と連絡先が1枚に収まるようにしたい。",
+            "itemIds": [
+              "incident-response-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "担当チームへの連絡には、判断した緊急度を添える。",
+            "covers": [
+              "incident-response-n3->incident-response-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "回避策の実施は、連絡を受けた担当チームが担う。",
+            "covers": [
+              "incident-response-n4->incident-response-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "利用者への告知には、実施した回避策と現在の状況を載せたい。",
+            "covers": [
+              "incident-response-n5->incident-response-n6"
+            ]
+          }
+        ]
+      }
     },
     "backup-restore": {
-      "overview": "復旧の依頼を受けて、バックアップからデータを戻し、依頼者へ完了を伝えるまでの流れ。",
-      "scope": { "バックアップ媒体の外観": ["備品メモ", "バックアップ媒体の外観は、保管庫の運用ルールに従う。"] }
+      "requirements": "依頼された時点のデータをバックアップから復元し、結果を確認して完了を知らせたい。 今回の図の対象：復旧の依頼を受けて、バックアップからデータを戻し、依頼者へ完了を伝えるまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "依頼者に、戻したいデータと必要な時点を確認する。",
+            "covers": [
+              "backup-restore-n1->backup-restore-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "バックアップは、確認した対象と時点に合うものを選ぶ。",
+            "covers": [
+              "backup-restore-n2->backup-restore-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "バックアップ媒体の外観で保管世代を見分けられるようにしたい。",
+            "itemIds": [
+              "backup-restore-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "復元には選定したバックアップを使用する。",
+            "covers": [
+              "backup-restore-n3->backup-restore-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "復元作業の終了だけでは成功としない。戻したデータが利用できるか検証する。",
+            "covers": [
+              "backup-restore-n4->backup-restore-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "依頼者に完了を知らせる根拠は、復元結果の検証で問題がなかったこととする。",
+            "covers": [
+              "backup-restore-n5->backup-restore-n6"
+            ]
+          }
+        ]
+      }
     },
     "data-import": {
-      "overview": "CSVで受け取った顧客データを検証し、問題のないものを登録する流れ。",
-      "scope": { "取込担当者の部署名": ["名簿メモ", "取込担当者の部署名は、組織変更のたびに更新される。"] }
+      "requirements": "顧客CSVを検証し、正常な行を登録して、不備のある行を確認できるようにしたい。今回は列構成が正しいファイルを扱う。 今回の図の対象：CSVで受け取った顧客データを検証し、問題のないものを登録する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "受け付けたCSVは、まず列構成の検証対象になる。",
+            "covers": [
+              "data-import-n1->data-import-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "列構成が正しいCSVについて、各行の必須項目を調べる。",
+            "covers": [
+              "data-import-n2->data-import-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "取込担当者の部署名を一覧に表示し、連絡先を探しやすくしたい。",
+            "itemIds": [
+              "data-import-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "必須項目がそろった行を登録する。不備行は登録せずエラー一覧に出す。同じファイルに両方の行があり得る。",
+            "covers": [
+              "data-import-n3->data-import-n4",
+              "data-import-n3->data-import-n5"
+            ]
+          }
+        ]
+      }
     },
     "account-suspension": {
-      "overview": "不審な利用が見つかったアカウントについて、本人確認の結果に応じて停止または再開する流れ。",
-      "scope": { "アカウント画面のテーマ色": ["画面仕様メモ", "アカウント画面のテーマ色は、利用者が好みで選べる。"] }
+      "requirements": "不審な利用を本人に確認し、期限までに応答がなければ一時停止したい。本人と確認できたアカウントは利用できる状態にする。 今回の図の対象：不審な利用が見つかったアカウントについて、本人確認の結果に応じて停止または再開する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "いつもと違う利用を検知したアカウントについて、本人に確認を求める。",
+            "covers": [
+              "account-suspension-n1->account-suspension-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "確認依頼には応答期限を設ける。本人からの回答があれば本人確認を行い、まだなければ期限まで待つ。",
+            "covers": [
+              "account-suspension-n2->account-suspension-n3",
+              "account-suspension-n2->account-suspension-n5"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "アカウント画面は明るいテーマと暗いテーマを選べるようにしたい。",
+            "itemIds": [
+              "account-suspension-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "期限まで応答が得られないアカウントは一時停止する。",
+            "covers": [
+              "account-suspension-n3->account-suspension-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "本人の利用だと確認できたアカウントは、再び利用できる状態にする。",
+            "covers": [
+              "account-suspension-n5->account-suspension-n6"
+            ]
+          }
+        ]
+      }
     },
     "notification-preference": {
-      "overview": "利用者が通知方法を変更し、その設定が次回の通知から反映されるまでの流れ。",
-      "scope": { "設定画面のアイコン": ["共通デザインメモ", "設定画面のアイコンは、共通アイコンセットから選ぶ。"] }
+      "requirements": "利用者が通知方法を変更し、妥当な設定を次回の通知から適用できるようにしたい。 今回の図の対象：利用者が通知方法を変更し、その設定が次回の通知から反映されるまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "通知設定を開いた利用者が、希望する通知方法を選ぶ。",
+            "covers": [
+              "notification-preference-n1->notification-preference-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "検証対象は利用者が選んだ通知方法の組み合わせとする。",
+            "covers": [
+              "notification-preference-n2->notification-preference-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "設定画面のアイコンは、メールとアプリ通知を形でも見分けられるものにしたい。",
+            "itemIds": [
+              "notification-preference-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "保存できるのは、設定内容の検証を通った組み合わせだけ。",
+            "covers": [
+              "notification-preference-n3->notification-preference-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "次回の通知で使う方法は、保存された設定を参照する。未保存の選択は反映しない。",
+            "covers": [
+              "notification-preference-n4->notification-preference-n5"
+            ]
+          }
+        ]
+      }
     },
     "subscription-renewal": {
-      "overview": "更新日を迎えた契約について、決済の結果に応じて継続または利用の一時停止へ進む流れ。",
-      "scope": { "料金表の表示色": ["共通デザインメモ", "料金表の表示色は、料金改定のたびにデザイナーが調整する。"] }
+      "requirements": "更新日を迎えた契約を確認して課金し、支払いに応じて継続または利用停止を管理したい。 今回の図の対象：更新日を迎えた契約について、決済の結果に応じて継続または利用の一時停止へ進む流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "契約状態を調べるきっかけは、契約の更新日を迎えたこととする。",
+            "covers": [
+              "subscription-renewal-n1->subscription-renewal-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "今回は更新可能な契約を対象とする。確認した契約の料金を決済に使う。",
+            "covers": [
+              "subscription-renewal-n2->subscription-renewal-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "料金表では現在のプランを色と枠で見つけやすくしたい。",
+            "itemIds": [
+              "subscription-renewal-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "料金を払えた契約だけ継続期間を延ばす。決済失敗なら利用者に知らせる。",
+            "covers": [
+              "subscription-renewal-n3->subscription-renewal-n4",
+              "subscription-renewal-n3->subscription-renewal-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "利用停止の前に、決済できなかったことを利用者に伝える必要がある。",
+            "covers": [
+              "subscription-renewal-n5->subscription-renewal-n6"
+            ]
+          }
+        ]
+      }
     },
     "trial-upgrade": {
-      "overview": "無料試用の終了前に、利用者が有料プランを選んで決済し、使い続けられるようにする流れ。",
-      "scope": { "料金ページの写真": ["広報メモ", "料金ページの写真は、広報が定期的に差し替える。"] }
+      "requirements": "試用終了前にプランを案内し、利用者の選択と支払いに応じて有料機能を使えるようにしたい。 今回の図の対象：無料試用の終了前に、利用者が有料プランを選んで決済し、使い続けられるようにする流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "試用期間の残りが少なくなった利用者に、プラン選択を案内する。",
+            "covers": [
+              "trial-upgrade-n1->trial-upgrade-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "利用者は届いた案内を見て、希望する有料プランを選ぶ。",
+            "covers": [
+              "trial-upgrade-n2->trial-upgrade-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "料金ページの写真は、プラン名の文字に重ならない位置に置きたい。",
+            "itemIds": [
+              "trial-upgrade-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "決済する料金は、本人が選択したプランに基づく。",
+            "covers": [
+              "trial-upgrade-n3->trial-upgrade-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "有料機能は決済成功を条件に使えるようにする。決済が失敗した場合は、その旨を案内する。",
+            "covers": [
+              "trial-upgrade-n4->trial-upgrade-n5",
+              "trial-upgrade-n4->trial-upgrade-n6"
+            ]
+          }
+        ]
+      }
     },
     "access-request": {
-      "overview": "社員が業務システムの権限を申請し、確認を経て付与されるまでの流れ。",
-      "scope": { "権限画面の配色": ["画面仕様メモ", "権限画面の配色は、管理画面の共通スタイルに合わせる。"] }
+      "requirements": "社員が業務に必要なシステム権限を申請できるようにしたい。業務上の必要性と利用可能な権限を確認したうえで付与し、申請者が結果を把握できること。 今回の図の対象：社員が業務システムの権限を申請し、確認を経て付与されるまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "申請には利用したいシステムと業務上の理由を書いてもらう。理由の妥当性は、その社員の上長が確認する。",
+            "covers": [
+              "access-request-n1->access-request-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "管理者が権限の範囲を確認する対象は、上長が業務上必要と認めた申請とする。",
+            "covers": [
+              "access-request-n2->access-request-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "権限の一覧では、利用中と停止中を文字と色で見分けたい。",
+            "itemIds": [
+              "access-request-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "業務上必要でも、希望どおりの権限を付けられるとは限らない。付与する権限は、管理者が確認した範囲に限る。",
+            "covers": [
+              "access-request-n3->access-request-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "申請者への連絡には、実際に付与できた権限を載せる。",
+            "covers": [
+              "access-request-n4->access-request-n5"
+            ]
+          }
+        ]
+      }
     },
     "audit-review": {
-      "overview": "操作ログを定期的に確認し、異常があれば調査を依頼して、結果を記録する流れ。",
-      "scope": { "ログ画面の列幅": ["画面仕様メモ", "ログ画面の列幅は、利用者が画面上で調整できる。"] }
+      "requirements": "一定期間の操作を監査し、異常があれば調査して確認結果を残したい。 今回の図の対象：操作ログを定期的に確認し、異常があれば調査を依頼して、結果を記録する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "ログの抽出範囲は、監査の対象として決めた期間とする。",
+            "covers": [
+              "audit-review-n1->audit-review-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "異常操作の確認には、対象期間から抽出したログを使う。",
+            "covers": [
+              "audit-review-n2->audit-review-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "ログ画面の列幅を変え、長い操作内容も省略せず読めるようにしたい。",
+            "itemIds": [
+              "audit-review-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "問題の有無は、見つかった異常な操作の内容から判断する。",
+            "covers": [
+              "audit-review-n3->audit-review-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "問題があれば調査を依頼する。問題がなければその確認結果を記録する。",
+            "covers": [
+              "audit-review-n4->audit-review-n5",
+              "audit-review-n4->audit-review-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "調査を依頼した場合は、その調査の結果も確認記録に含める。",
+            "covers": [
+              "audit-review-n5->audit-review-n6"
+            ]
+          }
+        ]
+      }
     },
     "ci-deploy": {
-      "overview": "変更を取り込んでテストし、結果に応じて本番へ公開するか、修正へ戻る流れ。公開後の確認も含む。",
-      "scope": { "開発端末の機種名": ["環境メモ", "開発端末の機種名は、資産台帳に記載している。"] }
+      "requirements": "変更を自動テストで確かめて本番に公開したい。テスト失敗は修正につなぎ、公開後に異常があれば元に戻す。 今回の図の対象：変更を取り込んでテストし、結果に応じて本番へ公開するか、修正へ戻る流れ。公開後の確認も含む。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "自動テストの対象は、今回取り込んだ変更を含むコードとする。",
+            "covers": [
+              "ci-deploy-n1->ci-deploy-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "合否は自動テストの実行結果から判定する。",
+            "covers": [
+              "ci-deploy-n2->ci-deploy-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "開発端末の機種名を資産台帳で検索し、交換対象を確認できるようにしたい。",
+            "itemIds": [
+              "ci-deploy-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "合格した変更だけ本番に公開する。失敗した場合は、その内容を開発者に知らせる。",
+            "covers": [
+              "ci-deploy-n3->ci-deploy-n4",
+              "ci-deploy-n3->ci-deploy-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "開発者は通知された失敗を手がかりに修正し、再実行を依頼する。",
+            "covers": [
+              "ci-deploy-n5->ci-deploy-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "修正済みという申告だけでは合格としない。同じ自動テストで改めて確認する。",
+            "covers": [
+              "ci-deploy-n6->ci-deploy-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "本番に反映した環境を、ヘルスチェックの対象にする。",
+            "covers": [
+              "ci-deploy-n4->ci-deploy-n7"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "公開完了と知らせるにはヘルスチェックの成功が必要。異常があれば前のバージョンに戻す。",
+            "covers": [
+              "ci-deploy-n7->ci-deploy-n8",
+              "ci-deploy-n7->ci-deploy-n9"
+            ]
+          }
+        ]
+      }
     },
     "feature-flag": {
-      "overview": "新機能を一部の利用者へ公開し、様子を見ながら、対象を広げるか止めるかを決める流れ。",
-      "scope": { "フラグ管理画面の色": ["画面仕様メモ", "フラグ管理画面の色は、管理ツールの標準テーマに従う。"] }
+      "requirements": "新機能を限定公開して影響を確認し、安全なら対象を広げ、問題があれば停止したい。 今回の図の対象：新機能を一部の利用者へ公開し、様子を見ながら、対象を広げるか止めるかを決める流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "限定利用者が機能を使えるのは、対象機能のフラグが有効なときだけ。",
+            "covers": [
+              "feature-flag-n1->feature-flag-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "監視では、限定公開された利用者の利用状況を集める。",
+            "covers": [
+              "feature-flag-n2->feature-flag-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "フラグ管理画面では有効と無効を色だけに頼らず見分けたい。",
+            "itemIds": [
+              "feature-flag-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "問題が起きていないかは、集めた利用状況に基づいて判断する。",
+            "covers": [
+              "feature-flag-n3->feature-flag-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "問題がなければ公開対象を広げる。問題があれば機能を止める。",
+            "covers": [
+              "feature-flag-n4->feature-flag-n5",
+              "feature-flag-n4->feature-flag-n6"
+            ]
+          }
+        ]
+      }
     },
     "rate-limit": {
-      "overview": "APIへのリクエストを受けて、利用量に応じて処理を続けるか、制限の応答を返すかを決める流れ。",
-      "scope": { "API仕様書の表紙": ["文書メモ", "API仕様書の表紙は、文書管理のテンプレートに従う。"] }
+      "requirements": "APIの利用量が上限内の場合だけ通常処理を行い、超過した要求にはその旨を応答したい。 今回の図の対象：APIへのリクエストを受けて、利用量に応じて処理を続けるか、制限の応答を返すかを決める流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "利用量の集計には、今回受信したリクエストも含める。",
+            "covers": [
+              "rate-limit-n1->rate-limit-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "上限との比較には、集計した利用量を使う。",
+            "covers": [
+              "rate-limit-n2->rate-limit-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "API仕様書の表紙には版番号を大きく載せ、参照中の版が分かるようにしたい。",
+            "itemIds": [
+              "rate-limit-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "上限内なら通常の処理を実行する。上限を超えた場合は通常処理をせず、超過を示す応答を返す。",
+            "covers": [
+              "rate-limit-n3->rate-limit-n4",
+              "rate-limit-n3->rate-limit-n5"
+            ]
+          }
+        ]
+      }
     },
     "batch-retry": {
-      "overview": "定期バッチで外部連携を実行し、失敗したときのやり直しと、最終的な通知までの流れ。",
-      "scope": { "バッチ実行サーバーの型番": ["環境メモ", "バッチ実行サーバーの型番は、インフラ台帳に記載している。"] }
+      "requirements": "定期的な外部連携で成功データを残し、失敗は回数を制限して再試行したい。 今回の図の対象：定期バッチで外部連携を実行し、失敗したときのやり直しと、最終的な通知までの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "定期バッチの起動で、その回の外部連携を実行する。",
+            "covers": [
+              "batch-retry-n1->batch-retry-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "連携の成否は、外部への処理要求に対する結果から判定する。",
+            "covers": [
+              "batch-retry-n2->batch-retry-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "運用担当者はバッチ実行サーバーの型番を一覧で確認し、保守部品を手配したい。",
+            "itemIds": [
+              "batch-retry-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "成功したデータを記録する。失敗した場合は、再試行できる回数が残っているか調べる。",
+            "covers": [
+              "batch-retry-n3->batch-retry-n4",
+              "batch-retry-n3->batch-retry-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "規定回数内なら同じ外部連携を試す。上限に達していたら再実行せず担当者に知らせる。",
+            "covers": [
+              "batch-retry-n5->batch-retry-n2",
+              "batch-retry-n5->batch-retry-n6"
+            ]
+          }
+        ]
+      }
     },
     "suspicious-login": {
-      "overview": "通常と異なるログインを検知したとき、追加の認証結果に応じて、許可するか一時的にロックするかを決める流れ。",
-      "scope": { "ログイン画面の背景": ["画面仕様メモ", "ログイン画面の背景は、季節ごとに差し替える。"] }
+      "requirements": "通常と違うログインに追加認証を求め、本人を確認できない場合はロックして本人に知らせたい。 今回の図の対象：通常と異なるログインを検知したとき、追加の認証結果に応じて、許可するか一時的にロックするかを決める流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "通常と異なるログインを検知した利用者には、追加の認証を求める。",
+            "covers": [
+              "suspicious-login-n1->suspicious-login-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "許可の判断に使う結果は、要求した追加認証に対する回答で確認する。",
+            "covers": [
+              "suspicious-login-n2->suspicious-login-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "ログイン画面の背景は、追加認証の案内文が読みやすい画像にしたい。",
+            "itemIds": [
+              "suspicious-login-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "認証に成功すればログインを許可する。失敗したアカウントは一時的にロックする。",
+            "covers": [
+              "suspicious-login-n3->suspicious-login-n4",
+              "suspicious-login-n3->suspicious-login-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "本人への通知には、実際にロックしたことを記載する。",
+            "covers": [
+              "suspicious-login-n5->suspicious-login-n6"
+            ]
+          }
+        ]
+      }
     },
     "personal-data-export": {
-      "overview": "本人からの開示請求を受け、本人確認のうえでデータを作成し、受け取り方法を案内するまでの流れ。",
-      "scope": { "データ保管場所の詳細": ["運用メモ", "データ保管場所の詳細は、情報管理規程に記載している。"] }
+      "requirements": "本人からの開示請求に対して個人データをまとめ、安全に受け取れるよう案内したい。 今回の図の対象：本人からの開示請求を受け、本人確認のうえでデータを作成し、受け取り方法を案内するまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "本人確認は、開示請求を出した人を対象に行う。",
+            "covers": [
+              "personal-data-export-n1->personal-data-export-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "個人データを抽出できるのは、請求者を本人と確認できた場合だけ。",
+            "covers": [
+              "personal-data-export-n2->personal-data-export-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "情報管理者は、個人データの保管場所と管理責任者を台帳で確認したい。",
+            "itemIds": [
+              "personal-data-export-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "提供するファイルは、開示対象として抽出したデータから作成する。",
+            "covers": [
+              "personal-data-export-n3->personal-data-export-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "受取方法の案内には、作成済みのデータファイルを受け取れる情報を載せる。",
+            "covers": [
+              "personal-data-export-n4->personal-data-export-n5"
+            ]
+          }
+        ]
+      }
     },
     "survey-publish": {
-      "overview": "アンケートの回答期間が終わってから、集計して結果を公開できる状態にするまでの流れ。",
-      "scope": { "アンケート画面のデザイン": ["画面仕様メモ", "アンケート画面のデザインは、前回のものを踏襲する。"] }
+      "requirements": "アンケート結果を集計し、個人を特定できる情報を公開しないよう確認したい。 今回の図の対象：アンケートの回答期間が終わってから、集計して結果を公開できる状態にするまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "公開用の集計対象は、回答期間が終了した時点でそろった回答とする。",
+            "covers": [
+              "survey-publish-n1->survey-publish-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "個人を特定できないかの確認には、集計結果を使う。",
+            "covers": [
+              "survey-publish-n2->survey-publish-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "アンケート画面は、設問と回答欄の対応が小さな画面でも分かるデザインにしたい。",
+            "itemIds": [
+              "survey-publish-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "公開可否は、個人特定の可能性を確認した内容に基づいて判断する。",
+            "covers": [
+              "survey-publish-n3->survey-publish-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "問題がなければ集計結果を公開する。特定につながる箇所があれば除外を必要とする。",
+            "covers": [
+              "survey-publish-n4->survey-publish-n5",
+              "survey-publish-n4->survey-publish-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "除外した結果を公開対象とする。公開不可の箇所を残したまま公開しない。",
+            "covers": [
+              "survey-publish-n6->survey-publish-n5"
+            ]
+          }
+        ]
+      }
     },
     "facility-reservation": {
-      "overview": "社員が施設を予約する流れ。条件によっては、管理者の承認を待ってから確定する。",
-      "scope": { "施設の案内写真": ["広報メモ", "施設の案内写真は、広報が年度ごとに更新している。"] }
+      "requirements": "施設の空き状況と承認条件に応じて予約を確定したい。今回は空きのある日時の予約を扱う。 今回の図の対象：社員が施設を予約する流れ。条件によっては、管理者の承認を待ってから確定する。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "空き状況を調べるには、希望する利用日時が必要になる。",
+            "covers": [
+              "facility-reservation-n1->facility-reservation-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "空いている利用枠について、管理者の承認が必要かを確認する。",
+            "covers": [
+              "facility-reservation-n2->facility-reservation-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "施設の案内写真では、入口と車椅子用の通路が分かるようにしたい。",
+            "itemIds": [
+              "facility-reservation-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "承認不要の枠はそのまま予約できる。承認が必要な枠は管理者の判断を求める。",
+            "covers": [
+              "facility-reservation-n3->facility-reservation-n4",
+              "facility-reservation-n3->facility-reservation-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "承認が必要な枠の予約は、管理者の承認を得た場合だけ確定する。",
+            "covers": [
+              "facility-reservation-n5->facility-reservation-n6"
+            ]
+          }
+        ]
+      }
     },
     "workshop-registration": {
-      "overview": "社員が研修に申し込み、定員や承認の条件に応じて、参加確定またはキャンセル待ちになる流れ。",
-      "scope": { "研修会場の写真": ["広報メモ", "研修会場の写真は、案内メールの装飾に使っている。"] }
+      "requirements": "研修の定員と承認条件を確認し、参加確定またはキャンセル待ちの結果を申込者へ伝えたい。 今回の図の対象：社員が研修に申し込み、定員や承認の条件に応じて、参加確定またはキャンセル待ちになる流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "空き人数を調べる対象は、申し込まれた研修とする。",
+            "covers": [
+              "workshop-registration-n1->workshop-registration-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "空きがあれば上長承認の条件を確認する。満員の場合はキャンセル待ちに登録する。",
+            "covers": [
+              "workshop-registration-n2->workshop-registration-n3",
+              "workshop-registration-n2->workshop-registration-n5"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "研修会場の写真で、机の配置と通路の幅を事前に確認できるようにしたい。",
+            "itemIds": [
+              "workshop-registration-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "今回は承認が不要、または承認を取得済みの申込みを扱う。承認の条件を満たせば参加を確定できる。",
+            "covers": [
+              "workshop-registration-n3->workshop-registration-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "参加が確定した人には、その結果を知らせる。",
+            "covers": [
+              "workshop-registration-n4->workshop-registration-n6"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "キャンセル待ちになった人にも、待ち登録の結果を知らせる。",
+            "covers": [
+              "workshop-registration-n5->workshop-registration-n6"
+            ]
+          }
+        ]
+      }
     },
     "learning-completion": {
-      "overview": "オンライン学習の受講後にテストを採点し、結果に応じて、修了または再受講を案内する流れ。",
-      "scope": { "教材ページの背景色": ["画面仕様メモ", "教材ページの背景色は、教材の制作チームが決めている。"] }
+      "requirements": "教材の理解度をテストで確認し、合格者に修了証を発行したい。基準に届かない場合は学び直しを案内する。 今回の図の対象：オンライン学習の受講後にテストを採点し、結果に応じて、修了または再受講を案内する流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "理解度の確認テストは、教材を受講した学習者が提出する。",
+            "covers": [
+              "learning-completion-n1->learning-completion-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "採点の対象は、提出済みのテストとする。",
+            "covers": [
+              "learning-completion-n2->learning-completion-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "教材ページの背景色は、長い説明文を読んでも疲れにくいものにしたい。",
+            "itemIds": [
+              "learning-completion-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "合否の判定には、採点で得られた得点を使う。",
+            "covers": [
+              "learning-completion-n3->learning-completion-n4"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "基準点以上なら修了証を発行する。届かない場合は再受講を案内する。",
+            "covers": [
+              "learning-completion-n4->learning-completion-n5",
+              "learning-completion-n4->learning-completion-n6"
+            ]
+          }
+        ]
+      }
     },
     "reimbursement": {
-      "overview": "社員が出張経費を申請し、確認と承認を経て支払うまでの流れ。",
-      "scope": { "出張先の観光情報": ["社内報メモ", "出張先の観光情報は、社内報のコラム用に集めている。"] }
+      "requirements": "出張経費を領収書と照合して承認されたものを支払いたい。不備があれば申請者に修正を求める。 今回の図の対象：社員が出張経費を申請し、確認と承認を経て支払うまでの流れ。",
+      "documents": {
+        "initial": [
+          {
+            "kind": "requirement",
+            "text": "経費申請には、支出を証明する領収書を追加してもらう。",
+            "covers": [
+              "reimbursement-n1->reimbursement-n2"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "経理は添付された領収書を使って、申請金額を確認する。",
+            "covers": [
+              "reimbursement-n2->reimbursement-n3"
+            ]
+          },
+          {
+            "kind": "scope",
+            "text": "出張先の観光情報は、移動日程を考える際に見られるようにしたい。",
+            "itemIds": [
+              "reimbursement-x1"
+            ]
+          }
+        ],
+        "additional": [
+          {
+            "kind": "requirement",
+            "text": "金額や証憑に不備があれば差し戻す。不備がなければ上長の承認対象にする。",
+            "covers": [
+              "reimbursement-n3->reimbursement-n4",
+              "reimbursement-n3->reimbursement-n5"
+            ]
+          },
+          {
+            "kind": "requirement",
+            "text": "支払いは、上長が承認した経費だけに行う。",
+            "covers": [
+              "reimbursement-n5->reimbursement-n6"
+            ]
+          }
+        ]
+      }
     }
   }
 }

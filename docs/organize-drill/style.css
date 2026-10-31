@@ -353,14 +353,19 @@
 
 
 /* Progressive source documents: persistent, draggable notes on the left board. */
-.prompt-document-board{position:relative;display:block;overflow:visible;touch-action:pan-y}.prompt-doc-surface{position:relative;min-height:300px}
+.prompt-board-panel{display:flex;flex-direction:column}.prompt-board-panel #promptText{display:flex;flex:1}.prompt-document-board{position:relative;display:flex;flex-direction:column;flex:1;width:100%;overflow:visible;touch-action:pan-y}.prompt-doc-surface{position:relative;flex:1 0 auto;min-height:300px}
 .prompt-document-note{position:absolute;width:46%;min-width:0;max-width:none;min-height:112px;display:flex;flex-direction:column;gap:6px;cursor:grab;user-select:none;touch-action:none;z-index:1;box-shadow:0 3px 7px #3b3a2517;transform:rotate(var(--tilt,0deg))}.prompt-document-note.is-new{animation:note-pop .38s ease-out}@keyframes note-pop{from{opacity:0;transform:translateY(-8px) scale(.92) rotate(var(--tilt,0deg))}to{opacity:1;transform:none}}
 .prompt-document-note.is-dragging{z-index:10;cursor:grabbing;box-shadow:0 8px 18px #28372b30;transform:rotate(0)!important}
-.prompt-document-title{display:block;font-size:10px;line-height:1.35;color:#52675a}
+.prompt-note-remove{position:absolute;right:3px;top:3px;width:24px;height:24px;padding:0;border:0;border-radius:50%;background:#ffffff80;color:#53685a;font-size:18px;line-height:1;cursor:pointer}.prompt-note-remove:hover{background:#fff}.prompt-note-remove:focus-visible{outline:2px solid #3976b8}.prompt-note-remove:disabled{opacity:.45;cursor:default}.prompt-document-note{padding-top:30px!important}
 .prompt-document-body{display:block;font-size:11px;line-height:1.55;font-weight:500;overflow-wrap:anywhere}
-.prompt-document-external{background:#e2edf8;border-color:#c8d9ea;color:#35485d}
-.prompt-document-requirement{background:#e5f1df;border-color:#cbdcc3;color:#40563d}
-.prompt-document-scope{background:#f3eddf;border-color:#e3d8bf;color:#625942}.prompt-document-detail{background:#ece6f6;border-color:#d7cde9;color:#4a4264}
+.prompt-note-color-0{background:#e2edf8;border-color:#c8d9ea;color:#35485d}
+.prompt-note-color-1{background:#e5f1df;border-color:#cbdcc3;color:#40563d}
+.prompt-note-color-2{background:#f3eddf;border-color:#e3d8bf;color:#625942}.prompt-note-color-3{background:#ece6f6;border-color:#d7cde9;color:#4a4264}
+#promptInstruction{grid-column:1/-1;width:100%}
+.howto{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:1100px){.howto{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.prompt-scope{display:flex;align-items:baseline;gap:5px;margin-top:10px}.prompt-scope-badge{flex:none;padding:2px 8px;border:1px solid #cddbcf;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:10px;font-weight:750}.prompt-scope-text{min-width:0}
+.prompt-board-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 2% 0;flex-shrink:0}.prompt-board-actions .prompt-reveal-note{margin:0;min-width:0;min-height:54px}.prompt-trash-area{position:relative;display:flex;flex:none;z-index:20;pointer-events:none}.prompt-trash-toggle{pointer-events:auto}.prompt-trash-panel{left:auto;right:0;pointer-events:auto}.prompt-trash-panel .trash-list li{align-items:flex-start}
+.diagram-canvas>.trash-area{display:flex;align-items:center;gap:12px}.quiz-actions{justify-content:flex-end}
 .prompt-reveal-note{position:relative;width:46%;min-width:150px;min-height:54px;margin:12px 0 0 2%;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;text-align:center;background:#fff7d9;border:1px dashed #c8ad65;color:#735d2b;font-weight:750;cursor:pointer;transform:rotate(-.6deg)}.prompt-reveal-note:hover:not(:disabled){background:#fff0bd}.prompt-reveal-cost{font-size:9px;font-weight:600;line-height:1.4;opacity:.85}
 .prompt-reveal-note:disabled{opacity:.65;cursor:default}
 @media(max-width:700px){.prompt-document-note,.prompt-reveal-note{width:48%;padding:9px}.prompt-document-note{min-height:120px}.prompt-document-body{font-size:10px}}
