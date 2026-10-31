@@ -134,7 +134,9 @@
 
     var slides = Array.prototype.slice.call(wrap.querySelectorAll(".wb-slide"));
     var dots = Array.prototype.slice.call(wrap.querySelectorAll(".wb-dot"));
-    var items = Array.prototype.slice.call(wrap.querySelectorAll(".wb-item"));
+    var items = Array.prototype.slice.call(wrap.querySelectorAll(".wb-item")).sort(function (a, b) {
+      return Number(a.dataset.index) - Number(b.dataset.index);
+    });
     var prevBtn = wrap.querySelector(".wb-nav.prev");
     var nextBtn = wrap.querySelector(".wb-nav.next");
     var detailBody = wrap.querySelector(".wb-detail-body");

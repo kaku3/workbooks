@@ -36,12 +36,12 @@ section{position:relative;padding-bottom:92px} section:before{content:"";positio
 .wb-detail-link:hover{transform:translateX(4px)}
 
 .wb-list{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.wb-item{min-width:0;border:1px solid var(--line);border-radius:12px;background:rgba(255,253,248,.58);transition:background .2s,transform .2s}.wb-item:hover{background:var(--white);transform:translateY(-2px)}
-.wb-item a{display:block;height:100%;padding:.9rem 1rem;border-radius:11px;text-decoration:none;background:transparent;border:1px solid transparent;border-left:3px solid transparent;transition:background .2s,border-color .2s}
-.wb-item .tag{display:block}
-.wb-item h3{margin:4px 0 0;font-size:1rem;line-height:1.4;color:var(--ink)}
-.wb-item a:hover,.wb-item a:focus-visible{background:rgba(255,253,248,.75);border-color:var(--line)}
-.wb-item.is-active{background:var(--white);border-color:#d8c8ac;box-shadow:0 4px 0 rgba(100,83,57,.035)}.wb-item.is-active a{border-left-color:var(--amber)}
+.wb-item{min-width:0;border:1px solid #e3dfd5;border-radius:5px;background:rgba(255,253,248,.45);transition:background .2s,border-color .2s}.wb-item:hover{background:var(--white);border-color:#cfc7b8}
+.wb-item a{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;height:100%;min-height:68px;padding:9px 12px;border-radius:4px;text-decoration:none;background:transparent;transition:background .2s}
+.wb-item .tag{display:inline-block;padding:2px 7px;border:1px solid #dce3db;border-radius:999px;background:#edf1eb;color:#677b70;font-size:.62rem;font-weight:400;line-height:1.3;letter-spacing:.02em}
+.wb-item h3{margin:0;font-size:.88rem;font-weight:500;line-height:1.45;color:var(--ink)}
+.wb-item a:hover,.wb-item a:focus-visible{background:rgba(255,253,248,.75)}
+.wb-item.is-active{background:var(--white);border-color:#c8b697;box-shadow:none}
 .wb-item.is-active h3{color:#9b805c}
 .story{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:stretch}.story-main{padding:38px;background:#718c80;color:#fff;border-radius:24px;position:relative;overflow:hidden}.story-main:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-80px;bottom:-120px;background:rgba(255,255,255,.08);will-change:transform;transform:translateY(var(--circle-shift,0px))}.story-main h2{color:#fff}.story-main p{color:#e9f0eb}.story-main .line{margin:25px 0;width:65px;height:3px;background:#e4bd80;transform-origin:left center;transform:scaleX(0);transition:transform .7s cubic-bezier(.2,.8,.2,1)}.story-main.is-visible .line{transform:scaleX(1)}.story-side{padding:34px;background:var(--amber2);border-radius:24px}.story-side h3{margin:0 0 12px;font-size:1.2rem}.story-side p{color:#695e50}.mini-list{display:grid;gap:10px;margin-top:20px}.mini-list span{padding:10px 13px;background:rgba(255,255,255,.5);border-radius:10px;font-weight:750;display:block;opacity:0;transform:translateY(8px);transition:opacity .5s ease,transform .5s ease}.story-side.is-visible .mini-list span{opacity:1;transform:translateY(0)}.story-side.is-visible .mini-list span:nth-child(1){transition-delay:.05s}.story-side.is-visible .mini-list span:nth-child(2){transition-delay:.15s}.story-side.is-visible .mini-list span:nth-child(3){transition-delay:.25s}.story-side.is-visible .mini-list span:nth-child(4){transition-delay:.35s}
 .use{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.use article{padding:25px;background:var(--white);border:1px solid var(--line);border-radius:18px}.use strong{font-size:1.03rem}.use p{color:var(--muted);font-size:.9rem}
@@ -100,3 +100,19 @@ footer{padding:32px 20px 48px;text-align:center;color:#8b8b7f;font-size:.78rem;b
 
 
 
+
+/* 教材一覧：PCはカテゴリごとの行、スマホは見出しバーとカードの縦並び。 */
+.wb-categories{display:grid;gap:10px;margin-top:20px}
+.wb-categories .wb-category{display:grid;grid-template-columns:138px minmax(0,1fr);gap:12px;margin:0;padding:0;min-width:0}
+.wb-category-title{display:flex;align-items:center;margin:0;padding:6px 0;color:var(--muted);font-size:.75rem;line-height:1.6;font-weight:500;letter-spacing:.03em}
+.wb-categories .wb-list{margin:0;gap:7px;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+@media(min-width:851px){
+  .wb-categories .wb-category::before{content:none}
+  .wb-categories .wb-category{padding-bottom:12px;border-bottom:1px solid #dcd6c9}
+  .wb-categories .wb-category-title{color:var(--ink);font-weight:700}
+  .wb-categories .wb-item{background:var(--white);border-color:#dcd6c9;box-shadow:0 2px 5px rgba(61,52,38,.07)}
+  .wb-categories .wb-item:hover{border-color:#c8baa3;box-shadow:0 3px 8px rgba(61,52,38,.11)}
+  .wb-categories .wb-item.is-active{border-color:#c8b697;box-shadow:0 2px 6px rgba(100,83,57,.10)}
+}
+@media(max-width:850px){.wb-categories .wb-category{grid-template-columns:minmax(0,1fr);gap:8px}.wb-category-title{padding:5px 10px;background:#eeeae1;border-radius:2px}}
+@media(max-width:540px){.wb-categories{gap:15px}.wb-categories .wb-list{grid-template-columns:minmax(0,1fr);grid-auto-flow:row;grid-auto-columns:auto;gap:6px}.wb-item a{min-height:62px;padding:8px 11px}}
