@@ -6614,45 +6614,46 @@
       ],
       "layout": {
         "ci-deploy-n1": {
-          "x": 0.12,
-          "y": 0.5
+          "x": 0.1,
+          "y": 0.45
         },
         "ci-deploy-n2": {
-          "x": 0.35,
-          "y": 0.5
+          "x": 0.3,
+          "y": 0.45
         },
         "ci-deploy-n3": {
-          "x": 0.58,
-          "y": 0.5
+          "x": 0.5,
+          "y": 0.45
         },
         "ci-deploy-n4": {
-          "x": 0.82,
-          "y": 0.25
+          "x": 0.7,
+          "y": 0.2
         },
         "ci-deploy-n5": {
-          "x": 0.58,
-          "y": 0.82
+          "x": 0.5,
+          "y": 0.8
         },
         "ci-deploy-n6": {
-          "x": 0.35,
-          "y": 0.82
+          "x": 0.3,
+          "y": 0.8
         },
         "ci-deploy-n7": {
           "x": 0.9,
-          "y": 0.25
+          "y": 0.2
         },
         "ci-deploy-n8": {
           "x": 0.9,
           "y": 0.5
         },
         "ci-deploy-n9": {
-          "x": 0.9,
-          "y": 0.82
+          "x": 0.7,
+          "y": 0.8
         }
       },
       "explanation": "テスト成功時だけ本番公開し、失敗時は修正してテストをやり直します。公開後のヘルスチェックが正常なら完了を通知し、異常なら前バージョンへ戻します。",
       "source": "24_organize-drill",
-      "difficulty": "hard"
+      "difficulty": "hard",
+      "solutionLayout": "manual"
     },
     {
       "id": "feature-flag",

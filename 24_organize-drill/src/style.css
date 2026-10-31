@@ -370,3 +370,10 @@
 .prompt-reveal-note:disabled{opacity:.65;cursor:default}
 @media(max-width:700px){.prompt-document-note,.prompt-reveal-note{width:48%;padding:9px}.prompt-document-note{min-height:120px}.prompt-document-body{font-size:10px}}
 .drill-notice{margin:0 0 14px;padding:10px 12px;border:1px solid #e3d0c9;border-radius:9px;background:#fbefeb;color:var(--red);font-size:13px;font-weight:650}
+/* 解答確認の採点欄は、比較する2つの図の下に全幅で表示する。 */
+.workbench.is-reviewing #feedback{grid-column:1/-1;grid-row:2;height:auto;overflow-x:auto}
+.workbench.is-reviewing #feedback .scoring-table,.workbench.is-reviewing #feedback .scoring-help-table{width:100%;min-width:720px;table-layout:fixed;border-collapse:collapse}
+.workbench.is-reviewing #feedback .scoring-table th,.workbench.is-reviewing #feedback .scoring-table td,.workbench.is-reviewing #feedback .scoring-help-table th,.workbench.is-reviewing #feedback .scoring-help-table td{width:auto;text-align:center;vertical-align:middle;border-right:1px solid #e5e2d8;padding:10px 8px;white-space:normal}
+.workbench.is-reviewing #feedback .scoring-table .scoring-total{background:#f2f6fb;color:#3976b8;font-weight:850}
+.workbench.is-reviewing #feedback .scoring-table th:last-child,.workbench.is-reviewing #feedback .scoring-table td:last-child,.workbench.is-reviewing #feedback .scoring-help-table th:last-child,.workbench.is-reviewing #feedback .scoring-help-table td:last-child{border-right:0}
+@media(max-width:700px){.workbench.is-reviewing #feedback{grid-row:auto}}

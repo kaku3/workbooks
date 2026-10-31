@@ -73,15 +73,15 @@
 
 | 付箋ID | x | y |
 |---|---:|---:|
-| `ci-deploy-n1` | 0.12 | 0.5 |
-| `ci-deploy-n2` | 0.35 | 0.5 |
-| `ci-deploy-n3` | 0.58 | 0.5 |
-| `ci-deploy-n4` | 0.82 | 0.25 |
-| `ci-deploy-n5` | 0.58 | 0.82 |
-| `ci-deploy-n6` | 0.35 | 0.82 |
-| `ci-deploy-n7` | 0.9 | 0.25 |
+| `ci-deploy-n1` | 0.1 | 0.45 |
+| `ci-deploy-n2` | 0.3 | 0.45 |
+| `ci-deploy-n3` | 0.5 | 0.45 |
+| `ci-deploy-n4` | 0.7 | 0.2 |
+| `ci-deploy-n5` | 0.5 | 0.8 |
+| `ci-deploy-n6` | 0.3 | 0.8 |
+| `ci-deploy-n7` | 0.9 | 0.2 |
 | `ci-deploy-n8` | 0.9 | 0.5 |
-| `ci-deploy-n9` | 0.9 | 0.82 |
+| `ci-deploy-n9` | 0.7 | 0.8 |
 
 ## 解説
 

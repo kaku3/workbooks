@@ -798,7 +798,7 @@ function labelForEdge(edgeKey) { const [from, to] = edgeKey.split('->'); return 
 function scorePlacement(nodes, edited, hintPenalty) {
   const limit = Math.max(0, nodes.length - 1);
   const maxPoints = nodes.length > 1 ? 1 + limit * 2 : 0;
-  if (!edited) return { points: 0, maxPoints, overlaps: 0, alignmentPoints: 0, spacingPoints: 0, aligned: false, hasEqualSpacing: false, untouched: true, hintPenalty, details: ['操作なし', `追加資料の開示 -${hintPenalty}点`] };
+  if (!edited) return { points: 0, maxPoints, overlaps: 0, alignmentPoints: 0, spacingPoints: 0, aligned: false, hasEqualSpacing: false, untouched: true, hintPenalty, details: ['操作なし', `追加メモ -${hintPenalty}点`] };
   const overlapsPair = (a, b) => a.left < b.right - 6 && a.right > b.left + 6 && a.top < b.bottom - 6 && a.bottom > b.top + 6;
   let overlaps = 0;
   for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) if (overlapsPair(nodes[i], nodes[j])) overlaps++;
@@ -849,7 +849,7 @@ function scorePlacement(nodes, edited, hintPenalty) {
   const alignmentPoints = alignment.points, spacingPoints = spacing.points;
   const points = Math.max(0, (nodes.length > 1 && !overlaps ? 1 : 0) + alignmentPoints + spacingPoints - hintPenalty);
   return { points, maxPoints, overlaps, alignmentPoints, spacingPoints, aligned: alignmentPoints > 0, hasEqualSpacing: spacingPoints > 0, hintPenalty,
-    details: [overlaps ? `カードの重なり ${overlaps}組` : nodes.length > 1 ? '重なりなし' : '配置カードが少なく重なりを判定できない', `中心整列 ${alignmentPoints}点`, `等間隔 ${spacingPoints}点`, `追加資料の開示 -${hintPenalty}点`] };
+    details: [overlaps ? `カードの重なり ${overlaps}組` : nodes.length > 1 ? '重なりなし' : '配置カードが少なく重なりを判定できない', `中心整列 ${alignmentPoints}点`, `等間隔 ${spacingPoints}点`, `追加メモ -${hintPenalty}点`] };
 }
 
 function assessComposition() {
@@ -878,9 +878,15 @@ function renderFeedback(comparison, composition) {
     ['重なり', 'カード同士が重なっていない', '芸術点 1点'],
     ['中心整列', '同じ行・列で隣り合うカードの中心がそろっている', '1組1点、最大カード数−1点'],
     ['等間隔', '同じ行・列で隣り合う間隔がそろっている', '1間隔1点、最大カード数−1点'],
-    ['追加資料の開示', '追加資料を初めて開くごとに1点減点', '開示1枚につき -1点'],
+    ['追加メモ', '追加資料を初めて開くごとに1点減点', '開示1枚につき -1点'],
   ];
-  helpRows.forEach(([name, description, pointsLabel]) => { const tr = document.createElement('tr'); [name, description, pointsLabel].forEach((value, i) => { const cell = document.createElement(i === 0 ? 'th' : 'td'); cell.textContent = value; if (i === 0) cell.scope = 'row'; tr.append(cell); }); helpTable.append(tr); });
+  const helpHead = document.createElement('thead'), helpBody = document.createElement('tbody');
+  const helpNames = document.createElement('tr'), helpDescriptions = document.createElement('tr'), helpPoints = document.createElement('tr');
+  helpRows.forEach(([name, description, pointsLabel]) => {
+    const th = document.createElement('th'); th.scope = 'col'; th.textContent = name; helpNames.append(th);
+    helpDescriptions.append(h('td', '', description)); helpPoints.append(h('td', '', pointsLabel));
+  });
+  helpHead.append(helpNames); helpBody.append(helpDescriptions, helpPoints); helpTable.append(helpHead, helpBody);
   helpPanel.append(helpTable);
   helpButton.addEventListener('click', () => { helpPanel.hidden = !helpPanel.hidden; helpButton.setAttribute('aria-expanded', String(!helpPanel.hidden)); });
   heading.append(headingText, helpButton);
@@ -891,13 +897,13 @@ function renderFeedback(comparison, composition) {
     ['重なり', composition.untouched ? '操作なし' : composition.overlaps ? `${composition.overlaps}か所` : 'なし', !composition.untouched && !composition.overlaps, 'カード同士が重なっていなければ1点'],
     ['中心整列', composition.untouched ? '操作なし' : `${composition.alignmentPoints}点`, !composition.untouched && composition.aligned, '整列した隣接カード1組につき1点、最大カード数−1点'],
     ['等間隔', composition.untouched ? '操作なし' : `${composition.spacingPoints}点`, !composition.untouched && composition.hasEqualSpacing, 'そろった間隔1個につき1点、最大カード数−1点'],
-    ['追加資料の開示', composition.hintPenalty ? `-${composition.hintPenalty}点` : '減点なし', composition.hintPenalty === 0, '追加資料を初めて開くごとに1点減点'],
+    ['追加メモ', composition.hintPenalty ? `-${composition.hintPenalty}点` : '減点なし', composition.hintPenalty === 0, '追加資料を初めて開くごとに1点減点'],
     ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, composition.untouched ? 'カードやつなぎを操作していないため0点' : '重なりなし1点＋中心整列の組数＋等間隔の個数。追加メモの減点後、下限0点']
   ];
-  const tbody = document.createElement('tbody');
+  const thead = document.createElement('thead'), headerRow = document.createElement('tr');
+  const tbody = document.createElement('tbody'), valueRow = document.createElement('tr');
   rows.forEach(([label, value, good, description], index) => {
-    const row = document.createElement('tr');
-    const th = document.createElement('th'); th.scope = 'row'; th.textContent = label; th.title = description;
+    const th = document.createElement('th'); th.scope = 'col'; th.textContent = label; th.title = description;
     const td = document.createElement('td');
     const status = document.createElement('span'); status.className = 'scoring-status';
     if (good === null) { status.classList.add('is-score'); status.textContent = value; }
@@ -905,10 +911,10 @@ function renderFeedback(comparison, composition) {
     else if (index < 3) { status.classList.add('is-bad'); status.textContent = `× ${value}`; }
     else { status.classList.add('is-neutral'); status.textContent = `− ${value}`; }
     td.append(status);
-    if (index === rows.length - 1) { row.classList.add('scoring-total-row'); th.classList.add('scoring-total'); td.classList.add('scoring-total'); }
-    row.append(th, td); tbody.append(row);
+    if (index === rows.length - 1) { th.classList.add('scoring-total'); td.classList.add('scoring-total'); }
+    headerRow.append(th); valueRow.append(td);
   });
-  table.append(tbody);
+  thead.append(headerRow); tbody.append(valueRow); table.append(thead, tbody);
   feedback.append(heading, helpPanel, table);
   const hintText = $('#hintText'); hintText.replaceChildren();
   const intro = document.createElement('p'); intro.className = 'hint-review-intro'; intro.textContent = current.explanation;
@@ -964,8 +970,20 @@ function renderFeedback(comparison, composition) {
 }
 
 // 正解例を詰めて配置する。かたまり内は上から下へ、かたまり同士は左から右へ。
-// 入る余地がないときは、問題データの layout をそのまま使う。
+// 個別指定の配置は優先し、自動配置が収まらない場合も元の配置を保つ。
 function applyCompactSolutionLayout(nodeMap, canvasW, canvasH, problem = current) {
+  if (problem.solutionLayout === 'manual') {
+    const nodes = [...nodeMap.values()];
+    const width = Math.max(canvasW, 5 * (Math.max(...nodes.map(node => node.offsetWidth)) + GAP_H));
+    const height = Math.max(canvasH, 620);
+    const container = nodes[0]?.parentElement;
+    if (container) { container.style.width = `${width}px`; container.style.height = `${height}px`; }
+    nodeMap.forEach((node, id) => {
+      const point = problem.layout[id];
+      node.style.left = `${point.x * width}px`; node.style.top = `${point.y * height}px`;
+    });
+    return;
+  }
   const ids = [...nodeMap.keys()], index = new Map(ids.map((id, i) => [id, i]));
   const edges = problem.connections.filter(([a, b]) => nodeMap.has(a) && nodeMap.has(b));
   const groupOf = new Map();
