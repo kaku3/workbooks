@@ -363,7 +363,7 @@
     renderDailyChallenge(); renderCareer();
     $('#result-accuracy').textContent = `${record.accuracy}%`; $('#result-time').textContent = formatTime(duration); $('#result-average').textContent = averageCorrect == null ? '—' : `${averageCorrect}秒`;
     $('#result-points').textContent = `${state.earnedPoints > 0 ? '+' : ''}${state.earnedPoints} pt`;
-    $('#again-button').hidden = state.sessionType === 'daily'; $('#again10-button').hidden = state.sessionType === 'daily'; $('#same-again-button').hidden = state.sessionType === 'daily';
+    $('#again-button').hidden = false; $('#again10-button').hidden = false; $('#same-again-button').hidden = state.sessionType === 'daily';
     $('#result-message').textContent = '繰り返すうちに、少しずつ見えてきます。';
     setCountControlsDisabled(false);
     $('#review-list').hidden = true; $('#review-list').innerHTML = ''; updateReviewToggle(); setView('result'); renderHistory(); $('#progress-bar').style.width = '100%';
