@@ -143,45 +143,114 @@ function defaultPosition() {
   return point;
 }
 
+// 左のホワイトボードに資料の付箋を並べる。最初は外部設計1枚＋スコープ外2枚。
+// 「（ヒントを見る）」を押すたびに追加資料を1枚開き、開示ごとに1点減点する（assessCompositionで集計）。
+let hintDocumentsOpened = 0;
+const NOTE_TILTS = [-1.2, .8, -.5, 1.1, -.9, .4];
+
 function renderPrompt(prompt) {
   const root = $('#promptText');
   root.replaceChildren();
-  const instruction = $('#promptInstruction');
-  if (typeof prompt === 'string') {
-    instruction.textContent = prompt;
-    root.classList.add('is-legacy-prompt');
-    return;
-  }
   root.classList.remove('is-legacy-prompt');
-  instruction.textContent = [prompt.intro, prompt.task].filter(Boolean).join(' ')
+  $('#promptInstruction').textContent = [prompt.intro, prompt.task].filter(Boolean).join(' ')
     || '図に必要な付箋を選び、処理の流れを矢印でつないでください。';
-  const sections = [
-    ['requirements', '要求仕様'],
-    ['conditions', '要件'],
-    ['externalDesign', '外部設計'],
-    ['detailedDesign', '詳細設計']
-  ];
-  const board = document.createElement('div');
-  board.className = 'prompt-sticky-board';
-  sections.forEach(([key, label]) => {
-    const notes = prompt[key] || [];
-    if (!notes.length) return;
-    const section = document.createElement('section');
-    section.className = `prompt-layer prompt-layer-${key}`;
-    const heading = document.createElement('h3');
-    heading.textContent = label;
-    const cards = document.createElement('div');
-    cards.className = 'prompt-sticky-notes';
-    notes.forEach((text, index) => {
-      const note = document.createElement('div');
-      note.className = `prompt-sticky-note note-tilt-${index % 3}`;
-      note.textContent = text;
-      cards.append(note);
-    });
-    section.append(heading, cards);
-    board.append(section);
-  });
+  const documents = prompt.documents;
+  if (!documents?.initial?.length) throw new Error(`問題「${current.id}」に段階開示資料がありません`);
+
+  const board = h('div', 'prompt-sticky-board prompt-document-board');
+  board.dataset.problemId = current.id;
+  const surface = h('div', 'prompt-doc-surface');
+  const reveal = h('button', 'prompt-sticky-note prompt-reveal-note');
+  reveal.type = 'button';
+  board.append(surface, reveal);
   root.append(board);
+
+  // 問題データを書き換えないよう複製して使う（同じ問題の再挑戦でも初期状態に戻る）。
+  const remaining = shuffle(documents.additional.map(doc => ({ ...doc })));
+  const total = remaining.length;
+  let opened = 0, topLayer = 1, noteCount = 0;
+
+  const addNote = (doc, isNew) => {
+    const note = h('article', `prompt-sticky-note prompt-document-note prompt-document-${doc.kind || 'external'}`);
+    note.dataset.documentId = doc.id;
+    note.style.setProperty('--tilt', `${NOTE_TILTS[noteCount++ % NOTE_TILTS.length]}deg`);
+    note.append(h('strong', 'prompt-document-title', doc.title || '資料'), h('span', 'prompt-document-body', doc.text));
+    note.style.visibility = 'hidden';
+    surface.append(note);
+    const spot = findFreeNoteSpot(surface, note);
+    note.style.left = `${spot.left / Math.max(1, surface.clientWidth) * 100}%`;
+    note.style.top = `${spot.top}px`;
+    note.style.visibility = '';
+    if (isNew) { note.classList.add('is-new'); note.addEventListener('animationend', () => note.classList.remove('is-new'), { once: true }); }
+    enablePromptNoteDrag(note, surface, () => ++topLayer);
+    fitNoteSurface(surface);
+    return note;
+  };
+
+  const updateReveal = () => {
+    reveal.disabled = !remaining.length;
+    reveal.replaceChildren(h('span', 'prompt-reveal-label', remaining.length ? '（ヒントを見る）' : '資料はすべて確認しました'));
+    reveal.append(h('small', 'prompt-reveal-cost', remaining.length
+      ? `1枚開くごとに1点減点（開示 ${opened}/${total}枚）`
+      : `追加資料 ${total}枚を開示（-${opened}点）`));
+  };
+
+  reveal.addEventListener('click', () => {
+    if (locked || !remaining.length) return;
+    const note = addNote(remaining.shift(), true);
+    opened++;
+    hintDocumentsOpened = opened;
+    updateReveal();
+    note.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+
+  documents.initial.forEach(doc => addNote(doc, false));
+  updateReveal();
+}
+
+// 既にある付箋（ドラッグで動かした位置も含む）と重ならない、いちばん上・左の空きを返す。
+function findFreeNoteSpot(surface, note) {
+  const gap = 10, width = surface.clientWidth || 320, noteW = note.offsetWidth, noteH = note.offsetHeight;
+  const others = [...surface.querySelectorAll('.prompt-document-note')].filter(n => n !== note)
+    .map(n => ({ left: n.offsetLeft, top: n.offsetTop, right: n.offsetLeft + n.offsetWidth, bottom: n.offsetTop + n.offsetHeight }));
+  const margin = Math.round(width * .02);
+  const lefts = [margin, Math.max(margin, width - noteW - margin)];
+  const tops = [0, ...others.map(o => o.bottom + gap)].sort((a, b) => a - b);
+  for (const top of tops) for (const left of lefts) {
+    const clear = others.every(o => left + noteW + gap / 2 <= o.left || left >= o.right + gap / 2 || top + noteH + gap / 2 <= o.top || top >= o.bottom + gap / 2);
+    if (clear) return { left, top };
+  }
+  return { left: lefts[0], top: Math.max(0, ...others.map(o => o.bottom + gap)) };
+}
+
+function fitNoteSurface(surface) {
+  const bottom = Math.max(0, ...[...surface.querySelectorAll('.prompt-document-note')].map(n => n.offsetTop + n.offsetHeight));
+  surface.style.height = `${Math.max(300, bottom + 16)}px`;
+}
+
+// 付箋をドラッグで自由に動かせる。位置はDOMにだけ持つので、資料を追加しても動かした位置は変わらない。
+function enablePromptNoteDrag(note, surface, nextLayer) {
+  let drag = null;
+  note.addEventListener('pointerdown', event => {
+    if (event.button !== 0) return;
+    drag = { x: event.clientX, y: event.clientY, left: note.offsetLeft, top: note.offsetTop };
+    note.style.zIndex = String(nextLayer());
+    note.classList.add('is-dragging');
+    note.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+  note.addEventListener('pointermove', event => {
+    if (!drag) return;
+    const maxLeft = Math.max(0, surface.clientWidth - note.offsetWidth);
+    const left = Math.max(0, Math.min(maxLeft, drag.left + event.clientX - drag.x));
+    const top = Math.max(0, drag.top + event.clientY - drag.y);
+    note.style.left = `${left / Math.max(1, surface.clientWidth) * 100}%`;
+    note.style.top = `${top}px`;
+    fitNoteSurface(surface);
+  });
+  const end = () => { if (!drag) return; drag = null; note.classList.remove('is-dragging'); fitNoteSurface(surface); };
+  note.addEventListener('pointerup', end);
+  note.addEventListener('pointercancel', end);
 }
 
 function renderQuestion() {
@@ -189,6 +258,7 @@ function renderQuestion() {
   reviewZoom = 1;
   placed = new Map(); positions = new Map(); trashed = new Set(); trashedPositions = new Map(); trashedConnections = new Map(); connections = []; linkStart = null; selectedConnection = null;
   reviewExpectedEdges = new Set();
+  hintDocumentsOpened = 0;
   defaultPositionIndex = 0; locked = false; userEdited = false;
   positionSlots = shuffle([
     { x: .20, y: .24 }, { x: .50, y: .24 }, { x: .80, y: .24 },
@@ -257,6 +327,7 @@ function renderQuestion() {
   $('#hintText').textContent = current?.hint || '';
   $('#hintBadge').textContent = 'ヒント';
   $('#hintBadge').hidden = false;
+  $('#hintPanel').hidden = Boolean(current?.prompt?.documents);
   $('#hintPanel').classList.remove('is-review-hint');
   initializingNodes = true;
   shuffle(current.items).forEach(item => addNode(item.id, defaultPosition()));
@@ -647,7 +718,7 @@ function labelForEdge(edgeKey) { const [from, to] = edgeKey.split('->'); return 
 
 function assessComposition() {
   // 初期配置のままでは整っているように見えるため、何も操作していない解答には芸術点を与えない。
-  if (!userEdited) return { points: 0, maxPoints: 3, overlaps: 0, aligned: false, hasEqualSpacing: false, untouched: true, details: ['操作なし'] };
+  if (!userEdited) return { points: 0, maxPoints: 3, overlaps: 0, aligned: false, hasEqualSpacing: false, untouched: true, hintPenalty: hintDocumentsOpened, details: ['操作なし', `追加資料の開示 -${hintDocumentsOpened}点`] };
   const canvas = $('#diagramCanvas').getBoundingClientRect();
   const nodes = [...placed.entries()].map(([id, node]) => {
     const box = node.getBoundingClientRect();
@@ -694,7 +765,10 @@ function assessComposition() {
   // 芸術点は、配置だけで客観的に判定しやすい3項目に限定する。
   // 意味のまとまりは問題ごとの構造や配置意図に左右され、正解例でも不当に低得点になるため採点対象から外す。
   points = (!overlaps && nodes.length > 1 ? 1 : 0) + (aligned ? 1 : 0) + (hasEqualSpacing ? 1 : 0);
-  return { points, maxPoints: 3, overlaps, aligned, hasEqualSpacing, details };
+  const hintPenalty = hintDocumentsOpened;
+  points = Math.max(0, points - hintPenalty);
+  details.push(`追加資料の開示 -${hintPenalty}点`);
+  return { points, maxPoints: 3, overlaps, aligned, hasEqualSpacing, hintPenalty, details };
 
 }
 
@@ -714,6 +788,7 @@ function renderFeedback(comparison, composition) {
     ['重なり', 'カード同士が重なっていない', '芸術点 1点'],
     ['中心整列', 'カードの中心が横または縦にそろっている', '芸術点 1点'],
     ['等間隔', '同じ列・行のカードが一定の間隔で並んでいる', '芸術点 1点'],
+    ['追加資料の開示', '追加資料を初めて開くごとに1点減点', '開示1枚につき -1点'],
   ];
   helpRows.forEach(([name, description, pointsLabel]) => { const tr = document.createElement('tr'); [name, description, pointsLabel].forEach((value, i) => { const cell = document.createElement(i === 0 ? 'th' : 'td'); cell.textContent = value; if (i === 0) cell.scope = 'row'; tr.append(cell); }); helpTable.append(tr); });
   helpPanel.append(helpTable);
@@ -726,6 +801,7 @@ function renderFeedback(comparison, composition) {
     ['重なり', composition.untouched ? '操作なし' : composition.overlaps ? `${composition.overlaps}か所` : 'なし', !composition.untouched && !composition.overlaps, 'カード同士が重なっていなければ1点'],
     ['中心整列', !composition.untouched && composition.aligned ? '加点あり' : composition.untouched ? '操作なし' : '加点なし', !composition.untouched && composition.aligned, 'カードの中心がそろっていれば1点'],
     ['等間隔', composition.untouched ? '操作なし' : composition.hasEqualSpacing ? '加点あり' : '加点なし', !composition.untouched && composition.hasEqualSpacing, 'カード間隔がそろっていれば1点'],
+    ['追加資料の開示', composition.hintPenalty ? `-${composition.hintPenalty}点` : '減点なし', composition.hintPenalty === 0, '追加資料を初めて開くごとに1点減点'],
     ['図の整いポイント', `${composition.points} / ${composition.maxPoints}点`, null, composition.untouched ? 'カードやつなぎを操作していないため0点' : '重なり・中心整列・等間隔の3項目で最大3点']
   ];
   const tbody = document.createElement('tbody');
@@ -1256,6 +1332,7 @@ async function init() {
     const outgoing = new Map(); problem.connections.forEach(([from]) => outgoing.set(from, (outgoing.get(from) || 0) + 1));
     return [...outgoing.values()].filter(count => count > 1).length < 2;
   })) throw new Error('難しい問題には複数の条件分岐が必要です');
+  if (data.problems.some(problem => !problem.prompt?.documents?.initial?.length || !problem.prompt.documents.additional?.length)) throw new Error('各問題に段階開示資料（最初の資料と追加資料）が必要です');
   if (careerData.version !== 1 || !careerData.rewards || !Array.isArray(careerData.rewards.milestones) || !Array.isArray(careerData.stages)) throw new Error('継続設定データの形式が正しくありません');
   problems = data.problems;
   careerConfig = careerData;
@@ -1338,6 +1415,18 @@ async function init() {
   });
   window.addEventListener('resize', () => { drawCurrentConnections(); drawSolutionConnections(); });
   renderContinuity(); renderRecords();
+  startRequestedDrill();
+}
+
+// ?drill=zukai-payment-auth のように問題IDを指定すると、その1問だけを練習として始める。
+function startRequestedDrill() {
+  const id = new URLSearchParams(location.search).get('drill');
+  if (!id) return;
+  const target = problems.find(problem => problem.id === id);
+  if (target) { startSession(1, 'practice', [target]); return; }
+  const notice = h('p', 'drill-notice', `問題ID「${id}」は見つかりませんでした。下のボタンから始められます。`);
+  notice.setAttribute('role', 'alert');
+  $('#startView').prepend(notice);
 }
 
 init().catch(error => {

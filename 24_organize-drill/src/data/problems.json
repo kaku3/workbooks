@@ -5,27 +5,80 @@
       "id": "order-flow",
       "title": "ネット注文の流れを整理する",
       "prompt": {
-        "intro": "「ネット注文の流れを整理する」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「月次の売上を集計する」は担当者間で認識が異なる",
-          "「決済を処理する」の後に「倉庫へ出荷を依頼する」を行いたい",
-          "「決済を処理する」を実現したい",
-          "「利用者が注文内容を送信する」を実現したい"
-        ],
-        "conditions": [
-          "機能要件：利用者へ発送を通知する"
-        ],
-        "externalDesign": [
-          "帳票レイアウトは別紙参照"
-        ],
-        "detailedDesign": [
-          "「倉庫へ出荷を依頼する」完了後に「利用者へ発送を通知する」を呼び出す",
-          "内部処理：システムが在庫を確認する",
-          "「システムが在庫を確認する」完了後に「決済を処理する」を呼び出す",
-          "「利用者が注文内容を送信する」完了後に「システムが在庫を確認する」を呼び出す",
-          "内部処理：倉庫へ出荷を依頼する"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「ネット注文の流れを整理する」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "order-flow-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "ネット注文を受け付けてから、利用者へ発送を知らせるまでの一連の業務を見直す。注文1件ごとに繰り返される流れが対象。"
+            },
+            {
+              "id": "order-flow-doc-02",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "order-flow-doc-03",
+              "kind": "scope",
+              "title": "経理メモ",
+              "text": "月次の売上を集計する作業は、経理が月末に別の業務として行っている。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "order-flow-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「利用者が注文内容を送信する」を受けて、「システムが在庫を確認する」につなぐ。",
+              "covers": [
+                "submit-order->check-stock"
+              ]
+            },
+            {
+              "id": "order-flow-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「システムが在庫を確認する」を受けて、「決済を処理する」につなぐ。",
+              "covers": [
+                "check-stock->process-payment"
+              ]
+            },
+            {
+              "id": "order-flow-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「決済を処理する」を受けて、「倉庫へ出荷を依頼する」につなぐ。",
+              "covers": [
+                "process-payment->request-shipping"
+              ]
+            },
+            {
+              "id": "order-flow-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「倉庫へ出荷を依頼する」を受けて、「利用者へ発送を通知する」につなぐ。",
+              "covers": [
+                "request-shipping->notify-shipped"
+              ]
+            },
+            {
+              "id": "order-flow-doc-08",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "order-flow-doc-09",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            }
+          ]
+        }
       },
       "hint": "まずは注文を受けてから発送するまでを追ってみましょう。今回の流れと関係の薄い付箋も混ざっています。",
       "items": [
@@ -118,27 +171,80 @@
       "id": "support-flow",
       "title": "問い合わせ対応を整理する",
       "prompt": {
-        "intro": "「問い合わせ対応を整理する」について集めたメモです。",
-        "requirements": [
-          "「担当者が発生条件を確認する」を実現したい",
-          "「結果を利用者へ共有する」を実現したい",
-          "「原因を切り分ける」を実現したい"
-        ],
-        "conditions": [
-          "同時利用は最大50人",
-          "「修正または回避策を行う」完了後に「結果を利用者へ共有する」へ進む",
-          "「原因を切り分ける」完了後に「修正または回避策を行う」へ進む"
-        ],
-        "externalDesign": [
-          "利用者から見える動き：修正または回避策を行う",
-          "「翌月の研修計画を作る」も論点に挙がったが未決定"
-        ],
-        "detailedDesign": [
-          "「担当者が発生条件を確認する」完了後に「原因を切り分ける」を呼び出す",
-          "内部処理：利用者が不具合を報告する",
-          "「利用者が不具合を報告する」完了後に「担当者が発生条件を確認する」を呼び出す"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「問い合わせ対応を整理する」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "support-flow-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者から不具合の報告を受けてから、対応結果を伝えるまでの問い合わせ対応を見直す。"
+            },
+            {
+              "id": "support-flow-doc-02",
+              "kind": "scope",
+              "title": "運営メモ",
+              "text": "翌月の研修計画を作る作業は、サポートチームの別の会議で進めている。"
+            },
+            {
+              "id": "support-flow-doc-03",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "support-flow-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「利用者が不具合を報告する」を受けて、「担当者が発生条件を確認する」につなぐ。",
+              "covers": [
+                "report-issue->confirm-context"
+              ]
+            },
+            {
+              "id": "support-flow-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「担当者が発生条件を確認する」が終わったら、「原因を切り分ける」に移る。",
+              "covers": [
+                "confirm-context->isolate-cause"
+              ]
+            },
+            {
+              "id": "support-flow-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「原因を切り分ける」を行った後に、「修正または回避策を行う」へ進む。",
+              "covers": [
+                "isolate-cause->apply-fix"
+              ]
+            },
+            {
+              "id": "support-flow-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「修正または回避策を行う」の次は「結果を利用者へ共有する」を行う。",
+              "covers": [
+                "apply-fix->share-result"
+              ]
+            },
+            {
+              "id": "support-flow-doc-08",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "support-flow-doc-09",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            }
+          ]
+        }
       },
       "hint": "利用者への返答だけでなく、その前に状況を確かめる作業にも目を向けてみましょう。",
       "items": [
@@ -238,25 +344,83 @@
       "id": "expense-flow",
       "title": "経費申請の確認を整理する",
       "prompt": {
-        "intro": "「経費申請の確認を整理する」の設計見直しで出た記述です。",
-        "requirements": [
-          "「申請者が経費を申請する」の結果で「上長が承認可否を判定する」／「経理が領収書の不備を確認する」を使い分けたい",
-          "操作研修の資料は別途用意"
-        ],
-        "conditions": [
-          "「申請者が経費を申請する」完了後に「上長が承認可否を判定する」へ進む",
-          "同時利用は最大50人"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる",
-          "「上長が承認可否を判定する」の結果で「経理が振込を依頼する」／「申請者へ却下理由を通知する」に分岐"
-        ],
-        "detailedDesign": [
-          "「人事が研修予定を更新する」は担当者間で認識が異なる",
-          "「経理が領収書の不備を確認する」の戻り値で「経理が振込を依頼する」／「領収書の修正を依頼する」を切り替える",
-          "「経理が振込を依頼する」完了後に「申請者へ結果を通知する」を呼び出す"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「経費申請の確認を整理する」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "expense-flow-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "申請された経費が、確認と承認を経て、申請者へ結果が伝わるまでの流れを見直す。"
+            },
+            {
+              "id": "expense-flow-doc-02",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            },
+            {
+              "id": "expense-flow-doc-03",
+              "kind": "scope",
+              "title": "人事メモ",
+              "text": "人事が研修予定を更新する作業は、人事部門の別の台帳で行われている。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "expense-flow-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「申請者が経費を申請する」を受けて、「上長が承認可否を判定する」と「経理が領収書の不備を確認する」が並行して始まる。",
+              "covers": [
+                "submit-expense->manager-approve",
+                "submit-expense->check-receipt"
+              ]
+            },
+            {
+              "id": "expense-flow-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「上長が承認可否を判定する」の結果次第で、行き先（「経理が振込を依頼する」、「申請者へ却下理由を通知する」）が決まる。",
+              "covers": [
+                "manager-approve->request-transfer",
+                "manager-approve->manager-reject"
+              ]
+            },
+            {
+              "id": "expense-flow-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「経理が領収書の不備を確認する」の結果に応じて、「経理が振込を依頼する」、「領収書の修正を依頼する」のいずれかへ進む。",
+              "covers": [
+                "check-receipt->request-transfer",
+                "check-receipt->receipt-correction"
+              ]
+            },
+            {
+              "id": "expense-flow-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「経理が振込を依頼する」が終わったら、「申請者へ結果を通知する」に移る。",
+              "covers": [
+                "request-transfer->notify-applicant"
+              ]
+            },
+            {
+              "id": "expense-flow-doc-08",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。"
+            },
+            {
+              "id": "expense-flow-doc-09",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            }
+          ]
+        }
       },
       "hint": "確認することが複数あり、同時に進められるものもありそうです。判断の結果と、複数の確認がそろった後の処理に注目しましょう。",
       "items": [
@@ -386,27 +550,80 @@
       "id": "release-flow",
       "title": "サービス更新の流れを整理する",
       "prompt": {
-        "intro": "「サービス更新の流れを整理する」について集めたメモです。",
-        "requirements": [
-          "「公開の承認を得る」を実現したい",
-          "参考：チームの採用計画を立てる"
-        ],
-        "conditions": [
-          "機能要件：更新を本番環境へ公開する"
-        ],
-        "externalDesign": [
-          "「公開の承認を得る」の次に「更新を本番環境へ公開する」を行う",
-          "「更新を本番環境へ公開する」の次に「公開後の動作を確認する」を行う",
-          "「テストを実行する」の次に「公開の承認を得る」を行う",
-          "「更新内容と公開手順を準備する」の次に「テストを実行する」を行う"
-        ],
-        "detailedDesign": [
-          "内部処理：テストを実行する",
-          "保存先テーブル名は開発標準に従う",
-          "内部処理：更新内容と公開手順を準備する",
-          "内部処理：公開後の動作を確認する"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「サービス更新の流れを整理する」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "release-flow-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "サービスの更新を、準備から本番への公開、公開後の確認まで安全に進める流れを見直す。"
+            },
+            {
+              "id": "release-flow-doc-02",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "release-flow-doc-03",
+              "kind": "scope",
+              "title": "チームメモ",
+              "text": "チームの採用計画を立てる作業は、四半期ごとに別途行っている。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "release-flow-doc-04",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「更新内容と公開手順を準備する」の次は「テストを実行する」を行う。",
+              "covers": [
+                "prepare-release->run-tests"
+              ]
+            },
+            {
+              "id": "release-flow-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「テストを実行する」を受けて、「公開の承認を得る」につなぐ。",
+              "covers": [
+                "run-tests->approve-release"
+              ]
+            },
+            {
+              "id": "release-flow-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「公開の承認を得る」を行った後に、「更新を本番環境へ公開する」へ進む。",
+              "covers": [
+                "approve-release->deploy-release"
+              ]
+            },
+            {
+              "id": "release-flow-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「更新を本番環境へ公開する」を受けて、「公開後の動作を確認する」につなぐ。",
+              "covers": [
+                "deploy-release->monitor-release"
+              ]
+            },
+            {
+              "id": "release-flow-doc-08",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            },
+            {
+              "id": "release-flow-doc-09",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            }
+          ]
+        }
       },
       "hint": "公開する前と、公開した後では、確認することが違いそうです。採用計画の付箋は今回の流れに関係するでしょうか？",
       "items": [
@@ -507,28 +724,89 @@
       "id": "learning-cycle",
       "title": "学びを次につなげる",
       "prompt": {
-        "intro": "「学びを次につなげる」の設計見直しで出た記述です。",
-        "requirements": [
-          "「次の目標に向けて練習する」を実現したい",
-          "「できたことと課題を振り返る」を実現したい",
-          "「身につけたい操作を決める」の後に「操作を練習する」を行いたい"
-        ],
-        "conditions": [
-          "「振り返りから次の目標を決める」完了後に「次の目標に向けて練習する」へ進む"
-        ],
-        "externalDesign": [
-          "利用者から見える動き：操作を練習する",
-          "画面文言は後日確定",
-          "利用者から見える動き：身につけたい操作を決める",
-          "「共有フォルダーを整理する」は担当者間で認識が異なる",
-          "利用者から見える動き：振り返りから次の目標を決める"
-        ],
-        "detailedDesign": [
-          "「操作を練習する」完了後に「できたことと課題を振り返る」を呼び出す",
-          "「次の目標に向けて練習する」完了後に「できたことと課題を振り返る」を呼び出す",
-          "「できたことと課題を振り返る」完了後に「振り返りから次の目標を決める」を呼び出す"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「学びを次につなげる」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "learning-cycle-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "新しい操作を身につけるために、練習と振り返りを繰り返しながら目標を更新していく流れを整理する。"
+            },
+            {
+              "id": "learning-cycle-doc-02",
+              "kind": "scope",
+              "title": "環境メモ",
+              "text": "共有フォルダーを整理する作業は、年度末にまとめて行っている。"
+            },
+            {
+              "id": "learning-cycle-doc-03",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "learning-cycle-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「身につけたい操作を決める」を受けて、「操作を練習する」につなぐ。",
+              "covers": [
+                "set-goal->practice-skill"
+              ]
+            },
+            {
+              "id": "learning-cycle-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「操作を練習する」を受けて、「できたことと課題を振り返る」につなぐ。",
+              "covers": [
+                "practice-skill->review-progress"
+              ]
+            },
+            {
+              "id": "learning-cycle-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「できたことと課題を振り返る」を行った後に、「振り返りから次の目標を決める」へ進む。",
+              "covers": [
+                "review-progress->choose-next-goal"
+              ]
+            },
+            {
+              "id": "learning-cycle-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「振り返りから次の目標を決める」の次は「次の目標に向けて練習する」を行う。",
+              "covers": [
+                "choose-next-goal->practice-again"
+              ]
+            },
+            {
+              "id": "learning-cycle-doc-08",
+              "kind": "external",
+              "title": "外部設計｜やり直し",
+              "text": "「次の目標に向けて練習する」を終えたら、もう一度「できたことと課題を振り返る」を行う。",
+              "covers": [
+                "practice-again->review-progress"
+              ]
+            },
+            {
+              "id": "learning-cycle-doc-09",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            },
+            {
+              "id": "learning-cycle-doc-10",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ]
+        }
       },
       "hint": "練習して終わりではなく、振り返った後に何が起きるかを考えてみましょう。",
       "items": [
@@ -632,24 +910,73 @@
       "id": "zukai-login",
       "title": "ログインの流れ",
       "prompt": {
-        "intro": "「ログインの流れ」の設計見直しで出た記述です。",
-        "requirements": [
-          "「アカウント状態を確認」の後に「利用停止を案内」を行いたい"
-        ],
-        "conditions": [
-          "「認証情報を入力」完了後に「アカウント状態を確認」へ進む",
-          "応答時間は3秒以内"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる",
-          "「システムが認証」の結果で「ホーム画面を表示」／「認証エラーを表示」に分岐",
-          "参考：ログイン画面の背景画像"
-        ],
-        "detailedDesign": [
-          "「アカウント状態を確認」の戻り値で「利用停止を案内」／「システムが認証」を切り替える",
-          "APIのタイムアウトは設定ファイルで管理"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「ログインの流れ」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-login-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者がログインしてホーム画面に進むまでの流れ。アカウントの状態と認証の結果によって、行き先が変わる。"
+            },
+            {
+              "id": "zukai-login-doc-02",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "ログイン画面の背景画像は、季節ごとにデザイナーが差し替える。"
+            },
+            {
+              "id": "zukai-login-doc-03",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-login-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「認証情報を入力」を受けて、「アカウント状態を確認」につなぐ。",
+              "covers": [
+                "zukai-login-n1->zukai-login-n4"
+              ]
+            },
+            {
+              "id": "zukai-login-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「アカウント状態を確認」の結果に応じて、「利用停止を案内」、「システムが認証」のいずれかへ進む。",
+              "covers": [
+                "zukai-login-n4->zukai-login-n5",
+                "zukai-login-n4->zukai-login-n2"
+              ]
+            },
+            {
+              "id": "zukai-login-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「システムが認証」の結果次第で、行き先（「ホーム画面を表示」、「認証エラーを表示」）が決まる。",
+              "covers": [
+                "zukai-login-n2->zukai-login-n3",
+                "zukai-login-n2->zukai-login-n6"
+              ]
+            },
+            {
+              "id": "zukai-login-doc-07",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "zukai-login-doc-08",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ]
+        }
       },
       "hint": "認証の結果によって、そのまま利用できる場合と、利用できない場合がありそうです。結果が変わる場所を探してみましょう。",
       "items": [
@@ -756,25 +1083,71 @@
       "id": "zukai-profile-update",
       "title": "プロフィール更新",
       "prompt": {
-        "intro": "「プロフィール更新」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「表示名を編集して保存」の後に「文字数をチェック」を行いたい",
-          "「データを保存」を実現したい"
-        ],
-        "conditions": [
-          "同時利用は最大50人",
-          "機能要件：文字数をチェック",
-          "機能要件：完了メッセージを表示",
-          "「データを保存」完了後に「完了メッセージを表示」へ進む",
-          "「将来の画像変更機能」も論点に挙がったが未決定"
-        ],
-        "externalDesign": [],
-        "detailedDesign": [
-          "内部処理：表示名を編集して保存",
-          "「保存ボタンの色」は担当者間で認識が異なる",
-          "「文字数をチェック」完了後に「データを保存」を呼び出す"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「プロフィール更新」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-profile-update-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者が表示名を変更して保存を終えるまでの流れ。今回は入力に問題がない場合を扱う。"
+            },
+            {
+              "id": "zukai-profile-update-doc-02",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "保存ボタンの色は、共通スタイルの基本色を使う。"
+            },
+            {
+              "id": "zukai-profile-update-doc-03",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-profile-update-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「表示名を編集して保存」を受けて、「文字数をチェック」につなぐ。",
+              "covers": [
+                "zukai-profile-update-n1->zukai-profile-update-n2"
+              ]
+            },
+            {
+              "id": "zukai-profile-update-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「文字数をチェック」を受けて、「データを保存」につなぐ。",
+              "covers": [
+                "zukai-profile-update-n2->zukai-profile-update-n3"
+              ]
+            },
+            {
+              "id": "zukai-profile-update-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「データを保存」を行った後に、「完了メッセージを表示」へ進む。",
+              "covers": [
+                "zukai-profile-update-n3->zukai-profile-update-n4"
+              ]
+            },
+            {
+              "id": "zukai-profile-update-doc-07",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "将来の画像変更機能は、次期の検討事項として保留している。"
+            },
+            {
+              "id": "zukai-profile-update-doc-08",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。"
+            }
+          ]
+        }
       },
       "hint": "今回は、表示名を変更して保存する一連の流れが対象です。見た目や将来の機能は、処理そのものと分けて考えましょう。",
       "items": [
@@ -861,25 +1234,82 @@
       "id": "zukai-upload",
       "title": "ファイルアップロードと検証",
       "prompt": {
-        "intro": "「ファイルアップロードと検証」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「サイズ上限10MBを確認」の結果で「拡張子がPDFか確認」／「エラーを表示」を使い分けたい",
-          "「拡張子がPDFか確認」の結果で「ファイルを保存」／「エラーを表示」を使い分けたい"
-        ],
-        "conditions": [
-          "同時利用は最大50人"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる",
-          "「PDFをアップロード」の次に「サイズ上限10MBを確認」を行う"
-        ],
-        "detailedDesign": [
-          "「ファイルを保存」完了後に「一覧に反映」を呼び出す",
-          "「サーバーのディスク容量監視」も論点に挙がったが未決定",
-          "APIのタイムアウトは設定ファイルで管理",
-          "「サイズ上限10MBを確認」完了後に「エラーを表示」を呼び出す"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「ファイルアップロードと検証」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-upload-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者がPDFをアップロードし、条件を満たすものだけを保存して一覧に反映する流れ。条件を満たさない場合の扱いも含む。"
+            },
+            {
+              "id": "zukai-upload-doc-02",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "サーバーのディスク容量監視は、運用チームが別の仕組みで行っている。"
+            },
+            {
+              "id": "zukai-upload-doc-03",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-upload-doc-04",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「PDFをアップロード」を行った後に、「サイズ上限10MBを確認」へ進む。",
+              "covers": [
+                "zukai-upload-n1->zukai-upload-n2"
+              ]
+            },
+            {
+              "id": "zukai-upload-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「サイズ上限10MBを確認」の後は、状況によって「拡張子がPDFか確認」／「エラーを表示」に分かれる。",
+              "covers": [
+                "zukai-upload-n2->zukai-upload-n3",
+                "zukai-upload-n2->zukai-upload-n6"
+              ]
+            },
+            {
+              "id": "zukai-upload-doc-06",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「拡張子がPDFか確認」の結果次第で、行き先（「ファイルを保存」、「エラーを表示」）が決まる。",
+              "covers": [
+                "zukai-upload-n3->zukai-upload-n4",
+                "zukai-upload-n3->zukai-upload-n6"
+              ]
+            },
+            {
+              "id": "zukai-upload-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「ファイルを保存」を行った後に、「一覧に反映」へ進む。",
+              "covers": [
+                "zukai-upload-n4->zukai-upload-n5"
+              ]
+            },
+            {
+              "id": "zukai-upload-doc-08",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            },
+            {
+              "id": "zukai-upload-doc-09",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            }
+          ]
+        }
       },
       "hint": "確認項目が複数あります。どれか一つでも条件を満たさない場合、処理はどうなるでしょう？",
       "items": [
@@ -999,23 +1429,72 @@
       "id": "zukai-stock-sync",
       "title": "在庫連携バッチ",
       "prompt": {
-        "intro": "「在庫連携バッチ」の設計見直しで出た記述です。",
-        "requirements": [
-          "「在庫CSVを送信」の後に「処理結果CSVを受信」を行いたい"
-        ],
-        "conditions": [
-          "「CSVの列順の詳細」は担当者間で認識が異なる",
-          "参考：実行サーバー名",
-          "操作ログは1年間保存"
-        ],
-        "externalDesign": [
-          "「処理結果CSVを受信」の結果で「成功時刻を記録」／「失敗行を担当者へ通知」に分岐"
-        ],
-        "detailedDesign": [
-          "「毎時バッチを開始」完了後に「在庫CSVを送信」を呼び出す",
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「在庫連携バッチ」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-stock-sync-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "毎時の在庫連携で、自社システムと外部倉庫がデータをやり取りし、結果を記録または通知する流れ。"
+            },
+            {
+              "id": "zukai-stock-sync-doc-02",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            },
+            {
+              "id": "zukai-stock-sync-doc-03",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "実行サーバー名は、運用手順書に記載している。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-stock-sync-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「毎時バッチを開始」を受けて、「在庫CSVを送信」につなぐ。",
+              "covers": [
+                "zukai-stock-sync-n1->zukai-stock-sync-n2"
+              ]
+            },
+            {
+              "id": "zukai-stock-sync-doc-05",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「在庫CSVを送信」が終わったら、「処理結果CSVを受信」に移る。",
+              "covers": [
+                "zukai-stock-sync-n2->zukai-stock-sync-n3"
+              ]
+            },
+            {
+              "id": "zukai-stock-sync-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「処理結果CSVを受信」の結果次第で、行き先（「成功時刻を記録」、「失敗行を担当者へ通知」）が決まる。",
+              "covers": [
+                "zukai-stock-sync-n3->zukai-stock-sync-n4",
+                "zukai-stock-sync-n3->zukai-stock-sync-n5"
+              ]
+            },
+            {
+              "id": "zukai-stock-sync-doc-07",
+              "kind": "scope",
+              "title": "連携仕様メモ",
+              "text": "CSVの列順の詳細は、別紙のインターフェース定義に従う。"
+            },
+            {
+              "id": "zukai-stock-sync-doc-08",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。"
+            }
+          ]
+        }
       },
       "hint": "データを送った後、結果を受け取ります。成功した場合と問題があった場合で、記録や連絡が変わる点に注目しましょう。",
       "items": [
@@ -1121,26 +1600,91 @@
       "id": "zukai-payment-auth",
       "title": "決済オーソリ",
       "prompt": {
-        "intro": "「決済オーソリ」に関する資料の断片です。",
-        "requirements": [
-          "「購入内容を検証」の結果で「決済代行へ承認要求」／「購入内容の修正を依頼」を使い分けたい"
-        ],
-        "conditions": [
-          "「購入内容を検証」完了後に「決済代行へ承認要求」へ進む",
-          "操作ログは1年間保存",
-          "「購入確定を実行」完了後に「購入内容を検証」へ進む",
-          "「決済代行へ承認要求」完了後に「承認結果を判定」へ進む"
-        ],
-        "externalDesign": [
-          "参考：配送先住所の表示順",
-          "エラー表示の色は共通スタイルに合わせる",
-          "「注文を確定」の次に「注文番号を表示」を行う"
-        ],
-        "detailedDesign": [
-          "「承認結果を判定」の戻り値で「注文を確定」／「支払い方法を再入力」を切り替える",
-          "入力項目の桁数・型はテーブル定義に従う"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「決済オーソリ」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "購入確定から、決済結果に応じた次の処理までを図に整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "pay-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "購入を確定する前に内容を確認し、問題がなければ決済へ進む。決済結果を受けて、注文の扱いを決める。"
+            },
+            {
+              "id": "pay-doc-02",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "配送先住所の表示順は、現行画面の並びを踏襲する。"
+            },
+            {
+              "id": "pay-doc-03",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "pay-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "購入内容を検証し、不備があれば購入内容の修正を依頼する。問題がなければ決済代行へ承認を要求する。",
+              "covers": [
+                "zukai-payment-auth-n7->zukai-payment-auth-n2",
+                "zukai-payment-auth-n7->zukai-payment-auth-n8"
+              ]
+            },
+            {
+              "id": "pay-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "購入確定を実行した後に、購入内容を検証する。",
+              "covers": [
+                "zukai-payment-auth-n1->zukai-payment-auth-n7"
+              ]
+            },
+            {
+              "id": "pay-doc-06",
+              "kind": "external",
+              "title": "外部設計｜決済連携",
+              "text": "決済代行へ承認要求を行った後、承認結果を判定する。",
+              "covers": [
+                "zukai-payment-auth-n2->zukai-payment-auth-n3"
+              ]
+            },
+            {
+              "id": "pay-doc-07",
+              "kind": "external",
+              "title": "外部設計｜結果の扱い",
+              "text": "承認結果に応じて、注文を確定するか、支払い方法の再入力を依頼する。",
+              "covers": [
+                "zukai-payment-auth-n3->zukai-payment-auth-n4",
+                "zukai-payment-auth-n3->zukai-payment-auth-n6"
+              ]
+            },
+            {
+              "id": "pay-doc-08",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。"
+            },
+            {
+              "id": "pay-doc-09",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            },
+            {
+              "id": "pay-doc-10",
+              "kind": "external",
+              "title": "外部設計｜完了後の表示",
+              "text": "注文を確定した後、注文番号を表示する。",
+              "covers": [
+                "zukai-payment-auth-n4->zukai-payment-auth-n5"
+              ]
+            }
+          ]
+        }
       },
       "hint": "購入内容の確認と、決済代行から返る結果は別の段階です。結果によって次の行き先が変わるところを探しましょう。",
       "items": [
@@ -1281,25 +1825,82 @@
       "id": "zukai-refund",
       "title": "注文キャンセルと返金",
       "prompt": {
-        "intro": "「注文キャンセルと返金」について集めたメモです。",
-        "requirements": [
-          "「決済代行へ返金API」の結果で「成功時に返金済みへ更新」／「失敗時に再試行キューへ登録」を使い分けたい",
-          "画面の雰囲気は現行システムに近づける",
-          "「返金対象か判定」の結果で「決済代行へ返金API」／「返金対象外を担当者へ通知」を使い分けたい"
-        ],
-        "conditions": [
-          "「返金対象か判定」完了後に「返金対象外を担当者へ通知」へ進む"
-        ],
-        "externalDesign": [
-          "「失敗時に再試行キューへ登録」の次に「担当者へ失敗を通知」を行う",
-          "エラー表示の色は共通スタイルに合わせる",
-          "「担当者が注文をキャンセル」の次に「返金対象か判定」を行う"
-        ],
-        "detailedDesign": [
-          "入力項目の桁数・型はテーブル定義に従う",
-          "「注文メモの文字数上限」も論点に挙がったが未決定"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「注文キャンセルと返金」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-refund-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "担当者が注文をキャンセルしたあと、返金の可否と決済代行からの結果に応じて対応を進める流れ。"
+            },
+            {
+              "id": "zukai-refund-doc-02",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "zukai-refund-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "注文メモの文字数上限は、現行画面の仕様を踏襲する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-refund-doc-04",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「担当者が注文をキャンセル」を行った後に、「返金対象か判定」へ進む。",
+              "covers": [
+                "zukai-refund-n1->zukai-refund-n2"
+              ]
+            },
+            {
+              "id": "zukai-refund-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「返金対象か判定」の後は、状況によって「決済代行へ返金API」／「返金対象外を担当者へ通知」に分かれる。",
+              "covers": [
+                "zukai-refund-n2->zukai-refund-n3",
+                "zukai-refund-n2->zukai-refund-n7"
+              ]
+            },
+            {
+              "id": "zukai-refund-doc-06",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「決済代行へ返金API」の結果次第で、行き先（「成功時に返金済みへ更新」、「失敗時に再試行キューへ登録」）が決まる。",
+              "covers": [
+                "zukai-refund-n3->zukai-refund-n4",
+                "zukai-refund-n3->zukai-refund-n5"
+              ]
+            },
+            {
+              "id": "zukai-refund-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「失敗時に再試行キューへ登録」が終わったら、「担当者へ失敗を通知」に移る。",
+              "covers": [
+                "zukai-refund-n5->zukai-refund-n6"
+              ]
+            },
+            {
+              "id": "zukai-refund-doc-08",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "zukai-refund-doc-09",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ]
+        }
       },
       "hint": "返金できるかどうかの判断と、APIを呼び出した後の結果に注目しましょう。失敗時の対応も忘れずに。",
       "items": [
@@ -1428,25 +2029,82 @@
       "id": "zukai-shipping-api",
       "title": "出荷依頼API連携",
       "prompt": {
-        "intro": "「出荷依頼API連携」に関する資料の断片です。",
-        "requirements": [
-          "「出荷依頼APIを送信」の結果で「受付IDを受領」／「受付失敗を記録して担当者へ通知」を使い分けたい",
-          "画面の雰囲気は現行システムに近づける",
-          "「Webhook署名方式の詳細」も論点に挙がったが未決定"
-        ],
-        "conditions": [
-          "「受付IDを受領」完了後に「出荷依頼中へ更新」へ進む",
-          "「Webhookで結果を受信」の後は状況に応じて「成功時に出荷済みへ更新」／「失敗時に出荷保留へ更新」へ進む",
-          "同時利用は最大50人"
-        ],
-        "externalDesign": [
-          "「出荷依頼中へ更新」の次に「Webhookで結果を受信」を行う",
-          "帳票レイアウトは別紙参照"
-        ],
-        "detailedDesign": [
-          "「Webhookで結果を受信」完了後に「失敗時に出荷保留へ更新」を呼び出す"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「出荷依頼API連携」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-shipping-api-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "注文確定後の出荷依頼を外部へ送り、受付時の応答と、あとから届く結果で注文の状態を更新する流れ。結果は非同期で届く。"
+            },
+            {
+              "id": "zukai-shipping-api-doc-02",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            },
+            {
+              "id": "zukai-shipping-api-doc-03",
+              "kind": "scope",
+              "title": "セキュリティメモ",
+              "text": "Webhook署名方式の詳細は、別途セキュリティ担当と詰める。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-shipping-api-doc-04",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「出荷依頼APIを送信」の後は、状況によって「受付IDを受領」／「受付失敗を記録して担当者へ通知」に分かれる。",
+              "covers": [
+                "zukai-shipping-api-n1->zukai-shipping-api-n2",
+                "zukai-shipping-api-n1->zukai-shipping-api-n7"
+              ]
+            },
+            {
+              "id": "zukai-shipping-api-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「受付IDを受領」の次は「出荷依頼中へ更新」を行う。",
+              "covers": [
+                "zukai-shipping-api-n2->zukai-shipping-api-n3"
+              ]
+            },
+            {
+              "id": "zukai-shipping-api-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「出荷依頼中へ更新」を受けて、「Webhookで結果を受信」につなぐ。",
+              "covers": [
+                "zukai-shipping-api-n3->zukai-shipping-api-n4"
+              ]
+            },
+            {
+              "id": "zukai-shipping-api-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「Webhookで結果を受信」の結果に応じて、「成功時に出荷済みへ更新」、「失敗時に出荷保留へ更新」のいずれかへ進む。",
+              "covers": [
+                "zukai-shipping-api-n4->zukai-shipping-api-n5",
+                "zukai-shipping-api-n4->zukai-shipping-api-n6"
+              ]
+            },
+            {
+              "id": "zukai-shipping-api-doc-08",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "zukai-shipping-api-doc-09",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ]
+        }
       },
       "hint": "依頼を受け付けた時点と、後から処理結果が届いた時点は同じではありません。時間差のある処理を意識してみましょう。",
       "items": [
@@ -1575,22 +2233,73 @@
       "id": "zukai-expense-redesign",
       "title": "経費精算フローの再設計",
       "prompt": {
-        "intro": "「経費精算フローの再設計」について集めたメモです。",
-        "requirements": [
-          "参考：申請集中の現状",
-          "「経理担当者の異動予定」も論点に挙がったが未決定",
-          "導入時期は繁忙期を避ける",
-          "「入力内容をチェック」の結果で「不備を差し戻す」／「部門長へ承認依頼」を使い分けたい"
-        ],
-        "conditions": [
-          "「部門長へ承認依頼」完了後に「承認後に支払い」へ進む"
-        ],
-        "externalDesign": [],
-        "detailedDesign": [
-          "「申請者がWeb申請」の戻り値で「入力内容をチェック」／「進捗をWebで確認」を切り替える",
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「経費精算フローの再設計」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-expense-redesign-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "Web申請を導入する経費精算で、入力の確認から承認、支払い、進捗の確認までを新しい流れに整理する。"
+            },
+            {
+              "id": "zukai-expense-redesign-doc-02",
+              "kind": "scope",
+              "title": "現状メモ",
+              "text": "申請集中の現状は、運用改善の課題として別に整理している。"
+            },
+            {
+              "id": "zukai-expense-redesign-doc-03",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-expense-redesign-doc-04",
+              "kind": "external",
+              "title": "外部設計｜並行する作業",
+              "text": "「申請者がWeb申請」のあとは、「入力内容をチェック」と「進捗をWebで確認」をそれぞれ進める。",
+              "covers": [
+                "zukai-expense-redesign-n1->zukai-expense-redesign-n2",
+                "zukai-expense-redesign-n1->zukai-expense-redesign-n6"
+              ]
+            },
+            {
+              "id": "zukai-expense-redesign-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「入力内容をチェック」の結果に応じて、「不備を差し戻す」、「部門長へ承認依頼」のいずれかへ進む。",
+              "covers": [
+                "zukai-expense-redesign-n2->zukai-expense-redesign-n3",
+                "zukai-expense-redesign-n2->zukai-expense-redesign-n4"
+              ]
+            },
+            {
+              "id": "zukai-expense-redesign-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「部門長へ承認依頼」を行った後に、「承認後に支払い」へ進む。",
+              "covers": [
+                "zukai-expense-redesign-n4->zukai-expense-redesign-n5"
+              ]
+            },
+            {
+              "id": "zukai-expense-redesign-doc-07",
+              "kind": "scope",
+              "title": "人事メモ",
+              "text": "経理担当者の異動予定は、来期の体制検討の中で扱っている。"
+            },
+            {
+              "id": "zukai-expense-redesign-doc-08",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ]
+        }
       },
       "hint": "新しい申請の流れと、現状の課題・背景情報を分けて考えましょう。利用者が途中経過を確認する動きもあります。",
       "items": [
@@ -1710,24 +2419,89 @@
       "id": "zukai-contact-improvement",
       "title": "問い合わせ対応の設計改善",
       "prompt": {
-        "intro": "「問い合わせ対応の設計改善」の設計見直しで出た記述です。",
-        "requirements": [
-          "「過去回答候補を表示」の後に「担当者が回答を作成」を行いたい"
-        ],
-        "conditions": [
-          "参考：座席レイアウト変更",
-          "操作ログは1年間保存",
-          "「顧客へ回答」完了後に「回答を履歴として保存」へ進む",
-          "「担当者が回答を作成」完了後に「顧客へ回答」へ進む"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる",
-          "「類似問い合わせを検索」の次に「過去回答候補を表示」を行う",
-          "「問い合わせを受け付ける」の次に「類似問い合わせを検索」を行う",
-          "「担当者の所属一覧」も論点に挙がったが未決定"
-        ],
-        "detailedDesign": [],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「問い合わせ対応の設計改善」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-contact-improvement-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "問い合わせへの回答を、過去の回答を活用しながら作成し、次回にも生かせるようにする流れ。"
+            },
+            {
+              "id": "zukai-contact-improvement-doc-02",
+              "kind": "scope",
+              "title": "総務メモ",
+              "text": "座席レイアウト変更は、総務が別途進めている。"
+            },
+            {
+              "id": "zukai-contact-improvement-doc-03",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-contact-improvement-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「問い合わせを受け付ける」の次は「類似問い合わせを検索」を行う。",
+              "covers": [
+                "zukai-contact-improvement-n1->zukai-contact-improvement-n2"
+              ]
+            },
+            {
+              "id": "zukai-contact-improvement-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「類似問い合わせを検索」が終わったら、「過去回答候補を表示」に移る。",
+              "covers": [
+                "zukai-contact-improvement-n2->zukai-contact-improvement-n3"
+              ]
+            },
+            {
+              "id": "zukai-contact-improvement-doc-06",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「過去回答候補を表示」が終わったら、「担当者が回答を作成」に移る。",
+              "covers": [
+                "zukai-contact-improvement-n3->zukai-contact-improvement-n4"
+              ]
+            },
+            {
+              "id": "zukai-contact-improvement-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「担当者が回答を作成」が終わったら、「顧客へ回答」に移る。",
+              "covers": [
+                "zukai-contact-improvement-n4->zukai-contact-improvement-n5"
+              ]
+            },
+            {
+              "id": "zukai-contact-improvement-doc-08",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「顧客へ回答」を行った後に、「回答を履歴として保存」へ進む。",
+              "covers": [
+                "zukai-contact-improvement-n5->zukai-contact-improvement-n6"
+              ]
+            },
+            {
+              "id": "zukai-contact-improvement-doc-09",
+              "kind": "scope",
+              "title": "名簿メモ",
+              "text": "担当者の所属一覧は、人事の名簿を参照する。"
+            },
+            {
+              "id": "zukai-contact-improvement-doc-10",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ]
+        }
       },
       "hint": "過去の回答を探すことは、今回の回答だけでなく次の問い合わせにもつながります。情報が残る場所に注目しましょう。",
       "items": [
@@ -1847,25 +2621,89 @@
       "id": "zukai-attendance-role",
       "title": "勤怠システムの責務分離",
       "prompt": {
-        "intro": "「勤怠システムの責務分離」に関する資料の断片です。",
-        "requirements": [
-          "「社員が出退勤を打刻」の後に「システムが勤務時間を算出」を行いたい"
-        ],
-        "conditions": [
-          "「上長が休暇を承認」完了後に「人事が勤怠を確認」へ進む",
-          "「社員が休暇を申請」完了後に「上長が休暇を承認」へ進む",
-          "「システムが勤務時間を算出」完了後に「人事が勤怠を確認」へ進む",
-          "操作ログは1年間保存"
-        ],
-        "externalDesign": [
-          "「人事が勤怠を確認」の次に「給与計算へ勤務データを連携」を行う",
-          "「部署ごとの休憩ルール詳細」も論点に挙がったが未決定"
-        ],
-        "detailedDesign": [
-          "保存先テーブル名は開発標準に従う",
-          "参考：Excelへの二重転記"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「勤怠システムの責務分離」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "zukai-attendance-role-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "勤怠の打刻と休暇の申請を、人事の確認を経て給与計算へ渡すまでの役割分担を整理する。"
+            },
+            {
+              "id": "zukai-attendance-role-doc-02",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            },
+            {
+              "id": "zukai-attendance-role-doc-03",
+              "kind": "scope",
+              "title": "現状メモ",
+              "text": "Excelへの二重転記は現在も残っているが、解消は別の課題として扱う。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "zukai-attendance-role-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「社員が出退勤を打刻」が終わったら、「システムが勤務時間を算出」に移る。",
+              "covers": [
+                "zukai-attendance-role-n1->zukai-attendance-role-n2"
+              ]
+            },
+            {
+              "id": "zukai-attendance-role-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「社員が休暇を申請」が終わったら、「上長が休暇を承認」に移る。",
+              "covers": [
+                "zukai-attendance-role-n3->zukai-attendance-role-n4"
+              ]
+            },
+            {
+              "id": "zukai-attendance-role-doc-06",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「システムが勤務時間を算出」を受けて、「人事が勤怠を確認」につなぐ。",
+              "covers": [
+                "zukai-attendance-role-n2->zukai-attendance-role-n5"
+              ]
+            },
+            {
+              "id": "zukai-attendance-role-doc-07",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「上長が休暇を承認」を行った後に、「人事が勤怠を確認」へ進む。",
+              "covers": [
+                "zukai-attendance-role-n4->zukai-attendance-role-n5"
+              ]
+            },
+            {
+              "id": "zukai-attendance-role-doc-08",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「人事が勤怠を確認」を行った後に、「給与計算へ勤務データを連携」へ進む。",
+              "covers": [
+                "zukai-attendance-role-n5->zukai-attendance-role-n6"
+              ]
+            },
+            {
+              "id": "zukai-attendance-role-doc-09",
+              "kind": "scope",
+              "title": "就業規則メモ",
+              "text": "部署ごとの休憩ルール詳細は、就業規則に従う。"
+            },
+            {
+              "id": "zukai-attendance-role-doc-10",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ]
+        }
       },
       "hint": "打刻と休暇申請は別々に始まります。担当者ごとの作業と、それらの結果を受けて行う確認を見分けましょう。",
       "items": [
@@ -1986,27 +2824,80 @@
       "id": "password-reset",
       "title": "パスワード再設定",
       "prompt": {
-        "intro": "「パスワード再設定」の設計見直しで出た記述です。",
-        "requirements": [
-          "導入時期は繁忙期を避ける",
-          "「新しいパスワードを登録」を実現したい",
-          "「新しいパスワードを登録」の後に「完了を通知」を行いたい"
-        ],
-        "conditions": [
-          "機能要件：完了を通知",
-          "機能要件：確認リンクを開く",
-          "機能要件：再設定を申請"
-        ],
-        "externalDesign": [
-          "「登録メールへ確認リンクを送信」の次に「確認リンクを開く」を行う"
-        ],
-        "detailedDesign": [
-          "「再設定を申請」完了後に「登録メールへ確認リンクを送信」を呼び出す",
-          "「確認リンクを開く」完了後に「新しいパスワードを登録」を呼び出す",
-          "参考：パスワードの保存ハッシュ方式",
-          "内部処理：登録メールへ確認リンクを送信"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「パスワード再設定」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "password-reset-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "パスワードを忘れた利用者が、本人確認を経て新しいパスワードを登録するまでの流れ。"
+            },
+            {
+              "id": "password-reset-doc-02",
+              "kind": "scope",
+              "title": "セキュリティメモ",
+              "text": "パスワードの保存ハッシュ方式は、社内のセキュリティ基準に従う。"
+            },
+            {
+              "id": "password-reset-doc-03",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "password-reset-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「再設定を申請」の次は「登録メールへ確認リンクを送信」を行う。",
+              "covers": [
+                "password-reset-n1->password-reset-n2"
+              ]
+            },
+            {
+              "id": "password-reset-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「登録メールへ確認リンクを送信」が終わったら、「確認リンクを開く」に移る。",
+              "covers": [
+                "password-reset-n2->password-reset-n3"
+              ]
+            },
+            {
+              "id": "password-reset-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「確認リンクを開く」が終わったら、「新しいパスワードを登録」に移る。",
+              "covers": [
+                "password-reset-n3->password-reset-n4"
+              ]
+            },
+            {
+              "id": "password-reset-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「新しいパスワードを登録」が終わったら、「完了を通知」に移る。",
+              "covers": [
+                "password-reset-n4->password-reset-n5"
+              ]
+            },
+            {
+              "id": "password-reset-doc-08",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            },
+            {
+              "id": "password-reset-doc-09",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ]
+        }
       },
       "hint": "利用者が申請しただけでは、本人だと確認できません。確認が終わる前に進めてよい処理か考えてみましょう。",
       "items": [
@@ -2108,27 +2999,80 @@
       "id": "account-registration",
       "title": "アカウント登録",
       "prompt": {
-        "intro": "「アカウント登録」に関する資料の断片です。",
-        "requirements": [
-          "「登録情報を入力」の後に「入力内容を検証」を行いたい",
-          "「入力内容を検証」を実現したい",
-          "「登録情報を入力」を実現したい",
-          "「確認リンクを開く」を実現したい"
-        ],
-        "conditions": [
-          "「登録画面のロゴ」も論点に挙がったが未決定"
-        ],
-        "externalDesign": [
-          "画面文言は後日確定",
-          "「確認リンクを開く」の次に「アカウントを有効化」を行う",
-          "利用者から見える動き：確認メールを送信",
-          "利用者から見える動き：アカウントを有効化"
-        ],
-        "detailedDesign": [
-          "「確認メールを送信」完了後に「確認リンクを開く」を呼び出す",
-          "「入力内容を検証」完了後に「確認メールを送信」を呼び出す"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「アカウント登録」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "account-registration-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者がアカウントを登録し、メールでの確認を経て利用を始められるようになるまでの流れ。"
+            },
+            {
+              "id": "account-registration-doc-02",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "account-registration-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "登録画面のロゴは、最新のブランドガイドラインに合わせる。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "account-registration-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「登録情報を入力」を受けて、「入力内容を検証」につなぐ。",
+              "covers": [
+                "account-registration-n1->account-registration-n2"
+              ]
+            },
+            {
+              "id": "account-registration-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「入力内容を検証」の次は「確認メールを送信」を行う。",
+              "covers": [
+                "account-registration-n2->account-registration-n3"
+              ]
+            },
+            {
+              "id": "account-registration-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「確認メールを送信」を行った後に、「確認リンクを開く」へ進む。",
+              "covers": [
+                "account-registration-n3->account-registration-n4"
+              ]
+            },
+            {
+              "id": "account-registration-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「確認リンクを開く」の次は「アカウントを有効化」を行う。",
+              "covers": [
+                "account-registration-n4->account-registration-n5"
+              ]
+            },
+            {
+              "id": "account-registration-doc-08",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            },
+            {
+              "id": "account-registration-doc-09",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ]
+        }
       },
       "hint": "登録情報を受け取った直後に利用開始できるとは限りません。メールでの確認が何を区切っているか考えましょう。",
       "items": [
@@ -2230,22 +3174,72 @@
       "id": "reservation-booking",
       "title": "会議室の予約",
       "prompt": {
-        "intro": "「会議室の予約」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "画面の雰囲気は現行システムに近づける"
-        ],
-        "conditions": [
-          "参考：会議室の壁紙"
-        ],
-        "externalDesign": [
-          "「空き状況を確認」の結果で「予約を確定」／「別日時を選び直す」に分岐"
-        ],
-        "detailedDesign": [
-          "「予約を確定」完了後に「予約完了を通知」を呼び出す",
-          "「日時と会議室を選択」完了後に「空き状況を確認」を呼び出す",
-          "APIのタイムアウトは設定ファイルで管理"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「会議室の予約」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "reservation-booking-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "社員が会議室を予約する流れ。空き状況によって、予約が確定するか、選び直しになるかが変わる。"
+            },
+            {
+              "id": "reservation-booking-doc-02",
+              "kind": "scope",
+              "title": "総務メモ",
+              "text": "会議室の壁紙は、総務が年度内に張り替えを予定している。"
+            },
+            {
+              "id": "reservation-booking-doc-03",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "reservation-booking-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「日時と会議室を選択」を受けて、「空き状況を確認」につなぐ。",
+              "covers": [
+                "reservation-booking-n1->reservation-booking-n2"
+              ]
+            },
+            {
+              "id": "reservation-booking-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「空き状況を確認」の結果次第で、行き先（「予約を確定」、「別日時を選び直す」）が決まる。",
+              "covers": [
+                "reservation-booking-n2->reservation-booking-n3",
+                "reservation-booking-n2->reservation-booking-n5"
+              ]
+            },
+            {
+              "id": "reservation-booking-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「予約を確定」が終わったら、「予約完了を通知」に移る。",
+              "covers": [
+                "reservation-booking-n3->reservation-booking-n4"
+              ]
+            },
+            {
+              "id": "reservation-booking-doc-07",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            },
+            {
+              "id": "reservation-booking-doc-08",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ]
+        }
       },
       "hint": "空き状況を確認した結果で、その後の行き先が変わります。予約できない場合の動きも探してみましょう。",
       "items": [
@@ -2347,23 +3341,89 @@
       "id": "reservation-cancel",
       "title": "予約キャンセル待ち",
       "prompt": {
-        "intro": "「予約キャンセル待ち」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「空席案内を送信」の後に「利用者が予約を確定」を行いたい",
-          "「キャンセル待ちを登録」の後に「予約の取消を受け付ける」を行いたい",
-          "導入時期は繁忙期を避ける"
-        ],
-        "conditions": [],
-        "externalDesign": [
-          "「待ち順の先頭を確認」の次に「空席案内を送信」を行う",
-          "「予約の取消を受け付ける」の次に「待ち順の先頭を確認」を行う"
-        ],
-        "detailedDesign": [
-          "「施設の外観写真」は担当者間で認識が異なる",
-          "「満席を確認」完了後に「キャンセル待ちを登録」を呼び出す",
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「予約キャンセル待ち」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "reservation-cancel-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "満席の予約に対してキャンセル待ちを受け付け、空きが出たときに利用者へ案内する流れ。"
+            },
+            {
+              "id": "reservation-cancel-doc-02",
+              "kind": "scope",
+              "title": "広報メモ",
+              "text": "施設の外観写真は、広報が案内ページ用に撮り直している。"
+            },
+            {
+              "id": "reservation-cancel-doc-03",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "reservation-cancel-doc-04",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「満席を確認」を行った後に、「キャンセル待ちを登録」へ進む。",
+              "covers": [
+                "reservation-cancel-n1->reservation-cancel-n2"
+              ]
+            },
+            {
+              "id": "reservation-cancel-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「キャンセル待ちを登録」を行った後に、「予約の取消を受け付ける」へ進む。",
+              "covers": [
+                "reservation-cancel-n2->reservation-cancel-n3"
+              ]
+            },
+            {
+              "id": "reservation-cancel-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「予約の取消を受け付ける」が終わったら、「待ち順の先頭を確認」に移る。",
+              "covers": [
+                "reservation-cancel-n3->reservation-cancel-n4"
+              ]
+            },
+            {
+              "id": "reservation-cancel-doc-07",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「待ち順の先頭を確認」の次は「空席案内を送信」を行う。",
+              "covers": [
+                "reservation-cancel-n4->reservation-cancel-n5"
+              ]
+            },
+            {
+              "id": "reservation-cancel-doc-08",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「空席案内を送信」を受けて、「利用者が予約を確定」につなぐ。",
+              "covers": [
+                "reservation-cancel-n5->reservation-cancel-n6"
+              ]
+            },
+            {
+              "id": "reservation-cancel-doc-09",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            },
+            {
+              "id": "reservation-cancel-doc-10",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ]
+        }
       },
       "hint": "満席の時点で行うことと、後から空きが出た時に行うことを時間の流れでつないでみましょう。",
       "items": [
@@ -2479,27 +3539,80 @@
       "id": "stock-reorder",
       "title": "在庫不足の補充",
       "prompt": {
-        "intro": "「在庫不足の補充」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「入荷を確認」を実現したい",
-          "「在庫数を確認」の後に「補充基準と比較」を行いたい"
-        ],
-        "conditions": [
-          "機能要件：補充基準と比較"
-        ],
-        "externalDesign": [
-          "帳票レイアウトは別紙参照",
-          "「仕入先へ発注」の次に「入荷を確認」を行う",
-          "利用者から見える動き：在庫数を更新",
-          "参考：倉庫の所在地"
-        ],
-        "detailedDesign": [
-          "「入荷を確認」完了後に「在庫数を更新」を呼び出す",
-          "内部処理：在庫数を確認",
-          "内部処理：仕入先へ発注",
-          "「補充基準と比較」完了後に「仕入先へ発注」を呼び出す"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「在庫不足の補充」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "stock-reorder-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "在庫数が基準を下回った商品を補充し、在庫数に反映するまでの流れ。"
+            },
+            {
+              "id": "stock-reorder-doc-02",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "stock-reorder-doc-03",
+              "kind": "scope",
+              "title": "拠点メモ",
+              "text": "倉庫の所在地は、拠点一覧に記載している。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "stock-reorder-doc-04",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「在庫数を確認」を受けて、「補充基準と比較」につなぐ。",
+              "covers": [
+                "stock-reorder-n1->stock-reorder-n2"
+              ]
+            },
+            {
+              "id": "stock-reorder-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「補充基準と比較」を受けて、「仕入先へ発注」につなぐ。",
+              "covers": [
+                "stock-reorder-n2->stock-reorder-n3"
+              ]
+            },
+            {
+              "id": "stock-reorder-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「仕入先へ発注」を受けて、「入荷を確認」につなぐ。",
+              "covers": [
+                "stock-reorder-n3->stock-reorder-n4"
+              ]
+            },
+            {
+              "id": "stock-reorder-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「入荷を確認」の次は「在庫数を更新」を行う。",
+              "covers": [
+                "stock-reorder-n4->stock-reorder-n5"
+              ]
+            },
+            {
+              "id": "stock-reorder-doc-08",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "stock-reorder-doc-09",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "画面文言は後日確定する。"
+            }
+          ]
+        }
       },
       "hint": "在庫を確認した後、すぐに在庫数を書き換えるわけではありません。発注から入荷までの順番を考えましょう。",
       "items": [
@@ -2601,24 +3714,73 @@
       "id": "coupon-application",
       "title": "クーポン適用",
       "prompt": {
-        "intro": "「クーポン適用」について集めたメモです。",
-        "requirements": [
-          "「有効期限を確認」の結果で「対象商品を確認」／「利用できない理由を表示」を使い分けたい"
-        ],
-        "conditions": [
-          "操作ログは1年間保存",
-          "「対象商品を確認」完了後に「割引を適用」へ進む",
-          "参考：キャンペーンバナーの色",
-          "「対象商品を確認」の後は状況に応じて「割引を適用」／「利用できない理由を表示」へ進む",
-          "「クーポンコードを入力」完了後に「有効期限を確認」へ進む"
-        ],
-        "externalDesign": [
-          "帳票レイアウトは別紙参照"
-        ],
-        "detailedDesign": [
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「クーポン適用」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "coupon-application-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者がクーポンを使うときに、条件を確認して割引を適用する流れ。条件を満たさない場合の扱いも含む。"
+            },
+            {
+              "id": "coupon-application-doc-02",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            },
+            {
+              "id": "coupon-application-doc-03",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "キャンペーンバナーの色は、季節の配色に合わせて決める。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "coupon-application-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「クーポンコードを入力」が終わったら、「有効期限を確認」に移る。",
+              "covers": [
+                "coupon-application-n1->coupon-application-n2"
+              ]
+            },
+            {
+              "id": "coupon-application-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「有効期限を確認」の結果次第で、行き先（「対象商品を確認」、「利用できない理由を表示」）が決まる。",
+              "covers": [
+                "coupon-application-n2->coupon-application-n3",
+                "coupon-application-n2->coupon-application-n5"
+              ]
+            },
+            {
+              "id": "coupon-application-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「対象商品を確認」の後は、状況によって「割引を適用」／「利用できない理由を表示」に分かれる。",
+              "covers": [
+                "coupon-application-n3->coupon-application-n4",
+                "coupon-application-n3->coupon-application-n5"
+              ]
+            },
+            {
+              "id": "coupon-application-doc-07",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "coupon-application-doc-08",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ]
+        }
       },
       "hint": "割引には複数の条件がありそうです。確認が一つ終わっただけで適用してよいか、結果による行き先の違いを考えましょう。",
       "items": [
@@ -2724,23 +3886,90 @@
       "id": "return-exchange",
       "title": "返品・交換の受付",
       "prompt": {
-        "intro": "「返品・交換の受付」に関する資料の断片です。",
-        "requirements": [],
-        "conditions": [
-          "「返品条件を判定」の後は状況に応じて「返送方法を案内」／「対象外の理由を通知」へ進む",
-          "参考：返品受付画面の配色"
-        ],
-        "externalDesign": [
-          "帳票レイアウトは別紙参照"
-        ],
-        "detailedDesign": [
-          "「返送品を受領」完了後に「返金または交換を処理」を呼び出す",
-          "「返送方法を案内」完了後に「返送品を受領」を呼び出す",
-          "「購入情報を確認」完了後に「返品条件を判定」を呼び出す",
-          "保存先テーブル名は開発標準に従う",
-          "「返品を申請」完了後に「購入情報を確認」を呼び出す"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「返品・交換の受付」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "return-exchange-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者からの返品・交換の申請を受け付け、条件に応じて対応を案内する流れ。"
+            },
+            {
+              "id": "return-exchange-doc-02",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            },
+            {
+              "id": "return-exchange-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "返品受付画面の配色は、共通スタイルに合わせる。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "return-exchange-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「返品を申請」を受けて、「購入情報を確認」につなぐ。",
+              "covers": [
+                "return-exchange-n1->return-exchange-n2"
+              ]
+            },
+            {
+              "id": "return-exchange-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「購入情報を確認」を受けて、「返品条件を判定」につなぐ。",
+              "covers": [
+                "return-exchange-n2->return-exchange-n3"
+              ]
+            },
+            {
+              "id": "return-exchange-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「返品条件を判定」の後は、状況によって「返送方法を案内」／「対象外の理由を通知」に分かれる。",
+              "covers": [
+                "return-exchange-n3->return-exchange-n4",
+                "return-exchange-n3->return-exchange-n5"
+              ]
+            },
+            {
+              "id": "return-exchange-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「返送方法を案内」が終わったら、「返送品を受領」に移る。",
+              "covers": [
+                "return-exchange-n4->return-exchange-n6"
+              ]
+            },
+            {
+              "id": "return-exchange-doc-08",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「返送品を受領」の次は「返金または交換を処理」を行う。",
+              "covers": [
+                "return-exchange-n6->return-exchange-n7"
+              ]
+            },
+            {
+              "id": "return-exchange-doc-09",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            },
+            {
+              "id": "return-exchange-doc-10",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            }
+          ]
+        }
       },
       "hint": "申請内容を確認した後、条件に合う場合と合わない場合で案内が変わります。その後の処理も追ってみましょう。",
       "items": [
@@ -2869,27 +4098,80 @@
       "id": "invoice-payment",
       "title": "請求書の支払い",
       "prompt": {
-        "intro": "「請求書の支払い」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「請求書を受領」の後に「金額と明細を照合」を行いたい",
-          "「請求書を受領」を実現したい"
-        ],
-        "conditions": [
-          "応答時間は3秒以内",
-          "機能要件：金額と明細を照合",
-          "「承認後に振込」完了後に「支払記録を保存」へ進む"
-        ],
-        "externalDesign": [
-          "「金額と明細を照合」の次に「承認を依頼」を行う"
-        ],
-        "detailedDesign": [
-          "「承認を依頼」完了後に「承認後に振込」を呼び出す",
-          "内部処理：承認後に振込",
-          "内部処理：承認を依頼",
-          "内部処理：支払記録を保存",
-          "参考：請求書の紙色"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「請求書の支払い」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "invoice-payment-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "届いた請求書を確認し、承認を得て支払い、記録を残すまでの流れ。"
+            },
+            {
+              "id": "invoice-payment-doc-02",
+              "kind": "scope",
+              "title": "備品メモ",
+              "text": "請求書の紙色は、取引先ごとのフォーマットに任せている。"
+            },
+            {
+              "id": "invoice-payment-doc-03",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "invoice-payment-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「請求書を受領」の次は「金額と明細を照合」を行う。",
+              "covers": [
+                "invoice-payment-n1->invoice-payment-n2"
+              ]
+            },
+            {
+              "id": "invoice-payment-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「金額と明細を照合」が終わったら、「承認を依頼」に移る。",
+              "covers": [
+                "invoice-payment-n2->invoice-payment-n3"
+              ]
+            },
+            {
+              "id": "invoice-payment-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「承認を依頼」が終わったら、「承認後に振込」に移る。",
+              "covers": [
+                "invoice-payment-n3->invoice-payment-n4"
+              ]
+            },
+            {
+              "id": "invoice-payment-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「承認後に振込」を受けて、「支払記録を保存」につなぐ。",
+              "covers": [
+                "invoice-payment-n4->invoice-payment-n5"
+              ]
+            },
+            {
+              "id": "invoice-payment-doc-08",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            },
+            {
+              "id": "invoice-payment-doc-09",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ]
+        }
       },
       "hint": "支払いに進む前に、内容の確認が必要です。問題が見つかった場合の戻し先も考えてみましょう。",
       "items": [
@@ -2991,24 +4273,90 @@
       "id": "purchase-approval",
       "title": "備品購入の承認",
       "prompt": {
-        "intro": "「備品購入の承認」について集めたメモです。",
-        "requirements": [
-          "「備品を発注」の後に「申請者へ結果を通知」を行いたい",
-          "操作研修の資料は別途用意",
-          "「予算内か判定」の結果で「備品を発注」／「申請を差し戻す」を使い分けたい",
-          "「社員が購入申請」の後に「上長が内容を確認」を行いたい"
-        ],
-        "conditions": [
-          "操作ログは1年間保存"
-        ],
-        "externalDesign": [
-          "「上長が内容を確認」の次に「予算内か判定」を行う"
-        ],
-        "detailedDesign": [
-          "参考：備品カタログの表紙",
-          "「申請を差し戻す」完了後に「申請者へ結果を通知」を呼び出す"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「備品購入の承認」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "purchase-approval-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "社員の備品購入の申請を、上長が確認して発注または差し戻しにするまでの流れ。結果は申請者に伝える。"
+            },
+            {
+              "id": "purchase-approval-doc-02",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            },
+            {
+              "id": "purchase-approval-doc-03",
+              "kind": "scope",
+              "title": "総務メモ",
+              "text": "備品カタログの表紙は、年度ごとに差し替わる。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "purchase-approval-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「社員が購入申請」を行った後に、「上長が内容を確認」へ進む。",
+              "covers": [
+                "purchase-approval-n1->purchase-approval-n2"
+              ]
+            },
+            {
+              "id": "purchase-approval-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「上長が内容を確認」を受けて、「予算内か判定」につなぐ。",
+              "covers": [
+                "purchase-approval-n2->purchase-approval-n3"
+              ]
+            },
+            {
+              "id": "purchase-approval-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「予算内か判定」の結果次第で、行き先（「備品を発注」、「申請を差し戻す」）が決まる。",
+              "covers": [
+                "purchase-approval-n3->purchase-approval-n4",
+                "purchase-approval-n3->purchase-approval-n5"
+              ]
+            },
+            {
+              "id": "purchase-approval-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「備品を発注」が終わったら、「申請者へ結果を通知」に移る。",
+              "covers": [
+                "purchase-approval-n4->purchase-approval-n6"
+              ]
+            },
+            {
+              "id": "purchase-approval-doc-08",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「申請を差し戻す」を受けて、「申請者へ結果を通知」につなぐ。",
+              "covers": [
+                "purchase-approval-n5->purchase-approval-n6"
+              ]
+            },
+            {
+              "id": "purchase-approval-doc-09",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "purchase-approval-doc-10",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            }
+          ]
+        }
       },
       "hint": "判断の結果で処理が分かれますが、どちらの場合も申請者への連絡が必要そうです。最後の通知まで見てみましょう。",
       "items": [
@@ -3128,27 +4476,100 @@
       "id": "leave-request",
       "title": "休暇申請",
       "prompt": {
-        "intro": "「休暇申請」について集めたメモです。",
-        "requirements": [
-          "導入時期は繁忙期を避ける",
-          "「社員が休暇を申請」の後に「休暇日数の上限を確認」を行いたい"
-        ],
-        "conditions": [
-          "「承認するか判定」完了後に「休暇予定を登録」へ進む",
-          "「却下理由を通知」完了後に「申請者へ結果を通知」へ進む",
-          "同時利用は最大50人"
-        ],
-        "externalDesign": [
-          "画面文言は後日確定",
-          "「社内カレンダーの色」も論点に挙がったが未決定"
-        ],
-        "detailedDesign": [
-          "「休暇予定を登録」完了後に「申請者へ結果を通知」を呼び出す",
-          "「承認するか判定」の戻り値で「休暇予定を登録」／「却下理由を通知」を切り替える",
-          "「上長が申請を確認」完了後に「承認するか判定」を呼び出す",
-          "「休暇日数の上限を確認」の戻り値で「上長が申請を確認」／「申請日数の修正を依頼」を切り替える"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「休暇申請」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "leave-request-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "社員の休暇申請を、日数の上限の確認と上長の判断を経て、予定の登録または通知につなげる流れ。"
+            },
+            {
+              "id": "leave-request-doc-02",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "leave-request-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "社内カレンダーの色は、部署ごとの運用に任せている。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "leave-request-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「社員が休暇を申請」を受けて、「休暇日数の上限を確認」につなぐ。",
+              "covers": [
+                "leave-request-n1->leave-request-n7"
+              ]
+            },
+            {
+              "id": "leave-request-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「休暇日数の上限を確認」の結果次第で、行き先（「上長が申請を確認」、「申請日数の修正を依頼」）が決まる。",
+              "covers": [
+                "leave-request-n7->leave-request-n2",
+                "leave-request-n7->leave-request-n8"
+              ]
+            },
+            {
+              "id": "leave-request-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「上長が申請を確認」が終わったら、「承認するか判定」に移る。",
+              "covers": [
+                "leave-request-n2->leave-request-n3"
+              ]
+            },
+            {
+              "id": "leave-request-doc-07",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「承認するか判定」の結果次第で、行き先（「休暇予定を登録」、「却下理由を通知」）が決まる。",
+              "covers": [
+                "leave-request-n3->leave-request-n4",
+                "leave-request-n3->leave-request-n5"
+              ]
+            },
+            {
+              "id": "leave-request-doc-08",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「休暇予定を登録」を受けて、「申請者へ結果を通知」につなぐ。",
+              "covers": [
+                "leave-request-n4->leave-request-n6"
+              ]
+            },
+            {
+              "id": "leave-request-doc-09",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「却下理由を通知」が終わったら、「申請者へ結果を通知」に移る。",
+              "covers": [
+                "leave-request-n5->leave-request-n6"
+              ]
+            },
+            {
+              "id": "leave-request-doc-10",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "leave-request-doc-11",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "画面文言は後日確定する。"
+            }
+          ]
+        }
       },
       "hint": "日数の確認と、上長の判断は別のチェックです。どの条件で予定を登録できるのか、結果の違いに注目しましょう。",
       "items": [
@@ -3294,22 +4715,81 @@
       "id": "employee-onboarding",
       "title": "新入社員の受け入れ",
       "prompt": {
-        "intro": "「新入社員の受け入れ」の設計見直しで出た記述です。",
-        "requirements": [],
-        "conditions": [
-          "「利用権限を設定」完了後に「初日の案内を送信」へ進む",
-          "参考：オフィスの座席写真",
-          "「端末と備品を準備」完了後に「初日の案内を送信」へ進む",
-          "同時利用は最大50人",
-          "「アカウントを発行」完了後に「利用権限を設定」へ進む"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる"
-        ],
-        "detailedDesign": [
-          "「入社情報を受領」の戻り値で「アカウントを発行」／「端末と備品を準備」を切り替える"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「新入社員の受け入れ」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "employee-onboarding-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "入社が決まった社員が初日を迎えられるように、アカウントや備品を準備して案内を送るまでの流れ。"
+            },
+            {
+              "id": "employee-onboarding-doc-02",
+              "kind": "scope",
+              "title": "総務メモ",
+              "text": "オフィスの座席写真は、入社案内の冊子に載せる予定。"
+            },
+            {
+              "id": "employee-onboarding-doc-03",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "employee-onboarding-doc-04",
+              "kind": "external",
+              "title": "外部設計｜並行する作業",
+              "text": "「入社情報を受領」のあとは、「アカウントを発行」と「端末と備品を準備」をそれぞれ進める。",
+              "covers": [
+                "employee-onboarding-n1->employee-onboarding-n2",
+                "employee-onboarding-n1->employee-onboarding-n3"
+              ]
+            },
+            {
+              "id": "employee-onboarding-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「アカウントを発行」が終わったら、「利用権限を設定」に移る。",
+              "covers": [
+                "employee-onboarding-n2->employee-onboarding-n4"
+              ]
+            },
+            {
+              "id": "employee-onboarding-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「端末と備品を準備」の次は「初日の案内を送信」を行う。",
+              "covers": [
+                "employee-onboarding-n3->employee-onboarding-n5"
+              ]
+            },
+            {
+              "id": "employee-onboarding-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「利用権限を設定」を行った後に、「初日の案内を送信」へ進む。",
+              "covers": [
+                "employee-onboarding-n4->employee-onboarding-n5"
+              ]
+            },
+            {
+              "id": "employee-onboarding-doc-08",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "employee-onboarding-doc-09",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            }
+          ]
+        }
       },
       "hint": "準備作業のすべてが一本道とは限りません。並行して進められる作業と、案内を送る前に必要な準備を探しましょう。",
       "items": [
@@ -3415,22 +4895,81 @@
       "id": "recruiting",
       "title": "採用選考",
       "prompt": {
-        "intro": "「採用選考」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「応募を受け付ける」の後に「応募書類を確認」を行いたい",
-          "「採用可否を判定」の結果で「採用を通知」／「不採用を通知」を使い分けたい",
-          "参考：面接室の場所"
-        ],
-        "conditions": [
-          "応答時間は3秒以内",
-          "「面接を実施」完了後に「採用可否を判定」へ進む"
-        ],
-        "externalDesign": [],
-        "detailedDesign": [
-          "入力項目の桁数・型はテーブル定義に従う",
-          "「応募書類を確認」完了後に「面接を実施」を呼び出す"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「採用選考」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "recruiting-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "応募を受けてから、書類の確認と面接を経て、選考結果を伝えるまでの流れ。"
+            },
+            {
+              "id": "recruiting-doc-02",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "recruiting-doc-03",
+              "kind": "scope",
+              "title": "総務メモ",
+              "text": "面接室の場所は、フロア案内に従う。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "recruiting-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「応募を受け付ける」を行った後に、「応募書類を確認」へ進む。",
+              "covers": [
+                "recruiting-n1->recruiting-n2"
+              ]
+            },
+            {
+              "id": "recruiting-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「応募書類を確認」を行った後に、「面接を実施」へ進む。",
+              "covers": [
+                "recruiting-n2->recruiting-n3"
+              ]
+            },
+            {
+              "id": "recruiting-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「面接を実施」を行った後に、「採用可否を判定」へ進む。",
+              "covers": [
+                "recruiting-n3->recruiting-n4"
+              ]
+            },
+            {
+              "id": "recruiting-doc-07",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「採用可否を判定」の後は、状況によって「採用を通知」／「不採用を通知」に分かれる。",
+              "covers": [
+                "recruiting-n4->recruiting-n5",
+                "recruiting-n4->recruiting-n6"
+              ]
+            },
+            {
+              "id": "recruiting-doc-08",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            },
+            {
+              "id": "recruiting-doc-09",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ]
+        }
       },
       "hint": "選考の途中までは共通でも、判断後の連絡は同じとは限りません。結果に応じた行き先を考えましょう。",
       "items": [
@@ -3546,23 +5085,81 @@
       "id": "task-review",
       "title": "作業依頼のレビュー",
       "prompt": {
-        "intro": "「作業依頼のレビュー」について集めたメモです。",
-        "requirements": [
-          "「依頼フォームの背景色」も論点に挙がったが未決定",
-          "導入時期は繁忙期を避ける"
-        ],
-        "conditions": [
-          "「必要情報を確認」完了後に「情報が十分か判定」へ進む",
-          "応答時間は3秒以内"
-        ],
-        "externalDesign": [
-          "「担当者へ割り当て」の次に「着手予定を通知」を行う"
-        ],
-        "detailedDesign": [
-          "「情報が十分か判定」の戻り値で「不足情報を依頼者へ確認」／「担当者へ割り当て」を切り替える",
-          "「作業依頼を受け付ける」完了後に「必要情報を確認」を呼び出す"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「作業依頼のレビュー」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "task-review-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "作業依頼を受け付け、情報の過不足に応じて、依頼者への確認または担当者への割り当てを行う流れ。"
+            },
+            {
+              "id": "task-review-doc-02",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "依頼フォームの背景色は、共通スタイルに合わせる。"
+            },
+            {
+              "id": "task-review-doc-03",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "task-review-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「作業依頼を受け付ける」を受けて、「必要情報を確認」につなぐ。",
+              "covers": [
+                "task-review-n1->task-review-n2"
+              ]
+            },
+            {
+              "id": "task-review-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「必要情報を確認」の次は「情報が十分か判定」を行う。",
+              "covers": [
+                "task-review-n2->task-review-n3"
+              ]
+            },
+            {
+              "id": "task-review-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「情報が十分か判定」の結果に応じて、「不足情報を依頼者へ確認」、「担当者へ割り当て」のいずれかへ進む。",
+              "covers": [
+                "task-review-n3->task-review-n4",
+                "task-review-n3->task-review-n5"
+              ]
+            },
+            {
+              "id": "task-review-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「担当者へ割り当て」を受けて、「着手予定を通知」につなぐ。",
+              "covers": [
+                "task-review-n5->task-review-n6"
+              ]
+            },
+            {
+              "id": "task-review-doc-08",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "task-review-doc-09",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            }
+          ]
+        }
       },
       "hint": "依頼内容が十分かどうかで、担当者へ回す前に必要な作業が変わります。判断の後を見比べてみましょう。",
       "items": [
@@ -3678,23 +5275,90 @@
       "id": "document-revision",
       "title": "文書の改訂",
       "prompt": {
-        "intro": "「文書の改訂」の設計見直しで出た記述です。",
-        "requirements": [
-          "「関係者がレビュー」の結果で「指摘を反映」／「承認を確認」を使い分けたい",
-          "参考：文書テンプレートの色",
-          "導入時期は繁忙期を避ける"
-        ],
-        "conditions": [
-          "「公開版を更新」完了後に「改訂履歴を記録」へ進む",
-          "同時利用は最大50人",
-          "「指摘を反映」完了後に「関係者がレビュー」へ進む",
-          "「改訂案を作成」完了後に「関係者がレビュー」へ進む"
-        ],
-        "externalDesign": [],
-        "detailedDesign": [
-          "「承認を確認」完了後に「公開版を更新」を呼び出す"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「文書の改訂」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "document-revision-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "文書の改訂案を作り、レビューと承認を経て公開版に反映し、履歴を残す流れ。"
+            },
+            {
+              "id": "document-revision-doc-02",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "文書テンプレートの色は、ブランドガイドラインに従う。"
+            },
+            {
+              "id": "document-revision-doc-03",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "document-revision-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「改訂案を作成」が終わったら、「関係者がレビュー」に移る。",
+              "covers": [
+                "document-revision-n1->document-revision-n2"
+              ]
+            },
+            {
+              "id": "document-revision-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「関係者がレビュー」の結果次第で、行き先（「指摘を反映」、「承認を確認」）が決まる。",
+              "covers": [
+                "document-revision-n2->document-revision-n3",
+                "document-revision-n2->document-revision-n4"
+              ]
+            },
+            {
+              "id": "document-revision-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「指摘を反映」のあとは、再び「関係者がレビュー」に戻る。",
+              "covers": [
+                "document-revision-n3->document-revision-n2"
+              ]
+            },
+            {
+              "id": "document-revision-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「承認を確認」を受けて、「公開版を更新」につなぐ。",
+              "covers": [
+                "document-revision-n4->document-revision-n5"
+              ]
+            },
+            {
+              "id": "document-revision-doc-08",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「公開版を更新」の次は「改訂履歴を記録」を行う。",
+              "covers": [
+                "document-revision-n5->document-revision-n6"
+              ]
+            },
+            {
+              "id": "document-revision-doc-09",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "画面文言は後日確定する。"
+            },
+            {
+              "id": "document-revision-doc-10",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ]
+        }
       },
       "hint": "レビューで指摘が出た場合、そこで終わりではありません。修正後にどこへ戻るか、承認へ進む条件は何かを考えましょう。",
       "items": [
@@ -3814,23 +5478,90 @@
       "id": "support-escalation",
       "title": "問い合わせのエスカレーション",
       "prompt": {
-        "intro": "「問い合わせのエスカレーション」に関する資料の断片です。",
-        "requirements": [
-          "画面の雰囲気は現行システムに近づける",
-          "「専門部署へ引き継ぐ」の後に「専門部署が回答を作成」を行いたい",
-          "参考：担当者の座席配置"
-        ],
-        "conditions": [
-          "同時利用は最大50人",
-          "「窓口で解決可能か判定」の後は状況に応じて「利用者へ回答する」／「専門部署へ引き継ぐ」へ進む"
-        ],
-        "externalDesign": [
-          "「問い合わせを受け付ける」の次に「窓口で内容を確認」を行う",
-          "「窓口で内容を確認」の次に「窓口で解決可能か判定」を行う",
-          "「専門部署が回答を作成」の次に「利用者へ回答する」を行う"
-        ],
-        "detailedDesign": [],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「問い合わせのエスカレーション」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "support-escalation-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "窓口に届いた問い合わせについて、窓口で解決するか専門部署へ引き継ぐかを判断し、利用者へ回答する流れ。"
+            },
+            {
+              "id": "support-escalation-doc-02",
+              "kind": "scope",
+              "title": "総務メモ",
+              "text": "担当者の座席配置は、四半期ごとに見直している。"
+            },
+            {
+              "id": "support-escalation-doc-03",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "support-escalation-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「問い合わせを受け付ける」の次は「窓口で内容を確認」を行う。",
+              "covers": [
+                "support-escalation-n1->support-escalation-n2"
+              ]
+            },
+            {
+              "id": "support-escalation-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「窓口で内容を確認」の次は「窓口で解決可能か判定」を行う。",
+              "covers": [
+                "support-escalation-n2->support-escalation-n3"
+              ]
+            },
+            {
+              "id": "support-escalation-doc-06",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「窓口で解決可能か判定」の結果次第で、行き先（「利用者へ回答する」、「専門部署へ引き継ぐ」）が決まる。",
+              "covers": [
+                "support-escalation-n3->support-escalation-n6",
+                "support-escalation-n3->support-escalation-n4"
+              ]
+            },
+            {
+              "id": "support-escalation-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「専門部署へ引き継ぐ」が終わったら、「専門部署が回答を作成」に移る。",
+              "covers": [
+                "support-escalation-n4->support-escalation-n5"
+              ]
+            },
+            {
+              "id": "support-escalation-doc-08",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「専門部署が回答を作成」を行った後に、「利用者へ回答する」へ進む。",
+              "covers": [
+                "support-escalation-n5->support-escalation-n6"
+              ]
+            },
+            {
+              "id": "support-escalation-doc-09",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            },
+            {
+              "id": "support-escalation-doc-10",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ]
+        }
       },
       "hint": "窓口で解決できる場合と、専門部署の助けが必要な場合があります。どちらも最終的に利用者へ返答する点に注目しましょう。",
       "items": [
@@ -3950,24 +5681,89 @@
       "id": "incident-response",
       "title": "障害発生時の初動",
       "prompt": {
-        "intro": "「障害発生時の初動」について集めたメモです。",
-        "requirements": [
-          "導入時期は繁忙期を避ける"
-        ],
-        "conditions": [
-          "「緊急度を判定」完了後に「担当チームへ連絡」へ進む",
-          "「影響範囲を確認」完了後に「緊急度を判定」へ進む"
-        ],
-        "externalDesign": [
-          "「回避策を実施」の次に「状況を利用者へ告知」を行う"
-        ],
-        "detailedDesign": [
-          "入力項目の桁数・型はテーブル定義に従う",
-          "「当番表の印刷方法」は担当者間で認識が異なる",
-          "「障害アラートを受信」完了後に「影響範囲を確認」を呼び出す",
-          "「担当チームへ連絡」完了後に「回避策を実施」を呼び出す"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「障害発生時の初動」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "incident-response-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "障害のアラートを受けてから、影響を確認して対応し、利用者へ知らせるまでの初動の流れ。"
+            },
+            {
+              "id": "incident-response-doc-02",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "当番表の印刷方法は、運用手順書の付録に記載している。"
+            },
+            {
+              "id": "incident-response-doc-03",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "incident-response-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「障害アラートを受信」が終わったら、「影響範囲を確認」に移る。",
+              "covers": [
+                "incident-response-n1->incident-response-n2"
+              ]
+            },
+            {
+              "id": "incident-response-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「影響範囲を確認」を受けて、「緊急度を判定」につなぐ。",
+              "covers": [
+                "incident-response-n2->incident-response-n3"
+              ]
+            },
+            {
+              "id": "incident-response-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「緊急度を判定」が終わったら、「担当チームへ連絡」に移る。",
+              "covers": [
+                "incident-response-n3->incident-response-n4"
+              ]
+            },
+            {
+              "id": "incident-response-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「担当チームへ連絡」を受けて、「回避策を実施」につなぐ。",
+              "covers": [
+                "incident-response-n4->incident-response-n5"
+              ]
+            },
+            {
+              "id": "incident-response-doc-08",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「回避策を実施」の次は「状況を利用者へ告知」を行う。",
+              "covers": [
+                "incident-response-n5->incident-response-n6"
+              ]
+            },
+            {
+              "id": "incident-response-doc-09",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "画面文言は後日確定する。"
+            },
+            {
+              "id": "incident-response-doc-10",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ]
+        }
       },
       "hint": "アラートを受けたらすぐに対応するのではなく、影響と緊急度を見極めます。判断の後に誰が何をするか整理しましょう。",
       "items": [
@@ -4083,24 +5879,89 @@
       "id": "backup-restore",
       "title": "バックアップからの復旧",
       "prompt": {
-        "intro": "「バックアップからの復旧」の設計見直しで出た記述です。",
-        "requirements": [
-          "「データを復元」の後に「復元結果を検証」を行いたい"
-        ],
-        "conditions": [
-          "応答時間は3秒以内",
-          "「バックアップ媒体の外観」は担当者間で認識が異なる"
-        ],
-        "externalDesign": [
-          "画面文言は後日確定",
-          "「復元結果を検証」の次に「依頼者へ完了を通知」を行う",
-          "「対象データと時点を確認」の次に「バックアップを選択」を行う"
-        ],
-        "detailedDesign": [
-          "「復旧依頼を受け付ける」完了後に「対象データと時点を確認」を呼び出す",
-          "「バックアップを選択」完了後に「データを復元」を呼び出す"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「バックアップからの復旧」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "backup-restore-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "復旧の依頼を受けて、バックアップからデータを戻し、依頼者へ完了を伝えるまでの流れ。"
+            },
+            {
+              "id": "backup-restore-doc-02",
+              "kind": "scope",
+              "title": "備品メモ",
+              "text": "バックアップ媒体の外観は、保管庫の運用ルールに従う。"
+            },
+            {
+              "id": "backup-restore-doc-03",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "backup-restore-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「復旧依頼を受け付ける」の次は「対象データと時点を確認」を行う。",
+              "covers": [
+                "backup-restore-n1->backup-restore-n2"
+              ]
+            },
+            {
+              "id": "backup-restore-doc-05",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「対象データと時点を確認」を行った後に、「バックアップを選択」へ進む。",
+              "covers": [
+                "backup-restore-n2->backup-restore-n3"
+              ]
+            },
+            {
+              "id": "backup-restore-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「バックアップを選択」が終わったら、「データを復元」に移る。",
+              "covers": [
+                "backup-restore-n3->backup-restore-n4"
+              ]
+            },
+            {
+              "id": "backup-restore-doc-07",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「データを復元」が終わったら、「復元結果を検証」に移る。",
+              "covers": [
+                "backup-restore-n4->backup-restore-n5"
+              ]
+            },
+            {
+              "id": "backup-restore-doc-08",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「復元結果を検証」を行った後に、「依頼者へ完了を通知」へ進む。",
+              "covers": [
+                "backup-restore-n5->backup-restore-n6"
+              ]
+            },
+            {
+              "id": "backup-restore-doc-09",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "backup-restore-doc-10",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ]
+        }
       },
       "hint": "復元を始める前に、何をいつの状態に戻すのか確かめる必要があります。復元した後の確認まで含めましょう。",
       "items": [
@@ -4216,21 +6077,72 @@
       "id": "data-import",
       "title": "顧客データの一括取込",
       "prompt": {
-        "intro": "「顧客データの一括取込」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "操作研修の資料は別途用意"
-        ],
-        "conditions": [],
-        "externalDesign": [
-          "画面文言は後日確定",
-          "「CSVを受け付ける」の次に「列構成を検証」を行う"
-        ],
-        "detailedDesign": [
-          "「各行の必須項目を検証」の戻り値で「有効行を登録」／「不備行をエラー一覧に出力」を切り替える",
-          "「取込担当者の部署名」も論点に挙がったが未決定",
-          "「列構成を検証」完了後に「各行の必須項目を検証」を呼び出す"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「顧客データの一括取込」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "data-import-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "CSVで受け取った顧客データを検証し、問題のないものを登録する流れ。"
+            },
+            {
+              "id": "data-import-doc-02",
+              "kind": "scope",
+              "title": "名簿メモ",
+              "text": "取込担当者の部署名は、組織変更のたびに更新される。"
+            },
+            {
+              "id": "data-import-doc-03",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "data-import-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「CSVを受け付ける」の次は「列構成を検証」を行う。",
+              "covers": [
+                "data-import-n1->data-import-n2"
+              ]
+            },
+            {
+              "id": "data-import-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「列構成を検証」を受けて、「各行の必須項目を検証」につなぐ。",
+              "covers": [
+                "data-import-n2->data-import-n3"
+              ]
+            },
+            {
+              "id": "data-import-doc-06",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「各行の必須項目を検証」の後は、状況によって「有効行を登録」／「不備行をエラー一覧に出力」に分かれる。",
+              "covers": [
+                "data-import-n3->data-import-n4",
+                "data-import-n3->data-import-n5"
+              ]
+            },
+            {
+              "id": "data-import-doc-07",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "data-import-doc-08",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            }
+          ]
+        }
       },
       "hint": "ファイル全体の形式と、各行の内容は別々に確認します。行ごとの結果が分かれるところを見つけましょう。",
       "items": [
@@ -4332,22 +6244,81 @@
       "id": "account-suspension",
       "title": "アカウントの一時停止",
       "prompt": {
-        "intro": "「アカウントの一時停止」の設計見直しで出た記述です。",
-        "requirements": [
-          "画面の雰囲気は現行システムに近づける"
-        ],
-        "conditions": [
-          "「アカウント画面のテーマ色」は担当者間で認識が異なる",
-          "「本人確認を完了」完了後に「アカウントを再開」へ進む",
-          "同時利用は最大50人",
-          "「確認期限まで応答を待つ」完了後に「アカウントを一時停止」へ進む"
-        ],
-        "externalDesign": [],
-        "detailedDesign": [
-          "「不審な利用を検知」完了後に「本人へ確認を依頼」を呼び出す",
-          "「本人へ確認を依頼」の戻り値で「確認期限まで応答を待つ」／「本人確認を完了」を切り替える"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「アカウントの一時停止」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "account-suspension-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "不審な利用が見つかったアカウントについて、本人確認の結果に応じて停止または再開する流れ。"
+            },
+            {
+              "id": "account-suspension-doc-02",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            },
+            {
+              "id": "account-suspension-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "アカウント画面のテーマ色は、利用者が好みで選べる。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "account-suspension-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「不審な利用を検知」を受けて、「本人へ確認を依頼」につなぐ。",
+              "covers": [
+                "account-suspension-n1->account-suspension-n2"
+              ]
+            },
+            {
+              "id": "account-suspension-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「本人へ確認を依頼」の結果に応じて、「確認期限まで応答を待つ」、「本人確認を完了」のいずれかへ進む。",
+              "covers": [
+                "account-suspension-n2->account-suspension-n3",
+                "account-suspension-n2->account-suspension-n5"
+              ]
+            },
+            {
+              "id": "account-suspension-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「確認期限まで応答を待つ」の次は「アカウントを一時停止」を行う。",
+              "covers": [
+                "account-suspension-n3->account-suspension-n4"
+              ]
+            },
+            {
+              "id": "account-suspension-doc-07",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「本人確認を完了」を受けて、「アカウントを再開」につなぐ。",
+              "covers": [
+                "account-suspension-n5->account-suspension-n6"
+              ]
+            },
+            {
+              "id": "account-suspension-doc-08",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "account-suspension-doc-09",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            }
+          ]
+        }
       },
       "hint": "本人から返事がない場合と、本人確認ができた場合では、その後が変わります。待つ処理と判断後の処理を見分けましょう。",
       "items": [
@@ -4463,27 +6434,80 @@
       "id": "notification-preference",
       "title": "通知設定の変更",
       "prompt": {
-        "intro": "「通知設定の変更」に関する資料の断片です。",
-        "requirements": [
-          "「通知設定を開く」の後に「通知方法を選ぶ」を行いたい",
-          "「次回通知から反映」を実現したい"
-        ],
-        "conditions": [
-          "「通知設定を保存」完了後に「次回通知から反映」へ進む",
-          "機能要件：設定内容を検証",
-          "応答時間は3秒以内",
-          "参考：設定画面のアイコン"
-        ],
-        "externalDesign": [
-          "利用者から見える動き：通知設定を保存",
-          "利用者から見える動き：通知設定を開く"
-        ],
-        "detailedDesign": [
-          "「通知方法を選ぶ」完了後に「設定内容を検証」を呼び出す",
-          "内部処理：通知方法を選ぶ",
-          "「設定内容を検証」完了後に「通知設定を保存」を呼び出す"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「通知設定の変更」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "notification-preference-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "利用者が通知方法を変更し、その設定が次回の通知から反映されるまでの流れ。"
+            },
+            {
+              "id": "notification-preference-doc-02",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            },
+            {
+              "id": "notification-preference-doc-03",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "設定画面のアイコンは、共通アイコンセットから選ぶ。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "notification-preference-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「通知設定を開く」を受けて、「通知方法を選ぶ」につなぐ。",
+              "covers": [
+                "notification-preference-n1->notification-preference-n2"
+              ]
+            },
+            {
+              "id": "notification-preference-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「通知方法を選ぶ」が終わったら、「設定内容を検証」に移る。",
+              "covers": [
+                "notification-preference-n2->notification-preference-n3"
+              ]
+            },
+            {
+              "id": "notification-preference-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「設定内容を検証」を受けて、「通知設定を保存」につなぐ。",
+              "covers": [
+                "notification-preference-n3->notification-preference-n4"
+              ]
+            },
+            {
+              "id": "notification-preference-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「通知設定を保存」の次は「次回通知から反映」を行う。",
+              "covers": [
+                "notification-preference-n4->notification-preference-n5"
+              ]
+            },
+            {
+              "id": "notification-preference-doc-08",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "notification-preference-doc-09",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            }
+          ]
+        }
       },
       "hint": "設定を選ぶだけでは反映されません。内容の確認、保存、その後の通知への反映を順に考えましょう。",
       "items": [
@@ -4585,23 +6609,81 @@
       "id": "subscription-renewal",
       "title": "サブスクリプション更新",
       "prompt": {
-        "intro": "「サブスクリプション更新」の設計見直しで出た記述です。",
-        "requirements": [
-          "導入時期は繁忙期を避ける",
-          "「更新料金を決済」の結果で「継続期間を更新」／「決済失敗を通知」を使い分けたい",
-          "「更新日を迎える」の後に「契約状態を確認」を行いたい"
-        ],
-        "conditions": [
-          "「決済失敗を通知」完了後に「利用を一時停止」へ進む"
-        ],
-        "externalDesign": [
-          "「料金表の表示色」は担当者間で認識が異なる",
-          "「契約状態を確認」の次に「更新料金を決済」を行う"
-        ],
-        "detailedDesign": [
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「サブスクリプション更新」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "subscription-renewal-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "更新日を迎えた契約について、決済の結果に応じて継続または利用の一時停止へ進む流れ。"
+            },
+            {
+              "id": "subscription-renewal-doc-02",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            },
+            {
+              "id": "subscription-renewal-doc-03",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "料金表の表示色は、料金改定のたびにデザイナーが調整する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "subscription-renewal-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「更新日を迎える」を行った後に、「契約状態を確認」へ進む。",
+              "covers": [
+                "subscription-renewal-n1->subscription-renewal-n2"
+              ]
+            },
+            {
+              "id": "subscription-renewal-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「契約状態を確認」の次は「更新料金を決済」を行う。",
+              "covers": [
+                "subscription-renewal-n2->subscription-renewal-n3"
+              ]
+            },
+            {
+              "id": "subscription-renewal-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「更新料金を決済」の後は、状況によって「継続期間を更新」／「決済失敗を通知」に分かれる。",
+              "covers": [
+                "subscription-renewal-n3->subscription-renewal-n4",
+                "subscription-renewal-n3->subscription-renewal-n5"
+              ]
+            },
+            {
+              "id": "subscription-renewal-doc-07",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「決済失敗を通知」を受けて、「利用を一時停止」につなぐ。",
+              "covers": [
+                "subscription-renewal-n5->subscription-renewal-n6"
+              ]
+            },
+            {
+              "id": "subscription-renewal-doc-08",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            },
+            {
+              "id": "subscription-renewal-doc-09",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ]
+        }
       },
       "hint": "決済が成功した場合と失敗した場合で、契約の扱いが変わります。利用を続けられる条件を考えてみましょう。",
       "items": [
@@ -4717,23 +6799,81 @@
       "id": "trial-upgrade",
       "title": "無料試用から有料プランへ",
       "prompt": {
-        "intro": "「無料試用から有料プランへ」に関する資料の断片です。",
-        "requirements": [
-          "「決済を実行」の結果で「有料機能を有効化」／「決済失敗を案内」を使い分けたい"
-        ],
-        "conditions": [
-          "応答時間は3秒以内"
-        ],
-        "externalDesign": [
-          "「利用者がプランを選択」の次に「決済を実行」を行う",
-          "画面文言は後日確定",
-          "「プラン選択を案内」の次に「利用者がプランを選択」を行う"
-        ],
-        "detailedDesign": [
-          "参考：料金ページの写真",
-          "「試用終了が近づく」完了後に「プラン選択を案内」を呼び出す"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「無料試用から有料プランへ」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "trial-upgrade-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "無料試用の終了前に、利用者が有料プランを選んで決済し、使い続けられるようにする流れ。"
+            },
+            {
+              "id": "trial-upgrade-doc-02",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "trial-upgrade-doc-03",
+              "kind": "scope",
+              "title": "広報メモ",
+              "text": "料金ページの写真は、広報が定期的に差し替える。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "trial-upgrade-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「試用終了が近づく」を受けて、「プラン選択を案内」につなぐ。",
+              "covers": [
+                "trial-upgrade-n1->trial-upgrade-n2"
+              ]
+            },
+            {
+              "id": "trial-upgrade-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「プラン選択を案内」の次は「利用者がプランを選択」を行う。",
+              "covers": [
+                "trial-upgrade-n2->trial-upgrade-n3"
+              ]
+            },
+            {
+              "id": "trial-upgrade-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「利用者がプランを選択」を行った後に、「決済を実行」へ進む。",
+              "covers": [
+                "trial-upgrade-n3->trial-upgrade-n4"
+              ]
+            },
+            {
+              "id": "trial-upgrade-doc-07",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「決済を実行」の結果に応じて、「有料機能を有効化」、「決済失敗を案内」のいずれかへ進む。",
+              "covers": [
+                "trial-upgrade-n4->trial-upgrade-n5",
+                "trial-upgrade-n4->trial-upgrade-n6"
+              ]
+            },
+            {
+              "id": "trial-upgrade-doc-08",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "trial-upgrade-doc-09",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ]
+        }
       },
       "hint": "プランを選ぶことと、有料機能が使えるようになることの間には確認が必要です。決済結果に注目しましょう。",
       "items": [
@@ -4849,27 +6989,80 @@
       "id": "access-request",
       "title": "システム権限の申請",
       "prompt": {
-        "intro": "「システム権限の申請」に関する資料の断片です。",
-        "requirements": [
-          "導入時期は繁忙期を避ける",
-          "「社員が権限を申請」の後に「上長が必要性を確認」を行いたい",
-          "「管理者が権限範囲を確認」を実現したい",
-          "「管理者が権限範囲を確認」の後に「権限を付与」を行いたい"
-        ],
-        "conditions": [
-          "「上長が必要性を確認」完了後に「管理者が権限範囲を確認」へ進む",
-          "機能要件：社員が権限を申請",
-          "機能要件：権限を付与",
-          "「権限画面の配色」は担当者間で認識が異なる"
-        ],
-        "externalDesign": [
-          "利用者から見える動き：上長が必要性を確認"
-        ],
-        "detailedDesign": [
-          "「権限を付与」完了後に「申請者へ結果を通知」を呼び出す",
-          "内部処理：申請者へ結果を通知"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「システム権限の申請」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "access-request-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "社員が業務システムの権限を申請し、確認を経て付与されるまでの流れ。"
+            },
+            {
+              "id": "access-request-doc-02",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "権限画面の配色は、管理画面の共通スタイルに合わせる。"
+            },
+            {
+              "id": "access-request-doc-03",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "access-request-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「社員が権限を申請」が終わったら、「上長が必要性を確認」に移る。",
+              "covers": [
+                "access-request-n1->access-request-n2"
+              ]
+            },
+            {
+              "id": "access-request-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「上長が必要性を確認」を受けて、「管理者が権限範囲を確認」につなぐ。",
+              "covers": [
+                "access-request-n2->access-request-n3"
+              ]
+            },
+            {
+              "id": "access-request-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「管理者が権限範囲を確認」の次は「権限を付与」を行う。",
+              "covers": [
+                "access-request-n3->access-request-n4"
+              ]
+            },
+            {
+              "id": "access-request-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「権限を付与」が終わったら、「申請者へ結果を通知」に移る。",
+              "covers": [
+                "access-request-n4->access-request-n5"
+              ]
+            },
+            {
+              "id": "access-request-doc-08",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "access-request-doc-09",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            }
+          ]
+        }
       },
       "hint": "申請の理由が妥当かという確認と、実際に付与する権限の確認は別の観点です。確認の順番を整理しましょう。",
       "items": [
@@ -4971,24 +7164,90 @@
       "id": "audit-review",
       "title": "操作ログの定期確認",
       "prompt": {
-        "intro": "「操作ログの定期確認」の設計見直しで出た記述です。",
-        "requirements": [
-          "「必要時に調査を依頼」の後に「確認結果を記録」を行いたい"
-        ],
-        "conditions": [
-          "応答時間は3秒以内",
-          "「異常な操作を確認」完了後に「問題の有無を判定」へ進む"
-        ],
-        "externalDesign": [
-          "「確認対象期間を決める」の次に「操作ログを抽出」を行う",
-          "参考：ログ画面の列幅",
-          "帳票レイアウトは別紙参照",
-          "「問題の有無を判定」の結果で「必要時に調査を依頼」／「確認結果を記録」に分岐"
-        ],
-        "detailedDesign": [
-          "「操作ログを抽出」完了後に「異常な操作を確認」を呼び出す"
-        ],
-        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。"
+        "intro": "「操作ログの定期確認」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "audit-review-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "操作ログを定期的に確認し、異常があれば調査を依頼して、結果を記録する流れ。"
+            },
+            {
+              "id": "audit-review-doc-02",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "audit-review-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "ログ画面の列幅は、利用者が画面上で調整できる。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "audit-review-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「確認対象期間を決める」の次は「操作ログを抽出」を行う。",
+              "covers": [
+                "audit-review-n1->audit-review-n2"
+              ]
+            },
+            {
+              "id": "audit-review-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「操作ログを抽出」を行った後に、「異常な操作を確認」へ進む。",
+              "covers": [
+                "audit-review-n2->audit-review-n3"
+              ]
+            },
+            {
+              "id": "audit-review-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「異常な操作を確認」を受けて、「問題の有無を判定」につなぐ。",
+              "covers": [
+                "audit-review-n3->audit-review-n4"
+              ]
+            },
+            {
+              "id": "audit-review-doc-07",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「問題の有無を判定」の結果に応じて、「必要時に調査を依頼」、「確認結果を記録」のいずれかへ進む。",
+              "covers": [
+                "audit-review-n4->audit-review-n5",
+                "audit-review-n4->audit-review-n6"
+              ]
+            },
+            {
+              "id": "audit-review-doc-08",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「必要時に調査を依頼」の次は「確認結果を記録」を行う。",
+              "covers": [
+                "audit-review-n5->audit-review-n6"
+              ]
+            },
+            {
+              "id": "audit-review-doc-09",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "audit-review-doc-10",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ]
+        }
       },
       "hint": "確認結果によって追加調査が必要になる場合があります。調査を行う場合と行わない場合の流れを考えましょう。",
       "items": [
@@ -5108,28 +7367,109 @@
       "id": "ci-deploy",
       "title": "テストから本番公開",
       "prompt": {
-        "intro": "「テストから本番公開」について集めたメモです。",
-        "requirements": [
-          "「公開後のヘルスチェック」の結果で「公開完了を通知」／「前バージョンへ戻す」を使い分けたい",
-          "「テスト結果を判定」の結果で「本番環境へ公開」／「失敗内容を開発者へ通知」を使い分けたい"
-        ],
-        "conditions": [
-          "「自動テストを実行」完了後に「テスト結果を判定」へ進む",
-          "操作ログは1年間保存",
-          "「修正して再実行」完了後に「自動テストを実行」へ進む"
-        ],
-        "externalDesign": [
-          "「本番環境へ公開」の次に「公開後のヘルスチェック」を行う",
-          "「変更を取り込む」の次に「自動テストを実行」を行う",
-          "エラー表示の色は共通スタイルに合わせる",
-          "「失敗内容を開発者へ通知」の次に「修正して再実行」を行う"
-        ],
-        "detailedDesign": [
-          "「自動テストを実行」完了後に「テスト結果を判定」を呼び出す",
-          "「開発端末の機種名」も論点に挙がったが未決定",
-          "入力項目の桁数・型はテーブル定義に従う"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「テストから本番公開」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "ci-deploy-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "変更を取り込んでテストし、結果に応じて本番へ公開するか、修正へ戻る流れ。公開後の確認も含む。"
+            },
+            {
+              "id": "ci-deploy-doc-02",
+              "kind": "scope",
+              "title": "環境メモ",
+              "text": "開発端末の機種名は、資産台帳に記載している。"
+            },
+            {
+              "id": "ci-deploy-doc-03",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "ci-deploy-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「変更を取り込む」を行った後に、「自動テストを実行」へ進む。",
+              "covers": [
+                "ci-deploy-n1->ci-deploy-n2"
+              ]
+            },
+            {
+              "id": "ci-deploy-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「自動テストを実行」の次は「テスト結果を判定」を行う。",
+              "covers": [
+                "ci-deploy-n2->ci-deploy-n3"
+              ]
+            },
+            {
+              "id": "ci-deploy-doc-06",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「テスト結果を判定」の後は、状況によって「本番環境へ公開」／「失敗内容を開発者へ通知」に分かれる。",
+              "covers": [
+                "ci-deploy-n3->ci-deploy-n4",
+                "ci-deploy-n3->ci-deploy-n5"
+              ]
+            },
+            {
+              "id": "ci-deploy-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「失敗内容を開発者へ通知」を受けて、「修正して再実行」につなぐ。",
+              "covers": [
+                "ci-deploy-n5->ci-deploy-n6"
+              ]
+            },
+            {
+              "id": "ci-deploy-doc-08",
+              "kind": "external",
+              "title": "外部設計｜やり直し",
+              "text": "「修正して再実行」のあとは、再び「自動テストを実行」に戻る。",
+              "covers": [
+                "ci-deploy-n6->ci-deploy-n2"
+              ]
+            },
+            {
+              "id": "ci-deploy-doc-09",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「本番環境へ公開」が終わったら、「公開後のヘルスチェック」に移る。",
+              "covers": [
+                "ci-deploy-n4->ci-deploy-n7"
+              ]
+            },
+            {
+              "id": "ci-deploy-doc-10",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「公開後のヘルスチェック」の後は、状況によって「公開完了を通知」／「前バージョンへ戻す」に分かれる。",
+              "covers": [
+                "ci-deploy-n7->ci-deploy-n8",
+                "ci-deploy-n7->ci-deploy-n9"
+              ]
+            },
+            {
+              "id": "ci-deploy-doc-11",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            },
+            {
+              "id": "ci-deploy-doc-12",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "操作ログは1年間保存する。今回の処理フロー図では保存方式までは扱わない。"
+            }
+          ]
+        }
       },
       "hint": "テスト結果と、公開後の確認は別の判断です。失敗した場合にどこへ戻るかも含めて流れを追いましょう。",
       "items": [
@@ -5288,23 +7628,81 @@
       "id": "feature-flag",
       "title": "機能フラグの段階公開",
       "prompt": {
-        "intro": "「機能フラグの段階公開」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "「利用状況を監視」の後に「問題の有無を判定」を行いたい",
-          "「フラグ管理画面の色」は担当者間で認識が異なる",
-          "導入時期は繁忙期を避ける"
-        ],
-        "conditions": [
-          "「機能フラグを有効化」完了後に「限定利用者へ公開」へ進む"
-        ],
-        "externalDesign": [
-          "画面文言は後日確定",
-          "「限定利用者へ公開」の次に「利用状況を監視」を行う"
-        ],
-        "detailedDesign": [
-          "「問題の有無を判定」の戻り値で「対象範囲を拡大」／「問題時に機能を停止」を切り替える"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「機能フラグの段階公開」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "feature-flag-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "新機能を一部の利用者へ公開し、様子を見ながら、対象を広げるか止めるかを決める流れ。"
+            },
+            {
+              "id": "feature-flag-doc-02",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "feature-flag-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "フラグ管理画面の色は、管理ツールの標準テーマに従う。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "feature-flag-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「機能フラグを有効化」が終わったら、「限定利用者へ公開」に移る。",
+              "covers": [
+                "feature-flag-n1->feature-flag-n2"
+              ]
+            },
+            {
+              "id": "feature-flag-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「限定利用者へ公開」を行った後に、「利用状況を監視」へ進む。",
+              "covers": [
+                "feature-flag-n2->feature-flag-n3"
+              ]
+            },
+            {
+              "id": "feature-flag-doc-06",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「利用状況を監視」が終わったら、「問題の有無を判定」に移る。",
+              "covers": [
+                "feature-flag-n3->feature-flag-n4"
+              ]
+            },
+            {
+              "id": "feature-flag-doc-07",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「問題の有無を判定」の後は、状況によって「対象範囲を拡大」／「問題時に機能を停止」に分かれる。",
+              "covers": [
+                "feature-flag-n4->feature-flag-n5",
+                "feature-flag-n4->feature-flag-n6"
+              ]
+            },
+            {
+              "id": "feature-flag-doc-08",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "feature-flag-doc-09",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            }
+          ]
+        }
       },
       "hint": "公開後の状態を見て、次の対応を決めます。問題がない場合と、問題が見つかった場合の行き先を考えましょう。",
       "items": [
@@ -5420,22 +7818,72 @@
       "id": "rate-limit",
       "title": "API利用上限の超過",
       "prompt": {
-        "intro": "「API利用上限の超過」について集めたメモです。",
-        "requirements": [
-          "「上限内か判定」の結果で「通常処理を実行」／「上限超過の応答を返す」を使い分けたい",
-          "「利用量を集計」の後に「上限内か判定」を行いたい"
-        ],
-        "conditions": [
-          "操作ログは1年間保存"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる",
-          "「APIリクエストを受信」の次に「利用量を集計」を行う"
-        ],
-        "detailedDesign": [
-          "「API仕様書の表紙」は担当者間で認識が異なる"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「API利用上限の超過」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "rate-limit-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "APIへのリクエストを受けて、利用量に応じて処理を続けるか、制限の応答を返すかを決める流れ。"
+            },
+            {
+              "id": "rate-limit-doc-02",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "画面文言は後日確定する。"
+            },
+            {
+              "id": "rate-limit-doc-03",
+              "kind": "scope",
+              "title": "文書メモ",
+              "text": "API仕様書の表紙は、文書管理のテンプレートに従う。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "rate-limit-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「APIリクエストを受信」の次は「利用量を集計」を行う。",
+              "covers": [
+                "rate-limit-n1->rate-limit-n2"
+              ]
+            },
+            {
+              "id": "rate-limit-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「利用量を集計」を受けて、「上限内か判定」につなぐ。",
+              "covers": [
+                "rate-limit-n2->rate-limit-n3"
+              ]
+            },
+            {
+              "id": "rate-limit-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「上限内か判定」の結果に応じて、「通常処理を実行」、「上限超過の応答を返す」のいずれかへ進む。",
+              "covers": [
+                "rate-limit-n3->rate-limit-n4",
+                "rate-limit-n3->rate-limit-n5"
+              ]
+            },
+            {
+              "id": "rate-limit-doc-07",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            },
+            {
+              "id": "rate-limit-doc-08",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ]
+        }
       },
       "hint": "リクエストを受け取った後、利用量によって通常処理に進めるかが変わります。判定結果の二つの行き先を探しましょう。",
       "items": [
@@ -5537,24 +7985,82 @@
       "id": "batch-retry",
       "title": "バッチ処理の再試行",
       "prompt": {
-        "intro": "「バッチ処理の再試行」の打ち合わせ後に残った資料です。",
-        "requirements": [],
-        "conditions": [
-          "操作ログは1年間保存",
-          "「規定回数内なら再試行」の後は状況に応じて「外部連携を実行」／「上限到達時に担当者へ通知」へ進む",
-          "「結果を判定」の後は状況に応じて「成功データを記録」／「規定回数内なら再試行」へ進む",
-          "「外部連携を実行」完了後に「結果を判定」へ進む"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる",
-          "「規定回数内なら再試行」の次に「上限到達時に担当者へ通知」を行う",
-          "「定期バッチを開始」の次に「外部連携を実行」を行う"
-        ],
-        "detailedDesign": [
-          "「バッチ実行サーバーの型番」は担当者間で認識が異なる",
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「バッチ処理の再試行」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "batch-retry-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "定期バッチで外部連携を実行し、失敗したときのやり直しと、最終的な通知までの流れ。"
+            },
+            {
+              "id": "batch-retry-doc-02",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            },
+            {
+              "id": "batch-retry-doc-03",
+              "kind": "scope",
+              "title": "環境メモ",
+              "text": "バッチ実行サーバーの型番は、インフラ台帳に記載している。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "batch-retry-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「定期バッチを開始」が終わったら、「外部連携を実行」に移る。",
+              "covers": [
+                "batch-retry-n1->batch-retry-n2"
+              ]
+            },
+            {
+              "id": "batch-retry-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「外部連携を実行」を受けて、「結果を判定」につなぐ。",
+              "covers": [
+                "batch-retry-n2->batch-retry-n3"
+              ]
+            },
+            {
+              "id": "batch-retry-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「結果を判定」の結果次第で、行き先（「成功データを記録」、「規定回数内なら再試行」）が決まる。",
+              "covers": [
+                "batch-retry-n3->batch-retry-n4",
+                "batch-retry-n3->batch-retry-n5"
+              ]
+            },
+            {
+              "id": "batch-retry-doc-07",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「規定回数内なら再試行」の結果次第で、行き先（「外部連携を実行」、「上限到達時に担当者へ通知」）が決まる。",
+              "covers": [
+                "batch-retry-n5->batch-retry-n2",
+                "batch-retry-n5->batch-retry-n6"
+              ]
+            },
+            {
+              "id": "batch-retry-doc-08",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            },
+            {
+              "id": "batch-retry-doc-09",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "画面の雰囲気は現行システムに近づけたい。"
+            }
+          ]
+        }
       },
       "hint": "失敗したらすぐ終了するとは限りません。再試行できる間と、上限に達した後の対応を区別しましょう。",
       "items": [
@@ -5674,22 +8180,81 @@
       "id": "suspicious-login",
       "title": "不審なログインの確認",
       "prompt": {
-        "intro": "「不審なログインの確認」について集めたメモです。",
-        "requirements": [
-          "導入時期は繁忙期を避ける"
-        ],
-        "conditions": [
-          "同時利用は最大50人",
-          "「通常と異なるログインを検知」完了後に「追加認証を要求」へ進む"
-        ],
-        "externalDesign": [
-          "「追加認証を要求」の次に「認証結果を確認」を行う",
-          "「ログイン画面の背景」は担当者間で認識が異なる",
-          "「アカウントを一時ロック」の次に「本人へ通知」を行う",
-          "「認証結果を確認」の結果で「ログインを許可」／「アカウントを一時ロック」に分岐"
-        ],
-        "detailedDesign": [],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「不審なログインの確認」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "suspicious-login-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "通常と異なるログインを検知したとき、追加の認証結果に応じて、許可するか一時的にロックするかを決める流れ。"
+            },
+            {
+              "id": "suspicious-login-doc-02",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "suspicious-login-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "ログイン画面の背景は、季節ごとに差し替える。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "suspicious-login-doc-04",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「通常と異なるログインを検知」が終わったら、「追加認証を要求」に移る。",
+              "covers": [
+                "suspicious-login-n1->suspicious-login-n2"
+              ]
+            },
+            {
+              "id": "suspicious-login-doc-05",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「追加認証を要求」の次は「認証結果を確認」を行う。",
+              "covers": [
+                "suspicious-login-n2->suspicious-login-n3"
+              ]
+            },
+            {
+              "id": "suspicious-login-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「認証結果を確認」の結果次第で、行き先（「ログインを許可」、「アカウントを一時ロック」）が決まる。",
+              "covers": [
+                "suspicious-login-n3->suspicious-login-n4",
+                "suspicious-login-n3->suspicious-login-n5"
+              ]
+            },
+            {
+              "id": "suspicious-login-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「アカウントを一時ロック」を受けて、「本人へ通知」につなぐ。",
+              "covers": [
+                "suspicious-login-n5->suspicious-login-n6"
+              ]
+            },
+            {
+              "id": "suspicious-login-doc-08",
+              "kind": "scope",
+              "title": "共通デザインメモ",
+              "text": "エラー表示の色は共通スタイルに合わせる。"
+            },
+            {
+              "id": "suspicious-login-doc-09",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            }
+          ]
+        }
       },
       "hint": "通常と異なるログインでは、認証の結果によって許可するか止めるかが変わります。判断の後を見てみましょう。",
       "items": [
@@ -5805,26 +8370,80 @@
       "id": "personal-data-export",
       "title": "個人データの開示請求",
       "prompt": {
-        "intro": "「個人データの開示請求」に関する資料の断片です。",
-        "requirements": [
-          "「対象データを抽出」の後に「データファイルを作成」を行いたい",
-          "「データファイルを作成」を実現したい",
-          "「開示請求を受け付ける」を実現したい",
-          "「対象データを抽出」を実現したい",
-          "「本人確認を行う」を実現したい",
-          "「データ保管場所の詳細」も論点に挙がったが未決定",
-          "「開示請求を受け付ける」の後に「本人確認を行う」を行いたい"
-        ],
-        "conditions": [],
-        "externalDesign": [
-          "「本人確認を行う」の次に「対象データを抽出」を行う",
-          "利用者から見える動き：本人へ受取方法を案内"
-        ],
-        "detailedDesign": [
-          "「データファイルを作成」完了後に「本人へ受取方法を案内」を呼び出す",
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「個人データの開示請求」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "personal-data-export-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "本人からの開示請求を受け、本人確認のうえでデータを作成し、受け取り方法を案内するまでの流れ。"
+            },
+            {
+              "id": "personal-data-export-doc-02",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "画面文言は後日確定する。"
+            },
+            {
+              "id": "personal-data-export-doc-03",
+              "kind": "scope",
+              "title": "運用メモ",
+              "text": "データ保管場所の詳細は、情報管理規程に記載している。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "personal-data-export-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「開示請求を受け付ける」の次は「本人確認を行う」を行う。",
+              "covers": [
+                "personal-data-export-n1->personal-data-export-n2"
+              ]
+            },
+            {
+              "id": "personal-data-export-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「本人確認を行う」を受けて、「対象データを抽出」につなぐ。",
+              "covers": [
+                "personal-data-export-n2->personal-data-export-n3"
+              ]
+            },
+            {
+              "id": "personal-data-export-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「対象データを抽出」を行った後に、「データファイルを作成」へ進む。",
+              "covers": [
+                "personal-data-export-n3->personal-data-export-n4"
+              ]
+            },
+            {
+              "id": "personal-data-export-doc-07",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「データファイルを作成」を行った後に、「本人へ受取方法を案内」へ進む。",
+              "covers": [
+                "personal-data-export-n4->personal-data-export-n5"
+              ]
+            },
+            {
+              "id": "personal-data-export-doc-08",
+              "kind": "scope",
+              "title": "要求メモ",
+              "text": "導入時期は繁忙期を避けたい。"
+            },
+            {
+              "id": "personal-data-export-doc-09",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            }
+          ]
+        }
       },
       "hint": "個人データを抽出する前に、本人からの請求か確認する必要があります。確認と抽出の順番に注目しましょう。",
       "items": [
@@ -5926,24 +8545,90 @@
       "id": "survey-publish",
       "title": "アンケート結果の公開",
       "prompt": {
-        "intro": "「アンケート結果の公開」の設計見直しで出た記述です。",
-        "requirements": [
-          "「アンケート画面のデザイン」も論点に挙がったが未決定",
-          "画面の雰囲気は現行システムに近づける",
-          "「回答期間を終了」の後に「回答データを集計」を行いたい"
-        ],
-        "conditions": [
-          "「公開不可の箇所を除外」完了後に「集計結果を公開」へ進む"
-        ],
-        "externalDesign": [
-          "「公開可能か判定」の結果で「集計結果を公開」／「公開不可の箇所を除外」に分岐",
-          "「個人特定の可能性を確認」の次に「公開可能か判定」を行う"
-        ],
-        "detailedDesign": [
-          "「回答データを集計」完了後に「個人特定の可能性を確認」を呼び出す",
-          "APIのタイムアウトは設定ファイルで管理"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「アンケート結果の公開」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "survey-publish-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "アンケートの回答期間が終わってから、集計して結果を公開できる状態にするまでの流れ。"
+            },
+            {
+              "id": "survey-publish-doc-02",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            },
+            {
+              "id": "survey-publish-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "アンケート画面のデザインは、前回のものを踏襲する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "survey-publish-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「回答期間を終了」を行った後に、「回答データを集計」へ進む。",
+              "covers": [
+                "survey-publish-n1->survey-publish-n2"
+              ]
+            },
+            {
+              "id": "survey-publish-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「回答データを集計」の次は「個人特定の可能性を確認」を行う。",
+              "covers": [
+                "survey-publish-n2->survey-publish-n3"
+              ]
+            },
+            {
+              "id": "survey-publish-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「個人特定の可能性を確認」を行った後に、「公開可能か判定」へ進む。",
+              "covers": [
+                "survey-publish-n3->survey-publish-n4"
+              ]
+            },
+            {
+              "id": "survey-publish-doc-07",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「公開可能か判定」の後は、状況によって「集計結果を公開」／「公開不可の箇所を除外」に分かれる。",
+              "covers": [
+                "survey-publish-n4->survey-publish-n5",
+                "survey-publish-n4->survey-publish-n6"
+              ]
+            },
+            {
+              "id": "survey-publish-doc-08",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「公開不可の箇所を除外」を受けて、「集計結果を公開」につなぐ。",
+              "covers": [
+                "survey-publish-n6->survey-publish-n5"
+              ]
+            },
+            {
+              "id": "survey-publish-doc-09",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "画面文言は後日確定する。"
+            },
+            {
+              "id": "survey-publish-doc-10",
+              "kind": "scope",
+              "title": "未決事項",
+              "text": "入力項目の桁数・型はテーブル定義に従う。画面項目の詳細は別途確認する。"
+            }
+          ]
+        }
       },
       "hint": "集計結果をそのまま公開できるとは限りません。公開できない情報があった場合の扱いを考えてみましょう。",
       "items": [
@@ -6063,22 +8748,81 @@
       "id": "facility-reservation",
       "title": "施設利用の予約",
       "prompt": {
-        "intro": "「施設利用の予約」の打ち合わせ後に残った資料です。",
-        "requirements": [],
-        "conditions": [
-          "「承認が必要か判定」の後は状況に応じて「予約を確定」／「管理者が承認」へ進む",
-          "「管理者が承認」完了後に「承認後に予約確定」へ進む",
-          "「利用日時を選ぶ」完了後に「空き状況を確認」へ進む",
-          "参考：施設の案内写真"
-        ],
-        "externalDesign": [
-          "「空き状況を確認」の次に「承認が必要か判定」を行う",
-          "帳票レイアウトは別紙参照"
-        ],
-        "detailedDesign": [
-          "保存先テーブル名は開発標準に従う"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「施設利用の予約」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "facility-reservation-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "社員が施設を予約する流れ。条件によっては、管理者の承認を待ってから確定する。"
+            },
+            {
+              "id": "facility-reservation-doc-02",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "facility-reservation-doc-03",
+              "kind": "scope",
+              "title": "広報メモ",
+              "text": "施設の案内写真は、広報が年度ごとに更新している。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "facility-reservation-doc-04",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「利用日時を選ぶ」が終わったら、「空き状況を確認」に移る。",
+              "covers": [
+                "facility-reservation-n1->facility-reservation-n2"
+              ]
+            },
+            {
+              "id": "facility-reservation-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「空き状況を確認」が終わったら、「承認が必要か判定」に移る。",
+              "covers": [
+                "facility-reservation-n2->facility-reservation-n3"
+              ]
+            },
+            {
+              "id": "facility-reservation-doc-06",
+              "kind": "requirement",
+              "title": "要件メモ",
+              "text": "「承認が必要か判定」の結果に応じて、「予約を確定」、「管理者が承認」のいずれかへ進む。",
+              "covers": [
+                "facility-reservation-n3->facility-reservation-n4",
+                "facility-reservation-n3->facility-reservation-n5"
+              ]
+            },
+            {
+              "id": "facility-reservation-doc-07",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「管理者が承認」を受けて、「承認後に予約確定」につなぐ。",
+              "covers": [
+                "facility-reservation-n5->facility-reservation-n6"
+              ]
+            },
+            {
+              "id": "facility-reservation-doc-08",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "facility-reservation-doc-09",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ]
+        }
       },
       "hint": "予約の条件によっては、すぐ確定せずに承認を待つ必要があります。判断の結果と確定までの順番を整理しましょう。",
       "items": [
@@ -6194,24 +8938,90 @@
       "id": "workshop-registration",
       "title": "研修への参加登録",
       "prompt": {
-        "intro": "「研修への参加登録」の打ち合わせ後に残った資料です。",
-        "requirements": [
-          "導入時期は繁忙期を避ける",
-          "「定員に空きがあるか確認」の結果で「上長承認が必要か確認」／「キャンセル待ちへ登録」を使い分けたい",
-          "「研修会場の写真」は担当者間で認識が異なる",
-          "「上長承認が必要か確認」の後に「参加を確定」を行いたい"
-        ],
-        "conditions": [
-          "「キャンセル待ちへ登録」完了後に「申込者へ結果を通知」へ進む"
-        ],
-        "externalDesign": [
-          "「研修に申し込む」の次に「定員に空きがあるか確認」を行う"
-        ],
-        "detailedDesign": [
-          "保存先テーブル名は開発標準に従う",
-          "「参加を確定」完了後に「申込者へ結果を通知」を呼び出す"
-        ],
-        "task": "資料の順番に惑わされず、必要な付箋を選んで図にしてください。"
+        "intro": "「研修への参加登録」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "関係する付箋を選び、情報のつながりを矢印で整理してください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "workshop-registration-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "社員が研修に申し込み、定員や承認の条件に応じて、参加確定またはキャンセル待ちになる流れ。"
+            },
+            {
+              "id": "workshop-registration-doc-02",
+              "kind": "scope",
+              "title": "設定メモ",
+              "text": "APIのタイムアウトは設定ファイルで管理する。"
+            },
+            {
+              "id": "workshop-registration-doc-03",
+              "kind": "scope",
+              "title": "広報メモ",
+              "text": "研修会場の写真は、案内メールの装飾に使っている。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "workshop-registration-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「研修に申し込む」の次は「定員に空きがあるか確認」を行う。",
+              "covers": [
+                "workshop-registration-n1->workshop-registration-n2"
+              ]
+            },
+            {
+              "id": "workshop-registration-doc-05",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「定員に空きがあるか確認」の結果次第で、行き先（「上長承認が必要か確認」、「キャンセル待ちへ登録」）が決まる。",
+              "covers": [
+                "workshop-registration-n2->workshop-registration-n3",
+                "workshop-registration-n2->workshop-registration-n5"
+              ]
+            },
+            {
+              "id": "workshop-registration-doc-06",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「上長承認が必要か確認」を行った後に、「参加を確定」へ進む。",
+              "covers": [
+                "workshop-registration-n3->workshop-registration-n4"
+              ]
+            },
+            {
+              "id": "workshop-registration-doc-07",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「参加を確定」が終わったら、「申込者へ結果を通知」に移る。",
+              "covers": [
+                "workshop-registration-n4->workshop-registration-n6"
+              ]
+            },
+            {
+              "id": "workshop-registration-doc-08",
+              "kind": "requirement",
+              "title": "要求メモ",
+              "text": "「キャンセル待ちへ登録」が終わったら、「申込者へ結果を通知」に移る。",
+              "covers": [
+                "workshop-registration-n5->workshop-registration-n6"
+              ]
+            },
+            {
+              "id": "workshop-registration-doc-09",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "workshop-registration-doc-10",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ]
+        }
       },
       "hint": "空席があることだけで参加が決まるとは限りません。承認の必要性も含め、申込結果が決まる条件を探しましょう。",
       "items": [
@@ -6331,23 +9141,81 @@
       "id": "learning-completion",
       "title": "オンライン学習の修了",
       "prompt": {
-        "intro": "「オンライン学習の修了」について集めたメモです。",
-        "requirements": [
-          "「教材ページの背景色」は担当者間で認識が異なる",
-          "操作研修の資料は別途用意"
-        ],
-        "conditions": [
-          "「基準点以上か判定」の後は状況に応じて「修了証を発行」／「再受講を案内」へ進む",
-          "「テストを採点」完了後に「基準点以上か判定」へ進む"
-        ],
-        "externalDesign": [
-          "エラー表示の色は共通スタイルに合わせる",
-          "「確認テストを提出」の次に「テストを採点」を行う"
-        ],
-        "detailedDesign": [
-          "「教材を受講」完了後に「確認テストを提出」を呼び出す"
-        ],
-        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。"
+        "intro": "「オンライン学習の修了」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "learning-completion-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "オンライン学習の受講後にテストを採点し、結果に応じて、修了または再受講を案内する流れ。"
+            },
+            {
+              "id": "learning-completion-doc-02",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "learning-completion-doc-03",
+              "kind": "scope",
+              "title": "画面仕様メモ",
+              "text": "教材ページの背景色は、教材の制作チームが決めている。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "learning-completion-doc-04",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「教材を受講」を受けて、「確認テストを提出」につなぐ。",
+              "covers": [
+                "learning-completion-n1->learning-completion-n2"
+              ]
+            },
+            {
+              "id": "learning-completion-doc-05",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「確認テストを提出」が終わったら、「テストを採点」に移る。",
+              "covers": [
+                "learning-completion-n2->learning-completion-n3"
+              ]
+            },
+            {
+              "id": "learning-completion-doc-06",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「テストを採点」の次は「基準点以上か判定」を行う。",
+              "covers": [
+                "learning-completion-n3->learning-completion-n4"
+              ]
+            },
+            {
+              "id": "learning-completion-doc-07",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「基準点以上か判定」の後は、状況によって「修了証を発行」／「再受講を案内」に分かれる。",
+              "covers": [
+                "learning-completion-n4->learning-completion-n5",
+                "learning-completion-n4->learning-completion-n6"
+              ]
+            },
+            {
+              "id": "learning-completion-doc-08",
+              "kind": "scope",
+              "title": "開発標準メモ",
+              "text": "保存先テーブル名は開発標準に従う。"
+            },
+            {
+              "id": "learning-completion-doc-09",
+              "kind": "scope",
+              "title": "非機能メモ",
+              "text": "応答時間は3秒以内を目標とする。性能の検討は別の資料で行う。"
+            }
+          ]
+        }
       },
       "hint": "受講しただけで修了になるとは限りません。判定結果によって、その後の案内がどう変わるか考えましょう。",
       "items": [
@@ -6463,22 +9331,81 @@
       "id": "reimbursement",
       "title": "出張経費の精算",
       "prompt": {
-        "intro": "「出張経費の精算」について集めたメモです。",
-        "requirements": [],
-        "conditions": [
-          "「社員が経費を申請」完了後に「領収書を添付」へ進む",
-          "「上長が承認」完了後に「経費を支払う」へ進む",
-          "「経理が金額を確認」の後は状況に応じて「不備を差し戻す」／「上長が承認」へ進む"
-        ],
-        "externalDesign": [
-          "帳票レイアウトは別紙参照"
-        ],
-        "detailedDesign": [
-          "「領収書を添付」完了後に「経理が金額を確認」を呼び出す",
-          "保存先テーブル名は開発標準に従う",
-          "参考：出張先の観光情報"
-        ],
-        "task": "図に載せる情報を見極め、付箋を矢印でつないでください。"
+        "intro": "「出張経費の精算」の見直しにあたり、関係者から集めたメモと設計資料です。今回整理する範囲を考えながら、必要な情報を集めてください。",
+        "task": "図に必要な付箋を選び、処理の流れを矢印でつないでください。",
+        "documents": {
+          "initial": [
+            {
+              "id": "reimbursement-doc-01",
+              "kind": "external",
+              "title": "外部設計｜処理概要",
+              "text": "社員が出張経費を申請し、確認と承認を経て支払うまでの流れ。"
+            },
+            {
+              "id": "reimbursement-doc-02",
+              "kind": "scope",
+              "title": "社内報メモ",
+              "text": "出張先の観光情報は、社内報のコラム用に集めている。"
+            },
+            {
+              "id": "reimbursement-doc-03",
+              "kind": "scope",
+              "title": "研修メモ",
+              "text": "操作研修の資料は別途用意する。"
+            }
+          ],
+          "additional": [
+            {
+              "id": "reimbursement-doc-04",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「社員が経費を申請」が終わったら、「領収書を添付」に移る。",
+              "covers": [
+                "reimbursement-n1->reimbursement-n2"
+              ]
+            },
+            {
+              "id": "reimbursement-doc-05",
+              "kind": "detail",
+              "title": "詳細設計｜内部処理",
+              "text": "「領収書を添付」が終わったら、「経理が金額を確認」に移る。",
+              "covers": [
+                "reimbursement-n2->reimbursement-n3"
+              ]
+            },
+            {
+              "id": "reimbursement-doc-06",
+              "kind": "external",
+              "title": "外部設計｜分岐の扱い",
+              "text": "「経理が金額を確認」の結果次第で、行き先（「不備を差し戻す」、「上長が承認」）が決まる。",
+              "covers": [
+                "reimbursement-n3->reimbursement-n4",
+                "reimbursement-n3->reimbursement-n5"
+              ]
+            },
+            {
+              "id": "reimbursement-doc-07",
+              "kind": "external",
+              "title": "外部設計｜処理順序",
+              "text": "「上長が承認」を行った後に、「経費を支払う」へ進む。",
+              "covers": [
+                "reimbursement-n5->reimbursement-n6"
+              ]
+            },
+            {
+              "id": "reimbursement-doc-08",
+              "kind": "scope",
+              "title": "帳票メモ",
+              "text": "帳票レイアウトは別紙を参照する。"
+            },
+            {
+              "id": "reimbursement-doc-09",
+              "kind": "scope",
+              "title": "利用メモ",
+              "text": "同時利用は最大50人を想定している。"
+            }
+          ]
+        }
       },
       "hint": "金額の確認で不備が見つかった場合、承認へ進む前に対応が必要です。確認結果の違いに注目しましょう。",
       "items": [
