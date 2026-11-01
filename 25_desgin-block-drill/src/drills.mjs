@@ -1,4 +1,6 @@
 import { initialGraph, tests } from './data.mjs';
+import { approvalDrills } from './approval-drills.mjs';
+import { operations } from './engine.mjs';
 const copy = value => structuredClone(value);
 function make(id, title, difficulty, summary, ids, mutate, nodes) {
   const graph = copy(initialGraph);
@@ -28,3 +30,5 @@ export const drills = [
     block(g, 'cleanup').operations = ['release', 'confirm'];
   }),
 ];
+for (const drill of drills) Object.assign(drill, { chapter: 1, allowMove: false, allowPlace: false, availableBlocks: [], allowedOperations: Object.keys(operations).filter(id => !approvalDrills[3].allowedOperations.includes(id)) });
+drills.push(...approvalDrills);

@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
-const root = fileURLToPath(new URL('../src/', import.meta.url));
+const root = path.resolve(process.env.DRILL_ROOT || fileURLToPath(new URL('../src/', import.meta.url))) + path.sep;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const server = createServer(async (req, res) => {
   try {
@@ -48,7 +48,7 @@ try {
     if (grade === 'Bad') { await delay(3200); assert.equal(await evaluate('document.querySelector("#batchResult").open'), false); } else await evaluate('document.querySelector("#batchResult").close()');
   };
 
-  await call('Page.navigate', { url });
+  await call('Page.navigate', { url: `${url}?drill=order-system` });
   for (let i = 0; i < 50; i++) { if (await evaluate('document.querySelectorAll("#nodes .node").length === 8')) break; await delay(100); }
 
   assert.equal(await evaluate('document.querySelectorAll("#nodes .node").length'), 8);
@@ -77,7 +77,7 @@ try {
   await route('failed', 'success', 'END');
   await runBatch();
   assert.match(await evaluate('document.querySelector("#batchSummary").textContent'), /7 \/ 7/);
-  await evaluate('document.querySelector("[data-node=notify] button").click(); document.querySelector("#openAddOperation").click(); document.querySelector("[data-operation=guard]").click(); document.querySelector("#addOperation").click()');
+  await evaluate('document.querySelector("[data-node=notify] button").click(); document.querySelector("#openAddOperation").click(); document.querySelector("[data-operation=guard]").click()');
   assert.equal(await evaluate('document.querySelectorAll(".op-row").length'), 2);
   assert.equal(await evaluate('document.querySelector(".add-operation")'), null);
   await evaluate('document.querySelectorAll(".op-row")[1].querySelector(".move-up").click(); document.querySelector(".op-row .delete-operation").click()');
@@ -104,6 +104,8 @@ try {
     await evaluate('document.querySelectorAll(".case")[0].click(); document.querySelector("#step").click()');
   }
   await evaluate('document.querySelectorAll(".case")[5].click(); document.querySelector("#warehouse").click()');
+  await delay(550);
+  assert.equal(await evaluate('[...document.querySelectorAll(".token")].every(t => { const a=t.getBoundingClientRect(), b=document.querySelector(`[data-node="${t.dataset.nodeId}"]`).getBoundingClientRect(); return a.bottom<=b.top; })'), true);
   assert.equal(await evaluate('document.querySelectorAll("#state table")[1].querySelectorAll("thead th").length'), 3);
   await evaluate('document.querySelectorAll(".token")[1].click()');
   assert.equal(await evaluate('document.querySelectorAll("#state table")[1].querySelector("tbody tr .selected-state-column").textContent'), 'ORD-B');

@@ -3,7 +3,7 @@ import { drills } from '../src/drills.mjs';
 import { initialGraph } from '../src/data.mjs';
 import { clone, createRun, finish } from '../src/engine.mjs';
 const expected = [[false, true, false, false, false, false, false], [false, false], [false, false, false], [false, false, false, false, false, false, false]];
-for (const [i, drill] of drills.entries()) {
+for (const [i, drill] of drills.filter(d => d.chapter === 1).entries()) {
   assert.deepEqual(drill.tests.map(t => finish(createRun(drill.initialGraph, t)).pass), expected[i], `${drill.id}: initial failures`);
   const repair = clone(initialGraph); repair.nodes = repair.nodes.filter(n => drill.initialGraph.nodes.some(b => b.id === n.id));
   const failed = repair.nodes.find(n => n.id === 'failed'); if (failed) failed.success = 'END';
@@ -13,7 +13,7 @@ for (const [i, drill] of drills.entries()) {
     for (const test of drill.tests) assert.equal(finish(createRun(repair, test)).pass, true, `${drill.id}: alternative ${test.id}`);
   }
 }
-assert.equal(new Set(drills.map(d => d.id)).size, 4);
+assert.equal(new Set(drills.map(d => d.id)).size, 8);
 // 後処理と失敗通知だけ直しても、重複確認なしの受付では二重要求が失敗する。
 const medium = drills.find(d => d.id === 'cancel-consistency');
 const partial = clone(medium.initialGraph);

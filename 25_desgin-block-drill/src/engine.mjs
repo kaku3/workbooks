@@ -1,4 +1,6 @@
+import { approvalOperations, executeApproval } from './approval.mjs';
 export const operations = {
+  ...approvalOperations,
   reserve: ['在庫引当', '在庫が注文数量以上なら減算し、引当を記録'],
   pay: ['決済', '有効な引当が必要'],
   ship: ['出荷指示', '有効な注文・引当・決済が必要。ここが出荷確定点'],
@@ -14,7 +16,8 @@ export const operations = {
   waitPaid: ['決済を待つ', '決済済みになるまで wait'],
 };
 export const clone = value => structuredClone(value);
-export function execute(state, orderId, operation) {
+export function execute(state, orderId, operation, event) {
+  if (state.requests) return executeApproval(state, orderId, operation, event);
   const next = clone(state), o = next.orders[orderId];
   const result = (status, reason = '') => ({ status, reason, state: status === 'failure' || status === 'wait' ? state : next });
   if (!o) return result('failure', '注文がありません');
@@ -65,7 +68,7 @@ export function differences(before, after, prefix = '') {
   });
 }
 export function createRun(graph, test) {
-  return { graph: clone(graph), test, state: clone(test.initialState), tokens: test.events.map((e, i) => ({ id: `荷物${i + 1}`, orderId: e.orderId, node: graph.entries[e.type], index: 0, status: 'queued' })), logs: [], step: 0, status: 'ready' };
+  return { graph: clone(graph), test, state: clone(test.initialState), tokens: test.events.map((e, i) => ({ id: `荷物${i + 1}`, orderId: e.orderId || e.requestId, event: clone(e), node: graph.entries[e.type], index: 0, status: 'queued' })), logs: [], step: 0, status: 'ready' };
 }
 export function step(run) {
   if (['completed', 'stopped'].includes(run.status)) return null;
@@ -79,7 +82,7 @@ export function step(run) {
   const node = run.graph.nodes.find(n => n.id === token.node);
   const operation = node?.operations[token.index];
   const before = run.state;
-  const outcome = operation ? execute(before, token.orderId, operation) : { state: before, status: 'failure', reason: 'ブロックまたは操作が未設定' };
+  const outcome = operation ? execute(before, token.orderId, operation, token.event) : { state: before, status: 'failure', reason: 'ブロックまたは操作が未設定' };
   run.state = outcome.state; run.step++;
   const from = token.node;
   if (outcome.status === 'wait') { token.status = 'waiting'; run.status = 'waiting'; }
@@ -102,7 +105,7 @@ export function step(run) {
 export function finish(run) { while (!['completed', 'stopped', 'waiting'].includes(run.status)) step(run); return judge(run); }
 export function judge(run) {
   const checks = run.test.assertions.map(a => {
-    const actual = a.event ? run.state.effects.filter(e => e.type === a.event && (!a.orderId || a.orderId === e.orderId)).length : a.path.split('.').reduce((v, k) => v?.[k], run.state);
+    const actual = a.event ? run.state.effects.filter(e => e.type === a.event && (!a.orderId || a.orderId === e.orderId) && Object.entries(a.where || {}).every(([key, value]) => e[key] === value)).length : a.path.split('.').reduce((v, k) => v?.[k], run.state);
     return { label: a.label || a.path || a.event, expected: a.equals, actual, pass: actual === a.equals, events: run.logs.filter(l => !a.orderId || l.orderId === a.orderId).map(l => l.step) };
   });
   checks.push({ label: '全荷物が正常終了', expected: true, actual: run.tokens.every(t => t.status === 'completed'), pass: run.tokens.every(t => t.status === 'completed') });
