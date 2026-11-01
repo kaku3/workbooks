@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import { clone, createRun, step, finish, execute } from '../src/engine.mjs';
+import { initialGraph, tests } from '../src/data.mjs';
+const baseline = tests.map(t => finish(createRun(initialGraph, t)).pass);
+assert.deepEqual(baseline, [true, true, false, true, true, true, false]);
+const broken = createRun(initialGraph, tests[2]); finish(broken);
+assert.equal(broken.state.effects.filter(e => e.type === 'cancelCompletedEmail').length, 1);
+assert.equal(broken.state.orders['ORD-001'].cancellationStatus, 'failed');
+const fixed = clone(initialGraph);
+fixed.nodes.find(n => n.id === 'failed').success = 'END';
+for (const t of tests) assert.equal(finish(createRun(fixed, t)).pass, true, t.id);
+// 接続形状が異なる、条件チェックによる修正も受理する。
+const guarded = clone(initialGraph), notify = guarded.nodes.find(n => n.id === 'notify');
+notify.operations.unshift('guard'); notify.failure = 'END';
+for (const t of tests) assert.equal(finish(createRun(guarded, t)).pass, true, `guard ${t.id}`);
+const duplicate = createRun(fixed, tests[4]); finish(duplicate);
+assert.equal(duplicate.state.inventory['ITEM-A'], 10);
+assert.equal(duplicate.logs.filter(l => l.operation === 'キャンセル要求' && l.status === 'no_op').length, 1);
+const state = clone(tests[2].initialState), snapshot = clone(state);
+const outcome = execute(state, 'ORD-001', 'release');
+assert.equal(outcome.status, 'failure'); assert.deepEqual(state, snapshot); assert.deepEqual(outcome.state, snapshot);
+assert.deepEqual(tests[0].initialState.inventory, { 'ITEM-A': 10 });
+const first = createRun(fixed, tests[0]), second = createRun(fixed, tests[0]);
+finish(first); finish(second); assert.deepEqual(first.logs, second.logs);
+const missing = clone(fixed); missing.nodes.find(n => n.id === 'stock').success = '';
+const stopped = createRun(missing, tests[0]); assert.equal(finish(stopped).pass, false); assert.equal(stopped.status, 'stopped');
+const loop = clone(fixed); loop.nodes.find(n => n.id === 'shortage').success = 'shortage';
+const looping = createRun(loop, tests[1]); assert.equal(finish(looping).pass, false); assert.equal(looping.step, 200); assert.equal(looping.status, 'stopped');
+const waitingGraph = clone(fixed); waitingGraph.nodes.find(n => n.id === 'stock').operations = ['waitPaid'];
+const waiting = createRun(waitingGraph, tests[5]); finish(waiting);
+assert.equal(waiting.status, 'waiting'); assert.equal(waiting.tokens[1].status, 'queued');
+waiting.state.orders['ORD-A'].paymentStatus = 'paid'; step(waiting); assert.notEqual(waiting.tokens[0].status, 'waiting');
+// 途中失敗より後の副作用が実行されず、失敗前の変更は残る。
+const partial = clone(fixed); partial.nodes.find(n => n.id === 'stock').operations = ['reserve', 'release', 'ship', 'email'];
+const partialRun = createRun(partial, tests[0]); finish(partialRun);
+assert.equal(partialRun.state.orders['ORD-001'].reservationStatus, 'released');
+assert.equal(partialRun.state.effects.length, 0);
+console.log('PASS: 7 cases, two valid repairs, real erroneous email, idempotency, isolated deterministic runs, atomic failure, partial failure, missing routes, FIFO waiting/resume and loop limit');
