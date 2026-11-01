@@ -1,8 +1,12 @@
 import { operations, clone, createRun, step, finish, judge } from './engine.mjs';
 import { drills } from './drills.mjs';
 import { snapPosition } from './snap.mjs';
+import { resolveStoryDrill, chapterUnlocked } from './story.mjs';
+import { installStoryUI } from './story-ui.mjs';
 const requestedDrill = new URLSearchParams(location.search).get('drill');
-const drill = drills.find(d => d.id === requestedDrill) || drills[0];
+const storyMode = new URLSearchParams(location.search).get('mode') === 'story';
+const titleMode = !requestedDrill && !storyMode;
+const drill = drills.find(d => d.id === (storyMode ? resolveStoryDrill(requestedDrill) : requestedDrill)) || drills[0];
 const { initialGraph, tests } = drill;
 const $ = s => document.querySelector(s);
 const el = (tag, text, className) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (className) e.className = className; return e; };
@@ -18,7 +22,12 @@ function previewRoute(target, kind) {
   routePreview = target ? { target, kind } : null;
   drawEdges();
 }
-try { const saved = JSON.parse(localStorage.getItem(KEY)); if (saved?.nodes?.length === initialGraph.nodes.length && saved.nodes.every(n => initialGraph.nodes.some(i => i.id === n.id) && Array.isArray(n.operations) && n.operations.every(o => operations[o]) && Number.isFinite(n.x) && Number.isFinite(n.y)) && saved.entries) graph = saved; } catch {}
+const catalog = [...initialGraph.nodes, ...(drill.availableBlocks || [])];
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY));
+  if (saved?.nodes && initialGraph.nodes.every(n => saved.nodes.some(s => s.id === n.id)) && new Set(saved.nodes.map(n => n.id)).size === saved.nodes.length && saved.nodes.every(n => catalog.some(i => i.id === n.id) && Array.isArray(n.operations) && n.operations.every(o => drill.allowedOperations.includes(o)) && Number.isFinite(n.x) && Number.isFinite(n.y)) && JSON.stringify(saved.entries) === JSON.stringify(initialGraph.entries)) graph = saved;
+} catch {}
+if (!drill.allowMove) graph.nodes.forEach(n => { const position = initialGraph.nodes.find(x => x.id === n.id); n.x = position.x; n.y = position.y; });
 function pause() { clearInterval(timer); timer = null; }
 function openBlock(mode = 'block') {
   $('#editor').hidden = mode !== 'block';
@@ -33,7 +42,7 @@ function openBlock(mode = 'block') {
   fitCanvas();
 }
 // 旧レイアウトの保存データも、接続・カードを保ったまま画面内へ収める。
-if (graph.nodes.some(n => n.y > 500)) graph.nodes.forEach(n => { const layout = initialGraph.nodes.find(x => x.id === n.id); n.x = layout.x; n.y = layout.y; });
+if (graph.nodes.some(n => n.y > 500)) graph.nodes.forEach(n => { const layout = catalog.find(x => x.id === n.id); n.x = layout.x; n.y = layout.y; });
 function setDrawer(open) {
   drawerOpen = open;
   $('#testDrawer').classList.toggle('open', open);
@@ -50,8 +59,30 @@ function fitCanvas() {
   drawEdges();
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(graph)); } catch {} }
+function placeBlock(id, position) {
+  if (!drill.allowPlace) return;
+  const template = drill.availableBlocks?.find(b => b.id === id);
+  if (!template || graph.nodes.some(n => n.id === id)) return;
+  const node = clone(template);
+  if (!position) position = [70, 220, 400].flatMap(y => [40, 330, 620].map(x => ({ x, y }))).find(p => !graph.nodes.some(n => Math.abs(n.x - p.x) < 230 && Math.abs(n.y - p.y) < 65)) || { x: 40, y: 480 };
+  Object.assign(node, snapPosition(position.x, position.y, graph.nodes, id));
+  // New blocks have no hidden connections. The player connects them explicitly.
+  node.success = 'END'; node.failure = 'END';
+  graph.nodes.push(node); selected = id; changed(); openBlock();
+}
+function renderPalette() {
+  const area = $('#blockPalette'); area.hidden = !drill.allowPlace;
+  if (!drill.allowPlace) return;
+  area.replaceChildren(el('strong', '未配置ブロック'));
+  drill.availableBlocks.filter(b => !graph.nodes.some(n => n.id === b.id)).forEach(b => {
+    const card = el('button', `${b.label} ＋配置`, 'palette-block'); card.draggable = true; card.dataset.block = b.id;
+    card.onclick = () => placeBlock(b.id);
+    card.ondragstart = e => { e.dataTransfer.setData('text/plain', b.id); e.dataTransfer.effectAllowed = 'copy'; }; area.append(card);
+  });
+  if (area.children.length === 1) area.append(el('span', 'すべて配置済み', 'rule'));
+}
 function reset() { pause(); batchRun = null; run = test ? createRun(graph, test) : { tokens: [], logs: [], step: 0, status: 'ready' }; selectedToken = 0; render(); }
-function changed() { save(); results = {}; reset(); renderEditor(); }
+function changed() { save(); results = {}; reset(); renderEditor(); renderPalette(); }
 function renderCases() {
   $('#cases').replaceChildren(...tests.map(t => {
     const b = el('button', undefined, `case${t.id === test?.id ? ' active' : ''}`);
@@ -72,7 +103,7 @@ function renderNodes() {
     edit.onclick = () => { selected = n.id; openBlock(); renderNodes(); drawEdges(); renderEditor(); }; heading.append(edit); box.append(heading);
     box.title = n.operations.map(o => operations[o][0]).join(' → ') || '操作未設定';
     let drag;
-    box.onpointerdown = e => { if (e.button !== 0) return; pause(); drag = { x: e.clientX, y: e.clientY, left: n.x, top: n.y }; box.setPointerCapture(e.pointerId); };
+    box.onpointerdown = e => { if (e.button !== 0 || !drill.allowMove) return; pause(); drag = { x: e.clientX, y: e.clientY, left: n.x, top: n.y }; box.setPointerCapture(e.pointerId); };
     box.onpointermove = e => {
       if (!drag || Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 3) return;
       const scale = $('#canvas').getBoundingClientRect().width / 910;
@@ -137,9 +168,24 @@ function renderTokens() {
     path.setAttribute('d', 'M3 7l9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10M7.5 5l9 4v5'); path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'currentColor'); path.setAttribute('stroke-width', '1.6'); path.setAttribute('stroke-linejoin', 'round'); icon.append(path);
     b.append(icon, el('span', `${t.id} · ${t.orderId}`)); b.onclick = () => selectToken(i); return b;
   }));
-  run.tokens.forEach((t, i) => { const n = graph.nodes.find(n => n.id === t.node); const b = container.children[i]; b.className = `token ${t.status}`; b.style.left = `${(n?.x || 0) + 12}px`; b.style.top = `${(n?.y || 0) - 24 + run.tokens.slice(0, i).filter(x => x.node === t.node).length * 26}px`; b.title = `${t.status} ${t.reason || t.last?.reason || ''}`; });
+  run.tokens.forEach((t, i) => {
+    const n = graph.nodes.find(n => n.id === t.node), b = container.children[i];
+    const group = run.tokens.filter(other => other.node === t.node), position = group.indexOf(t);
+    const gap = Math.max(28, ...[...container.children].map(button => button.offsetHeight + 6));
+    const above = (n?.y || 0) - group.length * gap;
+    b.className = `token ${t.status}`; b.dataset.nodeId = t.node;
+    b.style.left = `${(n?.x || 0) + 12}px`;
+    b.style.top = `${above >= 4 ? above + position * gap : (n?.y || 0) + 54 + position * gap}px`;
+    b.title = `${t.status} ${t.reason || t.last?.reason || ''}`;
+  });
   run.tokens.forEach((t, i) => { const b = container.children[i]; b.classList.toggle('selected-token', i === selectedToken); b.setAttribute('aria-pressed', String(i === selectedToken)); b.setAttribute('aria-label', `${t.id} ${t.orderId}の状態を表示`); b.title = `${t.id} ${t.orderId}：クリックで下の状態欄に表示`; });
   run.tokens.forEach((t, i) => {
+    if (run.state.requests) {
+      const b = container.children[i], r = run.state.requests[t.orderId];
+      b.querySelectorAll('.quantity-badge,.reservation-badge').forEach(b => b.remove());
+      let badge = b.querySelector('.request-badge'); if (!badge) { badge = el('span', undefined, 'request-badge'); b.append(badge); }
+      badge.textContent = `版${r.revision} ${r.paymentStatus === 'paid' ? '振込済' : '未振込'}`; return;
+    }
     const order = run.state.orders[t.orderId];
     const quantity = order.reservedQuantity;
     const remaining = Math.max(0, order.quantity - quantity);
@@ -156,8 +202,9 @@ function renderTokens() {
   const warehouse = $('#warehouse');
   warehouse.hidden = !test;
   if (test) {
-    $('#warehouseCount').textContent = String(run.state.inventory['ITEM-A']);
-    warehouse.setAttribute('aria-label', `商品Aの在庫 ${run.state.inventory['ITEM-A']}個`);
+    $('#warehouseCount').textContent = String(run.state.requests ? Object.keys(run.state.requests).length : run.state.inventory['ITEM-A']);
+    warehouse.querySelector('span').textContent = run.state.requests ? '申請の状態' : '商品Aの在庫';
+    warehouse.setAttribute('aria-label', run.state.requests ? '申請と振込の状態を表示' : `商品Aの在庫 ${run.state.inventory['ITEM-A']}個`);
   }
 }
 function selectToken(index) {
@@ -180,6 +227,11 @@ function renderEditor(adding = false) {
   blockPreview.append(el('h3', undefined));
   blockPreview.firstChild.append(el('strong', n.label, 'node-action'));
   $('#blockSelection').replaceChildren(blockPreview);
+  if (drill.availableBlocks?.some(b => b.id === n.id)) {
+    const remove = el('button', 'パレットに戻す', 'return-block');
+    remove.onclick = () => { graph.nodes = graph.nodes.filter(b => b.id !== n.id); graph.nodes.forEach(b => { for (const key of ['success', 'failure']) if (b[key] === n.id) b[key] = ''; }); selected = graph.nodes[0].id; changed(); };
+    editor.append(remove, el('p', '戻すと、このブロックへの接続は(未設定)になります。', 'rule'));
+  }
   editor.append(el('h4', '登録済みの操作', 'registered-heading'));
   if (!n.operations.length) editor.append(el('p', 'まだ操作が登録されていません。', 'rule'));
   n.operations.forEach((o, i) => {
@@ -201,20 +253,15 @@ function renderEditor(adding = false) {
   }
   const form = el('div', undefined, 'add-operation mode-add'); editor.append(form);
   form.append(el('div', '追加モード', 'operation-mode'));
-  let operation = '';
-  const commit = el('button', '追加', 'primary commit-operation'); commit.id = 'addOperation'; commit.disabled = true;
   form.append(el('div', '操作', 'operation-label'));
   const choices = el('div', undefined, 'operation-choices'); choices.setAttribute('role', 'group'); choices.setAttribute('aria-label', '操作を選択');
-  Object.entries(operations).forEach(([id, [label, rule]]) => {
+  Object.entries(operations).filter(([id]) => drill.allowedOperations.includes(id)).forEach(([id, [label, rule]]) => {
     const button = el('button', label, 'operation-choice'); button.type = 'button'; button.dataset.operation = id; button.title = rule;
     button.disabled = n.operations.includes(id);
-    button.setAttribute('aria-pressed', String(operation === id));
-    button.onclick = () => { operation = id; commit.disabled = false; choices.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.operation === id))); commit.textContent = '追加'; };
+    button.onclick = () => { if (n.operations.includes(id)) return; n.operations.push(id); previewRoute(null); changed(); $('#openAddOperation')?.focus(); };
     choices.append(button);
   }); form.append(choices);
   const cancel = el('button', '取消', 'cancel-edit'); cancel.onclick = () => { renderEditor(); $('#openAddOperation')?.focus(); }; form.append(cancel);
-  form.append(commit);
-  commit.onclick = () => { if (!operation || n.operations.includes(operation)) return; n.operations.push(operation); previewRoute(null); changed(); };
   renderRoutes(n, editor);
 }
 function renderRoutes(n, editor) {
@@ -276,6 +323,14 @@ function appendParcelSection(wrap, title, fields, values) {
 function renderState() {
   const area = $('#state'); area.replaceChildren();
   if (!test) { area.append(el('p', '\u30c6\u30b9\u30c8\u30b1\u30fc\u30b9\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044\u3002', 'rule')); return; }
+  if (run.state.requests) {
+    const records = run.tokens.map(t => [t.orderId, run.state.requests[t.orderId]]);
+    const details = parcelTable('申請の状態', ['申請', '金額', '版', '承認', '承認版', '経理確認', '確認版', '振込', '振込版'], records.map(([id, r]) => [id, `${r.amount}円`, r.revision, r.approvalStatus, r.approvedRevision ?? '—', r.accountingStatus, r.verifiedRevision ?? '—', r.paymentStatus, r.paidRevision ?? '—']));
+    area.append(details);
+    appendParcelSection(details, '実行位置・結果', ['実行者', '位置', '状態', '理由'], run.tokens.map(t => [t.event.actorId, name(t.node), t.status, t.reason || t.last?.reason || '—']));
+    appendParcelSection(details, '通知・副作用（申請単位）', ['振込回数', '通知数', '不正な振込'], run.tokens.map(t => ['transfer', 'paidEmail', 'invalid'].map(type => run.state.effects.filter(e => e.orderId === t.orderId && (type === 'invalid' ? e.type === 'transfer' && !e.valid : e.type === type)).length)));
+    return;
+  }
   area.append(el('p', '\u5728\u5eab\u306f\u3059\u3079\u3066\u306e\u6ce8\u6587\u3067\u5171\u901a\u3057\u3066\u4f7f\u3046\u30c7\u30fc\u30bf\u3067\u3059\u3002', 'rule'));
   area.append(stateTable('\u5546\u54c1\u5225\u306e\u5728\u5eab', ['\u5546\u54c1', '\u5728\u5eab', '\u5f15\u5f53\u6570'], Object.entries(run.state.inventory).map(([id, stock]) => [id, stock, Object.values(run.state.orders).filter(o => o.itemId === id).reduce((sum, o) => sum + o.reservedQuantity, 0)])));
   const orders = run.tokens.map(t => [t.orderId, run.state.orders[t.orderId]]);
@@ -299,7 +354,7 @@ function renderResults() {
   $('#testPerspective').textContent = test.perspective;
   $('#resultTitle').textContent = run.step === 0 ? '未実行' : !done ? '実行中 · 現在値で仮判定' : result.pass ? '○ すべての期待を満たしました' : '× 期待値との差があります';
   $('#liveNote').textContent = !done ? '○×は現在値と最終期待値の比較です。途中の×は、後続処理で○に変わることがあります。' : '実行が終了または停止した時点の結果です。';
-  for (const c of result.checks) { const row = el('div', undefined, 'check'); row.dataset.pass = run.step === 0 ? 'pending' : String(c.pass); row.append(el('span', run.step === 0 ? '—' : c.pass ? '○' : '×', run.step === 0 ? 'muted' : c.pass ? 'pass' : 'fail')); const fields = { reservationStatus: '引当状態', reservedQuantity: '引当数量', paymentStatus: '決済状態', orderStatus: '注文状態', cancellationStatus: 'キャンセル状態', shippingStatus: '出荷状態' }; const parts = c.label.split('.'); const label = fields[parts.at(-1)] ? `${parts[1]} · ${fields[parts.at(-1)]}` : c.label; const body = el('div', label); body.append(el('small', `期待：${String(c.expected)} ／ 現在：${String(c.actual)}`)); row.append(body); area.append(row); }
+  for (const c of result.checks) { const row = el('div', undefined, 'check'); row.dataset.pass = run.step === 0 ? 'pending' : String(c.pass); row.append(el('span', run.step === 0 ? '—' : c.pass ? '○' : '×', run.step === 0 ? 'muted' : c.pass ? 'pass' : 'fail')); const fields = { amount: '\u91d1\u984d', revision: '\u7248', approvalStatus: '\u627f\u8a8d\u72b6\u614b', approvedRevision: '\u627f\u8a8d\u7248', accountingStatus: '\u7d4c\u7406\u78ba\u8a8d', verifiedRevision: '\u78ba\u8a8d\u7248', paidRevision: '\u632f\u8fbc\u7248', reservationStatus: '引当状態', reservedQuantity: '引当数量', paymentStatus: '決済状態', orderStatus: '注文状態', cancellationStatus: 'キャンセル状態', shippingStatus: '出荷状態' }; const parts = c.label.split('.'); const label = fields[parts.at(-1)] ? `${parts[1]} · ${fields[parts.at(-1)]}` : c.label; const body = el('div', label); body.append(el('small', `期待：${String(c.expected)} ／ 現在：${String(c.actual)}`)); row.append(body); area.append(row); }
 }
 function renderLogs() {
   $('#logs').replaceChildren(...run.logs.map(l => { const row = el('div', undefined, 'log-entry'); row.append(el('span', `#${l.step} ${l.orderId || ''} ${l.operation} → ${l.status === 'no_op' ? '変更なし' : l.status}${l.reason ? `（${l.reason}）` : ''}`, l.status === 'failure' ? 'fail' : '')); row.append(el('small', `${l.diff.map(d => `${d.path}: ${JSON.stringify(d.before)} → ${JSON.stringify(d.after)}`).join('\n') || '状態変更なし'} ／ 遷移先：${name(l.to)}`)); return row; })); $('#logs').scrollTop = $('#logs').scrollHeight;
@@ -321,6 +376,7 @@ function showBatchResult() {
   $('#batchScore').textContent = `${passed} / ${tests.length} ケース成功`;
   $('#batchMessage').textContent = passed === tests.length ? 'すべてのテストをクリアしました！' : '失敗したケースの状態とログを確認し、設計を修正しましょう。';
   dialog.showModal();
+  if (passed === tests.length) storyUI.onClear();
   clearTimeout(resultDismissTimer);
   resultDismissTimer = setTimeout(() => { if (dialog.open) dialog.close(); }, 3000);
 }
@@ -346,7 +402,7 @@ $('#pause').onclick = () => { pause(); render(); };
 $('#step').onclick = () => { pause(); advance(); };
 $('#speed').onchange = () => { if (timer) { pause(); timer = setInterval(advance, Number($('#speed').value)); } };
 $('#reset').onclick = reset;
-$('#restore').onclick = () => { graph = clone(initialGraph); changed(); };
+$('#restore').onclick = () => { graph = clone(initialGraph); selected = graph.nodes[0].id; changed(); };
 $('#batch').onclick = () => {
   pause(); results = {}; test = tests[0]; reset();
   if (document.querySelector('main').classList.contains('cases-expanded')) $('#toggleCaseList').click();
@@ -381,16 +437,34 @@ help.append(el('p', '操作が失敗すると、そのブロックの残りの�
 help.append(el('p', '「変更なし（no_op）」は、状態の変更が不要だったという処理結果です。例：返金済みの注文へ再度返金しても、もう一度は返金しません。通常は残りのカードを続け、最後に成功時の遷移先へ進みます。'));
 help.append(el('p', '例外：キャンセル受付で「キャンセル済み」と判定した場合は、その荷物の処理を終了します。'));
 help.append(el('h3', '操作カードの前提条件'));
-Object.values(operations).forEach(([title, rule]) => help.append(el('p', `${title}：${rule.replaceAll('no_op', '変更なし')}`)));
+Object.entries(operations).filter(([id]) => drill.allowedOperations.includes(id)).forEach(([, [title, rule]]) => help.append(el('p', `${title}：${rule.replaceAll('no_op', '変更なし')}`)));
 document.body.append(help);
 new ResizeObserver(fitCanvas).observe($('.canvas-viewport'));
 new ResizeObserver(() => requestAnimationFrame(syncCaseHeight)).observe($('.workspace'));
 const picker = $('#drillSelect');
-drills.forEach(d => { const option = el('option', `${d.difficulty} / ${d.title}`); option.value = d.id; picker.append(option); });
+drills.filter(d => d.id === drill.id || chapterUnlocked(d.chapter)).forEach(d => { const option = el('option', `${d.difficulty} / ${d.title}`); option.value = d.id; picker.append(option); });
 picker.value = drill.id;
-picker.onchange = () => { const url = new URL(location.href); url.searchParams.set('drill', picker.value); location.assign(url.href); };
+picker.disabled = storyMode;
+picker.onchange = () => { const url = new URL(location.href); url.searchParams.delete('mode'); url.searchParams.delete('replay'); url.searchParams.set('drill', picker.value); location.assign(url.href); };
 $('#drillSummary').textContent = drill.summary;
+$('#assignmentIntro').textContent = drill.chapter === 2 ? '上長承認後に経理確認を行い、振り込むシステムです。' : '在庫引当後に決済、決済後に出荷するシステムです。';
+const ruleItems = drill.chapter === 2 ? [
+  '本人承認は禁止', '上長権限・現版の承認・現版の経理確認が必要',
+  '差戻し・却下・旧版承認では振込禁止', '振込完了時だけ通知', '再実行しても振込・通知は各1回',
+] : [
+  '取消は出荷確定前のみ', '引当解除・返金後に取消を確定', '成功時だけ通知', '二重要求の在庫戻し・返金・通知は各1回',
+];
+$('#assignmentRules').replaceChildren(...ruleItems.map(rule => el('li', rule)));
+$('#assignmentTask').textContent = 'すべてのテストが正しく動くように設計してください。';
+$('.canvas-heading>p').textContent = drill.allowMove ? 'ブロックを配置・移動し、接続と操作を編集' : '配置は固定です。ブロックをクリックして接続と操作を編集';
+document.body.classList.toggle('fixed-blocks', !drill.allowMove);
+$('.badge').textContent = `${drill.chapter === 2 ? '経費精算・承認' : '注文システム'} / ${drill.difficulty}`;
+$('.canvas-viewport').ondragover = e => { if (drill.allowPlace) e.preventDefault(); };
+$('.canvas-viewport').ondrop = e => { if (!drill.allowPlace) return; e.preventDefault(); const rect = $('#canvas').getBoundingClientRect(), scale = rect.width / 910; placeBlock(e.dataTransfer.getData('text/plain'), { x: (e.clientX - rect.left) / scale - 110, y: (e.clientY - rect.top) / scale - 24 }); };
 $('#drillNotice').textContent = requestedDrill && !drills.some(d => d.id === requestedDrill) ? '\u6307\u5b9a\u3055\u308c\u305fID\u304c\u898b\u3064\u304b\u3089\u306a\u3044\u305f\u3081\u3001\u7dcf\u5408\u554f\u984c\u3092\u8868\u793a\u3057\u3066\u3044\u307e\u3059\u3002' : '';
+if (storyMode && requestedDrill && requestedDrill !== drill.id) $('#drillNotice').textContent = '未解放のステージのため、解放済みのステージを表示しています。';
 reset(); renderEditor();
+renderPalette();
 $('#toggleCaseList').click();
 setDrawer(false); fitCanvas();
+const storyUI = installStoryUI(drills, drill, storyMode, titleMode);
