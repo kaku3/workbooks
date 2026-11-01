@@ -3,6 +3,7 @@ import { typeDialogue } from './typewriter.mjs';
 import { stages, chapterNames, readProgress, saveProgress, startStory, chapterUnlocked, completeStage } from './story.mjs';
 const element = (tag, text, className) => { const e = document.createElement(tag); if (text) e.textContent = text; if (className) e.className = className; return e; };
 const names = { player: 'あなた', sales: '営業・折原', lead: '先輩・真壁', client: '担当・佐伯', accountant: '経理・三田' };
+const portraits = { player: { width: 1024, file: '01_player-transparent.png' }, sales: { width: 1024, file: '02_orihara-transparent.png' }, lead: { width: 1024, file: '03_makabe-transparent.png' }, client: { width: 1024, file: '04_saeki-transparent.png' }, accountant: { width: 1024, file: '05_mita-transparent.png' } };
 export function stageURL(id, story = false, replay = false) {
   const url = new URL(location.href); url.search = ''; url.searchParams.set('drill', id);
   if (story) url.searchParams.set('mode', 'story'); if (replay) url.searchParams.set('replay', '1'); return url.href;
@@ -40,6 +41,21 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     const eventId = `${key}.v${sceneVersions[key] || 1}`, lines = extraLines || scenes[key];
     if (!lines?.length || (!force && readProgress().seenEvents.includes(eventId))) { done(); return; }
     const dialog = document.querySelector('#storyDialog'); let index = 0, writer; active = true;
+    const cast = document.querySelector('#storyCast'), speakerIds = ['player', 'sales', 'lead', 'client', 'accountant'];
+    const participants = [...new Set(lines.map(line => line.speaker))].filter(id => speakerIds.includes(id));
+    cast.replaceChildren(); cast.style.setProperty('--cast-count', String(Math.max(1, participants.length)));
+    const totalWidth = participants.reduce((sum, id) => sum + portraits[id].width, 0);
+    cast.style.gridTemplateColumns = participants.map(id => `minmax(0,${portraits[id].width}fr)`).join(' ');
+    const castHeight = participants.length > 1 ? 480 : 640;
+    cast.style.width = `min(80%, ${totalWidth * castHeight / 1536}px, ${totalWidth * 64 / 1536}vh)`;
+    participants.forEach(id => {
+      const portrait = element('img', undefined, 'story-portrait'); portrait.dataset.speaker = id;
+      const { width, file } = portraits[id];
+      portrait.src = new URL(`assets/${file}`, import.meta.url).href;
+      portrait.alt = names[id]; portrait.width = width; portrait.height = 1536;
+      portrait.style.aspectRatio = `${width} / 1536`;
+      portrait.setAttribute('role', 'img'); portrait.setAttribute('aria-label', names[id]); cast.append(portrait);
+    });
     const finish = () => {
       writer?.destroy();
       const saved = readProgress(); if (!saved.seenEvents.includes(eventId)) saved.seenEvents.push(eventId);
@@ -50,6 +66,11 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     const render = () => {
       writer?.destroy(); const line = lines[index], button = document.querySelector('#storyAdvance');
       document.querySelector('#storySpeaker').textContent = names[line.speaker] || line.speaker;
+      cast.querySelectorAll('.story-portrait').forEach(portrait => {
+        const speaking = portrait.dataset.speaker === line.speaker;
+        portrait.classList.toggle('speaking', speaking);
+        if (speaking) portrait.id = 'storyPortrait'; else portrait.removeAttribute('id');
+      });
       document.querySelector('#storyPage').textContent = `${index + 1} / ${lines.length}`;
       button.textContent = '全文表示';
       writer = typeDialogue(document.querySelector('#storyText'), line.text, { onComplete: () => { button.textContent = index + 1 === lines.length ? '閉じる' : '次へ'; } });

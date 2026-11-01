@@ -108,3 +108,39 @@ main.test-panel-open{grid-template-columns:190px minmax(0,1fr)}
 
 /* Two queued parcels fit above the first-row block (y=70). */
 .token{height:26px;min-height:26px;box-sizing:border-box;line-height:1.2;padding:3px 6px}.token .quantity-badge,.token .reservation-badge,.token .request-badge{line-height:1.2}
+
+/* Five-character sprite sheet, shown beside the speaking character's dialogue. */
+.story-dialog{width:min(790px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto}.story-dialog-body{display:grid;grid-template-columns:190px minmax(0,1fr);gap:22px;align-items:center;margin:16px 0}.story-portrait{width:100%;aspect-ratio:434.4 / 724;background-image:url('assets/characters.png');background-size:500% 100%;background-repeat:no-repeat;align-self:end;border-radius:8px;filter:drop-shadow(0 4px 4px #193a3118)}.story-message{min-width:0}.story-message h2{margin:0 0 12px}.story-message #storyText{margin:0;min-height:120px;overflow-wrap:anywhere}.story-dialog-body:not(:has(.story-portrait:not([hidden]))){grid-template-columns:1fr}
+@media(max-width:600px){.story-dialog{padding:16px}.story-dialog-body{grid-template-columns:100px minmax(0,1fr);gap:12px;align-items:start}.story-message h2{font-size:13px;margin-bottom:8px}.story-message #storyText{font-size:14px;line-height:1.85;min-height:110px}.story-portrait{align-self:start}}
+
+/* Cast stands above a larger message window. The transparent dialog keeps portraits unclipped. */
+.story-dialog{width:min(980px,calc(100vw - 24px));max-height:calc(100dvh - 16px);padding:10px 8px;border:0;background:transparent;box-shadow:none;overflow:auto}.story-cast{display:grid;grid-template-columns:repeat(var(--cast-count,1),minmax(0,min(180px,19vh)));justify-content:center;align-items:end;gap:8px;padding:10px 16px 0;position:relative;z-index:0}.story-cast .story-portrait{aspect-ratio:434.4 / 724;border-radius:0;filter:brightness(.7) saturate(.65);transform:translateY(4px);transition:filter .2s,transform .2s}.story-cast .story-portrait.speaking{filter:brightness(1) drop-shadow(0 0 9px #e4edaa70);transform:translateY(-4px)}.story-window{position:relative;z-index:1;margin-top:-38px;padding:22px 28px;background:#fffef7;border:1px solid #b7c7a7;border-radius:14px;box-shadow:0 10px 35px #122d3340}.story-dialog .story-dialog-body{display:block;margin:16px 0}.story-message #storyText{min-height:100px;font-size:18px;line-height:1.9}.story-message h2{font-size:17px}.story-dialog-top button{background:#fffef7}.story-dialog-bottom{margin-top:14px}
+@media(max-width:600px){.story-dialog{padding:8px 2px;width:calc(100vw - 12px)}.story-cast{gap:3px;padding:8px 4px 0}.story-window{margin-top:-18px;padding:16px;border-radius:10px}.story-message #storyText{font-size:15px;min-height:100px}.story-message h2{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.story-cast .story-portrait{transition:none}}
+
+.story-cast{margin-inline:auto}
+
+.story-cast img.story-portrait{display:block;height:auto;background:none;object-fit:contain}
+
+/* Anchor dialogue near the bottom, with a larger cast above the message box. */
+.story-dialog{inset:auto 0 20px;margin:0 auto;max-height:calc(100dvh - 32px)}
+@media(max-width:600px){.story-dialog{bottom:10px;max-height:calc(100dvh - 20px)}}
+
+/* Larger portraits; allow the cast to extend wider than the dialogue text. */
+.story-dialog{width:min(1400px,calc(100vw - 24px))}.story-window{max-width:964px;margin-left:auto;margin-right:auto}
+@media(max-width:600px){.story-dialog{width:calc(100vw - 12px)}}
+
+/* Larger dialogue text to match the portraits. */
+.story-message #storyText{font-size:22px;line-height:1.9}.story-message h2{font-size:20px}.story-dialog-bottom button{font-size:16px}
+@media(max-width:600px){.story-message #storyText{font-size:18px;line-height:1.85}.story-message h2{font-size:17px}.story-dialog-bottom button{font-size:14px}}
+
+/* Hip-up portraits sit lower, behind the message window. */
+.story-window{margin-top:-120px}
+@media(max-width:600px){.story-window{margin-top:-64px}}
+
+/* Bring the cast closer, overlap shoulders and place the speaker in front. */
+.story-cast{gap:0;padding-left:0;padding-right:0;isolation:isolate}.story-cast img.story-portrait{position:relative;width:140%;max-width:none;left:-20%;z-index:1}.story-cast .story-portrait.speaking{z-index:10}.story-cast img.story-portrait:only-child{width:100%;left:0}.story-window{margin-top:clamp(-210px,-15vw,-90px)}
+@media(max-width:600px){.story-window{margin-top:-45px}}
+
+.story-dialog-top #storySpeaker{font-size:20px;margin:0;line-height:1.5}.story-dialog-top #storySkip{flex-shrink:0}
+@media(max-width:600px){.story-dialog-top #storySpeaker{font-size:17px}}

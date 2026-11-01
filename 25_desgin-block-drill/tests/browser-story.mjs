@@ -63,6 +63,14 @@ try {
   await evaluate('document.querySelector("#storyAdvance").click()');
   assert.equal(await evaluate('document.querySelector("#storyText").classList.contains("is-typing")'), false);
   assert.equal(await evaluate('document.querySelector("#storyPage").textContent'), '1 / 5');
+  assert.equal(await evaluate('document.querySelector("#storyPortrait").dataset.speaker'), 'sales');
+  assert.equal(await evaluate('document.querySelectorAll("#storyCast .story-portrait").length'), 4);
+  assert.equal(await evaluate('document.querySelectorAll("#storyCast .speaking").length'), 1);
+  assert.equal(await evaluate('document.querySelector("#storyCast").getBoundingClientRect().top < document.querySelector(".story-window").getBoundingClientRect().top'), true);
+  await waitFor('[...document.querySelectorAll("#storyCast img")].every(img => img.complete && img.naturalWidth > 0)');
+  assert.ok(await evaluate('document.querySelector("#storyPortrait").src.endsWith("02_orihara-transparent.png")'));
+  await evaluate('document.querySelector("#storyAdvance").click()');
+  assert.equal(await evaluate('document.querySelector("#storyPortrait").dataset.speaker'), 'player');
 
   assert.equal(await evaluate('document.querySelector("#drillSelect").value'), 'order-basics');
   assert.equal(await evaluate('document.body.classList.contains("fixed-blocks")'), true);
