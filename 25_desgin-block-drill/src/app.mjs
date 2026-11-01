@@ -1,5 +1,6 @@
 import { operations, clone, createRun, step, finish, judge } from './engine.mjs';
 import { drills } from './drills.mjs';
+import { snapPosition } from './snap.mjs';
 const requestedDrill = new URLSearchParams(location.search).get('drill');
 const drill = drills.find(d => d.id === requestedDrill) || drills[0];
 const { initialGraph, tests } = drill;
@@ -60,7 +61,7 @@ function renderCases() {
     info.append(el('span', '試験概要', 'case-info-label'), el('span', t.description), el('span', '試験観点', 'case-info-label'), el('span', t.perspective)); b.append(info);
     b.setAttribute('aria-pressed', String(t.id === test?.id)); b.title = t.description;
     b.setAttribute('aria-controls', 'testDrawer'); b.setAttribute('aria-expanded', String(t.id === test?.id && drawerOpen));
-    b.onclick = () => { if (batchRun || test?.id !== t.id) { test = t; reset(); } setDrawer(true); }; return b;
+    b.onclick = () => { if (batchRun || test?.id !== t.id) { test = t; reset(); } if (document.querySelector('main').classList.contains('cases-expanded')) $('#toggleCaseList').click(); setDrawer(true); }; return b;
   }));
 }
 function renderNodes() {
@@ -72,9 +73,22 @@ function renderNodes() {
     box.title = n.operations.map(o => operations[o][0]).join(' → ') || '操作未設定';
     let drag;
     box.onpointerdown = e => { if (e.button !== 0) return; pause(); drag = { x: e.clientX, y: e.clientY, left: n.x, top: n.y }; box.setPointerCapture(e.pointerId); };
-    box.onpointermove = e => { if (!drag) return; const scale = $('#canvas').getBoundingClientRect().width / 910; n.x = Math.max(20, Math.min(670, drag.left + (e.clientX - drag.x) / scale)); n.y = Math.max(40, Math.min(500, drag.top + (e.clientY - drag.y) / scale)); box.style.left = `${n.x}px`; box.style.top = `${n.y}px`; drawEdges(); renderTokens(); };
+    box.onpointermove = e => {
+      if (!drag || Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 3) return;
+      const scale = $('#canvas').getBoundingClientRect().width / 910;
+      const point = snapPosition(drag.left + (e.clientX - drag.x) / scale, drag.top + (e.clientY - drag.y) / scale, graph.nodes, n.id, scale, e.shiftKey);
+      n.x = point.x; n.y = point.y;
+      box.style.left = `${n.x}px`; box.style.top = `${n.y}px`; drawEdges(); renderTokens();
+      for (const [axis, value] of [['x', point.guideX], ['y', point.guideY]]) {
+        if (value === null) continue;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line'); line.classList.add('snap-guide');
+        line.setAttribute('x1', axis === 'x' ? value : 0); line.setAttribute('x2', axis === 'x' ? value : 910);
+        line.setAttribute('y1', axis === 'y' ? value : 0); line.setAttribute('y2', axis === 'y' ? value : 560);
+        line.setAttribute('stroke', '#8d60ba'); line.setAttribute('stroke-width', '1'); line.setAttribute('stroke-dasharray', '5 4'); $('#lines').append(line);
+      }
+    };
     box.onpointerup = () => { if (!drag) return; drag = null; selected = n.id; openBlock(); save(); renderNodes(); drawEdges(); renderEditor(); };
-    box.onpointercancel = () => { drag = null; save(); };
+    box.onpointercancel = () => { drag = null; save(); drawEdges(); };
     return box;
   }));
 }
