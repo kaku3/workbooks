@@ -68,7 +68,7 @@ export function differences(before, after, prefix = '') {
   });
 }
 export function createRun(graph, test) {
-  return { graph: clone(graph), test, state: clone(test.initialState), tokens: test.events.map((e, i) => ({ id: `荷物${i + 1}`, orderId: e.orderId || e.requestId, event: clone(e), node: graph.entries[e.type], index: 0, status: 'queued' })), logs: [], step: 0, status: 'ready' };
+  return { graph: clone(graph), test, state: clone(test.initialState), tokens: test.events.map((e, i) => ({ id: `${test.initialState.requests ? '申請' : '荷物'}${i + 1}`, orderId: e.orderId || e.requestId, event: clone(e), node: graph.entries[e.type], index: 0, status: 'queued' })), logs: [], step: 0, status: 'ready' };
 }
 export function step(run) {
   if (['completed', 'stopped'].includes(run.status)) return null;
@@ -108,6 +108,6 @@ export function judge(run) {
     const actual = a.event ? run.state.effects.filter(e => e.type === a.event && (!a.orderId || a.orderId === e.orderId) && Object.entries(a.where || {}).every(([key, value]) => e[key] === value)).length : a.path.split('.').reduce((v, k) => v?.[k], run.state);
     return { label: a.label || a.path || a.event, expected: a.equals, actual, pass: actual === a.equals, events: run.logs.filter(l => !a.orderId || l.orderId === a.orderId).map(l => l.step) };
   });
-  checks.push({ label: '全荷物が正常終了', expected: true, actual: run.tokens.every(t => t.status === 'completed'), pass: run.tokens.every(t => t.status === 'completed') });
+  checks.push({ label: run.state.requests ? '全申請が正常終了' : '全荷物が正常終了', expected: true, actual: run.tokens.every(t => t.status === 'completed'), pass: run.tokens.every(t => t.status === 'completed') });
   return { pass: checks.every(c => c.pass), checks };
 }

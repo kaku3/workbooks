@@ -1,6 +1,7 @@
 import { operations, clone, createRun, step, finish, judge } from './engine.mjs';
 import { drills } from './drills.mjs';
 import { snapPosition } from './snap.mjs';
+import { connectionPath } from './connections.mjs';
 import { resolveStoryDrill, chapterUnlocked } from './story.mjs';
 import { installStoryUI } from './story-ui.mjs';
 const requestedDrill = new URLSearchParams(location.search).get('drill');
@@ -34,7 +35,7 @@ function openBlock(mode = 'block') {
   $('#blockSelection').hidden = mode !== 'block';
   $('.state-panel').hidden = mode !== 'state';
   $('#editorHelp').hidden = mode !== 'block';
-  $('.block-heading h2').firstChild.textContent = mode === 'block' ? '\u30d6\u30ed\u30c3\u30af\u306e\u7de8\u96c6' : '\u8377\u7269\u30fb\u5728\u5eab\u306e\u8a73\u7d30';
+  $('.block-heading h2').firstChild.textContent = mode === 'block' ? '\u30d6\u30ed\u30c3\u30af\u306e\u7de8\u96c6' : drill.chapter === 2 ? '\u7533\u8acb\u306e\u8a73\u7d30' : '\u8377\u7269\u30fb\u5728\u5eab\u306e\u8a73\u7d30';
   $('.canvas-stage').classList.add('block-panel-open');
   $('#blockDrawer').classList.add('open');
   $('#blockDrawer').inert = false;
@@ -129,10 +130,8 @@ function drawEdges() {
   graph.nodes.forEach(n => ['success', 'failure'].forEach((kind, i) => {
     const target = graph.nodes.find(t => t.id === n[kind]); if (!target) return;
     const a = document.querySelector(`[data-node="${n.id}"]`), b = document.querySelector(`[data-node="${target.id}"]`);
-    const x1 = n.x + a.offsetWidth, y1 = n.y + a.offsetHeight * (i ? .72 : .28), x2 = target.x, y2 = target.y + b.offsetHeight / 2;
     const p = document.createElementNS(ns, 'path');
-    const bend = Math.max(45, Math.abs(x2 - x1) / 2);
-    p.setAttribute('d', `M${x1},${y1} C${x1 + bend},${y1} ${x2 - bend},${y2} ${x2},${y2}`);
+    p.setAttribute('d', connectionPath({ ...n, width: a.offsetWidth, height: a.offsetHeight }, { ...target, width: b.offsetWidth, height: b.offsetHeight }, !!i));
     p.setAttribute('fill', 'none'); p.setAttribute('stroke', i ? '#ca7951' : '#267a6b'); p.setAttribute('stroke-width', '2'); if (i) p.setAttribute('stroke-dasharray', '6 5'); p.setAttribute('marker-end', `url(#arrow-${i ? 'fail' : 'ok'})`); lines.append(p);
     if (n.id === selected && Object.hasOwn(pendingRoutes, kind)) p.setAttribute('opacity', '.25');
   }));
@@ -151,8 +150,7 @@ function drawEdges() {
     const from = graph.nodes.find(n => n.id === selected), to = graph.nodes.find(n => n.id === routePreview.target);
     if (from && to) {
       const p = document.createElementNS(ns, 'path'); p.classList.add('route-preview');
-      const x = from.x + 220, y = from.y + 24;
-      p.setAttribute('d', `M${x},${y} C${x + 50},${y} ${to.x - 50},${to.y + 24} ${to.x},${to.y + 24}`);
+      p.setAttribute('d', connectionPath(from, to, routePreview.kind === 'failure'));
       p.setAttribute('fill', 'none'); p.setAttribute('stroke', routePreview.kind === 'failure' ? '#ca7951' : '#267a6b'); p.setAttribute('stroke-width', '5'); p.setAttribute('stroke-dasharray', '8 4');
       p.setAttribute('marker-end', `url(#arrow-${routePreview.kind === 'failure' ? 'fail' : 'ok'})`); lines.append(p);
     }
@@ -165,7 +163,8 @@ function renderTokens() {
     const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     icon.setAttribute('viewBox', '0 0 24 24'); icon.setAttribute('width', '15'); icon.setAttribute('height', '15'); icon.setAttribute('aria-hidden', 'true'); icon.classList.add('parcel-icon');
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M3 7l9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10M7.5 5l9 4v5'); path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'currentColor'); path.setAttribute('stroke-width', '1.6'); path.setAttribute('stroke-linejoin', 'round'); icon.append(path);
+    icon.classList.toggle('document-icon', !!run.state.requests);
+    path.setAttribute('d', run.state.requests ? 'M6 2h8l4 4v16H6V2Zm8 0v5h4M9 11h6M9 15h6M9 18h4' : 'M3 7l9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10M7.5 5l9 4v5'); path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'currentColor'); path.setAttribute('stroke-width', '1.6'); path.setAttribute('stroke-linejoin', 'round'); icon.append(path);
     b.append(icon, el('span', `${t.id} · ${t.orderId}`)); b.onclick = () => selectToken(i); return b;
   }));
   run.tokens.forEach((t, i) => {
@@ -458,6 +457,7 @@ $('#assignmentRules').replaceChildren(...ruleItems.map(rule => el('li', rule)));
 $('#assignmentTask').textContent = 'すべてのテストが正しく動くように設計してください。';
 $('.canvas-heading>p').textContent = drill.allowMove ? 'ブロックを配置・移動し、接続と操作を編集' : '配置は固定です。ブロックをクリックして接続と操作を編集';
 document.body.classList.toggle('fixed-blocks', !drill.allowMove);
+if (drill.chapter === 2) $('.legend span:last-child').textContent = '● 申請をクリックして状態を確認';
 $('.badge').textContent = `${drill.chapter === 2 ? '経費精算・承認' : '注文システム'} / ${drill.difficulty}`;
 $('.canvas-viewport').ondragover = e => { if (drill.allowPlace) e.preventDefault(); };
 $('.canvas-viewport').ondrop = e => { if (!drill.allowPlace) return; e.preventDefault(); const rect = $('#canvas').getBoundingClientRect(), scale = rect.width / 910; placeBlock(e.dataTransfer.getData('text/plain'), { x: (e.clientX - rect.left) / scale - 110, y: (e.clientY - rect.top) / scale - 24 }); };

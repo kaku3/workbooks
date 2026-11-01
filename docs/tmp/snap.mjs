@@ -9,6 +9,6 @@ export function snapPosition(x, y, nodes, movingId, scale = 1, bypass = false) {
     if (nearest && Math.abs(nearest[key] - value) <= threshold) return { value: nearest[key], aligned: true };
     return { value: clamp(Math.round(value / 20) * 20, min, max), aligned: false };
   }
-  const sx = axis(x, 'x', 20, 670), sy = axis(y, 'y', 40, 500);
+  const sx = axis(x, 'x', 20, 690), sy = axis(y, 'y', 40, 500);
   return { x: sx.value, y: sy.value, guideX: sx.aligned ? sx.value + 110 : null, guideY: sy.aligned ? sy.value + 24 : null };
 }
