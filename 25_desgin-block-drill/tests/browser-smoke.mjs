@@ -52,6 +52,11 @@ try {
   for (let i = 0; i < 50; i++) { if (await evaluate('document.querySelectorAll("#nodes .node").length === 8')) break; await delay(100); }
 
   assert.equal(await evaluate('document.querySelectorAll("#nodes .node").length'), 8);
+  assert.equal(await evaluate('document.querySelector(".tests").getBoundingClientRect().bottom <= document.querySelector(".canvas-stage").getBoundingClientRect().top'), true);
+  assert.equal(await evaluate('getComputedStyle(document.querySelector("#cases")).overflowX'), 'auto');
+  assert.equal(await evaluate('new Set([...document.querySelectorAll(".case")].map(c => Math.round(c.getBoundingClientRect().top))).size'), 1);
+  assert.equal(await evaluate('getComputedStyle(document.querySelector(".canvas-viewport")).backgroundImage.includes("linear-gradient")'), true);
+
   assert.equal(await evaluate('document.querySelectorAll(".case.active").length'), 0);
   assert.equal(await evaluate('document.querySelector("#play").disabled'), true);
   await runBatch('Bad');

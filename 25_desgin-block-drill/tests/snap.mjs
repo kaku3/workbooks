@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { snapPosition } from '../src/snap.mjs';
 const nodes = [{ id: 'a', x: 40, y: 70 }, { id: 'b', x: 330, y: 320 }];
-assert.deepEqual(snapPosition(326, 74, nodes, 'a'), { x: 330, y: 80, guideX: 440, guideY: null });
+assert.deepEqual(snapPosition(326, 74, nodes, 'a'), { x: 330, y: 80, guideX: 430, guideY: null });
 assert.equal(snapPosition(100, 315, nodes, 'a').y, 320);
 assert.equal(snapPosition(109, 113, nodes, 'a').x, 100);
 assert.equal(snapPosition(109, 113, nodes, 'a', 1, true).x, 109);
@@ -9,4 +9,6 @@ assert.equal(snapPosition(318, 320, nodes, 'a', .5).x, 330);
 assert.equal(snapPosition(-100, 900, nodes, 'a').x, 20);
 assert.equal(snapPosition(-100, 900, nodes, 'a').y, 500);
 assert.equal(snapPosition(42, 72, nodes, 'a').guideX, null);
+assert.equal(snapPosition(1100, 80, nodes, 'a', 1, false, { width: 1400 }).x, 1100);
+assert.equal(snapPosition(2000, 80, nodes, 'a', 1, false, { width: 1400 }).x, 1200);
 console.log('PASS: grid, block alignment, zoom, bounds, self exclusion, Shift bypass');
