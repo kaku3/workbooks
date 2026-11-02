@@ -12,7 +12,7 @@ const { initialGraph, tests } = drill;
 const $ = s => document.querySelector(s);
 const el = (tag, text, className) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (className) e.className = className; return e; };
 const KEY = `design-block-drill.v2.${drill.id}`;
-let graph = clone(initialGraph), selected = initialGraph.nodes[0].id, test = null, run, timer, selectedToken = 0;
+let graph = clone(initialGraph), selected = initialGraph.nodes[0].id, test = tests[0] || null, run, timer, selectedToken = 0;
 let results = {};
 let batchRun = null;
 let resultDismissTimer;
@@ -44,19 +44,22 @@ function openBlock(mode = 'block') {
 }
 // 旧レイアウトの保存データも、接続・カードを保ったまま画面内へ収める。
 if (graph.nodes.some(n => n.y > 500)) graph.nodes.forEach(n => { const layout = catalog.find(x => x.id === n.id); n.x = layout.x; n.y = layout.y; });
-function setDrawer(open) {
+function setDrawer(open, focus = true) {
   drawerOpen = open;
   $('#testDrawer').classList.toggle('open', open);
   $('#testDrawer').inert = !open;
   $('#testDrawer').setAttribute('aria-hidden', String(!open));
   document.querySelector('main').classList.toggle('test-panel-open', open);
-  if (open) $('#closeTestDrawer').focus({ preventScroll: true });
+  if (open && focus) $('#closeTestDrawer').focus({ preventScroll: true });
   renderCases();
 }
+function canvasWidth() { return parseFloat($('#canvas').style.width) || 910; }
 function fitCanvas() {
-  const scale = Math.min(1, $('.canvas-viewport').clientWidth / 910);
+  const width = Math.max(910, $('.canvas-viewport').clientWidth, ...graph.nodes.map(n => n.x + 200));
+  $('#canvas').style.width = `${width}px`;
+  const scale = Math.min(1, $('.canvas-viewport').clientWidth / width);
   $('#canvas').style.transform = `scale(${scale})`;
-  $('.canvas-viewport').style.height = `${Math.max(450, 560 * scale + 68)}px`;
+  $('.canvas-viewport').style.height = `${Math.max(420, 560 * scale + 40)}px`;
   drawEdges();
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(graph)); } catch {} }
@@ -66,7 +69,7 @@ function placeBlock(id, position) {
   if (!template || graph.nodes.some(n => n.id === id)) return;
   const node = clone(template);
   if (!position) position = [70, 220, 400].flatMap(y => [40, 330, 620].map(x => ({ x, y }))).find(p => !graph.nodes.some(n => Math.abs(n.x - p.x) < 230 && Math.abs(n.y - p.y) < 65)) || { x: 40, y: 480 };
-  Object.assign(node, snapPosition(position.x, position.y, graph.nodes, id));
+  Object.assign(node, snapPosition(position.x, position.y, graph.nodes, id, 1, false, { width: canvasWidth() }));
   // New blocks have no hidden connections. The player connects them explicitly.
   node.success = 'END'; node.failure = 'END';
   graph.nodes.push(node); selected = id; changed(); openBlock();
@@ -90,10 +93,10 @@ function renderCases() {
     b.dataset.result = results[t.id] === undefined ? 'pending' : results[t.id] ? 'pass' : 'fail';
     b.append(el('small', t.id), el('strong', t.title), el('span', results[t.id] === undefined ? '—' : results[t.id] ? '○' : '×', `case-result ${results[t.id] === undefined ? 'muted' : results[t.id] ? 'pass' : 'fail'}`));
     const info = el('span', undefined, 'case-info');
-    info.append(el('span', '試験概要', 'case-info-label'), el('span', t.description), el('span', '試験観点', 'case-info-label'), el('span', t.perspective)); b.append(info);
+    info.append(el('span', '概要', 'case-info-label'), el('span', t.description), el('span', '観点', 'case-info-label'), el('span', t.perspective)); b.append(info);
     b.setAttribute('aria-pressed', String(t.id === test?.id)); b.title = t.description;
     b.setAttribute('aria-controls', 'testDrawer'); b.setAttribute('aria-expanded', String(t.id === test?.id && drawerOpen));
-    b.onclick = () => { if (batchRun || test?.id !== t.id) { test = t; reset(); } if (document.querySelector('main').classList.contains('cases-expanded')) $('#toggleCaseList').click(); setDrawer(true); }; return b;
+    b.onclick = () => { if (batchRun || test?.id !== t.id) { test = t; reset(); } setDrawer(true); }; return b;
   }));
 }
 function renderNodes() {
@@ -104,23 +107,25 @@ function renderNodes() {
     edit.onclick = () => { selected = n.id; openBlock(); renderNodes(); drawEdges(); renderEditor(); }; heading.append(edit); box.append(heading);
     box.title = n.operations.map(o => operations[o][0]).join(' → ') || '操作未設定';
     let drag;
-    box.onpointerdown = e => { if (e.button !== 0 || !drill.allowMove) return; pause(); drag = { x: e.clientX, y: e.clientY, left: n.x, top: n.y }; box.setPointerCapture(e.pointerId); };
-    box.onpointermove = e => {
-      if (!drag || Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 3) return;
-      const scale = $('#canvas').getBoundingClientRect().width / 910;
-      const point = snapPosition(drag.left + (e.clientX - drag.x) / scale, drag.top + (e.clientY - drag.y) / scale, graph.nodes, n.id, scale, e.shiftKey);
+    box.ondragstart = e => e.preventDefault();
+    box.onpointerdown = e => { if (e.button !== 0 || !drill.allowMove) return; e.preventDefault(); pause(); drag = { x: e.clientX, y: e.clientY, left: n.x, top: n.y, pointerId: e.pointerId }; box.setPointerCapture(e.pointerId); window.addEventListener('pointermove', moveDrag); window.addEventListener('pointerup', stopDrag); window.addEventListener('pointercancel', cancelDrag); };
+    const moveDrag = e => {
+      if (!drag || e.pointerId !== drag.pointerId || Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 3) return;
+      const scale = $('#canvas').getBoundingClientRect().width / canvasWidth();
+      const point = snapPosition(drag.left + (e.clientX - drag.x) / scale, drag.top + (e.clientY - drag.y) / scale, graph.nodes, n.id, scale, e.shiftKey, { width: canvasWidth() });
       n.x = point.x; n.y = point.y;
       box.style.left = `${n.x}px`; box.style.top = `${n.y}px`; drawEdges(); renderTokens();
       for (const [axis, value] of [['x', point.guideX], ['y', point.guideY]]) {
         if (value === null) continue;
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line'); line.classList.add('snap-guide');
-        line.setAttribute('x1', axis === 'x' ? value : 0); line.setAttribute('x2', axis === 'x' ? value : 910);
+        line.setAttribute('x1', axis === 'x' ? value : 0); line.setAttribute('x2', axis === 'x' ? value : canvasWidth());
         line.setAttribute('y1', axis === 'y' ? value : 0); line.setAttribute('y2', axis === 'y' ? value : 560);
         line.setAttribute('stroke', '#8d60ba'); line.setAttribute('stroke-width', '1'); line.setAttribute('stroke-dasharray', '5 4'); $('#lines').append(line);
       }
     };
-    box.onpointerup = () => { if (!drag) return; drag = null; selected = n.id; openBlock(); save(); renderNodes(); drawEdges(); renderEditor(); };
-    box.onpointercancel = () => { drag = null; save(); drawEdges(); };
+    const releaseDrag = () => { window.removeEventListener('pointermove', moveDrag); window.removeEventListener('pointerup', stopDrag); window.removeEventListener('pointercancel', cancelDrag); drag = null; };
+    const stopDrag = e => { if (!drag || e.pointerId !== drag.pointerId) return; releaseDrag(); selected = n.id; openBlock(); save(); renderNodes(); drawEdges(); renderEditor(); };
+    const cancelDrag = e => { if (!drag || e.pointerId !== drag.pointerId) return; releaseDrag(); save(); drawEdges(); };
     return box;
   }));
 }
@@ -138,8 +143,8 @@ function drawEdges() {
   for (const [kind, target] of Object.entries(pendingRoutes)) {
     const from = graph.nodes.find(n => n.id === selected), to = graph.nodes.find(n => n.id === target);
     if (!from) continue;
-    const x = from.x + 220, y = from.y + (kind === 'failure' ? 35 : 13);
-    const endX = to ? to.x : x + 45, endY = to ? to.y + 24 : y;
+    const x = from.x + 200, y = from.y + (kind === 'failure' ? 29 : 11);
+    const endX = to ? to.x : x + 45, endY = to ? to.y + 20 : y;
     const p = document.createElementNS(ns, 'path'); p.classList.add('route-pending'); p.dataset.kind = kind; p.dataset.target = target;
     p.setAttribute('d', `M${x},${y} C${x + 45},${y} ${endX - 45},${endY} ${endX},${endY}`);
     p.setAttribute('fill', 'none'); p.setAttribute('stroke', '#8560bf'); p.setAttribute('stroke-width', '3'); p.setAttribute('stroke-dasharray', '7 5'); lines.append(p);
@@ -174,7 +179,7 @@ function renderTokens() {
     const above = (n?.y || 0) - group.length * gap;
     b.className = `token ${t.status}`; b.dataset.nodeId = t.node;
     b.style.left = `${(n?.x || 0) + 12}px`;
-    b.style.top = `${above >= 4 ? above + position * gap : (n?.y || 0) + 54 + position * gap}px`;
+    b.style.top = `${above >= 4 ? above + position * gap : (n?.y || 0) + 46 + position * gap}px`;
     b.title = `${t.status} ${t.reason || t.last?.reason || ''}`;
   });
   run.tokens.forEach((t, i) => { const b = container.children[i]; b.classList.toggle('selected-token', i === selectedToken); b.setAttribute('aria-pressed', String(i === selectedToken)); b.setAttribute('aria-label', `${t.id} ${t.orderId}の状態を表示`); b.title = `${t.id} ${t.orderId}：クリックで下の状態欄に表示`; });
@@ -198,22 +203,13 @@ function renderTokens() {
     badge.textContent = `引当 ${quantity}`;
     b.setAttribute('aria-label', `${t.id} ${t.orderId} 未引当の数量${remaining}個、引当${quantity}個。クリックで状態を表示`);
   });
-  const warehouse = $('#warehouse');
-  warehouse.hidden = !test;
-  if (test) {
-    $('#warehouseCount').textContent = String(run.state.requests ? Object.keys(run.state.requests).length : run.state.inventory['ITEM-A']);
-    warehouse.querySelector('span').textContent = run.state.requests ? '申請の状態' : '商品Aの在庫';
-    warehouse.setAttribute('aria-label', run.state.requests ? '申請と振込の状態を表示' : `商品Aの在庫 ${run.state.inventory['ITEM-A']}個`);
-  }
+
 }
 function selectToken(index) {
   selectedToken = index; renderTokens(); renderState();
   openBlock('state');
 }
-function syncCaseHeight() {
-  const height = $('.canvas-stage').getBoundingClientRect().bottom - $('.tests').getBoundingClientRect().top;
-  $('.tests').style.setProperty('--case-menu-height', `${Math.max(240, Math.round(height))}px`);
-}
+
 function selectControl(label, value, values, onChange) {
   const wrap = el('label', label); const input = el('select');
   values.forEach(([id, text]) => { const option = el('option', text); option.value = id; input.append(option); }); input.value = value;
@@ -231,7 +227,7 @@ function renderEditor(adding = false) {
     remove.onclick = () => { graph.nodes = graph.nodes.filter(b => b.id !== n.id); graph.nodes.forEach(b => { for (const key of ['success', 'failure']) if (b[key] === n.id) b[key] = ''; }); selected = graph.nodes[0].id; changed(); };
     editor.append(remove, el('p', '戻すと、このブロックへの接続は(未設定)になります。', 'rule'));
   }
-  editor.append(el('h4', '登録済みの操作', 'registered-heading'));
+  editor.append(el('h4', '操作', 'registered-heading'));
   if (!n.operations.length) editor.append(el('p', 'まだ操作が登録されていません。', 'rule'));
   n.operations.forEach((o, i) => {
     const row = el('div', undefined, 'op-row'); const text = el('span', operations[o][0]); text.title = operations[o][1]; row.append(text);
@@ -265,9 +261,10 @@ function renderEditor(adding = false) {
 }
 function renderRoutes(n, editor) {
   const form = el('div', undefined, 'block-routes'); editor.append(form);
+  form.append(el('h4', '遷移先', 'routes-heading'));
   const draft = { success: n.success, failure: n.failure };
   const targets = [['', '(未設定)'], ['END', '(完了)'], ...graph.nodes.map(x => [x.id, x.label])];
-  for (const [key, label] of [['success', '成功時遷移先'], ['failure', '失敗時遷移先']]) {
+  for (const [key, label] of [['success', '成功時'], ['failure', '失敗時']]) {
     const field = el('div', undefined, 'route-field'); field.dataset.route = key;
     const caption = el('div', label, 'route-label'), row = el('div', undefined, 'route-current'), value = el('span', name(draft[key]));
     const toggle = el('button', '編集'); toggle.type = 'button'; toggle.setAttribute('aria-expanded', 'false');
@@ -352,13 +349,13 @@ function renderResults() {
   $('#testOverview').textContent = test.description;
   $('#testPerspective').textContent = test.perspective;
   $('#resultTitle').textContent = run.step === 0 ? '未実行' : !done ? '実行中 · 現在値で仮判定' : result.pass ? '○ すべての期待を満たしました' : '× 期待値との差があります';
-  $('#liveNote').textContent = !done ? '○×は現在値と最終期待値の比較です。途中の×は、後続処理で○に変わることがあります。' : '実行が終了または停止した時点の結果です。';
   for (const c of result.checks) { const row = el('div', undefined, 'check'); row.dataset.pass = run.step === 0 ? 'pending' : String(c.pass); row.append(el('span', run.step === 0 ? '—' : c.pass ? '○' : '×', run.step === 0 ? 'muted' : c.pass ? 'pass' : 'fail')); const fields = { amount: '\u91d1\u984d', revision: '\u7248', approvalStatus: '\u627f\u8a8d\u72b6\u614b', approvedRevision: '\u627f\u8a8d\u7248', accountingStatus: '\u7d4c\u7406\u78ba\u8a8d', verifiedRevision: '\u78ba\u8a8d\u7248', paidRevision: '\u632f\u8fbc\u7248', reservationStatus: '引当状態', reservedQuantity: '引当数量', paymentStatus: '決済状態', orderStatus: '注文状態', cancellationStatus: 'キャンセル状態', shippingStatus: '出荷状態' }; const parts = c.label.split('.'); const label = fields[parts.at(-1)] ? `${parts[1]} · ${fields[parts.at(-1)]}` : c.label; const body = el('div', label); body.append(el('small', `期待：${String(c.expected)} ／ 現在：${String(c.actual)}`)); row.append(body); area.append(row); }
 }
 function renderLogs() {
   $('#logs').replaceChildren(...run.logs.map(l => { const row = el('div', undefined, 'log-entry'); row.append(el('span', `#${l.step} ${l.orderId || ''} ${l.operation} → ${l.status === 'no_op' ? '変更なし' : l.status}${l.reason ? `（${l.reason}）` : ''}`, l.status === 'failure' ? 'fail' : '')); row.append(el('small', `${l.diff.map(d => `${d.path}: ${JSON.stringify(d.before)} → ${JSON.stringify(d.after)}`).join('\n') || '状態変更なし'} ／ 遷移先：${name(l.to)}`)); return row; })); $('#logs').scrollTop = $('#logs').scrollHeight;
 }
 function render() {
+  $('.toolbar').hidden = !test;
   renderResults(); renderCases(); renderNodes(); drawEdges(); renderTokens(); renderState(); renderLogs();
   const status = { ready: '準備完了', running: timer ? '実行中' : '一時停止', waiting: '待機中', stopped: '停止', completed: '完了' };
   $('#status').textContent = test ? `${test.id} · ${status[run.status]} · ${run.step} step` : 'テストケースを選択してください';
@@ -404,15 +401,9 @@ $('#reset').onclick = reset;
 $('#restore').onclick = () => { graph = clone(initialGraph); selected = graph.nodes[0].id; changed(); };
 $('#batch').onclick = () => {
   pause(); results = {}; test = tests[0]; reset();
-  if (document.querySelector('main').classList.contains('cases-expanded')) $('#toggleCaseList').click();
+  
   setDrawer(true); batchRun = { index: 0, nextAt: 0 }; openBlock('state');
   timer = setInterval(advance, Number($('#speed').value)); render();
-};
-$('#toggleCaseList').onclick = () => {
-  const expanded = document.querySelector('main').classList.toggle('cases-expanded');
-  const button = $('#toggleCaseList'); button.textContent = expanded ? '⇤' : '☷';
-  button.setAttribute('aria-expanded', String(expanded)); button.setAttribute('aria-label', expanded ? 'テストケース一覧を縮める' : 'テストケースの概要と観点を一覧表示'); button.title = expanded ? '一覧を縮める' : '一覧を広げる';
-  fitCanvas();
 };
 $('#closeBlockDrawer').onclick = () => {
   pendingRoutes = {}; previewRoute(null);
@@ -424,7 +415,6 @@ $('#closeBlockDrawer').onclick = () => {
 };
 $('#closeTestDrawer').onclick = () => { setDrawer(false); document.querySelector('.case.active')?.focus({ preventScroll: true }); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawerOpen) { setDrawer(false); document.querySelector('.case.active')?.focus({ preventScroll: true }); } });
-$('#warehouse').onclick = () => { renderState(); openBlock('state'); };
 const helpButton = el('button', '?', 'editor-help-button');
 helpButton.id = 'editorHelp'; helpButton.setAttribute('aria-label', '操作カードと処理結果の説明');
 helpButton.setAttribute('popovertarget', 'editorHelpPopup');
@@ -439,7 +429,6 @@ help.append(el('h3', '操作カードの前提条件'));
 Object.entries(operations).filter(([id]) => drill.allowedOperations.includes(id)).forEach(([, [title, rule]]) => help.append(el('p', `${title}：${rule.replaceAll('no_op', '変更なし')}`)));
 document.body.append(help);
 new ResizeObserver(fitCanvas).observe($('.canvas-viewport'));
-new ResizeObserver(() => requestAnimationFrame(syncCaseHeight)).observe($('.workspace'));
 const picker = $('#drillSelect');
 drills.filter(d => d.id === drill.id || chapterUnlocked(d.chapter)).forEach(d => { const option = el('option', `${d.difficulty} / ${d.title}`); option.value = d.id; picker.append(option); });
 picker.value = drill.id;
@@ -460,11 +449,29 @@ document.body.classList.toggle('fixed-blocks', !drill.allowMove);
 if (drill.chapter === 2) $('.legend span:last-child').textContent = '● 申請をクリックして状態を確認';
 $('.badge').textContent = `${drill.chapter === 2 ? '経費精算・承認' : '注文システム'} / ${drill.difficulty}`;
 $('.canvas-viewport').ondragover = e => { if (drill.allowPlace) e.preventDefault(); };
-$('.canvas-viewport').ondrop = e => { if (!drill.allowPlace) return; e.preventDefault(); const rect = $('#canvas').getBoundingClientRect(), scale = rect.width / 910; placeBlock(e.dataTransfer.getData('text/plain'), { x: (e.clientX - rect.left) / scale - 110, y: (e.clientY - rect.top) / scale - 24 }); };
+$('.canvas-viewport').ondrop = e => { if (!drill.allowPlace) return; e.preventDefault(); const rect = $('#canvas').getBoundingClientRect(), scale = rect.width / canvasWidth(); placeBlock(e.dataTransfer.getData('text/plain'), { x: (e.clientX - rect.left) / scale - 100, y: (e.clientY - rect.top) / scale - 20 }); };
 $('#drillNotice').textContent = requestedDrill && !drills.some(d => d.id === requestedDrill) ? '\u6307\u5b9a\u3055\u308c\u305fID\u304c\u898b\u3064\u304b\u3089\u306a\u3044\u305f\u3081\u3001\u7dcf\u5408\u554f\u984c\u3092\u8868\u793a\u3057\u3066\u3044\u307e\u3059\u3002' : '';
 if (storyMode && requestedDrill && requestedDrill !== drill.id) $('#drillNotice').textContent = '未解放のステージのため、解放済みのステージを表示しています。';
 reset(); renderEditor();
 renderPalette();
-$('#toggleCaseList').click();
-setDrawer(false); fitCanvas();
+setDrawer(!titleMode && !!test, false); fitCanvas();
 const storyUI = installStoryUI(drills, drill, storyMode, titleMode);
+
+const assignmentDialog = $('#assignmentDialog');
+function focusCanvas() { if (!titleMode) $('.canvas-heading').scrollIntoView({ block: 'start', behavior: 'instant' }); }
+assignmentDialog.addEventListener('close', focusCanvas);
+if (!titleMode) requestAnimationFrame(focusCanvas);
+function showAssignment() { if (!assignmentDialog.open) assignmentDialog.showModal(); }
+$('#showAssignment').onclick = showAssignment;
+$('#closeAssignment').onclick = () => assignmentDialog.close();
+if (!titleMode) {
+  if (!storyMode) showAssignment();
+  else {
+    const showAfterStory = () => setTimeout(() => {
+      if ($('#storyDialog').open) return;
+      $('#storyDialog').removeEventListener('close', showAfterStory);
+      showAssignment();
+    }, 0);
+    $('#storyDialog').addEventListener('close', showAfterStory);
+  }
+}

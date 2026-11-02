@@ -42,20 +42,23 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     if (!lines?.length || (!force && readProgress().seenEvents.includes(eventId))) { done(); return; }
     const dialog = document.querySelector('#storyDialog'); let index = 0, writer; active = true;
     const cast = document.querySelector('#storyCast'), speakerIds = ['player', 'sales', 'lead', 'client', 'accountant'];
-    const participants = [...new Set(lines.map(line => line.speaker))].filter(id => speakerIds.includes(id));
-    cast.replaceChildren(); cast.style.setProperty('--cast-count', String(Math.max(1, participants.length)));
-    const totalWidth = participants.reduce((sum, id) => sum + portraits[id].width, 0);
-    cast.style.gridTemplateColumns = participants.map(id => `minmax(0,${portraits[id].width}fr)`).join(' ');
-    const castHeight = participants.length > 1 ? 480 : 640;
-    cast.style.width = `min(80%, ${totalWidth * castHeight / 1536}px, ${totalWidth * 64 / 1536}vh)`;
-    participants.forEach(id => {
+    const participants = [];
+    cast.replaceChildren();
+    function revealSpeaker(id) {
+      if (!speakerIds.includes(id) || participants.includes(id)) return;
+      participants.push(id);
+      cast.style.setProperty('--cast-count', String(participants.length));
+      const totalWidth = participants.reduce((sum, id) => sum + portraits[id].width, 0);
+      cast.style.gridTemplateColumns = participants.map(id => `minmax(0,${portraits[id].width}fr)`).join(' ');
+      const castHeight = participants.length > 1 ? 480 : 640;
+      cast.style.width = `min(80%, ${totalWidth * castHeight / 1536}px, ${totalWidth * 64 / 1536}vh)`;
       const portrait = element('img', undefined, 'story-portrait'); portrait.dataset.speaker = id;
       const { width, file } = portraits[id];
       portrait.src = new URL(`assets/${file}`, import.meta.url).href;
       portrait.alt = names[id]; portrait.width = width; portrait.height = 1536;
       portrait.style.aspectRatio = `${width} / 1536`;
-      portrait.setAttribute('role', 'img'); portrait.setAttribute('aria-label', names[id]); cast.append(portrait);
-    });
+      cast.append(portrait);
+    }
     const finish = () => {
       writer?.destroy();
       const saved = readProgress(); if (!saved.seenEvents.includes(eventId)) saved.seenEvents.push(eventId);
@@ -66,6 +69,7 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     const render = () => {
       writer?.destroy(); const line = lines[index], button = document.querySelector('#storyAdvance');
       document.querySelector('#storySpeaker').textContent = names[line.speaker] || line.speaker;
+      revealSpeaker(line.speaker);
       cast.querySelectorAll('.story-portrait').forEach(portrait => {
         const speaking = portrait.dataset.speaker === line.speaker;
         portrait.classList.toggle('speaking', speaking);
