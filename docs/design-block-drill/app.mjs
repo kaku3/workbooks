@@ -98,13 +98,15 @@ function changed() { save(); reset(); renderEditor(); renderPalette(); }
 function renderCases() {
   $('#caseFilters').hidden = !Object.keys(results).length && !batchRun;
   const counts = { all: tests.length, pass: Object.values(results).filter(value => value === true).length, fail: Object.values(results).filter(value => value === false).length };
-  const filterLabels = { all: 'すべて', pass: '成功', fail: '失敗' };
+  const filterLabels = { all: 'すべて', pass: 'Pass', fail: 'Fail' };
   $('#caseFilters').querySelectorAll('button').forEach(button => { button.textContent = `${filterLabels[button.dataset.filter]}(${counts[button.dataset.filter]})`; });
   $('#cases').replaceChildren(...tests.map(t => {
     const b = el('button', undefined, `case${t.id === test?.id ? ' active' : ''}`);
     b.dataset.result = results[t.id] === undefined ? 'pending' : results[t.id] ? 'pass' : 'fail';
     b.hidden = caseFilter !== 'all' && b.dataset.result !== caseFilter;
-    b.append(el('small', t.id), el('strong', t.title), el('span', results[t.id] === undefined ? '—' : results[t.id] ? '○' : '×', `case-result ${results[t.id] === undefined ? 'muted' : results[t.id] ? 'pass' : 'fail'}`));
+    const caption = el('small', t.id);
+    caption.append(el('span', results[t.id] === undefined ? '—' : results[t.id] ? 'Pass' : 'Fail', `case-result ${results[t.id] === undefined ? 'muted' : results[t.id] ? 'pass' : 'fail'}`));
+    b.append(caption, el('strong', t.title));
 
     const info = el('span', undefined, 'case-info');
     info.append(el('span', '概要', 'case-info-label'), el('span', t.description), el('span', '観点', 'case-info-label'), el('span', t.perspective)); b.append(info);

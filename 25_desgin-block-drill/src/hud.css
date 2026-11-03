@@ -189,8 +189,9 @@ body:not(.fixed-blocks) #canvas{touch-action:none}
 .workspace>.tests .case.active{background:#f0fbff;border-color:#72dcf0;box-shadow:inset 0 0 0 2px #15566d,inset 5px 0 #15566d,0 0 0 1px #a3edff,0 0 14px #6cdeff60}
 .workspace>.tests .case[data-result="pass"],.workspace>.tests .case[data-result="pass"]:hover{background:#dcefe9;border-color:#78b4a4}
 .workspace>.tests .case[data-result="fail"],.workspace>.tests .case[data-result="fail"]:hover{background:#f6e3df;border-color:#cb9487}
-.workspace>.tests .case[data-result="pass"] .case-result{color:#1f6855}
-.workspace>.tests .case[data-result="fail"] .case-result{color:#9b3f30}
+.workspace>.tests .case .case-result{display:inline-block;padding:1px 4px;border-radius:3px;font-size:9px;font-weight:700;line-height:1.25;letter-spacing:0}
+.workspace>.tests .case[data-result="pass"] .case-result{color:#f0fbff;background:#286181}
+.workspace>.tests .case[data-result="fail"] .case-result{color:#fff4f1;background:#9b4a3c}
 .cases-expanded .workspace>.tests .case .case-info{background:#d6e3eb;color:#304e62}
 .cases-expanded .workspace>.tests .case[data-result="pass"] .case-info{background:#cce3da}
 .cases-expanded .workspace>.tests .case[data-result="fail"] .case-info{background:#ecd4cf}
