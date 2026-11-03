@@ -3,7 +3,7 @@ const copy = structuredClone;
 const request = extra => ({ applicantId: 'E-01', amount: 1200, revision: 1, approvalStatus: 'pending', approvedRevision: null, accountingStatus: 'pending', verifiedRevision: null, paymentStatus: 'unpaid', paidRevision: null, ...extra });
 const event = (type, extra = {}) => ({ type, requestId: 'R-01', actorId: type === 'approve' ? 'M-01' : 'A-01', decision: 'approve', receiptValid: true, ...extra });
 const p = (field, equals) => ({ path: `requests.R-01.${field}`, equals });
-const count = (type, equals, where) => ({ event: type, equals, where, label: `${{ transfer: '振込', paidEmail: '完了通知', decision: '権限違反の判断' }[type]}件数${where ? '（違反）' : ''}` });
+const count = (type, equals, where) => ({ event: type, equals, where, label: where ? `${{ transfer: '不正な振込', paidEmail: '不正な完了通知', decision: '権限違反の上長判断' }[type]}の合計` : `${{ transfer: '振込', paidEmail: '完了通知' }[type]}の合計` });
 function test(id, title, description, extra, events, expected, transfers, emails) {
   const perspectives = {
     'AP-01': '「上長判断」で承認を記録した後、「現版承認確認」と「経理確認」が現在の版を対象に行われ、振込・完了通知が各1回になるか確認します。',

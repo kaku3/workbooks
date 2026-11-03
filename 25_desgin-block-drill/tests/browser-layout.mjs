@@ -45,7 +45,7 @@ try {
     for (let i=0;i<600;i++) { if (await evaluate('document.querySelector("#batchResult").open')) break; await delay(100); }
     assert.equal(await evaluate('document.querySelector("#batchResult").open'), true);
     assert.equal(await evaluate('document.querySelector("#batchGrade").textContent'), grade);
-    if (grade === 'Bad') { await delay(3200); assert.equal(await evaluate('document.querySelector("#batchResult").open'), false); } else await evaluate('document.querySelector("#batchResult").close()');
+    if (grade === 'Try Again') { await delay(3200); assert.equal(await evaluate('document.querySelector("#batchResult").open'), false); } else await evaluate('document.querySelector("#batchResult").close()');
   };
 
 

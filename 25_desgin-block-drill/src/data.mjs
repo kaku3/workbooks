@@ -15,7 +15,7 @@ export const initialGraph = {
   ],
 };
 const path = (path, equals, label) => ({ path, equals, label });
-const effect = (event, equals) => ({ event, equals, label: { shipping: '出荷指示件数', refund: '返金件数', cancelCompletedEmail: 'キャンセル完了メール件数' }[event] });
+const effect = (event, equals) => ({ event, equals, label: { shipping: '出荷指示の合計', refund: '返金の合計', cancelCompletedEmail: 'キャンセル完了通知の合計' }[event] });
 const p = (field, value, id = 'ORD-001') => path(`orders.${id}.${field}`, value);
 function test(id, title, description, stock, orders, events, assertions) { return { id, title, description, initialState: { inventory: { 'ITEM-A': stock }, orders, effects: [] }, events, assertions: [path('inventory.ITEM-A', stock, '在庫'), ...assertions] }; }
 export const tests = [

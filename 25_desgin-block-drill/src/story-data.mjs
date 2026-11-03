@@ -164,7 +164,7 @@ export const scenes = {
   "02-04.clear": [
     {
       "speaker": "accountant",
-      "text": "部長の経費が見えなくなっちゃいましたね…。"
+      "text": "部長がステルス精算できるようになっちゃいましたね…。"
     },
     {
       "speaker": "player",
@@ -172,7 +172,7 @@ export const scenes = {
     },
     {
       "speaker": "sales",
-      "text": "お疲れさまでした！ 次はセキュリティ案件です。<br>現場共通のIDとパスワード、付箋に書いて貸与PCに貼っておきました！"
+      "text": "お疲れさまでした！ 次はセキュリティ案件です。<br>**現場共通のIDとパスワード、付箋に書いて貸与PCに貼っておきました！ **"
     },
     {
       "speaker": "player",

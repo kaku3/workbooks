@@ -100,6 +100,9 @@ export function step(run) {
     if (run.tokens.every(t => ['completed', 'stopped'].includes(t.status))) run.status = run.tokens.some(t => t.status === 'stopped') ? 'stopped' : 'completed';
   }
   const log = { step: run.step, tokenId: token.id, orderId: token.orderId, node: from, operation: operations[operation]?.[0] || '未設定', status: outcome.status, reason: outcome.reason || token.reason || '', diff: differences(before, run.state), to: token.status === 'completed' ? 'END' : token.node };
+  log.inputIndex = run.tokens.indexOf(token) + 1;
+  log.inputCount = run.tokens.length;
+  log.inputEvent = clone(token.event);
   token.last = log; run.logs.push(log); return log;
 }
 export function finish(run) { while (!['completed', 'stopped', 'waiting'].includes(run.status)) step(run); return judge(run); }

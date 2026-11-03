@@ -45,7 +45,7 @@ try {
     for (let i=0;i<600;i++) { if (await evaluate('document.querySelector("#batchResult").open')) break; await delay(100); }
     assert.equal(await evaluate('document.querySelector("#batchResult").open'), true);
     assert.equal(await evaluate('document.querySelector("#batchGrade").textContent'), grade);
-    if (grade === 'Bad') { await delay(3200); assert.equal(await evaluate('document.querySelector("#batchResult").open'), false); } else await evaluate('document.querySelector("#batchResult").close()');
+    if (grade === 'Try Again') { await delay(3200); assert.equal(await evaluate('document.querySelector("#batchResult").open'), false); } else await evaluate('document.querySelector("#batchResult").close()');
   };
 
   await call('Page.navigate', { url: `${url}?drill=order-system` });
@@ -59,7 +59,7 @@ try {
 
   assert.equal(await evaluate('document.querySelectorAll(".case.active").length'), 0);
   assert.equal(await evaluate('document.querySelector("#play").disabled'), true);
-  await runBatch('Bad');
+  await runBatch('Try Again');
   await evaluate('document.querySelector("[data-node=stock] button").click()');
   assert.equal(await evaluate('document.querySelectorAll(".edit-operation").length'), 0);
   assert.equal(await evaluate('document.querySelectorAll(".block-routes .route-field").length'), 2);
