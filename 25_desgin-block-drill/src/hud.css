@@ -113,3 +113,43 @@ header{background:linear-gradient(100deg,#241e38ed,#151d30bd);border-bottom-colo
 #editor .block-routes .routes-heading{position:absolute;top:8px;left:38px;margin:0;font-size:12px;line-height:20px;font-weight:700;color:#d5edf7}
 .editor-keyboard{width:410px;right:-170px}
 .test-drawer .check small{text-align:right}
+
+@keyframes title-main-loop{
+  0%{transform:translate3d(0,0,0) scale(1.02)}
+  34%{transform:translate3d(-3.5vw,-1.3vh,0) scale(1.05)}
+  67%{transform:translate3d(3vw,-2vh,0) scale(1.045)}
+  100%{transform:translate3d(0,0,0) scale(1.02)}
+}
+html.title-overlay-active .title-screen{background:radial-gradient(circle at 22% 9%,#2c5a7a26,transparent 46%),linear-gradient(180deg,#0f1d2a1a,#0f1d2a66)}
+html.title-overlay-active header,html.title-overlay-active footer{visibility:hidden}
+html.title-overlay-active main{position:fixed;inset:0;max-width:none;padding:0;display:block;filter:none;transform:none;animation:none}
+html.title-overlay-active .canvas-stage{position:absolute;left:50%;top:50%;width:max(100vw,1000px);transform:translate(-50%,-50%) rotate(-12deg) scale(1.5);transform-origin:center;opacity:.65;filter:blur(1px);pointer-events:none}
+html.title-overlay-active .canvas-viewport{border:0;box-shadow:none;overflow:hidden}
+html.title-overlay-active .workspace{display:block}
+html.title-overlay-active .workspace>:not(.canvas-stage),html.title-overlay-active .canvas-stage>:not(.canvas-viewport),html.title-overlay-active .story-navigation{display:none!important}
+html.title-overlay-active .title-screen{overflow-y:auto;justify-content:safe center;align-items:center}
+html.title-overlay-active .mode-grid{width:min(100%,880px);grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+html.title-overlay-active .story-card{transform:none}
+@media(max-width:700px){html.title-overlay-active .mode-grid{max-width:440px;grid-template-columns:minmax(0,1fr)}html.title-overlay-active .title-screen{justify-content:flex-start;padding:28px 18px}}
+html.title-overlay-active .story-card,html.title-overlay-active .drill-card{background:#19384ab5;backdrop-filter:blur(8px)}
+html.title-overlay-active .story-card{background:#193e49bd;border-color:#80dcca55}
+html.title-overlay-active .drill-card{background:#2b354fbd;border-color:#b1a5e655}
+.title-screen .story-card h2{color:#c2f3e8}
+.title-screen .drill-card h2{color:#dfd8ff}
+.title-screen .story-card .paper-label{background:#326d70;color:#dcfff6}
+.title-screen .drill-card .paper-label{background:#555681;color:#eeeaff}
+.story-card .mode-pictogram{color:#8ddfce}
+.drill-card .mode-pictogram{color:#b7a9ed}
+
+/* Clean technical type and mode emblems for the title menu. */
+.title-screen,.title-screen>h1,.title-screen .mode-grid h2,.title-screen .story-card button,.title-screen .drill-card,.title-screen .title-kicker{font-family:"Rajdhani","Noto Sans JP","Yu Gothic UI",sans-serif}
+.title-screen>h1{font-weight:600;letter-spacing:.12em;line-height:1.45}
+.title-screen .mode-grid h2{font-weight:600;font-size:23px;letter-spacing:.06em}
+.title-screen .title-copy{font-size:17px;font-weight:400;letter-spacing:.08em}
+.title-screen .title-kicker,.title-screen .paper-label{font-family:"Rajdhani",sans-serif;font-weight:600;letter-spacing:.2em}
+.title-screen .paper-label{font-size:12px;align-self:flex-start}
+.title-screen .story-card,.title-screen .drill-card{padding-bottom:120px}
+.mode-pictogram{position:absolute;right:24px;bottom:20px;width:80px;height:80px;color:#87d9ec;opacity:.55;pointer-events:none}
+.title-screen .chapter-locked{display:flex;align-items:center;gap:8px;font-size:13px;color:#9ebdcc}
+.chapter-locked svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:700px){.title-screen .mode-grid h2{font-size:21px}.title-screen .story-card,.title-screen .drill-card{padding-bottom:104px}.mode-pictogram{width:68px;height:68px;right:20px;bottom:16px}}

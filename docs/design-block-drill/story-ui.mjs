@@ -10,7 +10,8 @@ export function stageURL(id, story = false, replay = false) {
 }
 export function installStoryUI(drills, drill, storyMode, titleMode) {
   const title = document.querySelector('#titleScreen'), main = document.querySelector('main'), header = document.querySelector('body>header');
-  title.hidden = !titleMode; main.hidden = titleMode; header.hidden = titleMode; document.querySelector('footer').hidden = titleMode;
+  title.hidden = !titleMode; main.hidden = false; header.hidden = false; document.querySelector('footer').hidden = false;
+  document.documentElement.classList.toggle('title-overlay-active', titleMode);
   function link(text, id, story = false) { const a = element('a', text, 'mode-link'); a.href = stageURL(id, story); return a; }
   const p = readProgress();
   const continueButton = document.querySelector('#continueStory'); continueButton.hidden = !p.started;
@@ -20,8 +21,17 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
   for (const chapter of [...new Set(stages.map(s => s.chapter))]) {
     const card = element('section', undefined, 'chapter-card'), list = stages.filter(s => s.chapter === chapter), unlocked = chapterUnlocked(chapter, p);
     card.append(element('h3', `第${chapter}章 ${unlocked ? chapterNames[chapter] : '?????'}`));
-    if (unlocked) list.forEach(stage => card.append(link(`${p.completedStages.includes(stage.id) ? '✓ ' : ''}${stage.id} ${drills.find(d => d.id === stage.drillId).title}`, stage.drillId)));
-    else card.append(element('p', `${list.length}ステージ 🔒 この章の総合をストーリーでクリアすると解放`));
+    if (unlocked) list.forEach(stage => card.append(link(`${stage.id} ${drills.find(d => d.id === stage.drillId).title}`, stage.drillId)));
+    else {
+      const condition = element('p', 'ストーリークリアで解放', 'chapter-locked');
+      const lock = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      lock.setAttribute('viewBox', '0 0 24 24');
+      lock.setAttribute('aria-hidden', 'true');
+      lock.setAttribute('focusable', 'false');
+      const shape = document.createElementNS(lock.namespaceURI, 'path');
+      shape.setAttribute('d', 'M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5zM12 14v3');
+      lock.append(shape); condition.prepend(lock); card.append(condition);
+    }
     chapters.append(card);
   }
   const home = document.querySelector('#backToTitle'); home.onclick = () => { const url = new URL(location.href); url.search = ''; location.assign(url.href); };
@@ -97,5 +107,6 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
   }
   let clearPending = false;
   document.querySelector('#batchResult').addEventListener('close', () => { if (clearPending) { clearPending = false; if (finalStage) dialogue(`${stage.id}.clear`, true, proceed); else proceed(); } });
+  document.documentElement.classList.remove('booting');
   return { onClear() { if (!storyMode) return; completeStage(drill.id); clearPending = true; }, showNext };
 }

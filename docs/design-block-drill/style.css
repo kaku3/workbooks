@@ -144,3 +144,24 @@ main.test-panel-open{grid-template-columns:190px minmax(0,1fr)}
 
 .story-dialog-top #storySpeaker{font-size:20px;margin:0;line-height:1.5}.story-dialog-top #storySkip{flex-shrink:0}
 @media(max-width:600px){.story-dialog-top #storySpeaker{font-size:17px}}
+
+html.booting body{display:none}
+html.title-overlay-active{overflow:hidden}
+html.title-overlay-active #titleScreen[hidden]{display:flex!important}
+html.title-overlay-active header,html.title-overlay-active main,html.title-overlay-active footer{filter:blur(5px) saturate(.95);transform:scale(1.01);pointer-events:none;user-select:none}
+html.title-overlay-active .title-screen{position:fixed;inset:0;z-index:50;max-width:none;margin:0;display:flex;flex-direction:column;justify-content:center;padding:40px 28px;background:radial-gradient(circle at 20% 10%,#2c5a7a33,transparent 45%),linear-gradient(180deg,#0f1d2a40,#0f1d2a7d)}
+.title-screen>h1,.mode-grid h2,.story-card button,.drill-card,.title-kicker{font-family:"DotGothic16","M PLUS 1 Code","Yu Gothic UI",sans-serif}
+.title-screen>h1{letter-spacing:.08em;text-shadow:0 0 18px #86d2f04a}
+.title-copy{font-size:20px}
+.mode-grid{align-items:stretch}
+.story-card,.drill-card{display:flex;flex-direction:column;height:100%;padding-bottom:28px}
+.story-card{align-self:stretch}
+.story-card button{position:relative;z-index:1}
+#chapterList{margin-top:auto;position:relative;z-index:1}
+.mode-grid h2{font-size:25px}
+.mode-grid p,.mode-link,.chapter-card h3{font-size:15px}
+.mode-link{padding:10px 12px}
+.drill-card .chapter-card{margin-top:10px;padding-top:8px}
+.drill-card .chapter-card h3{margin:0 0 6px}
+.drill-card .mode-link{padding:6px 10px}
+@media(max-width:700px){.story-card,.drill-card{padding-bottom:22px}.mode-grid h2{font-size:22px}.mode-grid p,.mode-link,.chapter-card h3{font-size:14px}}

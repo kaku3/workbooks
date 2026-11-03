@@ -443,7 +443,7 @@ const ruleItems = drill.chapter === 2 ? [
   '取消は出荷確定前のみ', '引当解除・返金後に取消を確定', '成功時だけ通知', '二重要求の在庫戻し・返金・通知は各1回',
 ];
 $('#assignmentRules').replaceChildren(...ruleItems.map(rule => el('li', rule)));
-$('#assignmentTask').textContent = 'すべてのテストが正しく動くように設計してください。';
+$('#assignmentTask').textContent = 'ブロックを修正してすべてのテストが正しく動くようにしてください。';
 $('.canvas-heading>p').textContent = drill.allowMove ? 'ブロックを配置・移動し、接続と操作を編集' : '配置は固定です。ブロックをクリックして接続と操作を編集';
 document.body.classList.toggle('fixed-blocks', !drill.allowMove);
 if (drill.chapter === 2) $('.legend span:last-child').textContent = '● 申請をクリックして状態を確認';
@@ -456,6 +456,36 @@ reset(); renderEditor();
 renderPalette();
 setDrawer(!titleMode && !!test, false); fitCanvas();
 const storyUI = installStoryUI(drills, drill, storyMode, titleMode);
+
+// Title demos use fresh graphs only; they never save designs or story progress.
+if (titleMode) {
+  $('main').inert = true;
+  $('main').setAttribute('aria-hidden', 'true');
+  const scenes = drills.filter(d => d.tests.length && d.initialGraph.nodes.length);
+  let sceneIndex = 0, ticks = 0, hold = 0;
+  function nextDemo() {
+    const scene = scenes[sceneIndex % scenes.length];
+    const sample = scene.tests[Math.floor(sceneIndex / scenes.length) % scene.tests.length];
+    sceneIndex++;
+    graph = clone(scene.initialGraph);
+    selected = null;
+    run = createRun(graph, sample);
+    ticks = 0; hold = 0;
+    $('#tokens').replaceChildren();
+    renderNodes(); fitCanvas(); renderTokens();
+  }
+  nextDemo();
+  const demoTimer = setInterval(() => {
+    if (document.hidden) return;
+    if (['completed', 'stopped'].includes(run.status) || ticks >= 24) {
+      if (++hold >= 3) nextDemo();
+      return;
+    }
+    step(run); ticks++;
+    renderNodes(); drawEdges(); renderTokens();
+  }, 700);
+  window.addEventListener('pagehide', () => clearInterval(demoTimer), { once: true });
+}
 
 const assignmentDialog = $('#assignmentDialog');
 function focusCanvas() { if (!titleMode) $('.canvas-heading').scrollIntoView({ block: 'start', behavior: 'instant' }); }
