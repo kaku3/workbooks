@@ -279,7 +279,8 @@ body:not(.fixed-blocks) #canvas{touch-action:none}
 .canvas-stage .log-panel{isolation:isolate;overflow:hidden}
 .dashboard-ambient{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;opacity:.28;color:#73cbe6;contain:strict}
 .log-panel>.section-title,.log-panel>#logs{position:relative;z-index:1}
-.ambient-wire{position:absolute;left:3%;top:-32px;width:320px;height:240px;fill:none;stroke:currentColor;stroke-width:.7;animation:ambient-orbit 30s linear infinite;transform-origin:center}
+.ambient-wire{position:absolute;left:-8%;top:-25%;width:116%;height:150%;fill:none;stroke:currentColor;stroke-width:.7;opacity:.75;animation:ambient-wire-drift 70s ease-in-out infinite alternate;transform-origin:center}
+@keyframes ambient-wire-drift{from{transform:translate(-1.5%,1%) scale(1)}to{transform:translate(1.5%,-2%) scale(1.05)}}
 .ambient-bars{position:absolute;left:38%;bottom:12px;width:22%;height:120px;display:flex;align-items:flex-end;gap:5px}
 .ambient-bars i{flex:1;height:100%;background:linear-gradient(#9ec4f9aa,#705ac133);transform-origin:bottom;animation:ambient-bar calc(1.4s + var(--bar-index)*.13s) ease-in-out infinite alternate;animation-delay:calc(var(--bar-index)*-.21s)}
 .ambient-pie{position:absolute;right:19%;top:20px;width:155px;height:155px;fill:none;stroke-width:13;stroke:#87b1ed;animation:ambient-orbit 18s linear infinite reverse}

@@ -4,13 +4,14 @@ export function installDashboardAmbient(panel) {
   layer.className = 'dashboard-ambient'; layer.setAttribute('aria-hidden', 'true');
   const ns = 'http://www.w3.org/2000/svg';
   const wire = document.createElementNS(ns, 'svg');
-  wire.setAttribute('viewBox', '0 0 260 180'); wire.classList.add('ambient-wire');
-  for (let i = 0; i < 5; i++) {
-    const polygon = document.createElementNS(ns, 'polygon');
-    polygon.setAttribute('points', '130,15 225,60 225,120 130,165 35,120 35,60');
-    polygon.setAttribute('transform', `rotate(${i * 18} 130 90) scale(${1 - i * .12}) translate(${i * 18} ${i * 12})`);
-    wire.append(polygon);
+  wire.setAttribute('viewBox', '0 0 1440 320'); wire.setAttribute('preserveAspectRatio', 'none'); wire.classList.add('ambient-wire');
+  const point = (column, row) => [column * 120 - 60 + (row % 2) * 55, row * 95 - 30 + Math.sin(column * 1.7 + row) * 18];
+  const lines = [];
+  for (let row = 0; row < 5; row++) for (let column = 0; column < 14; column++) {
+    const a = point(column, row);
+    for (const b of [point(column + 1, row), ...(row < 4 ? [point(column, row + 1), point(column + 1, row + 1)] : [])]) lines.push(`M${a.join(',')} L${b.join(',')}`);
   }
+  const mesh = document.createElementNS(ns, 'path'); mesh.setAttribute('d', lines.join(' ')); mesh.setAttribute('vector-effect', 'non-scaling-stroke'); wire.append(mesh);
   layer.append(wire);
   const bars = document.createElement('div'); bars.className = 'ambient-bars';
   for (let i = 0; i < 12; i++) {
