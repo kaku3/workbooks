@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { groupDelta } from '../src/group-move.mjs';
+const positions = [{ x: 40, y: 70 }, { x: 330, y: 220 }];
+assert.deepEqual(groupDelta(positions, 80, 60, 910), { x: 80, y: 60 });
+assert.deepEqual(groupDelta(positions, -100, -100, 910), { x: -20, y: -30 });
+assert.deepEqual(groupDelta(positions, 1000, 1000, 910), { x: 380, y: 280 });
+const delta = groupDelta(positions, 1000, -100, 910);
+const moved = positions.map(p => ({ x: p.x + delta.x, y: p.y + delta.y }));
+assert.equal(moved[1].x - moved[0].x, 290);
+assert.equal(moved[1].y - moved[0].y, 150);
+assert.deepEqual(positions, [{ x: 40, y: 70 }, { x: 330, y: 220 }]);
+console.log('PASS: group bounds, preserved spacing and immutable origins');

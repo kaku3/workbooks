@@ -1,6 +1,7 @@
 import { operations, clone, createRun, step, finish, judge } from './engine.mjs';
 import { drills } from './drills.mjs';
 import { snapPosition } from './snap.mjs';
+import { groupDelta } from './group-move.mjs';
 import { connectionPath } from './connections.mjs';
 import { resolveStoryDrill, stages } from './story.mjs';
 import { installStoryUI } from './story-ui.mjs';
@@ -14,6 +15,8 @@ const el = (tag, text, className) => { const e = document.createElement(tag); if
 const KEY = `design-block-drill.v2.${drill.id}`;
 let graph = clone(initialGraph), selected = initialGraph.nodes[0].id, test = tests[0] || null, run, timer, selectedToken = 0;
 let results = {};
+let caseFilter = 'all';
+let selectedNodes = new Set();
 let batchRun = null;
 let resultDismissTimer;
 let drawerOpen = false;
@@ -52,6 +55,11 @@ function setDrawer(open, focus = true) {
   document.querySelector('main').classList.toggle('test-panel-open', open);
   if (open && focus) $('#closeTestDrawer').focus({ preventScroll: true });
   renderCases();
+  positionTestDrawer();
+}
+function positionTestDrawer() {
+  const bottom = $('.tests.panel').getBoundingClientRect().bottom;
+  $('#testDrawer').style.setProperty('--test-drawer-top', `${Math.max(12, bottom + 8)}px`);
 }
 function canvasWidth() { return parseFloat($('#canvas').style.width) || 910; }
 function fitCanvas() {
@@ -86,11 +94,16 @@ function renderPalette() {
   if (area.children.length === 1) area.append(el('span', 'すべて配置済み', 'rule'));
 }
 function reset() { pause(); batchRun = null; run = test ? createRun(graph, test) : { tokens: [], logs: [], step: 0, status: 'ready' }; selectedToken = 0; render(); }
-function changed() { save(); results = {}; reset(); renderEditor(); renderPalette(); }
+function changed() { save(); reset(); renderEditor(); renderPalette(); }
 function renderCases() {
+  $('#caseFilters').hidden = !Object.keys(results).length && !batchRun;
+  const counts = { all: tests.length, pass: Object.values(results).filter(value => value === true).length, fail: Object.values(results).filter(value => value === false).length };
+  const filterLabels = { all: 'すべて', pass: '成功', fail: '失敗' };
+  $('#caseFilters').querySelectorAll('button').forEach(button => { button.textContent = `${filterLabels[button.dataset.filter]}(${counts[button.dataset.filter]})`; });
   $('#cases').replaceChildren(...tests.map(t => {
     const b = el('button', undefined, `case${t.id === test?.id ? ' active' : ''}`);
     b.dataset.result = results[t.id] === undefined ? 'pending' : results[t.id] ? 'pass' : 'fail';
+    b.hidden = caseFilter !== 'all' && b.dataset.result !== caseFilter;
     b.append(el('small', t.id), el('strong', t.title), el('span', results[t.id] === undefined ? '—' : results[t.id] ? '○' : '×', `case-result ${results[t.id] === undefined ? 'muted' : results[t.id] ? 'pass' : 'fail'}`));
 
     const info = el('span', undefined, 'case-info');
@@ -99,20 +112,41 @@ function renderCases() {
     b.setAttribute('aria-controls', 'testDrawer'); b.setAttribute('aria-expanded', String(t.id === test?.id && drawerOpen));
     b.onclick = () => { if (batchRun || test?.id !== t.id) { test = t; reset(); } setDrawer(true); }; return b;
   }));
+  if (![...$('#cases').children].some(card => !card.hidden)) $('#cases').append(el('span', '該当するケースはありません', 'case-filter-empty'));
 }
 function renderNodes() {
   $('#nodes').replaceChildren(...graph.nodes.map(n => {
-    const box = el('div', undefined, `node${selected === n.id ? ' selected' : ''}${run.tokens.some(t => t.node === n.id && !['completed', 'queued'].includes(t.status)) ? ' active-node' : ''}`);
+    const box = el('div', undefined, `node${selected === n.id ? ' selected' : ''}${selectedNodes.has(n.id) ? ' group-selected' : ''}${run.tokens.some(t => t.node === n.id && !['completed', 'queued'].includes(t.status)) ? ' active-node' : ''}`);
     box.style.left = `${n.x}px`; box.style.top = `${n.y}px`; box.dataset.node = n.id;
     const heading = el('h3'); const edit = el('button', n.label, 'node-action'); edit.setAttribute('aria-label', `${n.label}を編集`);
-    edit.onclick = () => { selected = n.id; openBlock(); renderNodes(); drawEdges(); renderEditor(); }; heading.append(edit); box.append(heading);
+    edit.onclick = () => { selectedNodes.clear(); selected = n.id; openBlock(); renderNodes(); drawEdges(); renderEditor(); }; heading.append(edit); box.append(heading);
     box.title = n.operations.map(o => operations[o][0]).join(' → ') || '操作未設定';
     let drag;
     box.ondragstart = e => e.preventDefault();
-    box.onpointerdown = e => { if (e.button !== 0 || !drill.allowMove) return; e.preventDefault(); pause(); drag = { x: e.clientX, y: e.clientY, left: n.x, top: n.y, pointerId: e.pointerId }; box.setPointerCapture(e.pointerId); window.addEventListener('pointermove', moveDrag); window.addEventListener('pointerup', stopDrag); window.addEventListener('pointercancel', cancelDrag); };
+    box.onpointerdown = e => {
+      if (e.button !== 0 || !drill.allowMove) return;
+      e.preventDefault(); pause();
+      if (!selectedNodes.has(n.id)) selectedNodes.clear();
+      const positions = graph.nodes.filter(item => selectedNodes.has(item.id)).map(item => ({ id: item.id, x: item.x, y: item.y }));
+      drag = { x: e.clientX, y: e.clientY, left: n.x, top: n.y, pointerId: e.pointerId, positions, moved: false };
+      box.setPointerCapture(e.pointerId); window.addEventListener('pointermove', moveDrag); window.addEventListener('pointerup', stopDrag); window.addEventListener('pointercancel', cancelDrag);
+    };
     const moveDrag = e => {
       if (!drag || e.pointerId !== drag.pointerId || Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 3) return;
       const scale = $('#canvas').getBoundingClientRect().width / canvasWidth();
+      drag.moved = true;
+      if (drag.positions.length > 1) {
+        let dx = (e.clientX - drag.x) / scale, dy = (e.clientY - drag.y) / scale;
+        if (!e.shiftKey) { dx = Math.round(dx / 20) * 20; dy = Math.round(dy / 20) * 20; }
+        const delta = groupDelta(drag.positions, dx, dy, canvasWidth());
+        for (const origin of drag.positions) {
+          const item = graph.nodes.find(item => item.id === origin.id);
+          item.x = origin.x + delta.x; item.y = origin.y + delta.y;
+          const card = document.querySelector(`[data-node="${item.id}"]`);
+          card.style.left = `${item.x}px`; card.style.top = `${item.y}px`;
+        }
+        drawEdges(); renderTokens(); return;
+      }
       const point = snapPosition(drag.left + (e.clientX - drag.x) / scale, drag.top + (e.clientY - drag.y) / scale, graph.nodes, n.id, scale, e.shiftKey, { width: canvasWidth() });
       n.x = point.x; n.y = point.y;
       box.style.left = `${n.x}px`; box.style.top = `${n.y}px`; drawEdges(); renderTokens();
@@ -125,12 +159,47 @@ function renderNodes() {
       }
     };
     const releaseDrag = () => { window.removeEventListener('pointermove', moveDrag); window.removeEventListener('pointerup', stopDrag); window.removeEventListener('pointercancel', cancelDrag); drag = null; };
-    const stopDrag = e => { if (!drag || e.pointerId !== drag.pointerId) return; releaseDrag(); selected = n.id; openBlock(); save(); renderNodes(); drawEdges(); renderEditor(); };
+    const stopDrag = e => {
+      if (!drag || e.pointerId !== drag.pointerId) return;
+      const groupMoved = drag.moved && drag.positions.length > 1;
+      releaseDrag();
+      if (!groupMoved) { selectedNodes.clear(); selected = n.id; openBlock(); }
+      save(); renderNodes(); drawEdges(); renderEditor();
+    };
     const cancelDrag = e => { if (!drag || e.pointerId !== drag.pointerId) return; releaseDrag(); save(); drawEdges(); };
     return box;
   }));
 }
 function name(id) { return id === 'END' ? '(完了)' : graph.nodes.find(n => n.id === id)?.label || '(未設定)'; }
+// Drag empty canvas space to select intersecting blocks in canvas coordinates.
+$('.canvas-viewport').addEventListener('pointerdown', event => {
+  if (titleMode || !drill.allowMove || event.button !== 0 || event.target.closest('.node,.token,button')) return;
+  event.preventDefault(); pause();
+  const canvas = $('#canvas'), previous = new Set(selectedNodes);
+  const point = e => { const r = canvas.getBoundingClientRect(), scale = r.width / canvasWidth(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; };
+  const start = point(event), marquee = el('div', undefined, 'selection-marquee');
+  canvas.append(marquee); canvas.setPointerCapture(event.pointerId);
+  const move = e => {
+    if (e.pointerId !== event.pointerId) return;
+    const end = point(e), left = Math.min(start.x, end.x), top = Math.min(start.y, end.y);
+    const width = Math.abs(end.x - start.x), height = Math.abs(end.y - start.y);
+    Object.assign(marquee.style, { left: `${left}px`, top: `${top}px`, width: `${width}px`, height: `${height}px` });
+    selectedNodes = new Set(graph.nodes.filter(n => {
+      const card = document.querySelector(`[data-node="${n.id}"]`);
+      return width > 3 && height > 3 && n.x < left + width && n.x + card.offsetWidth > left && n.y < top + height && n.y + card.offsetHeight > top;
+    }).map(n => n.id));
+    $('#nodes').querySelectorAll('.node').forEach(card => card.classList.toggle('group-selected', selectedNodes.has(card.dataset.node)));
+  };
+  const finish = e => {
+    if (e.pointerId !== event.pointerId) return;
+    if (e.type === 'pointercancel') selectedNodes = previous;
+    else move(e);
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', finish); window.removeEventListener('pointercancel', finish);
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    marquee.remove(); renderNodes(); drawEdges();
+  };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', finish); window.addEventListener('pointercancel', finish);
+});
 function drawEdges() {
   const ns = 'http://www.w3.org/2000/svg', lines = $('#lines'); lines.replaceChildren();
   graph.nodes.forEach(n => ['success', 'failure'].forEach((kind, i) => {
@@ -361,9 +430,7 @@ function render() {
   const status = { ready: '準備完了', running: timer ? '実行中' : '一時停止', waiting: '待機中', stopped: '停止', completed: '完了' };
   $('#status').textContent = test ? `${test.id} · ${status[run.status]} · ${run.step} step` : 'テストケースを選択してください';
   for (const id of ['play', 'pause', 'step', 'reset']) $(`#${id}`).disabled = !test;
-  $('#batchSummary').textContent = Object.keys(results).length ? `${Object.values(results).filter(Boolean).length} / ${Object.keys(results).length} ケース成功` : '';
   $('#batch').disabled = !!batchRun;
-  if (batchRun) $('#batchSummary').textContent = `検証中 ${batchRun.index + 1} / ${tests.length} · ${Object.values(results).filter(Boolean).length} ケース成功`;
 }
 function showBatchResult() {
   const passed = Object.values(results).filter(Boolean).length, ratio = passed / tests.length;
@@ -429,7 +496,17 @@ help.append(el('p', '例外：キャンセル受付で「キャンセル済み�
 help.append(el('h3', '操作カードの前提条件'));
 Object.entries(operations).filter(([id]) => drill.allowedOperations.includes(id)).forEach(([, [title, rule]]) => help.append(el('p', `${title}：${rule.replaceAll('no_op', '変更なし')}`)));
 document.body.append(help);
+$('#caseFilters').addEventListener('click', event => {
+  const button = event.target.closest('button[data-filter]');
+  if (!button) return;
+  caseFilter = button.dataset.filter;
+  $('#caseFilters').querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+  renderCases();
+});
 new ResizeObserver(fitCanvas).observe($('.canvas-viewport'));
+new ResizeObserver(positionTestDrawer).observe($('.tests.panel'));
+window.addEventListener('resize', positionTestDrawer);
+window.addEventListener('scroll', positionTestDrawer, { passive: true });
 $('#drillSummary').textContent = drill.summary;
 $('#assignmentIntro').textContent = drill.chapter === 2 ? '上長承認後に経理確認を行い、振り込むシステムです。' : '在庫引当後に決済、決済後に出荷するシステムです。';
 const ruleItems = drill.chapter === 2 ? [

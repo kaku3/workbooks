@@ -9,7 +9,7 @@ export const approvalOperations = {
   sendPaid: ['振込完了通知', '条件確認なしで通知。必要な確認は前の操作で行う'],
   returnRequest: ['差戻しを記録', '未振込のみ。承認・経理確認を解除する'],
   reviseRequest: ['再申請', '差戻し済み・未振込のみ。版を更新し、承認・経理確認を解除'],
-  audit: ['監査を記録', '申請・実行者・入力された判断を履歴に残す'],
+  audit: ['監査を記録', '申請・実行者・入力された判断を履歴に残す。承認・経理確認・振込済みの確認は行わない'],
 };
 export function executeApproval(state, requestId, operation, event = {}) {
   const next = structuredClone(state), r = next.requests[requestId];

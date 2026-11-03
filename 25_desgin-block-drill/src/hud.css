@@ -120,9 +120,19 @@ header{background:linear-gradient(100deg,#241e38ed,#151d30bd);border-bottom-colo
 #editor .block-routes .routes-heading{position:absolute;top:8px;left:38px;margin:0;font-size:12px;line-height:20px;font-weight:700;color:#d5edf7}
 .editor-keyboard{width:410px;right:-170px}
 .story-message #storyText{white-space:pre-line}
-.test-drawer{width:min(680px,calc(100vw - 24px))}
+.story-window .story-dialog-top{justify-content:flex-end}
+.story-window .story-dialog-bottom{justify-content:flex-start}
+.story-dialog-bottom #storySkip{padding:4px 9px;font-size:12px;background:#20485f;color:#cfeaf5}
+.story-dialog-bottom #storyAdvance{margin-left:auto}
+.story-window .story-dialog-top #storySpeaker{position:absolute;left:28px;top:0;transform:translateY(-50%);max-width:calc(100% - 56px);margin:0;padding:5px 18px;border:1px solid #c59ae799;border-radius:5px;background:linear-gradient(115deg,#352640,#24344b);box-shadow:0 3px 12px #0004;color:#e9f6ff;line-height:1.5;overflow-wrap:anywhere;z-index:2}
+@media(max-width:600px){.story-window .story-dialog-top #storySpeaker{left:16px;max-width:calc(100% - 32px);padding:4px 12px}}
+.test-drawer{width:min(560px,calc(100vw - 24px));top:var(--test-drawer-top,12px)}
+.test-drawer .drawer-heading{padding:7px 12px;gap:8px}
+.test-drawer .drawer-heading h2{margin:0;font-size:13px;line-height:1.5}
+.test-drawer .drawer-heading button{padding:0 7px;font-size:18px}
+.test-drawer .drawer-body{padding-left:12px;padding-right:12px}
 .test-drawer .results{overflow-x:auto}
-.test-drawer .check,.test-drawer .result-columns{display:grid;grid-template-columns:20px minmax(200px,1fr) 150px 150px;gap:8px;align-items:center;min-width:560px;padding:4px 8px;margin:2px 0}
+.test-drawer .check,.test-drawer .result-columns{display:grid;grid-template-columns:20px minmax(200px,1fr) 110px 110px;gap:6px;align-items:center;min-width:474px;padding:4px 8px;margin:2px 0}
 .test-drawer .result-columns{align-items:center;padding-top:10px;padding-bottom:8px}
 .test-drawer .result-summary{grid-column:span 2;min-width:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .test-drawer .result-summary h3{margin:0;flex:none}
@@ -160,6 +170,14 @@ html.title-overlay-active .drill-card{background:#2b354fbd;border-color:#b1a5e65
 .story-card .mode-pictogram{color:#8ddfce}
 .drill-card .mode-pictogram{color:#b7a9ed}
 
+.workspace>.tests .case-filters{display:flex;flex-direction:column;gap:2px;flex:none;order:3}
+.case-filters button{padding:1px 5px;font-size:9px;line-height:1.25;min-height:0;border-radius:3px;white-space:nowrap}
+.case-filters button[aria-pressed="true"]{background:#c7eaf2;color:#183e50;border-color:#8ee5f5;font-weight:700}
+.case-filter-empty{align-self:center;padding:8px;font-size:11px;color:#a8c3d2;white-space:nowrap}
+@media(max-width:600px){.workspace>.tests.panel{flex-wrap:wrap}.workspace>.tests .case-filters{margin-left:auto}.workspace>.tests #cases{flex-basis:100%;order:4}}
+.selection-marquee{position:absolute;z-index:20;pointer-events:none;border:1px solid #9aeaff;background:#72d8ff24;box-shadow:0 0 0 1px #142b45;}
+#nodes .node.group-selected{outline:2px solid #99edff;outline-offset:3px;box-shadow:0 0 18px #69cfff55}
+body:not(.fixed-blocks) #canvas{touch-action:none}
 /* Bright mission cards stand out against the dark simulation workspace. */
 .workspace>.tests .case{background:#e5edf2;color:#203749;border-color:#b8cedb;box-shadow:inset 0 3px #93b9cb,0 3px 9px #0002}
 .workspace>.tests .case:hover{background:#f5f9fc;border-color:#83c5d9}
