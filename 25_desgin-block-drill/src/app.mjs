@@ -2,7 +2,7 @@ import { operations, clone, createRun, step, finish, judge } from './engine.mjs'
 import { drills } from './drills.mjs';
 import { snapPosition } from './snap.mjs';
 import { connectionPath } from './connections.mjs';
-import { resolveStoryDrill, chapterUnlocked } from './story.mjs';
+import { resolveStoryDrill, stages } from './story.mjs';
 import { installStoryUI } from './story-ui.mjs';
 const requestedDrill = new URLSearchParams(location.search).get('drill');
 const storyMode = new URLSearchParams(location.search).get('mode') === 'story';
@@ -79,7 +79,7 @@ function renderPalette() {
   if (!drill.allowPlace) return;
   area.replaceChildren(el('strong', '未配置ブロック'));
   drill.availableBlocks.filter(b => !graph.nodes.some(n => n.id === b.id)).forEach(b => {
-    const card = el('button', `${b.label} ＋配置`, 'palette-block'); card.draggable = true; card.dataset.block = b.id;
+    const card = el('button', b.label, 'palette-block'); card.draggable = true; card.dataset.block = b.id;
     card.onclick = () => placeBlock(b.id);
     card.ondragstart = e => { e.dataTransfer.setData('text/plain', b.id); e.dataTransfer.effectAllowed = 'copy'; }; area.append(card);
   });
@@ -92,6 +92,7 @@ function renderCases() {
     const b = el('button', undefined, `case${t.id === test?.id ? ' active' : ''}`);
     b.dataset.result = results[t.id] === undefined ? 'pending' : results[t.id] ? 'pass' : 'fail';
     b.append(el('small', t.id), el('strong', t.title), el('span', results[t.id] === undefined ? '—' : results[t.id] ? '○' : '×', `case-result ${results[t.id] === undefined ? 'muted' : results[t.id] ? 'pass' : 'fail'}`));
+
     const info = el('span', undefined, 'case-info');
     info.append(el('span', '概要', 'case-info-label'), el('span', t.description), el('span', '観点', 'case-info-label'), el('span', t.perspective)); b.append(info);
     b.setAttribute('aria-pressed', String(t.id === test?.id)); b.title = t.description;
@@ -324,7 +325,7 @@ function renderState() {
     const details = parcelTable('申請の状態', ['申請', '金額', '版', '承認', '承認版', '経理確認', '確認版', '振込', '振込版'], records.map(([id, r]) => [id, `${r.amount}円`, r.revision, r.approvalStatus, r.approvedRevision ?? '—', r.accountingStatus, r.verifiedRevision ?? '—', r.paymentStatus, r.paidRevision ?? '—']));
     area.append(details);
     appendParcelSection(details, '実行位置・結果', ['実行者', '位置', '状態', '理由'], run.tokens.map(t => [t.event.actorId, name(t.node), t.status, t.reason || t.last?.reason || '—']));
-    appendParcelSection(details, '通知・副作用（申請単位）', ['振込回数', '通知数', '不正な振込'], run.tokens.map(t => ['transfer', 'paidEmail', 'invalid'].map(type => run.state.effects.filter(e => e.orderId === t.orderId && (type === 'invalid' ? e.type === 'transfer' && !e.valid : e.type === type)).length)));
+    appendParcelSection(details, '振込・通知の実行回数（申請単位）', ['振込回数', '通知数', '不正な振込'], run.tokens.map(t => ['transfer', 'paidEmail', 'invalid'].map(type => run.state.effects.filter(e => e.orderId === t.orderId && (type === 'invalid' ? e.type === 'transfer' && !e.valid : e.type === type)).length)));
     return;
   }
   area.append(el('p', '\u5728\u5eab\u306f\u3059\u3079\u3066\u306e\u6ce8\u6587\u3067\u5171\u901a\u3057\u3066\u4f7f\u3046\u30c7\u30fc\u30bf\u3067\u3059\u3002', 'rule'));
@@ -334,8 +335,8 @@ function renderState() {
   area.append(parcelDetails);
   appendParcelSection(parcelDetails, '\u5b9f\u884c\u4f4d\u7f6e\u30fb\u7d50\u679c', ['\u4f4d\u7f6e', '\u72b6\u614b', '\u76f4\u8fd1\u306e\u64cd\u4f5c', '\u7406\u7531'], run.tokens.map(t => [name(t.node), t.status, t.last?.operation || '-', t.reason || t.last?.reason || '-']));
   const types = [['shipping', '\u51fa\u8377\u6307\u793a'], ['refund', '\u8fd4\u91d1'], ['cancelCompletedEmail', '\u5b8c\u4e86\u30e1\u30fc\u30eb']];
-  appendParcelSection(parcelDetails, '\u901a\u77e5\u30fb\u526f\u4f5c\u7528', types.map(([, label]) => label), run.tokens.map(t => [...types.map(([type]) => run.state.effects.filter(e => e.orderId === t.orderId && e.type === type).length)]));
-  if (new Set(run.tokens.map(t => t.orderId)).size < run.tokens.length) area.append(el('p', '\u901a\u77e5\u30fb\u526f\u4f5c\u7528\u306f\u6ce8\u6587\u5358\u4f4d\u306e\u7d2f\u8a08\u3067\u3059\u3002\u540c\u3058\u6ce8\u6587\u306e\u8377\u7269\u306b\u306f\u540c\u3058\u4ef6\u6570\u3092\u8868\u793a\u3057\u307e\u3059\u3002', 'rule'));
+  appendParcelSection(parcelDetails, '処理・通知の実行回数', types.map(([, label]) => label), run.tokens.map(t => [...types.map(([type]) => run.state.effects.filter(e => e.orderId === t.orderId && e.type === type).length)]));
+  if (new Set(run.tokens.map(t => t.orderId)).size < run.tokens.length) area.append(el('p', '処理・通知の実行回数\u306f\u6ce8\u6587\u5358\u4f4d\u306e\u7d2f\u8a08\u3067\u3059\u3002\u540c\u3058\u6ce8\u6587\u306e\u8377\u7269\u306b\u306f\u540c\u3058\u4ef6\u6570\u3092\u8868\u793a\u3057\u307e\u3059\u3002', 'rule'));
 
 }
 function renderResults() {
@@ -349,7 +350,7 @@ function renderResults() {
   $('#testOverview').textContent = test.description;
   $('#testPerspective').textContent = test.perspective;
   $('#resultTitle').textContent = run.step === 0 ? '未実行' : !done ? '実行中 · 現在値で仮判定' : result.pass ? '○ すべての期待を満たしました' : '× 期待値との差があります';
-  for (const c of result.checks) { const row = el('div', undefined, 'check'); row.dataset.pass = run.step === 0 ? 'pending' : String(c.pass); row.append(el('span', run.step === 0 ? '—' : c.pass ? '○' : '×', run.step === 0 ? 'muted' : c.pass ? 'pass' : 'fail')); const fields = { amount: '\u91d1\u984d', revision: '\u7248', approvalStatus: '\u627f\u8a8d\u72b6\u614b', approvedRevision: '\u627f\u8a8d\u7248', accountingStatus: '\u7d4c\u7406\u78ba\u8a8d', verifiedRevision: '\u78ba\u8a8d\u7248', paidRevision: '\u632f\u8fbc\u7248', reservationStatus: '引当状態', reservedQuantity: '引当数量', paymentStatus: '決済状態', orderStatus: '注文状態', cancellationStatus: 'キャンセル状態', shippingStatus: '出荷状態' }; const parts = c.label.split('.'); const label = fields[parts.at(-1)] ? `${parts[1]} · ${fields[parts.at(-1)]}` : c.label; const body = el('div', label); body.append(el('small', `期待：${String(c.expected)} ／ 現在：${String(c.actual)}`)); row.append(body); area.append(row); }
+  for (const c of result.checks) { const row = el('div', undefined, 'check'); row.dataset.pass = run.step === 0 ? 'pending' : String(c.pass); row.append(el('span', run.step === 0 ? '—' : c.pass ? '○' : '×', run.step === 0 ? 'muted' : c.pass ? 'pass' : 'fail')); const fields = { amount: '\u91d1\u984d', revision: '\u7248', approvalStatus: '\u627f\u8a8d\u72b6\u614b', approvedRevision: '\u627f\u8a8d\u7248', accountingStatus: '\u7d4c\u7406\u78ba\u8a8d', verifiedRevision: '\u78ba\u8a8d\u7248', paidRevision: '\u632f\u8fbc\u7248', reservationStatus: '引当状態', reservedQuantity: '引当数量', paymentStatus: '決済状態', orderStatus: '注文状態', cancellationStatus: 'キャンセル状態', shippingStatus: '出荷状態' }; const parts = c.label.split('.'); const label = fields[parts.at(-1)] ? `${parts[1]} · ${fields[parts.at(-1)]}` : c.label; row.append(el('span', label, 'check-condition')); const actual = el('span', String(c.actual), 'check-value check-actual'); actual.dataset.match = String(c.pass); row.append(el('span', String(c.expected), 'check-value'), actual); area.append(row); }
 }
 function renderLogs() {
   $('#logs').replaceChildren(...run.logs.map(l => { const row = el('div', undefined, 'log-entry'); row.append(el('span', `#${l.step} ${l.orderId || ''} ${l.operation} → ${l.status === 'no_op' ? '変更なし' : l.status}${l.reason ? `（${l.reason}）` : ''}`, l.status === 'failure' ? 'fail' : '')); row.append(el('small', `${l.diff.map(d => `${d.path}: ${JSON.stringify(d.before)} → ${JSON.stringify(d.after)}`).join('\n') || '状態変更なし'} ／ 遷移先：${name(l.to)}`)); return row; })); $('#logs').scrollTop = $('#logs').scrollHeight;
@@ -429,11 +430,6 @@ help.append(el('h3', '操作カードの前提条件'));
 Object.entries(operations).filter(([id]) => drill.allowedOperations.includes(id)).forEach(([, [title, rule]]) => help.append(el('p', `${title}：${rule.replaceAll('no_op', '変更なし')}`)));
 document.body.append(help);
 new ResizeObserver(fitCanvas).observe($('.canvas-viewport'));
-const picker = $('#drillSelect');
-drills.filter(d => d.id === drill.id || chapterUnlocked(d.chapter)).forEach(d => { const option = el('option', `${d.difficulty} / ${d.title}`); option.value = d.id; picker.append(option); });
-picker.value = drill.id;
-picker.disabled = storyMode;
-picker.onchange = () => { const url = new URL(location.href); url.searchParams.delete('mode'); url.searchParams.delete('replay'); url.searchParams.set('drill', picker.value); location.assign(url.href); };
 $('#drillSummary').textContent = drill.summary;
 $('#assignmentIntro').textContent = drill.chapter === 2 ? '上長承認後に経理確認を行い、振り込むシステムです。' : '在庫引当後に決済、決済後に出荷するシステムです。';
 const ruleItems = drill.chapter === 2 ? [
@@ -491,12 +487,23 @@ const assignmentDialog = $('#assignmentDialog');
 function focusCanvas() { if (!titleMode) $('.canvas-heading').scrollIntoView({ block: 'start', behavior: 'instant' }); }
 assignmentDialog.addEventListener('close', focusCanvas);
 if (!titleMode) requestAnimationFrame(focusCanvas);
-function showAssignment() { if (!assignmentDialog.open) assignmentDialog.showModal(); }
+const assignmentSeenKey = `design-block-drill.assignment-seen.v1.${drill.id}`;
+function assignmentSeen() {
+  try { if (localStorage.getItem(assignmentSeenKey) === '1') return true; } catch {}
+  try { return sessionStorage.getItem(assignmentSeenKey) === '1'; } catch { return false; }
+}
+function showAssignment() {
+  if (!assignmentDialog.open) assignmentDialog.showModal();
+  if (!storyMode && !titleMode) {
+    try { localStorage.setItem(assignmentSeenKey, '1'); }
+    catch { try { sessionStorage.setItem(assignmentSeenKey, '1'); } catch {} }
+  }
+}
 $('#showAssignment').onclick = showAssignment;
 $('#closeAssignment').onclick = () => assignmentDialog.close();
 if (!titleMode) {
-  if (!storyMode) showAssignment();
-  else {
+  if (!storyMode) { if (!assignmentSeen()) showAssignment(); }
+  else if (stages.find(stage => stage.chapter === drill.chapter)?.drillId === drill.id) {
     const showAfterStory = () => setTimeout(() => {
       if ($('#storyDialog').open) return;
       $('#storyDialog').removeEventListener('close', showAfterStory);

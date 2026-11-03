@@ -8,9 +8,8 @@
 <section class="drill-card"><span class="paper-label">DRILL MODE</span><h2>ドリルモード</h2><div id="chapterList"></div><svg class="mode-pictogram" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true" focusable="false"><path d="M29 10h22v18H29zM8 51h22v18H8zM50 51h22v18H50zM40 28v12M19 51V40h42v11"/><path d="m34 19 4 4 8-8M15 60h8M57 60h8M5 9h12M5 9v12M63 75h12V63"/></svg></section></div>
 <p class="title-note">進捗はこのブラウザに保存されます。会社・人物はすべて架空です。</p></section>
 
-<header><button id="backToTitle" class="home-button" aria-label="タイトルへ">&#8962;</button><div><span class="eyebrow">DESIGN BLOCK DRILL</span><h1>設計のつながりを、動かして考える。</h1><p>通常は動く。その設計は、失敗したときも大丈夫？</p></div><span class="badge">注文・在庫・キャンセル編</span><div class="header-drill"><label for="drillSelect">問題</label> <select id="drillSelect"></select></div></header>
 <main>
-<div id="storyNavigation" class="story-navigation" hidden><span id="storyStageLabel"></span><button id="readStory">会話を読む</button><button id="nextStage" hidden></button></div>
+<div id="storyNavigation" class="story-navigation" hidden><button id="backToTitle" class="home-button" aria-label="タイトルへ">&#8962;</button><span id="storyStageLabel"></span><span class="badge"></span><button id="readStory">会話を読む</button><button id="nextStage" hidden></button></div>
 
 
 <section class="workspace"><div class="canvas-heading"><h2>設計キャンバス</h2><p>ブロックを動かす・クリックして操作と分岐を編集</p><div class="legend"><span class="green">━━ 成功 / 変更なし</span><span class="orange">┄┄ 失敗</span><span>● 荷物をクリックして状態を確認</span></div><div class="canvas-actions"><button id="restore">初期設計に戻す</button><button id="showAssignment" aria-label="案件概要を表示" title="案件概要">?</button></div></div>
@@ -24,7 +23,7 @@
 <aside id="testDrawer" class="test-drawer" aria-labelledby="drawerTitle" aria-hidden="true" inert>
 <div class="drawer-heading"><div><h2 id="drawerTitle"></h2></div><button id="closeTestDrawer" aria-label="試験内容を閉じる">×</button></div>
 <div class="drawer-body"><h3 class="detail-badge">概要</h3><p id="testOverview"></p><h3 class="detail-badge">観点</h3><p id="testPerspective"></p>
-<section class="results"><div class="section-title"><h3>実行結果：</h3><span id="resultTitle">未実行</span></div><div id="assertions" aria-live="off"></div></section></div>
+<section class="results"><div class="section-title result-columns"><div class="result-summary"><h3>実行結果</h3><span id="resultTitle">未実行</span></div><span>期待値</span><span>現在値</span></div><div id="assertions" aria-live="off"></div></section></div>
 </aside>
 </main><footer>組み立てて、動かして、失敗を観察して修正する。設計はブラウザに自動保存されます。</footer><script type="module" src="app.mjs"></script>
 <dialog id="batchResult" class="batch-result" aria-labelledby="batchGrade"><div class="result-spark" aria-hidden="true">&#10022;</div><p class="result-eyebrow">ALL TESTS COMPLETE</p><h2 id="batchGrade"></h2><p id="batchScore"></p><p id="batchMessage"></p></dialog><dialog id="storyDialog" class="story-dialog" aria-labelledby="storySpeaker"><div id="storyCast" class="story-cast" aria-label="会話の登場人物"></div><div class="story-window"><div class="story-dialog-top"><h2 id="storySpeaker"></h2><button id="storySkip">スキップ</button></div><div class="story-dialog-body"><div class="story-message"><p id="storyText"></p></div></div><div class="story-dialog-bottom"><span id="storyPage"></span><button id="storyAdvance" class="primary">次へ</button></div></div></dialog><dialog id="assignmentDialog" aria-label="案件概要"><section class="panel assignment"><button id="closeAssignment" class="assignment-close" aria-label="閉じる">×</button><h2>案件概要</h2><p id="drillSummary"></p><p id="drillNotice" role="status"></p><p id="assignmentIntro"></p><ul id="assignmentRules"></ul><p id="assignmentTask"></p><p class="rule">各ケースは独立した初期状態で実行します。ケース内のイベントは投入順に処理し、待機中は後続も停止します。</p></section></dialog></body></html>

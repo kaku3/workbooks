@@ -9,8 +9,8 @@ export function stageURL(id, story = false, replay = false) {
   if (story) url.searchParams.set('mode', 'story'); if (replay) url.searchParams.set('replay', '1'); return url.href;
 }
 export function installStoryUI(drills, drill, storyMode, titleMode) {
-  const title = document.querySelector('#titleScreen'), main = document.querySelector('main'), header = document.querySelector('body>header');
-  title.hidden = !titleMode; main.hidden = false; header.hidden = false; document.querySelector('footer').hidden = false;
+  const title = document.querySelector('#titleScreen'), main = document.querySelector('main');
+  title.hidden = !titleMode; main.hidden = false; document.querySelector('footer').hidden = false;
   document.documentElement.classList.toggle('title-overlay-active', titleMode);
   function link(text, id, story = false) { const a = element('a', text, 'mode-link'); a.href = stageURL(id, story); return a; }
   const p = readProgress();
@@ -35,7 +35,9 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     chapters.append(card);
   }
   const home = document.querySelector('#backToTitle'); home.onclick = () => { const url = new URL(location.href); url.search = ''; location.assign(url.href); };
-  const stage = stages.find(s => s.drillId === drill.id), panel = document.querySelector('#storyNavigation'); panel.hidden = !storyMode;
+  const stage = stages.find(s => s.drillId === drill.id), panel = document.querySelector('#storyNavigation'); panel.hidden = titleMode;
+  document.querySelector('#storyStageLabel').hidden = !storyMode;
+  document.querySelector('#readStory').hidden = !storyMode;
   const next = document.querySelector('#nextStage');
   const finalStage = stage === stages.at(-1);
   const proceed = () => { const following = stages[stages.indexOf(stage) + 1]; if (following) location.assign(stageURL(following.drillId, true)); else home.click(); };

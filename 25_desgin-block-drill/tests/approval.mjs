@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { approvalDrills, approvalSolution } from '../src/approval-drills.mjs';
 import { createRun, finish, clone, execute } from '../src/engine.mjs';
+assert.deepEqual(approvalDrills.find(d => d.id === 'approval-return').tests.map(t => t.id), ['AR-01', 'AR-02', 'AR-04']);
+assert.ok(approvalDrills.find(d => d.id === 'approval-system').tests.some(t => t.id === 'AR-03'));
 for (const drill of approvalDrills) {
   const initial = drill.tests.map(t => finish(createRun(drill.initialGraph, t)).pass);
   assert.ok(initial.includes(false), `${drill.id} needs repairs`);

@@ -104,7 +104,7 @@ main.test-panel-open{grid-template-columns:190px minmax(0,1fr)}
 
 .assignment #assignmentRules{font-size:12px;line-height:1.8;padding-left:1.5em;margin:6px 0 10px}.assignment #assignmentTask{margin-top:8px}.assignment #drillNotice:empty{display:none}
 
-#storyText strong{font-weight:800;color:#9b492e;background:linear-gradient(transparent 65%,#f3d9a2 65%)}#storyText.is-typing::after{content:'';display:inline-block;width:2px;height:1em;margin-left:3px;background:#71845d;vertical-align:-.1em;animation:dialogue-caret .7s steps(1) infinite}@keyframes dialogue-caret{50%{opacity:0}}@media(prefers-reduced-motion:reduce){#storyText.is-typing::after{animation:none}}
+#storyText strong{font-size:1.35em;font-weight:900;line-height:1.4;color:#9b492e;background:none;text-decoration:none}#storyText.is-typing::after{content:'';display:inline-block;width:2px;height:1em;margin-left:3px;background:#71845d;vertical-align:-.1em;animation:dialogue-caret .7s steps(1) infinite}@keyframes dialogue-caret{50%{opacity:0}}@media(prefers-reduced-motion:reduce){#storyText.is-typing::after{animation:none}}
 
 /* Two queued parcels fit above the first-row block (y=70). */
 .token{height:26px;min-height:26px;box-sizing:border-box;line-height:1.2;padding:3px 6px}.token .quantity-badge,.token .reservation-badge,.token .request-badge{line-height:1.2}

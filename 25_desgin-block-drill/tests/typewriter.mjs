@@ -4,4 +4,7 @@ assert.deepEqual(dialogueParts('早く、**今中に直せますか？！**'), [
 assert.deepEqual(dialogueParts('**一つ**と**二つ**'), [{ text: '一つ', strong: true }, { text: 'と', strong: false }, { text: '二つ', strong: true }]);
 assert.deepEqual(dialogueParts('<img onerror=alert(1)>'), [{ text: '<img onerror=alert(1)>', strong: false }]);
 assert.deepEqual(dialogueParts('**閉じ忘れ'), [{ text: '**閉じ忘れ', strong: false }]);
+assert.deepEqual(dialogueParts('前半<br>後半<br />次の行'), [{ text: '前半\n後半\n次の行', strong: false }]);
+assert.deepEqual(dialogueParts('**大声で<br>話す**'), [{ text: '大声で\n話す', strong: true }]);
+assert.deepEqual(dialogueParts('<br><img onerror=alert(1)>'), [{ text: '\n<img onerror=alert(1)>', strong: false }]);
 console.log('PASS: dialogue emphasis, multiple segments, literal HTML and unmatched markers');

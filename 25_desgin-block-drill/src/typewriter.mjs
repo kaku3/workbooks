@@ -1,4 +1,6 @@
 export function dialogueParts(text) {
+  // Only the Markdown table's line-break notation is recognized, never HTML.
+  text = text.replace(/<br\s*\/?\s*>/gi, '\n');
   const parts = []; let start = 0;
   for (const match of text.matchAll(/\*\*([^*]+)\*\*/g)) {
     if (match.index > start) parts.push({ text: text.slice(start, match.index), strong: false });
