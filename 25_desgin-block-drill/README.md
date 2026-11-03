@@ -4,6 +4,8 @@
 
 ## 起動
 
+PLiCy向けには、ソースを変更せず配布版を生成できます。プロジェクト内で `npm ci`、`npm run build:plicy` を実行し、`dist/design-block-drill-plicy.zip` を投稿してください。[手順と検証](docs/50_plicy-build.md)を参照。
+
 VS Code の Live Server で `src/index.html` を開いてください。JavaScript モジュールを使用するため、ファイルの直接起動ではなくHTTPサーバー経由で開きます。
 
 URLの指定なしではタイトル画面を表示します。「はじめから」で第1章の会話から開始し、「つづきから」で再開できます。はじめから遊び直してもクリア済み記録は消しません。

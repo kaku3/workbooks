@@ -1,0 +1,14 @@
+{
+  "name": "design-block-drill",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:plicy": "node scripts/build-plicy.mjs",
+    "test:bundle": "node tests/bundle.mjs",
+    "test:plicy": "node tests/plicy.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "fflate": "0.8.3"
+  }
+}

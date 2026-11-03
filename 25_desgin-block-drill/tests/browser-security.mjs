@@ -5,14 +5,21 @@ import {spawn} from 'node:child_process';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {securityDrills,securitySolution} from '../src/security-drills.mjs';
+import {stages} from '../src/story.mjs';
+import {shareText,shareURL} from '../src/sharing.mjs';
 const root=path.resolve(process.env.DRILL_ROOT || fileURLToPath(new URL('../src/',import.meta.url)))+path.sep;
 const runner=`<!doctype html><meta charset="utf-8"><pre id="report">RUNNING</pre><iframe id="game" style="width:1500px;height:1000px"></iframe><script type="module">
-import {securityDrills,securitySolution} from './security-drills.mjs';
-import {stages} from './story.mjs';
-import {shareText,shareURL} from './sharing.mjs';
+const securityDrills=${JSON.stringify(securityDrills)};
+const securitySolution=()=>structuredClone(${JSON.stringify(securitySolution())});
+const stages=${JSON.stringify(stages)};
+const shareText=${JSON.stringify(shareText)},shareURL=${JSON.stringify(shareURL)};
 const report=document.querySelector('#report'),frame=document.querySelector('#game');
 const check=(value,message)=>{if(!value)throw new Error(message)};
-const runtimeErrors=[]; const load=url=>new Promise(resolve=>{frame.onload=()=>{frame.contentWindow.addEventListener('error',e=>runtimeErrors.push(e.message));resolve(frame.contentDocument)};frame.src=url;});
+const hosted=${JSON.stringify(!!process.env.TEST_PLICY_HOST)};
+const runtimeErrors=[]; const load=url=>new Promise(resolve=>{frame.onload=()=>{frame.contentWindow.addEventListener('error',e=>runtimeErrors.push(e.message));resolve(frame.contentDocument)};const target=new URL(url,location.href);if(hosted){const key='design-block-drill.plicy.route.v3';localStorage.setItem(key+'.pending',JSON.stringify({search:target.search,at:Date.now()}));target.search='?hostGame=123';target.hash=''}const previous=new URL(frame.contentWindow.location.href);const samePage=hosted&&previous.origin===target.origin&&previous.pathname===target.pathname&&previous.search===target.search;frame.src=target.href;if(samePage)frame.contentWindow.location.reload();});
+const currentDrill=()=>{const url=new URL(frame.contentWindow.location.href);return new URLSearchParams(hosted?frame.contentWindow.__designBlockPlicyRouteSearch:url.search).get('drill')};
+const waitScreen=async action=>{const previousDocument=frame.contentDocument;const previous=previousDocument.querySelector('#plicyGameRoot')||previousDocument.body;const previousURL=frame.contentWindow.location.href;action();for(let i=0;i<250;i++){await new Promise(r=>setTimeout(r,20));try{const doc=frame.contentDocument,current=doc.querySelector('#plicyGameRoot')||doc.body;if(current!==previous&&!doc.documentElement.classList.contains('booting')){if(hosted){check(doc===previousDocument,'game navigation reloaded the hosting frame');check(frame.contentWindow.location.href===previousURL,'game navigation changed host URL')}return}}catch(error){if(error.message.includes('game navigation'))throw error}}throw new Error('Screen transition timed out')};
 let assertions=0;
 try{
  for(const drill of securityDrills){
@@ -48,15 +55,24 @@ try{
  }
  localStorage.setItem('design-block-drill.story.v1',JSON.stringify({completedStages:stages.slice(0,8).map(s=>s.id),seenEvents:[],currentStage:'02-04',started:true}));
  let doc=await load('./index.html');check(doc.querySelectorAll('#chapterList .chapter-card').length===3,'chapter count');
+ report.textContent='RUNNING new story';await waitScreen(()=>doc.querySelector('#newStory').click());doc=frame.contentDocument;
+ check(currentDrill()==='order-basics','new story did not navigate to first stage');
+ if(hosted){check(new URL(frame.contentWindow.location.href).searchParams.get('hostGame')==='123','host query was lost');check(frame.contentWindow.location.hash==='','navigation changed host fragment');check(frame.contentWindow.location.search==='?hostGame=123','navigation changed host query')}
+ for(let i=0;i<70&&!doc.querySelector('#storyDialog').open;i++)await new Promise(r=>setTimeout(r,100));
+ check(doc.querySelector('#storyDialog').open,'first chapter intro missing');doc.querySelector('#storySkip').click();
+ await waitScreen(()=>doc.querySelector('#backToTitle').click());
+ localStorage.setItem('design-block-drill.story.v1',JSON.stringify({completedStages:stages.slice(0,8).map(s=>s.id),seenEvents:[],currentStage:'02-04',started:true}));
+ doc=await load('./index.html');
  check([...doc.querySelectorAll('#chapterList a')].filter(a=>a.href.includes('security-')).length===0,'chapter 3 drill should stay locked until own clear');
  for(const id of ['shareX','shareLine']){const link=new URL(doc.querySelector('#'+id).href);check(link.searchParams.get('text')===shareText,'share text/hashtags missing');check(link.searchParams.get('url')===shareURL,'share URL incorrect')}
  check(doc.querySelector('.workbooks-link').href==='https://kaku3.github.io/workbooks/','workbooks link missing');
  const copied=[];Object.defineProperty(frame.contentWindow.navigator,'clipboard',{configurable:true,value:{writeText:async text=>copied.push(text)}});doc.querySelector('#copyShare').click();await Promise.resolve();check(copied[0]===shareText+'\\n'+shareURL,'copy share text incorrect');
- doc.querySelector('#continueStory').click();
- await new Promise(resolve=>{frame.onload=resolve});doc=frame.contentDocument;
- check(new URL(frame.contentWindow.location.href).searchParams.get('drill')==='security-login','save migration');
+ await waitScreen(()=>doc.querySelector('#continueStory').click());doc=frame.contentDocument;
+ check(currentDrill()==='security-login','save migration');
  for(let i=0;i<70&&!doc.querySelector('#storyDialog').open;i++)await new Promise(r=>setTimeout(r,100));
- check(doc.querySelector('#storyDialog').open,'intro did not open');doc.querySelector('#storySkip').click();
+ check(doc.querySelector('#storyDialog').open,'intro did not open');
+ check([...doc.querySelectorAll('#storyCast img')].every(image=>image.complete && image.naturalWidth>0),'portrait assets did not load');
+ doc.querySelector('#storySkip').click();
  for(let i=0;i<50&&!doc.querySelector('#assignmentDialog').open;i++)await new Promise(r=>setTimeout(r,100));check(doc.querySelector('#assignmentDialog').open,'assignment after intro, errors='+runtimeErrors.join('|')+', introOpen='+doc.querySelector('#storyDialog').open+', badge='+doc.querySelector('.badge').textContent);
  
  const waitIntro=async()=>{for(let i=0;i<70&&!doc.querySelector('#storyDialog').open;i++)await new Promise(r=>setTimeout(r,100));check(doc.querySelector('#storyDialog').open,'story did not open')};
@@ -70,20 +86,20 @@ try{
  };
  await runBatch();
  check(JSON.parse(localStorage.getItem('design-block-drill.story.v1')).completedStages.includes('03-01'),'batch did not record clear');
- let nextLoaded=new Promise(resolve=>frame.onload=resolve);doc.querySelector('#batchResult').close();await nextLoaded;
- check(new URL(frame.contentWindow.location.href).searchParams.get('drill')==='security-lock','batch must advance to next stage');
+ await waitScreen(()=>doc.querySelector('#batchResult').close());
+ check(currentDrill()==='security-lock','batch must advance to next stage');
 
  localStorage.setItem('design-block-drill.story.v1',JSON.stringify({completedStages:stages.slice(0,9).map(s=>s.id),seenEvents:[],currentStage:'03-02',started:true}));
  report.textContent='RUNNING mid-chapter';doc=await load('./index.html?mode=story&drill=security-lock');await waitIntro();doc.querySelector('#storySkip').click();
  await new Promise(r=>setTimeout(r,300));check(!doc.querySelector('#assignmentDialog').open,'mid-chapter assignment should stay closed');
  localStorage.setItem('design-block-drill.story.v1',JSON.stringify({completedStages:stages.slice(0,8).map(s=>s.id),seenEvents:[],currentStage:'03-01',pendingClear:'02-04',started:true}));
  report.textContent='RUNNING chapter-clear';doc=await load('./index.html?mode=story&drill=approval-system');await waitIntro();
- let loaded=new Promise(resolve=>frame.onload=resolve);doc.querySelector('#storySkip').click();await loaded;
- check(new URL(frame.contentWindow.location.href).searchParams.get('drill')==='security-login','chapter 2 clear must proceed to chapter 3');
+ await waitScreen(()=>doc.querySelector('#storySkip').click());
+ check(currentDrill()==='security-login','chapter 2 clear must proceed to chapter 3');
  localStorage.setItem('design-block-drill.story.v1',JSON.stringify({completedStages:stages.map(s=>s.id),seenEvents:[],currentStage:'03-04',pendingClear:'03-04',started:true}));
  report.textContent='RUNNING final-clear';doc=await load('./index.html?mode=story&drill=security-system');await waitIntro();
- loaded=new Promise(resolve=>frame.onload=resolve);doc.querySelector('#storySkip').click();await loaded;
- check(!new URL(frame.contentWindow.location.href).searchParams.get('drill'),'final clear must return to title');
+ await waitScreen(()=>doc.querySelector('#storySkip').click());
+ check(!currentDrill(),'final clear must return to title');
  check(JSON.parse(localStorage.getItem('design-block-drill.story.v1')).pendingClear===null,'clear remains pending');
  check([...frame.contentDocument.querySelectorAll('#chapterList a')].filter(a=>a.href.includes('security-')).length===4,'chapter 3 drill not unlocked after own clear');
  frame.style.width='390px';await new Promise(r=>setTimeout(r,100));check(frame.contentDocument.documentElement.scrollWidth<=frame.contentWindow.innerWidth,'mobile overflow '+frame.contentDocument.documentElement.scrollWidth+'/'+frame.contentWindow.innerWidth+' '+JSON.stringify([...frame.contentDocument.body.querySelectorAll('*')].map(e=>({id:e.id,c:e.className,r:e.getBoundingClientRect().right,l:e.getBoundingClientRect().left})).filter(e=>e.r>390).slice(0,12)));report.textContent='PASS: '+assertions+' browser cases, batch clear/advance, details/logs, chapter unlock, save migration, intro/assignment, chapter/final clears and mobile title';
@@ -92,10 +108,13 @@ try{
 const server=createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://localhost');
+  if(process.env.TEST_PLICY_HOST && url.pathname==='/index.html' && (url.searchParams.has('drill')||url.searchParams.has('mode'))){for(const key of ['drill','mode','replay'])url.searchParams.delete(key);res.writeHead(302,{Location:url.pathname+url.search}).end();return;}
   if(url.pathname==='/__test.html'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(runner);return;}
   const file=path.resolve(root,'.'+(url.pathname==='/'?'/index.html':decodeURIComponent(url.pathname)));if(!file.startsWith(root)){res.writeHead(403).end();return;}
   let data=await readFile(file);if(path.extname(file)==='.html')data=Buffer.from(data.toString('utf8').replace(/<link[^>]+fonts\.googleapis\.com[^>]*>/g,''));
-  res.setHeader('Content-Type',{'.html':'text/html; charset=utf-8','.mjs':'application/javascript','.css':'text/css','.png':'image/png'}[path.extname(file)]||'application/octet-stream');res.end(data);
+  const extension=path.extname(file),unknown=process.env.TEST_UNKNOWN_MIME && ['.js','.mjs','.css'].includes(extension);
+  res.setHeader('Content-Type',unknown?'www/unknown':{'.html':'text/html; charset=utf-8','.js':'application/javascript','.mjs':'application/javascript','.css':'text/css','.png':'image/png'}[extension]||'application/octet-stream');
+  res.setHeader('X-Content-Type-Options','nosniff');res.end(data);
  }catch{res.writeHead(404).end();}
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
