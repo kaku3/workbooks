@@ -164,6 +164,7 @@ html.title-overlay-active .story-card,html.title-overlay-active .drill-card{back
 html.title-overlay-active .story-card{background:#193e49bd;border-color:#80dcca55}
 html.title-overlay-active .drill-card{background:#2b354fbd;border-color:#b1a5e655}
 .title-screen .story-card h2{color:#c2f3e8}
+.title-screen .story-card .company-name{font-weight:700;color:#ffdda2}
 .title-screen .drill-card h2{color:#dfd8ff}
 .title-screen .story-card .paper-label{background:#326d70;color:#dcfff6}
 .title-screen .drill-card .paper-label{background:#555681;color:#eeeaff}
