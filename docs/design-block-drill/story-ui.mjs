@@ -4,6 +4,17 @@ import { stages, chapterNames, readProgress, saveProgress, startStory, chapterUn
 const element = (tag, text, className) => { const e = document.createElement(tag); if (text) e.textContent = text; if (className) e.className = className; return e; };
 const names = { player: 'あなた', sales: '営業・折原', lead: '先輩・真壁', client: '担当・佐伯', accountant: '経理・三田' };
 const portraits = { player: { width: 1024, file: '01_player-transparent.png' }, sales: { width: 1024, file: '02_orihara-transparent.png' }, lead: { width: 1024, file: '03_makabe-transparent.png' }, client: { width: 1024, file: '04_saeki-transparent.png' }, accountant: { width: 1024, file: '05_mita-transparent.png' } };
+const portraitCache = new Map();
+function preparePortrait(id) {
+  if (!portraitCache.has(id)) {
+    const image = new Image();
+    image.src = new URL(`assets/${portraits[id].file}`, import.meta.url).href;
+    // Reuse the decoded image itself when its speaker first appears.
+    const ready = image.decode().catch(() => {});
+    portraitCache.set(id, { image, ready });
+  }
+  return portraitCache.get(id);
+}
 export function stageURL(id, story = false, replay = false) {
   const url = new URL(location.href); url.search = ''; url.searchParams.set('drill', id);
   if (story) url.searchParams.set('mode', 'story'); if (replay) url.searchParams.set('replay', '1'); return url.href;
@@ -48,11 +59,16 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     next.onclick = () => following ? location.assign(stageURL(following.drillId, true)) : home.click();
   }
   let active = false;
-  function dialogue(key, force = false, done = showNext, extraLines) {
+  async function dialogue(key, force = false, done = showNext, extraLines) {
     if (active) return;
     const eventId = `${key}.v${sceneVersions[key] || 1}`, lines = extraLines || scenes[key];
     if (!lines?.length || (!force && readProgress().seenEvents.includes(eventId))) { done(); return; }
     const dialog = document.querySelector('#storyDialog'); let index = 0, writer; active = true;
+    const imagesReady = Promise.all([...new Set(lines.map(line => line.speaker))].filter(id => portraits[id]).map(id => preparePortrait(id).ready));
+    // A missing or stalled asset must not prevent the conversation from opening.
+    let loadingTimeout;
+    await Promise.race([imagesReady, new Promise(resolve => { loadingTimeout = setTimeout(resolve, 5000); })]);
+    clearTimeout(loadingTimeout);
     const cast = document.querySelector('#storyCast'), speakerIds = ['player', 'sales', 'lead', 'client', 'accountant'];
     const participants = [];
     cast.replaceChildren();
@@ -64,9 +80,8 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
       cast.style.gridTemplateColumns = participants.map(id => `minmax(0,${portraits[id].width}fr)`).join(' ');
       const castHeight = participants.length > 1 ? 480 : 640;
       cast.style.width = `min(80%, ${totalWidth * castHeight / 1536}px, ${totalWidth * 64 / 1536}vh)`;
-      const portrait = element('img', undefined, 'story-portrait'); portrait.dataset.speaker = id;
-      const { width, file } = portraits[id];
-      portrait.src = new URL(`assets/${file}`, import.meta.url).href;
+      const portrait = preparePortrait(id).image; portrait.className = 'story-portrait'; portrait.dataset.speaker = id;
+      const { width } = portraits[id];
       portrait.alt = names[id]; portrait.width = width; portrait.height = 1536;
       portrait.style.aspectRatio = `${width} / 1536`;
       cast.append(portrait);
