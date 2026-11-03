@@ -182,7 +182,8 @@ header{background:linear-gradient(100deg,#241e38ed,#151d30bd);border-bottom-colo
 }
 html.title-overlay-active .title-screen{background:radial-gradient(circle at 22% 9%,#2c5a7a26,transparent 46%),linear-gradient(180deg,#0f1d2a1a,#0f1d2a66)}
 html.title-overlay-active header,html.title-overlay-active footer{visibility:hidden}
-html.title-overlay-active main{position:fixed;inset:0;max-width:none;padding:0;display:block;filter:none;transform:none;animation:none}
+html.title-overlay-active .test-drawer,html.title-overlay-active footer{display:none}
+html.title-overlay-active main{position:fixed;inset:0;max-width:none;padding:0;display:block;filter:none;transform:none;animation:none;overflow:hidden}
 html.title-overlay-active .canvas-stage{position:absolute;left:50%;top:50%;width:max(100vw,1000px);transform:translate(-50%,-50%) rotate(-12deg) scale(1.5);transform-origin:center;opacity:.65;filter:blur(1px);pointer-events:none}
 html.title-overlay-active .canvas-viewport{border:0;box-shadow:none;overflow:hidden}
 html.title-overlay-active .workspace{display:block}
@@ -213,6 +214,10 @@ html.title-overlay-active .drill-card{background:#2b354fbd;border-color:#b1a5e65
 .processing-card strong{margin-bottom:3px;color:#9deaff}
 .processing-card .processing-origin{display:block;margin-bottom:5px;font-size:10px;color:#b4bbdf}
 .processing-card .processing-input{display:block;margin-bottom:3px;font-size:10px;color:#a4dfec}
+.token .token-short-label{display:none}
+.token:is(.queued,.waiting):not(:hover):not(:focus-visible)>span:not(.token-short-label){display:none}
+.token:is(.queued,.waiting):not(:hover):not(:focus-visible)>.token-short-label{display:inline}
+.token:is(:hover,:focus-visible){z-index:35}
 .test-drawer .drawer-body .result-scope{font-size:10px;line-height:1.6;color:#a8bed0;margin:4px 0 7px}
 .test-drawer .drawer-body .test-inputs{padding:7px 9px;border-left:2px solid #8cbedb;background:#8cbedb0e;font-size:11px}
 .processing-card[data-status="failure"]{border-color:#ffad98aa;background:#422c37f2;color:#ffe1d9}
@@ -259,6 +264,39 @@ body:not(.fixed-blocks) #canvas{touch-action:none}
 .title-screen .title-kicker,.title-screen .paper-label{font-family:"Rajdhani",sans-serif;font-weight:600;letter-spacing:.2em}
 .title-screen .paper-label{font-size:12px;align-self:flex-start}
 .title-screen .story-card,.title-screen .drill-card{padding-bottom:120px}
+.title-footer{width:min(100%,880px);margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:10px 20px;flex-wrap:wrap}
+.title-share{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;min-width:0}
+.share-hashtags{color:#a8d8e9;font-size:12px}
+.share-actions{display:flex;gap:6px;flex-wrap:wrap}
+.share-actions a,.share-actions button{font:inherit;font-size:11px;color:#d8eaf7;border:1px solid #9dbce34d;border-radius:5px;background:#20394cbf;padding:5px 9px;text-decoration:none}
+.share-actions a:hover,.share-actions button:hover{background:#35506c}
+.share-status{font-size:11px;color:#bce3d1}
+.share-status:empty{display:none}
+#shareCopyText{flex:1 0 100%;max-width:100%;height:110px;background:#152b40;color:#dcebf5;border:1px solid #83d8f355}
+.workbooks-link{font-family:"Rajdhani",sans-serif;letter-spacing:.12em;font-size:13px;color:#b9c9ef;text-decoration:none;white-space:nowrap}
+.workbooks-link:hover{color:#e1efff;text-decoration:underline}
+.title-footer .title-note{flex-basis:100%;margin:3px 0 0}
+.canvas-stage .log-panel{isolation:isolate;overflow:hidden}
+.dashboard-ambient{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;opacity:.28;color:#73cbe6;contain:strict}
+.log-panel>.section-title,.log-panel>#logs{position:relative;z-index:1}
+.ambient-wire{position:absolute;left:3%;top:-32px;width:320px;height:240px;fill:none;stroke:currentColor;stroke-width:.7;animation:ambient-orbit 30s linear infinite;transform-origin:center}
+.ambient-bars{position:absolute;left:38%;bottom:12px;width:22%;height:120px;display:flex;align-items:flex-end;gap:5px}
+.ambient-bars i{flex:1;height:100%;background:linear-gradient(#9ec4f9aa,#705ac133);transform-origin:bottom;animation:ambient-bar calc(1.4s + var(--bar-index)*.13s) ease-in-out infinite alternate;animation-delay:calc(var(--bar-index)*-.21s)}
+.ambient-pie{position:absolute;right:19%;top:20px;width:155px;height:155px;fill:none;stroke-width:13;stroke:#87b1ed;animation:ambient-orbit 18s linear infinite reverse}
+.ambient-pie circle{stroke-dasharray:100 183;animation:ambient-pie 4s ease-in-out infinite alternate}
+.ambient-pie circle+circle{stroke:#b39ddd;stroke-width:6;stroke-dasharray:50 138;animation-delay:-2s}
+.ambient-stream{position:absolute;right:12px;top:0;bottom:0;width:190px;overflow:hidden;opacity:.65;mask-image:linear-gradient(transparent,#000 20%,#000 80%,transparent)}
+.ambient-stream pre{margin:0;font:9px/15px monospace;white-space:pre;animation:ambient-stream 5s linear infinite}
+@keyframes ambient-orbit{to{transform:rotate(360deg)}}
+@keyframes ambient-bar{from{transform:scaleY(.12);opacity:.4}to{transform:scaleY(1);opacity:1}}
+@keyframes ambient-pie{from{stroke-dasharray:20 263}to{stroke-dasharray:235 48}}
+@keyframes ambient-stream{to{transform:translateY(-50%)}}
+@media(prefers-reduced-motion:reduce){.dashboard-ambient *{animation:none!important}}
+.title-screen #chapterList{margin-top:0;min-height:0;max-height:clamp(160px,32dvh,300px);overflow-y:scroll;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#a69bd2 #1c263c;padding:0 10px 6px 2px}
+.title-screen #chapterList::-webkit-scrollbar{width:6px}
+.title-screen #chapterList::-webkit-scrollbar-track{background:#1c263c;border-radius:4px}
+.title-screen #chapterList::-webkit-scrollbar-thumb{background:#a69bd2;border-radius:4px}
+.title-screen #chapterList:focus-visible{outline:2px solid #b7a9ed;outline-offset:3px}
 .mode-pictogram{position:absolute;right:24px;bottom:20px;width:80px;height:80px;color:#87d9ec;opacity:.55;pointer-events:none}
 .title-screen .chapter-locked{display:flex;align-items:center;gap:8px;font-size:13px;color:#9ebdcc}
 .chapter-locked svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}

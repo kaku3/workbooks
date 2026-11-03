@@ -1,6 +1,8 @@
 import { approvalOperations, executeApproval } from './approval.mjs';
+import { securityOperations, executeSecurity } from './security.mjs';
 export const operations = {
   ...approvalOperations,
+  ...securityOperations,
   reserve: ['在庫引当', '在庫が注文数量以上なら減算し、引当を記録'],
   pay: ['決済', '有効な引当が必要'],
   ship: ['出荷指示', '有効な注文・引当・決済が必要。ここが出荷確定点'],
@@ -17,6 +19,7 @@ export const operations = {
 };
 export const clone = value => structuredClone(value);
 export function execute(state, orderId, operation, event) {
+  if (state.security) return executeSecurity(state, operation, event);
   if (state.requests) return executeApproval(state, orderId, operation, event);
   const next = clone(state), o = next.orders[orderId];
   const result = (status, reason = '') => ({ status, reason, state: status === 'failure' || status === 'wait' ? state : next });
@@ -68,7 +71,7 @@ export function differences(before, after, prefix = '') {
   });
 }
 export function createRun(graph, test) {
-  return { graph: clone(graph), test, state: clone(test.initialState), tokens: test.events.map((e, i) => ({ id: `${test.initialState.requests ? '申請' : '荷物'}${i + 1}`, orderId: e.orderId || e.requestId, event: clone(e), node: graph.entries[e.type], index: 0, status: 'queued' })), logs: [], step: 0, status: 'ready' };
+  return { graph: clone(graph), test, state: clone(test.initialState), tokens: test.events.map((e, i) => ({ id: `${test.initialState.security ? '入力' : test.initialState.requests ? '申請' : '荷物'}${i + 1}`, orderId: e.orderId || e.requestId || e.userId || e.actorId, event: clone(e), node: graph.entries[e.type], index: 0, status: 'queued' })), logs: [], inputStates: {}, step: 0, status: 'ready' };
 }
 export function step(run) {
   if (['completed', 'stopped'].includes(run.status)) return null;
@@ -103,14 +106,16 @@ export function step(run) {
   log.inputIndex = run.tokens.indexOf(token) + 1;
   log.inputCount = run.tokens.length;
   log.inputEvent = clone(token.event);
+  if (run.state.security && ['completed', 'stopped'].includes(token.status)) run.inputStates[log.inputIndex] = clone(run.state);
   token.last = log; run.logs.push(log); return log;
 }
 export function finish(run) { while (!['completed', 'stopped', 'waiting'].includes(run.status)) step(run); return judge(run); }
 export function judge(run) {
   const checks = run.test.assertions.map(a => {
-    const actual = a.event ? run.state.effects.filter(e => e.type === a.event && (!a.orderId || a.orderId === e.orderId) && Object.entries(a.where || {}).every(([key, value]) => e[key] === value)).length : a.path.split('.').reduce((v, k) => v?.[k], run.state);
+    const source = a.inputIndex ? run.inputStates[a.inputIndex] : run.state;
+    const actual = a.event ? (source?.effects || []).filter(e => e.type === a.event && (!a.orderId || a.orderId === e.orderId) && Object.entries(a.where || {}).every(([key, value]) => e[key] === value)).length : a.path.split('.').reduce((v, k) => v?.[k], source);
     return { label: a.label || a.path || a.event, expected: a.equals, actual, pass: actual === a.equals, events: run.logs.filter(l => !a.orderId || l.orderId === a.orderId).map(l => l.step) };
   });
-  checks.push({ label: run.state.requests ? '全申請が正常終了' : '全荷物が正常終了', expected: true, actual: run.tokens.every(t => t.status === 'completed'), pass: run.tokens.every(t => t.status === 'completed') });
+  checks.push({ label: run.state.security ? '全入力が正常終了' : run.state.requests ? '全申請が正常終了' : '全荷物が正常終了', expected: true, actual: run.tokens.every(t => t.status === 'completed'), pass: run.tokens.every(t => t.status === 'completed') });
   return { pass: checks.every(c => c.pass), checks };
 }

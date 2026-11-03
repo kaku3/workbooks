@@ -5,7 +5,7 @@
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="WORKBOOKS">
 <meta property="og:title" content="設計ブロックドリル">
-<meta property="og:description" content="ブロックの接続と処理を修正し、テストで設計を確かめるブラウザゲーム。注文システムと経費精算・承認を、ストーリーモードとドリルモードで学べます。">
+<meta property="og:description" content="ブロックの接続と処理を修正し、テストで設計を確かめるブラウザゲーム。注文・経費精算・認証セキュリティを、ストーリーモードとドリルモードで学べます。">
 <meta property="og:url" content="https://kaku3.github.io/workbooks/design-block-drill/index.html">
 <meta property="og:image" content="https://kaku3.github.io/workbooks/design-block-drill/assets/ogp.png">
 <meta property="og:image:type" content="image/png">
@@ -14,7 +14,7 @@
 <meta property="og:image:alt" content="設計ブロックドリル — つないで、動かして、設計を身につける">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="設計ブロックドリル">
-<meta name="twitter:description" content="ブロックを修正し、テストで設計を確かめる。注文システムと経費精算・承認を学ぶブラウザゲーム。">
+<meta name="twitter:description" content="ブロックを修正し、テストで設計を確かめる。注文・経費精算・認証セキュリティを学ぶブラウザゲーム。">
 <meta name="twitter:image" content="https://kaku3.github.io/workbooks/design-block-drill/assets/ogp.png">
 <meta name="twitter:image:alt" content="設計ブロックドリル — つないで、動かして、設計を身につける">
 <script>(()=>{const p=new URLSearchParams(location.search),title=!p.get('drill')&&p.get('mode')!=='story';document.documentElement.classList.add('booting');if(title)document.documentElement.classList.add('title-overlay-active')})();</script><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@200&family=DotGothic16&family=Noto+Sans+JP:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="hud.css"></head>
@@ -22,8 +22,8 @@
 <section id="titleScreen" class="title-screen" hidden>
 <p class="title-kicker">WORKBOOKS / DESIGN GAME</p><h1>設計ブロックドリル</h1><p class="title-copy">つないで、動かして、設計を身につける</p>
 <div class="mode-grid"><section class="story-card"><span class="paper-label">STORY MODE</span><h2>ストーリーモード</h2><p><strong class="company-name">株式会社コウカンゲン</strong>へようこそ。<br>今日からあなたもエンジニアです。</p><button id="continueStory" class="primary">つづきから</button><button id="newStory">はじめから</button><svg class="mode-pictogram" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true" focusable="false"><path d="M10 16h23l7 5 7-5h23v45H47l-7 5-7-5H10V16Z"/><path d="M40 21v45M18 27h13M18 35h13M18 43h9M49 27h13M49 35h13M49 43h9"/><path d="M5 9h12M5 9v12M63 71h12V59" opacity=".5"/></svg></section>
-<section class="drill-card"><span class="paper-label">DRILL MODE</span><h2>ドリルモード</h2><div id="chapterList"></div><svg class="mode-pictogram" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true" focusable="false"><path d="M29 10h22v18H29zM8 51h22v18H8zM50 51h22v18H50zM40 28v12M19 51V40h42v11"/><path d="m34 19 4 4 8-8M15 60h8M57 60h8M5 9h12M5 9v12M63 75h12V63"/></svg></section></div>
-<p class="title-note">進捗はこのブラウザに保存されます。会社・人物はすべて架空です。</p></section>
+<section class="drill-card"><span class="paper-label">DRILL MODE</span><h2>ドリルモード</h2><div id="chapterList" tabindex="0" role="region" aria-label="ドリルの章・ステージ一覧"></div><svg class="mode-pictogram" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true" focusable="false"><path d="M29 10h22v18H29zM8 51h22v18H8zM50 51h22v18H50zM40 28v12M19 51V40h42v11"/><path d="m34 19 4 4 8-8M15 60h8M57 60h8M5 9h12M5 9v12M63 75h12V63"/></svg></section></div>
+<div class="title-footer"><div class="title-share"><span class="share-hashtags">#workbooks #設計ブロックドリル</span><div class="share-actions"><a id="shareX" href="https://twitter.com/intent/tweet" target="_blank" rel="noopener noreferrer" aria-label="Xでシェア">X でシェア</a><a id="shareLine" href="https://social-plugins.line.me/lineit/share" target="_blank" rel="noopener noreferrer" aria-label="LINEで送る">LINEで送る</a><button id="copyShare" type="button">共有文をコピー</button></div><span id="shareStatus" class="share-status" role="status"></span><textarea id="shareCopyText" aria-label="コピーする共有文" readonly hidden></textarea></div><a class="workbooks-link" href="https://kaku3.github.io/workbooks/">WORKBOOKS ↗</a><p class="title-note">進捗はこのブラウザに保存されます。会社・人物はすべて架空です。</p></div></section>
 
 <main>
 <div id="storyNavigation" class="story-navigation" hidden><button id="backToTitle" class="home-button" aria-label="タイトルへ">&#8962;</button><span id="storyStageLabel"></span><span class="badge"></span><button id="readStory">会話を読む</button><button id="nextStage" hidden></button></div>

@@ -1,4 +1,17 @@
 export const operationChanges = {
+  requireUnlocked: '状態は変えず、ユーザーが存在し未ロックか確認します。',
+  checkPassword: 'この入力のパスワード確認を成功済みにします。',
+  checkMfa: 'この入力の追加認証確認を成功済みにします。',
+  recordLoginFailure: 'この入力で未加算なら連続失敗を1増やします。同じ入力では二重加算しません。',
+  requireFailureLimit: '状態は変えず、連続失敗が3回以上か確認します。',
+  lockUser: 'ユーザーをロック済みにします。',
+  issueSession: '新しいセッションを発行して有効にし、発行を1件記録します。照合を飛ばすと不正発行として記録されます。',
+  resetLoginFailures: 'この入力で正しく発行できた場合だけ失敗回数を0に戻します。',
+  requireSession: '状態は変えず、セッションの本人一致・有効性・期限を確認します。',
+  requireAdmin: '状態は変えず、実行者が管理者か確認します。',
+  runAdminAction: '管理処理を1件記録します。セッション・権限が不足すると不正実行として記録されます。',
+  revokeSession: '本人のセッションを無効にし、失効を1件記録します。失効済みなら変更しません。',
+  recordSecurityAudit: 'この入力の種類・実行者・セッションの監査履歴を1件記録します。',
   reserve: '在庫を注文数量分減らし、引当数量を記録します。',
   pay: '決済状態を決済済みにします。',
   ship: '出荷状態を出荷指示済みにし、出荷指示を1件記録します。',
@@ -34,7 +47,7 @@ export function resultPhase(run) {
 }
 const fields = { amount: '金額', revision: '版', approvalStatus: '承認状態', approvedRevision: '承認版', accountingStatus: '経理確認', verifiedRevision: '確認版', paymentStatus: '決済状態', paidRevision: '振込版', reservationStatus: '引当状態', reservedQuantity: '引当数量', orderStatus: '注文状態', cancellationStatus: 'キャンセル状態', shippingStatus: '出荷状態' };
 const values = { pending: '未処理', approved: '承認済み', rejected: '却下', returned: '差戻し', verified: '確認済み', unpaid: '未振込', paid: '支払済み', refunded: '返金済み', none: 'なし', reserved: '引当済み', released: '解除済み', accepted: '受付済み', cancelled: 'キャンセル済み', stock_shortage: '在庫不足', requested: '要求済み', succeeded: '成功', failed: '失敗' };
-const effectNames = { transfer: '振込', paidEmail: '振込完了通知', audit: '監査履歴', decision: '上長判断履歴', shipping: '出荷指示', refund: '返金', cancelCompletedEmail: 'キャンセル完了通知' };
+const effectNames = { sessionIssued: 'セッション発行', adminAction: '管理処理', sessionRevoked: 'セッション失効', securityAudit: '監査履歴', transfer: '振込', paidEmail: '振込完了通知', audit: '監査履歴', decision: '上長判断履歴', shipping: '出荷指示', refund: '返金', cancelCompletedEmail: 'キャンセル完了通知' };
 export function effectLines(log) {
   return log.diff.flatMap(change => {
     if (change.path === 'effects') {
@@ -42,8 +55,9 @@ export function effectLines(log) {
       return (change.after || []).slice(before).map(effect => `${effectNames[effect.type] || effect.type} +1`);
     }
     const parts = change.path.split('.'), field = parts.at(-1);
+    const securityFields = { failedCount: '失敗回数', locked: 'ロック', role: '権限', userId: '利用者', active: 'セッション有効', expiresAt: '有効期限', authenticated: '本人確認', passwordChecked: 'パスワード確認', mfaChecked: '追加認証確認', failureRecorded: '失敗加算済み', sessionIssued: 'セッション発行済み' };
     const isRequest = parts[0] === 'requests';
-    const label = parts[0] === 'inventory' ? '在庫' : isRequest && field === 'paymentStatus' ? '振込状態' : fields[field] || field;
+    const label = parts[0] === 'inventory' ? '在庫' : isRequest && field === 'paymentStatus' ? '振込状態' : securityFields[field] || fields[field] || field;
     const display = value => {
       if (value == null) return 'なし';
       if (field === 'paymentStatus' && value === 'paid') return isRequest ? '振込済み' : '決済済み';

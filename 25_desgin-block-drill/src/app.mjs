@@ -4,8 +4,10 @@ import { snapPosition } from './snap.mjs';
 import { groupDelta } from './group-move.mjs';
 import { operationChanges, effectLines, inputLabel, resultPhase } from './operation-ui.mjs';
 import { connectionPath } from './connections.mjs';
-import { resolveStoryDrill, stages } from './story.mjs';
+import { resolveStoryDrill, stages, chapterNames } from './story.mjs';
 import { installStoryUI } from './story-ui.mjs';
+import { installDashboardAmbient } from './dashboard-ambient.mjs';
+import { installSharing } from './sharing.mjs';
 const requestedDrill = new URLSearchParams(location.search).get('drill');
 const storyMode = new URLSearchParams(location.search).get('mode') === 'story';
 const titleMode = !requestedDrill && !storyMode;
@@ -35,6 +37,8 @@ function previewRoute(target, kind) {
   drawEdges();
 }
 const catalog = [...initialGraph.nodes, ...(drill.availableBlocks || [])];
+installDashboardAmbient($('.log-panel'));
+installSharing();
 try {
   const saved = JSON.parse(localStorage.getItem(KEY));
   if (saved?.nodes && initialGraph.nodes.every(n => saved.nodes.some(s => s.id === n.id)) && new Set(saved.nodes.map(n => n.id)).size === saved.nodes.length && saved.nodes.every(n => catalog.some(i => i.id === n.id) && Array.isArray(n.operations) && n.operations.every(o => drill.allowedOperations.includes(o)) && Number.isFinite(n.x) && Number.isFinite(n.y)) && JSON.stringify(saved.entries) === JSON.stringify(initialGraph.entries)) graph = saved;
@@ -47,6 +51,7 @@ function openBlock(mode = 'block') {
   $('.state-panel').hidden = mode !== 'state';
   $('#editorHelp').hidden = mode !== 'block';
   $('.block-heading h2').firstChild.textContent = mode === 'block' ? '\u30d6\u30ed\u30c3\u30af\u306e\u7de8\u96c6' : drill.chapter === 2 ? '\u7533\u8acb\u306e\u8a73\u7d30' : '\u8377\u7269\u30fb\u5728\u5eab\u306e\u8a73\u7d30';
+  if (mode === 'state' && drill.chapter === 3) $('.block-heading h2').firstChild.textContent = '認証・セッションの詳細';
   $('.canvas-stage').classList.add('block-panel-open');
   $('#blockDrawer').classList.add('open');
   $('#blockDrawer').inert = false;
@@ -146,9 +151,9 @@ function renderNodes() {
     const box = el('div', undefined, `node${selected === n.id ? ' selected' : ''}${selectedNodes.has(n.id) ? ' group-selected' : ''}${run.tokens.some(t => t.node === n.id && !['completed', 'queued'].includes(t.status)) ? ' active-node' : ''}`);
     box.style.left = `${n.x}px`; box.style.top = `${n.y}px`; box.dataset.node = n.id;
     const heading = el('h3'); const edit = el('button', n.label, 'node-action'); edit.setAttribute('aria-label', `${n.label}を編集`);
-    edit.onclick = () => { selectedNodes.clear(); selected = n.id; openBlock(); renderNodes(); drawEdges(); renderEditor(); scrollToBlockLog(n.id); }; heading.append(edit); box.append(heading);
+    edit.onclick = () => { if (suppressClick) return; selectedNodes.clear(); selected = n.id; openBlock(); renderNodes(); drawEdges(); renderEditor(); scrollToBlockLog(n.id); }; heading.append(edit); box.append(heading);
     box.title = n.operations.map(o => operations[o][0]).join(' → ') || '処理未設定';
-    let drag;
+    let drag, suppressClick = false;
     box.ondragstart = e => e.preventDefault();
     box.onpointerdown = e => {
       if (e.button !== 0 || !drill.allowMove) return;
@@ -188,9 +193,13 @@ function renderNodes() {
     const releaseDrag = () => { window.removeEventListener('pointermove', moveDrag); window.removeEventListener('pointerup', stopDrag); window.removeEventListener('pointercancel', cancelDrag); drag = null; };
     const stopDrag = e => {
       if (!drag || e.pointerId !== drag.pointerId) return;
-      const groupMoved = drag.moved && drag.positions.length > 1;
+      const moved = drag.moved, groupMoved = moved && drag.positions.length > 1;
       releaseDrag();
-      if (!groupMoved) { selectedNodes.clear(); selected = n.id; openBlock(); scrollToBlockLog(n.id); }
+      if (moved) {
+        suppressClick = true;
+        $('#closeBlockDrawer').click(); selected = null;
+        if (!groupMoved) selectedNodes.clear();
+      } else { selectedNodes.clear(); selected = n.id; openBlock(); scrollToBlockLog(n.id); }
       save(); renderNodes(); drawEdges(); renderEditor();
     };
     const cancelDrag = e => { if (!drag || e.pointerId !== drag.pointerId) return; releaseDrag(); save(); drawEdges(); };
@@ -280,7 +289,7 @@ function renderTokens() {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     icon.classList.toggle('document-icon', !!run.state.requests);
     path.setAttribute('d', run.state.requests ? 'M6 2h8l4 4v16H6V2Zm8 0v5h4M9 11h6M9 15h6M9 18h4' : 'M3 7l9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10M7.5 5l9 4v5'); path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'currentColor'); path.setAttribute('stroke-width', '1.6'); path.setAttribute('stroke-linejoin', 'round'); icon.append(path);
-    b.append(icon, el('span', `${t.id} · ${t.orderId}`)); b.onclick = () => selectToken(i); return b;
+    b.append(icon, el('span', `入力${i + 1}`, 'token-short-label'), el('span', `${t.id} · ${t.orderId}`, 'token-full-label')); b.onclick = () => selectToken(i); return b;
   }));
   run.tokens.forEach((t, i) => {
     const n = graph.nodes.find(n => n.id === t.node), b = container.children[i];
@@ -294,6 +303,13 @@ function renderTokens() {
   });
   run.tokens.forEach((t, i) => { const b = container.children[i]; b.classList.toggle('selected-token', i === selectedToken); b.setAttribute('aria-pressed', String(i === selectedToken)); b.setAttribute('aria-label', `${t.id} ${t.orderId}の状態を表示`); b.title = `${t.id} ${t.orderId}：クリックで下の状態欄に表示`; });
   run.tokens.forEach((t, i) => {
+    if (run.state.security) {
+      const b = container.children[i], user = run.state.users[t.orderId];
+      let badge = b.querySelector('.security-badge');
+      if (!badge) { badge = el('span', undefined, 'security-badge'); b.append(badge); }
+      badge.textContent = user ? `失敗${user.failedCount} · ${user.locked ? 'ロック済み' : '未ロック'}` : '不明ユーザー';
+      return;
+    }
     if (run.state.requests) {
       const b = container.children[i], r = run.state.requests[t.orderId];
       b.querySelectorAll('.quantity-badge,.reservation-badge').forEach(b => b.remove());
@@ -313,7 +329,15 @@ function renderTokens() {
     badge.textContent = `引当 ${quantity}`;
     b.setAttribute('aria-label', `${t.id} ${t.orderId} 未引当の数量${remaining}個、引当${quantity}個。クリックで状態を表示`);
   });
-
+  run.tokens.forEach((t, i) => {
+    const b = container.children[i], event = t.event;
+    const details = [`入力${i + 1}/${run.tokens.length} · ${inputLabel(event, run.graph)}`, `利用者：${t.orderId}`, `状態：${{ queued: '待機', active: '実行中', waiting: '条件待ち', completed: '完了', stopped: '停止' }[t.status] || t.status}`];
+    if (run.state.security) {
+      if (event.sessionId) details.push(`セッション：${event.sessionId}`);
+      if (event.type === 'login') details.push(`パスワード：${event.passwordMatches ? '一致' : '不一致'}／追加認証：${event.mfaMatches ? '一致' : '不一致'}`);
+    }
+    b.title = details.join('\n');
+  });
 }
 function selectToken(index) {
   selectedToken = index; renderTokens(); renderState();
@@ -497,6 +521,14 @@ function appendParcelSection(wrap, title, fields, values) {
 function renderState() {
   const area = $('#state'); area.replaceChildren();
   if (!test) { area.append(el('p', '\u30c6\u30b9\u30c8\u30b1\u30fc\u30b9\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044\u3002', 'rule')); return; }
+  if (run.state.security) {
+    const token = run.tokens[selectedToken] || run.tokens[0], attempt = run.state.attempts[token?.event.inputId];
+    area.append(stateTable('ユーザーの状態', ['ユーザー', '権限', '失敗回数', 'ロック'], Object.entries(run.state.users).map(([id, u]) => [id, u.role, u.failedCount, u.locked ? 'ロック済み' : '未ロック'])));
+    area.append(stateTable('セッション', ['ID', '利用者', '有効', '期限', '本人確認'], Object.entries(run.state.sessions).map(([id, s]) => [id, s.userId, s.active, s.expiresAt, s.authenticated])));
+    if (token && attempt) area.append(stateTable(`入力${selectedToken + 1}の確認状態`, ['パスワード', '追加認証', '失敗加算', '発行'], [[attempt.passwordChecked, attempt.mfaChecked, attempt.failureRecorded, attempt.sessionIssued]]));
+    area.append(stateTable('ケース全体の合計', ['発行', '管理処理', '失効', '不正発行', '不正管理'], [[...['sessionIssued', 'adminAction', 'sessionRevoked'].map(type => run.state.effects.filter(e => e.type === type).length), run.state.effects.filter(e => e.type === 'sessionIssued' && !e.valid).length, run.state.effects.filter(e => e.type === 'adminAction' && !e.valid).length]]));
+    return;
+  }
   if (run.state.requests) {
     const records = run.tokens.map(t => [t.orderId, run.state.requests[t.orderId]]);
     const details = parcelTable('申請の状態', ['申請', '金額', '版', '承認', '承認版', '経理確認', '確認版', '振込', '振込版'], records.map(([id, r]) => [id, `${r.amount}円`, r.revision, r.approvalStatus, r.approvedRevision ?? '—', r.accountingStatus, r.verifiedRevision ?? '—', r.paymentStatus, r.paidRevision ?? '—']));
@@ -693,8 +725,8 @@ new ResizeObserver(positionTestDrawer).observe($('.tests.panel'));
 window.addEventListener('resize', positionTestDrawer);
 window.addEventListener('scroll', positionTestDrawer, { passive: true });
 $('#drillSummary').textContent = drill.summary;
-$('#assignmentIntro').textContent = drill.chapter === 2 ? '上長承認後に経理確認を行い、振り込むシステムです。' : '在庫引当後に決済、決済後に出荷するシステムです。';
-const ruleItems = drill.chapter === 2 ? [
+$('#assignmentIntro').textContent = drill.chapter === 3 ? '社内ポータルの認証・セッション・管理機能を扱います。照合結果と時刻は入力で与えられるシミュレーションです。' : drill.chapter === 2 ? '上長承認後に経理確認を行い、振り込むシステムです。' : '在庫引当後に決済、決済後に出荷するシステムです。';
+const ruleItems = drill.chapter === 3 ? (drill.id === 'security-login' ? ['パスワードと追加認証の両照合が必要', '照合失敗時はセッションを発行せず終了', 'この問題では失敗回数・ロックは扱わない'] : ['連続失敗3回でロック。1入力につき失敗加算は1回', 'ロック済みの入力は加算も発行もしない', '正しいログイン成功時だけ失敗回数を0へ戻す', '管理機能は有効な本人セッションと管理権限が必要', 'ログアウト済み・期限切れ・他人のセッションは利用不可', 'セッションIDは再利用・上書き不可']) : drill.chapter === 2 ? [
   '本人承認は禁止', '上長権限・現版の承認・現版の経理確認が必要',
   '差戻し・却下・旧版承認では振込禁止', '振込完了時だけ通知', '再実行しても振込・通知は各1回',
 ] : [
@@ -704,8 +736,9 @@ $('#assignmentRules').replaceChildren(...ruleItems.map(rule => el('li', rule)));
 $('#assignmentTask').textContent = 'ブロックを修正してすべてのテストが正しく動くようにしてください。';
 $('.canvas-heading>p').textContent = drill.allowMove ? 'ブロックを配置・移動し、接続と処理を編集' : '配置は固定です。ブロックをクリックして接続と処理を編集';
 document.body.classList.toggle('fixed-blocks', !drill.allowMove);
+if (drill.chapter === 3) $('.legend span:last-child').textContent = '● 入力をクリックして認証状態を確認';
 if (drill.chapter === 2) $('.legend span:last-child').textContent = '● 申請をクリックして状態を確認';
-$('.badge').textContent = `${drill.chapter === 2 ? '経費精算・承認' : '注文システム'} / ${drill.difficulty}`;
+$('.badge').textContent = `${chapterNames[drill.chapter]} / ${drill.difficulty}`;
 $('.canvas-viewport').ondragover = e => { if (drill.allowPlace) e.preventDefault(); };
 $('.canvas-viewport').ondrop = e => { if (!drill.allowPlace) return; e.preventDefault(); const rect = $('#canvas').getBoundingClientRect(), scale = rect.width / canvasWidth(); placeBlock(e.dataTransfer.getData('text/plain'), { x: (e.clientX - rect.left) / scale - 100, y: (e.clientY - rect.top) / scale - 20 }); };
 $('#drillNotice').textContent = requestedDrill && !drills.some(d => d.id === requestedDrill) ? '\u6307\u5b9a\u3055\u308c\u305fID\u304c\u898b\u3064\u304b\u3089\u306a\u3044\u305f\u3081\u3001\u7dcf\u5408\u554f\u984c\u3092\u8868\u793a\u3057\u3066\u3044\u307e\u3059\u3002' : '';

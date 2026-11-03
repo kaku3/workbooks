@@ -51,6 +51,7 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
   document.querySelector('#readStory').hidden = !storyMode;
   const next = document.querySelector('#nextStage');
   const finalStage = stage === stages.at(-1);
+  const hasClearScene = stage.chapter >= 2 && !!scenes[`${stage.id}.clear`];
   const proceed = () => { const following = stages[stages.indexOf(stage) + 1]; if (following) location.assign(stageURL(following.drillId, true)); else home.click(); };
   function showNext() {
     if (!storyMode) return;
@@ -117,13 +118,13 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     const saved = readProgress(); saved.started = true; saved.currentStage = stage.id; saveProgress(saved);
     document.querySelector('#storyStageLabel').textContent = `${stage.id} / 第${stage.chapter}章 ${chapterNames[stage.chapter]}`;
     document.querySelector('#readStory').onclick = () => { document.querySelector('#pause').click(); dialogue(`${stage.id}.intro`, true); };
-    if (finalStage && saved.pendingClear === stage.id) dialogue(`${stage.id}.clear`, true, proceed);
+    if (hasClearScene && saved.pendingClear === stage.id) dialogue(`${stage.id}.clear`, true, proceed);
     else dialogue(`${stage.id}.intro`, true, tutorial);
     if (new URLSearchParams(location.search).has('replay')) { const url = new URL(location.href); url.searchParams.delete('replay'); history.replaceState(null, '', url.href); }
     showNext();
   }
   let clearPending = false;
-  document.querySelector('#batchResult').addEventListener('close', () => { if (clearPending) { clearPending = false; if (finalStage) dialogue(`${stage.id}.clear`, true, proceed); else proceed(); } });
+  document.querySelector('#batchResult').addEventListener('close', () => { if (clearPending) { clearPending = false; if (hasClearScene) dialogue(`${stage.id}.clear`, true, proceed); else proceed(); } });
   document.documentElement.classList.remove('booting');
   return { onClear() { if (!storyMode) return; completeStage(drill.id); clearPending = true; }, showNext };
 }

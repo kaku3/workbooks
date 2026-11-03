@@ -13,7 +13,7 @@ for (const [i, drill] of drills.filter(d => d.chapter === 1).entries()) {
     for (const test of drill.tests) assert.equal(finish(createRun(repair, test)).pass, true, `${drill.id}: alternative ${test.id}`);
   }
 }
-assert.equal(new Set(drills.map(d => d.id)).size, 8);
+assert.equal(new Set(drills.map(d => d.id)).size, 12);
 // 後処理と失敗通知だけ直しても、重複確認なしの受付では二重要求が失敗する。
 const medium = drills.find(d => d.id === 'cancel-consistency');
 const partial = clone(medium.initialGraph);
