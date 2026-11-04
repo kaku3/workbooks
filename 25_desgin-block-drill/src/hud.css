@@ -304,7 +304,8 @@ body:not(.fixed-blocks) #canvas{touch-action:none}
 @keyframes ambient-pie{from{stroke-dasharray:20 263}to{stroke-dasharray:235 48}}
 @keyframes ambient-stream{to{transform:translateY(-50%)}}
 @media(prefers-reduced-motion:reduce){.dashboard-ambient *{animation:none!important}}
-.workspace>.tests #batch.batch-ready{position:relative;isolation:isolate;background:#ffe7a0;color:#352a17;border-color:#fff2c7;font-weight:700;animation:batch-ready-glow 1.6s ease-in-out infinite}
+.workspace>.tests.panel:has(#batch.batch-ready){position:relative;z-index:10;overflow:visible}
+.workspace>.tests #batch.batch-ready{position:relative;z-index:1;isolation:isolate;background:#ffe7a0;color:#352a17;border-color:#fff2c7;font-weight:700;animation:batch-ready-glow 1.6s ease-in-out infinite}
 #batch.batch-ready::before,#batch.batch-ready::after{content:'';position:absolute;inset:-12px;border:1px solid #ffe7a0;border-radius:7px;pointer-events:none;animation:batch-ready-focus 2.4s ease-out infinite}
 #batch.batch-ready::after{animation-delay:1.2s}
 @keyframes batch-ready-glow{0%,100%{background:#ffe7a0;box-shadow:0 0 8px #ffd36b55}50%{background:#fff5d6;box-shadow:0 0 22px #ffd36baa}}
