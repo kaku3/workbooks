@@ -4,8 +4,8 @@ import { snapPosition } from './snap.mjs';
 import { groupDelta } from './group-move.mjs';
 import { operationChanges, effectLines, inputLabel, resultPhase } from './operation-ui.mjs';
 import { connectionPath } from './connections.mjs';
-import { resolveStoryDrill, stages, chapterNames } from './story.mjs';
-import { installStoryUI } from './story-ui.mjs';
+import { resolveStoryDrill, stages, chapterNames, chapterUnlocked, readProgress } from './story.mjs';
+import { installStoryUI, stageURL } from './story-ui.mjs';
 import { installDashboardAmbient } from './dashboard-ambient.mjs';
 import { installSharing } from './sharing.mjs';
 const requestedDrill = new URLSearchParams(location.search).get('drill');
@@ -18,6 +18,7 @@ const el = (tag, text, className) => { const e = document.createElement(tag); if
 const KEY = `design-block-drill.v2.${drill.id}`;
 let graph = clone(initialGraph), selected = initialGraph.nodes[0].id, test = tests[0] || null, run, timer, selectedToken = 0;
 let results = {};
+const individualPasses = new Set();
 let caseFilter = 'all';
 let selectedNodes = new Set();
 let logSource = null;
@@ -40,7 +41,12 @@ const catalog = [...initialGraph.nodes, ...(drill.availableBlocks || [])];
 installDashboardAmbient($('.log-panel'));
 installSharing();
 try {
-  const saved = JSON.parse(localStorage.getItem(KEY));
+  const fresh = !storyMode && new URLSearchParams(location.search).get('fresh') === '1';
+  if (fresh) {
+    localStorage.setItem(KEY, JSON.stringify(graph));
+    const url = new URL(location.href); url.searchParams.delete('fresh'); history.replaceState(null, '', url.href);
+  }
+  const saved = fresh ? null : JSON.parse(localStorage.getItem(KEY));
   if (saved?.nodes && initialGraph.nodes.every(n => saved.nodes.some(s => s.id === n.id)) && new Set(saved.nodes.map(n => n.id)).size === saved.nodes.length && saved.nodes.every(n => catalog.some(i => i.id === n.id) && Array.isArray(n.operations) && n.operations.every(o => drill.allowedOperations.includes(o)) && Number.isFinite(n.x) && Number.isFinite(n.y)) && JSON.stringify(saved.entries) === JSON.stringify(initialGraph.entries)) graph = saved;
 } catch {}
 if (!drill.allowMove) graph.nodes.forEach(n => { const position = initialGraph.nodes.find(x => x.id === n.id); n.x = position.x; n.y = position.y; });
@@ -126,6 +132,7 @@ function renderPalette() {
 function reset() { pause(); clearProcessingEffects(); batchRun = null; run = test ? createRun(graph, test) : { tokens: [], logs: [], step: 0, status: 'ready' }; selectedToken = 0; render(); }
 function changed() { save(); reset(); renderEditor(); renderPalette(); }
 function renderCases() {
+  $('#batch').classList.toggle('batch-ready', !batchRun && tests.length > 0 && tests.every(t => individualPasses.has(t.id)));
   $('#caseFilters').hidden = !Object.keys(results).length && !batchRun;
   const counts = { all: tests.length, pass: Object.values(results).filter(value => value === true).length, fail: Object.values(results).filter(value => value === false).length };
   const filterLabels = { all: 'すべて', pass: 'Pass', fail: 'Fail' };
@@ -562,7 +569,13 @@ function renderResults() {
   if (!test) return;
   const phase = resultPhase(run), final = phase === 'final' || phase === 'waiting', result = judge(run);
   if (!final) { stampedRun = null; drawer.querySelector('.test-result-stamp')?.remove(); }
-  else if (stampedRun !== run) { stampedRun = run; stampTestResult(result.pass); }
+  else if (stampedRun !== run) {
+    stampedRun = run; stampTestResult(result.pass);
+    if (!batchRun) {
+      if (result.pass) individualPasses.add(test.id);
+      else individualPasses.delete(test.id);
+    }
+  }
   if (final) { drawer.dataset.result = result.pass ? 'pass' : 'fail'; results[test.id] = result.pass; }
   $('#drawerTitle').textContent = `${test.id} ${test.title}`;
   $('#testOverview').textContent = test.description;
@@ -613,13 +626,27 @@ function showBatchResult() {
   const passed = Object.values(results).filter(Boolean).length, ratio = passed / tests.length;
   const grade = passed === tests.length ? 'Excellent' : ratio >= .8 ? 'Almost!' : 'Try Again';
   const dialog = $('#batchResult'); dialog.dataset.grade = grade === 'Excellent' ? 'excellent' : 'retry';
+  dialog.querySelector('.batch-result-actions')?.remove();
   $('#batchGrade').textContent = grade;
   $('#batchScore').textContent = `${passed} / ${tests.length} ケース成功`;
   $('#batchMessage').textContent = passed === tests.length ? 'すべてのテストをクリアしました！' : '失敗したケースの状態とログを確認し、設計を修正しましょう。';
   dialog.showModal();
   if (passed === tests.length) storyUI.onClear();
   clearTimeout(resultDismissTimer);
-  resultDismissTimer = setTimeout(() => { if (dialog.open) dialog.close(); }, 3000);
+  resultDismissTimer = setTimeout(() => {
+    if (!dialog.open) return;
+    if (storyMode || passed !== tests.length) { dialog.close(); return; }
+    const actions = el('div', undefined, 'batch-result-actions');
+    const home = el('button', 'タイトルに戻る');
+    home.onclick = () => $('#backToTitle').click();
+    const next = el('button', '次の問題', 'primary');
+    const following = stages[stages.findIndex(stage => stage.drillId === drill.id) + 1];
+    next.disabled = !following || !chapterUnlocked(following.chapter, readProgress());
+    if (following && next.disabled) next.title = 'ストーリーモードで次の章を解放してください';
+    next.onclick = () => { if (following && !next.disabled) location.assign(stageURL(following.drillId)); };
+    actions.append(home, next); dialog.append(actions);
+    next.disabled ? home.focus() : next.focus();
+  }, 3000);
 }
 function advance() {
   if (!test) return;
@@ -644,11 +671,13 @@ $('#step').onclick = () => { pause(); setTestDrawerSize('fit'); setDrawer(true, 
 $('#speed').onchange = () => { if (timer) { pause(); timer = setInterval(advance, Number($('#speed').value)); } };
 $('#reset').onclick = reset;
 $('#restore').onclick = () => {
+  individualPasses.clear();
   results = {}; caseFilter = 'all'; assertionFilter = 'all'; selectedNodes.clear();
   $('#caseFilters').querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === 'all')));
   graph = clone(initialGraph); selected = graph.nodes[0].id; changed();
 };
 $('#batch').onclick = () => {
+  individualPasses.clear();
   pause(); results = {}; test = tests[0]; reset();
   
   setTestDrawerSize('fit'); setDrawer(true); batchRun = { index: 0, nextAt: 0 };
@@ -779,6 +808,53 @@ if (titleMode) {
 }
 
 const assignmentDialog = $('#assignmentDialog');
+const assignmentCopy = [...assignmentDialog.querySelectorAll('.assignment p, .assignment li')]
+  .map(element => ({ element, text: element.textContent }));
+let assignmentTypingFrame;
+function finishAssignmentTyping() {
+  cancelAnimationFrame(assignmentTypingFrame);
+  $('#closeAssignment').disabled = false;
+  assignmentCopy.forEach(({ element, text }) => {
+    element.textContent = text;
+    element.classList.remove('assignment-pending');
+  });
+}
+function typeAssignment() {
+  finishAssignmentTyping();
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  $('#closeAssignment').disabled = true;
+  const letters = [];
+  assignmentCopy.forEach(({ element, text }) => {
+    if (!text) return;
+    if (element.tagName === 'LI') element.classList.add('assignment-pending');
+    const readable = el('span', text, 'assignment-readable');
+    const visual = el('span');
+    visual.setAttribute('aria-hidden', 'true');
+    visual.append(...Array.from(text, character => {
+      const letter = el('span', character, 'assignment-letter');
+      letters.push({ letter, element });
+      return letter;
+    }));
+    element.replaceChildren(readable, visual);
+  });
+  let started, revealed = 0;
+  function reveal(now) {
+    started ??= now;
+    const target = Math.min(letters.length, Math.floor((now - started) / 8) + 1);
+    while (revealed < target) {
+      const { letter, element } = letters[revealed++];
+      letter.style.visibility = 'visible';
+      element.classList.remove('assignment-pending');
+    }
+    if (revealed < letters.length) assignmentTypingFrame = requestAnimationFrame(reveal);
+    else finishAssignmentTyping();
+  }
+  assignmentTypingFrame = requestAnimationFrame(reveal);
+}
+assignmentDialog.addEventListener('close', finishAssignmentTyping);
+assignmentDialog.querySelector('.assignment').addEventListener('click', event => {
+  if (!event.target.closest('button')) finishAssignmentTyping();
+});
 function focusCanvas() { if (!titleMode) $('.canvas-heading').scrollIntoView({ block: 'start', behavior: 'instant' }); }
 assignmentDialog.addEventListener('close', focusCanvas);
 if (!titleMode) requestAnimationFrame(focusCanvas);
@@ -788,7 +864,11 @@ function assignmentSeen() {
   try { return sessionStorage.getItem(assignmentSeenKey) === '1'; } catch { return false; }
 }
 function showAssignment() {
-  if (!assignmentDialog.open) assignmentDialog.showModal();
+  if (!assignmentDialog.open) {
+    typeAssignment();
+    assignmentDialog.showModal();
+    assignmentDialog.scrollTop = 0;
+  }
   if (!storyMode && !titleMode) {
     try { localStorage.setItem(assignmentSeenKey, '1'); }
     catch { try { sessionStorage.setItem(assignmentSeenKey, '1'); } catch {} }

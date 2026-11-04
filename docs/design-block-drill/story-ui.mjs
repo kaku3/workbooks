@@ -17,7 +17,8 @@ function preparePortrait(id) {
 }
 export function stageURL(id, story = false, replay = false) {
   const url = new URL(location.href); url.search = ''; url.searchParams.set('drill', id);
-  if (story) url.searchParams.set('mode', 'story'); if (replay) url.searchParams.set('replay', '1'); return url.href;
+  if (story) url.searchParams.set('mode', 'story'); else url.searchParams.set('fresh', '1');
+  if (replay) url.searchParams.set('replay', '1'); return url.href;
 }
 export function installStoryUI(drills, drill, storyMode, titleMode) {
   const title = document.querySelector('#titleScreen'), main = document.querySelector('main');
