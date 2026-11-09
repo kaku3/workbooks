@@ -76,6 +76,11 @@ function setDrawer(open, focus = true) {
   renderCases();
   positionTestDrawer();
 }
+function openTestDrawerForExecution(focus = true) {
+  if (matchMedia('(max-width:800px)').matches) return;
+  setTestDrawerSize('fit');
+  setDrawer(true, focus);
+}
 function positionTestDrawer() {
   const top = Math.max(12, $('.tests.panel').getBoundingClientRect().bottom + 8);
   const bottom = drawerSize === 'max' ? innerHeight - 12 : Math.min(innerHeight - 12, $('.log-panel').getBoundingClientRect().top);
@@ -104,6 +109,7 @@ function fitEditorHeight() {
   const viewport = $('.canvas-viewport'), palette = $('#blockPalette');
   const bottom = palette.hidden ? viewport.getBoundingClientRect().bottom : palette.getBoundingClientRect().bottom;
   $('.canvas-stage').style.setProperty('--canvas-editor-height', `${bottom - viewport.getBoundingClientRect().top}px`);
+  $('.canvas-stage').style.setProperty('--canvas-log-top', `${$('.log-panel').offsetTop}px`);
   positionTestDrawer();
 }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(graph)); } catch {} }
@@ -617,8 +623,6 @@ function renderLogs() {
 function render() {
   $('.toolbar').hidden = !test;
   renderResults(); renderCases(); renderNodes(); drawEdges(); renderTokens(); renderState(); renderLogs();
-  const status = { ready: '準備完了', running: timer ? '実行中' : '一時停止', waiting: '待機中', stopped: '停止', completed: '完了' };
-  $('#status').textContent = test ? `${test.id} · ${status[run.status]} · ${run.step} step` : 'テストケースを選択してください';
   for (const id of ['play', 'pause', 'step', 'reset']) $(`#${id}`).disabled = !test;
   $('#batch').disabled = !!batchRun;
 }
@@ -665,10 +669,15 @@ function advance() {
     else { pause(); batchRun = null; render(); showBatchResult(); }
   } else if (done) pause();
 }
-$('#play').onclick = () => { if (!test) return; setTestDrawerSize('fit'); setDrawer(true); if (timer || (!batchRun && ['completed', 'stopped'].includes(run.status))) return; timer = setInterval(advance, Number($('#speed').value)); advance(); };
+$('#play').onclick = () => { if (!test) return; openTestDrawerForExecution(); if (timer || (!batchRun && ['completed', 'stopped'].includes(run.status))) return; timer = setInterval(advance, Number($('#speed [aria-pressed="true"]').dataset.speed)); advance(); };
 $('#pause').onclick = () => { pause(); render(); };
-$('#step').onclick = () => { pause(); setTestDrawerSize('fit'); setDrawer(true, false); advance(); };
-$('#speed').onchange = () => { if (timer) { pause(); timer = setInterval(advance, Number($('#speed').value)); } };
+$('#step').onclick = () => { pause(); openTestDrawerForExecution(false); advance(); };
+$('#speed').onclick = event => {
+  const button = event.target.closest('button[data-speed]');
+  if (!button) return;
+  for (const option of $('#speed').querySelectorAll('button')) option.setAttribute('aria-pressed', String(option === button));
+  if (timer) { pause(); timer = setInterval(advance, Number(button.dataset.speed)); }
+};
 $('#reset').onclick = reset;
 $('#restore').onclick = () => {
   individualPasses.clear();
@@ -680,8 +689,8 @@ $('#batch').onclick = () => {
   individualPasses.clear();
   pause(); results = {}; test = tests[0]; reset();
   
-  setTestDrawerSize('fit'); setDrawer(true); batchRun = { index: 0, nextAt: 0 };
-  timer = setInterval(advance, Number($('#speed').value)); render();
+  openTestDrawerForExecution(); batchRun = { index: 0, nextAt: 0 };
+  timer = setInterval(advance, Number($('#speed [aria-pressed="true"]').dataset.speed)); render();
 };
 $('#closeBlockDrawer').onclick = () => {
   pendingRoutes = {}; previewRoute(null);

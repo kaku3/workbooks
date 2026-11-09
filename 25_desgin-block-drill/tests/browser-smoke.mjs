@@ -39,7 +39,7 @@ try {
   await call('Emulation.setDeviceMetricsOverride', { width: 1500, height: 1000, deviceScaleFactor: 1, mobile: false });
   const url = `http://127.0.0.1:${server.address().port}/`;
   const runBatch = async (grade = 'Excellent') => {
-    await evaluate('document.querySelector("#speed").value="220"; document.querySelector("#speed").dispatchEvent(new Event("change")); document.querySelector("#batch").click()');
+    await evaluate('document.querySelector("#speed button:last-child").dataset.speed="220"; document.querySelector("#speed button:last-child").click(); document.querySelector("#batch").click()');
     assert.equal(await evaluate('document.querySelector("main").classList.contains("cases-expanded")'), false);
     assert.equal(await evaluate('document.querySelector("#testDrawer").inert'), false);
     for (let i=0;i<600;i++) { if (await evaluate('document.querySelector("#batchResult").open')) break; await delay(100); }

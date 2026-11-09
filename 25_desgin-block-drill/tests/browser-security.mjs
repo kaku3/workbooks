@@ -78,7 +78,7 @@ try{
  const waitIntro=async()=>{for(let i=0;i<70&&!doc.querySelector('#storyDialog').open;i++)await new Promise(r=>setTimeout(r,100));check(doc.querySelector('#storyDialog').open,'story did not open')};
  const runBatch=async()=>{
   if(doc.querySelector('#assignmentDialog').open)doc.querySelector('#assignmentDialog').close();
-  const speed=doc.querySelector('#speed'),option=doc.createElement('option');option.value='1';speed.append(option);speed.value='1';
+  const speed=doc.querySelector('#speed button:last-child');speed.dataset.speed='1';speed.click();
   doc.querySelector('#batch').click();
   for(let i=0;i<400&&!doc.querySelector('#batchResult').open;i++)await new Promise(r=>setTimeout(r,50));
   check(doc.querySelector('#batchResult').open,'batch did not finish');
