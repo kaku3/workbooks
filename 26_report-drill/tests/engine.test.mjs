@@ -62,7 +62,7 @@ test('report reactions depend on explanation elements, not the number of cards',
   assert.equal(s.history.at(-1).report.level,level);
   assert.equal(s.conversation.ids[0],`01.report-${level}`);
   const lines=scenario.scenes[s.conversation.ids[0]].lines;
-  assert.equal(lines[0].speaker,'player');assert.ok(lines.some(line=>line.speaker==='sales'));
+  assert.equal(lines[0].speaker,'player');assert.ok(lines.some(line=>line.speaker==='client'));
   finish(s);assert.equal(s.phase,level===3?'complete':'report');
  }
 });

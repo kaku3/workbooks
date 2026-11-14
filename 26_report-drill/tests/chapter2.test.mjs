@@ -15,9 +15,9 @@ test('v2 introduction explains why to investigate before estimating without reve
  assert.match(thoughts,/経理に何をしたい/);assert.match(thoughts,/修正範囲を確定/);assert.match(thoughts,/見積もり根拠/);
  assert.doesNotMatch(thoughts,/ab\.|3枚|３枚|要約カード/);
  assert.match(problem.requestPurpose,/適正な見積もりの根拠/);
- const reply=scenario.scenes['02.report-purpose'].lines.find(line=>line.speaker==='sales').text;
+ const reply=scenario.scenes['02.report-purpose'].lines.find(line=>line.speaker==='client').text;
  assert.match(reply,/ボタン一個分の見積もり/);
- assert.match(scenario.scenes['02.report-scope'].lines.find(line=>line.speaker==='sales').text,/どこまで含める見積もり/);
+ assert.match(scenario.scenes['02.report-scope'].lines.find(line=>line.speaker==='client').text,/どこまで含める見積もり/);
 });
 test('Makabe responds to his schedule and the preparation of the question',()=>{
  const s=start();assert.equal(e.preview(s,'ab.ask-makabe').result.id,'busy');
@@ -69,10 +69,16 @@ test('equivalent detail cards form a report without requiring the three summary 
  const other=prepare('notification');other.phase='report';other.selected=['ab.purpose-summary','ab.flow','ab.agreed-scope'];assert.equal(e.evaluateReport(other).level,3);
 });
 test('technical rechecks remain available, cost time and grant no repeated rewards',()=>{
+ const firstRun=(s,id)=>{
+  const plan=e.preview(s,'ab.'+id);
+  assert.notEqual(plan.result.id,'recheck');
+  assert.ok(scenario.scenes[plan.result.scene].lines.every(line=>line.text!=='これ以上は調べても何も分からなそうだ。'));
+  run(s,id);
+ };
  let s;
  for(const id of ['screen','source','api','ui','design','ai']){
-  s=start();run(s,'screen');run(s,'source');if(id==='design')run(s,'api');
-  if(!['screen','source'].includes(id))run(s,id);assert.equal(e.cardStatus(s,'ab.'+id),'todo');
+  s=start();firstRun(s,'screen');firstRun(s,'source');if(id==='design')firstRun(s,'api');
+  if(!['screen','source'].includes(id))firstRun(s,id);assert.equal(e.cardStatus(s,'ab.'+id),'todo');
   const before=structuredClone(s),plan=e.preview(s,'ab.'+id);assert.equal(plan.replay,false);assert.equal(plan.result.id,'recheck');
   run(s,id);assert.equal(s.time,before.time+plan.minutes);assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);
   assert.equal(scenario.scenes[plan.result.scene].lines.at(-1).text,'これ以上は調べても何も分からなそうだ。');

@@ -792,7 +792,7 @@
 [
   {
     "id": "wm.report",
-    "to": "sales",
+    "to": "client",
     "prompt": "PDF印刷のウォーターマークの件\n現象、影響範囲、対策の報告をお願いします。",
     "slots": 3,
     "minutes": 10,

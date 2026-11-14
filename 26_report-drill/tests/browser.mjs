@@ -61,8 +61,13 @@ try {
   `});
   await call('Runtime.enable');await call('Page.enable');await size(1440,1000);
   await call('Page.navigate',{url});await waitFor("Boolean(document.querySelector('[data-action=start]'))");
-  await screenshot('title');await click('[data-action=start]');
+  await screenshot('title');
+  await evaluate("import('./data/content.mjs').then(({cases})=>{const line=cases.watermark.scenario.scenes['01.intro'].lines[0];line.text='**'+line.text+'**';})");
+  await click('[data-action=start]');
   await waitFor("Boolean(document.querySelector('.portrait img')?.complete && document.querySelector('.portrait img')?.naturalWidth)");
+  await waitFor("Boolean(document.querySelector('#dialogue-text strong'))");
+  await click('[data-action=scene-next]');
+  assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent.includes('**')"),false,'emphasis survives completing the typewriter without showing markers');
   const portraitWidth=await evaluate("document.querySelector('.portrait img').getBoundingClientRect().width");
   const introMessageHeight=await evaluate("document.querySelector('.conversation-window').getBoundingClientRect().height");
   await screenshot('intro');

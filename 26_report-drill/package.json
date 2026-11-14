@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node scripts/build-content.mjs",
     "start": "node scripts/serve.mjs",
-    "test": "node --test tests/engine.test.mjs tests/chapter2.test.mjs",
+    "test": "node --test tests/engine.test.mjs tests/chapter2.test.mjs tests/dialogue-text.test.mjs",
     "test:browser": "node tests/browser.mjs"
   }
 }

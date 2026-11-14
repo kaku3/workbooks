@@ -1,3 +1,4 @@
+import {dialogueHTML,dialogueLength,plainDialogue,setDialogue} from './dialogue-text.mjs';
 import { cases } from './data/content.mjs';
 const requestedCase=new URLSearchParams(location.search).get('case');
 const caseId=Object.hasOwn(cases,requestedCase)?requestedCase:'watermark';
@@ -18,7 +19,7 @@ const app = document.querySelector('#app');
 const modal = document.querySelector('#modal');
 const storageKey = caseId==='watermark'?'report-drill.pdf-incident.v1':`report-drill.${caseId}.v1`;
 const names = Object.fromEntries(scenario.characters.map(item => [item.id, item.name]));
-const initials = { player: '私', sales: '佐', lead: '真', client: '客', accountant:'三', ai: 'AI' };
+const initials = { player: '私', sales: '折', lead: '真', client: '佐', accountant:'三', ai: 'AI' };
 const portraitFiles = { 主人公: '01_player', あなた: '01_player', 折原: '02_orihara', 真壁: '03_makabe', 佐伯: '04_saeki', 三田: '05_mita' };
 const openingImages=['./assets/04_saeki-transparent.png','./assets/01_player-transparent.png'];
 preloadImages(openingImages,'high');
@@ -96,15 +97,15 @@ function typeReportRequest() {
   const text=problem.questions[state.question].prompt;
   const key=`${state.loop}:${state.history.length}:${text}`;
   if(reportTextProgress?.key!==key)reportTextProgress={key,index:0};
-  const letters=Array.from(text);
-  if(state.settings.instant||state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)reportTextProgress.index=letters.length;
-  const update=()=>{target.textContent=letters.slice(0,reportTextProgress.index).join('');};
+  const textLength=dialogueLength(text);
+  if(state.settings.instant||state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)reportTextProgress.index=textLength;
+  const update=()=>{setDialogue(target,text,reportTextProgress.index);};
   update();
-  if(reportTextProgress.index>=letters.length)finishMeetingRequest();
-  if(reportTextProgress.index<letters.length)reportTextTimer=setInterval(()=>{
+  if(reportTextProgress.index>=textLength)finishMeetingRequest();
+  if(reportTextProgress.index<textLength)reportTextTimer=setInterval(()=>{
     if(!target.isConnected){clearInterval(reportTextTimer);return;}
     reportTextProgress.index++;update();
-    if(reportTextProgress.index>=letters.length){clearInterval(reportTextTimer);finishMeetingRequest();}
+    if(reportTextProgress.index>=textLength){clearInterval(reportTextTimer);finishMeetingRequest();}
   },35);
 }
 let visualState = null, pendingEffects = [];
@@ -262,14 +263,14 @@ function deckToolbar(){
 function reportPage() {
   const q=problem.questions[state.question]||problem.questions.at(-1);
   const canSubmit=state.phase==='report'&&state.selected.length===q.slots;
-  return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('sales')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span class="share-indicator">${icon('layers')} 画面共有中</span><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをドラッグして配置</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
+  return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('client')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span class="share-indicator">${icon('layers')} 画面共有中</span><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをドラッグして配置</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
       const card=problem.evidence.find(item=>item.id===(state.reportSlots||state.selected)[i]);
       return `<div class="report-slot ${card?'occupied':''}" data-report-slot="${i}">${card?evidenceCard(card,true):`<span class="slot-number">0${i+1}</span><span>ここに手がかりを置く</span>`}</div>`;
-    }).join('')}</div></div><aside class="report-buttons"><span>${state.selected.length} / ${q.slots}枚</span>${button('submit',`<span>報告する</span><small>${duration(q.minutes)}</small>`,'primary',canSubmit?'':'disabled')}</aside></div><div class="report-conversation"><div class="conversation-window"><div class="conversation-person"><div><p class="eyebrow">REPORT REQUEST</p><h2>佐伯</h2></div></div><p class="report-request" aria-label="${esc(q.prompt)}"><span class="report-request-text" aria-hidden="true">${esc(q.prompt)}</span></p><p class="report-hint">手がかりを3枚組み合わせ、相手に伝わる説明を組み立てる。</p></div></div></section>`;
+    }).join('')}</div></div><aside class="report-buttons"><span>${state.selected.length} / ${q.slots}枚</span>${button('submit',`<span>報告する</span><small>${duration(q.minutes)}</small>`,'primary',canSubmit?'':'disabled')}</aside></div><div class="report-conversation"><div class="conversation-window"><div class="conversation-person"><div><p class="eyebrow">REPORT REQUEST</p><h2>佐伯</h2></div></div><p class="report-request" aria-label="${esc(plainDialogue(q.prompt))}"><span class="report-request-text" aria-hidden="true">${esc(q.prompt)}</span></p><p class="report-hint">手がかりを3枚組み合わせ、相手に伝わる説明を組み立てる。</p></div></div></section>`;
 }
 
 function historyEntry(item,index) {
-  return `<details class="history-entry" data-history-index="${index}"><summary class="history-item"><div class="history-copy"><h3>${esc(item.label.replace(/ · [0-9hm]+経過$/u,''))}</h3><small>${item.ids.length}件の会話 ${item.selected?.length?`· 手がかり ${item.selected.length}枚`:''}</small></div>${historyChanges(item)}${item.changes?.minutes>0?`<span class="history-duration" aria-label="消費時間 ${duration(item.changes.minutes)}">${duration(item.changes.minutes)}</span>`:''}</summary><div class="history-inline">${item.ids.map(id=>scenario.scenes[id].lines.map(line=>`<p><strong>${esc(names[line.speaker])}</strong> ${esc(line.text)}</p>`).join('')).join('')}</div></details>`;
+  return `<details class="history-entry" data-history-index="${index}"><summary class="history-item"><div class="history-copy"><h3>${esc(item.label.replace(/ · [0-9hm]+経過$/u,''))}</h3><small>${item.ids.length}件の会話 ${item.selected?.length?`· 手がかり ${item.selected.length}枚`:''}</small></div>${historyChanges(item)}${item.changes?.minutes>0?`<span class="history-duration" aria-label="消費時間 ${duration(item.changes.minutes)}">${duration(item.changes.minutes)}</span>`:''}</summary><div class="history-inline">${item.ids.map(id=>scenario.scenes[id].lines.map(line=>`<p><strong>${esc(names[line.speaker])}</strong> ${dialogueHTML(line.text)}</p>`).join('')).join('')}</div></details>`;
 }
 function historyPage() {
   return `<div class="workspace-heading"><div><p class="eyebrow">WORK LOG</p><h1>調査と報告の記録。</h1></div></div><div class="history-list">${state.history.map((item,index)=>item.ids.length?historyEntry(item,index):'').join('') || '<p class="empty">まだ記録はありません。</p>'}</div>`;
@@ -368,7 +369,7 @@ function render() {
     if(meeting.phase==='connecting')meetingArea.insertAdjacentHTML('beforeend','<div class="meeting-connecting" role="status"><p>会議が開始すると 誰かが入室を許可します</p></div>');
     meetingArea.querySelector('.report-stage').insertAdjacentHTML('beforeend',`<aside class="self-panel" aria-label="その他の参加者"><div class="self-camera ${meeting.camera?'':'camera-off'}" ${roomStyle('player')}>${meeting.camera?'<img src="./assets/01_player-transparent.png" alt="自分のカメラ映像">':icon('people')}<span>あなた${meeting.camera?'':' · カメラオフ'}</span></div></aside>`);
     const activeLine=isMeetingScene()?scenario.scenes[state.conversation.ids[state.conversation.scene]].lines[state.conversation.line]:null;
-    const active=activeLine?.speaker||'sales';
+    const active=activeLine?.speaker||'client';
     const participants=meetingArea.querySelector('.self-panel');
     for(const speaker of meeting.participants.filter(id=>id!=='player')){
       const file=portraitFiles[names[speaker]];
@@ -428,39 +429,39 @@ function showMeetingConversation(){
   const c=state.conversation,id=c.ids[c.scene],scene=scenario.scenes[id],line=scene.lines[c.line];
   const key=`${state.loop}:${c.historyIndex}:${c.scene}:${c.line}`;
   if(meetingLineProgress?.key!==key)meetingLineProgress={key,index:0};
-  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='sales'));
+  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client'));
   const receiptKey=`${state.loop}:${c.historyIndex}`;
   const freshReceipt=accepted&&!meeting.receipts.has(receiptKey);
   if(accepted)meeting.receipts.add(receiptKey);
   const window=document.querySelector('.report-conversation .conversation-window');
   window.classList.toggle('report-received',accepted);
-  window.innerHTML=`${accepted?`<div class="report-accepted ${freshReceipt?'':'receipt-static'}" role="status">${icon('check')} 回答が伝わった</div>`:''}<div class="meeting-speaker"><strong>${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</strong><small>${c.line+1} / ${scene.lines.length}</small></div><p id="dialogue-text" class="meeting-dialogue ${line.kind==='thought'?'thought':''}" aria-label="${esc(line.text)}"></p><div class="meeting-dialogue-actions">${button('scene-skip','会話をスキップ','text-button')}${button('scene-next','次へ','primary')}</div>`;
+  window.innerHTML=`${accepted?`<div class="report-accepted ${freshReceipt?'':'receipt-static'}" role="status">${icon('check')} 回答が伝わった</div>`:''}<div class="meeting-speaker"><strong>${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</strong><small>${c.line+1} / ${scene.lines.length}</small></div><p id="dialogue-text" class="meeting-dialogue ${line.kind==='thought'?'thought':''}" aria-label="${esc(plainDialogue(line.text))}"></p><div class="meeting-dialogue-actions">${button('scene-skip','会話をスキップ','text-button')}${button('scene-next','次へ','primary')}</div>`;
   const target=window.querySelector('#dialogue-text');
   typed=Boolean(state.settings.instant||state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches);
-  if(typed)meetingLineProgress.index=line.text.length;
-  target.textContent=line.text.slice(0,meetingLineProgress.index);
-  typed=meetingLineProgress.index>=line.text.length;
+  if(typed)meetingLineProgress.index=dialogueLength(line.text);
+  setDialogue(target,line.text,meetingLineProgress.index);
+  typed=meetingLineProgress.index>=dialogueLength(line.text);
   const voice=document.querySelector('.self-camera');
   voice?.classList.toggle('voice-typing',!typed&&line.speaker==='player'&&line.kind!=='thought');
   if(!typed)typeTimer=setInterval(()=>{
     if(!target.isConnected){voice?.classList.remove('voice-typing');clearInterval(typeTimer);return;}
-    meetingLineProgress.index++;target.textContent=line.text.slice(0,meetingLineProgress.index);
-    if(meetingLineProgress.index>=line.text.length){typed=true;voice?.classList.remove('voice-typing');clearInterval(typeTimer);}
+    meetingLineProgress.index++;setDialogue(target,line.text,meetingLineProgress.index);
+    if(meetingLineProgress.index>=dialogueLength(line.text)){typed=true;voice?.classList.remove('voice-typing');clearInterval(typeTimer);}
   },20);
   document.querySelectorAll('.reporting [data-action=progress-report],.reporting [data-action=cannot-report]').forEach(button=>button.disabled=true);
 }
 function advanceMeetingConversation(skip){
   const c=state.conversation,line=scenario.scenes[c.ids[c.scene]].lines[c.line];
-  if(!skip&&!typed){clearInterval(typeTimer);meetingLineProgress.index=line.text.length;document.querySelector('#dialogue-text').textContent=line.text;typed=true;document.querySelector('.self-camera')?.classList.remove('voice-typing');return;}
+  if(!skip&&!typed){clearInterval(typeTimer);meetingLineProgress.index=dialogueLength(line.text);setDialogue(document.querySelector('#dialogue-text'),line.text);typed=true;document.querySelector('.self-camera')?.classList.remove('voice-typing');return;}
   engine.advance(state,skip);save();render();
 }
 function showConversation() {
   const c=state.conversation, id=c.ids[c.scene], scene=scenario.scenes[id], line=scene.lines[c.line];
-  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='sales'));
+  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client'));
   const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
   const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map(speaker=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
   openModal(`<div class="conversation-head"><span>${esc(c.label)}</span><small>${c.line+1} / ${scene.lines.length}</small></div><div class="conversation-person">${avatar(line.speaker,true)}<div><p class="eyebrow">${line.kind==='thought'?'INNER VOICE':'CONVERSATION'}</p><h2 id="modal-title">${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</h2></div></div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p><div class="conversation-actions"><span class="muted tiny">${state.seen.includes(`${id}:${scene.version}`)?'既読':'未読'} · 決定で次へ</span><div>${button('scene-skip','会話をスキップ','text-button')}${button('scene-next',`次へ ${icon('arrow')}`,'primary')}</div></div>`,action=>{
-    if(action==='scene-next'&&!typed) { clearInterval(typeTimer); document.querySelector('#dialogue-text').textContent=line.text; typed=true; return; }
+    if(action==='scene-next'&&!typed) { clearInterval(typeTimer); setDialogue(document.querySelector('#dialogue-text'),line.text); typed=true; return; }
     if(['scene-next','scene-skip'].includes(action)) { closeModal(); engine.advance(state,action==='scene-skip'); save(); render(); }
   },'conversation');
   const window = document.createElement('div');
@@ -477,8 +478,8 @@ function showConversation() {
   }
   const target=document.querySelector('#dialogue-text');
   typed=Boolean(state.settings.instant || state.settings.reduced || matchMedia('(prefers-reduced-motion: reduce)').matches);
-  if(typed) target.textContent=line.text;
-  else { let n=0; typeTimer=setInterval(()=>{ target.textContent=line.text.slice(0,++n); if(n>=line.text.length){clearInterval(typeTimer);typed=true;} },20); }
+  if(typed) setDialogue(target,line.text);
+  else { let n=0; typeTimer=setInterval(()=>{ setDialogue(target,line.text,++n); if(n>=dialogueLength(line.text)){clearInterval(typeTimer);typed=true;} },20); }
 }
 function confirmAction(title, description, execute, label='実行する') {
   openModal(`<p class="eyebrow">CONFIRM</p><h2 id="modal-title">${esc(title)}</h2><p class="confirm-description">${esc(description)}</p><div class="modal-buttons">${button('cancel','戻る','secondary')}${button('confirm',esc(label),'primary')}</div>`,action=>{if(action==='cancel')closeModal();if(action==='confirm'){closeModal();execute();}});
