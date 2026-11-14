@@ -1,0 +1,11 @@
+{
+  "name": "report-drill",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-content.mjs",
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/engine.test.mjs",
+    "test:browser": "node tests/browser.mjs"
+  }
+}
