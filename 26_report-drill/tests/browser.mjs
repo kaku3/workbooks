@@ -225,7 +225,7 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.report-board')).display"),'none');await screenshot('meeting-video');
   await waitFor("document.querySelector('.reporting')?.dataset.meetingPhase==='speaking'");
   await waitFor("document.querySelector('.reporting')?.dataset.meetingPhase==='shared'");
-  const meetingMessageHeight=await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().height");
+  const meetingMessageHeight=await evaluate("parseFloat(getComputedStyle(document.querySelector('.report-conversation .conversation-window')).height)");
   await evaluate('advanceGameTimer(600000)');assert.equal((await state()).time,beforeMeeting,'choosing clues in the report never advances real time');
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.clock-colon')).animationName"),'none','the report clock does not blink');
   assert.equal(await evaluate("document.querySelectorAll('.meeting-controls button').length"),5);
@@ -320,6 +320,7 @@ try {
     await screenshot('report-accepted');
   });
   assert.equal((await state()).phase,'complete');await screenshot('complete');
+  assert.equal(await evaluate("Boolean(document.querySelector('[data-action=next-case]'))"),true,'chapter one offers chapter two');
   await click('[data-action=retry-case]');await settle();
   await investigate('wm.design');await investigate('wm.docs-detail');
   assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.source-pdf\"]'))"),false);
@@ -379,6 +380,21 @@ try {
   assert.deepEqual((await state()).conversation.ids,['01.timeout','01.gameover'],'a task exceeding the remaining time immediately starts timeout');
   assert.equal((await state()).time,1080);assert.equal((await state()).done.includes('wm.lunch:default'),false);
   await settle();assert.equal((await state()).phase,'gameover');
+  const firstCaseSave=await evaluate("localStorage.getItem('report-drill.pdf-incident.v1')");
+  await call('Page.navigate',{url:url+'/?case=approval-button'});await waitFor("Boolean(document.querySelector('[data-action=start]'))");
+  assert.equal(await evaluate("document.querySelector('.case-paper h2').textContent"),'承認画面へのボタン追加');
+  await screenshot('chapter2-title');await click('[data-action=start]');await settle();
+  const chapter2State=()=>evaluate("JSON.parse(localStorage.getItem('report-drill.approval-button.v1'))");
+  assert.equal((await chapter2State()).caseId,'approval-button');
+  await click('[data-action=settings]');await click('#instant');await click('[data-action=settings-save]');
+  for(const id of ['business','workflow','reapply','state','permission'])await investigate('ab.'+id);
+  assert.ok((await chapter2State()).evidence.includes('ab.impact-summary'));
+  await screenshot('chapter2-desk');await click('[data-action=report]');
+  for(const id of ['ab.purpose-summary','ab.return-flow','ab.impact-summary'])await click(`[data-action="select:${id}"]`);
+  await screenshot('chapter2-report');await click('[data-action=submit]');
+  assert.equal(await evaluate("Boolean(document.querySelector('.meeting-dialogue'))"),true);
+  await settle();assert.equal((await chapter2State()).phase,'complete');await screenshot('chapter2-complete');
+  assert.equal(await evaluate("localStorage.getItem('report-drill.pdf-incident.v1')"),firstCaseSave,'chapter two never overwrites chapter one');
   assert.deepEqual(errors,[],'no browser runtime errors');
   console.log('Browser: complete route, rejected report, replay, reload, carryover, timeout, mobile, keyboard cancel: OK');
   console.log('Screenshots: tests/artifacts/');

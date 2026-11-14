@@ -32,10 +32,10 @@ function parseMarkdown(text, name) {
   return data;
 }
 
-// Validate both manuscripts before writing either generated file.
+async function buildCase(stem) {
 const entries = [];
 for (const folder of folders) {
-  const base = new URL(`docs/${folder}/01_watermark`, root);
+  const base = new URL(`docs/${folder}/${stem}`, root);
   const text = await readFile(new URL(`${base.href}.md`), 'utf8');
   entries.push({ folder, base, data: parseMarkdown(text, folder) });
 }
@@ -66,7 +66,11 @@ for (const entry of entries) {
   } else await writeFile(target, output, 'utf8');
   console.log(`${entry.folder}: ${process.argv.includes('--check') ? 'OK' : 'built'}`);
 }
-const runtime = `// Generated from docs Markdown. Do not edit.\nexport const scenario = ${JSON.stringify(scenario, null, 2)};\nexport const problem = ${JSON.stringify(problem, null, 2)};\n`;
+return {scenario,problem};
+}
+const chapters=await Promise.all(['01_watermark','02_approval-button'].map(buildCase));
+const cases=Object.fromEntries(chapters.map(chapter=>[chapter.problem.caseId,chapter]));
+const runtime = `// Generated from docs Markdown. Do not edit.\nexport const cases = ${JSON.stringify(cases, null, 2)};\nexport const {scenario,problem}=cases.watermark;\n`;
 const runtimeUrl = new URL('src/data/content.mjs', root);
 if (process.argv.includes('--check')) {
   if (await readFile(runtimeUrl, 'utf8') !== runtime) throw new Error('Runtime data differs. Run npm run build.');

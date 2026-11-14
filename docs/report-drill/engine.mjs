@@ -9,7 +9,7 @@ export function createEngine(problem, scenario) {
   const allCards = new Set(problem.evidence.map(card => card.id));
   function fresh(previous = {}, nextLoop = false) {
     return {
-      saveVersion: 1, reportModel: 2, contentVersion: `${problem.version}:${scenario.version}`, phase: 'desk',
+      saveVersion: 1, reportModel: 2, caseId:problem.caseId, contentVersion: `${problem.version}:${scenario.version}`, phase: 'desk',
       time: minutes(problem.clock.start), loop: nextLoop ? (previous.loop || 1) + 1 : 1,
       knowledge: Object.fromEntries(Object.entries(problem.knowledge).map(([key, value]) => [key, value.initial])),
       intuition: 0, memories: [],
@@ -157,6 +157,9 @@ export function createEngine(problem, scenario) {
         state.flags = [...new Set([...state.flags, ...(result.flags || [])])];
       }
     }
+    for(const card of problem.derivedEvidence||[]) {
+      if(!state.evidence.includes(card.id)&&matches(card.when,state)){state.evidence.push(card.id);state.acquired[card.id]=state.time;}
+    }
     if (problem.investigations.some(item=>item.id===id)) {
       (state.board ??= {})[id] = 'working';
       (state.investigationResults ??= {})[id] = result.scene;
@@ -197,7 +200,8 @@ export function createEngine(problem, scenario) {
     const conflict=Boolean(q.conflict && matches(q.conflict,state));
     const primary=q.primaryElement||q.elements[0].id;
     const relevant=q.relevant?matches(q.relevant,state):Object.values(elements).some(Boolean);
-    const level=conflict ? 1 : Object.values(elements).every(Boolean) ? 3 : elements[primary] ? 2 : relevant ? 1 : 0;
+    const primaryMet=q.primaryWhen?matches(q.primaryWhen,state):elements[primary];
+    const level=conflict ? 1 : Object.values(elements).every(Boolean) ? 3 : primaryMet ? 2 : relevant ? 1 : 0;
     return {level,elements,conflict};
   }
   function report(state) {
@@ -210,7 +214,9 @@ export function createEngine(problem, scenario) {
     const rejected = q.reject.find(item => matches(item.when, state));
     const accepted = !rejected && q.accept.find(item => matches(item.when, state));
     state.time += q.minutes;
-    const ids = [evaluation ? q.reactions[evaluation.level] : rejected?.scene || accepted?.scene || q.fallback];
+    const missing=evaluation&&q.elements.find(element=>!evaluation.elements[element.id]);
+    const feedback=evaluation&&evaluation.level>0&&missing?q.missingReactions?.[missing.id]:null;
+    const ids = [evaluation ? feedback||q.reactions[evaluation.level] : rejected?.scene || accepted?.scene || q.fallback];
     const label = `報告 ${state.question + 1} · ${duration(q.minutes)}経過`;
     if (evaluation ? evaluation.level===3 : accepted) state.question++;
     const complete = state.question === problem.questions.length;
@@ -235,6 +241,7 @@ export function createEngine(problem, scenario) {
   }
   function restore(text) {
     const state = JSON.parse(text);
+    if(state?.caseId && state.caseId!==problem.caseId)throw new Error('別の案件の保存データです。');
     if(state && state.reportModel!==2){
       state.question=state.completed||state.phase==='complete'?problem.questions.length:0;
       state.selected=[];state.reportModel=2;
@@ -252,6 +259,7 @@ export function createEngine(problem, scenario) {
     }
     for (const key of ['evidence','selected','memories','grown','seen','flags','done','helpUsed','history']) if (!Array.isArray(state[key])) throw new Error('保存データの形式が正しくありません。');
     state.board ??= {};
+    for(const action of problem.investigations)if(action.repeatable&&state.board[action.id]==='done')state.board[action.id]='todo';
     state.investigationResults ??= {};
     // Earlier saves used one source-analysis task for both overview and PDF location.
     if(state.done.some(key=>['wm.source:prepared','wm.source:default'].includes(key))) {
@@ -287,7 +295,7 @@ export function createEngine(problem, scenario) {
         const state=structuredClone(previous);
         state.loop++;state.time=minutes(problem.clock.start);state.phase='desk';state.selected=[];state.conversation=null;state.settled=false;state.progressReported=false;
         state.timerRemainder=0;
-        for (const id of ['wm.lunch','wm.progress']) {
+        for (const id of problem.dailyActions||['wm.lunch','wm.progress']) {
           delete state.board[id];delete state.investigationResults[id];
           state.done=state.done.filter(key=>!key.startsWith(`${id}:`));
         }

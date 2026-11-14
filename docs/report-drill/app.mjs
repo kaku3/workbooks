@@ -1,4 +1,11 @@
-import { problem, scenario } from './data/content.mjs';
+import { cases } from './data/content.mjs';
+const requestedCase=new URLSearchParams(location.search).get('case');
+const caseId=Object.hasOwn(cases,requestedCase)?requestedCase:'watermark';
+const {problem,scenario}=cases[caseId];
+const chapterNumber=caseId==='watermark'?1:2;
+const caseLabel=String(chapterNumber).padStart(2,'0');
+const lunchId=problem.lunchAction||'wm.lunch';
+const coffeeId=problem.coffeeAction||'wm.coffee';
 import { createEngine, clock, minutes, duration } from './engine.mjs';
 import { findTimeSavings, playTimeSavings } from './cost-effects.mjs';
 import { buildChatFeed } from './chat-feed.mjs';
@@ -8,9 +15,9 @@ import { captureMeetingWindows, animateMeetingWindows } from './meeting-layout.m
 const engine = createEngine(problem, scenario);
 const app = document.querySelector('#app');
 const modal = document.querySelector('#modal');
-const storageKey = 'report-drill.pdf-incident.v1';
+const storageKey = caseId==='watermark'?'report-drill.pdf-incident.v1':`report-drill.${caseId}.v1`;
 const names = Object.fromEntries(scenario.characters.map(item => [item.id, item.name]));
-const initials = { player: '私', sales: '佐', lead: '真', client: '客', ai: 'AI' };
+const initials = { player: '私', sales: '佐', lead: '真', client: '客', accountant:'三', ai: 'AI' };
 const portraitFiles = { 主人公: '01_player', あなた: '01_player', 折原: '02_orihara', 真壁: '03_makabe', 佐伯: '04_saeki', 三田: '05_mita' };
 const roomStyle = speaker => {
   const portrait=portraitFiles[names[speaker]];
@@ -51,7 +58,7 @@ let reportTextTimer, reportTextProgress=null;
 let meeting=null, meetingTimers=[];
 let meetingLineProgress=null;
 function isMeetingScene(){
-  return state?.phase==='scene'&&Boolean(state.conversation?.meeting||state.conversation?.after==='report'||state.conversation?.ids.some(id=>/^01\.(report-|clear)/.test(id)));
+  return state?.phase==='scene'&&Boolean(state.conversation?.meeting||state.conversation?.after==='report'||state.conversation?.ids.some(id=>/^\d+\.(report-|clear)/.test(id)));
 }
 function resetMeeting(){meetingTimers.forEach(clearTimeout);meetingTimers=[];meeting=null;}
 function meetingLater(fn,ms){meetingTimers.push(setTimeout(()=>{if(meeting)fn();},ms));}
@@ -189,10 +196,10 @@ function start(nextLoop = false) {
   page = 'game'; tab = 'investigate'; resetChat(); save(); render();
 }
 function header() {
-  return `<header class="topbar"><button class="brand" data-action="title"><span class="brand-mark">${icon('file')}</span><span>確認して、回答します。<small>INVESTIGATION & REPORT</small></span></button><div class="top-right"><span class="prototype"><i></i> PROTOTYPE · 第1面</span>${button('settings', icon('settings'), 'icon-button', 'aria-label="設定"')}</div></header>`;
+  return `<header class="topbar"><button class="brand" data-action="title"><span class="brand-mark">${icon('file')}</span><span>確認して、回答します。<small>INVESTIGATION & REPORT</small></span></button><div class="top-right"><span class="prototype"><i></i> PROTOTYPE · 第${chapterNumber}面</span>${button('settings', icon('settings'), 'icon-button', 'aria-label="設定"')}</div></header>`;
 }
 function titlePage() {
-  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><div class="title-actions">${button('start', `はじめる ${icon('arrow')}`, 'primary')}${button('continue', 'つづきから', 'secondary', !saved ? 'disabled' : '')}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE 01</span><div class="paper-symbol">${icon('file')}</div><h2>ウォーターマークの<br>誤表示</h2><p>「三田が印刷したのに、<br>透かしは田中太郎？」</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>01 / 04 CASES <span class="muted">— 続きの案件は準備中</span></span></footer>`;
+  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a href="?case=${p.caseId}" ${p.caseId===caseId?'aria-current="page"':''}>第${i+1}面：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${button('start', `はじめる ${icon('arrow')}`, 'primary')}${button('continue', 'つづきから', 'secondary', !saved ? 'disabled' : '')}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」'}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / 02 CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
 }
 function stats() {
   return `<section class="panel memo"><p class="eyebrow">DESCRIPTION</p><p>${esc(problem.requestMemo)}</p></section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識'],['intuition','直感']].map(([key,label])=>{ const value = key === 'intuition' ? state.intuition : state.knowledge[key]; const max = key === 'intuition' ? problem.intuition.max : problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
@@ -211,16 +218,16 @@ function investigations() {
   const status = action => engine.cardStatus(state,action.id);
   const card = action => {
     const plan=actionPlan(action); const done=state.done.some(key=>key.startsWith(`${action.id}:`));
-    const lunchDelay=action.id==='wm.lunch'&&status(action)==='todo'?Math.max(0,state.time-minutes('12:00')):0;
+    const lunchDelay=action.id===lunchId&&status(action)==='todo'?Math.max(0,state.time-minutes('12:00')):0;
     const delayMark=lunchDelay?`<span class="task-delay">${icon('clock')}<span>休憩が遅れています</span><b>${duration(lunchDelay)}遅延</b></span>`:'';
     const hint=action.id==='wm.source-backend' && state.flags.includes('wm.source-hint');
     const remembered = plan.result.id==='remembered';
-    const note = remembered?'前にも調べた気がする':hint?'真壁が言っていた出力経路':!plan.allowed?'使用回数の上限':action.repeatable?'条件を絞って何度でも調査':done&&!plan.replay?'再調査できる':'';
+    const note = remembered?'前にも調べた気がする':hint?'真壁が言っていた出力経路':!plan.allowed?'使用回数の上限':action.repeatable?(action.repeatHint||'条件を絞って何度でも調査'):done&&!plan.replay?'再調査できる':'';
     return `<button type="button" draggable="true" class="action-card ${hint?'hint':''} ${lunchDelay?'overdue':''} ${lunchDelay>=60?'overdue-long':''}" ${lunchDelay?`style="--lunch-delay-space:${lunchDelay*2}px"`:''} data-card-id="${esc(action.id)}" data-action="investigate:${esc(action.id)}"><div class="action-top"><span class="card-icon">${icon(actionIcon(action.id))}</span><h3>${esc(action.title)}</h3></div><p>${esc(action.description)}</p>${delayMark}${note?`<div class="action-bottom"><span>${note}</span></div>`:''}${plan.minutes>0?`<span class="action-time ${!plan.allowed?'too-late':''}">${duration(plan.minutes)}</span>`:''}</button>`;
   };
   return `<div class="kanban" aria-label="調査の進捗">${[['todo','未着手'],['working','作業中'],['done','完了']].map(([id,label])=>{
     const items = actions.filter(action=>status(action)===id);
-    if(id==='todo'&&state.time>=minutes('12:00'))items.sort((a,b)=>Number(b.id==='wm.lunch')-Number(a.id==='wm.lunch'));
+    if(id==='todo'&&state.time>=minutes('12:00'))items.sort((a,b)=>Number(b.id===lunchId)-Number(a.id===lunchId));
     if(id==='done')items.sort((a,b)=>(completionOrder.get(a.id)??Infinity)-(completionOrder.get(b.id)??Infinity));
     return `<section class="kanban-column ${id}" data-status="${id}" aria-labelledby="column-${id}"><h2 id="column-${id}"><i></i>${label}<span class="column-count">${items.length}</span></h2><div class="kanban-cards">${items.map(card).join('') || '<p class="column-empty">まだありません</p>'}</div></section>`;
   }).join('')}</div><p class="tiny muted">※ 作業中へ移すとイベント開始。完了・未着手への移動は時間を使いません。</p>`;
@@ -290,13 +297,13 @@ function workspace() {
   if(reporting)deckSize='medium';
   const progress = (state.time-minutes(problem.clock.start))/(engine.deadline-minutes(problem.clock.start))*100;
   const content=reporting?reportPage():investigations();
-  return `${header()}<div class="casebar"><div><span class="case-index">CASE 01</span><strong>${esc(problem.title)}</strong><span class="loop-label">${state.loop}日目</span></div><div class="case-actions"><nav class="report-actions browser-tabs" role="tablist" aria-label="作業画面">${button('investigate',`${icon('search')} 調査カンバン - Backlog`,reporting?'':'active',`role="tab" aria-selected="${!reporting}"`)}${button('report',`${icon('video')} 報告 - Meets`,reporting?'active':'',`role="tab" aria-selected="${reporting}"`)}</nav><div class="time-status">${icon('clock')}<strong class="game-clock">${clock(state.time).replace(':','<span class="clock-colon">:</span>')}</strong><span>回答期限 18:00</span><div class="time-track"><i style="width:${progress}%"></i></div></div></div></div><nav class="mobile-tabs" aria-label="表示パネル">${button('panel:desk','デスク','active')}${button('panel:chat','#pj-marunage')}${button('notebook','手がかり')}</nav><main class="desktop"><aside class="left-rail">${stats()}<div class="sidebar-coffee">${button('coffee',`${icon('coffee')} コーヒーを飲む <small>${state.helpUsed.includes('wm.coffee')?'使用済み':'残り1回 · 5m'}</small>`,'coffee-button',state.helpUsed.includes('wm.coffee')?'disabled':'')}</div><div class="left-bottom">${button('restart','はじめからやり直す','text-button')}</div></aside><section class="work-area ${reporting?'reporting':''}" data-deck-size="${deckSize}"><div class="work-content">${content}</div><section class="clue-drawer ${deckSize!=='small'?'open':''} deck-${deckSize}" aria-label="手元の手がかり">${deckToolbar()}<div id="shared-clue-deck" data-report-deck>${notebook(reporting)}</div></section></section>${chatPanel()}</main>`;
+  return `${header()}<div class="casebar"><div><span class="case-index">CASE ${caseLabel}</span><strong>${esc(problem.title)}</strong><span class="loop-label">${state.loop}日目</span></div><div class="case-actions"><nav class="report-actions browser-tabs" role="tablist" aria-label="作業画面">${button('investigate',`${icon('search')} 調査カンバン - Backlog`,reporting?'':'active',`role="tab" aria-selected="${!reporting}"`)}${button('report',`${icon('video')} 報告 - Meets`,reporting?'active':'',`role="tab" aria-selected="${reporting}"`)}</nav><div class="time-status">${icon('clock')}<strong class="game-clock">${clock(state.time).replace(':','<span class="clock-colon">:</span>')}</strong><span>回答期限 18:00</span><div class="time-track"><i style="width:${progress}%"></i></div></div></div></div><nav class="mobile-tabs" aria-label="表示パネル">${button('panel:desk','デスク','active')}${button('panel:chat','#pj-marunage')}${button('notebook','手がかり')}</nav><main class="desktop"><aside class="left-rail">${stats()}<div class="sidebar-coffee">${button('coffee',`${icon('coffee')} コーヒーを飲む <small>${state.helpUsed.includes(coffeeId)?'使用済み':'残り1回 · 5m'}</small>`,'coffee-button',state.helpUsed.includes(coffeeId)?'disabled':'')}</div><div class="left-bottom">${button('restart','はじめからやり直す','text-button')}</div></aside><section class="work-area ${reporting?'reporting':''}" data-deck-size="${deckSize}"><div class="work-content">${content}</div><section class="clue-drawer ${deckSize!=='small'?'open':''} deck-${deckSize}" aria-label="手元の手がかり">${deckToolbar()}<div id="shared-clue-deck" data-report-deck>${notebook(reporting)}</div></section></section>${chatPanel()}</main>`;
 }
 function ending() {
   const complete=state.phase==='complete';
   const extended=state.phase==='loop';
   const closingNote=extended?'手がかり・知識・調査状況を引き継ぎ、翌日9:00から再開します。延長はこの一日です。':complete?'確認できた原因と根拠、影響範囲と対応案を報告しました。本番の是正作業は次の相談です。':state.progressReported?'調査の記録は履歴から確認できます。':'途中で状況を共有できれば、期限の相談につなげられたかもしれません。';
-  return `${header()}<main class="ending ${complete?'case-solved':''}"><p class="eyebrow">${complete?'CASE CLOSED':extended?'ONE MORE DAY':'GAME OVER'}</p><div class="ending-icon">${icon(complete?'check':'clock')}</div><h1>${complete?'説明が、伝わった。':extended?'もう一日、時間をもらえました。':'今回は、ここまで。'}</h1><p>${complete?'「ありがとうございます！ これなら先方にも説明できます！」——佐伯':extended?'途中で状況を共有していたので、真壁さんが期限を調整してくれました。':'期限までに回答できず、担当を交代することになりました。'}</p>${extended?`<p class="ending-note">${closingNote}</p>`:''}<div class="title-actions">${button(extended?'next-loop':'retry-case',extended?'翌日の調査へ':'はじめからやり直す','primary')}${button('title','タイトルへ','secondary')}</div></main>`;
+  return `${header()}<main class="ending ${complete?'case-solved':''}"><p class="eyebrow">${complete?'CASE CLOSED':extended?'ONE MORE DAY':'GAME OVER'}</p><div class="ending-icon">${icon(complete?'check':'clock')}</div><h1>${complete?'説明が、伝わった。':extended?'もう一日、時間をもらえました。':'今回は、ここまで。'}</h1><p>${complete?'「ありがとうございます！ これなら先方にも説明できます！」——佐伯':extended?'途中で状況を共有していたので、真壁さんが期限を調整してくれました。':'期限までに回答できず、担当を交代することになりました。'}</p>${extended?`<p class="ending-note">${closingNote}</p>`:''}<div class="title-actions">${button(extended?'next-loop':'retry-case',extended?'翌日の調査へ':'はじめからやり直す','primary')}${complete&&chapterNumber===1?button('next-case','第2面へ','primary'):''}${button('title','タイトルへ','secondary')}</div></main>`;
 }
 function render() {
   const oldMeetingWindows=captureMeetingWindows();
@@ -317,7 +324,7 @@ function render() {
   const newClues=state?.evidence.some(id=>!visualState?.evidence.includes(id));
   const clueScroll=newClues?0:document.querySelector('#shared-clue-deck .evidence-grid')?.scrollLeft||0;
   const deckScroll=document.querySelector('#shared-clue-deck .evidence-grid')?.scrollTop||0;
-  const lunchMovedToTop=state&&visualState&&state.loop===visualState.loop&&visualState.time<minutes('12:00')&&state.time>=minutes('12:00')&&engine.cardStatus(state,'wm.lunch')==='todo';
+  const lunchMovedToTop=state&&visualState&&state.loop===visualState.loop&&visualState.time<minutes('12:00')&&state.time>=minutes('12:00')&&engine.cardStatus(state,lunchId)==='todo';
   const columnScrolls=[...document.querySelectorAll('.kanban-column')].map(column=>[column.dataset.status,column.querySelector('.kanban-cards').scrollTop]);
   const boardScroll=document.querySelector('.kanban')?.scrollLeft||0;
   const openedHistory=[...document.querySelectorAll('.chat-scroll .history-entry[open]')].map(item=>item.dataset.historyIndex);
@@ -409,7 +416,7 @@ function showMeetingConversation(){
   const c=state.conversation,id=c.ids[c.scene],scene=scenario.scenes[id],line=scene.lines[c.line];
   const key=`${state.loop}:${c.historyIndex}:${c.scene}:${c.line}`;
   if(meetingLineProgress?.key!==key)meetingLineProgress={key,index:0};
-  const accepted=id==='01.clear'||id==='01.report-3'&&c.line>=scene.lines.findIndex(item=>item.speaker==='sales');
+  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='sales'));
   const receiptKey=`${state.loop}:${c.historyIndex}`;
   const freshReceipt=accepted&&!meeting.receipts.has(receiptKey);
   if(accepted)meeting.receipts.add(receiptKey);
@@ -437,7 +444,7 @@ function advanceMeetingConversation(skip){
 }
 function showConversation() {
   const c=state.conversation, id=c.ids[c.scene], scene=scenario.scenes[id], line=scene.lines[c.line];
-  const accepted=id==='01.clear'||(id==='01.report-3'&&c.line>=scene.lines.findIndex(item=>item.speaker==='sales'));
+  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='sales'));
   const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
   const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map(speaker=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
   openModal(`<div class="conversation-head"><span>${esc(c.label)}</span><small>${c.line+1} / ${scene.lines.length}</small></div><div class="conversation-person">${avatar(line.speaker,true)}<div><p class="eyebrow">${line.kind==='thought'?'INNER VOICE':'CONVERSATION'}</p><h2 id="modal-title">${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</h2></div></div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p><div class="conversation-actions"><span class="muted tiny">${state.seen.includes(`${id}:${scene.version}`)?'既読':'未読'} · 決定で次へ</span><div>${button('scene-skip','会話をスキップ','text-button')}${button('scene-next',`次へ ${icon('arrow')}`,'primary')}</div></div>`,action=>{
@@ -575,6 +582,7 @@ app.addEventListener('dragend',()=>{
 app.addEventListener('click',event=>{
   const target=event.target.closest('[data-action]'); if(!target)return;
   const action=target.dataset.action;
+  if(action==='next-case'){location.search='?case=approval-button';return;}
   if(action==='settings'){settings();return;}
   if(action==='title'){page='title';render();return;}
   if(action==='start') {if(saved||saveError)confirmAction('はじめから進めますか？','今回の進行をやり直します。記憶・直感・完了記録は保持します。',()=>start(),'はじめから');else start();return;}
@@ -604,7 +612,7 @@ app.addEventListener('click',event=>{
     else notify('手がかりは3枚までです。選択を外して入れ替えてください。');
     return;
   }
-  if(action==='coffee'){beginInvestigation('wm.coffee');return;}
+  if(action==='coffee'){beginInvestigation(coffeeId);return;}
   if(action==='toggle-deck'){setDeckSize(deckSize==='small'?'medium':'small');return;}
   if(action==='report'){if(state.phase==='report')return;resetMeeting();deckSize='medium';state.reportSlots=Array.from({length:3},(_,i)=>state.selected[i]||null);state.phase='report';save();render();return;}
   if(action==='submit'){if(engine.report(state)){state.conversation.meeting=true;save();render();}return;}

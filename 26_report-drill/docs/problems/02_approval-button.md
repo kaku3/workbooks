@@ -1,29 +1,876 @@
-# 第2面：承認画面へのボタン追加（問題草案）
+# 第2面：承認画面へのボタン追加（問題）
 
-案件ID候補：`approval-button`。未確定・取込対象外。[シナリオ草案](../scenarios/02_approval-button.md)。
+編集の正本。仕様は [第2面仕様](../chapter2/10_第2面仕様.md) を参照。
 
-## 学習テーマ
+## schemaVersion
 
-要望と業務目的の違い。ボタンの追加を、その後の仕事まで含めて考える。
+```json
+1
+```
 
-## 仮の案件事実
+## caseId
 
-- 現状は承認・却下だけで、申請内容を直して再提出する経路がない。
-- 顧客は入力のやり直しと、修正依頼の別連絡を減らしたい。
-- 差戻し後の担当者、編集可能項目、再申請時の承認経路が要確認。
+```json
+"approval-button"
+```
 
-## 調査・証拠品の候補
+## version
 
-利用者への目的確認、現行の状態遷移、権限仕様、通知、履歴、再申請の確認。カード候補は「修正したい理由」「差戻し先」「再申請の経路」「操作権限」「通知と履歴」。
+```json
+1
+```
 
-遠回りの候補はボタンの色や配置の比較だけを続けること。画面の使いやすさは否定せず、目的達成の説明に何が足りないかで返す。
+## status
 
-## 報告の問い候補
+```json
+"prototype"
+```
 
-1. お客さんは何をできるようにしたいのか。
-2. 差戻し後に誰が何を行い、どう再申請するのか。
-3. 権限・通知・履歴を含め、変更する範囲はどこか。
+## title
 
-## 未確定
+```json
+"承認画面へのボタン追加"
+```
 
-調査時間、カード数、3枚への情報のまとめ方、正解の別案、周回時の記憶。確定後にJSON化する。
+## requestMemo
+
+```json
+"経理から「承認画面に差戻しボタンを追加したい」と依頼された。何に困っているか、差し戻した後に誰が何をするか、ボタン以外に直すところがないかを調べ、18:00までに佐伯へ報告する。実装完了や工数の断定は今回の範囲外。"
+```
+
+## clock
+
+```json
+{
+  "start": "09:00",
+  "deadline": "18:00"
+}
+```
+
+## knowledge
+
+```json
+{
+  "business": {
+    "initial": 0,
+    "max": 8
+  },
+  "system": {
+    "initial": 0,
+    "max": 10
+  }
+}
+```
+
+## intuition
+
+```json
+{
+  "max": 3
+}
+```
+
+## evidence
+
+```json
+[
+  {
+    "id": "ab.requested",
+    "title": "差戻しボタンの依頼",
+    "text": "承認画面への追加依頼。何を解決したいかは未確認。",
+    "kind": "confirmed",
+    "source": "差戻しボタンの依頼"
+  },
+  {
+    "id": "ab.screen",
+    "title": "承認画面の構成",
+    "text": "操作欄に追加できる。差戻し後の扱いは記載なし。",
+    "kind": "reference",
+    "source": "承認画面の構成"
+  },
+  {
+    "id": "ab.pain",
+    "title": "再入力と別連絡が負担",
+    "text": "軽微な不備でも再入力。修正依頼は別メールで連絡。",
+    "kind": "confirmed",
+    "source": "再入力と別連絡が負担"
+  },
+  {
+    "id": "ab.current",
+    "title": "却下後は再編集できない",
+    "text": "却下は申請を終了させる。修正・再提出の経路はない。",
+    "kind": "confirmed",
+    "source": "却下後は再編集できない"
+  },
+  {
+    "id": "ab.source",
+    "title": "承認処理の経路",
+    "text": "画面からAPIへ渡し、サーバー側で状態を更新する。",
+    "kind": "confirmed",
+    "source": "承認処理の経路"
+  },
+  {
+    "id": "ab.ui",
+    "title": "ボタンは配置できる",
+    "text": "却下と区別する配置案。業務ルールの確定はこれから。",
+    "kind": "proposal",
+    "source": "ボタンは配置できる"
+  },
+  {
+    "id": "ab.api",
+    "title": "APIの変更候補",
+    "text": "受付と状態更新の追加案。遷移条件・権限は未確定。",
+    "kind": "proposal",
+    "source": "APIの変更候補"
+  },
+  {
+    "id": "ab.state",
+    "title": "状態の追加が必要",
+    "text": "差戻し中・再申請を区別する。承認の再開条件は要確認。",
+    "kind": "confirmed",
+    "source": "状態の追加が必要"
+  },
+  {
+    "id": "ab.access",
+    "title": "編集できる人の確認",
+    "text": "差戻しの状態・編集権限を変更。修正できる項目は要確認。",
+    "kind": "confirmed",
+    "source": "編集できる人の確認"
+  },
+  {
+    "id": "ab.notice",
+    "title": "通知と履歴も関係する",
+    "text": "差戻しの状態・理由・通知・履歴が対象。通知先は要確認。",
+    "kind": "confirmed",
+    "source": "通知と履歴も関係する"
+  },
+  {
+    "id": "ab.flow",
+    "title": "修正して再申請したい",
+    "text": "差戻し→申請者が修正→再申請→改めて承認判断。",
+    "kind": "confirmed",
+    "source": "修正して再申請したい"
+  },
+  {
+    "id": "ab.return-flow",
+    "title": "差戻し後の業務フロー",
+    "text": "理由を付けて戻し、申請者が修正・再申請して再承認。",
+    "kind": "confirmed",
+    "source": "差戻し後の業務フロー"
+  },
+  {
+    "id": "ab.design",
+    "title": "実装方式の比較",
+    "text": "複数案に利点と制約がある。要件確定後に方式を選ぶ。",
+    "kind": "proposal",
+    "source": "実装方式の比較"
+  },
+  {
+    "id": "ab.ai",
+    "title": "AIの実装案",
+    "text": "ボタン・API・通知の一般案。現場の確認はまだ。",
+    "kind": "proposal",
+    "source": "AIの実装案"
+  },
+  {
+    "id": "ab.purpose-summary",
+    "title": "再入力と別連絡を減らしたい",
+    "text": "却下で終了する現状を変え、不備の修正と再提出を楽にする。",
+    "kind": "confirmed",
+    "source": "再入力と別連絡を減らしたい"
+  },
+  {
+    "id": "ab.impact-summary",
+    "title": "ボタンだけでは済まない",
+    "text": "申請の状態・編集できる人・通知・履歴も見直す。詳細は要確認。",
+    "kind": "confirmed",
+    "source": "ボタン以外にも変更が及ぶ"
+  }
+]
+```
+
+## investigations
+
+```json
+[
+  {
+    "id": "ab.request",
+    "title": "依頼と現状を確認する",
+    "description": "佐伯から届いた依頼を読み直す。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 20,
+        "scene": "02.request",
+        "flags": [
+          "ab.request"
+        ],
+        "evidence": [
+          "ab.requested"
+        ],
+        "gain": {
+          "business": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.screen",
+    "title": "画面仕様書を読む",
+    "description": "承認画面の構成と操作を調べる。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 20,
+        "scene": "02.screen",
+        "flags": [
+          "ab.screen"
+        ],
+        "evidence": [
+          "ab.screen"
+        ],
+        "gain": {
+          "system": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.business",
+    "title": "経理の三田に確認する",
+    "description": "不備のある申請をどう扱いたいか聞く。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 30,
+        "scene": "02.business",
+        "flags": [
+          "ab.business"
+        ],
+        "evidence": [
+          "ab.pain"
+        ],
+        "gain": {
+          "business": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.workflow",
+    "title": "現行フローを確認する",
+    "description": "却下後の申請がどうなるか調べる。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 30,
+        "scene": "02.workflow",
+        "flags": [
+          "ab.workflow"
+        ],
+        "evidence": [
+          "ab.current"
+        ],
+        "gain": {
+          "business": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.source",
+    "title": "ソースを解析する",
+    "description": "画面・API・状態処理のつながりを見る。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 60,
+        "scene": "02.source",
+        "flags": [
+          "ab.source"
+        ],
+        "evidence": [
+          "ab.source"
+        ],
+        "gain": {
+          "system": 2
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.ui",
+    "title": "ボタン配置を検討する",
+    "description": "誤操作を避ける配置と確認画面を考える。",
+    "unlock": {
+      "flagsAll": [
+        "ab.screen"
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "recheck",
+        "when": {
+          "flagsAll": [
+            "ab.ui"
+          ]
+        },
+        "minutes": 45,
+        "scene": "02.ui-recheck",
+        "complete": false
+      },
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 45,
+        "scene": "02.ui",
+        "flags": [
+          "ab.ui"
+        ],
+        "evidence": [
+          "ab.ui"
+        ],
+        "gain": {
+          "system": 1
+        }
+      }
+    ],
+    "repeatable": true,
+    "repeatHint": "追加で調べ直す"
+  },
+  {
+    "id": "ab.api",
+    "title": "APIの改修点を調べる",
+    "description": "差戻し操作を受け付ける処理を確認する。",
+    "unlock": {
+      "flagsAll": [
+        "ab.source"
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "recheck",
+        "when": {
+          "flagsAll": [
+            "ab.api"
+          ]
+        },
+        "minutes": 60,
+        "scene": "02.api-recheck",
+        "complete": false
+      },
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 60,
+        "scene": "02.api",
+        "flags": [
+          "ab.api"
+        ],
+        "evidence": [
+          "ab.api"
+        ],
+        "gain": {
+          "system": 2
+        }
+      }
+    ],
+    "repeatable": true,
+    "repeatHint": "追加で調べ直す"
+  },
+  {
+    "id": "ab.state",
+    "title": "状態遷移を調べる",
+    "description": "差戻しと却下を区別して追う。",
+    "unlock": {
+      "any": [
+        {
+          "flagsAll": [
+            "ab.workflow"
+          ]
+        },
+        {
+          "flagsAll": [
+            "ab.source"
+          ]
+        }
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 40,
+        "scene": "02.state",
+        "flags": [
+          "ab.state"
+        ],
+        "evidence": [
+          "ab.state"
+        ],
+        "gain": {
+          "system": 1,
+          "business": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.permission",
+    "title": "編集権限を調べる",
+    "description": "誰が、いつ、どこまで編集できるか調べる。",
+    "unlock": {
+      "flagsAll": [
+        "ab.state"
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 35,
+        "scene": "02.permission",
+        "flags": [
+          "ab.permission"
+        ],
+        "evidence": [
+          "ab.access"
+        ],
+        "gain": {
+          "system": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.notification",
+    "title": "通知と履歴を調べる",
+    "description": "理由を伝え、操作の記録を残す経路を調べる。",
+    "unlock": {
+      "flagsAll": [
+        "ab.state"
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 40,
+        "scene": "02.notification",
+        "flags": [
+          "ab.notification"
+        ],
+        "evidence": [
+          "ab.notice"
+        ],
+        "gain": {
+          "system": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.reapply",
+    "title": "再申請の経路を確認する",
+    "description": "修正後、誰が次の判断をするか確認する。",
+    "unlock": {
+      "any": [
+        {
+          "flagsAll": [
+            "ab.business"
+          ]
+        },
+        {
+          "flagsAll": [
+            "ab.state"
+          ]
+        }
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 35,
+        "scene": "02.reapply",
+        "flags": [
+          "ab.reapply"
+        ],
+        "evidence": [
+          "ab.flow",
+          "ab.return-flow"
+        ],
+        "gain": {
+          "business": 1
+        }
+      }
+    ]
+  },
+  {
+    "id": "ab.design",
+    "title": "実装方式を比較する",
+    "description": "複数の実装案の利点と制約を比較する。",
+    "unlock": {
+      "any": [
+        {
+          "flagsAll": [
+            "ab.api"
+          ]
+        },
+        {
+          "flagsAll": [
+            "ab.ui"
+          ]
+        }
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "recheck",
+        "when": {
+          "flagsAll": [
+            "ab.design"
+          ]
+        },
+        "minutes": 90,
+        "scene": "02.design-recheck",
+        "complete": false
+      },
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 90,
+        "scene": "02.design",
+        "flags": [
+          "ab.design"
+        ],
+        "evidence": [
+          "ab.design"
+        ],
+        "gain": {
+          "system": 2
+        }
+      }
+    ],
+    "repeatable": true,
+    "repeatHint": "追加で調べ直す"
+  },
+  {
+    "id": "ab.ai",
+    "title": "AIに聞く",
+    "description": "差戻し機能の一般的な実装例を聞く。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "recheck",
+        "when": {
+          "flagsAll": [
+            "ab.ai"
+          ]
+        },
+        "minutes": 5,
+        "scene": "02.ai-recheck",
+        "complete": false
+      },
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 5,
+        "scene": "02.ai",
+        "flags": [
+          "ab.ai"
+        ],
+        "evidence": [
+          "ab.ai"
+        ],
+        "gain": {
+          "system": 1
+        }
+      }
+    ],
+    "repeatable": true,
+    "repeatHint": "追加で調べ直す"
+  },
+  {
+    "id": "ab.ask-makabe",
+    "title": "真壁に聞く",
+    "description": "先輩に差戻しの相談をする。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "busy",
+        "when": {
+          "availabilityIn": [
+            "incident",
+            "meeting"
+          ]
+        },
+        "minutes": 10,
+        "scene": "02.makabe-busy",
+        "complete": false
+      },
+      {
+        "id": "prepared",
+        "when": {
+          "flagsAll": [
+            "ab.business",
+            "ab.reapply"
+          ]
+        },
+        "minutes": 10,
+        "scene": "02.ask-makabe",
+        "gain": {
+          "business": 1
+        }
+      },
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 45,
+        "scene": "02.makabe-vague",
+        "complete": false,
+        "flags": [
+          "ab.ask-makabe"
+        ],
+        "evidence": [],
+        "gain": {}
+      }
+    ]
+  },
+  {
+    "id": "ab.lunch",
+    "title": "昼休憩",
+    "description": "人間的生活に必要。しっかり食べて、ひと息つこう。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 60,
+        "scene": "02.lunch",
+        "flags": [
+          "ab.lunch"
+        ],
+        "evidence": [],
+        "gain": {}
+      }
+    ]
+  },
+  {
+    "id": "ab.progress",
+    "title": "真壁に途中報告",
+    "description": "確認できたことと、残っている確認を共有する。",
+    "unlock": {},
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 30,
+        "scene": "02.progress",
+        "flags": [
+          "ab.progress"
+        ],
+        "evidence": [],
+        "gain": {},
+        "progressReported": true
+      }
+    ]
+  }
+]
+```
+
+## derivedEvidence
+
+```json
+[
+  {
+    "id": "ab.purpose-summary",
+    "when": {
+      "flagsAll": [
+        "ab.business",
+        "ab.workflow"
+      ]
+    }
+  },
+  {
+    "id": "ab.impact-summary",
+    "when": {
+      "all": [
+        {
+          "flagsAll": [
+            "ab.state"
+          ]
+        },
+        {
+          "any": [
+            {
+              "flagsAll": [
+                "ab.permission"
+              ]
+            },
+            {
+              "flagsAll": [
+                "ab.notification"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
+```
+
+## dailyActions
+
+```json
+[
+  "ab.lunch",
+  "ab.progress"
+]
+```
+
+## lunchAction
+
+```json
+"ab.lunch"
+```
+
+## coffeeAction
+
+```json
+"ab.coffee"
+```
+
+## help
+
+```json
+{
+  "cards": [
+    {
+      "id": "ab.coffee",
+      "title": "コーヒーを飲む",
+      "unlock": {},
+      "usesPerLoop": 1,
+      "outcomes": [
+        {
+          "id": "default",
+          "when": {},
+          "minutes": 5,
+          "scene": "02.coffee"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## loop
+
+```json
+{
+  "memoryCandidates": [],
+  "maxMemories": 0,
+  "intuitionGainPerNewMemoryLoop": 0
+}
+```
+
+## questions
+
+```json
+[
+  {
+    "id": "ab.report",
+    "prompt": "差戻しボタンの件、経理は何に困っているんでしょう？\n差し戻した後の使い方と、ボタンを足すだけで済むのかを教えてください。",
+    "slots": 3,
+    "minutes": 10,
+    "elements": [
+      {
+        "id": "purpose",
+        "when": {
+          "selectedAny": [
+            "ab.pain",
+            "ab.purpose-summary"
+          ]
+        }
+      },
+      {
+        "id": "workflow",
+        "when": {
+          "selectedAny": [
+            "ab.flow",
+            "ab.return-flow"
+          ]
+        }
+      },
+      {
+        "id": "scope",
+        "when": {
+          "selectedAny": [
+            "ab.impact-summary",
+            "ab.access",
+            "ab.notice"
+          ]
+        }
+      }
+    ],
+    "primaryElement": "purpose",
+    "primaryWhen": {
+      "all": [
+        {
+          "selectedAny": [
+            "ab.pain",
+            "ab.purpose-summary"
+          ]
+        },
+        {
+          "selectedAny": [
+            "ab.flow",
+            "ab.return-flow"
+          ]
+        }
+      ]
+    },
+    "relevant": {
+      "selectedAny": [
+        "ab.requested",
+        "ab.screen",
+        "ab.pain",
+        "ab.current",
+        "ab.source",
+        "ab.state",
+        "ab.access",
+        "ab.notice",
+        "ab.flow",
+        "ab.return-flow",
+        "ab.purpose-summary",
+        "ab.impact-summary"
+      ]
+    },
+    "reactions": [
+      "02.report-0",
+      "02.report-1",
+      "02.report-2",
+      "02.report-3"
+    ],
+    "reject": [],
+    "accept": [],
+    "fallback": "02.report-0",
+    "missingReactions": {
+      "purpose": "02.report-purpose",
+      "workflow": "02.report-workflow",
+      "scope": "02.report-scope"
+    }
+  }
+]
+```

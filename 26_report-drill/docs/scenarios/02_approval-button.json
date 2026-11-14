@@ -1,0 +1,635 @@
+{
+  "schemaVersion": 1,
+  "caseId": "approval-button",
+  "version": 1,
+  "status": "prototype",
+  "characters": [
+    {
+      "id": "player",
+      "name": "主人公"
+    },
+    {
+      "id": "sales",
+      "name": "佐伯"
+    },
+    {
+      "id": "lead",
+      "name": "真壁"
+    },
+    {
+      "id": "ai",
+      "name": "社内AI"
+    },
+    {
+      "id": "accountant",
+      "name": "三田"
+    }
+  ],
+  "scenes": {
+    "02.intro": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "sales",
+          "text": "経理から、承認画面に差戻しボタンを一つ追加してほしいと言われてまして。ボタン一個なら、すぐできますよね？"
+        },
+        {
+          "speaker": "player",
+          "text": "……確認して、回答します。"
+        }
+      ]
+    },
+    "02.request": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "sales",
+          "text": "承認画面に「差戻し」を追加したいそうです。今は承認と却下しかありません。"
+        }
+      ]
+    },
+    "02.screen": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "承認と却下の横に配置できそうだ。ただ、押した後の仕事までは書かれていない。"
+        }
+      ]
+    },
+    "02.business": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "accountant",
+          "text": "領収書が一枚足りないだけでも、却下すると最初から入力し直しなんです。修正のお願いも別メールで送っていて。"
+        },
+        {
+          "speaker": "player",
+          "text": "内容を直して、もう一度出せるようにしたいんですね。"
+        },
+        {
+          "speaker": "accountant",
+          "text": "そうです。ただ、承認済みの内容まで勝手に変わるのは困ります。"
+        }
+      ]
+    },
+    "02.workflow": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "却下で申請は終了する。元の申請を編集して再提出する経路はない。"
+        }
+      ]
+    },
+    "02.source": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "画面操作からAPI、状態更新までの経路は追えた。個別の改修点を調べられそうだ。"
+        }
+      ]
+    },
+    "02.ui": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "却下と区別する配置、理由の入力欄が必要そうだ。見た目の案は作れた。"
+        }
+      ]
+    },
+    "02.api": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "操作の受付と状態更新を追加する案がある。権限や遷移条件が決まるまでは実装を確定できない。"
+        }
+      ]
+    },
+    "02.state": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "差戻し中の状態を分け、修正して再申請した後に承認判断へ戻す必要がある。"
+        }
+      ]
+    },
+    "02.permission": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "差戻し中に申請者が編集できる権限が必要だ。修正可能な項目と、承認済みの扱いは業務側に確認しよう。"
+        }
+      ]
+    },
+    "02.notification": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "差戻し理由を申請者へ伝え、修正・再申請の記録を残す必要がある。通知先と方法はまだ決められない。"
+        }
+      ]
+    },
+    "02.reapply": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "accountant",
+          "text": "申請者に直してもらって、もう一度承認をお願いします。"
+        },
+        {
+          "speaker": "player",
+          "text": "差戻し、修正、再申請、承認の順ですね。承認をどこから再開するかは別途確認します。"
+        }
+      ]
+    },
+    "02.design": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "既存の却下処理を拡張する案と、差戻し用の処理を分ける案がある。業務ルールを固めてから選ぼう。"
+        }
+      ]
+    },
+    "02.ai": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "ai",
+          "text": "ボタン、受付API、差戻し状態、通知などが実装候補です。現場の業務ルールは別途確認してください。"
+        }
+      ]
+    },
+    "02.ask-makabe": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "lead",
+          "text": "戻す相手と再申請の流れは分かったんだな。編集できる項目と、承認をどこからやり直すかも聞いておいてくれ。"
+        },
+        {
+          "speaker": "player",
+          "text": "はい。そこはまだなので、確認してきます。"
+        }
+      ]
+    },
+    "02.makabe-busy": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "lead",
+          "text": "今ちょっと別件に入ってる。分かったところを先にまとめておいてくれ。"
+        }
+      ]
+    },
+    "02.makabe-vague": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "差戻しボタンって、どこに置けばいいですか？"
+        },
+        {
+          "speaker": "lead",
+          "text": "その前に何のために置くんだ？ そもそも画面設計ってのは……。"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "話を聞いていたら、45分経っていた。先に三田さんへ聞くべきだった。"
+        }
+      ]
+    },
+    "02.lunch": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "ごはんを食べて、少し休んだ。調査に戻ろう。"
+        }
+      ]
+    },
+    "02.progress": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "分かったことと、まだ確認が必要な点を共有します。"
+        },
+        {
+          "speaker": "lead",
+          "text": "了解。先方への話はこっちでも進めるから、調査よろしく。"
+        }
+      ]
+    },
+    "02.report-0": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "調べた資料をまとめました。"
+        },
+        {
+          "speaker": "sales",
+          "text": "すみません、何をおっしゃっているのか、ちょっと分からないのですが……。"
+        }
+      ]
+    },
+    "02.report-1": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "画面や処理は調べましたが、何を解決したいかまで説明しきれていません。"
+        },
+        {
+          "speaker": "sales",
+          "text": "調査いただいたのは分かったのですが、担当者にはどのように説明すればいいでしょうか？"
+        }
+      ]
+    },
+    "02.report-2": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "不備のある申請を差し戻し、直して再提出できるようにしたい、という話です。"
+        },
+        {
+          "speaker": "sales",
+          "text": "やりたいことは分かったのですが、ボタン一つで済むんでしょうか？"
+        }
+      ]
+    },
+    "02.report-3": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "目的は、軽い不備での再入力と別メールの手間を減らすことです。"
+        },
+        {
+          "speaker": "player",
+          "text": "却下とは別に、差戻し後に申請者が修正して再申請し、改めて承認する流れを作ります。"
+        },
+        {
+          "speaker": "player",
+          "text": "画面だけでなく状態・権限・通知・履歴も対象です。修正できる項目や承認の再開条件を確認し、範囲と見積もりをご相談します。"
+        },
+        {
+          "speaker": "sales",
+          "text": "ありがとうございます。これなら説明できます！ ……ボタン一個の話じゃなかったんですね。"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "最初からそう言ってる……いや、言ってないか。"
+        }
+      ]
+    },
+    "02.clear": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "lead",
+          "text": "お疲れ。日程の話は、要件がまとまってからだな。"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "ボタンの先に、こんなに仕事があったのか。"
+        }
+      ]
+    },
+    "02.timeout": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "sales",
+          "text": "経理から連絡が来ています。差戻しボタンの件、どう説明すればいいでしょう？"
+        },
+        {
+          "speaker": "player",
+          "text": "すみません。差し戻した後の使い方と、ボタン以外に直すところを整理できていません。"
+        }
+      ]
+    },
+    "02.report-progress": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "途中経過です。差戻し後の業務と、追加の確認が必要な範囲を整理しています。"
+        },
+        {
+          "speaker": "sales",
+          "text": "調査中として部署に共有します。期限に間に合わないようなら、先に相談してくださいね。"
+        }
+      ]
+    },
+    "02.report-cannot": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "どう使うのか、どこを直す必要があるのかを、期限までに整理できません。分かったことと残った調査を共有し、期限を相談させてください。"
+        },
+        {
+          "speaker": "sales",
+          "text": "今日中と伝えているので困りますが、未確認のまま断言されても……。現在の状況をお願いします。"
+        }
+      ]
+    },
+    "02.extension": {
+      "version": 2,
+      "lines": [
+        {
+          "speaker": "lead",
+          "text": "先方には俺の方で報告しておいたから。調査期間を一日のばしてもらった、明日も頑張れ。"
+        },
+        {
+          "speaker": "player",
+          "text": "ありがとうございます。今日の調査を引き継いで、明日こそ報告します。"
+        }
+      ]
+    },
+    "02.gameover": {
+      "version": 2,
+      "lines": [
+        {
+          "speaker": "lead",
+          "text": "おい、期限まで何をしていたんだ！ 途中報告もせず、黙って抱え込んでどうする！"
+        },
+        {
+          "speaker": "lead",
+          "text": "間に合わないなら、その時点で言え！ こっちは先方への説明も、応援の手配もできないだろ！"
+        },
+        {
+          "speaker": "lead",
+          "text": "分からないことを責めているんじゃない。状況を伝えないまま期限を過ぎたことを言っているんだ！"
+        },
+        {
+          "speaker": "lead",
+          "text": "今回の担当はここまでだ。調査した内容をまとめて引き継げ。"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "途中で真壁さんに相談しておくべきだった……。"
+        }
+      ]
+    },
+    "02.extension-used": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "sales",
+          "text": "追加の一日まで調整しましたが、今回はここまでにしましょう。調査した事実と未確認事項を引き継いでください。"
+        }
+      ]
+    },
+    "02.next-day": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "lead",
+          "text": "昨日の続きから。記録は残っている。今日は戻した後の仕事と、ボタン以外に直すところを詰めよう。"
+        },
+        {
+          "speaker": "player",
+          "text": "はい。まだ裏付けのないところから確認します。"
+        }
+      ]
+    },
+    "02.dream": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "夢ならよかった。でも調査は現実だ。"
+        }
+      ]
+    },
+    "02.coffee": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "ひと息ついて、調査に戻ろう。"
+        }
+      ]
+    },
+    "02.api-recheck": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "APIの呼び出しと状態更新をもう一度追った。同じ処理で、新しい条件は見つからなかった。"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "実装を追うだけでは、どんな運用にしたいかまでは決まらないな。"
+        }
+      ]
+    },
+    "02.ui-recheck": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "配置と確認画面を見直した。別の案は描けるけれど、業務の疑問が減ったわけではない。"
+        }
+      ]
+    },
+    "02.design-recheck": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "player",
+          "text": "方式をもう一度比較した。新しい根拠は増えなかった。先に決めるべき条件が残っている。"
+        }
+      ]
+    },
+    "02.ai-recheck": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "ai",
+          "text": "一般的にはボタン、API、状態、通知などを検討します。今回の業務ルールは利用者に確認してください。"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "聞き直したけど、さっきの案と同じだった。"
+        }
+      ]
+    },
+    "02.report-purpose": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "sales",
+          "text": "ボタンが作れるのは分かりました。経理の何の手間が減るのか、そこを説明してもらえますか？"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "作り方ではなく、何を楽にしたいかから話そう。"
+        }
+      ]
+    },
+    "02.report-workflow": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "sales",
+          "text": "不便なのは分かりました。差し戻した後、誰が直して、どう承認に戻るんでしょう？"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "困っている理由だけでなく、その後の仕事の流れも伝えよう。"
+        }
+      ]
+    },
+    "02.report-scope": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "sales",
+          "text": "修正して出し直す流れですね。画面以外に、権限や通知も変わるんでしょうか。まだ決まっていない点も教えてください。"
+        },
+        {
+          "speaker": "player",
+          "kind": "thought",
+          "text": "ボタン以外に直すところと、まだ決まっていないところを分けて話そう。"
+        }
+      ]
+    }
+  },
+  "chat": [
+    {
+      "id": "02.chat.1",
+      "at": "09:00",
+      "speaker": "lead",
+      "text": "佐伯さんより依頼された件、調査、報告よろしく"
+    },
+    {
+      "id": "02.chat.2",
+      "at": "09:15",
+      "speaker": "lead",
+      "text": "差戻しって、どこに戻すんだよ"
+    },
+    {
+      "id": "02.chat.3",
+      "at": "09:40",
+      "speaker": "lead",
+      "text": "仕様書に書いてない"
+    },
+    {
+      "id": "02.chat.4",
+      "at": "09:45",
+      "speaker": "lead",
+      "text": "俺が書いた仕様書だった"
+    },
+    {
+      "id": "02.chat.5",
+      "at": "10:30",
+      "speaker": "lead",
+      "text": "別件の障害対応入ります"
+    },
+    {
+      "id": "02.chat.6",
+      "at": "11:20",
+      "speaker": "lead",
+      "text": "復旧。原因は設定値"
+    },
+    {
+      "id": "02.chat.7",
+      "at": "11:25",
+      "speaker": "lead",
+      "text": "設定したの俺だった"
+    },
+    {
+      "id": "02.chat.8",
+      "at": "13:00",
+      "speaker": "lead",
+      "text": "会議終わった。次の会議の日程が決まった"
+    },
+    {
+      "id": "02.chat.9",
+      "at": "15:00",
+      "speaker": "lead",
+      "text": "差戻しと却下を同じにすると、後で泣くぞ"
+    },
+    {
+      "id": "02.chat.10",
+      "at": "16:30",
+      "speaker": "sales",
+      "text": "差戻しボタンの件、確認できたところから状況をお願いします。"
+    }
+  ],
+  "schedules": {
+    "lead": [
+      {
+        "from": "09:00",
+        "to": "10:30",
+        "state": "incident"
+      },
+      {
+        "from": "10:30",
+        "to": "10:45",
+        "state": "working"
+      },
+      {
+        "from": "10:45",
+        "to": "11:15",
+        "state": "available"
+      },
+      {
+        "from": "11:15",
+        "to": "12:00",
+        "state": "related"
+      },
+      {
+        "from": "12:00",
+        "to": "13:00",
+        "state": "working"
+      },
+      {
+        "from": "13:00",
+        "to": "14:00",
+        "state": "meeting"
+      },
+      {
+        "from": "14:00",
+        "to": "18:00",
+        "state": "working"
+      }
+    ]
+  },
+  "events": {
+    "intro": "02.intro",
+    "clear": "02.clear",
+    "timeout": "02.timeout",
+    "progress": "02.report-progress",
+    "cannot": "02.report-cannot",
+    "extension": "02.extension",
+    "gameover": "02.gameover",
+    "extensionUsed": "02.extension-used",
+    "nextDay": "02.next-day",
+    "dream": "02.dream"
+  }
+}
