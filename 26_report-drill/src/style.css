@@ -89,6 +89,14 @@
 .kanban .action-bottom{padding:0;border:0;min-height:0}
 .kanban .action-time{position:absolute;right:7px;bottom:-5px;margin:0;display:block;font:1000 58px/1 var(--mono);letter-spacing:-4px;color:#314e662b;-webkit-text-stroke:1px currentColor;pointer-events:none;z-index:0}
 .kanban .action-time.too-late{color:#8c412a40}
+.kanban .action-card.overdue{background:#ead1c9;border-color:#c78e7f;border-left:4px solid #bb6958;padding-bottom:calc(18px + var(--lunch-delay-space,0px))}
+.kanban .action-card.overdue:hover{background:#f0dbd4}
+.kanban .action-card.overdue-long{background:#e5b9b2;border-color:#bb746a;border-left-color:#a54438}
+.kanban .action-card.overdue-long:hover{background:#edc8c1}
+.task-delay{position:relative;z-index:1;display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px;margin:4px 0 2px;padding:5px 7px;border:1px solid #a5443840;border-radius:4px;background:#fff4edaa;color:#803a2e;font-size:10px;line-height:1.6}
+.task-delay svg{width:13px;height:13px}
+.task-delay b{margin-left:auto;white-space:nowrap;font-family:var(--mono)}
+.kanban .overdue .action-time{color:#963f3030}
 .board-view .desk-tip{flex-shrink:0;margin:12px 0 8px;padding:10px 12px}
 .board-view>.tiny{flex-shrink:0}
 @media(max-width:1099px){.work-content.board-view{flex:none;height:clamp(400px,65svh,650px)}.board-view .kanban-column{min-height:0}}
@@ -413,8 +421,322 @@
 .case-solved>p:not(.eyebrow){font-size:16px;line-height:1.9;margin:18px 0 28px}
 @media(max-width:699px){.case-solved h1{font-size:28px}.case-solved>p:not(.eyebrow){font-size:14px}}
 .evidence-card.clue-awaiting{visibility:hidden;pointer-events:none}
+#shared-clue-deck .evidence-card.clue-awaiting{display:none}
+#shared-clue-deck .evidence-card.clue-awaiting.clue-slot-opening{display:flex}
 .sidebar-coffee{padding:0 4px}
 .sidebar-coffee .coffee-button{width:100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:7px;padding:11px 8px;font-size:12px}
 .sidebar-coffee .coffee-button small{font-size:10px}
 .knowledge .section-label{font-size:13px;letter-spacing:1.5px}
 @media(max-width:699px){.sidebar-coffee{padding:4px 0}.sidebar-coffee .coffee-button{width:auto}}
+/* Video meeting: participant camera on the left, shared report on the right. */
+.reporting .report-stage{position:relative}
+.meeting-camera{position:absolute;left:0;top:0;width:220px;height:280px;overflow:hidden;border:1px solid #9bafb0;border-radius:9px;background:#9eaaa2 var(--meeting-room,url('./assets/04_room.png')) center/cover;box-shadow:0 8px 22px #0004}
+.meeting-camera>img{position:absolute;width:200%;max-width:none;height:auto;left:-50%;top:-7%;filter:drop-shadow(0 4px 8px #0002)}
+.camera-live{position:absolute;top:10px;left:10px;z-index:2;padding:2px 7px;border-radius:4px;background:#142b2cc9;color:#d8f5e4;font:9px var(--mono);letter-spacing:1px}
+.camera-live i{display:inline-block;width:5px;height:5px;background:#91e6af;border-radius:50%;margin-right:5px}
+.camera-name{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:8px 11px;background:linear-gradient(transparent,#10252be8);color:#fff;font-size:14px;font-weight:600}
+.camera-name>span{float:right;color:#bce1cc;font-size:9px;font-weight:400;margin-top:4px}
+.reporting .report-board{margin-left:236px;border:1px solid #72a995;border-top:3px solid #a8dfb8;border-radius:7px;background:#142c38a8;padding:10px 12px;gap:8px 12px;box-shadow:0 8px 20px #0002}
+.share-header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #708f9470;padding:0 0 8px;font-size:10px;color:#b3c7cd}
+.share-indicator{display:inline-flex;align-items:center;gap:6px;color:#c5f1d2;font-size:11px;font-weight:600}
+.share-indicator svg{width:15px;height:15px}
+.reporting .report-buttons{padding-top:23px}
+.reporting .report-conversation .conversation-window{margin-left:0}
+.reporting .report-request{white-space:pre-line;min-height:5.6em;font-size:17px}
+@media(min-width:700px) and (max-height:800px){.meeting-camera{width:166px;height:220px}.reporting .report-board{margin-left:178px;padding:7px 9px;gap:5px 8px}.share-header{padding-bottom:5px}.reporting .report-request{min-height:4.7em;font-size:15px}.camera-name{font-size:12px}.camera-name>span{display:none}}
+@media(max-width:699px){.meeting-camera{width:96px;height:135px;border-radius:6px}.meeting-camera>img{width:215%;left:-58%;top:-8%}.camera-live{font-size:7px;left:5px;top:5px;padding:2px 4px}.camera-name{font-size:12px;padding:6px}.camera-name>span{display:none}.reporting .report-board{margin-left:106px;padding:6px;gap:7px;grid-template-columns:minmax(0,1fr)}.reporting .report-buttons{padding-top:0;gap:5px}.reporting .report-buttons>span{display:none}.reporting .report-buttons button{min-height:33px;padding:5px;font-size:11px}.share-header{font-size:8px;gap:4px}.share-header>span:last-child{display:none}.share-indicator{font-size:10px}.reporting .report-stage{min-height:420px}.reporting .report-request{font-size:15px;min-height:5.5em}}
+.reporting>.report-conversation{position:relative;flex:0 0 auto;margin:0;padding:0 20px;z-index:4}
+.reporting .report-selection>.eyebrow{display:none}
+.reporting .report-buttons{padding-top:0}
+.reporting .report-conversation .conversation-person{padding:7px 14px 0}
+.reporting .report-conversation .conversation-person h2{font-size:16px}
+.reporting .report-request{min-height:0;font-size:16px;line-height:1.6;padding:6px 14px 10px}
+@media(max-width:699px){.reporting>.report-conversation{padding:0 12px}.reporting .report-request{font-size:14px}.reporting .report-board{margin-left:106px}.reporting .report-stage{min-height:350px}}
+.reporting .report-request{min-height:68px}
+@media(max-width:699px){.reporting .report-request{min-height:88px}}
+/* Browser tabs and a staged video-call entrance. */
+.report-actions.browser-tabs{display:flex;flex-direction:row;align-self:stretch;gap:4px;border-bottom:1px solid #60737c;padding:8px 5px 0}
+.browser-tabs button{display:flex;align-items:center;gap:8px;min-width:105px;justify-content:center;background:#1b2935;border:1px solid #425560;border-bottom:0;border-radius:10px 10px 0 0;color:#9baeb9;padding:9px 18px;font-size:13px;min-height:39px;position:relative}
+.browser-tabs button.active{background:#344f5d;color:#e5f5ed;box-shadow:0 -2px 0 #aad9c5}
+.browser-tabs button.active::after{content:'';position:absolute;height:2px;bottom:-1px;left:0;right:0;background:#344f5d}
+.browser-tabs svg{width:16px;height:16px}
+.reporting>.work-content{order:0}.reporting>.report-conversation{order:1}.reporting>.clue-drawer{order:3}
+.meeting-controls{order:2;flex:0 0 48px;display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:5px 20px;background:#10212cd9;z-index:5}
+.meeting-control{position:relative;width:37px;height:37px;display:grid;place-items:center;border:1px solid #527078;border-radius:9px;background:#253d49;color:#d0e5e9}
+.meeting-control.on{background:#3c6259;border-color:#80b19b;color:#d9f5e4}
+.meeting-control.off[data-action=meeting-camera]::after,.meeting-control.off[data-action=meeting-mic]::after{content:'';width:25px;height:2px;background:#deaaa8;transform:rotate(-45deg);position:absolute}
+.meeting-connecting{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;gap:16px;background:#101c28;color:#c9e1e5;font:18px var(--mono);letter-spacing:3px}
+.connecting-spinner{width:24px;height:24px;border:2px solid #42606d;border-top-color:#b5e8d1;border-radius:50%;animation:connecting-spin .8s linear infinite}
+@keyframes connecting-spin{to{transform:rotate(360deg)}}
+.reporting[data-meeting-phase=connecting]>.work-content,.reporting[data-meeting-phase=connecting]>.report-conversation,.reporting[data-meeting-phase=connecting]>.meeting-controls,.reporting[data-meeting-phase=connecting]>.clue-drawer{visibility:hidden}
+.reporting.meeting-unshared>.clue-drawer{display:none}
+.meeting-unshared .report-board{display:none!important}
+.reporting[data-meeting-phase=video]>.report-conversation{display:none}
+.reporting.meeting-unshared .report-stage{height:100%;min-height:260px}
+.meeting-unshared .meeting-camera{position:absolute;inset:0;width:100%;height:100%;border-radius:8px;background-position:center;background-size:cover}
+.meeting-unshared .meeting-camera>img{height:185%;width:auto;left:50%;top:-8%;transform:translateX(-50%)}
+.self-camera{position:absolute;width:130px;height:105px;left:10px;bottom:12px;z-index:3;overflow:hidden;background:#a2aaa0 var(--meeting-room,url('./assets/01_room.png')) center/cover;border:2px solid #a8ccbd;border-radius:8px;box-shadow:0 5px 15px #0005}
+.self-camera img{position:absolute;width:210%;max-width:none;height:auto;left:-55%;top:-20%}
+.self-camera span{position:absolute;bottom:0;left:0;right:0;padding:3px 7px;background:#152b35bb;font-size:10px;color:white}
+.meeting-response{position:absolute;top:12px;right:12px;z-index:4;background:#14242bd9;border-radius:9px;padding:6px 10px;color:#f5edb7;font-size:22px;animation:report-arrives .3s ease-out}
+@media(max-width:699px){.browser-tabs button{min-width:75px;padding:8px 10px;font-size:12px}.browser-tabs{padding-top:0}.meeting-controls{padding:5px 12px;gap:6px;flex-basis:45px}.meeting-control{width:34px;height:34px}.reporting.meeting-unshared .report-stage{min-height:240px}.self-camera{width:95px;height:78px}.meeting-response{font-size:16px;right:5px;top:25px}.meeting-connecting{font-size:15px}}
+.meeting-camera .self-camera{left:auto;right:8px;bottom:35px;width:92px;height:74px}
+@media(max-width:699px){.meeting-camera .self-camera{right:4px;bottom:28px;width:65px;height:53px}}
+/* Independent meeting windows above a persistent clue deck. */
+.reporting>.work-content.report-view{padding:12px 16px;overflow:auto}
+.reporting .report-stage,.reporting.meeting-unshared .report-stage{display:grid;grid-template-columns:170px minmax(0,1fr) 120px;gap:12px;align-items:stretch;height:100%;min-height:230px;position:relative}
+.reporting .report-stage>.meeting-camera,.reporting.meeting-unshared .report-stage>.meeting-camera{position:relative;inset:auto;width:100%;height:100%;min-height:210px;grid-column:1;grid-row:1}
+.reporting .report-board{grid-column:2;grid-row:1;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);margin:0;padding:9px;min-width:0;align-self:stretch;border-radius:9px;overflow:hidden}
+.reporting .report-selection{min-height:0}.reporting .report-slots{height:100%;align-items:center;margin:0}
+.reporting .self-camera{position:relative;inset:auto;left:auto;right:auto;bottom:auto;grid-column:3;grid-row:1;width:100%;height:160px;align-self:start;border:1px solid #648b93;border-radius:9px;box-shadow:0 8px 22px #0003}
+.reporting .self-camera.camera-off{display:grid;place-items:center;background:#243945}
+.self-camera.camera-off>svg{width:43px;height:43px;color:#aac2cc}
+.self-camera.camera-off.voice-typing::before,.self-camera.camera-off.voice-typing::after{content:'';position:absolute;left:50%;top:50%;width:min(72px,70%);aspect-ratio:1;border:6px solid #a9e6c4;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(.75);opacity:0;animation:camera-voice-wave 1.5s ease-out infinite}
+.self-camera.camera-off.voice-typing::after{animation-delay:-.75s}
+.self-camera.camera-off.voice-typing>svg{color:#d9ffe9;filter:drop-shadow(0 0 6px #a9e6c480)}
+@keyframes camera-voice-wave{0%{transform:translate(-50%,-50%) scale(.75);opacity:.3}100%{transform:translate(-50%,-50%) scale(1.45);opacity:0}}
+@media(prefers-reduced-motion:reduce){.self-camera.camera-off.voice-typing::before,.self-camera.camera-off.voice-typing::after{animation:none;transform:translate(-50%,-50%);opacity:.6}.self-camera.camera-off.voice-typing::after{display:none}}
+.reduce-motion .self-camera.camera-off.voice-typing::before{animation:none;transform:translate(-50%,-50%);opacity:.6}
+.reduce-motion .self-camera.camera-off.voice-typing::after{display:none}
+.reporting .self-camera img{top:-10%;left:-50%;width:200%;height:auto;transform:none}
+.reporting.meeting-unshared .report-stage{grid-template-columns:minmax(0,1fr) 140px}
+.reporting.meeting-unshared .report-stage>.meeting-camera{grid-column:1}
+.reporting.meeting-unshared .self-camera{grid-column:2}
+.reporting.meeting-unshared>.clue-drawer{display:block}
+.meeting-bottom{order:1;flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(310px,.95fr);gap:12px;padding:0 16px 12px;align-items:stretch}
+.reporting .meeting-bottom>.report-conversation{padding:0;margin:0;position:relative;min-width:0}
+.reporting .meeting-bottom .conversation-window{height:100%;margin:0;border:1px solid #8eb7bd88;border-radius:9px;background:#152c3cbd;box-shadow:0 7px 20px #0003}
+.reporting .meeting-bottom .report-request{min-height:92px;font-size:15px}
+.meeting-command-panel{display:flex;flex-direction:column;justify-content:space-between;gap:8px;min-width:0}
+.reporting .meeting-command-panel .report-buttons{display:flex;flex-direction:row;gap:7px;padding:0;margin:0}
+.reporting .meeting-command-panel .report-buttons>span{display:none}
+.reporting .meeting-command-panel .report-buttons button{flex:1;min-width:0;min-height:46px;width:auto;padding:7px 5px;font-size:12px;gap:4px}
+.reporting .meeting-command-panel .meeting-controls{flex:0 0 auto;justify-content:flex-end;padding:7px 9px;border:1px solid #54717a;border-radius:9px;background:#172c39;box-shadow:0 5px 15px #0002}
+.reporting[data-meeting-phase=connecting]>.meeting-bottom{visibility:hidden}
+.reporting[data-meeting-phase=video] .meeting-bottom .report-conversation{visibility:hidden;display:block}
+.reporting .meeting-bottom .report-buttons .warning{font-size:10px}
+.reporting>.clue-drawer{order:3}
+[data-meeting-window]{transform-origin:top left}
+@media(min-width:700px) and (max-height:800px){.reporting .report-stage{grid-template-columns:125px minmax(0,1fr) 95px;min-height:210px;gap:9px}.reporting .self-camera{height:120px}.reporting .meeting-bottom .report-request{font-size:14px;min-height:72px}.meeting-bottom{padding:0 12px 8px;gap:9px;grid-template-columns:minmax(0,1fr) minmax(300px,1fr)}.reporting .meeting-command-panel .report-buttons button{font-size:11px;min-height:38px}.reporting .meeting-command-panel .meeting-controls{padding:4px 7px}}
+@media(max-width:699px){.reporting>.work-content.report-view{padding:8px}.reporting .report-stage{grid-template-columns:82px minmax(0,1fr) 65px;gap:6px;min-height:215px}.reporting .report-stage>.meeting-camera{min-height:185px}.reporting .self-camera{height:88px}.self-camera.camera-off>svg{width:29px;height:29px}.self-camera span{font-size:8px;padding:3px}.reporting.meeting-unshared .report-stage{grid-template-columns:minmax(0,1fr) 80px;min-height:215px}.meeting-bottom{padding:0 8px 8px;gap:7px;grid-template-columns:minmax(0,1fr) 182px}.reporting .meeting-bottom .report-request{font-size:12px;min-height:112px;line-height:1.6;padding:5px 8px}.reporting .meeting-bottom .conversation-person{padding:6px 8px 0}.reporting .meeting-bottom .conversation-person h2{font-size:14px}.reporting .meeting-command-panel .report-buttons{gap:4px}.reporting .meeting-command-panel .report-buttons button{font-size:10px;min-height:46px;padding:5px 2px}.reporting .meeting-command-panel .meeting-controls{gap:4px;padding:5px;justify-content:space-between}.meeting-control{width:28px;height:30px}.meeting-control svg{width:17px;height:17px}.reporting .share-header{padding-bottom:5px}.reporting .share-indicator{font-size:9px}}
+/* The clue deck belongs to a separate app, including while the call connects. */
+.reporting{--meeting-deck-height:320px}
+.reporting>.meeting-connecting{bottom:var(--meeting-deck-height)}
+.reporting[data-meeting-phase=connecting]>.clue-drawer{visibility:visible}
+.reporting>.clue-drawer{border-top:1px solid #617487;border-radius:9px 9px 0 0;background:#162332;box-shadow:0 -7px 0 #101722}
+.reporting .fixed-deck-label{justify-content:flex-start;padding:0 16px;background:#253745;color:#d1dde8}
+.reporting .fixed-deck-label>span{font:11px var(--mono);padding:1px 7px;background:#3c5063;border-radius:4px;color:#d4e1eb}
+@media(min-width:700px) and (max-height:800px){.reporting{--meeting-deck-height:270px}}
+@media(max-width:699px){.reporting{--meeting-deck-height:270px}}
+.reporting .meeting-command-panel .report-buttons button{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;text-align:left;gap:6px;padding:8px}
+.report-buttons button>span{min-width:0;overflow-wrap:anywhere}
+.report-buttons button>small{font:700 12px var(--mono);justify-self:end;white-space:nowrap;opacity:.85}
+.meeting-response{display:flex;align-items:center;gap:7px}
+.meeting-response .raised-hand-label{font-size:11px;font-weight:500;line-height:1.5;white-space:nowrap}
+.clue-drawer:not(.clue-acquisition-stage){background:#eef3ee;border-top-color:#729782}
+.clue-drawer:not(.clue-acquisition-stage) #shared-clue-deck{background-color:#f3f6f1;background-image:linear-gradient(#ccd9d0 1px,transparent 1px),linear-gradient(90deg,#ccd9d0 1px,transparent 1px);background-size:24px 24px}
+.clue-drawer .deck-handle,.reporting .fixed-deck-label{background:#216547;color:#f1fff6;justify-content:flex-start;padding:0 16px}
+.reporting .fixed-deck-label>span{background:#ffffff25;color:#f1fff6}
+@media(max-width:699px){.reporting .meeting-command-panel .report-buttons button{padding:5px 3px;gap:3px}.report-buttons button>small{font-size:9px}.meeting-response .raised-hand-label{font-size:10px}}
+/* Participant actions belong below the wider self-camera tile. */
+.reporting .report-stage{grid-template-columns:155px minmax(0,1fr) 190px}
+.self-panel{grid-column:3;grid-row:1;position:relative;z-index:2;display:flex;flex-direction:column;gap:10px;min-width:0;align-self:start}
+.reporting .self-panel .self-camera{width:100%;height:155px;flex:none}
+.reporting .self-panel .report-buttons{display:flex;flex-direction:column;gap:8px;padding:0;margin:0;width:100%}
+.reporting .self-panel .report-buttons>span{display:none}
+.reporting .self-panel .report-buttons button{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px;padding:10px;min-height:42px;width:100%;text-align:left;font-size:13px;flex:none}
+.reporting .self-panel .report-buttons .warning{margin:0;font-size:11px}
+.meeting-bottom{grid-template-columns:minmax(0,1fr) 250px;align-items:end}
+.reporting .meeting-command-panel .meeting-controls{background:transparent;border:0;box-shadow:none;padding:5px 0;gap:10px}
+.meeting-control,.meeting-control.on{background:transparent;border:0;box-shadow:none;color:#d8e8ed}
+.meeting-control.on{color:#b9edce}.meeting-control:hover{background:#ffffff14}
+.reporting.meeting-unshared>.work-content.report-view{position:static;z-index:auto}
+.reporting.meeting-unshared .report-stage{position:static;grid-template-columns:minmax(0,1fr) 190px;min-height:230px}
+.reporting.meeting-unshared .report-stage>.meeting-camera{position:absolute;inset:0 0 var(--meeting-deck-height) 0;width:100%;height:auto;min-height:0;z-index:0;border:0;border-radius:0;box-shadow:none}
+.reporting.meeting-unshared .self-panel{grid-column:2;z-index:2}
+.reporting.meeting-unshared>.meeting-bottom{position:relative;z-index:2}
+.reporting.meeting-unshared>.clue-drawer{position:relative;z-index:3}
+.knowledge.panel{background:#263746;border-color:#465c70;box-shadow:0 3px 12px #0002}
+.knowledge .section-label,.knowledge .stat>div:first-child{color:#d0e1eb}
+@media(min-width:700px) and (max-height:800px){.reporting .report-stage{grid-template-columns:110px minmax(0,1fr) 165px}.reporting .self-panel .self-camera{height:125px}.reporting .self-panel .report-buttons{gap:6px}.reporting .self-panel .report-buttons button{min-height:35px;padding:7px;font-size:12px}.reporting.meeting-unshared .report-stage{grid-template-columns:minmax(0,1fr) 165px}.meeting-bottom{grid-template-columns:minmax(0,1fr) 235px}}
+@media(max-width:699px){.reporting .report-stage{grid-template-columns:70px minmax(0,1fr) 110px;min-height:235px}.reporting .self-panel .self-camera{height:90px}.self-panel{gap:7px}.reporting .self-panel .report-buttons{gap:5px}.reporting .self-panel .report-buttons button{min-height:37px;padding:6px;font-size:10px;gap:4px}.reporting.meeting-unshared .report-stage{grid-template-columns:minmax(0,1fr) 110px}.meeting-bottom{grid-template-columns:minmax(0,1fr) 175px}.reporting .meeting-command-panel .meeting-controls{gap:5px}.reporting .self-panel .report-buttons button>small{font-size:9px}}
+/* Individual controls keep their own backgrounds; the control area stays clear. */
+.meeting-control{background:#253d49;border:1px solid #527078;color:#d0e5e9;box-shadow:0 2px 5px #0002}
+.meeting-control.on{background:#3c6259;border:1px solid #80b19b;color:#d9f5e4}
+.meeting-control:hover{background:#3c5663}
+.self-camera .meeting-response{top:7px;right:7px;padding:4px 7px;font-size:11px;z-index:4}
+.meeting-reaction-float{position:absolute;left:22px;bottom:calc(var(--meeting-deck-height) + 14px);z-index:7;pointer-events:none;font-size:42px;line-height:1;filter:drop-shadow(0 3px 8px #0006);animation:meeting-reaction-rise 1.8s ease-out both}
+@keyframes meeting-reaction-rise{0%{opacity:0;transform:translate(0,12px) scale(.8)}12%{opacity:1;transform:translate(3px,-10px) scale(1)}70%{opacity:1}100%{opacity:0;transform:translate(28px,-220px) scale(1.15)}}
+@media(max-width:699px){.self-camera .meeting-response{top:4px;right:4px;padding:3px 4px}.self-camera .raised-hand-label{font-size:9px}.meeting-reaction-float{left:14px;font-size:34px}}
+.self-camera .raised-hand-label{position:static;display:inline;padding:0;background:none;color:inherit}
+/* Shared notes, participant gallery, and conversation inside the meeting. */
+.reporting .report-board{background:#f7f2e9;border:1px solid #b7a5ca;border-top:4px solid #855ba7;color:#3d354b;box-shadow:0 7px 20px #0003}
+.reporting .report-board .share-header{background:#765396;margin:-9px -9px 0;padding:8px 10px;color:#efe3fa;border-bottom:1px solid #b6a1cc}
+.reporting .report-board .share-indicator{color:#fff3ff}
+.reporting .report-selection{background-color:#fcf9f2;background-image:linear-gradient(#d6cfe180 1px,transparent 1px);background-size:100% 25px;border-left:3px solid #d6a9bd;padding-left:8px}
+.reporting .report-slot{background:#f3ecfa55;border-color:#bbaec8}
+.reporting .report-slot>.slot-number{color:#8b749c}
+.reporting .report-slot>span{color:#7c6a88}
+.share-submit{display:flex;justify-content:flex-end;padding-top:8px;border-top:1px solid #c8b9d6}
+.reporting .share-submit>button{display:grid;grid-template-columns:1fr auto;gap:14px;min-width:170px;min-height:37px;padding:7px 12px;background:#79529b;border-color:#8e6aae;color:white;text-align:left;font-size:12px}
+.reporting .report-board{grid-template-rows:auto minmax(0,1fr) auto}
+.reporting .meeting-command-panel .report-buttons{display:flex;flex-direction:column;gap:6px;padding:0;margin:0}
+.reporting .meeting-command-panel .report-buttons>span{display:none}
+.reporting .meeting-command-panel .report-buttons button{flex:none;min-height:36px;font-size:12px}
+.reporting .self-panel{max-height:100%;overflow-y:auto;scrollbar-width:thin;gap:8px}
+.reporting .self-panel .self-camera{height:110px;flex-shrink:0}
+.participant-camera{position:relative;height:110px;min-height:110px;overflow:hidden;flex-shrink:0;background:#a2aaa0 var(--meeting-room,url('./assets/04_room.png')) center/cover;border:1px solid #688b96;border-radius:9px}
+.participant-camera>img{position:absolute;width:185%;max-width:none;height:auto;left:-42%;top:-10%}
+.participant-camera>span{position:absolute;bottom:0;left:0;right:0;padding:4px 7px;background:#132b36c9;color:white;font-size:11px}
+.participant-camera.speaking,.self-camera.speaking{border:2px solid #b0e0b6;box-shadow:0 0 0 1px #b0e0b655}
+.meeting-speaker{display:flex;justify-content:space-between;align-items:center;padding:8px 12px 0;gap:10px}.meeting-speaker strong{font-size:14px}.meeting-speaker small{color:#9db3c0;font:9px var(--mono)}
+.meeting-dialogue{font-size:14px;line-height:1.85;padding:7px 12px;min-height:70px;max-height:135px;overflow-y:auto;white-space:pre-wrap}
+.meeting-dialogue.thought{color:#c9c0dc}
+.meeting-dialogue-actions{display:flex;justify-content:flex-end;gap:7px;padding:4px 10px 8px}.meeting-dialogue-actions .primary{min-height:29px;padding:4px 14px;font-size:11px}.meeting-dialogue-actions .text-button{font-size:10px}
+.report-conversation .report-accepted{font-size:14px;padding:8px 12px;border-radius:8px 8px 0 0}.report-accepted.receipt-static{animation:none}
+@media(min-width:700px) and (max-height:800px){.reporting .self-panel .self-camera,.participant-camera{height:85px;min-height:85px}.meeting-dialogue{font-size:13px;min-height:55px;max-height:95px}.reporting .share-submit>button{min-width:140px;min-height:31px;padding:5px 9px;font-size:11px}}
+@media(max-width:699px){.reporting .self-panel .self-camera,.participant-camera{height:75px;min-height:75px}.participant-camera>span{font-size:9px}.meeting-dialogue{font-size:12px;min-height:90px;max-height:150px;padding:5px 8px}.meeting-speaker{padding:6px 8px 0}.meeting-speaker strong{font-size:12px}.meeting-dialogue-actions{padding:4px 6px 6px;gap:3px}.meeting-dialogue-actions .primary{padding:4px 8px}.meeting-dialogue-actions .text-button{font-size:9px;padding:3px}.reporting .share-submit>button{min-width:0;width:100%;font-size:10px;padding:5px;gap:5px}.report-conversation .report-accepted{font-size:12px;padding:6px 8px}.reporting .meeting-command-panel .report-buttons button{font-size:11px}}
+.reporting .report-board .report-slot:not(.occupied){background:#eee5f566}
+.reporting .self-panel{height:100%;max-height:100%;display:grid;grid-auto-rows:minmax(0,1fr);align-self:stretch;overflow:hidden}
+.reporting .self-panel>.self-camera,.reporting .self-panel>.participant-camera{height:100%;min-height:0;align-self:stretch}
+.reporting .self-panel .participant-camera>img{height:350%;width:auto;left:50%;top:-12%;transform:translateX(-50%)}
+.reporting .self-panel .self-camera>img{height:320%;width:auto;left:50%;top:-12%;transform:translateX(-50%)}
+.reporting .report-selection{overflow:auto}
+.share-submit{position:relative;z-index:2;background:#f7f2e9}
+.reporting .self-panel{grid-template-columns:minmax(0,1fr)}
+.reporting .self-panel>.self-camera,.reporting .self-panel>.participant-camera{grid-column:1;grid-row:auto}
+
+.clock-colon{display:inline-block}
+.game-clock{white-space:nowrap;flex-shrink:0}
+.timer-running .clock-colon{animation:clock-tick 1s steps(1,end) infinite}
+@keyframes clock-tick{50%{opacity:0}}
+.deck-toolbar{display:flex;align-items:center;background:#216547;color:#f1fff6;height:36px;flex-shrink:0}
+.deck-toolbar .deck-handle{flex:1;min-width:0;width:auto;white-space:nowrap}
+.deck-sizes{display:flex;align-items:center;gap:3px;padding:0 7px;margin-left:auto}
+.deck-sizes button{display:flex;align-items:center;justify-content:center;gap:3px;min-width:38px;height:27px;padding:3px 6px;border:1px solid #ffffff40;border-radius:3px;background:transparent;color:#e3f3ea;font-size:10px}
+.deck-sizes button svg{width:15px;height:15px}
+.deck-sizes button.active{background:#e0eee2;color:#21573e;border-color:#e0eee2}
+.deck-sizes button:hover{outline:1px solid #e0eee2}
+.work-area{--deck-medium-height:320px}
+.work-area>.clue-drawer.deck-medium{height:var(--deck-medium-height);flex-basis:var(--deck-medium-height)}
+.clue-drawer.deck-medium #shared-clue-deck{height:calc(var(--deck-medium-height) - 36px)}
+.clue-drawer.deck-medium .evidence-grid>.evidence-card{height:calc(var(--deck-medium-height) - 58px);min-height:0}
+.reporting .deck-sizes{display:none}
+@media(max-width:699px),(min-width:700px) and (max-height:800px){.work-area{--deck-medium-height:270px}}
+.reporting[data-deck-size=small]{--meeting-deck-height:118px}
+.work-area>.clue-drawer.deck-small{height:118px;flex-basis:118px}
+.reporting>.clue-drawer{visibility:visible!important}
+.work-area>.clue-drawer.deck-large{position:fixed;inset:0;z-index:50;width:100%;height:100dvh;max-height:none;display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:0;box-shadow:none;visibility:visible}
+.clue-drawer.deck-large>.deck-toolbar{height:44px;flex-basis:44px}
+.clue-drawer.deck-large #shared-clue-deck{height:auto;flex:1;min-height:0;overflow:hidden;padding:12px}
+.clue-drawer.deck-large #shared-clue-deck .evidence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(210px,100%),1fr));grid-auto-rows:var(--clue-height,280px);align-content:start;gap:14px;padding:3px 3px 16px;overflow-x:hidden;overflow-y:auto;height:100%;width:100%}
+.clue-drawer.deck-large .evidence-grid>.evidence-card{width:100%;min-width:0;height:100%;min-height:0;cursor:grab;touch-action:pan-y}
+.clue-drawer.deck-large .evidence-card.dragging{opacity:.4}
+.clue-drawer.deck-large .evidence-card.drop-target{outline:3px solid #216547;outline-offset:-3px}
+.clue-drawer.deck-large .evidence-grid>.empty{grid-column:1/-1}
+.reporting[data-meeting-phase=lobby]>.work-content,
+.reporting[data-meeting-phase=lobby]>.meeting-bottom{visibility:hidden}
+.meeting-lobby{position:absolute;inset:0 0 var(--meeting-deck-height);z-index:12;display:grid;place-items:center;background:#edf0f3}
+.meeting-lobby .primary{background:#6264a7;border-color:#6264a7;color:#fff;padding:14px 28px;font-size:16px;border-radius:5px}
+.reporting>.meeting-connecting{background:#eee;color:#505050;display:flex;align-items:flex-start;justify-content:center;padding:0 24px;text-align:center;box-sizing:border-box}
+.reporting>.meeting-connecting p{position:absolute;top:20%;left:24px;right:24px}
+.meeting-connecting p{font-size:16px;line-height:1.8;margin:0}
+.reporting .report-board{grid-template-columns:minmax(0,1fr) 88px;grid-template-rows:auto minmax(0,1fr);gap:10px}
+.reporting .report-board>.share-header{grid-column:1/-1}
+.reporting .report-board>.report-selection{grid-column:1;grid-row:2}
+.reporting .share-submit{grid-column:2;grid-row:2;align-self:center;padding:0;border:0;background:transparent}
+.reporting .share-submit>button{width:88px;height:88px;min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;padding:8px;border-radius:4px;font-size:14px;text-align:center}
+.reporting .share-submit>button small{font:700 13px var(--mono)}
+.workspace-mode #app{height:100svh;display:flex;flex-direction:column;overflow:hidden}
+.workspace-mode .topbar{height:52px;flex:0 0 52px;padding:0 24px}
+.workspace-mode .brand{font-size:14px;gap:9px}
+.workspace-mode .brand-mark{width:29px;height:30px}
+.workspace-mode .brand small{font-size:7px;margin-top:0}
+.workspace-mode .icon-button{padding:5px}
+.workspace-mode .casebar{min-height:60px;flex:0 0 60px;padding:5px 24px;gap:10px}
+.workspace-mode .time-status>strong{font-size:30px}
+.workspace-mode .desktop{height:auto;min-height:0;flex:1;width:100%;margin:0 auto}
+/* Keep the message frame steady while text types, wraps, or changes speaker. */
+.conversation>.conversation-window{height:clamp(260px,36svh,340px);display:flex;flex-direction:column}
+.conversation>.conversation-window>.dialogue-text{flex:1;min-height:0;max-height:none;overflow-y:auto}
+.conversation>.conversation-window>:not(.dialogue-text){flex-shrink:0}
+.reporting .meeting-bottom>.report-conversation{height:180px}
+.reporting .meeting-bottom .conversation-window{height:100%;display:flex;flex-direction:column}
+.reporting .meeting-bottom .conversation-window>:not(.report-request):not(.meeting-dialogue){flex-shrink:0}
+.reporting .meeting-bottom .report-request,.reporting .meeting-bottom .meeting-dialogue{flex:1;min-height:0;max-height:none;overflow-y:auto;overflow-wrap:anywhere}
+@media(min-width:700px) and (max-height:800px){.reporting .meeting-bottom>.report-conversation{height:160px}}
+@media(max-width:699px){
+  .reporting .meeting-bottom>.report-conversation{height:190px}
+  .workspace-mode .topbar{height:44px;flex-basis:44px;padding:0 16px}
+  .workspace-mode .brand{font-size:12px}
+  .workspace-mode .brand-mark{width:25px;height:27px}
+  .workspace-mode .brand small{font-size:6px}
+  .workspace-mode .casebar{flex-basis:auto;min-height:0;padding:7px 16px 0;gap:5px}
+  .workspace-mode .mobile-tabs{flex-shrink:0;padding:4px 16px}
+  .workspace-mode.report-mode .desktop{height:auto}
+  .casebar .case-actions{flex-direction:column-reverse;align-items:stretch;gap:6px}
+  .case-actions .time-status{flex:none;width:100%;flex-wrap:nowrap}
+  .case-actions .time-status>strong{font-size:26px}
+  .case-actions .time-status>span{white-space:nowrap}
+  .case-actions .browser-tabs{width:100%;padding:3px 0 0;align-self:auto}
+  .case-actions .browser-tabs button{flex:1;min-width:0;padding:8px 5px;gap:5px;font-size:11px;white-space:nowrap}
+  .case-actions .browser-tabs svg{width:13px;height:13px;flex-shrink:0}
+  .reporting .report-board{grid-template-columns:minmax(0,1fr) 57px;gap:5px}
+  .reporting .share-submit>button{width:57px;height:57px;padding:3px;font-size:10px;gap:5px}
+  .reporting .share-submit>button small{font-size:10px}
+}
+
+/* Three-line clues leave more room for investigation and the call. */
+.work-area{--clue-height:176px;--deck-medium-height:234px;--meeting-deck-height:var(--deck-medium-height)}
+:is(.clue-drawer,.report-selection) .evidence-card{height:var(--clue-height,176px);min-height:0;padding:10px}
+:is(.clue-drawer,.report-selection) .evidence-card h3{height:40px;min-height:40px;font-size:13px;line-height:20px;padding-bottom:0}
+:is(.clue-drawer,.report-selection) .evidence-top{margin-top:6px;flex-shrink:0;line-height:18px}
+:is(.clue-drawer,.report-selection) .evidence-card>p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;overflow-wrap:anywhere;font-size:14px;line-height:21px;height:63px;min-height:63px;margin-top:8px;margin-bottom:0;flex-shrink:0}
+.reporting .meeting-bottom .report-request,.reporting .meeting-bottom .meeting-dialogue{font-size:20px;line-height:1.65}
+.reporting .meeting-speaker strong,.reporting .meeting-bottom .conversation-person h2{font-size:18px}
+@media(min-width:700px) and (max-height:800px){
+  .work-area{--clue-height:160px;--deck-medium-height:218px}
+  :is(.clue-drawer,.report-selection) .evidence-card{padding:8px}
+  :is(.clue-drawer,.report-selection) .evidence-top{margin-top:4px}
+  :is(.clue-drawer,.report-selection) .evidence-card>p{font-size:13px;line-height:20px;height:60px;min-height:60px;margin-top:6px}
+  .reporting .meeting-bottom .report-request,.reporting .meeting-bottom .meeting-dialogue{font-size:18px}
+}
+@media(max-width:699px){
+  .work-area{--clue-height:160px;--deck-medium-height:218px}
+  :is(.clue-drawer,.report-selection) .evidence-card{padding:8px}
+  :is(.clue-drawer,.report-selection) .evidence-top{margin-top:4px}
+  :is(.clue-drawer,.report-selection) .evidence-card>p{font-size:13px;line-height:20px;height:60px;min-height:60px;margin-top:6px}
+  .reporting .meeting-bottom .report-request,.reporting .meeting-bottom .meeting-dialogue{font-size:16px}
+  .reporting .meeting-speaker strong,.reporting .meeting-bottom .conversation-person h2{font-size:15px}
+}
+
+/* The message spans the call; controls sit at the bottom of the shared view. */
+.reporting>.meeting-bottom{position:relative;display:block;padding-top:0}
+.reporting .meeting-bottom>.report-conversation{width:100%}
+.reporting .meeting-bottom>.report-conversation{height:213px}
+.reporting .meeting-bottom .conversation-window{width:100%;max-width:none}
+.reporting .report-stage>.meeting-command-panel{position:relative;grid-column:2;grid-row:1;align-self:end;justify-self:center;z-index:6;width:max-content;max-width:calc(100% - 16px);margin-bottom:12px}
+.reporting.meeting-unshared .report-stage>.meeting-command-panel{grid-column:1}
+.reporting .report-board{padding-bottom:52px}
+.reporting .report-selection{align-self:stretch;display:flex;flex-direction:column;padding-top:18px;padding-bottom:18px;overflow:hidden}
+.reporting .report-selection .report-slots{flex:1;min-height:0;height:auto;align-items:safe center;padding-top:0;padding-bottom:8px;overflow-x:auto;overflow-y:hidden}
+.reporting .self-panel{padding:8px 8px 8px 12px;border:0;background:transparent;gap:8px}
+.reporting .meeting-command-panel .meeting-controls{padding:0;gap:10px}
+.reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}
+.reporting.meeting-unshared .meeting-bottom .conversation-window{height:auto;padding-bottom:46px}
+.reporting.meeting-unshared .meeting-bottom .report-request,.reporting.meeting-unshared .meeting-bottom .meeting-dialogue{flex:none;box-sizing:content-box;height:2lh;min-height:2lh;max-height:2lh;padding-top:7px;padding-bottom:7px}
+.reporting.meeting-unshared .meeting-bottom>.meeting-command-panel{position:absolute;right:26px;bottom:20px;z-index:6;width:max-content;max-width:calc(100% - 32px)}
+.reporting.meeting-unshared .meeting-dialogue-actions{position:absolute;bottom:8px;left:10px;justify-content:flex-start;padding:0}
+.reporting .report-stage>.meeting-camera>img{height:240%;width:auto;max-width:none;left:50%;top:50%;transform:translate(-49%,-19%)}
+@media(min-width:700px) and (max-height:800px){.reporting .meeting-bottom>.report-conversation{height:190px}}
+@media(max-width:699px){
+  .reporting .meeting-bottom>.report-conversation{height:217px}
+  .reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}
+  .reporting.meeting-unshared .meeting-bottom .conversation-window{padding-bottom:78px}
+  .reporting.meeting-unshared .meeting-bottom>.meeting-command-panel{right:16px;bottom:16px}
+  .reporting.meeting-unshared .meeting-dialogue-actions{bottom:44px}
+  .reporting .self-panel{padding:5px 4px 5px 7px;gap:6px}
+  .reporting .report-stage>.meeting-command-panel{max-width:100%;margin-bottom:8px}
+  .reporting .report-board{padding-bottom:44px}
+  .reporting .meeting-command-panel .meeting-controls{gap:6px}
+}

@@ -70,10 +70,20 @@ export function createEngine(problem, scenario) {
     state.memories = remembered;
     state.settled = true;
   }
-  function timeout(state) {
-    const before=snapshot(state);
+  function timeout(state, before=snapshot(state)) {
     state.time = deadline;
     endAttempt(state,[scenario.events.timeout],'期限を迎えた',before);
+  }
+  // One game minute passes per five real seconds; events never consume real time.
+  function elapse(state, elapsedMs) {
+    if (state.phase !== 'desk' || !Number.isFinite(elapsedMs) || elapsedMs <= 0) return false;
+    const total = (state.timerRemainder || 0) + elapsedMs;
+    const elapsedMinutes = Math.floor(total / 5000);
+    state.timerRemainder = total % 5000;
+    if (!elapsedMinutes) return false;
+    state.time = Math.min(deadline, state.time + elapsedMinutes);
+    if (state.time >= deadline) timeout(state);
+    return true;
   }
   function endAttempt(state, ids, label, before) {
     const extend=Boolean(state.progressReported && state.loop===1);
@@ -123,7 +133,7 @@ export function createEngine(problem, scenario) {
     const repeatable=Boolean(action.repeatable || result.complete===false);
     const replay = !rerun && !isHelp && !repeatable && state.done.includes(key);
     const exhausted = isHelp && state.helpUsed.filter(item => item === id).length >= action.usesPerLoop;
-    return { action, result, key, replay, canRerun: repeatable || !state.done.includes(key), minutes: replay ? 0 : result.minutes, allowed: !exhausted && (replay || state.time + result.minutes <= deadline) };
+    return { action, result, key, replay, canRerun: repeatable || !state.done.includes(key), minutes: replay ? 0 : result.minutes, allowed: !exhausted };
   }
   function investigate(state, id, questionId, rerun = false) {
     if (state.phase !== 'desk') return false;
@@ -133,8 +143,10 @@ export function createEngine(problem, scenario) {
     if (replay) return true;
     if (rerun && !plan.canRerun) return false;
     const before=snapshot(state);
+    if(state.time+result.minutes>deadline){timeout(state,before);return true;}
     if (!replay) {
       state.time += result.minutes;
+      if (result.progressReported) state.progressReported = true;
       if (problem.help.cards.some(item => item.id === id)) state.helpUsed.push(id);
       if (!state.done.includes(plan.key)) {
         state.done.push(plan.key);
@@ -191,8 +203,9 @@ export function createEngine(problem, scenario) {
   function report(state) {
     if (state.phase !== 'report') return false;
     const q = problem.questions[state.question];
-    if (!q || state.selected.length !== q.slots || new Set(state.selected).size !== q.slots || !state.selected.every(id => state.evidence.includes(id)) || state.time + q.minutes > deadline) return false;
+    if (!q || state.selected.length !== q.slots || new Set(state.selected).size !== q.slots || !state.selected.every(id => state.evidence.includes(id))) return false;
     const before=snapshot(state);
+    if(state.time+q.minutes>deadline){timeout(state,before);return true;}
     const evaluation=evaluateReport(state,q);
     const rejected = q.reject.find(item => matches(item.when, state));
     const accepted = !rejected && q.accept.find(item => matches(item.when, state));
@@ -268,11 +281,16 @@ export function createEngine(problem, scenario) {
     }
     return state;
   }
-  return { fresh, matches, queue, advance, preview, investigate, cardStatus, moveCard, report, evaluateReport, statusReport, restore, timeout, deadline, settle,
+  return { fresh, matches, queue, advance, preview, investigate, cardStatus, moveCard, report, evaluateReport, statusReport, restore, timeout, elapse, deadline, settle,
     start(previous={}, nextLoop = false) {
       if(nextLoop && previous.phase==='loop') {
         const state=structuredClone(previous);
         state.loop++;state.time=minutes(problem.clock.start);state.phase='desk';state.selected=[];state.conversation=null;state.settled=false;state.progressReported=false;
+        state.timerRemainder=0;
+        for (const id of ['wm.lunch','wm.progress']) {
+          delete state.board[id];delete state.investigationResults[id];
+          state.done=state.done.filter(key=>!key.startsWith(`${id}:`));
+        }
         queue(state,[scenario.events.nextDay],'desk','翌日の調査を開始');return state;
       }
       const state=fresh(previous);queue(state,[scenario.events.intro],'desk','依頼を受けた');return state;

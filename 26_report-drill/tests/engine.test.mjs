@@ -14,6 +14,41 @@ const answers=[['wm.case','wm.retired','wm.logs'],['wm.defaults','wm.debug','wm.
 const submit=(s,cards)=>{s.phase='report';s.selected=cards;assert.equal(e.report(s),true);finish(s);};
 const available=s=>problem.investigations.filter(a=>e.matches(a.unlock,s)).map(a=>a.id);
 
+test('real time advances one hour per five minutes, preserving fractional minutes across events and saves',()=>{
+ const s=start();
+ assert.equal(e.elapse(s,2500),false);assert.equal(s.time,540);
+ const restored=e.restore(JSON.stringify(s));
+ e.elapse(restored,2500);assert.equal(restored.time,541);
+ e.elapse(restored,300000);assert.equal(restored.time,601);
+ e.investigate(restored,'wm.lunch');const before=restored.time;
+ e.elapse(restored,300000);assert.equal(restored.time,before);
+ finish(restored);e.elapse(restored,5000);assert.equal(restored.time,before+1);
+ restored.phase='report';const reportTime=restored.time,remainder=restored.timerRemainder;
+ assert.equal(e.elapse(restored,300000),false);assert.equal(restored.time,reportTime);assert.equal(restored.timerRemainder,remainder);
+ restored.phase='desk';e.elapse(restored,5000);assert.equal(restored.time,reportTime+1);
+});
+
+test('lunch costs one hour and Makabe progress costs thirty minutes and earns a second day',()=>{
+ const s=start();run(s,'wm.lunch');assert.equal(s.time,600);
+ run(s,'wm.progress');assert.equal(s.time,630);assert.equal(s.progressReported,true);
+ e.elapse(s,3000000);assert.equal(s.time,e.deadline);
+ assert.ok(s.conversation.ids.includes(scenario.events.extension));
+ finish(s);assert.equal(s.phase,'loop');
+ const next=e.start(s,true);finish(next);
+ assert.equal(next.loop,2);assert.equal(next.progressReported,false);
+ assert.equal(e.cardStatus(next,'wm.lunch'),'todo');
+ assert.equal(e.preview(next,'wm.progress').replay,false);
+});
+
+test('timer expiry without progress queues Makabe reprimand and game over, once only',()=>{
+ const s=start();s.time=e.deadline-1;
+ e.elapse(s,5000);assert.equal(s.phase,'scene');
+ assert.ok(s.conversation.ids.includes(scenario.events.gameover));
+ const count=s.history.length;e.elapse(s,300000);assert.equal(s.history.length,count);
+ finish(s);assert.equal(s.phase,'gameover');
+ e.elapse(s,300000);assert.equal(s.time,e.deadline);
+});
+
 test('report reactions depend on explanation elements, not the number of cards',()=>{
  for(const [level,cards] of [
   [0,['wm.screen','wm.architecture','wm.detail']],
@@ -44,7 +79,7 @@ test('rejected report retains the hand and resumes reporting, including after re
  assert.equal(s.conversation.after,'report');
  const restored=e.restore(JSON.stringify(s));finish(restored);
  assert.equal(restored.phase,'report');assert.deepEqual(restored.selected,cards);assert.deepEqual(restored.reportSlots,cards);
- restored.time=1010;assert.equal(e.report(restored),true);finish(restored);
+ restored.time=1070;assert.equal(e.report(restored),true);finish(restored);
  assert.equal(restored.phase,'gameover','a rejected report at the deadline still terminates');
 });
 
@@ -91,7 +126,7 @@ test('history records real gains, discoveries and final status without inventing
 });
 test('root-cause route reproduces the incident and completes on the first day',()=>{
  const s=ready();assert.ok(s.evidence.includes('wm.repro'));assert.ok(s.evidence.includes('wm.impact'));
- answers.forEach(cards=>submit(s,cards));assert.equal(s.phase,'complete');assert.equal(s.completed,true);assert.equal(s.loop,1);assert.ok(s.time<=1020);assert.equal(s.helpUsed.length,0);
+ answers.forEach(cards=>submit(s,cards));assert.equal(s.phase,'complete');assert.equal(s.completed,true);assert.equal(s.loop,1);assert.ok(s.time<=1080);assert.equal(s.helpUsed.length,0);
 });
 test('general hypotheses, duplicate clues and forged clues cannot replace evidence',()=>{
  const s=ready();run(s,'wm.ai');submit(s,['wm.case','wm.retired','wm.cache']);assert.equal(s.question,0);assert.equal(s.history.at(-1).ids[0],'01.report-1');
@@ -110,13 +145,41 @@ test('interim report earns one extra day, keeping clues, knowledge, work and acc
  e.statusReport(next,'progress');finish(next);e.timeout(next);finish(next);assert.equal(next.phase,'gameover');
 });
 test('missing clues or no time still allow a terminal report; first report at deadline cannot earn extension',()=>{
- for(const time of [540,1019,1020]){const s=start();s.phase='report';s.time=time;assert.equal(e.report(s),false);e.statusReport(s,'cannot');finish(s);assert.equal(s.phase,'gameover');assert.equal(e.restore(JSON.stringify(s)).phase,'gameover');}
- const late=start();late.time=1020;e.statusReport(late,'progress');finish(late);assert.equal(late.phase,'gameover');
- const early=start();early.time=1019;e.statusReport(early,'progress');finish(early);assert.equal(early.phase,'loop');
+ for(const time of [540,1079,1080]){const s=start();s.phase='report';s.time=time;assert.equal(e.report(s),false);e.statusReport(s,'cannot');finish(s);assert.equal(s.phase,'gameover');assert.equal(e.restore(JSON.stringify(s)).phase,'gameover');}
+ const late=start();late.time=1080;e.statusReport(late,'progress');finish(late);assert.equal(late.phase,'gameover');
+ const early=start();early.time=1079;e.statusReport(early,'progress');finish(early);assert.equal(early.phase,'loop');
 });
 test('success at exact deadline wins over timeout',()=>{
- const s=ready();submit(s,answers[0]);submit(s,answers[1]);s.time=1010;submit(s,answers[2]);assert.equal(s.phase,'complete');assert.equal(s.time,1020);
- const late=start();late.time=1019;assert.equal(e.preview(late,'wm.logs').allowed,false);
+ const s=ready();submit(s,answers[0]);submit(s,answers[1]);s.time=1070;submit(s,answers[2]);assert.equal(s.phase,'complete');assert.equal(s.time,1080);
+ const late=start();late.time=1079;assert.equal(e.preview(late,'wm.logs').allowed,true);
+});
+test('workday is nine to eighteen, with one hour of lunch and eight hours of work',()=>{
+ assert.equal(minutes(problem.clock.start),540);assert.equal(e.deadline,1080);
+ const lunch=problem.investigations.find(action=>action.id==='wm.lunch').outcomes[0].minutes;
+ assert.equal(lunch,60);assert.equal(e.deadline-minutes(problem.clock.start)-lunch,480);
+});
+test('an investigation that crosses closing time immediately times out without granting its result',()=>{
+ const s=start();s.time=e.deadline-1;
+ const before=structuredClone(s);
+ assert.equal(e.preview(s,'wm.purpose-check').allowed,true);
+ assert.equal(e.investigate(s,'wm.purpose-check'),true);
+ assert.equal(s.time,e.deadline);assert.deepEqual(s.conversation.ids,[scenario.events.timeout,scenario.events.gameover]);
+ assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);assert.deepEqual(s.done,before.done);
+ assert.equal(s.history.at(-1).changes.minutes,1);
+ finish(s);assert.equal(s.phase,'gameover');assert.equal(e.restore(JSON.stringify(s)).phase,'gameover');
+});
+test('crossing closing time honours an earlier progress report, but an unfinished progress task earns no extension',()=>{
+ const s=start();run(s,'wm.progress');s.time=e.deadline-10;
+ assert.equal(e.moveCard(s,'wm.lunch','working'),true);
+ assert.deepEqual(s.conversation.ids,[scenario.events.timeout,scenario.events.extension]);
+ assert.equal(e.cardStatus(s,'wm.lunch'),'todo');finish(s);assert.equal(s.phase,'loop');
+ const late=start();late.time=e.deadline-10;e.investigate(late,'wm.progress');
+ assert.equal(late.progressReported,false);finish(late);assert.equal(late.phase,'gameover');
+});
+test('a report crossing closing time starts timeout rather than succeeding',()=>{
+ const s=ready();s.phase='report';s.selected=answers[2];s.time=e.deadline-1;
+ assert.equal(e.report(s),true);assert.equal(s.question,0);assert.equal(s.time,e.deadline);
+ assert.deepEqual(s.conversation.ids,[scenario.events.timeout,scenario.events.gameover]);finish(s);assert.equal(s.phase,'gameover');
 });
 test('Makabe offers a grounded hint after log correlation, without exposing PDF internals',()=>{
  const s=start();run(s,'wm.ask-makabe','general');assert.equal(e.cardStatus(s,'wm.ask-makabe'),'todo');

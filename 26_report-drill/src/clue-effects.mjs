@@ -9,7 +9,7 @@ export function playClueAcquisition(cards, { renderCard, onStored = () => {}, re
   stage.className = 'clue-drawer clue-acquisition-stage';
   layer.append(stage);
   const animations = [], timers = [];
-  const duration = reduced ? 1300 : 2400;
+  const duration = reduced ? 1300 : 2800;
   const interval = duration + 100;
   const later = (fn, delay) => timers.push(setTimeout(fn, delay));
   for (const [index, card] of cards.entries()) {
@@ -19,8 +19,11 @@ export function playClueAcquisition(cards, { renderCard, onStored = () => {}, re
       const paper = template.content.firstElementChild;
       paper.classList.add('clue-acquisition-card');
       paper.classList.remove('clue-awaiting');paper.removeAttribute('aria-hidden');
-      const deckCard = document.querySelector('#shared-clue-deck .evidence-card');
+      const deckCard = [...document.querySelectorAll('#shared-clue-deck .evidence-card')].find(item=>item.dataset.clueId===card.id);
+      // Measure the pending card without leaving a gap in the live deck.
+      if(deckCard)deckCard.style.display='flex';
       const size = deckCard?.getBoundingClientRect();
+      if(deckCard)deckCard.style.removeProperty('display');
       paper.style.width = `${size?.width || 190}px`;
       paper.style.height = `${size?.height || 302}px`;
       stage.append(paper);
@@ -30,10 +33,26 @@ export function playClueAcquisition(cards, { renderCard, onStored = () => {}, re
       caption.style.top = `calc(50% + ${(size?.height || 302)/2 + 20}px)`;
       stage.append(caption);
       paper.dataset.acquisitionPhase='arrival';
+      const openSlot=()=>{
+        if(!deckCard?.isConnected)return;
+        const grid=deckCard.parentElement;
+        grid.scrollLeft=0;
+        const existing=[...grid.querySelectorAll('.evidence-card:not(.clue-awaiting)')];
+        const before=new Map(existing.map(item=>[item,item.getBoundingClientRect()]));
+        deckCard.classList.add('clue-slot-opening');
+        if(!reduced)for(const item of existing){
+          const from=before.get(item),to=item.getBoundingClientRect();
+          if(from.left===to.left&&from.top===to.top)continue;
+          animations.push(item.animate([
+            {transform:`translate(${from.left-to.left}px,${from.top-to.top}px)`},
+            {transform:'translate(0,0)'},
+          ],{duration:360,easing:'cubic-bezier(.22,1,.36,1)'}));
+        }
+      };
       const letters=Array.from('手がかりを入手');
       if(reduced){
         later(()=>{caption.textContent=letters.join('');paper.dataset.acquisitionPhase='caption';},150);
-        later(()=>{caption.textContent='';paper.dataset.acquisitionPhase='storing';},1050);
+        later(()=>{caption.textContent='';openSlot();paper.dataset.acquisitionPhase='storing';},1050);
       }else{
         later(()=>{paper.dataset.acquisitionPhase='caption';},450);
         letters.forEach((_,i)=>later(()=>{caption.textContent=letters.slice(0,i+1).join('');},450+i*70));
@@ -41,30 +60,38 @@ export function playClueAcquisition(cards, { renderCard, onStored = () => {}, re
           paper.dataset.acquisitionPhase='erase';
           animations.push(caption.animate([{opacity:1},{opacity:0}],{duration:320,easing:'ease-out',fill:'forwards'}));
         },1600);
-        later(()=>{caption.textContent='';},1920);
-        later(()=>{paper.dataset.acquisitionPhase='storing';},2100);
+        later(()=>{caption.textContent='';paper.dataset.acquisitionPhase='spacing';openSlot();},1920);
       }
       const target = document.querySelector('.deck-handle');
-      const bounds = target?.getBoundingClientRect();
-      const y = bounds && bounds.height && bounds.top < innerHeight ? bounds.top + bounds.height / 2 : innerHeight - 32;
-      const slide = Math.max(160, y - innerHeight / 2);
       const animation = paper.animate(reduced ? [
         { opacity: 0 }, { offset: .15, opacity: 1 }, { offset: .8, opacity: 1 }, { opacity: 0 },
       ] : [
         { opacity: 0, filter: 'blur(18px)', transform: 'translate(-50%,-50%) scale(1.6)', easing: 'cubic-bezier(.16,1,.3,1)' },
-        { offset: 400/2400, opacity: 1, filter: 'blur(0px)', transform: 'translate(-50%,-50%) scale(1)' },
-        { offset: 2100/2400, opacity: 1, filter: 'blur(0px)', transform: 'translate(-50%,-50%) scale(1)', easing: 'cubic-bezier(.55,0,1,.45)' },
-        { opacity: 0, filter: 'blur(0px)', transform: `translate(-50%,calc(-50% + ${slide}px)) scale(1)` },
-      ], { duration, easing: 'linear', fill: 'forwards' });
+        { offset: 400/2280, opacity: 1, filter: 'blur(0px)', transform: 'translate(-50%,-50%) scale(1)' },
+        { opacity: 1, filter: 'blur(0px)', transform: 'translate(-50%,-50%) scale(1)' },
+      ], { duration:reduced?duration:2280, easing: 'linear', fill: 'forwards' });
       animations.push(animation);
-      animation.finished.then(() => {
+      const stored=()=>{
         paper.remove();
         caption.remove();
         onStored(card.id);
         if (target?.isConnected) animations.push(target.animate([
           { filter: 'brightness(1)' }, { filter: 'brightness(1.8)' }, { filter: 'brightness(1)' },
         ], { duration: 550 }));
-      }).catch(() => {});
+      };
+      if(reduced)animation.finished.then(stored).catch(()=>{});
+      else later(()=>{
+        paper.dataset.acquisitionPhase='storing';
+        const bounds=deckCard?.getBoundingClientRect();
+        const x=bounds?bounds.left+bounds.width/2-innerWidth/2:0;
+        const y=bounds?bounds.top+bounds.height/2-innerHeight/2:innerHeight/2;
+        const slide=paper.animate([
+          {opacity:1,transform:'translate(-50%,-50%) scale(1)'},
+          {opacity:1,transform:`translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(1)`},
+        ],{duration:520,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+        animations.push(slide);
+        slide.finished.then(stored).catch(()=>{});
+      },2280);
     }, index * interval);
   }
   const cleanup = () => { timers.forEach(clearTimeout);animations.forEach(animation => animation.cancel());layer.remove();cards.forEach(card=>onStored(card.id)); };
