@@ -1,6 +1,8 @@
 # 第2面：承認画面へのボタン追加（問題）
 
-編集の正本。仕様は [第2面仕様](../chapter2/10_第2面仕様.md) を参照。
+編集の正本。仕様は [第2面仕様 v2](../chapter2-v2/10_第2面仕様.md) を参照。
+
+導入に合わせ、今回は修正候補の列挙で終了せず、三田と対象を確認してから見積もりの根拠を報告する。業務・再申請・状態を調べ、権限または通知を確認すると「三田と今回の修正範囲を確認する」が開く。確認後の手がかりは、今回含める改修と含めない対応を示す。金額・納期の数値は正解条件にしない。
 
 ## schemaVersion
 
@@ -35,7 +37,19 @@
 ## requestMemo
 
 ```json
-"経理から「承認画面に差戻しボタンを追加したい」と依頼された。何に困っているか、差し戻した後に誰が何をするか、ボタン以外に直すところがないかを調べ、18:00までに佐伯へ報告する。実装完了や工数の断定は今回の範囲外。"
+"経理から、承認画面に差戻しボタンを追加してほしいとの依頼。\n\n「ボタン一個だから簡単」と思われているが、本当にそうなのかは分からない。"
+```
+
+## requestMemoTitle
+
+```json
+"承認画面への差戻しボタン追加"
+```
+
+## requestPurpose
+
+```json
+"実現したいことと必要な修正範囲を調査し、適正な見積もりの根拠を佐伯さんに説明する。"
 ```
 
 ## clock
@@ -105,21 +119,21 @@
   {
     "id": "ab.source",
     "title": "承認処理の経路",
-    "text": "画面からAPIへ渡し、サーバー側で状態を更新する。",
+    "text": "受付と状態更新の処理を確認。差戻しは画面以外も改修が必要。",
     "kind": "confirmed",
     "source": "承認処理の経路"
   },
   {
     "id": "ab.ui",
     "title": "ボタンは配置できる",
-    "text": "却下と区別する配置案。業務ルールの確定はこれから。",
+    "text": "配置と理由入力の案。押した後の処理は別に確認が必要。",
     "kind": "proposal",
     "source": "ボタンは配置できる"
   },
   {
     "id": "ab.api",
     "title": "APIの変更候補",
-    "text": "受付と状態更新の追加案。遷移条件・権限は未確定。",
+    "text": "操作受付と状態更新も改修候補。業務ルールを確認して見積もる。",
     "kind": "proposal",
     "source": "APIの変更候補"
   },
@@ -133,14 +147,14 @@
   {
     "id": "ab.access",
     "title": "編集できる人の確認",
-    "text": "差戻しの状態・編集権限を変更。修正できる項目は要確認。",
+    "text": "差戻し状態と編集権限も改修。直せる項目を確認して見積もる。",
     "kind": "confirmed",
     "source": "編集できる人の確認"
   },
   {
     "id": "ab.notice",
     "title": "通知と履歴も関係する",
-    "text": "差戻しの状態・理由・通知・履歴が対象。通知先は要確認。",
+    "text": "状態・通知・履歴も改修。通知先を確認して見積もる。",
     "kind": "confirmed",
     "source": "通知と履歴も関係する"
   },
@@ -181,10 +195,17 @@
   },
   {
     "id": "ab.impact-summary",
-    "title": "ボタンだけでは済まない",
-    "text": "申請の状態・編集できる人・通知・履歴も見直す。詳細は要確認。",
+    "title": "見積もりに含める修正",
+    "text": "修正・再承認・通知・履歴が対象。承認済み申請の変更は含めない。",
     "kind": "confirmed",
     "source": "ボタン以外にも変更が及ぶ"
+  },
+  {
+    "id": "ab.agreed-scope",
+    "title": "三田と確認した今回の対象",
+    "text": "差戻し中だけ編集可。元の経路で再承認し、本人と承認者へ通知。",
+    "kind": "confirmed",
+    "source": "三田への修正範囲の確認"
   }
 ]
 ```
@@ -223,6 +244,17 @@
     "unlock": {},
     "outcomes": [
       {
+        "id": "recheck",
+        "when": {
+          "flagsAll": [
+            "ab.screen"
+          ]
+        },
+        "minutes": 20,
+        "scene": "02.screen-recheck",
+        "complete": false
+      },
+      {
         "id": "default",
         "when": {},
         "minutes": 20,
@@ -237,7 +269,9 @@
           "system": 1
         }
       }
-    ]
+    ],
+    "repeatable": true,
+    "repeatHint": "追加で調べ直す"
   },
   {
     "id": "ab.business",
@@ -292,6 +326,17 @@
     "unlock": {},
     "outcomes": [
       {
+        "id": "recheck",
+        "when": {
+          "flagsAll": [
+            "ab.source"
+          ]
+        },
+        "minutes": 60,
+        "scene": "02.source-recheck",
+        "complete": false
+      },
+      {
         "id": "default",
         "when": {},
         "minutes": 60,
@@ -306,7 +351,9 @@
           "system": 2
         }
       }
-    ]
+    ],
+    "repeatable": true,
+    "repeatHint": "追加で調べ直す"
   },
   {
     "id": "ab.ui",
@@ -685,6 +732,53 @@
         "progressReported": true
       }
     ]
+  },
+  {
+    "id": "ab.confirm-scope",
+    "title": "三田と今回の修正範囲を確認する",
+    "description": "調べた改修点をもとに、今回どこまで対応するかを確認する。",
+    "unlock": {
+      "all": [
+        {
+          "flagsAll": [
+            "ab.business",
+            "ab.reapply",
+            "ab.state"
+          ]
+        },
+        {
+          "any": [
+            {
+              "flagsAll": [
+                "ab.permission"
+              ]
+            },
+            {
+              "flagsAll": [
+                "ab.notification"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "outcomes": [
+      {
+        "id": "default",
+        "when": {},
+        "minutes": 30,
+        "scene": "02.confirm-scope",
+        "flags": [
+          "ab.scope-agreed"
+        ],
+        "evidence": [
+          "ab.agreed-scope"
+        ],
+        "gain": {
+          "business": 1
+        }
+      }
+    ]
   }
 ]
 ```
@@ -705,26 +799,8 @@
   {
     "id": "ab.impact-summary",
     "when": {
-      "all": [
-        {
-          "flagsAll": [
-            "ab.state"
-          ]
-        },
-        {
-          "any": [
-            {
-              "flagsAll": [
-                "ab.permission"
-              ]
-            },
-            {
-              "flagsAll": [
-                "ab.notification"
-              ]
-            }
-          ]
-        }
+      "flagsAll": [
+        "ab.scope-agreed"
       ]
     }
   }
@@ -791,7 +867,7 @@
 [
   {
     "id": "ab.report",
-    "prompt": "差戻しボタンの件、経理は何に困っているんでしょう？\n差し戻した後の使い方と、ボタンを足すだけで済むのかを教えてください。",
+    "prompt": "差戻しボタンの見積もり、お願いします。\n経理が実現したいことと、今回どこまで直す見積もりなのか、説明していただけますか？",
     "slots": 3,
     "minutes": 10,
     "elements": [
@@ -816,10 +892,18 @@
       {
         "id": "scope",
         "when": {
-          "selectedAny": [
-            "ab.impact-summary",
-            "ab.access",
-            "ab.notice"
+          "all": [
+            {
+              "flagsAll": [
+                "ab.scope-agreed"
+              ]
+            },
+            {
+              "selectedAny": [
+                "ab.impact-summary",
+                "ab.agreed-scope"
+              ]
+            }
           ]
         }
       }
@@ -854,7 +938,8 @@
         "ab.flow",
         "ab.return-flow",
         "ab.purpose-summary",
-        "ab.impact-summary"
+        "ab.impact-summary",
+        "ab.agreed-scope"
       ]
     },
     "reactions": [

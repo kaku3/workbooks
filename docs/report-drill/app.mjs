@@ -11,6 +11,7 @@ import { findTimeSavings, playTimeSavings } from './cost-effects.mjs';
 import { buildChatFeed } from './chat-feed.mjs';
 import { playClueAcquisition } from './clue-effects.mjs';
 import { captureMeetingWindows, animateMeetingWindows } from './meeting-layout.mjs';
+import { preloadImages } from './image-preload.mjs';
 
 const engine = createEngine(problem, scenario);
 const app = document.querySelector('#app');
@@ -19,6 +20,10 @@ const storageKey = caseId==='watermark'?'report-drill.pdf-incident.v1':`report-d
 const names = Object.fromEntries(scenario.characters.map(item => [item.id, item.name]));
 const initials = { player: '私', sales: '佐', lead: '真', client: '客', accountant:'三', ai: 'AI' };
 const portraitFiles = { 主人公: '01_player', あなた: '01_player', 折原: '02_orihara', 真壁: '03_makabe', 佐伯: '04_saeki', 三田: '05_mita' };
+const openingImages=['./assets/04_saeki-transparent.png','./assets/01_player-transparent.png'];
+preloadImages(openingImages,'high');
+preloadImages([...new Set(Object.values(portraitFiles))].flatMap(file=>[`./assets/${file}-transparent.png`,`./assets/${file.slice(0,2)}_room.png`]));
+let starting=false;
 const roomStyle = speaker => {
   const portrait=portraitFiles[names[speaker]];
   return portrait?`style="--meeting-room:url('./assets/${portrait.slice(0,2)}_room.png')"`:'';
@@ -188,7 +193,13 @@ function showMobilePanel(panel) {
   }
   if(panel==='chat'){const chat=document.querySelector('.chat-scroll');if(chat)chat.scrollTop=chatBottom?chat.scrollHeight:chatScroll;}
 }
-function start(nextLoop = false) {
+async function start(nextLoop = false) {
+  if(starting)return;
+  starting=true;app.setAttribute('aria-busy','true');
+  const startButton=app.querySelector('[data-action=start],[data-action=next-loop],[data-action=retry-case]');
+  if(startButton){startButton.disabled=true;startButton.textContent='準備中…';}
+  try { await preloadImages(openingImages,'high'); }
+  finally {starting=false;app.removeAttribute('aria-busy');}
   deckSize='small';
   visualState=null;pendingEffects=[];
   pendingSavings.clear();deferredSavings.clear();
@@ -202,7 +213,8 @@ function titlePage() {
   return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a href="?case=${p.caseId}" ${p.caseId===caseId?'aria-current="page"':''}>第${i+1}面：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${button('start', `はじめる ${icon('arrow')}`, 'primary')}${button('continue', 'つづきから', 'secondary', !saved ? 'disabled' : '')}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」'}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / 02 CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
 }
 function stats() {
-  return `<section class="panel memo"><p class="eyebrow">DESCRIPTION</p><p>${esc(problem.requestMemo)}</p></section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識'],['intuition','直感']].map(([key,label])=>{ const value = key === 'intuition' ? state.intuition : state.knowledge[key]; const max = key === 'intuition' ? problem.intuition.max : problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
+  const memo=(problem.requestMemoTitle?`<h3>${esc(problem.requestMemoTitle)}</h3>`:'')+problem.requestMemo.split('\n\n').map(text=>`<p>${esc(text)}</p>`).join('')+(problem.requestPurpose?`<p><strong>今回の目的</strong></p><p>${esc(problem.requestPurpose)}</p>`:'');
+  return `<section class="panel memo"><p class="eyebrow">DESCRIPTION</p>${memo}</section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識'],['intuition','直感']].map(([key,label])=>{ const value = key === 'intuition' ? state.intuition : state.knowledge[key]; const max = key === 'intuition' ? problem.intuition.max : problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
 }
 function actionPlan(action) {
   const question = action.questionOptions?.filter(item=>engine.matches(item.unlock,state)).at(-1)?.id;
@@ -579,14 +591,22 @@ app.addEventListener('dragend',()=>{
   draggedCard=null;
   app.querySelectorAll('.dragging,.drop-target').forEach(item=>item.classList.remove('dragging','drop-target'));
 });
-app.addEventListener('click',event=>{
+app.addEventListener('click',async event=>{
   const target=event.target.closest('[data-action]'); if(!target)return;
   const action=target.dataset.action;
   if(action==='next-case'){location.search='?case=approval-button';return;}
   if(action==='settings'){settings();return;}
   if(action==='title'){page='title';render();return;}
   if(action==='start') {if(saved||saveError)confirmAction('はじめから進めますか？','今回の進行をやり直します。記憶・直感・完了記録は保持します。',()=>start(),'はじめから');else start();return;}
-  if(action==='continue'&&saved){state=structuredClone(saved);page='game';resetChat();render();return;}
+  if(action==='continue'&&saved){
+    if(starting)return;
+    starting=true;app.setAttribute('aria-busy','true');target.disabled=true;
+    const actors=saved.conversation?.ids.flatMap(id=>scenario.scenes[id]?.lines.map(line=>portraitFiles[names[line.speaker]]).filter(Boolean)||[])||[];
+    const rooms=saved.phase==='report'?['01_room','03_room','04_room']:[];
+    try{await preloadImages([...openingImages,...new Set(actors.map(file=>`./assets/${file}-transparent.png`)),...rooms.map(file=>`./assets/${file}.png`)],'high');}
+    finally{starting=false;app.removeAttribute('aria-busy');}
+    state=structuredClone(saved);page='game';resetChat();render();return;
+  }
   if(!state)return;
   if(action==='next-loop'){start(true);return;}
   if(action==='retry-case'){start();return;}

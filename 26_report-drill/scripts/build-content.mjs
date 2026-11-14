@@ -16,7 +16,7 @@ function parseMarkdown(text, name) {
         for (const line of lines.split(/\r?\n/).filter(line => line.trim())) {
           const match = line.match(/^- (\w+)( \[thought\])?: (.+)$/);
           if (!match) throw new Error(`${name}: invalid dialogue: ${line}`);
-          dialogue.push({ speaker: match[1], ...(match[2] ? { kind: 'thought' } : {}), text: match[3] });
+          dialogue.push({ speaker: match[1], ...(match[2] ? { kind: 'thought' } : {}), text: match[3].replace(/\\n/g, '\n') });
         }
         if (!dialogue.length) throw new Error(`${name}: empty scene ${id}`);
         data.scenes[id] = { version: Number(version), lines: dialogue };

@@ -1754,15 +1754,33 @@ export const cases = {
       ],
       "scenes": {
         "02.intro": {
-          "version": 1,
+          "version": 2,
           "lines": [
             {
               "speaker": "sales",
-              "text": "経理から、承認画面に差戻しボタンを一つ追加してほしいと言われてまして。ボタン一個なら、すぐできますよね？"
+              "text": "経理から、承認画面にボタンを一個追加してほしいって言われてまして。見積もりを頂けますか？"
+            },
+            {
+              "speaker": "player",
+              "text": "何をするボタンですか？"
+            },
+            {
+              "speaker": "sales",
+              "text": "差戻しです。ボタン一個なので、そんなにかからないですよね？"
             },
             {
               "speaker": "player",
               "text": "……確認して、回答します。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "差戻しボタンって、だいぶ面倒なんだけど……。\nワークフローや通知があったり、戻した後は誰が編集できるかとか、影響範囲が大きいけど見えにくいんだよなぁ……。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "ご想像より高い見積もりになるのは間違いないとして…\nまずは、経理に何をしたいのか確認して…修正範囲を確定して見積もり根拠を準備して回答しないとだな。"
             }
           ]
         },
@@ -1771,7 +1789,7 @@ export const cases = {
           "lines": [
             {
               "speaker": "sales",
-              "text": "承認画面に「差戻し」を追加したいそうです。今は承認と却下しかありません。"
+              "text": "今は承認と却下しかないので、差戻しを追加したいそうです。ボタン一個分の見積もりでお願いできれば、と。"
             }
           ]
         },
@@ -1780,7 +1798,7 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "承認と却下の横に配置できそうだ。ただ、押した後の仕事までは書かれていない。"
+              "text": "承認と却下の横に配置できそうだ。ただ、押した後の仕様までは書かれていない。"
             }
           ]
         },
@@ -1833,7 +1851,7 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "操作の受付と状態更新を追加する案がある。権限や遷移条件が決まるまでは実装を確定できない。"
+              "text": "ボタンの受付だけではなく、申請の状態を変える処理も必要だ。権限や承認の戻り先が決まれば、その作業を見積もれる。"
             }
           ]
         },
@@ -1976,11 +1994,11 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "画面や処理は調べましたが、何を解決したいかまで説明しきれていません。"
+              "text": "画面にボタンを追加して、APIを呼ぶ方法は確認しました。"
             },
             {
               "speaker": "sales",
-              "text": "調査いただいたのは分かったのですが、担当者にはどのように説明すればいいでしょうか？"
+              "text": "追加できるのは分かりました。では、ボタン一個分の見積もりでお願いできますか？"
             }
           ]
         },
@@ -1993,28 +2011,28 @@ export const cases = {
             },
             {
               "speaker": "sales",
-              "text": "やりたいことは分かったのですが、ボタン一つで済むんでしょうか？"
+              "text": "やりたいことは分かりました。でも、それでどうして工数がかかるんでしょう？"
             }
           ]
         },
         "02.report-3": {
-          "version": 1,
+          "version": 2,
           "lines": [
             {
               "speaker": "player",
-              "text": "目的は、軽い不備での再入力と別メールの手間を減らすことです。"
+              "text": "やりたいことは、不備の修正と再申請を楽にすることです。今の却下では、最初から入力し直しになります。"
             },
             {
               "speaker": "player",
-              "text": "却下とは別に、差戻し後に申請者が修正して再申請し、改めて承認する流れを作ります。"
+              "text": "三田さんと確認し、差戻し中の編集、元の経路での再承認、通知と履歴までを今回の対象にしました。承認済み申請の変更や承認経路の組み替えは含めません。"
             },
             {
               "speaker": "player",
-              "text": "画面だけでなく状態・権限・通知・履歴も対象です。修正できる項目や承認の再開条件を確認し、範囲と見積もりをご相談します。"
+              "text": "ボタンだけでなく、この処理の改修と試験にも作業がかかります。確認した範囲を根拠に見積もりをお出しします。対象が増える場合は、別途ご相談させてください。"
             },
             {
               "speaker": "sales",
-              "text": "ありがとうございます。これなら説明できます！ ……ボタン一個の話じゃなかったんですね。"
+              "text": "なるほど、ボタンだけじゃなくて、その後の処理も必要なんですね。それなら経理にも説明できます！"
             },
             {
               "speaker": "player",
@@ -2028,7 +2046,7 @@ export const cases = {
           "lines": [
             {
               "speaker": "lead",
-              "text": "お疲れ。日程の話は、要件がまとまってからだな。"
+              "text": "お疲れ。その範囲なら作業を洗い出せるな。見積もり、まとめよう。"
             },
             {
               "speaker": "player",
@@ -2158,48 +2176,58 @@ export const cases = {
           ]
         },
         "02.api-recheck": {
-          "version": 1,
+          "version": 2,
           "lines": [
             {
               "speaker": "player",
-              "text": "APIの呼び出しと状態更新をもう一度追った。同じ処理で、新しい条件は見つからなかった。"
+              "text": "APIの受付と状態更新を追い直したが、新しい条件は見つからなかった。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "実装を追うだけでは、どんな運用にしたいかまでは決まらないな。"
+              "text": "これ以上は調べても何も分からなそうだ。"
             }
           ]
         },
         "02.ui-recheck": {
-          "version": 1,
+          "version": 2,
           "lines": [
             {
               "speaker": "player",
-              "text": "配置と確認画面を見直した。別の案は描けるけれど、業務の疑問が減ったわけではない。"
-            }
-          ]
-        },
-        "02.design-recheck": {
-          "version": 1,
-          "lines": [
-            {
-              "speaker": "player",
-              "text": "方式をもう一度比較した。新しい根拠は増えなかった。先に決めるべき条件が残っている。"
-            }
-          ]
-        },
-        "02.ai-recheck": {
-          "version": 1,
-          "lines": [
-            {
-              "speaker": "ai",
-              "text": "一般的にはボタン、API、状態、通知などを検討します。今回の業務ルールは利用者に確認してください。"
+              "text": "配置と確認画面を見直したが、押した後の仕事について新しく分かったことはない。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "聞き直したけど、さっきの案と同じだった。"
+              "text": "これ以上は調べても何も分からなそうだ。"
+            }
+          ]
+        },
+        "02.design-recheck": {
+          "version": 2,
+          "lines": [
+            {
+              "speaker": "player",
+              "text": "方式を比べ直したが、新しい根拠は増えなかった。業務側に確認する条件が残っている。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "これ以上は調べても何も分からなそうだ。"
+            }
+          ]
+        },
+        "02.ai-recheck": {
+          "version": 2,
+          "lines": [
+            {
+              "speaker": "player",
+              "text": "聞き直したけど、さっきと同じ一般的な案だった。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "これ以上は調べても何も分からなそうだ。"
             }
           ]
         },
@@ -2208,12 +2236,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "sales",
-              "text": "ボタンが作れるのは分かりました。経理の何の手間が減るのか、そこを説明してもらえますか？"
+              "text": "追加できるのは分かりました。では、ボタン一個分の見積もりでお願いできますか？"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "作り方ではなく、何を楽にしたいかから話そう。"
+              "text": "作り方だけでは、なぜそれだけで済まないのか伝わらない。経理が何を楽にしたいかから話そう。"
             }
           ]
         },
@@ -2222,7 +2250,7 @@ export const cases = {
           "lines": [
             {
               "speaker": "sales",
-              "text": "不便なのは分かりました。差し戻した後、誰が直して、どう承認に戻るんでしょう？"
+              "text": "不便なのは分かりました。差し戻した後は、誰が直して、どう承認に戻るんでしょう？ その処理も見積もりに入るんですか？"
             },
             {
               "speaker": "player",
@@ -2236,12 +2264,66 @@ export const cases = {
           "lines": [
             {
               "speaker": "sales",
-              "text": "修正して出し直す流れですね。画面以外に、権限や通知も変わるんでしょうか。まだ決まっていない点も教えてください。"
+              "text": "直すところが色々あるのは分かりました。今回はどこまで含める見積もりですか？ 経理とは確認できていますか？"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "ボタン以外に直すところと、まだ決まっていないところを分けて話そう。"
+              "text": "改修の候補だけでは見積もりの前提が決まらない。今回やることと、含めないことを確認しよう。"
+            }
+          ]
+        },
+        "02.screen-recheck": {
+          "version": 2,
+          "lines": [
+            {
+              "speaker": "player",
+              "text": "仕様書を読み直したが、差戻し後に誰が何をするかの記載はなかった。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "これ以上は調べても何も分からなそうだ。"
+            }
+          ]
+        },
+        "02.source-recheck": {
+          "version": 2,
+          "lines": [
+            {
+              "speaker": "player",
+              "text": "処理の経路をたどり直した。差戻し後の新しい運用を決める情報は、ここにはない。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "これ以上は調べても何も分からなそうだ。"
+            }
+          ]
+        },
+        "02.confirm-scope": {
+          "version": 1,
+          "lines": [
+            {
+              "speaker": "player",
+              "text": "今回は差戻し中の申請だけ直せるようにして、元の承認経路へ戻す形でよいですか？"
+            },
+            {
+              "speaker": "accountant",
+              "text": "はい。入力内容と添付を直して出し直せれば十分です。承認済みの申請は変えないでください。"
+            },
+            {
+              "speaker": "player",
+              "text": "差戻し理由を残し、申請者に修正を知らせ、再申請したら承認者へ通知するところまで含めます。"
+            },
+            {
+              "speaker": "accountant",
+              "text": "それでお願いします。承認の順番を変えたり、過去の申請まで直したりする話は今回なしで。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "今回直すところと、含めないところが決まった。この範囲の改修と試験を見積もればいい。"
             }
           ]
         }
@@ -2366,7 +2448,9 @@ export const cases = {
       "version": 1,
       "status": "prototype",
       "title": "承認画面へのボタン追加",
-      "requestMemo": "経理から「承認画面に差戻しボタンを追加したい」と依頼された。何に困っているか、差し戻した後に誰が何をするか、ボタン以外に直すところがないかを調べ、18:00までに佐伯へ報告する。実装完了や工数の断定は今回の範囲外。",
+      "requestMemo": "経理から、承認画面に差戻しボタンを追加してほしいとの依頼。\n\n「ボタン一個だから簡単」と思われているが、本当にそうなのかは分からない。",
+      "requestMemoTitle": "承認画面への差戻しボタン追加",
+      "requestPurpose": "実現したいことと必要な修正範囲を調査し、適正な見積もりの根拠を佐伯さんに説明する。",
       "clock": {
         "start": "09:00",
         "deadline": "18:00"
@@ -2416,21 +2500,21 @@ export const cases = {
         {
           "id": "ab.source",
           "title": "承認処理の経路",
-          "text": "画面からAPIへ渡し、サーバー側で状態を更新する。",
+          "text": "受付と状態更新の処理を確認。差戻しは画面以外も改修が必要。",
           "kind": "confirmed",
           "source": "承認処理の経路"
         },
         {
           "id": "ab.ui",
           "title": "ボタンは配置できる",
-          "text": "却下と区別する配置案。業務ルールの確定はこれから。",
+          "text": "配置と理由入力の案。押した後の処理は別に確認が必要。",
           "kind": "proposal",
           "source": "ボタンは配置できる"
         },
         {
           "id": "ab.api",
           "title": "APIの変更候補",
-          "text": "受付と状態更新の追加案。遷移条件・権限は未確定。",
+          "text": "操作受付と状態更新も改修候補。業務ルールを確認して見積もる。",
           "kind": "proposal",
           "source": "APIの変更候補"
         },
@@ -2444,14 +2528,14 @@ export const cases = {
         {
           "id": "ab.access",
           "title": "編集できる人の確認",
-          "text": "差戻しの状態・編集権限を変更。修正できる項目は要確認。",
+          "text": "差戻し状態と編集権限も改修。直せる項目を確認して見積もる。",
           "kind": "confirmed",
           "source": "編集できる人の確認"
         },
         {
           "id": "ab.notice",
           "title": "通知と履歴も関係する",
-          "text": "差戻しの状態・理由・通知・履歴が対象。通知先は要確認。",
+          "text": "状態・通知・履歴も改修。通知先を確認して見積もる。",
           "kind": "confirmed",
           "source": "通知と履歴も関係する"
         },
@@ -2492,10 +2576,17 @@ export const cases = {
         },
         {
           "id": "ab.impact-summary",
-          "title": "ボタンだけでは済まない",
-          "text": "申請の状態・編集できる人・通知・履歴も見直す。詳細は要確認。",
+          "title": "見積もりに含める修正",
+          "text": "修正・再承認・通知・履歴が対象。承認済み申請の変更は含めない。",
           "kind": "confirmed",
           "source": "ボタン以外にも変更が及ぶ"
+        },
+        {
+          "id": "ab.agreed-scope",
+          "title": "三田と確認した今回の対象",
+          "text": "差戻し中だけ編集可。元の経路で再承認し、本人と承認者へ通知。",
+          "kind": "confirmed",
+          "source": "三田への修正範囲の確認"
         }
       ],
       "investigations": [
@@ -2529,6 +2620,17 @@ export const cases = {
           "unlock": {},
           "outcomes": [
             {
+              "id": "recheck",
+              "when": {
+                "flagsAll": [
+                  "ab.screen"
+                ]
+              },
+              "minutes": 20,
+              "scene": "02.screen-recheck",
+              "complete": false
+            },
+            {
               "id": "default",
               "when": {},
               "minutes": 20,
@@ -2543,7 +2645,9 @@ export const cases = {
                 "system": 1
               }
             }
-          ]
+          ],
+          "repeatable": true,
+          "repeatHint": "追加で調べ直す"
         },
         {
           "id": "ab.business",
@@ -2598,6 +2702,17 @@ export const cases = {
           "unlock": {},
           "outcomes": [
             {
+              "id": "recheck",
+              "when": {
+                "flagsAll": [
+                  "ab.source"
+                ]
+              },
+              "minutes": 60,
+              "scene": "02.source-recheck",
+              "complete": false
+            },
+            {
               "id": "default",
               "when": {},
               "minutes": 60,
@@ -2612,7 +2727,9 @@ export const cases = {
                 "system": 2
               }
             }
-          ]
+          ],
+          "repeatable": true,
+          "repeatHint": "追加で調べ直す"
         },
         {
           "id": "ab.ui",
@@ -2991,24 +3108,17 @@ export const cases = {
               "progressReported": true
             }
           ]
-        }
-      ],
-      "derivedEvidence": [
-        {
-          "id": "ab.purpose-summary",
-          "when": {
-            "flagsAll": [
-              "ab.business",
-              "ab.workflow"
-            ]
-          }
         },
         {
-          "id": "ab.impact-summary",
-          "when": {
+          "id": "ab.confirm-scope",
+          "title": "三田と今回の修正範囲を確認する",
+          "description": "調べた改修点をもとに、今回どこまで対応するかを確認する。",
+          "unlock": {
             "all": [
               {
                 "flagsAll": [
+                  "ab.business",
+                  "ab.reapply",
                   "ab.state"
                 ]
               },
@@ -3026,6 +3136,42 @@ export const cases = {
                   }
                 ]
               }
+            ]
+          },
+          "outcomes": [
+            {
+              "id": "default",
+              "when": {},
+              "minutes": 30,
+              "scene": "02.confirm-scope",
+              "flags": [
+                "ab.scope-agreed"
+              ],
+              "evidence": [
+                "ab.agreed-scope"
+              ],
+              "gain": {
+                "business": 1
+              }
+            }
+          ]
+        }
+      ],
+      "derivedEvidence": [
+        {
+          "id": "ab.purpose-summary",
+          "when": {
+            "flagsAll": [
+              "ab.business",
+              "ab.workflow"
+            ]
+          }
+        },
+        {
+          "id": "ab.impact-summary",
+          "when": {
+            "flagsAll": [
+              "ab.scope-agreed"
             ]
           }
         }
@@ -3062,7 +3208,7 @@ export const cases = {
       "questions": [
         {
           "id": "ab.report",
-          "prompt": "差戻しボタンの件、経理は何に困っているんでしょう？\n差し戻した後の使い方と、ボタンを足すだけで済むのかを教えてください。",
+          "prompt": "差戻しボタンの見積もり、お願いします。\n経理が実現したいことと、今回どこまで直す見積もりなのか、説明していただけますか？",
           "slots": 3,
           "minutes": 10,
           "elements": [
@@ -3087,10 +3233,18 @@ export const cases = {
             {
               "id": "scope",
               "when": {
-                "selectedAny": [
-                  "ab.impact-summary",
-                  "ab.access",
-                  "ab.notice"
+                "all": [
+                  {
+                    "flagsAll": [
+                      "ab.scope-agreed"
+                    ]
+                  },
+                  {
+                    "selectedAny": [
+                      "ab.impact-summary",
+                      "ab.agreed-scope"
+                    ]
+                  }
                 ]
               }
             }
@@ -3125,7 +3279,8 @@ export const cases = {
               "ab.flow",
               "ab.return-flow",
               "ab.purpose-summary",
-              "ab.impact-summary"
+              "ab.impact-summary",
+              "ab.agreed-scope"
             ]
           },
           "reactions": [

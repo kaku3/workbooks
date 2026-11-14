@@ -39,6 +39,7 @@ try {
   const evaluate=async expression=>{const result=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw new Error(JSON.stringify(result.exceptionDetails));return result.result.value;};
   const click=async selector=>{
     await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(selector)});if(!el)throw new Error('Missing element: '+${JSON.stringify(selector)});if(el.disabled)throw new Error('Disabled element');el.click();return true;})()`);
+    if(await evaluate("document.querySelector('#app').getAttribute('aria-busy')==='true'"))await waitFor("document.querySelector('#app').getAttribute('aria-busy')!=='true'");
     if(['[data-action=report]','[data-action=continue]'].includes(selector)&&await evaluate("Boolean(document.querySelector('.reporting'))")){if(await evaluate("Boolean(document.querySelector('[data-action=join-meeting]'))"))await click('[data-action=join-meeting]');await waitFor("document.querySelector('.reporting')?.dataset.meetingPhase==='shared'");}
   };
   const expire=async()=>{
@@ -387,7 +388,7 @@ try {
   const chapter2State=()=>evaluate("JSON.parse(localStorage.getItem('report-drill.approval-button.v1'))");
   assert.equal((await chapter2State()).caseId,'approval-button');
   await click('[data-action=settings]');await click('#instant');await click('[data-action=settings-save]');
-  for(const id of ['business','workflow','reapply','state','permission'])await investigate('ab.'+id);
+  for(const id of ['business','workflow','reapply','state','permission','confirm-scope'])await investigate('ab.'+id);
   assert.ok((await chapter2State()).evidence.includes('ab.impact-summary'));
   await screenshot('chapter2-desk');await click('[data-action=report]');
   for(const id of ['ab.purpose-summary','ab.return-flow','ab.impact-summary'])await click(`[data-action="select:${id}"]`);

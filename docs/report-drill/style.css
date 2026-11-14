@@ -657,7 +657,7 @@
 .workspace-mode .time-status>strong{font-size:30px}
 .workspace-mode .desktop{height:auto;min-height:0;flex:1;width:100%;margin:0 auto}
 /* Keep the message frame steady while text types, wraps, or changes speaker. */
-.conversation>.conversation-window{height:clamp(260px,36svh,340px);display:flex;flex-direction:column}
+.conversation>.conversation-window{width:100%;max-width:1280px;height:clamp(260px,36svh,340px);display:flex;flex-direction:column}
 .conversation>.conversation-window>.dialogue-text{flex:1;min-height:0;max-height:none;overflow-y:auto}
 .conversation>.conversation-window>:not(.dialogue-text){flex-shrink:0}
 .reporting .meeting-bottom>.report-conversation{height:180px}
@@ -725,6 +725,8 @@
 .chapter-picker{display:flex;flex-direction:column;gap:6px;margin:0 0 20px}
 .chapter-picker a{padding:7px 12px;border:1px solid #42565e;border-radius:5px;color:#b8ccd0;text-decoration:none;font-size:12px}
 .chapter-picker a[aria-current=page]{border-color:#a8ccbd;background:#254039;color:#e4f6ec}
+.memo>h3{font-size:13px;line-height:1.7;margin-bottom:12px}
+.memo>p:not(.eyebrow)+p{margin-top:12px}
 .reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}
 .reporting.meeting-unshared .meeting-bottom .conversation-window{height:auto;padding-bottom:46px}
 .reporting.meeting-unshared .meeting-bottom .report-request,.reporting.meeting-unshared .meeting-bottom .meeting-dialogue{flex:none;box-sizing:content-box;height:2lh;min-height:2lh;max-height:2lh;padding-top:7px;padding-bottom:7px}
