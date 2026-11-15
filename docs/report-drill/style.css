@@ -790,9 +790,10 @@
 .title-page:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(#b8edda66 1px,transparent 1px),linear-gradient(90deg,#b8edda66 1px,transparent 1px);background-size:72px 72px;background-position:center top;mask-image:linear-gradient(135deg,transparent 40%,#000 49%,#000 51%,transparent 60%);mask-size:300% 300%;mask-repeat:no-repeat;animation:title-grid-sweep 12s linear infinite}
 @keyframes title-grid-sweep{from{mask-position:100% 100%}to{mask-position:0% 0%}}
 .chapter-picker a{transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
-.chapter-picker a:hover,.chapter-picker a:focus-visible{background:#34564c;border-color:#b8ddce;color:#f2fff9;transform:translateX(5px);box-shadow:inset 3px 0 #a8d6c6,0 4px 14px #0003}
+.chapter-picker a:not([aria-current=page]):hover,.chapter-picker a:not([aria-current=page]):focus-visible{background:#34564c;border-color:#b8ddce;color:#f2fff9;transform:translateX(5px);box-shadow:inset 3px 0 #a8d6c6,0 4px 14px #0003}
 .chapter-picker a:focus-visible{outline:2px solid #a8d6c6;outline-offset:3px}
-.chapter-picker a:active{transform:translateX(3px) scale(.995)}
+.chapter-picker a:not([aria-current=page]):active{transform:translateX(3px) scale(.995)}
+.chapter-picker a[aria-current=page]{cursor:default}
 @media(prefers-reduced-motion:reduce){.title-page:before{animation:none;display:none}.chapter-picker a{transition:none}.chapter-picker a:hover,.chapter-picker a:focus-visible,.chapter-picker a:active{transform:none}}
 .reduce-motion .title-page:before{display:none}.reduce-motion .chapter-picker a:hover,.reduce-motion .chapter-picker a:focus-visible,.reduce-motion .chapter-picker a:active{transform:none}
 .action-choices{display:grid;gap:12px;margin:20px 0}.action-choices button{text-align:left;justify-content:space-between;white-space:normal}

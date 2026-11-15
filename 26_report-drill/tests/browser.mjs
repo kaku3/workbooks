@@ -69,7 +69,8 @@ try {
   await click('[data-action=start]');
   await waitFor("Boolean(document.querySelector('.portrait img')?.complete && document.querySelector('.portrait img')?.naturalWidth)");
   await waitFor("Boolean(document.querySelector('#dialogue-text strong'))");
-  await click('[data-action=scene-next]');
+  assert.equal(await evaluate("document.querySelector('.conversation-actions>.muted').textContent"),'未読');
+  await click('.conversation-window');
   assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent.includes('**')"),false,'emphasis survives completing the typewriter without showing markers');
   const portraitWidth=await evaluate("document.querySelector('.portrait img').getBoundingClientRect().width");
   const introMessageHeight=await evaluate("document.querySelector('.conversation-window').getBoundingClientRect().height");
@@ -363,7 +364,8 @@ try {
     assert.equal(await evaluate("document.querySelector('.meeting-camera>img').alt"),'佐伯','Saeki remains fixed in the main camera');
     assert.equal(await evaluate("(()=>{const panel=document.querySelector('.self-panel'),gallery=panel.getBoundingClientRect(),style=getComputedStyle(panel),contentWidth=gallery.width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-parseFloat(style.borderLeftWidth)-parseFloat(style.borderRightWidth);return [...document.querySelectorAll('.self-panel [data-participant]')].every(item=>{const rect=item.getBoundingClientRect();return rect.top>=gallery.top-1&&rect.bottom<=gallery.bottom+1&&Math.abs(rect.width-contentWidth)<2;});})()"),true,'all participant windows fit vertically in the gallery');
     const line=(await state()).conversation.line;
-    for(let i=0;i<3&&(await state()).conversation.line===line;i++)await click('[data-action=scene-next]');
+    for(let i=0;i<3&&(await state()).conversation.line===line;i++)await click('.report-conversation .conversation-window');
+    assert.notEqual((await state()).conversation.line,line,'clicking the meeting message window advances dialogue');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.report-accepted')).animationName"),'none','receipt does not animate again on the next line');
     await screenshot('report-accepted');
   });

@@ -240,7 +240,7 @@ function header() {
 function titlePage() {
   const resumable=hasContinueSave();
   const actions=`${resumable?button('continue','つづきから','primary'):''}${button('start',`はじめる ${icon('arrow')}`,resumable?'secondary':'primary')}`;
-  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a href="?case=${p.caseId}" ${p.caseId===caseId?'aria-current="page"':''}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${actions}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${problem.titleQuote|| (chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」')}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / ${String(caseIds.length).padStart(2,'0')} CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
+  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a ${p.caseId===caseId?'aria-current="page"':`href="?case=${p.caseId}"`}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${actions}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${problem.titleQuote|| (chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」')}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / ${String(caseIds.length).padStart(2,'0')} CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
 }
 function hasContinueSave(){return Boolean(saved&&(saved.history.length||saved.done.length||saved.phase!=='desk'));}
 function stats() {
@@ -559,7 +559,7 @@ function showConversation() {
   const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client'));
   const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
   const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map(speaker=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
-  openModal(`<div class="conversation-head"><span>${esc(c.label)}</span><small>${c.line+1} / ${scene.lines.length}</small></div><div class="conversation-person">${avatar(line.speaker,true)}<div><p class="eyebrow">${line.kind==='thought'?'INNER VOICE':'CONVERSATION'}</p><h2 id="modal-title">${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</h2></div></div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p><div class="conversation-actions"><span class="muted tiny">${state.seen.includes(`${id}:${scene.version}`)?'既読':'未読'} · 決定で次へ</span><div>${button('scene-skip','会話をスキップ','text-button')}${button('scene-next',`次へ ${icon('arrow')}`,'primary')}</div></div>`,action=>{
+  openModal(`<div class="conversation-head"><span>${esc(c.label)}</span><small>${c.line+1} / ${scene.lines.length}</small></div><div class="conversation-person">${avatar(line.speaker,true)}<div><p class="eyebrow">${line.kind==='thought'?'INNER VOICE':'CONVERSATION'}</p><h2 id="modal-title">${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</h2></div></div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p><div class="conversation-actions"><span class="muted tiny">${state.seen.includes(`${id}:${scene.version}`)?'既読':'未読'}</span><div>${button('scene-skip','会話をスキップ','text-button')}${button('scene-next',`次へ ${icon('arrow')}`,'primary')}</div></div>`,action=>{
     if(action==='scene-next'&&!typed) { clearInterval(typeTimer); setDialogue(document.querySelector('#dialogue-text'),line.text); typed=true; return; }
     if(['scene-next','scene-skip'].includes(action)) { closeModal(); engine.advance(state,action==='scene-skip'); save(); render(); }
   },'conversation');
@@ -704,6 +704,9 @@ app.addEventListener('dragend',()=>{
 });
 app.addEventListener('click',async event=>{
   if(deployingTickets)return;
+  if(isMeetingScene()&&event.target.closest('.report-conversation .conversation-window')&&!event.target.closest('[data-action]')){
+    advanceMeetingConversation(false);return;
+  }
   const target=event.target.closest('[data-action]'); if(!target)return;
   const action=target.dataset.action;
   if(action==='next-case'&&nextCaseId){location.search=`?case=${nextCaseId}`;return;}
@@ -763,7 +766,14 @@ app.addEventListener('click',async event=>{
     mobilePanel='desk';tab=action==='desk'?'investigate':action;state.phase='desk';save();render();
   }
 });
-modal.addEventListener('click',event=>{const target=event.target.closest('[data-action]');if(target&&!target.disabled)modalAction?.(target.dataset.action);});
+modal.addEventListener('click',event=>{
+  const target=event.target.closest('[data-action]');
+  if(target){if(!target.disabled)modalAction?.(target.dataset.action);return;}
+  if(modal.classList.contains('conversation')){
+    const bounds=modal.getBoundingClientRect();
+    if(event.target!==modal||(event.clientX>=bounds.left&&event.clientX<=bounds.right&&event.clientY>=bounds.top&&event.clientY<=bounds.bottom))modalAction?.('scene-next');
+  }
+});
 modal.addEventListener('cancel',event=>{
   if(page==='game'&&state?.phase==='scene'){event.preventDefault();return;}
   clearInterval(typeTimer); modalAction=null;
