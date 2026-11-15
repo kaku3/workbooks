@@ -5,11 +5,12 @@ import {createEngine} from '../src/engine.mjs';
 const {problem,scenario}=cases['bulk-import'],e=createEngine(problem,scenario);
 const finish=s=>{for(let i=0;s.phase==='scene'&&i<30;i++)e.advance(s,true);assert.notEqual(s.phase,'scene');};
 const start=()=>{const s=e.start();finish(s);e.beginWork(s);return s;};
-const run=(s,id,question)=>{assert.equal(e.investigate(s,'bi.'+id,question),true,id);finish(s);};
+const run=(s,id,question)=>{const action=problem.investigations.find(a=>a.id==='bi.'+id);question??=action?.questionOptions?.filter(q=>e.matches(q.unlock,s)).at(-1)?.id;assert.equal(e.investigate(s,'bi.'+id,question),true,id);finish(s);};
 const walk=(s,ids)=>{for(const entry of ids){const [id,q]=entry.split('/');run(s,id,q);}return s;};
-const business=['business','workbook','screen','mapping','prototype','related','notification','retry','csv-preparation','operations','plan/both','estimate'];
-const source=['source','related','notification','retry','plan/a','workbook','mapping','csv-preparation','operations','plan-more/b','estimate'];
-const screen=['screen','prototype','retry','notification','related','business','workbook','mapping','csv-preparation','operations','plan/both','estimate'];
+const businessResearch=['business','workbook','screen','mapping','prototype','related','notification','retry','csv-preparation','operations'];
+const business=[...businessResearch,'plan/a','estimate','plan-more/b','estimate-update'];
+const source=['source','related','notification','retry','plan/a','workbook','mapping','csv-preparation','operations','plan-more/b','estimate/a','estimate-update'];
+const screen=['screen','prototype','retry','notification','related','business','workbook','mapping','csv-preparation','operations','plan/a','estimate','plan-more/b','estimate-update'];
 const answers=['bi.business','bi.a','bi.b'];
 function report(s,cards=answers){s.phase='report';s.selected=cards;e.report(s);const id=s.conversation.ids[0];finish(s);return id;}
 test('initial tickets expose the job rather than the eventual solution',()=>{
@@ -45,11 +46,11 @@ test('trial evidence and source inference stay distinct; later notification corr
  assert.match(scenario.scenes['03.prototype'].lines.map(l=>l.text).join(''),/検証用/);
 });
 test('consultation-first route still reaches a grounded comparison and does not require adopting the macro',()=>{
- const s=walk(start(),['ask-makabe/general','workbook','screen','ask-makabe/excel','mapping','csv-preparation','prototype','related','notification','retry','operations','plan/both','estimate']);
- assert.equal(s.time,865);assert.ok(s.evidence.includes('bi.macro'));assert.ok(!s.evidence.includes('bi.macro-check'));
- run(s,'lunch');report(s);assert.equal(s.phase,'complete');assert.equal(s.time,935);
+ const s=walk(start(),['ask-makabe/general','workbook','screen','ask-makabe/excel','mapping','csv-preparation','prototype','related','notification','retry','operations','plan/a','estimate','plan-more/b','estimate-update']);
+ assert.equal(s.time,895);assert.ok(s.evidence.includes('bi.macro'));assert.ok(!s.evidence.includes('bi.macro-check'));
+ run(s,'lunch');report(s);assert.equal(s.phase,'complete');assert.equal(s.time,965);
 });
-for(const [name,route,research] of [['business',business,290],['source',source,270],['screen',screen,290]])test(`${name} entry reaches comparison without compulsory consultation or a failed report`,()=>{
+for(const [name,route,research] of [['business',business,320],['source',source,285],['screen',screen,320]])test(`${name} entry reaches comparison without compulsory consultation or a failed report`,()=>{
  const s=walk(start(),route);assert.equal(s.time,540+research);assert.ok(!s.done.some(k=>k.includes('makabe')));assert.equal(s.chatRead,undefined);
  assert.ok(problem.investigations.some(a=>e.matches(a.unlock,s)&&e.cardStatus(s,a.id)==='todo'));
  run(s,'lunch');assert.equal(report(s),'03.report-3');assert.equal(s.phase,'complete');assert.equal(s.time,540+research+70);
@@ -68,16 +69,16 @@ test('A-only report is stopped by Makabe, leaves investigations available, then 
  assert.ok(s.evidence.includes('bi.a')&&s.evidence.includes('bi.b'));run(s,'lunch');assert.equal(report(s),'03.report-3');assert.equal(s.time,905);
 });
 test('B-only report meets customer cost resistance; A is not generated until explicitly examined',()=>{
- const s=walk(start(),business.map(id=>id==='plan/both'?'plan/b':id));
+ const s=walk(start(),[...businessResearch,'plan/b','estimate']);
  assert.ok(s.evidence.includes('bi.b'));assert.ok(!s.evidence.includes('bi.a'));
  assert.equal(report(s,['bi.b','bi.business','bi.retry']),'03.report-only-b');assert.equal(s.phase,'report');
  assert.ok(scenario.scenes['03.report-only-b'].lines.some(l=>l.speaker==='client'&&l.text.includes('十日')));
- s.phase='desk';run(s,'plan-more','a');assert.ok(!s.evidence.includes('bi.a'));assert.equal(e.preview(s,'bi.estimate-update').minutes,15);run(s,'estimate-update');
+ s.phase='desk';run(s,'plan-more','a');assert.ok(!s.evidence.includes('bi.a'));assert.equal(e.preview(s,'bi.estimate-update','a').minutes,15);run(s,'estimate-update');
  run(s,'lunch');report(s);assert.equal(s.phase,'complete');assert.equal(s.time,940);
 });
 test('either single proposal can independently continue to both proposals without report-trigger flags',()=>{
  for(const first of ['a','b']){
-  const s=walk(start(),business.map(id=>id==='plan/both'?'plan/'+first:id));
+  const s=walk(start(),[...businessResearch,'plan/'+first,'estimate']);
   run(s,'plan-more',first==='a'?'b':'a');run(s,'estimate-update');report(s);assert.equal(s.phase,'complete');
   assert.equal(s.history.filter(h=>h.label.startsWith('報告 ')).length,1);
  }
@@ -91,9 +92,20 @@ test('rough estimates require technical grounds but not departmental scope or a 
  assert.match(problem.evidence.find(c=>c.id==='bi.b').text,/概算|程度/);
 });
 test('technical quotes without operations cannot clear and the three-card report uses actual evidence',()=>{
- const s=walk(start(),['source','related','notification','retry','plan/a','plan-more/b','estimate']);
+ const s=walk(start(),['source','related','notification','retry','plan/a','plan-more/b','estimate/a','estimate-update']);
  assert.equal(report(s,['bi.a','bi.b','bi.source']),'03.report-operation');assert.equal(s.completed,false);
  s.phase='desk';walk(s,['workbook','mapping','csv-preparation','operations']);assert.equal(report(s),'03.report-3');assert.equal(s.completed,true);
+});
+test('each planning and estimate action acquires at most one alternative, even with every technical fact',()=>{
+ for(const first of ['a','b']){
+  const s=walk(start(),businessResearch);
+  assert.equal(e.preview(s,'bi.plan','both'),null,'combined planning is not selectable');
+  run(s,'plan',first);assert.ok(!s.evidence.includes('bi.plan-'+(first==='a'?'b':'a')));
+  run(s,'plan-more',first==='a'?'b':'a');
+  run(s,'estimate',first);assert.ok(s.evidence.includes('bi.'+first));assert.ok(!s.evidence.includes('bi.'+(first==='a'?'b':'a')));
+  run(s,'estimate-update');assert.ok(s.evidence.includes('bi.a')&&s.evidence.includes('bi.b'));
+ }
+ for(const a of problem.investigations)for(const o of a.outcomes)assert.ok((o.evidence||[]).filter(id=>['bi.a','bi.b'].includes(id)).length<=1);
 });
 test('consultation reacts to selected topic and schedule; experience never confirms scope or a price',()=>{
  const s=start();assert.equal(e.preview(s,'bi.ask-makabe','general').minutes,35);run(s,'ask-makabe','general');run(s,'workbook');

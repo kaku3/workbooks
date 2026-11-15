@@ -1087,21 +1087,34 @@
       {
         "id": "a",
         "label": "エラー時に全体を戻す構成を考える",
-        "unlock": {}
+        "unlock": {
+          "any": [
+            {
+              "flagAbsent": "bi.plan-a"
+            },
+            {
+              "flagsAll": [
+                "bi.plan-a",
+                "bi.plan-b"
+              ]
+            }
+          ]
+        }
       },
       {
         "id": "b",
         "label": "通った登録を残す構成を考える",
-        "unlock": {}
-      },
-      {
-        "id": "both",
-        "label": "両方のやり直し方を比べて考える",
         "unlock": {
-          "evidenceAll": [
-            "bi.csv-ready",
-            "bi.operations",
-            "bi.retry"
+          "any": [
+            {
+              "flagAbsent": "bi.plan-b"
+            },
+            {
+              "flagsAll": [
+                "bi.plan-a",
+                "bi.plan-b"
+              ]
+            }
           ]
         }
       }
@@ -1147,76 +1160,6 @@
         "flags": [],
         "evidence": [],
         "gain": {}
-      },
-      {
-        "id": "recheck-both",
-        "when": {
-          "all": [
-            {
-              "questionIs": "both"
-            },
-            {
-              "flagsAll": [
-                "bi.plan-a",
-                "bi.plan-b"
-              ]
-            }
-          ]
-        },
-        "minutes": 25,
-        "scene": "03.recheck",
-        "flags": [],
-        "evidence": [],
-        "gain": {}
-      },
-      {
-        "id": "both-update",
-        "when": {
-          "all": [
-            {
-              "questionIs": "both"
-            },
-            {
-              "flagsAll": [
-                "bi.plan-started"
-              ]
-            }
-          ]
-        },
-        "minutes": 15,
-        "scene": "03.plan-both",
-        "flags": [
-          "bi.plan-started",
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "evidence": [
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "gain": {
-          "system": 1
-        }
-      },
-      {
-        "id": "both",
-        "when": {
-          "questionIs": "both"
-        },
-        "minutes": 25,
-        "scene": "03.plan-both",
-        "flags": [
-          "bi.plan-started",
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "evidence": [
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "gain": {
-          "system": 1
-        }
       },
       {
         "id": "a-update",
@@ -1307,6 +1250,14 @@
         "gain": {
           "system": 1
         }
+      },
+      {
+        "id": "legacy-both",
+        "when": {
+          "questionIs": "legacy-both"
+        },
+        "minutes": 25,
+        "scene": "03.plan-both"
       }
     ]
   },
@@ -1324,21 +1275,34 @@
       {
         "id": "a",
         "label": "エラー時に全体を戻す構成を考える",
-        "unlock": {}
+        "unlock": {
+          "any": [
+            {
+              "flagAbsent": "bi.plan-a"
+            },
+            {
+              "flagsAll": [
+                "bi.plan-a",
+                "bi.plan-b"
+              ]
+            }
+          ]
+        }
       },
       {
         "id": "b",
         "label": "通った登録を残す構成を考える",
-        "unlock": {}
-      },
-      {
-        "id": "both",
-        "label": "両方のやり直し方を比べて考える",
         "unlock": {
-          "evidenceAll": [
-            "bi.csv-ready",
-            "bi.operations",
-            "bi.retry"
+          "any": [
+            {
+              "flagAbsent": "bi.plan-b"
+            },
+            {
+              "flagsAll": [
+                "bi.plan-a",
+                "bi.plan-b"
+              ]
+            }
           ]
         }
       }
@@ -1384,76 +1348,6 @@
         "flags": [],
         "evidence": [],
         "gain": {}
-      },
-      {
-        "id": "recheck-both",
-        "when": {
-          "all": [
-            {
-              "questionIs": "both"
-            },
-            {
-              "flagsAll": [
-                "bi.plan-a",
-                "bi.plan-b"
-              ]
-            }
-          ]
-        },
-        "minutes": 25,
-        "scene": "03.recheck",
-        "flags": [],
-        "evidence": [],
-        "gain": {}
-      },
-      {
-        "id": "both-update",
-        "when": {
-          "all": [
-            {
-              "questionIs": "both"
-            },
-            {
-              "flagsAll": [
-                "bi.plan-started"
-              ]
-            }
-          ]
-        },
-        "minutes": 15,
-        "scene": "03.plan-both",
-        "flags": [
-          "bi.plan-started",
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "evidence": [
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "gain": {
-          "system": 1
-        }
-      },
-      {
-        "id": "both",
-        "when": {
-          "questionIs": "both"
-        },
-        "minutes": 15,
-        "scene": "03.plan-both",
-        "flags": [
-          "bi.plan-started",
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "evidence": [
-          "bi.plan-a",
-          "bi.plan-b"
-        ],
-        "gain": {
-          "system": 1
-        }
       },
       {
         "id": "a-update",
@@ -1544,6 +1438,14 @@
         "gain": {
           "system": 1
         }
+      },
+      {
+        "id": "legacy-both",
+        "when": {
+          "questionIs": "legacy-both"
+        },
+        "minutes": 25,
+        "scene": "03.plan-both"
       }
     ]
   },
@@ -1634,126 +1536,68 @@
         "gain": {}
       },
       {
-        "id": "both-update",
-        "when": {
-          "all": [
-            {
-              "flagsAll": [
-                "bi.estimate-started"
-              ]
-            },
-            {
-              "any": [
-                {
-                  "all": [
-                    {
-                      "all": [
-                        {
-                          "flagsAll": [
-                            "bi.plan-a"
-                          ]
-                        },
-                        {
-                          "evidenceAll": [
-                            "bi.related",
-                            "bi.notification"
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "flagAbsent": "bi.estimated-a"
-                    }
-                  ]
-                },
-                {
-                  "all": [
-                    {
-                      "all": [
-                        {
-                          "flagsAll": [
-                            "bi.plan-b"
-                          ]
-                        },
-                        {
-                          "evidenceAll": [
-                            "bi.related",
-                            "bi.notification",
-                            "bi.retry"
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "flagAbsent": "bi.estimated-b"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "all": [
-                {
-                  "all": [
-                    {
-                      "flagsAll": [
-                        "bi.plan-a"
-                      ]
-                    },
-                    {
-                      "evidenceAll": [
-                        "bi.related",
-                        "bi.notification"
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "all": [
-                    {
-                      "flagsAll": [
-                        "bi.plan-b"
-                      ]
-                    },
-                    {
-                      "evidenceAll": [
-                        "bi.related",
-                        "bi.notification",
-                        "bi.retry"
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        "minutes": 15,
-        "scene": "03.estimate-both",
-        "flags": [
-          "bi.estimate-started",
-          "bi.estimated-a",
-          "bi.estimated-b"
-        ],
-        "evidence": [
-          "bi.a",
-          "bi.b"
-        ],
-        "gain": {
-          "system": 1
-        }
-      },
-      {
         "id": "a-update",
         "when": {
           "all": [
             {
-              "flagsAll": [
-                "bi.estimate-started"
-              ]
+              "questionIs": "a"
             },
             {
-              "any": [
+              "all": [
+                {
+                  "flagsAll": [
+                    "bi.estimate-started"
+                  ]
+                },
+                {
+                  "any": [
+                    {
+                      "all": [
+                        {
+                          "all": [
+                            {
+                              "flagsAll": [
+                                "bi.plan-a"
+                              ]
+                            },
+                            {
+                              "evidenceAll": [
+                                "bi.related",
+                                "bi.notification"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "flagAbsent": "bi.estimated-a"
+                        }
+                      ]
+                    },
+                    {
+                      "all": [
+                        {
+                          "all": [
+                            {
+                              "flagsAll": [
+                                "bi.plan-b"
+                              ]
+                            },
+                            {
+                              "evidenceAll": [
+                                "bi.related",
+                                "bi.notification",
+                                "bi.retry"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "flagAbsent": "bi.estimated-b"
+                        }
+                      ]
+                    }
+                  ]
+                },
                 {
                   "all": [
                     {
@@ -1775,51 +1619,6 @@
                       "flagAbsent": "bi.estimated-a"
                     }
                   ]
-                },
-                {
-                  "all": [
-                    {
-                      "all": [
-                        {
-                          "flagsAll": [
-                            "bi.plan-b"
-                          ]
-                        },
-                        {
-                          "evidenceAll": [
-                            "bi.related",
-                            "bi.notification",
-                            "bi.retry"
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "flagAbsent": "bi.estimated-b"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "all": [
-                {
-                  "all": [
-                    {
-                      "flagsAll": [
-                        "bi.plan-a"
-                      ]
-                    },
-                    {
-                      "evidenceAll": [
-                        "bi.related",
-                        "bi.notification"
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "flagAbsent": "bi.estimated-a"
                 }
               ]
             }
@@ -1843,31 +1642,61 @@
         "when": {
           "all": [
             {
-              "flagsAll": [
-                "bi.estimate-started"
-              ]
+              "questionIs": "b"
             },
             {
-              "any": [
+              "all": [
                 {
-                  "all": [
+                  "flagsAll": [
+                    "bi.estimate-started"
+                  ]
+                },
+                {
+                  "any": [
                     {
                       "all": [
                         {
-                          "flagsAll": [
-                            "bi.plan-a"
+                          "all": [
+                            {
+                              "flagsAll": [
+                                "bi.plan-a"
+                              ]
+                            },
+                            {
+                              "evidenceAll": [
+                                "bi.related",
+                                "bi.notification"
+                              ]
+                            }
                           ]
                         },
                         {
-                          "evidenceAll": [
-                            "bi.related",
-                            "bi.notification"
-                          ]
+                          "flagAbsent": "bi.estimated-a"
                         }
                       ]
                     },
                     {
-                      "flagAbsent": "bi.estimated-a"
+                      "all": [
+                        {
+                          "all": [
+                            {
+                              "flagsAll": [
+                                "bi.plan-b"
+                              ]
+                            },
+                            {
+                              "evidenceAll": [
+                                "bi.related",
+                                "bi.notification",
+                                "bi.retry"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "flagAbsent": "bi.estimated-b"
+                        }
+                      ]
                     }
                   ]
                 },
@@ -1893,29 +1722,6 @@
                       "flagAbsent": "bi.estimated-b"
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "all": [
-                {
-                  "all": [
-                    {
-                      "flagsAll": [
-                        "bi.plan-b"
-                      ]
-                    },
-                    {
-                      "evidenceAll": [
-                        "bi.related",
-                        "bi.notification",
-                        "bi.retry"
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "flagAbsent": "bi.estimated-b"
                 }
               ]
             }
@@ -2242,78 +2048,33 @@
         "gain": {}
       },
       {
-        "id": "both",
-        "when": {
-          "all": [
-            {
-              "all": [
-                {
-                  "flagsAll": [
-                    "bi.plan-a"
-                  ]
-                },
-                {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification"
-                  ]
-                }
-              ]
-            },
-            {
-              "all": [
-                {
-                  "flagsAll": [
-                    "bi.plan-b"
-                  ]
-                },
-                {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification",
-                    "bi.retry"
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        "minutes": 25,
-        "scene": "03.estimate-both",
-        "flags": [
-          "bi.estimate-started",
-          "bi.estimated-a",
-          "bi.estimated-b"
-        ],
-        "evidence": [
-          "bi.a",
-          "bi.b"
-        ],
-        "gain": {
-          "system": 1
-        }
-      },
-      {
         "id": "a",
         "when": {
           "all": [
             {
+              "questionIs": "a"
+            },
+            {
               "all": [
                 {
-                  "flagsAll": [
-                    "bi.plan-a"
+                  "all": [
+                    {
+                      "flagsAll": [
+                        "bi.plan-a"
+                      ]
+                    },
+                    {
+                      "evidenceAll": [
+                        "bi.related",
+                        "bi.notification"
+                      ]
+                    }
                   ]
                 },
                 {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification"
-                  ]
+                  "flagAbsent": "bi.estimated-a"
                 }
               ]
-            },
-            {
-              "flagAbsent": "bi.estimated-a"
             }
           ]
         },
@@ -2335,23 +2096,30 @@
         "when": {
           "all": [
             {
+              "questionIs": "b"
+            },
+            {
               "all": [
                 {
-                  "flagsAll": [
-                    "bi.plan-b"
+                  "all": [
+                    {
+                      "flagsAll": [
+                        "bi.plan-b"
+                      ]
+                    },
+                    {
+                      "evidenceAll": [
+                        "bi.related",
+                        "bi.notification",
+                        "bi.retry"
+                      ]
+                    }
                   ]
                 },
                 {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification",
-                    "bi.retry"
-                  ]
+                  "flagAbsent": "bi.estimated-b"
                 }
               ]
-            },
-            {
-              "flagAbsent": "bi.estimated-b"
             }
           ]
         },
@@ -2424,6 +2192,74 @@
         "flags": [],
         "evidence": [],
         "gain": {}
+      },
+      {
+        "id": "legacy-both",
+        "when": {
+          "questionIs": "legacy-both"
+        },
+        "minutes": 25,
+        "scene": "03.estimate-both"
+      }
+    ],
+    "chooseQuestion": true,
+    "choicePrompt": "どの処理案を見積もりますか？",
+    "questionOptions": [
+      {
+        "id": "a",
+        "label": "全件取り消す案を見積もる",
+        "unlock": {
+          "all": [
+            {
+              "flagsAll": [
+                "bi.plan-a"
+              ]
+            },
+            {
+              "any": [
+                {
+                  "flagAbsent": "bi.estimated-a"
+                },
+                {
+                  "flagsAll": [
+                    "bi.estimated-b"
+                  ]
+                },
+                {
+                  "flagAbsent": "bi.plan-b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "label": "正常な行を残す案を見積もる",
+        "unlock": {
+          "all": [
+            {
+              "flagsAll": [
+                "bi.plan-b"
+              ]
+            },
+            {
+              "any": [
+                {
+                  "flagAbsent": "bi.estimated-b"
+                },
+                {
+                  "flagsAll": [
+                    "bi.estimated-a"
+                  ]
+                },
+                {
+                  "flagAbsent": "bi.plan-a"
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   },
@@ -2456,78 +2292,33 @@
         "gain": {}
       },
       {
-        "id": "both",
-        "when": {
-          "all": [
-            {
-              "all": [
-                {
-                  "flagsAll": [
-                    "bi.plan-a"
-                  ]
-                },
-                {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification"
-                  ]
-                }
-              ]
-            },
-            {
-              "all": [
-                {
-                  "flagsAll": [
-                    "bi.plan-b"
-                  ]
-                },
-                {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification",
-                    "bi.retry"
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        "minutes": 15,
-        "scene": "03.estimate-both",
-        "flags": [
-          "bi.estimate-started",
-          "bi.estimated-a",
-          "bi.estimated-b"
-        ],
-        "evidence": [
-          "bi.a",
-          "bi.b"
-        ],
-        "gain": {
-          "system": 1
-        }
-      },
-      {
         "id": "a",
         "when": {
           "all": [
             {
+              "questionIs": "a"
+            },
+            {
               "all": [
                 {
-                  "flagsAll": [
-                    "bi.plan-a"
+                  "all": [
+                    {
+                      "flagsAll": [
+                        "bi.plan-a"
+                      ]
+                    },
+                    {
+                      "evidenceAll": [
+                        "bi.related",
+                        "bi.notification"
+                      ]
+                    }
                   ]
                 },
                 {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification"
-                  ]
+                  "flagAbsent": "bi.estimated-a"
                 }
               ]
-            },
-            {
-              "flagAbsent": "bi.estimated-a"
             }
           ]
         },
@@ -2549,23 +2340,30 @@
         "when": {
           "all": [
             {
+              "questionIs": "b"
+            },
+            {
               "all": [
                 {
-                  "flagsAll": [
-                    "bi.plan-b"
+                  "all": [
+                    {
+                      "flagsAll": [
+                        "bi.plan-b"
+                      ]
+                    },
+                    {
+                      "evidenceAll": [
+                        "bi.related",
+                        "bi.notification",
+                        "bi.retry"
+                      ]
+                    }
                   ]
                 },
                 {
-                  "evidenceAll": [
-                    "bi.related",
-                    "bi.notification",
-                    "bi.retry"
-                  ]
+                  "flagAbsent": "bi.estimated-b"
                 }
               ]
-            },
-            {
-              "flagAbsent": "bi.estimated-b"
             }
           ]
         },
@@ -2638,6 +2436,74 @@
         "flags": [],
         "evidence": [],
         "gain": {}
+      },
+      {
+        "id": "legacy-both",
+        "when": {
+          "questionIs": "legacy-both"
+        },
+        "minutes": 25,
+        "scene": "03.estimate-both"
+      }
+    ],
+    "chooseQuestion": true,
+    "choicePrompt": "どの処理案を見積もりますか？",
+    "questionOptions": [
+      {
+        "id": "a",
+        "label": "全件取り消す案を見積もる",
+        "unlock": {
+          "all": [
+            {
+              "flagsAll": [
+                "bi.plan-a"
+              ]
+            },
+            {
+              "any": [
+                {
+                  "flagAbsent": "bi.estimated-a"
+                },
+                {
+                  "flagsAll": [
+                    "bi.estimated-b"
+                  ]
+                },
+                {
+                  "flagAbsent": "bi.plan-b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "b",
+        "label": "正常な行を残す案を見積もる",
+        "unlock": {
+          "all": [
+            {
+              "flagsAll": [
+                "bi.plan-b"
+              ]
+            },
+            {
+              "any": [
+                {
+                  "flagAbsent": "bi.estimated-b"
+                },
+                {
+                  "flagsAll": [
+                    "bi.estimated-a"
+                  ]
+                },
+                {
+                  "flagAbsent": "bi.plan-a"
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   },
