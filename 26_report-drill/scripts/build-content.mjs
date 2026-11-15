@@ -68,7 +68,7 @@ for (const entry of entries) {
 }
 return {scenario,problem};
 }
-const chapters=await Promise.all(['01_watermark','02_approval-button'].map(buildCase));
+const chapters=await Promise.all(['01_watermark','02_approval-button','03_bulk-import'].map(buildCase));
 const cases=Object.fromEntries(chapters.map(chapter=>[chapter.problem.caseId,chapter]));
 const runtime = `// Generated from docs Markdown. Do not edit.\nexport const cases = ${JSON.stringify(cases, null, 2)};\nexport const {scenario,problem}=cases.watermark;\n`;
 const runtimeUrl = new URL('src/data/content.mjs', root);

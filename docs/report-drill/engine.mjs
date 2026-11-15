@@ -166,8 +166,9 @@ export function createEngine(problem, scenario) {
     const summary = replay ? `${action.title} · 再読` : `${action.title} · ${duration(result.minutes)}経過`;
     const delta=changes(before,state);
     const noProgress=!delta.evidence.length && !Object.keys(delta.knowledge).length && !delta.unlocked.length && !delta.savings.length && !delta.progressReported;
+    const repeated=before.done.some(key=>key.startsWith(`${id}:`));
     const scenes=[result.scene];
-    if(noProgress && scenario.events.noProgress)scenes.push(scenario.events.noProgress);
+    if(repeated && noProgress && scenario.events.noProgress)scenes.push(scenario.events.noProgress);
     queue(state, scenes, 'desk', summary, replay,before);
     if (problem.investigations.some(item=>item.id===id)) {
       state.conversation.actionId=id;
@@ -213,7 +214,9 @@ export function createEngine(problem, scenario) {
     const accepted = !rejected && q.accept.find(item => matches(item.when, state));
     state.time += q.minutes;
     const missing=evaluation&&q.elements.find(element=>!evaluation.elements[element.id]);
-    const feedback=evaluation&&evaluation.level>0&&missing?q.missingReactions?.[missing.id]:null;
+    const feedback=evaluation&&evaluation.level<3
+      ?q.feedbackReactions?.find(item=>matches(item.when,state))?.scene||(evaluation.level>0&&missing?q.missingReactions?.[missing.id]:null)
+      :null;
     const ids = [evaluation ? feedback||q.reactions[evaluation.level] : rejected?.scene || accepted?.scene || q.fallback];
     const label = `報告 ${state.question + 1} · ${duration(q.minutes)}経過`;
     if (evaluation ? evaluation.level===3 : accepted) state.question++;
@@ -258,6 +261,14 @@ export function createEngine(problem, scenario) {
     for (const key of ['evidence','selected','memories','grown','seen','flags','done','helpUsed','history']) if (!Array.isArray(state[key])) throw new Error('保存データの形式が正しくありません。');
     state.board ??= {};
     state.investigationResults ??= {};
+    // Earlier second-day saves retained yesterday's lunch flag after resetting its results.
+    const lunchId=problem.lunchAction||'wm.lunch';
+    if(state.loop>1 && state.flags.includes(lunchId) && !state.done.includes(`${lunchId}:default`)) {
+      state.flags=state.flags.filter(id=>id!==lunchId);
+      state.done=state.done.filter(key=>!key.startsWith(`${lunchId}:`));
+      delete state.board[lunchId];delete state.investigationResults[lunchId];
+    }
+    if(state.chatRead && (!Array.isArray(state.chatRead.seen)||!Array.isArray(state.chatRead.unread)||![...state.chatRead.seen,...state.chatRead.unread].every(key=>typeof key==='string')))throw new Error('チャットの既読状態を読み取れません。');
     // Earlier saves used one source-analysis task for both overview and PDF location.
     if(state.done.some(key=>['wm.source:prepared','wm.source:default'].includes(key))) {
       state.done=state.done.filter(key=>!['wm.source:prepared','wm.source:default'].includes(key));
@@ -294,6 +305,7 @@ export function createEngine(problem, scenario) {
         const state=structuredClone(previous);
         state.loop++;state.time=minutes(problem.clock.start);state.phase='desk';state.selected=[];state.conversation=null;state.settled=false;state.progressReported=false;
         state.timerRemainder=0;
+        state.flags=state.flags.filter(id=>id!==(problem.lunchAction||'wm.lunch'));
         for (const id of problem.dailyActions||['wm.lunch','wm.progress']) {
           delete state.board[id];delete state.investigationResults[id];
           state.done=state.done.filter(key=>!key.startsWith(`${id}:`));

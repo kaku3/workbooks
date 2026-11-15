@@ -5,13 +5,13 @@
 | ファイル | 状態 |
 |---|---|
 | [01_watermark.md](01_watermark.md) | 第1面「5年前に辞めた人のPDF」。18調査・14手がかり・3問。[分岐図](01_pdf-incident-design.md) |
-| [02_approval-button.md](02_approval-button.md) | 第2面の草案・取込対象外 |
-| [03_bulk-import.md](03_bulk-import.md) | 第3面の草案・取込対象外 |
+| [02_approval-button.md](02_approval-button.md) | 2章。業務目的と修正範囲を確認し、見積もり根拠を説明する |
+| [03_bulk-import.md](03_bulk-import.md) | 第3章の問題正本。[分冊仕様](../chapter3/00_README.md)に沿って調査フローを再作成済み |
 | [04_closing-automation.md](04_closing-automation.md) | 第4面の草案・取込対象外 |
 
 ## 編集とビルド
 
-`01_watermark.md` が編集の正本です。JSONは生成物なので直接編集しません。
+第1〜3章のMarkdownが編集の正本です。JSONは生成物なので直接編集しません。
 
 `26_report-drill` ディレクトリで実行します。追加パッケージは不要です。
 
@@ -23,7 +23,7 @@ node scripts/build-content.mjs --check
 `--check` はファイルを変更せず原稿との一致を確認します。
 Markdownの `##` はJSONのトップレベル項目に対応し、各節のJSONコードブロックを取り込みます。
 会話は `### 会話ID (version 1)` の下に `- speaker: 台詞` を記述します。
-心の声は `- player [thought]: 台詞` です。第2〜4面の草案は取り込みません。
+心の声は `- player [thought]: 台詞` です。第4章の草案は取り込みません。
 
 ## JSONの形式
 UTF-8のJSON。`schemaVersion` は形式の版、`version` は案件内容の版、`caseId` はシナリオと共通のID。`authorNotes` は作者向けで、画面には出さない。
@@ -35,8 +35,10 @@ UTF-8のJSON。`schemaVersion` は形式の版、`version` は案件内容の版
 | `knowledge` / `intuition` | 初期値・上限 |
 | `evidence` | 証拠品。ID、名称、本文、情報源、扱い |
 | `investigations` | 調査候補。ID、名称、概要、解放条件、結果分岐 |
-| `investigations[].repeatable` | trueなら何度でも時間を使って調べられ、イベント後は未着手へ戻る。同じ結果の報酬は重複させない |
-| `outcomes[].complete` | falseなら有用な効果が得られなかった結果として未着手へ戻す。再調査にも時間を使う |
+| `investigations[].repeatable` | 再調査できる作業であることを示す。実行後は結果に関係なく作業中に残る。同じ結果の報酬は重複しない |
+| `investigations[].chooseQuestion` | trueならクリック時に選べるquestionOptionsを表示。ドラッグ実行は選択可能な最後の項目を使う |
+| `outcomes[].complete` | falseは調べ直しなどの結果。作業中に残り、再調査にも時間を使う |
+| `questions[].feedbackReactions` | 不十分な報告時、`when` を満たす最初の `scene` で問い返す。未指定時は既存の要素別反応 |
 | `questions` | 順番に進める報告の問い・必要枚数・時間・返答条件 |
 | `help` | 所持枠、カード、周回ごとの使用上限、結果分岐 |
 | `loop` | 持ち越し候補、件数上限、直感の成長量 |
@@ -74,7 +76,7 @@ UTF-8のJSON。`schemaVersion` は形式の版、`version` は案件内容の版
 - `evidence`：獲得するカードID。重複取得しない。
 - `flags`：追加するフラグID。同じ周回では解除しない。
 
-同じ調査の同じ結果IDは周回内に1回だけ効果を適用する。再度同じ結果になる場合は無料再読のみ。条件が変わって未実行の結果IDに変わる場合は、再調査として実行できる。`remembered` 分岐と通常分岐を繰り返すことはできない。記憶は周回中に変わらないためである。
+同じ調査の同じ結果IDは周回内に1回だけ効果を適用する。再実行にも時間を使うが、報酬は重複しない。履歴からの再読は無料。条件が変わって未実行の結果IDに変わる場合は、新たな結果を取得できる。
 
 真壁の質問は `questionOptions` に候補を置き、`unlock` を満たすものを表示する。質問選択後に分岐を評価する。説教や会議中の分岐は質問内容より優先する。
 
@@ -100,5 +102,5 @@ UTF-8のJSON。`schemaVersion` は形式の版、`version` は案件内容の版
 
 編集後はJSON構文、IDの一意性、会話・カード参照、条件キー、予定範囲、通常経路の所要時間を確認する。問題の到達条件を変えた場合は、真壁・直感・コーヒーなしでも成立できる経路を再確認する。
 
-`scripts/build-content.mjs` で第1面のMarkdownからJSONと `src/data/content.mjs` を生成する。JSON・実行データは直接編集しない。第2〜4面のMarkdown草案は対象外とする。
+`scripts/build-content.mjs` で第1〜3章のMarkdownからJSONと `src/data/content.mjs` を生成する。JSON・実行データは直接編集しない。第4章の草案は対象外。
 

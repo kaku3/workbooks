@@ -1,5 +1,10 @@
 # 第2面 Codex引継ぎパック
 
+<!-- document-status -->
+> **ドロップ：第2章の旧版資料。** 採用元は [chapter2-v2](../chapter2-v2/00_README.md)。この旧版の仕様・フロー・実装指示・台詞は現在の制作に使用しない。
+> 現在動くゲームの正本は [問題原稿](../problems/02_approval-button.md) と [会話原稿](../scenarios/02_approval-button.md)。本文は履歴として保存している。
+<!-- /document-status -->
+
 対象: `26_report-drill` / 第2面「承認画面へのボタン追加」
 基準: 添付ZIPの README、`docs/problems/02_approval-button.md`、`docs/scenarios/02_approval-button.md`、第1面の実装構成。
 

@@ -3,13 +3,16 @@ import { cases } from './data/content.mjs';
 const requestedCase=new URLSearchParams(location.search).get('case');
 const caseId=Object.hasOwn(cases,requestedCase)?requestedCase:'watermark';
 const {problem,scenario}=cases[caseId];
-const chapterNumber=caseId==='watermark'?1:2;
+const caseIds=Object.keys(cases);
+const chapterNumber=caseIds.indexOf(caseId)+1;
+const nextCaseId=caseIds[chapterNumber];
 const caseLabel=String(chapterNumber).padStart(2,'0');
 const lunchId=problem.lunchAction||'wm.lunch';
 const coffeeId=problem.coffeeAction||'wm.coffee';
 import { createEngine, clock, minutes, duration } from './engine.mjs';
 import { findTimeSavings, playTimeSavings } from './cost-effects.mjs';
 import { buildChatFeed } from './chat-feed.mjs';
+import { updateChatRead } from './chat-read.mjs';
 import { playClueAcquisition } from './clue-effects.mjs';
 import { captureMeetingWindows, animateMeetingWindows } from './meeting-layout.mjs';
 import { preloadImages } from './image-preload.mjs';
@@ -57,8 +60,9 @@ const icons = {
 const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.file}</svg>`;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
 let state = null, saved = null, saveError = '', page = 'title', tab = 'investigate';
-let modalAction = null, lastFocus = null, typeTimer, typed = true, lastChatCount = 0, unread = 0;
+let modalAction = null, lastFocus = null, typeTimer, typed = true, unread = 0;
 let chatScroll = 0, chatBottom = true;
+let unreadStartKey=null,pendingUnreadScroll=false,chatPulse=false;
 let mobilePanel = 'desk';
 let deckSize='small';
 let reportTextTimer, reportTextProgress=null;
@@ -175,7 +179,9 @@ function statusEffects() {
 }
 
 try { const raw = localStorage.getItem(storageKey); if (raw) saved = engine.restore(raw); }
-catch (error) { saveError = `保存記録を読み込めません。${error.message} 再開始する場合は「はじめから」を選んでください。`; }
+catch (error) { saveError = caseId==='bulk-import'&&error.message.includes('版')
+  ? ''
+  : `保存記録を読み込めません。${error.message} 再開始する場合は「はじめる」を選んでください。`; }
 
 function save() {
   if (!state) return;
@@ -185,7 +191,27 @@ function save() {
 function notify(text) { document.querySelector('#notice').textContent = text; }
 function button(action, text, className = '', extra = '') { return `<button type="button" data-action="${action}" class="${className}" ${extra}>${text}</button>`; }
 function avatar(speaker, large = false) { return `<span class="avatar ${speaker} ${large ? 'large' : ''}" aria-hidden="true">${initials[speaker] || '人'}</span>`; }
-function resetChat() { lastChatCount = 0; unread = 0; chatScroll = 0; chatBottom = true; mobilePanel='desk'; seenFeedKeys=null; }
+function resetChat() { unread = 0; unreadStartKey=null;pendingUnreadScroll=false;chatScroll = 0; chatBottom = true; mobilePanel='desk'; seenFeedKeys=null; }
+function chatVisible(){return deckSize!=='large'&&(matchMedia('(min-width:700px)').matches||mobilePanel==='chat');}
+function syncChatRead(){
+  chatPulse=false;
+  if(page!=='game'||!state||['briefing','loop','complete','gameover'].includes(state.phase))return;
+  const result=updateChatRead(state,buildChatFeed(scenario,state),{acknowledge:chatVisible()&&chatBottom});
+  unread=result.count;chatPulse=result.arrivals>0&&unread>0;
+  if(result.changed)save();
+}
+function acknowledgeChat(){
+  if(!state)return;
+  const result=updateChatRead(state,buildChatFeed(scenario,state),{acknowledge:true});
+  unread=0;
+  if(result.changed)save();
+  document.querySelectorAll('.chat-unread-badge,.unread').forEach(item=>item.remove());
+}
+function openChatPanel(){
+  const feed=buildChatFeed(scenario,state),result=updateChatRead(state,feed);
+  unreadStartKey=result.first;pendingUnreadScroll=Boolean(result.first);
+  acknowledgeChat();mobilePanel='chat';render();
+}
 function showMobilePanel(panel) {
   mobilePanel=panel;
   document.querySelector('.desktop')?.classList.toggle('show-chat',panel==='chat');
@@ -214,7 +240,7 @@ function header() {
 function titlePage() {
   const resumable=hasContinueSave();
   const actions=`${resumable?button('continue','つづきから','primary'):''}${button('start',`はじめる ${icon('arrow')}`,resumable?'secondary':'primary')}`;
-  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a href="?case=${p.caseId}" ${p.caseId===caseId?'aria-current="page"':''}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${actions}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」'}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / 02 CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
+  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a href="?case=${p.caseId}" ${p.caseId===caseId?'aria-current="page"':''}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${actions}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${problem.titleQuote|| (chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」')}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / ${String(caseIds.length).padStart(2,'0')} CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
 }
 function hasContinueSave(){return Boolean(saved&&(saved.history.length||saved.done.length||saved.phase!=='desk'));}
 function stats() {
@@ -296,8 +322,6 @@ function historyChanges(item) {
 }
 function chatPanel() {
   const feed=buildChatFeed(scenario,state);
-  if(feed.length>lastChatCount && !chatBottom)unread+=feed.length-lastChatCount;
-  lastChatCount=feed.length;
   let arrivals=0;
   const content=feed.map(item=>{
 
@@ -305,7 +329,8 @@ function chatPanel() {
     const delay=arriving?Math.min(arrivals++,4)*65:0;
     const msg=item.message;
     const html=item.kind==='history'?`<article class="message bot-message"><span class="avatar bot-avatar" aria-label="chatbot">${icon('robot')}</span><div class="message-content"><div class="bot-byline"><strong>chatbot</strong><time>${clock(item.time)}</time><span>APP</span></div>${historyEntry(item.item,item.index)}</div></article>`:`<article class="message">${avatar(msg.speaker)}<div class="message-content"><div><strong>${esc(names[msg.speaker])}</strong><time>${esc(msg.at)}</time></div><p>${esc(msg.text)}</p></div></article>`;
-    return `<div class="feed-entry ${arriving?'feed-arriving':''}" style="--feed-delay:${delay}ms" data-feed-key="${esc(item.key)}" data-day="${item.day}" data-time="${item.time}">${html}</div>`;
+    const divider=item.key===unreadStartKey?'<div class="chat-unread-divider" role="separator">ここから未読</div>':'';
+    return `${divider}<div class="feed-entry ${arriving?'feed-arriving':''}" style="--feed-delay:${delay}ms" data-feed-key="${esc(item.key)}" data-day="${item.day}" data-time="${item.time}">${html}</div>`;
   }).join('');
   seenFeedKeys=new Set(feed.map(item=>item.key));
   return `<aside class="chat-panel"><div class="chat-heading"><span>#pj-marunage</span><small><i></i> ONLINE</small></div><div class="chat-scroll" tabindex="0" aria-label="チャットと作業の履歴">${content}</div>${unread?button('chat-latest',`新着 ${unread}件 ↓`,'unread'):''}</aside>`;
@@ -320,8 +345,8 @@ function workspace() {
 function ending() {
   const complete=state.phase==='complete';
   const extended=state.phase==='loop';
-  const closingNote=extended?'手がかり・知識・調査状況を引き継ぎ、翌日9:00から再開します。延長はこの一日です。':complete?'確認できた原因と根拠、影響範囲と対応案を報告しました。本番の是正作業は次の相談です。':state.progressReported?'調査の記録は履歴から確認できます。':'途中で状況を共有できれば、期限の相談につなげられたかもしれません。';
-  return `${header()}<main class="ending ${complete?'case-solved':''}"><p class="eyebrow">${complete?'CASE CLOSED':extended?'ONE MORE DAY':'GAME OVER'}</p><div class="ending-icon">${icon(complete?'check':'clock')}</div><h1>${complete?'説明が、伝わった。':extended?'もう一日、時間をもらえました。':'今回は、ここまで。'}</h1><p>${complete?'「ありがとうございます！ これなら先方にも説明できます！」——佐伯':extended?'途中で状況を共有していたので、真壁さんが期限を調整してくれました。':'期限までに回答できず、担当を交代することになりました。'}</p>${extended?`<p class="ending-note">${closingNote}</p>`:''}<div class="title-actions">${button(extended?'next-loop':'retry-case',extended?'翌日の調査へ':'はじめからやり直す','primary')}${complete&&chapterNumber===1?button('next-case','2章へ','primary'):''}${button('title','タイトルへ','secondary')}</div></main>`;
+  const closingNote=extended?'手がかり・知識・調査状況を引き継ぎ、翌日9:00から再開します。延長はこの一日です。':complete?problem.closingNote||'確認できた原因と根拠、影響範囲と対応案を報告しました。本番の是正作業は次の相談です。':state.progressReported?'調査の記録は履歴から確認できます。':'途中で状況を共有できれば、期限の相談につなげられたかもしれません。';
+  return `${header()}<main class="ending ${complete?'case-solved':''}"><p class="eyebrow">${complete?'CASE CLOSED':extended?'ONE MORE DAY':'GAME OVER'}</p><div class="ending-icon">${icon(complete?'check':'clock')}</div><h1>${complete?'説明が、伝わった。':extended?'もう一日、時間をもらえました。':'今回は、ここまで。'}</h1><p>${complete?'「ありがとうございます！ これなら先方にも説明できます！」——佐伯':extended?'途中で状況を共有していたので、真壁さんが期限を調整してくれました。':'期限までに回答できず、担当を交代することになりました。'}</p>${extended?`<p class="ending-note">${closingNote}</p>`:''}<div class="title-actions">${button(extended?'next-loop':'retry-case',extended?'翌日の調査へ':'はじめからやり直す','primary')}${complete&&nextCaseId?button('next-case',`${chapterNumber+1}章へ`,'primary'):''}${button('title','タイトルへ','secondary')}</div></main>`;
 }
 function briefingPage(){
   return `${header()}<main class="ticket-briefing" aria-labelledby="ticket-briefing-title"><div class="ticket-briefing-heading"><p class="eyebrow">${chapterNumber}章 / ${esc(problem.title)}</p><h1 id="ticket-briefing-title">Backlogチケット</h1></div>${investigations(true)}<footer>${button('begin-work','業務を開始する','primary')}</footer></main>`;
@@ -332,7 +357,6 @@ async function beginWork(){
   const source=overview?{clone:overview.cloneNode(true),rect:overview.getBoundingClientRect(),scrollLeft:overview.scrollLeft}:null;
   deployingTickets=true;engine.beginWork(state);save();render();
   const reduced=state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const flights=[];
   const target=document.querySelector('[data-status="todo"] .kanban-cards');
   if(!reduced&&source&&target){
     const sheet=source.clone;
@@ -341,10 +365,12 @@ async function beginWork(){
     document.body.append(sheet);sheet.scrollTop=0;sheet.scrollLeft=source.scrollLeft;
     const cardLayer=document.createElement('div');
     cardLayer.className='kanban kanban-cards ticket-animation-layer';cardLayer.setAttribute('aria-hidden','true');cardLayer.inert=true;
+    cardLayer.dataset.phase='converting';
     Object.assign(cardLayer.style,{position:'fixed',inset:'0',display:'block',overflow:'visible',padding:'0',margin:'0',pointerEvents:'none',zIndex:'201'});
     document.body.append(cardLayer);
     const rows=[...sheet.querySelectorAll('tbody tr')];
     const cards=[...target.querySelectorAll('[data-card-id]')];
+    const tickets=[],conversions=[];
     cards.forEach(card=>card.style.opacity='0');
     for(const [index,row] of rows.entries()){
       const card=cards.find(item=>item.dataset.cardId===row.dataset.cardId);
@@ -362,16 +388,25 @@ async function beginWork(){
       cardLayer.append(clone);
       const x=destination.left-left,y=Math.max(column.top,Math.min(destination.top,column.bottom-destination.height))-top;
       const travel=`translate(${x}px,${y}px)`;
-      const animation=clone.animate([{transform:'scale(.88,.25)',opacity:0},{transform:'scale(1)',opacity:1,offset:.22},{transform:'scale(1)',opacity:1,offset:.35},{transform:travel,opacity:1,offset:.8},{transform:travel,opacity:0}],{duration:800,easing:'cubic-bezier(.22,.68,.25,1)',fill:'both'});
+      const animation=clone.animate([{transform:'scale(.88,.25)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:240,easing:'ease-out',fill:'both'});
       row.animate([{opacity:1},{opacity:.15}],{duration:180,fill:'forwards'});
-      flights.push(animation.finished.catch(()=>{}).finally(()=>{clone.remove();card.style.opacity='';}));
+      conversions.push(animation.finished.catch(()=>{}));
+      tickets.push({clone,card,travel,animation});
       if(index<rows.length-1)await new Promise(resolve=>setTimeout(resolve,130));
     }
+    await Promise.all(conversions);
+    cardLayer.dataset.phase='clearing';
     const fade=sheet.animate([{opacity:1},{opacity:0}],{duration:300,fill:'both'});
-    flights.push(fade.finished.catch(()=>{}).finally(()=>sheet.remove()));
+    await fade.finished.catch(()=>{});sheet.remove();
+    cardLayer.dataset.phase='placing';
+    const flights=tickets.map(({clone,card,travel,animation},index)=>{
+      animation.cancel();
+      const flight=clone.animate([{transform:'scale(1)',opacity:1},{transform:travel,opacity:1,offset:.8},{transform:travel,opacity:0}],{duration:600,delay:index*80,easing:'cubic-bezier(.22,.68,.25,1)',fill:'both'});
+      return flight.finished.catch(()=>{}).finally(()=>{clone.remove();card.style.opacity='';});
+    });
     await Promise.all(flights);cardLayer.remove();
   }
-  await Promise.all(flights);deployingTickets=false;syncTimer();
+  deployingTickets=false;syncTimer();
   document.querySelector('.todo .action-card')?.focus({preventScroll:true});
 }
 function render() {
@@ -399,10 +434,13 @@ function render() {
   const openedHistory=[...document.querySelectorAll('.chat-scroll .history-entry[open]')].map(item=>item.dataset.historyIndex);
   const chat = document.querySelector('.chat-scroll');
   if (chat?.clientHeight) { chatScroll=chat.scrollTop; chatBottom=chat.scrollHeight-chat.scrollTop-chat.clientHeight<40; }
+  syncChatRead();
   document.body.classList.toggle('reduce-motion', Boolean((state||saved)?.settings.reduced));
   document.body.classList.toggle('report-mode',page==='game'&&(state?.phase==='report'||isMeetingScene()));
   document.body.classList.toggle('workspace-mode',page==='game'&&state&&!['loop','complete','gameover'].includes(state.phase));
   app.innerHTML=page==='title'?titlePage():state.phase==='briefing'?briefingPage():['loop','complete','gameover'].includes(state.phase)?ending():workspace();
+  const chatEntry=app.querySelector('[data-action="panel:chat"]');
+  if(chatEntry&&unread){chatEntry.insertAdjacentHTML('beforeend',`<span class="chat-unread-badge" aria-label="未読 ${unread}件">${unread}</span>`);chatEntry.classList.toggle('chat-notify',chatPulse);}
   const reportDialogue=document.querySelector('.report-conversation');
   const reportDeck=document.querySelector('.reporting>.clue-drawer');
   if(reportDialogue&&reportDeck)reportDeck.before(reportDialogue);
@@ -454,10 +492,15 @@ function render() {
   if(nextChat) {
     for(const index of openedHistory){const item=nextChat.querySelector(`[data-history-index="${index}"]`);if(item)item.open=true;}
     nextChat.scrollTop=chatBottom?nextChat.scrollHeight:chatScroll;
+    if(pendingUnreadScroll){
+      const divider=nextChat.querySelector('.chat-unread-divider');
+      if(divider)nextChat.scrollTop+=divider.getBoundingClientRect().top-nextChat.getBoundingClientRect().top;
+      pendingUnreadScroll=false;chatScroll=nextChat.scrollTop;chatBottom=nextChat.scrollHeight-nextChat.scrollTop-nextChat.clientHeight<40;
+    }
     nextChat.addEventListener('scroll',()=>{
       if(!nextChat.isConnected || !nextChat.clientHeight)return;
       chatScroll=nextChat.scrollTop;chatBottom=nextChat.scrollHeight-nextChat.scrollTop-nextChat.clientHeight<40;
-      if(chatBottom){unread=0;document.querySelector('.unread')?.remove();}
+      if(chatBottom&&chatVisible())acknowledgeChat();
     });
     nextChat.addEventListener('toggle',()=>{if(nextChat.isConnected && chatBottom)nextChat.scrollTop=nextChat.scrollHeight;},true);
   }
@@ -543,12 +586,22 @@ function confirmAction(title, description, execute, label='実行する') {
 function beginInvestigation(id) {
   const action=problem.investigations.find(item=>item.id===id)||problem.help.cards.find(item=>item.id===id);
   if(!action || state.phase!=='desk')return;
-  const question=action.questionOptions?.filter(item=>engine.matches(item.unlock,state)).at(-1)?.id;
-  const plan=engine.preview(state,id,question);
-  if(!plan?.allowed){notify('このタスクは実行できません。');return;}
-  const execute=()=>{if(engine.investigate(state,id,question,true)){save();render();}};
-  if(engine.cardStatus(state,id)==='working')confirmAction('もう一度実行しますか？',`${action.title}を再実行します。所要時間 ${duration(plan.minutes)}`,execute,'再実行する');
-  else execute();
+  if(engine.cardStatus(state,id)==='done')return;
+  const questions=action.questionOptions?.filter(item=>engine.matches(item.unlock,state))||[];
+  const prepare=question=>{
+    const plan=engine.preview(state,id,question);
+    if(!plan?.allowed){notify('このタスクは実行できません。');return;}
+    const execute=()=>{if(engine.investigate(state,id,question,true)){save();render();}};
+    if(engine.cardStatus(state,id)==='working')confirmAction('もう一度実行しますか？',`${action.title}を再実行します。所要時間 ${duration(plan.minutes)}`,execute,'再実行する');
+    else execute();
+  };
+  if(action.chooseQuestion&&questions.length>1){
+    openModal(`<p class="eyebrow">${esc(action.title)}</p><h2 id="modal-title">${esc(action.choicePrompt||'何について考えますか？')}</h2><div class="action-choices">${questions.map((item,index)=>button(`question:${index}`,`${esc(item.label)} · ${duration(engine.preview(state,id,item.id).minutes)}`,'secondary')).join('')}</div>${button('cancel','戻る','text-button')}`,choice=>{
+      if(choice==='cancel'){closeModal();return;}
+      const question=questions[Number(choice.split(':')[1])];
+      if(choice.startsWith('question:')&&question){closeModal();prepare(question.id);}
+    });
+  }else prepare(questions.at(-1)?.id);
 }
 function settings() {
   const settings=(state||saved)?.settings||{instant:false,reduced:false};
@@ -653,7 +706,7 @@ app.addEventListener('click',async event=>{
   if(deployingTickets)return;
   const target=event.target.closest('[data-action]'); if(!target)return;
   const action=target.dataset.action;
-  if(action==='next-case'){location.search='?case=approval-button';return;}
+  if(action==='next-case'&&nextCaseId){location.search=`?case=${nextCaseId}`;return;}
   if(action==='settings'){settings();return;}
   if(action==='title'){page='title';render();return;}
   if(action==='start') {if(hasContinueSave()||saveError)confirmAction('はじめから進めますか？','今回の進行をやり直します。記憶・直感・完了記録は保持します。',()=>start(),'はじめから');else start();return;}
@@ -699,11 +752,11 @@ app.addEventListener('click',async event=>{
   if(action==='submit'){if(engine.report(state)){state.conversation.meeting=true;save();render();}return;}
   if(action==='restart'){confirmAction('はじめからやり直しますか？','調査の進行と時刻を戻し、1日目から新しい試行を始めます。',()=>{start();},'やり直す');return;}
   if(action==='chat-latest'){
-    unread=0;chatBottom=true;const chat=document.querySelector('.chat-scroll');
+    unreadStartKey=state.chatRead?.unread[0]||unreadStartKey;acknowledgeChat();chatBottom=true;const chat=document.querySelector('.chat-scroll');
     if(chat){chat.scrollTop=chat.scrollHeight;chatScroll=chat.scrollTop;}
     document.querySelector('.unread')?.remove();return;
   }
-  if(action==='panel:chat'){showMobilePanel('chat');return;}
+  if(action==='panel:chat'){openChatPanel();return;}
   if(action==='panel:desk'){showMobilePanel('desk');return;}
   if(action==='notebook'){showMobilePanel('desk');setDeckSize(deckSize==='small'?'medium':'small');return;}
   if(['investigate','desk'].includes(action)){

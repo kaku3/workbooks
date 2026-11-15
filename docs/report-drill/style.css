@@ -46,10 +46,10 @@
 
 /* Cast stands above the message window, following Design Block Drill. */
 .conversation{inset:auto 0 20px;margin:0 auto;width:min(1400px,calc(100vw - 24px));max-height:calc(100dvh - 32px);padding:10px 8px;border:0;background:transparent;box-shadow:none;overflow:auto}
-.conversation.with-portraits{width:min(1400px,calc(100vw - 24px));overflow:auto}
+.conversation.with-portraits{width:min(1400px,calc(100vw - 24px));overflow-x:hidden;overflow-y:auto}
 .conversation::backdrop{background:#080d1680;backdrop-filter:blur(2px)}
 .conversation-window{position:relative;z-index:2;max-width:964px;margin:0 auto;background:#1b2531;border:1px solid #63776d;border-radius:12px;box-shadow:0 12px 40px #0005;overflow:hidden}
-.portrait-stage{position:relative;z-index:1;isolation:isolate;display:flex;justify-content:center;align-items:end;gap:0;padding:8px 0 0;margin:0 auto;background:none;border:0}
+.portrait-stage{position:relative;z-index:1;isolation:isolate;display:flex;justify-content:center;align-items:end;gap:0;padding:8px min(66px,6vw) 0;margin:0 auto;background:none;border:0}
 .portrait{position:relative;flex:0 1 min(330px,39vh);min-width:0;margin:0;filter:brightness(.7) saturate(.65);transform:translateY(4px);z-index:1;transition:filter .2s,transform .2s}
 .portrait.speaking{filter:brightness(1) drop-shadow(0 0 9px #a8d6c650);transform:translateY(-4px);z-index:10}
 .portrait img{position:relative;display:block;width:140%;height:auto;max-width:none;left:-20%}
@@ -284,9 +284,10 @@
 @media(max-width:699px){.clue-acquisition-caption{font-size:24px}}
 
 .chat-panel .history-item{grid-template-columns:minmax(0,1fr)}
-.chat-panel .history-copy{grid-column:1;padding-right:86px}
-.chat-panel .history-deltas{position:absolute;top:5px;right:6px;z-index:2;grid-column:auto;grid-row:auto;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:3px;max-width:calc(100% - 20px);margin:0}
-.chat-panel .history-savings{grid-column:1/-1}
+.chat-panel .history-copy{grid-column:1;padding-right:44px}
+.chat-panel .history-deltas{position:static;grid-column:1;grid-row:3;justify-self:end;align-self:end;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;gap:3px;max-width:100%;margin:4px 0 0;padding:0}
+.chat-panel .history-deltas:empty{display:none}
+.chat-panel .history-savings{grid-column:1/-1;grid-row:2}
 .history-savings .history-saving{display:flex;flex-direction:column;gap:3px;width:100%;padding:5px 6px;border:1px solid #8aae7a;border-radius:4px;background:#e5f6de;color:#2b5849}
 .clue-drawer{height:118px;flex-basis:118px}
 :is(.clue-drawer,.report-selection) .evidence-card h3{height:50px;min-height:50px;flex-shrink:0;line-height:20px;margin:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -780,3 +781,18 @@
 @media(prefers-reduced-motion:reduce){.title-case .case-paper,.title-case .sticky-note{animation:none}}
 .title-page{max-width:none;background-image:linear-gradient(#a8d6c61a 1px,transparent 1px),linear-gradient(90deg,#a8d6c61a 1px,transparent 1px);background-size:72px 72px;background-position:center top}
 @media(min-width:1100px){.title-page{padding-left:max(45px,calc((100% - 1060px)/2));padding-right:max(45px,calc((100% - 1060px)/2))}}
+.chat-unread-badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:10px;background:#d4b987;color:#17212b;font:700 10px var(--mono)}
+.chat-unread-divider{display:flex;align-items:center;gap:10px;color:#d4b987;font-size:10px;padding:14px 0;scroll-margin-top:10px}.chat-unread-divider:before,.chat-unread-divider:after{content:"";height:1px;flex:1;background:#d4b98780}
+.mobile-tabs button.chat-notify{animation:chat-entry-notify 650ms ease-out}
+@keyframes chat-entry-notify{0%,100%{box-shadow:inset 0 0 0 1px transparent}45%{background:#d4b98725;box-shadow:inset 0 0 0 1px #d4b987}}
+@media(prefers-reduced-motion:reduce){.mobile-tabs button.chat-notify{animation:none}}
+.title-page{position:relative;isolation:isolate}
+.title-page:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(#b8edda66 1px,transparent 1px),linear-gradient(90deg,#b8edda66 1px,transparent 1px);background-size:72px 72px;background-position:center top;mask-image:linear-gradient(135deg,transparent 40%,#000 49%,#000 51%,transparent 60%);mask-size:300% 300%;mask-repeat:no-repeat;animation:title-grid-sweep 12s linear infinite}
+@keyframes title-grid-sweep{from{mask-position:100% 100%}to{mask-position:0% 0%}}
+.chapter-picker a{transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
+.chapter-picker a:hover,.chapter-picker a:focus-visible{background:#34564c;border-color:#b8ddce;color:#f2fff9;transform:translateX(5px);box-shadow:inset 3px 0 #a8d6c6,0 4px 14px #0003}
+.chapter-picker a:focus-visible{outline:2px solid #a8d6c6;outline-offset:3px}
+.chapter-picker a:active{transform:translateX(3px) scale(.995)}
+@media(prefers-reduced-motion:reduce){.title-page:before{animation:none;display:none}.chapter-picker a{transition:none}.chapter-picker a:hover,.chapter-picker a:focus-visible,.chapter-picker a:active{transform:none}}
+.reduce-motion .title-page:before{display:none}.reduce-motion .chapter-picker a:hover,.reduce-motion .chapter-picker a:focus-visible,.reduce-motion .chapter-picker a:active{transform:none}
+.action-choices{display:grid;gap:12px;margin:20px 0}.action-choices button{text-align:left;justify-content:space-between;white-space:normal}

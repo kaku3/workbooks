@@ -1,5 +1,10 @@
 # 第2面 Codex引継ぎパック
 
+<!-- document-status -->
+> **状態：第2章の採用元・参考資料。現行実装の指示書ではない。** 旧版chapter2を置き換えた設計だが、その後の修正や実装完了を反映していない記述がある。
+> 特に「第1章固定ビルド」「第2章は取込対象外」などは過去の状態。現行の正本は [問題原稿](../problems/02_approval-button.md) と [会話原稿](../scenarios/02_approval-button.md)。新規実装の指示として旧記述を再適用しない。
+<!-- /document-status -->
+
 対象: `26_report-drill` / 第2面「承認画面へのボタン追加」（仕様 v2）
 基準: 添付ZIPの README、`docs/problems/02_approval-button.md`、`docs/scenarios/02_approval-button.md`、第1面の実装構成。
 

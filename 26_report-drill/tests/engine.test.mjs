@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createEngine,minutes} from '../src/engine.mjs';
-import {problem,scenario} from '../src/data/content.mjs';
+import {cases,problem,scenario} from '../src/data/content.mjs';
 import {findTimeSavings} from '../src/cost-effects.mjs';
 import {buildChatFeed} from '../src/chat-feed.mjs';
 const e=createEngine(problem,scenario);
@@ -135,7 +135,8 @@ test('debugger remains working after a saved miss and can be retried after narro
 test('useful and unhelpful work both remain working until manually moved',()=>{
  const s=start();run(s,'wm.source');assert.equal(e.cardStatus(s,'wm.source'),'working');
  const before=structuredClone(s);run(s,'wm.source-common');assert.equal(s.time-before.time,45);assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);assert.equal(e.cardStatus(s,'wm.source-common'),'working');
- assert.ok(s.history.at(-1).ids.includes(scenario.events.noProgress));
+ assert.ok(!s.history.at(-1).ids.includes(scenario.events.noProgress));
+ run(s,'wm.source-common');assert.ok(s.history.at(-1).ids.includes(scenario.events.noProgress));
  run(s,'wm.legacy');assert.equal(e.cardStatus(s,'wm.legacy'),'working');
 });
 test('history records real gains, discoveries and final status without inventing capped gains',()=>{
@@ -245,4 +246,32 @@ test('chat history retains the cost reduction as part of the completed event',()
  const index=s.conversation.historyIndex;assert.equal(buildChatFeed(scenario,s).some(item=>item.key===`history:${index}`),false);
  finish(s);const entry=buildChatFeed(scenario,s).find(item=>item.key===`history:${index}`);
  assert.ok(entry.item.changes.savings.some(saving=>saving.id==='wm.source-backend'&&saving.saved===30));
+});
+
+
+for(const [id,{scenario,problem}] of Object.entries(cases))test(`${id}: first daily lunch and first coffee never receive a repeated-work thought`,()=>{
+ const e=createEngine(problem,scenario),s=e.start();
+ const finish=state=>{while(state.phase==='scene')e.advance(state,true);};
+ finish(s);e.beginWork(s);
+ const lunch=problem.lunchAction||'wm.lunch',coffee=problem.coffeeAction||'wm.coffee';
+ e.investigate(s,lunch);assert.ok(!s.conversation.ids.includes(scenario.events.noProgress));finish(s);
+ e.investigate(s,lunch);assert.ok(s.conversation.ids.includes(scenario.events.noProgress));finish(s);
+ e.investigate(s,coffee);assert.ok(!s.conversation.ids.includes(scenario.events.noProgress));finish(s);
+ e.statusReport(s,'progress');finish(s);e.timeout(s);finish(s);assert.equal(s.phase,'loop');
+ const next=e.start(s,true);finish(next);
+ const lunchScene=problem.investigations.find(action=>action.id===lunch).outcomes.find(result=>result.id==='default').scene;
+ assert.ok(!next.flags.includes(lunch));assert.equal(e.cardStatus(next,lunch),'todo');
+ const before=next.time;e.investigate(next,lunch);
+ assert.deepEqual(next.conversation.ids,[lunchScene]);assert.equal(next.time,before+60);finish(next);
+ const restored=e.restore(JSON.stringify(next));
+ assert.ok(restored.done.includes(`${lunch}:default`),'a real second-day lunch stays consumed after reload');
+});
+
+test('an existing second-day save with only the previous lunch flag can take lunch normally',()=>{
+ const {problem,scenario}=cases['bulk-import'],e=createEngine(problem,scenario);
+ const s=e.fresh();s.loop=2;s.flags=['bi.lunch','bi.source'];
+ s.done=['bi.lunch:recheck'];s.board['bi.lunch']='working';s.investigationResults['bi.lunch']='03.recheck';
+ const restored=e.restore(JSON.stringify(s));
+ assert.ok(restored.flags.includes('bi.source'));assert.equal(e.cardStatus(restored,'bi.lunch'),'todo');
+ e.investigate(restored,'bi.lunch');assert.deepEqual(restored.conversation.ids,['03.lunch']);assert.equal(restored.time,600);
 });
