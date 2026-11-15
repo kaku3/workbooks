@@ -59,6 +59,10 @@
 
 ## scenes
 
+### 02.no-progress (version 1)
+
+- player [thought]: この作業意味あるかな・・・？
+
 ### 02.intro (version 2)
 
 - client: 経理から、承認画面にボタンを一個追加してほしいって言われてまして。見積もりを頂けますか？
@@ -389,6 +393,7 @@
 ```json
 {
   "intro": "02.intro",
+  "noProgress": "02.no-progress",
   "clear": "02.clear",
   "timeout": "02.timeout",
   "progress": "02.report-progress",

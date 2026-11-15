@@ -29,6 +29,16 @@ export const cases = {
         }
       ],
       "scenes": {
+        "01.no-progress": {
+          "version": 1,
+          "lines": [
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "この作業意味あるかな・・・？"
+            }
+          ]
+        },
         "01.intro": {
           "version": 2,
           "lines": [
@@ -60,6 +70,10 @@ export const cases = {
             {
               "speaker": "player",
               "text": "**え！？**"
+            },
+            {
+              "speaker": "lead",
+              "text": "Backlogにチケット切っておいたから。\n着手する時は**作業中**に、完了したと思ったら**完了**にチケットを移動して。"
             }
           ]
         },
@@ -877,6 +891,7 @@ export const cases = {
       },
       "events": {
         "intro": "01.intro",
+        "noProgress": "01.no-progress",
         "clear": "01.clear",
         "timeout": "01.timeout",
         "progress": "01.report-progress",
@@ -1766,6 +1781,16 @@ export const cases = {
         }
       ],
       "scenes": {
+        "02.no-progress": {
+          "version": 1,
+          "lines": [
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "この作業意味あるかな・・・？"
+            }
+          ]
+        },
         "02.intro": {
           "version": 2,
           "lines": [
@@ -2444,6 +2469,7 @@ export const cases = {
       },
       "events": {
         "intro": "02.intro",
+        "noProgress": "02.no-progress",
         "clear": "02.clear",
         "timeout": "02.timeout",
         "progress": "02.report-progress",

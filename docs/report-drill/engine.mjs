@@ -102,7 +102,7 @@ export function createEngine(problem, scenario) {
     if (c.scene < c.ids.length) return;
     const actionId=c.actionId||c.completedActionId;
     if (actionId) {
-      const target=c.returnStatus||'done';
+      const target='working';
       (state.board ??= {})[actionId] = target;
       const entry=state.history[c.historyIndex];
       if(entry) {
@@ -130,10 +130,9 @@ export function createEngine(problem, scenario) {
     const result = action.outcomes.find(item => matches(item.when, state, { questionId }));
     const key = `${action.id}:${result.id}`;
     const isHelp = problem.help.cards.some(item => item.id === id);
-    const repeatable=Boolean(action.repeatable || result.complete===false);
-    const replay = !rerun && !isHelp && !repeatable && state.done.includes(key);
+    const replay = false;
     const exhausted = isHelp && state.helpUsed.filter(item => item === id).length >= action.usesPerLoop;
-    return { action, result, key, replay, canRerun: repeatable || !state.done.includes(key), minutes: replay ? 0 : result.minutes, allowed: !exhausted };
+    return { action, result, key, replay, canRerun: true, minutes: result.minutes, allowed: !exhausted };
   }
   function investigate(state, id, questionId, rerun = false) {
     if (state.phase !== 'desk') return false;
@@ -165,15 +164,19 @@ export function createEngine(problem, scenario) {
       (state.investigationResults ??= {})[id] = result.scene;
     }
     const summary = replay ? `${action.title} · 再読` : `${action.title} · ${duration(result.minutes)}経過`;
-    queue(state, [result.scene], 'desk', summary, replay,before);
+    const delta=changes(before,state);
+    const noProgress=!delta.evidence.length && !Object.keys(delta.knowledge).length && !delta.unlocked.length && !delta.savings.length && !delta.progressReported;
+    const scenes=[result.scene];
+    if(noProgress && scenario.events.noProgress)scenes.push(scenario.events.noProgress);
+    queue(state, scenes, 'desk', summary, replay,before);
     if (problem.investigations.some(item=>item.id===id)) {
       state.conversation.actionId=id;
-      state.conversation.returnStatus=result.complete===false||action.repeatable?'todo':'done';
+      state.conversation.returnStatus='working';
     }
     return true;
   }
   function cardStatus(state, id) {
-    return state.board?.[id] || (state.done.some(key=>key.startsWith(`${id}:`)) ? 'done' : 'todo');
+    return state.board?.[id] || (state.done.some(key=>key.startsWith(`${id}:`)) ? 'working' : 'todo');
   }
   function moveCard(state, id, target) {
     if (state.phase !== 'desk' || !['todo','working','done'].includes(target)) return false;
@@ -183,11 +186,6 @@ export function createEngine(problem, scenario) {
     const before=snapshot(state);
     if (target === 'working') {
       const question = action.questionOptions?.filter(item=>matches(item.unlock,state)).at(-1)?.id;
-      if (preview(state,id,question)?.replay) {
-        (state.board ??= {})[id]=target;
-        state.history.push({day:state.loop,time:state.time,ids:[],label:`${action.title} · 移動`,selected:[],changes:changes(before,state)});
-        return true;
-      }
       return investigate(state,id,question);
     }
     (state.board ??= {})[id] = target;
@@ -248,7 +246,7 @@ export function createEngine(problem, scenario) {
       if(state.phase==='scene' && state.conversation?.ids?.some(id=>/^01\.q[123]-/.test(id))){state.phase='desk';state.conversation=null;}
     }
     if (!state || state.saveVersion !== 1 || state.contentVersion !== `${problem.version}:${scenario.version}`) throw new Error('保存データの版が現在の原稿と異なります。');
-    if (!['desk','report','scene','loop','complete','gameover'].includes(state.phase) || !Number.isInteger(state.time) || state.time < minutes(problem.clock.start) || state.time > deadline || !Number.isInteger(state.question) || state.question < 0 || state.question > problem.questions.length) throw new Error('保存データの進行状態を読み取れません。');
+    if (!['briefing','desk','report','scene','loop','complete','gameover'].includes(state.phase) || !Number.isInteger(state.time) || state.time < minutes(problem.clock.start) || state.time > deadline || !Number.isInteger(state.question) || state.question < 0 || state.question > problem.questions.length) throw new Error('保存データの進行状態を読み取れません。');
     state.progressReported ??= state.history?.some(entry=>entry.label==='途中経過の報告' && (entry.day??1)===state.loop) || false;
     if(state.phase==='loop' && (!state.progressReported || state.loop>1))state.phase='gameover';
     if(state.phase==='scene' && state.conversation?.ids?.includes(scenario.events.dream)) {
@@ -259,7 +257,6 @@ export function createEngine(problem, scenario) {
     }
     for (const key of ['evidence','selected','memories','grown','seen','flags','done','helpUsed','history']) if (!Array.isArray(state[key])) throw new Error('保存データの形式が正しくありません。');
     state.board ??= {};
-    for(const action of problem.investigations)if(action.repeatable&&state.board[action.id]==='done')state.board[action.id]='todo';
     state.investigationResults ??= {};
     // Earlier saves used one source-analysis task for both overview and PDF location.
     if(state.done.some(key=>['wm.source:prepared','wm.source:default'].includes(key))) {
@@ -279,9 +276,10 @@ export function createEngine(problem, scenario) {
     for (const [key, value] of Object.entries(problem.knowledge)) if (!Number.isInteger(state.knowledge[key]) || state.knowledge[key] < 0 || state.knowledge[key] > value.max) throw new Error('知識の値が不正です。');
     if (state.phase === 'scene') {
       const c = state.conversation;
-      if (!c || !Array.isArray(c.ids) || !c.ids.length || !c.ids.every(id => scenario.scenes[id]) || !Number.isInteger(c.scene) || c.scene < 0 || c.scene >= c.ids.length || !Number.isInteger(c.line) || c.line < 0 || c.line >= scenario.scenes[c.ids[c.scene]].lines.length || !['desk','report','complete','loop','gameover'].includes(c.after)) throw new Error('会話の保存位置が不正です。');
+      if (!c || !Array.isArray(c.ids) || !c.ids.length || !c.ids.every(id => scenario.scenes[id]) || !Number.isInteger(c.scene) || c.scene < 0 || c.scene >= c.ids.length || !Number.isInteger(c.line) || c.line < 0 || c.line >= scenario.scenes[c.ids[c.scene]].lines.length || !['briefing','desk','report','complete','loop','gameover'].includes(c.after)) throw new Error('会話の保存位置が不正です。');
       if (c.completedActionId && !problem.investigations.some(action=>action.id===c.completedActionId)) throw new Error('完了する調査を読み取れません。');
-      if (c.actionId && (!problem.investigations.some(action=>action.id===c.actionId)||!['todo','done'].includes(c.returnStatus))) throw new Error('調査後の戻り先を読み取れません。');
+      if (c.actionId && (!problem.investigations.some(action=>action.id===c.actionId)||!['todo','working','done'].includes(c.returnStatus))) throw new Error('調査後の戻り先を読み取れません。');
+      if(!c.replay && c.ids.includes(scenario.events.intro) && c.after==='desk')c.after='briefing';
       if (!c.completedActionId && !c.actionId && !c.replay) {
         const action=problem.investigations.find(item=>item.outcomes.some(outcome=>c.ids.includes(outcome.scene) && outcome.complete!==false));
         if(action)c.completedActionId=action.id;
@@ -290,6 +288,7 @@ export function createEngine(problem, scenario) {
     return state;
   }
   return { fresh, matches, queue, advance, preview, investigate, cardStatus, moveCard, report, evaluateReport, statusReport, restore, timeout, elapse, deadline, settle,
+    beginWork(state) { if(state.phase!=='briefing')return false;state.phase='desk';return true; },
     start(previous={}, nextLoop = false) {
       if(nextLoop && previous.phase==='loop') {
         const state=structuredClone(previous);
@@ -301,7 +300,7 @@ export function createEngine(problem, scenario) {
         }
         queue(state,[scenario.events.nextDay],'desk','翌日の調査を開始');return state;
       }
-      const state=fresh(previous);queue(state,[scenario.events.intro],'desk','依頼を受けた');return state;
+      const state=fresh(previous);queue(state,[scenario.events.intro],'briefing','依頼を受けた');return state;
     },
     chat(state) { return scenario.chat.filter(item => minutes(item.at) <= state.time); },
   };

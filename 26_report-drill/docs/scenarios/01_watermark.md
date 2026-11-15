@@ -55,6 +55,10 @@
 
 ## scenes
 
+### 01.no-progress (version 1)
+
+- player [thought]: この作業意味あるかな・・・？
+
 ### 01.intro (version 2)
 
 - client: 経理の三田から、取引先に提出用に印刷したPDFの資料に、田中太郎という透かしが入ると問い合わせがありまして。
@@ -64,6 +68,7 @@
 - client: …何が起きているのか調べてください。\n**今日18時までに、**原因と根拠、どこまで影響して何を対応するか、報告をお願いします。
 - lead: 分かりました。まず三田さんの印刷資料と、出力したときの記録を確認します。\n**こいつが**
 - player: **え！？**
+- lead: Backlogにチケット切っておいたから。\n着手する時は**作業中**に、完了したと思ったら**完了**にチケットを移動して。
 
 ### 01.case (version 2)
 
@@ -453,6 +458,7 @@
 ```json
 {
   "intro": "01.intro",
+  "noProgress": "01.no-progress",
   "clear": "01.clear",
   "timeout": "01.timeout",
   "progress": "01.report-progress",

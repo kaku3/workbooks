@@ -5,7 +5,7 @@ import {createEngine} from '../src/engine.mjs';
 import {buildChatFeed} from '../src/chat-feed.mjs';
 const {problem,scenario}=cases['approval-button'],e=createEngine(problem,scenario);
 const finish=s=>{for(let i=0;s.phase==='scene'&&i<30;i++)e.advance(s,true);assert.notEqual(s.phase,'scene');};
-const start=()=>{const s=e.start();finish(s);return s;};
+const start=()=>{const s=e.start();finish(s);e.beginWork(s);return s;};
 const run=(s,id)=>{assert.equal(e.investigate(s,`ab.${id}`),true,id);finish(s);};
 const answers=['ab.purpose-summary','ab.return-flow','ab.impact-summary'];
 const prepare=(last='permission')=>{const s=start();for(const id of ['business','workflow','reapply','state',last,'confirm-scope'])run(s,id);return s;};
@@ -78,12 +78,12 @@ test('technical rechecks remain available, cost time and grant no repeated rewar
  let s;
  for(const id of ['screen','source','api','ui','design','ai']){
   s=start();firstRun(s,'screen');firstRun(s,'source');if(id==='design')firstRun(s,'api');
-  if(!['screen','source'].includes(id))firstRun(s,id);assert.equal(e.cardStatus(s,'ab.'+id),'todo');
+  if(!['screen','source'].includes(id))firstRun(s,id);assert.equal(e.cardStatus(s,'ab.'+id),'working');
   const before=structuredClone(s),plan=e.preview(s,'ab.'+id);assert.equal(plan.replay,false);assert.equal(plan.result.id,'recheck');
   run(s,id);assert.equal(s.time,before.time+plan.minutes);assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);
   assert.equal(scenario.scenes[plan.result.scene].lines.at(-1).text,'これ以上は調べても何も分からなそうだ。');
  }
- const old=structuredClone(s);old.board['ab.api']='done';assert.equal(e.cardStatus(e.restore(JSON.stringify(old)),'ab.api'),'todo');
+ const old=structuredClone(s);old.board['ab.api']='done';assert.equal(e.cardStatus(e.restore(JSON.stringify(old)),'ab.api'),'done');
 });
 test('report feedback identifies the missing explanation in ordinary customer language',()=>{
  const s=prepare();s.phase='report';s.selected=['ab.current','ab.flow','ab.access'];e.report(s);assert.equal(s.conversation.ids[0],'02.report-purpose');finish(s);

@@ -48,7 +48,7 @@ try {
     await evaluate('advanceGameTimer(5000)');
   };
   const state=()=>evaluate("JSON.parse(localStorage.getItem('report-drill.pdf-incident.v1'))");
-  const settle=async()=>{for(let i=0;i<12;i++){if(!await evaluate("Boolean(document.querySelector('dialog[open] [data-action=scene-skip],.reporting [data-action=scene-skip]'))"))return;await click('dialog[open] [data-action=scene-skip],.reporting [data-action=scene-skip]');}throw new Error('Scene did not finish');};
+  const settle=async(begin=true)=>{for(let i=0;i<12;i++){if(!await evaluate("Boolean(document.querySelector('dialog[open] [data-action=scene-skip],.reporting [data-action=scene-skip]'))")){if(begin&&await evaluate("Boolean(document.querySelector('[data-action=begin-work]'))")){await click('[data-action=begin-work]');await waitFor("!document.querySelector('.ticket-flight')");}return;}await click('dialog[open] [data-action=scene-skip],.reporting [data-action=scene-skip]');}throw new Error('Scene did not finish');};
   const screenshot=async name=>{const result=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(new URL(`${name}.png`,artifacts),Buffer.from(result.data,'base64'));};
   const waitFor=async expression=>{for(let i=0;i<100;i++){if(await evaluate(expression))return;await delay(50);}throw new Error(`Wait failed: ${expression}`);};
   const size=(width,height,mobile=false)=>call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile});
@@ -61,6 +61,9 @@ try {
   `});
   await call('Runtime.enable');await call('Page.enable');await size(1440,1000);
   await call('Page.navigate',{url});await waitFor("Boolean(document.querySelector('[data-action=start]'))");
+  assert.equal(await evaluate("Boolean(document.querySelector('[data-action=continue]'))"),false,'no continue button without a save for this chapter');
+  assert.equal(await evaluate("document.querySelector('[data-action=start]').classList.contains('primary')"),true);
+  assert.equal(await evaluate("Boolean(document.querySelector('.title-backdrop,.title-scene'))"),false,'title has no background images or blur animation');
   await screenshot('title');
   await evaluate("import('./data/content.mjs').then(({cases})=>{const line=cases.watermark.scenario.scenes['01.intro'].lines[0];line.text='**'+line.text+'**';})");
   await click('[data-action=start]');
@@ -75,7 +78,32 @@ try {
   await waitFor("[...document.querySelectorAll('.portrait img')].every(img=>img.complete && img.naturalWidth)");
   assert.equal(await evaluate("document.querySelector('.portrait img').getBoundingClientRect().width"),portraitWidth);
   assert.equal(await evaluate("document.querySelector('.conversation-window').getBoundingClientRect().height"),introMessageHeight,'intro message height stays fixed between lines');
-  await screenshot('intro-player');await settle();
+  await screenshot('intro-player');await settle(false);
+  assert.equal((await state()).phase,'briefing');
+  assert.equal(await evaluate("document.querySelector('#ticket-briefing-title').textContent"),'Backlogチケット');
+  assert.equal(await evaluate("document.querySelectorAll('.ticket-overview table tbody tr').length>0"),true,'overview displays spreadsheet rows');
+  assert.equal(await evaluate("Boolean(document.querySelector('.ticket-overview .action-card,.ticket-briefing-heading>p:not(.eyebrow)'))"),false,'overview has no card grid or explanatory sentence');
+  const initialTickets=await evaluate("[...document.querySelectorAll('.ticket-overview [data-card-id]')].map(card=>card.dataset.cardId)");
+  await evaluate('advanceGameTimer(300000)');assert.equal((await state()).time,540,'ticket overview pauses the clock');
+  await screenshot('ticket-overview');
+  await call('Page.reload');await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
+  assert.equal(await evaluate("Boolean(document.querySelector('.ticket-overview'))"),true,'resume restores the overview');
+  await click('[data-action=begin-work]');
+  assert.equal(await evaluate("Boolean(document.querySelector('.ticket-source-sheet table'))"),true,'spreadsheet remains visible while converting rows');
+  assert.equal(await evaluate("document.querySelector('.ticket-flight')?.classList.contains('action-card')"),true,'each row produces an actual game card');
+  assert.equal(await evaluate("document.querySelector('.ticket-flight')?.dataset.ticketIndex"),'0','conversion starts with the top row');
+  assert.equal(await evaluate(`(()=>{
+    const moving=document.querySelector('.ticket-flight'),actual=document.querySelector('.todo [data-card-id="'+${JSON.stringify(initialTickets[0])}+'"]');
+    return [['',['backgroundColor','backgroundImage','borderColor','padding','color','boxShadow']],['h3',['fontSize','color','lineHeight']],['.action-time',['position','fontSize','fontWeight','color']],['.card-icon',['backgroundColor','color']]].every(([selector,properties])=>{
+      const a=getComputedStyle(selector?moving.querySelector(selector):moving),b=getComputedStyle(selector?actual.querySelector(selector):actual);
+      return properties.every(property=>a[property]===b[property]);
+    });
+  })()`),true,'moving cards retain the current board design, including the large background duration');
+  await waitFor("Boolean(document.querySelector('.ticket-flight[data-ticket-index=\"1\"]'))");
+  assert.equal(await evaluate("Boolean(document.querySelector('.ticket-flight[data-ticket-index=\"0\"]'))"),true,'the next row follows the first card');
+  await evaluate('advanceGameTimer(5000)');assert.equal((await state()).time,540,'placement pauses the clock');
+  await waitFor("!document.querySelector('.ticket-flight')");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('.todo [data-card-id]')].map(card=>card.dataset.cardId)"),initialTickets);
   assert.equal((await state()).time,540);
   assert.equal(await evaluate("document.querySelector('.topbar').getBoundingClientRect().height"),52,'compact header preserves game height');
   assert.equal(await evaluate("Boolean(document.querySelector('.statusbar'))"),false,'game footer annotations are removed');
@@ -114,7 +142,7 @@ try {
   await screenshot('desk');
   const investigate=async id=>{
     await click(`[data-action="investigate:${id}"]`);
-    assert.equal(await evaluate("Boolean(document.querySelector('[data-action=execute],[data-action=rerun]'))"),false,'no investigation confirmation popup');
+    if(await evaluate("Boolean(document.querySelector('dialog[open] [data-action=confirm]'))"))await click('[data-action=confirm]');
     await settle();
   };
   const drop=async(id,status)=>evaluate(`(()=>{const card=document.querySelector('[data-card-id="'+${JSON.stringify(id)}+'"]');const column=document.querySelector('[data-status="'+${JSON.stringify(status)}+'"]');const dataTransfer=new DataTransfer();card.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer}));column.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer}));column.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer}));card.dispatchEvent(new DragEvent('dragend',{bubbles:true,dataTransfer}));return true;})()`);
@@ -126,7 +154,12 @@ try {
   assert.equal(await evaluate(`document.querySelector('[data-feed-key="history:${pendingLog}"]').classList.contains('feed-arriving')`),true,'finished event slides into chat');
   assert.equal(await evaluate(`getComputedStyle(document.querySelector('[data-feed-key="history:${pendingLog}"]')).animationName`),'feed-slide-in');
   assert.equal((await state()).time,585);
-  assert.equal(await evaluate("Boolean(document.querySelector('.todo [data-card-id=\"wm.logs\"]'))"),true,'failed logs return to todo after reload');
+  assert.equal(await evaluate("Boolean(document.querySelector('.working [data-card-id=\"wm.logs\"]'))"),true,'failed logs remain working after reload');
+  const beforeRerun=await state();
+  await click('[data-action="investigate:wm.logs"]');
+  assert.equal(await evaluate("document.querySelector('#modal-title').textContent"),'もう一度実行しますか？');
+  assert.equal((await state()).time,beforeRerun.time);
+  await click('[data-action=cancel]');assert.equal((await state()).time,beforeRerun.time,'cancelling costs no time');
   await drop('wm.purpose-check','done');assert.equal((await state()).evidence.length,0);
   await drop('wm.purpose-check','todo');await drop('wm.purpose-check','working');await settle();
   await waitFor("Boolean(document.querySelector('.clue-acquisition-card'))");
@@ -144,8 +177,8 @@ try {
   assert.equal(await evaluate("document.querySelectorAll('#shared-clue-deck .clue-awaiting').length"),0);
   assert.equal(await evaluate("document.querySelector('.deck-handle>span').textContent"),'2');
   assert.equal((await state()).time,605);
-  assert.equal(await evaluate("Boolean(document.querySelector('.done [data-card-id=\"wm.purpose-check\"]'))"),true);
-  assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.purpose-check\"] .action-time'))"),false);
+  assert.equal(await evaluate("Boolean(document.querySelector('.working [data-card-id=\"wm.purpose-check\"]'))"),true);
+  assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.purpose-check\"] .action-time'))"),true);
   assert.equal(await evaluate("Boolean(document.querySelector('.status-effects'))"),false,'state changes are recorded in chat instead of a popup');
   const count=await evaluate('document.querySelectorAll(".action-card").length');
   await investigate('wm.design');assert.equal(await evaluate('document.querySelectorAll(".action-card").length'),count+3);
@@ -186,7 +219,7 @@ try {
   await waitFor("document.querySelector('[data-card-id=\"wm.source-frontend\"] .action-time').textContent==='20m'");
   assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.source-pdf\"]'))"),false);
   await investigate('wm.logs');assert.equal((await state()).evidence.includes('wm.logs'),true);
-  assert.equal(await evaluate("Boolean(document.querySelector('.todo [data-card-id=\"wm.logs\"]'))"),true);
+  assert.equal(await evaluate("Boolean(document.querySelector('.working [data-card-id=\"wm.logs\"]'))"),true);
   await investigate('wm.source-backend');
   assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-pdf\"] .action-time').textContent"),'45m');
   await investigate('wm.docs-detail');
@@ -388,6 +421,7 @@ try {
   await settle();assert.equal((await state()).phase,'gameover');
   const firstCaseSave=await evaluate("localStorage.getItem('report-drill.pdf-incident.v1')");
   await call('Page.navigate',{url:url+'/?case=approval-button'});await waitFor("Boolean(document.querySelector('[data-action=start]'))");
+  assert.equal(await evaluate("Boolean(document.querySelector('[data-action=continue]'))"),false,'chapter one progress does not show continue in chapter two');
   assert.equal(await evaluate("document.querySelector('.case-paper h2').textContent"),'承認画面へのボタン追加');
   await screenshot('chapter2-title');await click('[data-action=start]');await settle();
   const chapter2State=()=>evaluate("JSON.parse(localStorage.getItem('report-drill.approval-button.v1'))");
@@ -401,6 +435,10 @@ try {
   assert.equal(await evaluate("Boolean(document.querySelector('.meeting-dialogue'))"),true);
   await settle();assert.equal((await chapter2State()).phase,'complete');await screenshot('chapter2-complete');
   assert.equal(await evaluate("localStorage.getItem('report-drill.pdf-incident.v1')"),firstCaseSave,'chapter two never overwrites chapter one');
+  await click('[data-action=title]');
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('.title-page .title-actions>button')].map(button=>button.dataset.action)"),['continue','start']);
+  assert.equal(await evaluate("document.querySelector('[data-action=continue]').classList.contains('primary')&&document.querySelector('[data-action=start]').classList.contains('secondary')"),true,'continue is emphasized when the current chapter has progress');
+  await screenshot('title-with-save');
   assert.deepEqual(errors,[],'no browser runtime errors');
   console.log('Browser: complete route, rejected report, replay, reload, carryover, timeout, mobile, keyboard cancel: OK');
   console.log('Screenshots: tests/artifacts/');

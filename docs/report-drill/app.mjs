@@ -25,6 +25,7 @@ const openingImages=['./assets/04_saeki-transparent.png','./assets/01_player-tra
 preloadImages(openingImages,'high');
 preloadImages([...new Set(Object.values(portraitFiles))].flatMap(file=>[`./assets/${file}-transparent.png`,`./assets/${file.slice(0,2)}_room.png`]));
 let starting=false;
+let deployingTickets=false;
 const roomStyle = speaker => {
   const portrait=portraitFiles[names[speaker]];
   return portrait?`style="--meeting-room:url('./assets/${portrait.slice(0,2)}_room.png')"`:'';
@@ -211,8 +212,11 @@ function header() {
   return `<header class="topbar"><button class="brand" data-action="title"><span class="brand-mark">${icon('file')}</span><span>確認して、回答します。<small>INVESTIGATION & REPORT</small></span></button><div class="top-right"><span class="prototype"><i></i> PROTOTYPE · ${chapterNumber}章</span>${button('settings', icon('settings'), 'icon-button', 'aria-label="設定"')}</div></header>`;
 }
 function titlePage() {
-  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a href="?case=${p.caseId}" ${p.caseId===caseId?'aria-current="page"':''}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${button('start', `はじめる ${icon('arrow')}`, 'primary')}${button('continue', 'つづきから', 'secondary', !saved ? 'disabled' : '')}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」'}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / 02 CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
+  const resumable=hasContinueSave();
+  const actions=`${resumable?button('continue','つづきから','primary'):''}${button('start',`はじめる ${icon('arrow')}`,resumable?'secondary':'primary')}`;
+  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a href="?case=${p.caseId}" ${p.caseId===caseId?'aria-current="page"':''}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${actions}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」'}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / 02 CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
 }
+function hasContinueSave(){return Boolean(saved&&(saved.history.length||saved.done.length||saved.phase!=='desk'));}
 function stats() {
   const memo=(problem.requestMemoTitle?`<h3>${esc(problem.requestMemoTitle)}</h3>`:'')+problem.requestMemo.split('\n\n').map(text=>`<p>${esc(text)}</p>`).join('')+(problem.requestPurpose?`<p><strong>今回の目的</strong></p><p>${esc(problem.requestPurpose)}</p>`:'');
   return `<section class="panel memo"><p class="eyebrow">DESCRIPTION</p>${memo}</section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識'],['intuition','直感']].map(([key,label])=>{ const value = key === 'intuition' ? state.intuition : state.knowledge[key]; const max = key === 'intuition' ? problem.intuition.max : problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
@@ -222,8 +226,9 @@ function actionPlan(action) {
   return engine.preview(state,action.id,question);
 }
 function actionIcon(id) { return id.includes('makabe') || id.includes('check') ? 'chat' : id.includes('ai') || id.includes('logs') || id.includes('source') ? 'search' : 'file'; }
-function investigations() {
+function investigations(overview=false) {
   const actions = problem.investigations.filter(action=>engine.matches(action.unlock,state));
+  if(overview)return `<div class="ticket-overview"><table aria-label="Backlogチケット"><thead><tr><th scope="col">No.</th><th scope="col">タスク</th><th scope="col">作業内容</th><th scope="col">見込み時間</th></tr></thead><tbody>${actions.map((action,index)=>`<tr data-card-id="${esc(action.id)}"><td>${String(index+1).padStart(2,'0')}</td><th scope="row">${esc(action.title)}</th><td>${esc(action.description)}</td><td>${duration(actionPlan(action).minutes)}</td></tr>`).join('')}</tbody></table></div>`;
   const completionOrder=new Map();
   state.history.forEach((entry,index)=>{
     for(const change of entry.changes?.board||[])if(change.to==='done')completionOrder.set(change.id,index);
@@ -318,6 +323,57 @@ function ending() {
   const closingNote=extended?'手がかり・知識・調査状況を引き継ぎ、翌日9:00から再開します。延長はこの一日です。':complete?'確認できた原因と根拠、影響範囲と対応案を報告しました。本番の是正作業は次の相談です。':state.progressReported?'調査の記録は履歴から確認できます。':'途中で状況を共有できれば、期限の相談につなげられたかもしれません。';
   return `${header()}<main class="ending ${complete?'case-solved':''}"><p class="eyebrow">${complete?'CASE CLOSED':extended?'ONE MORE DAY':'GAME OVER'}</p><div class="ending-icon">${icon(complete?'check':'clock')}</div><h1>${complete?'説明が、伝わった。':extended?'もう一日、時間をもらえました。':'今回は、ここまで。'}</h1><p>${complete?'「ありがとうございます！ これなら先方にも説明できます！」——佐伯':extended?'途中で状況を共有していたので、真壁さんが期限を調整してくれました。':'期限までに回答できず、担当を交代することになりました。'}</p>${extended?`<p class="ending-note">${closingNote}</p>`:''}<div class="title-actions">${button(extended?'next-loop':'retry-case',extended?'翌日の調査へ':'はじめからやり直す','primary')}${complete&&chapterNumber===1?button('next-case','2章へ','primary'):''}${button('title','タイトルへ','secondary')}</div></main>`;
 }
+function briefingPage(){
+  return `${header()}<main class="ticket-briefing" aria-labelledby="ticket-briefing-title"><div class="ticket-briefing-heading"><p class="eyebrow">${chapterNumber}章 / ${esc(problem.title)}</p><h1 id="ticket-briefing-title">Backlogチケット</h1></div>${investigations(true)}<footer>${button('begin-work','業務を開始する','primary')}</footer></main>`;
+}
+async function beginWork(){
+  if(state.phase!=='briefing'||deployingTickets)return;
+  const overview=document.querySelector('.ticket-overview');
+  const source=overview?{clone:overview.cloneNode(true),rect:overview.getBoundingClientRect(),scrollLeft:overview.scrollLeft}:null;
+  deployingTickets=true;engine.beginWork(state);save();render();
+  const reduced=state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const flights=[];
+  const target=document.querySelector('[data-status="todo"] .kanban-cards');
+  if(!reduced&&source&&target){
+    const sheet=source.clone;
+    sheet.classList.add('ticket-source-sheet');sheet.setAttribute('aria-hidden','true');sheet.inert=true;
+    Object.assign(sheet.style,{position:'fixed',left:`${source.rect.left}px`,top:`${source.rect.top}px`,width:`${source.rect.width}px`,height:`${source.rect.height}px`,margin:'0',zIndex:'200',pointerEvents:'none',overflow:'hidden'});
+    document.body.append(sheet);sheet.scrollTop=0;sheet.scrollLeft=source.scrollLeft;
+    const cardLayer=document.createElement('div');
+    cardLayer.className='kanban kanban-cards ticket-animation-layer';cardLayer.setAttribute('aria-hidden','true');cardLayer.inert=true;
+    Object.assign(cardLayer.style,{position:'fixed',inset:'0',display:'block',overflow:'visible',padding:'0',margin:'0',pointerEvents:'none',zIndex:'201'});
+    document.body.append(cardLayer);
+    const rows=[...sheet.querySelectorAll('tbody tr')];
+    const cards=[...target.querySelectorAll('[data-card-id]')];
+    cards.forEach(card=>card.style.opacity='0');
+    for(const [index,row] of rows.entries()){
+      const card=cards.find(item=>item.dataset.cardId===row.dataset.cardId);
+      row.removeAttribute('data-card-id');
+      if(!card)continue;
+      const bounds=sheet.getBoundingClientRect();
+      if(row.getBoundingClientRect().bottom>bounds.bottom)sheet.scrollTop+=row.getBoundingClientRect().bottom-bounds.bottom+12;
+      const origin=row.getBoundingClientRect(),destination=card.getBoundingClientRect(),column=target.getBoundingClientRect();
+      const clone=card.cloneNode(true);
+      clone.removeAttribute('data-card-id');clone.removeAttribute('data-action');clone.setAttribute('aria-hidden','true');clone.inert=true;
+      clone.classList.add('ticket-flight');clone.dataset.ticketIndex=index;
+      const left=Math.max(bounds.left+12,Math.min(origin.left+origin.width*.28,bounds.right-destination.width-12));
+      const top=Math.max(bounds.top+40,Math.min(origin.top,bounds.bottom-destination.height));
+      Object.assign(clone.style,{position:'fixed',left:`${left}px`,top:`${top}px`,width:`${destination.width}px`,height:`${destination.height}px`,margin:'0',zIndex:'201',pointerEvents:'none',transformOrigin:'center',opacity:'1'});
+      cardLayer.append(clone);
+      const x=destination.left-left,y=Math.max(column.top,Math.min(destination.top,column.bottom-destination.height))-top;
+      const travel=`translate(${x}px,${y}px)`;
+      const animation=clone.animate([{transform:'scale(.88,.25)',opacity:0},{transform:'scale(1)',opacity:1,offset:.22},{transform:'scale(1)',opacity:1,offset:.35},{transform:travel,opacity:1,offset:.8},{transform:travel,opacity:0}],{duration:800,easing:'cubic-bezier(.22,.68,.25,1)',fill:'both'});
+      row.animate([{opacity:1},{opacity:.15}],{duration:180,fill:'forwards'});
+      flights.push(animation.finished.catch(()=>{}).finally(()=>{clone.remove();card.style.opacity='';}));
+      if(index<rows.length-1)await new Promise(resolve=>setTimeout(resolve,130));
+    }
+    const fade=sheet.animate([{opacity:1},{opacity:0}],{duration:300,fill:'both'});
+    flights.push(fade.finished.catch(()=>{}).finally(()=>sheet.remove()));
+    await Promise.all(flights);cardLayer.remove();
+  }
+  await Promise.all(flights);deployingTickets=false;syncTimer();
+  document.querySelector('.todo .action-card')?.focus({preventScroll:true});
+}
 function render() {
   const oldMeetingWindows=captureMeetingWindows();
   const oldMeetingLayout=document.querySelector('.reporting')?.dataset.meetingLayout;
@@ -346,7 +402,7 @@ function render() {
   document.body.classList.toggle('reduce-motion', Boolean((state||saved)?.settings.reduced));
   document.body.classList.toggle('report-mode',page==='game'&&(state?.phase==='report'||isMeetingScene()));
   document.body.classList.toggle('workspace-mode',page==='game'&&state&&!['loop','complete','gameover'].includes(state.phase));
-  app.innerHTML=page==='title'?titlePage():['loop','complete','gameover'].includes(state.phase)?ending():workspace();
+  app.innerHTML=page==='title'?titlePage():state.phase==='briefing'?briefingPage():['loop','complete','gameover'].includes(state.phase)?ending():workspace();
   const reportDialogue=document.querySelector('.report-conversation');
   const reportDeck=document.querySelector('.reporting>.clue-drawer');
   if(reportDialogue&&reportDeck)reportDeck.before(reportDialogue);
@@ -490,8 +546,9 @@ function beginInvestigation(id) {
   const question=action.questionOptions?.filter(item=>engine.matches(item.unlock,state)).at(-1)?.id;
   const plan=engine.preview(state,id,question);
   if(!plan?.allowed){notify('このタスクは実行できません。');return;}
-  if(plan.replay){notify('調査済みです。手がかり・履歴で確認できます。');return;}
-  if(engine.investigate(state,id,question)){save();render();}
+  const execute=()=>{if(engine.investigate(state,id,question,true)){save();render();}};
+  if(engine.cardStatus(state,id)==='working')confirmAction('もう一度実行しますか？',`${action.title}を再実行します。所要時間 ${duration(plan.minutes)}`,execute,'再実行する');
+  else execute();
 }
 function settings() {
   const settings=(state||saved)?.settings||{instant:false,reduced:false};
@@ -593,12 +650,13 @@ app.addEventListener('dragend',()=>{
   app.querySelectorAll('.dragging,.drop-target').forEach(item=>item.classList.remove('dragging','drop-target'));
 });
 app.addEventListener('click',async event=>{
+  if(deployingTickets)return;
   const target=event.target.closest('[data-action]'); if(!target)return;
   const action=target.dataset.action;
   if(action==='next-case'){location.search='?case=approval-button';return;}
   if(action==='settings'){settings();return;}
   if(action==='title'){page='title';render();return;}
-  if(action==='start') {if(saved||saveError)confirmAction('はじめから進めますか？','今回の進行をやり直します。記憶・直感・完了記録は保持します。',()=>start(),'はじめから');else start();return;}
+  if(action==='start') {if(hasContinueSave()||saveError)confirmAction('はじめから進めますか？','今回の進行をやり直します。記憶・直感・完了記録は保持します。',()=>start(),'はじめから');else start();return;}
   if(action==='continue'&&saved){
     if(starting)return;
     starting=true;app.setAttribute('aria-busy','true');target.disabled=true;
@@ -609,6 +667,8 @@ app.addEventListener('click',async event=>{
     state=structuredClone(saved);page='game';resetChat();render();return;
   }
   if(!state)return;
+  if(action==='begin-work'){await beginWork();return;}
+  if(state.phase==='briefing')return;
   if(action==='next-loop'){start(true);return;}
   if(action==='retry-case'){start();return;}
   if(isMeetingScene()&&['scene-next','scene-skip'].includes(action)){advanceMeetingConversation(action==='scene-skip');return;}
@@ -679,7 +739,7 @@ setInterval(()=>{
 render();
 
 function timerEnabled(){
-  return page==='game' && state?.phase==='desk' && deckSize!=='large' && !modal.open;
+  return page==='game' && state?.phase==='desk' && !deployingTickets && deckSize!=='large' && !modal.open;
 }
 function syncTimer(){
   const enabled=Boolean(timerEnabled());

@@ -6,13 +6,33 @@ import {findTimeSavings} from '../src/cost-effects.mjs';
 import {buildChatFeed} from '../src/chat-feed.mjs';
 const e=createEngine(problem,scenario);
 const finish=s=>{for(let i=0;s.phase==='scene'&&i<30;i++)e.advance(s,true);assert.notEqual(s.phase,'scene');};
-const start=()=>{const s=e.start();finish(s);return s;};
+const start=()=>{const s=e.start();finish(s);e.beginWork(s);return s;};
 const run=(s,id,q)=>{assert.equal(e.investigate(s,id,q),true,id);finish(s);};
 const route=['wm.purpose-check','wm.design','wm.docs-external','wm.docs-detail','wm.source','wm.logs','wm.source-backend','wm.source-pdf','wm.settings','wm.debugger','wm.verify','wm.response'];
 const ready=()=>{const s=start();route.forEach(id=>run(s,id));return s;};
 const answers=[['wm.case','wm.retired','wm.logs'],['wm.defaults','wm.debug','wm.repro'],['wm.defaults','wm.impact','wm.response']];
 const submit=(s,cards)=>{s.phase='report';s.selected=cards;assert.equal(e.report(s),true);finish(s);};
 const available=s=>problem.investigations.filter(a=>e.matches(a.unlock,s)).map(a=>a.id);
+
+test('opening conversation leads to a saved overview and work starts explicitly',()=>{
+ const s=e.start();finish(s);assert.equal(s.phase,'briefing');
+ assert.equal(e.elapse(s,300000),false);assert.equal(s.time,540);
+ assert.equal(e.investigate(s,'wm.source'),false);
+ const restored=e.restore(JSON.stringify(s));assert.equal(restored.phase,'briefing');
+ assert.equal(e.beginWork(restored),true);assert.equal(restored.phase,'desk');
+ assert.equal(e.beginWork(restored),false);assert.equal(restored.time,540);
+ const oldOpening=e.start();oldOpening.conversation.after='desk';
+ const migrated=e.restore(JSON.stringify(oldOpening));finish(migrated);assert.equal(migrated.phase,'briefing');
+});
+
+test('manual completion and reopening preserve time, with repeats charging time and no duplicate rewards',()=>{
+ const s=start();run(s,'wm.source');assert.equal(e.cardStatus(s,'wm.source'),'working');
+ assert.ok(!s.history.at(-1).ids.includes(scenario.events.noProgress));
+ e.moveCard(s,'wm.source','done');const completed=e.restore(JSON.stringify(s));assert.equal(e.cardStatus(completed,'wm.source'),'done');
+ const before=structuredClone(s);run(s,'wm.source');assert.equal(s.time,before.time+60);
+ assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);
+ assert.ok(s.history.at(-1).ids.includes(scenario.events.noProgress));assert.equal(e.cardStatus(s,'wm.source'),'working');
+});
 
 test('real time advances one hour per five minutes, preserving fractional minutes across events and saves',()=>{
  const s=start();
@@ -100,28 +120,29 @@ test('old specifications shorten corresponding source reading without proving th
  run(s,'wm.docs-detail');assert.equal(e.preview(s,'wm.source-pdf').minutes,20);
  assert.equal(s.evidence.includes('wm.defaults'),false);assert.equal(e.preview(s,'wm.verify'),null);
 });
-test('logs are repeatable; misses return to todo and preparation changes results',()=>{
- const s=start();run(s,'wm.logs');assert.equal(s.time,585);assert.equal(s.evidence.length,0);assert.equal(e.cardStatus(s,'wm.logs'),'todo');
+test('logs remain working and preparation changes repeated results',()=>{
+ const s=start();run(s,'wm.logs');assert.equal(s.time,585);assert.equal(s.evidence.length,0);assert.equal(e.cardStatus(s,'wm.logs'),'working');
  run(s,'wm.logs');assert.equal(s.time,630);assert.equal(s.done.filter(k=>k==='wm.logs:default').length,1);
- run(s,'wm.purpose-check');run(s,'wm.logs');assert.ok(s.evidence.includes('wm.logs'));assert.equal(e.cardStatus(s,'wm.logs'),'todo');
+ run(s,'wm.purpose-check');run(s,'wm.logs');assert.ok(s.evidence.includes('wm.logs'));assert.equal(e.cardStatus(s,'wm.logs'),'working');
  const before=structuredClone(s);run(s,'wm.logs');assert.equal(s.time-before.time,30);assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);
 });
-test('debugger returns to todo after a saved miss and can be retried after narrowing the path',()=>{
+test('debugger remains working after a saved miss and can be retried after narrowing the path',()=>{
  const s=start();e.investigate(s,'wm.debugger');const next=e.restore(JSON.stringify(s));finish(next);
- assert.equal(e.cardStatus(next,'wm.debugger'),'todo');assert.equal(next.evidence.length,0);
+ assert.equal(e.cardStatus(next,'wm.debugger'),'working');assert.equal(next.evidence.length,0);
  run(next,'wm.purpose-check');run(next,'wm.logs');run(next,'wm.debugger');assert.ok(next.evidence.includes('wm.debug'));
  const before=structuredClone(next);run(next,'wm.debugger');assert.equal(next.time-before.time,30);assert.deepEqual(next.knowledge,before.knowledge);
 });
-test('unhelpful reading returns to todo, useful one-time work completes',()=>{
- const s=start();run(s,'wm.source');assert.equal(e.cardStatus(s,'wm.source'),'done');
- const before=structuredClone(s);run(s,'wm.source-common');assert.equal(s.time-before.time,45);assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);assert.equal(e.cardStatus(s,'wm.source-common'),'todo');
- run(s,'wm.legacy');assert.equal(e.cardStatus(s,'wm.legacy'),'todo');
+test('useful and unhelpful work both remain working until manually moved',()=>{
+ const s=start();run(s,'wm.source');assert.equal(e.cardStatus(s,'wm.source'),'working');
+ const before=structuredClone(s);run(s,'wm.source-common');assert.equal(s.time-before.time,45);assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);assert.equal(e.cardStatus(s,'wm.source-common'),'working');
+ assert.ok(s.history.at(-1).ids.includes(scenario.events.noProgress));
+ run(s,'wm.legacy');assert.equal(e.cardStatus(s,'wm.legacy'),'working');
 });
 test('history records real gains, discoveries and final status without inventing capped gains',()=>{
  const s=start();run(s,'wm.source');const row=s.history.at(-1);
- assert.equal(row.changes.minutes,60);assert.equal(row.changes.knowledge.system,1);assert.equal(row.changes.unlocked.length,3);assert.equal(row.changes.board[0].to,'done');
+ assert.equal(row.changes.minutes,60);assert.equal(row.changes.knowledge.system,1);assert.equal(row.changes.unlocked.length,3);assert.equal(row.changes.board[0].to,'working');
  assert.deepEqual(e.restore(JSON.stringify(s)).history.at(-1).changes,row.changes);
- run(s,'wm.source-common');assert.equal(s.history.at(-1).changes.board[0].to,'todo');
+ run(s,'wm.source-common');assert.equal(s.history.at(-1).changes.board[0].to,'working');
  const capped=start();capped.knowledge.system=8;run(capped,'wm.source');assert.deepEqual(capped.history.at(-1).changes.knowledge,{});
 });
 test('root-cause route reproduces the incident and completes on the first day',()=>{
@@ -135,8 +156,8 @@ test('general hypotheses, duplicate clues and forged clues cannot replace eviden
 });
 test('discarding is free and does not grant clues; completed one-time investigations do not duplicate rewards',()=>{
  const s=start();e.moveCard(s,'wm.purpose-check','done');assert.equal(s.time,540);assert.deepEqual(s.evidence,[]);
- e.moveCard(s,'wm.purpose-check','todo');e.moveCard(s,'wm.purpose-check','working');finish(s);assert.equal(e.cardStatus(s,'wm.purpose-check'),'done');assert.equal(s.time,560);
- const before=structuredClone(s);run(s,'wm.purpose-check');assert.deepEqual(s.history,before.history);assert.deepEqual(s.knowledge,before.knowledge);
+ e.moveCard(s,'wm.purpose-check','todo');e.moveCard(s,'wm.purpose-check','working');finish(s);assert.equal(e.cardStatus(s,'wm.purpose-check'),'working');assert.equal(s.time,560);
+ const before=structuredClone(s);run(s,'wm.purpose-check');assert.equal(s.time,before.time+20);assert.equal(s.history.length,before.history.length+1);assert.deepEqual(s.knowledge,before.knowledge);assert.ok(s.history.at(-1).ids.includes(scenario.events.noProgress));
 });
 test('interim report earns one extra day, keeping clues, knowledge, work and accepted answers',()=>{
  const s=ready();submit(s,answers[0]);e.statusReport(s,'progress');finish(s);e.statusReport(s,'cannot');assert.ok(s.conversation.ids.includes(scenario.events.extension));assert.ok(!s.conversation.ids.includes(scenario.events.dream));finish(s);assert.equal(s.phase,'loop');
@@ -182,7 +203,7 @@ test('a report crossing closing time starts timeout rather than succeeding',()=>
  assert.deepEqual(s.conversation.ids,[scenario.events.timeout,scenario.events.gameover]);finish(s);assert.equal(s.phase,'gameover');
 });
 test('Makabe offers a grounded hint after log correlation, without exposing PDF internals',()=>{
- const s=start();run(s,'wm.ask-makabe','general');assert.equal(e.cardStatus(s,'wm.ask-makabe'),'todo');
+ const s=start();run(s,'wm.ask-makabe','general');assert.equal(e.cardStatus(s,'wm.ask-makabe'),'working');
  run(s,'wm.purpose-check');run(s,'wm.logs');s.time=minutes('11:00');assert.equal(e.preview(s,'wm.ask-makabe','pdf-location').result.id,'specific');
  run(s,'wm.ask-makabe','pdf-location');assert.ok(s.flags.includes('wm.source-hint'));assert.equal(e.preview(s,'wm.source-pdf'),null);
 });
@@ -210,7 +231,7 @@ test('completing work is not a cost reduction, nor is a discount on an already c
 });
 test('chat publishes results and reached messages only after the event finishes',()=>{
  const s=e.start();assert.equal(buildChatFeed(scenario,s).some(item=>item.kind==='history'),false);
- finish(s);assert.equal(buildChatFeed(scenario,s).filter(item=>item.kind==='history').length,1);
+ finish(s);assert.equal(buildChatFeed(scenario,s).filter(item=>item.kind==='history').length,1);e.beginWork(s);
  const before=buildChatFeed(scenario,s);e.investigate(s,'wm.logs');
  assert.equal(s.time,585);assert.deepEqual(buildChatFeed(scenario,s).map(item=>item.key),before.map(item=>item.key));
  const restored=e.restore(JSON.stringify(s));assert.deepEqual(buildChatFeed(scenario,restored).map(item=>item.key),before.map(item=>item.key));
