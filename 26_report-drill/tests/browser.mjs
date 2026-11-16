@@ -144,7 +144,7 @@ try {
   assert.equal(await evaluate("Boolean(document.querySelector('[data-action=history]'))"),false);
   assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.source-pdf\"]'))"),false);
   assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.source-backend\"]'))"),false);
-  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source\"] .action-time').textContent"),'1h');
+  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source\"] .action-time').textContent"),'2h');
   await screenshot('desk');
   const investigate=async id=>{
     await click(`[data-action="investigate:${id}"]`);
@@ -206,13 +206,13 @@ try {
   await screenshot('deck-large-mobile');await size(1440,1000);
   await click('[data-action="deck-size:small"]');assert.equal(await evaluate("document.querySelector('.clue-drawer').getBoundingClientRect().height"),118);
   await click('[data-action="deck-size:medium"]');
-  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-backend\"] .action-time').textContent"),'1h');
+  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-backend\"] .action-time').textContent"),'3h');
   await investigate('wm.docs-external');
   await waitFor("Boolean(document.querySelector('.cost-projectile'))");
   await waitFor("document.querySelector('.cost-projectile')?.getAnimations().some(animation=>animation.currentTime>=220)");
   await screenshot('time-saving-flight');
-  await waitFor("document.querySelector('[data-card-id=\"wm.source-backend\"] .action-time').textContent==='30m'");
-  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-backend\"] .time-saving-badge').dataset.saving"),'30');
+  await waitFor("document.querySelector('[data-card-id=\"wm.source-backend\"] .action-time').textContent==='1h'");
+  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-backend\"] .time-saving-badge').dataset.saving"),'120');
   await screenshot('time-saving-impact');
   await investigate('wm.docs-screen');
   const beforeInsertion=await evaluate("(()=>{const card=document.querySelector('#shared-clue-deck .evidence-card:not(.clue-awaiting)');return {id:card.dataset.clueId,left:card.getBoundingClientRect().left};})()");
@@ -230,10 +230,10 @@ try {
   await investigate('wm.logs');assert.equal((await state()).evidence.includes('wm.logs'),true);
   assert.equal(await evaluate("Boolean(document.querySelector('.working [data-card-id=\"wm.logs\"]'))"),true);
   await investigate('wm.source-backend');
-  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-pdf\"] .action-time').textContent"),'45m');
+  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-pdf\"] .action-time').textContent"),'2h');
   await investigate('wm.docs-detail');
   await waitFor("document.querySelector('[data-card-id=\"wm.source-pdf\"] .action-time').textContent==='20m'");
-  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-pdf\"] .time-saving-badge').dataset.saving"),'25');
+  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-pdf\"] .time-saving-badge').dataset.saving"),'100');
   for(const id of ['wm.source-pdf','wm.settings','wm.debugger','wm.verify','wm.response','wm.ai'])await investigate(id);
   assert.equal((await state()).evidence.includes('wm.repro'),true);
   assert.equal((await state()).evidence.includes('wm.response'),true);
@@ -241,7 +241,7 @@ try {
   assert.equal(await evaluate("[...document.querySelectorAll('.chat-scroll .history-entry')].map(item=>item.dataset.historyIndex).length === new Set([...document.querySelectorAll('.chat-scroll .history-entry')].map(item=>item.dataset.historyIndex)).size"),true,'timeline has no duplicate history entries');
   assert.equal(await evaluate("(()=>{const items=[...document.querySelectorAll('.feed-entry')];return items.every((item,i)=>i===0||Number(items[i-1].dataset.day)<Number(item.dataset.day)||(items[i-1].dataset.day===item.dataset.day&&Number(items[i-1].dataset.time)<=Number(item.dataset.time)));})()"),true,'messages and history are sorted together');
   assert.equal(await evaluate("[...document.querySelectorAll('.chat-scroll .history-item')].every(item=>!(/未着手|作業中|→ 完了/).test(item.textContent))"),true,'history omits status transitions while retaining time discounts');
-  assert.equal(await evaluate("[...document.querySelectorAll('.history-duration')].some(item=>item.textContent==='1h')"),true);
+  assert.equal(await evaluate("[...document.querySelectorAll('.history-duration')].some(item=>item.textContent==='30m')"),true);
   assert.equal(await evaluate("Boolean(document.querySelector('.history-deltas svg'))"),true);
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.chat-panel .history-deltas')).flexDirection"),'row');
   assert.equal(await evaluate("document.querySelectorAll('.history-item>time').length"),0);
@@ -374,10 +374,10 @@ try {
   await click('[data-action=retry-case]');await settle();
   await investigate('wm.design');await investigate('wm.docs-detail');
   assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.source-pdf\"]'))"),false);
-  assert.equal(await evaluate("document.querySelector('.chat-scroll .history-saving').textContent.includes('−25m')"),true,'locked task savings are recorded in chat');
+  assert.equal(await evaluate("[...document.querySelectorAll('.chat-scroll .history-saving')].some(item=>item.textContent.includes('−1h40m'))"),true,'locked task savings are recorded in chat');
   await investigate('wm.source');await investigate('wm.source-backend');
   await waitFor("Boolean(document.querySelector('[data-card-id=\"wm.source-pdf\"] .time-saving-badge')) && document.querySelector('[data-card-id=\"wm.source-pdf\"] .action-time').textContent==='20m'");
-  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-pdf\"] .time-saving-badge').dataset.saving"),'25','discount effect waits for task unlock');
+  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-pdf\"] .time-saving-badge').dataset.saving"),'100','discount effect waits for task unlock');
   await screenshot('time-saving-deferred');
   await click('[data-action=restart]');await click('[data-action=confirm]');await settle();
   await investigate('wm.logs');await investigate('wm.logs');
@@ -420,7 +420,7 @@ try {
   await click('[data-action=settings]');await click('#reduced');await click('[data-action=settings-save]');
   await investigate('wm.docs-external');
   await waitFor("Boolean(document.querySelector('[data-card-id=\"wm.source-backend\"] .time-saving-badge'))");
-  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-backend\"] .action-time').textContent"),'30m');
+  assert.equal(await evaluate("document.querySelector('[data-card-id=\"wm.source-backend\"] .action-time').textContent"),'1h');
   assert.equal(await evaluate("document.querySelectorAll('.cost-projectile').length"),0,'reduced motion shows a static saving');
 
   await evaluate("(()=>{const s=JSON.parse(localStorage.getItem('report-drill.pdf-incident.v1'));s.time=1079;s.phase='desk';s.conversation=null;localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));})()");

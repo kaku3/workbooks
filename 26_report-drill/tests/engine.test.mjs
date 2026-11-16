@@ -29,7 +29,7 @@ test('manual completion and reopening preserve time, with repeats charging time 
  const s=start();run(s,'wm.source');assert.equal(e.cardStatus(s,'wm.source'),'working');
  assert.ok(!s.history.at(-1).ids.includes(scenario.events.noProgress));
  e.moveCard(s,'wm.source','done');const completed=e.restore(JSON.stringify(s));assert.equal(e.cardStatus(completed,'wm.source'),'done');
- const before=structuredClone(s);run(s,'wm.source');assert.equal(s.time,before.time+60);
+ const before=structuredClone(s);run(s,'wm.source');assert.equal(s.time,before.time+120);
  assert.deepEqual(s.evidence,before.evidence);assert.deepEqual(s.knowledge,before.knowledge);
  assert.ok(s.history.at(-1).ids.includes(scenario.events.noProgress));assert.equal(e.cardStatus(s,'wm.source'),'working');
 });
@@ -106,17 +106,17 @@ test('rejected report retains the hand and resumes reporting, including after re
 test('documents and source entry reveal three branches; PDF requires backend first',()=>{
  const s=start(),initial=available(s);run(s,'wm.design');
  assert.deepEqual(available(s).filter(id=>!initial.includes(id)),['wm.docs-screen','wm.docs-external','wm.docs-detail']);
- const before=available(s),time=s.time;run(s,'wm.source');assert.equal(s.time-time,60);
+ const before=available(s),time=s.time;run(s,'wm.source');assert.equal(s.time-time,30);
  assert.deepEqual(available(s).filter(id=>!before.includes(id)),['wm.source-backend','wm.source-frontend','wm.source-common']);
  assert.equal(e.preview(s,'wm.source-pdf'),null);run(s,'wm.docs-detail');assert.equal(e.preview(s,'wm.source-pdf'),null);
  run(s,'wm.source-backend');assert.ok(available(s).includes('wm.source-pdf'));assert.ok(available(s).includes('wm.settings'));
 });
 test('old specifications shorten corresponding source reading without proving the cause',()=>{
  const s=start();run(s,'wm.source');run(s,'wm.design');
- assert.equal(e.preview(s,'wm.source-frontend').minutes,45);assert.equal(e.preview(s,'wm.source-backend').minutes,60);
+ assert.equal(e.preview(s,'wm.source-frontend').minutes,120);assert.equal(e.preview(s,'wm.source-backend').minutes,180);
  run(s,'wm.docs-screen');assert.equal(e.preview(s,'wm.source-frontend').minutes,20);
- run(s,'wm.docs-external');assert.equal(e.preview(s,'wm.source-backend').minutes,30);
- run(s,'wm.source-backend');assert.equal(e.preview(s,'wm.source-pdf').minutes,45);
+ run(s,'wm.docs-external');assert.equal(e.preview(s,'wm.source-backend').minutes,60);
+ run(s,'wm.source-backend');assert.equal(e.preview(s,'wm.source-pdf').minutes,120);
  run(s,'wm.docs-detail');assert.equal(e.preview(s,'wm.source-pdf').minutes,20);
  assert.equal(s.evidence.includes('wm.defaults'),false);assert.equal(e.preview(s,'wm.verify'),null);
 });
@@ -141,7 +141,7 @@ test('useful and unhelpful work both remain working until manually moved',()=>{
 });
 test('history records real gains, discoveries and final status without inventing capped gains',()=>{
  const s=start();run(s,'wm.source');const row=s.history.at(-1);
- assert.equal(row.changes.minutes,60);assert.equal(row.changes.knowledge.system,1);assert.equal(row.changes.unlocked.length,3);assert.equal(row.changes.board[0].to,'working');
+ assert.equal(row.changes.minutes,120);assert.equal(row.changes.knowledge.system,1);assert.equal(row.changes.unlocked.length,3);assert.equal(row.changes.board[0].to,'working');
  assert.deepEqual(e.restore(JSON.stringify(s)).history.at(-1).changes,row.changes);
  run(s,'wm.source-common');assert.equal(s.history.at(-1).changes.board[0].to,'working');
  const capped=start();capped.knowledge.system=8;run(capped,'wm.source');assert.deepEqual(capped.history.at(-1).changes.knowledge,{});
@@ -217,10 +217,10 @@ test('time-saving effects detect real discounts, including locked future tasks',
  const s=start();run(s,'wm.source');run(s,'wm.design');
  const before=structuredClone(s);run(s,'wm.docs-external');
  const savings=findTimeSavings(e,problem,before,s);
- assert.deepEqual(savings.map(({id,from,to,saved,revealed})=>({id,from,to,saved,revealed})),[{id:'wm.source-backend',from:60,to:30,saved:30,revealed:true}]);
+ assert.deepEqual(savings.map(({id,from,to,saved,revealed})=>({id,from,to,saved,revealed})),[{id:'wm.source-backend',from:180,to:60,saved:120,revealed:true}]);
  const beforeDetail=structuredClone(s);run(s,'wm.docs-detail');
  const pdf=findTimeSavings(e,problem,beforeDetail,s).find(item=>item.id==='wm.source-pdf');
- assert.equal(pdf.saved,25);assert.equal(pdf.revealed,false);
+ assert.equal(pdf.saved,100);assert.equal(pdf.revealed,false);
  const clockOnly=structuredClone(s);clockOnly.time=800;
  assert.deepEqual(findTimeSavings(e,problem,s,clockOnly),[],'schedule changes do not masquerade as learning effects');
 });
@@ -245,7 +245,38 @@ test('chat history retains the cost reduction as part of the completed event',()
  const s=start();run(s,'wm.source');run(s,'wm.design');e.investigate(s,'wm.docs-external');
  const index=s.conversation.historyIndex;assert.equal(buildChatFeed(scenario,s).some(item=>item.key===`history:${index}`),false);
  finish(s);const entry=buildChatFeed(scenario,s).find(item=>item.key===`history:${index}`);
- assert.ok(entry.item.changes.savings.some(saving=>saving.id==='wm.source-backend'&&saving.saved===30));
+ assert.ok(entry.item.changes.savings.some(saving=>saving.id==='wm.source-backend'&&saving.saved===120));
+});
+
+test('reading a document pays for itself even with its initial overview cost',()=>{
+ for(const [document,target] of [['wm.design','wm.source'],['wm.docs-screen','wm.source-frontend'],['wm.docs-external','wm.source-backend'],['wm.docs-detail','wm.source-pdf']]){
+  const s=start();run(s,'wm.source');run(s,'wm.source-backend');
+  const raw=e.preview(s,target).minutes,before=s.time;
+  if(document!=='wm.design')run(s,'wm.design');run(s,document);
+  const prepared=e.preview(s,target).minutes;
+  assert.ok(raw-(s.time-before)-prepared>=60,`${document} must save at least one hour after paying for preparation`);
+ }
+});
+test('logs and external design each save time, and using both is better than either alone',()=>{
+ const raw=180,s=start();run(s,'wm.purpose-check');run(s,'wm.source');
+ const beforeLogs=s.time;run(s,'wm.logs');assert.equal(e.preview(s,'wm.source-backend').minutes,90);
+ assert.ok(raw-90>s.time-beforeLogs);
+ const beforeDocs=s.time;run(s,'wm.design');run(s,'wm.docs-external');
+ assert.equal(e.preview(s,'wm.source-backend').minutes,20);
+ assert.ok(90-20>s.time-beforeDocs);
+ const other=start();run(other,'wm.design');run(other,'wm.docs-external');run(other,'wm.source');run(other,'wm.purpose-check');
+ const before=other.time;run(other,'wm.logs');assert.ok(60-e.preview(other,'wm.source-backend').minutes>other.time-before);
+});
+test('prepared route leaves time for lunch and thought, while brute force runs out before reporting',()=>{
+ const prepared=ready();run(prepared,'wm.lunch');submit(prepared,answers[2]);assert.equal(prepared.phase,'complete');assert.equal(prepared.time,895);
+ const brute=start();
+ for(const id of ['wm.purpose-check','wm.source','wm.source-backend','wm.source-pdf','wm.settings','wm.debugger','wm.verify','wm.response']){
+  if(brute.phase!=='desk')break;run(brute,id);
+ }
+ assert.equal(brute.phase,'gameover');assert.ok(!brute.evidence.includes('wm.response'));
+ for(const [skip,expected] of [['wm.docs-detail',975],['wm.docs-external',945]]){
+  const s=start();route.filter(id=>id!==skip).forEach(id=>run(s,id));run(s,'wm.lunch');submit(s,answers[2]);assert.equal(s.phase,'complete');assert.equal(s.time,expected);
+ }
 });
 
 

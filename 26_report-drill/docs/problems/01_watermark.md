@@ -160,8 +160,8 @@
   },
   {
     "id": "wm.frontend",
-    "title": "画面・APIは三田の情報",
-    "text": "画面の氏名・APIの利用者IDは三田。透かし生成は見つからない。",
+    "title": "画面には透かし生成はない",
+    "text": "画面からはバックエンド側の印字リクエスト呼び出しのみ。",
     "source": "フロントエンドの現行ソース",
     "kind": "confirmed"
   },
@@ -308,9 +308,25 @@
     "unlock": {},
     "outcomes": [
       {
+        "id": "documented-overview",
+        "when": {
+          "flagsAll": [
+            "wm.docs-map"
+          ]
+        },
+        "minutes": 30,
+        "scene": "01.source-overview",
+        "gain": {
+          "system": 1
+        },
+        "flags": [
+          "wm.source-map"
+        ]
+      },
+      {
         "id": "overview",
         "when": {},
-        "minutes": 60,
+        "minutes": 120,
         "scene": "01.source-overview",
         "gain": {
           "system": 1
@@ -332,13 +348,35 @@
     },
     "outcomes": [
       {
+        "id": "documented-trace",
+        "when": {
+          "flagsAll": [
+            "wm.external-read"
+          ],
+          "evidenceAll": [
+            "wm.logs"
+          ]
+        },
+        "minutes": 20,
+        "scene": "01.backend",
+        "gain": {
+          "system": 1
+        },
+        "evidence": [
+          "wm.architecture"
+        ],
+        "flags": [
+          "wm.backend-read"
+        ]
+      },
+      {
         "id": "prepared",
         "when": {
           "flagsAll": [
             "wm.external-read"
           ]
         },
-        "minutes": 30,
+        "minutes": 60,
         "scene": "01.backend",
         "gain": {
           "system": 1
@@ -357,7 +395,7 @@
             "wm.logs"
           ]
         },
-        "minutes": 40,
+        "minutes": 90,
         "scene": "01.backend",
         "gain": {
           "system": 1
@@ -372,7 +410,7 @@
       {
         "id": "default",
         "when": {},
-        "minutes": 60,
+        "minutes": 180,
         "scene": "01.backend-wide",
         "gain": {
           "system": 1
@@ -415,7 +453,7 @@
       {
         "id": "default",
         "when": {},
-        "minutes": 45,
+        "minutes": 120,
         "scene": "01.frontend-wide",
         "gain": {
           "system": 1
@@ -474,7 +512,7 @@
       {
         "id": "default",
         "when": {},
-        "minutes": 45,
+        "minutes": 120,
         "scene": "01.pdf-source",
         "gain": {
           "system": 1

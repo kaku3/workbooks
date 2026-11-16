@@ -55,7 +55,7 @@ for(const [name,route,research] of [['business',business,320],['source',source,2
  assert.ok(problem.investigations.some(a=>e.matches(a.unlock,s)&&e.cardStatus(s,a.id)==='todo'));
  run(s,'lunch');assert.equal(report(s),'03.report-3');assert.equal(s.phase,'complete');assert.equal(s.time,540+research+70);
  const ending=scenario.scenes['03.report-3'].lines;
- assert.match(ending.find(l=>l.speaker==='client').text,/持ち帰って/);assert.match(ending.map(l=>l.text).join(''),/詳細設計と通し試験はこれから/);
+ assert.match(ending.find(l=>l.speaker==='client').text,/持ち帰って/);assert.match(ending.map(l=>l.text).join(''),/概算/);
  if(name==='source')assert.ok(!s.evidence.includes('bi.prototype'));
  if(name==='screen')assert.ok(!s.evidence.includes('bi.source'));
 });
@@ -72,7 +72,7 @@ test('B-only report meets customer cost resistance; A is not generated until exp
  const s=walk(start(),[...businessResearch,'plan/b','estimate']);
  assert.ok(s.evidence.includes('bi.b'));assert.ok(!s.evidence.includes('bi.a'));
  assert.equal(report(s,['bi.b','bi.business','bi.retry']),'03.report-only-b');assert.equal(s.phase,'report');
- assert.ok(scenario.scenes['03.report-only-b'].lines.some(l=>l.speaker==='client'&&l.text.includes('十日')));
+ assert.ok(scenario.scenes['03.report-only-b'].lines.some(l=>l.speaker==='client'&&/(十日|10日)/.test(l.text.normalize('NFKC'))));
  s.phase='desk';run(s,'plan-more','a');assert.ok(!s.evidence.includes('bi.a'));assert.equal(e.preview(s,'bi.estimate-update','a').minutes,15);run(s,'estimate-update');
  run(s,'lunch');report(s);assert.equal(s.phase,'complete');assert.equal(s.time,940);
 });

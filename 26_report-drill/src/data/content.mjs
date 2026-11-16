@@ -86,11 +86,20 @@ export const cases = {
             },
             {
               "speaker": "player",
-              "text": "三田さん自身が操作した資料ですね。田中さんの在籍とアカウントの記録も確認できますか？"
+              "kind": "thought",
+              "text": "取引先に提出前って、印刷してその場で気づかないのかな…\n**しかも5年も…**"
             },
             {
               "speaker": "client",
-              "text": "三田が自分のアカウントで出力して印刷しています。\n田中さんは5年前に退職して、そのときにアカウントも無効化されています。"
+              "text": "何かいいましたか？"
+            },
+            {
+              "speaker": "player",
+              "text": "いえ、べつに！\n田中さんはやっぱり退職なさっているんですよね？"
+            },
+            {
+              "speaker": "client",
+              "text": "ええ、田中は5年前に退職して、そのときにアカウントも無効化されているようです。"
             }
           ]
         },
@@ -99,12 +108,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "画面仕様書、外部設計書、詳細設計書がある。どれも更新日が少し古い。"
+              "text": "画面仕様書、外部連携書、詳細設計書があるな…。\nうわっ、**あちこちに【TBD】が残ったまま**だ。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "全部読むのも時間がかかる。追いたい場所の資料から見よう。"
+              "text": "全部読むのは大変だな…今回の件に関係ありそうなのは…。"
             }
           ]
         },
@@ -118,7 +127,7 @@ export const cases = {
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "最新化はされていないようだが、画面側の概要は分かった。\n現行コードと照らそう。"
+              "text": "さすがに透かしに田中太郎を出す仕様ではなかったな。まあ、そりゃそうか。\nコードがどうなってるかは分からないけど。"
             }
           ]
         },
@@ -127,12 +136,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "出力APIから帳票サービスを呼ぶ構成らしい。\n画面がPDFを作るわけではない。"
+              "text": "出力APIから帳票サービスを呼ぶ構成らしい。\n『こういう構成はローカルから呼べなくて困る』と死んだばーちゃんが言ってたな。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "最新化はされていないようだが、サーバー側の概要は分かった。\n現行ソースでも確認しよう。"
+              "text": "とりあえずサーバー側のアタリはついた。\n出力APIのあたりから見るか。"
             }
           ]
         },
@@ -141,12 +150,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "PDFの透かしにはwatermarkNameという氏名オプションがある。\n未設定時の説明は……ない。"
+              "text": "PDFの透かしにはwatermarkNameという氏名オプションがある。\n未設定時の説明は**【TBD】**。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "最新化はされていないようだが、引数の概要は分かった。\n透かしの氏名がどこから来るか追おう。"
+              "text": "【TBD】…めっちゃ腹立つけど、俺の資料も遠くの空の下の誰かの腹を立てているかもしれないな。\nソースでwatermarkNameを検索してみよう。"
             }
           ]
         },
@@ -155,12 +164,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "1時間でバックエンド、フロントエンド、共通処理の置き場所は分かった。"
+              "text": "バックエンド、フロントエンド、共通処理の置き場所は分かった。\n大したことないアプリに見えるのにすごい量のソースだ。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "どの領域が怪しいか、記録と照らそう。"
+              "text": "時計の針の音が大きく聞こえる。スマホの時計だからそんな音は鳴らないけど。"
             }
           ]
         },
@@ -183,7 +192,7 @@ export const cases = {
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "先に資料やログで絞れば、早かったかもしれない。\nPDF処理と設定を確認しよう。"
+              "text": "……帳票から見てたら楽だったんだけどな。\n普通気づかないよなぁ。"
             }
           ]
         },
@@ -192,7 +201,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "画面仕様を頼りに追った。画面の名前もAPIへ送るIDも三田さんで、PDFの透かしは画面側では作っていない。"
+              "text": "画面仕様を頼りにソースを追った。PDF出力はバックエンドのAPIを呼んでいるだけらしい。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "画面側には透かしを付ける処理はなさそうだな。"
             }
           ]
         },
@@ -201,12 +215,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "45分かけて画面の操作を追った。\n三田さんの情報は正しく、出力APIにも同じIDを渡している。"
+              "text": "画面の操作から順番にソースを追った。PDF出力はバックエンドのAPIを呼んでいるだけらしい。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "画面を直せば終わり、ではなさそうだ。\n透かしを付けるのはサーバー側か。"
+              "text": "……何度も操作を繰り返すと『視えて』くるんだよな。\n時間はかかるけど。"
             }
           ]
         },
@@ -215,12 +229,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "日付の書式、文字列の整形、禁則文字。\n詳しくなったが、田中太郎は出てこない。"
+              "text": "日付の書式、文字列の整形、禁則文字。\nいくら読んでも、今回の透かしとは関係なさそうな処理ばかりだった。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "……45分。今回の調査に使える情報は得られなかった。"
+              "text": "……45分。小学校の授業の１コマが消えた。"
             }
           ]
         },
@@ -229,12 +243,11 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "watermarkNameが空なら田中太郎を入れる処理がある。\nコメントは「初期サンプル用」。\n透かしの氏名に、実行利用者の名前を使っていない。"
+              "text": "**// FIXME : watermarkNameが空なら田中太郎**"
             },
             {
               "speaker": "player",
-              "kind": "thought",
-              "text": "田中太郎さん、透かしの中で現役だった。\n三田さんの出力もこの処理を通るか確認しよう。"
+              "text": "…これか。\nあとは何でwatermarkNameが空のままここまで来るかが分かれば…"
             }
           ]
         },
@@ -243,7 +256,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "標準テンプレートのwatermarkNameは空欄。\n透かしに田中太郎を補う条件に入る。\n誰がいつ設定したかは、この記録では分からない。"
+              "text": "帳票サービスの設定ファイルを開いた。\n標準テンプレートのwatermarkNameが空欄になっている。"
+            },
+            {
+              "speaker": "player",
+              "kind": "thought",
+              "text": "ああ、ここで名前を設定してないのか……。\nそりゃ田中太郎が出てくるわ。"
             }
           ]
         },
@@ -252,12 +270,12 @@ export const cases = {
           "lines": [
             {
               "speaker": "player",
-              "text": "印刷資料に対応するPDFの出力記録は、三田さんのID U-204の最近の操作と一致した。\nウォーターマークの田中太郎とは違う。"
+              "text": "印刷資料に対応するPDFの出力記録は、三田さんのID U-204の最近の操作と一致していた。"
             },
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "三田さんが操作した記録と、透かしの氏名が食い違っている。\n氏名を入れる場所を追おう。"
+              "text": "これで三田さんが操作したことが確定した。\nやはり田中の亡霊ではなかったか。"
             }
           ]
         },
@@ -583,7 +601,7 @@ export const cases = {
           "lines": [
             {
               "speaker": "lead",
-              "text": "先方には俺の方で報告しておいたから。\n調査期間を一日のばしてもらった、明日も頑張れ。"
+              "text": "佐伯さんには俺の方で報告しておいたから。\n調査期間を一日のばしてもらった、明日も頑張れ。"
             },
             {
               "speaker": "player",
@@ -1014,8 +1032,8 @@ export const cases = {
         },
         {
           "id": "wm.frontend",
-          "title": "画面・APIは三田の情報",
-          "text": "画面の氏名・APIの利用者IDは三田。透かし生成は見つからない。",
+          "title": "画面には透かし生成はない",
+          "text": "画面からはバックエンド側の印字リクエスト呼び出しのみ。",
           "source": "フロントエンドの現行ソース",
           "kind": "confirmed"
         },
@@ -1157,9 +1175,25 @@ export const cases = {
           "unlock": {},
           "outcomes": [
             {
+              "id": "documented-overview",
+              "when": {
+                "flagsAll": [
+                  "wm.docs-map"
+                ]
+              },
+              "minutes": 30,
+              "scene": "01.source-overview",
+              "gain": {
+                "system": 1
+              },
+              "flags": [
+                "wm.source-map"
+              ]
+            },
+            {
               "id": "overview",
               "when": {},
-              "minutes": 60,
+              "minutes": 120,
               "scene": "01.source-overview",
               "gain": {
                 "system": 1
@@ -1181,13 +1215,35 @@ export const cases = {
           },
           "outcomes": [
             {
+              "id": "documented-trace",
+              "when": {
+                "flagsAll": [
+                  "wm.external-read"
+                ],
+                "evidenceAll": [
+                  "wm.logs"
+                ]
+              },
+              "minutes": 20,
+              "scene": "01.backend",
+              "gain": {
+                "system": 1
+              },
+              "evidence": [
+                "wm.architecture"
+              ],
+              "flags": [
+                "wm.backend-read"
+              ]
+            },
+            {
               "id": "prepared",
               "when": {
                 "flagsAll": [
                   "wm.external-read"
                 ]
               },
-              "minutes": 30,
+              "minutes": 60,
               "scene": "01.backend",
               "gain": {
                 "system": 1
@@ -1206,7 +1262,7 @@ export const cases = {
                   "wm.logs"
                 ]
               },
-              "minutes": 40,
+              "minutes": 90,
               "scene": "01.backend",
               "gain": {
                 "system": 1
@@ -1221,7 +1277,7 @@ export const cases = {
             {
               "id": "default",
               "when": {},
-              "minutes": 60,
+              "minutes": 180,
               "scene": "01.backend-wide",
               "gain": {
                 "system": 1
@@ -1264,7 +1320,7 @@ export const cases = {
             {
               "id": "default",
               "when": {},
-              "minutes": 45,
+              "minutes": 120,
               "scene": "01.frontend-wide",
               "gain": {
                 "system": 1
@@ -1323,7 +1379,7 @@ export const cases = {
             {
               "id": "default",
               "when": {},
-              "minutes": 45,
+              "minutes": 120,
               "scene": "01.pdf-source",
               "gain": {
                 "system": 1
