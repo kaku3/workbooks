@@ -309,7 +309,26 @@ try {
   await click('[data-action=notebook]');await screenshot('notebook');
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.evidence-card')).backgroundColor.match(/[0-9]+/g).slice(0,3).every(value=>Number(value)>140)"),true);
   const submit=async(cards,beforeSettle)=>{if((await state()).phase!=='report')await click('[data-action=report]');for(const id of (await state()).selected)await click(`[data-action="select:${id}"]`);for(const id of cards)await click(`[data-action="select:${id}"]`);await click('[data-action=submit]');assert.equal(await evaluate("document.querySelector('dialog').open"),false,'reports continue inside the meeting');assert.equal(await evaluate("Boolean(document.querySelector('.reporting .meeting-dialogue'))"),true);if(beforeSettle)await beforeSettle();await settle();};
-  await submit(['wm.case','wm.retired','wm.cache']);assert.equal((await state()).question,0);assert.equal((await state()).phase,'report');assert.deepEqual((await state()).selected,['wm.case','wm.retired','wm.cache']);
+  await submit(['wm.case','wm.retired','wm.cache'],async()=>{
+    const interruptedLine=(await state()).conversation.line,time=(await state()).time;
+    if(await evaluate("document.querySelector('[data-action=meeting-mic]').getAttribute('aria-pressed')==='true'"))await click('[data-action=meeting-mic]');
+    await waitFor("document.querySelector('#dialogue-text').textContent.length>0&&document.querySelector('#dialogue-text').textContent.length<=5");
+    await waitFor("document.querySelector('.meeting-speaker strong').textContent==='佐伯'&&document.querySelector('#dialogue-text').textContent==='マイクミュートでしゃべってますか？'");
+    assert.equal((await state()).conversation.line,interruptedLine,'mute exchange holds the original dialogue position');
+    await click('[data-action=scene-skip]');
+    await waitFor("document.querySelector('#dialogue-text').textContent==='あ、すいません、ミュートでした。'");
+    await click('[data-action=scene-next]');assert.equal((await state()).conversation.line,interruptedLine,'next cannot bypass the muted apology');
+    await call('Page.reload');await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
+    assert.equal(await evaluate("document.querySelector('[data-action=meeting-mic]').getAttribute('aria-pressed')"),'false','mute state survives reload during the interruption');
+    await waitFor("document.querySelector('#dialogue-text').textContent==='あ、すいません、ミュートでした。'");
+    await click('[data-action=meeting-mic]');
+    assert.equal((await state()).conversation.muteInterruption,undefined);
+    assert.equal((await state()).conversation.line,interruptedLine);
+    assert.equal((await state()).time,time,'mute exchange and replay consume no game time');
+    assert.equal(await evaluate("document.querySelector('.meeting-speaker strong').textContent"),'主人公');
+    assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent.length<=5"),true,'unmuting restarts the interrupted line from its beginning');
+    await screenshot('meeting-muted-resumed');
+  });assert.equal((await state()).question,0);assert.equal((await state()).phase,'report');assert.deepEqual((await state()).selected,['wm.case','wm.retired','wm.cache']);
   assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().height"),meetingMessageHeight,'report requests and dialogue use the same fixed height');
   assert.equal((await state()).history.at(-1).report.level,1);
   assert.equal(await evaluate("document.querySelector('.chat-heading').textContent.includes('#pj-marunage')"),true);
@@ -357,8 +376,10 @@ try {
   await submit(['wm.case','wm.retired','wm.logs']);
   await submit(['wm.defaults','wm.debug','wm.repro']);
   await submit(['wm.defaults','wm.impact','wm.response'],async()=>{
-    for(let i=0;i<16;i++){if(await evaluate("Boolean(document.querySelector('.report-accepted'))"))break;await click('[data-action=scene-next]');}
-    assert.equal(await evaluate("Boolean(document.querySelector('.report-accepted'))"),true);
+    for(let i=0;i<16;i++){if(await evaluate("Boolean(document.querySelector('[data-report-accepted]'))"))break;await click('[data-action=scene-next]');}
+    assert.equal(await evaluate("document.querySelector('[data-report-accepted]').textContent"),'👍');
+    assert.equal(await evaluate("Boolean(document.querySelector('.report-accepted'))"),false,'success feedback does not consume message space');
+    const reactionStarted=await evaluate("document.querySelector('[data-report-accepted]').dataset.reactionStarted");
     assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().height"),meetingMessageHeight,'accepted reports do not expand the message window');
     assert.deepEqual(await evaluate("[...document.querySelectorAll('.self-panel [data-participant]')].map(item=>item.dataset.participant)"),['player','lead'],'the right gallery contains the player and Makabe');
     assert.equal(await evaluate("document.querySelector('.meeting-camera>img').alt"),'佐伯','Saeki remains fixed in the main camera');
@@ -366,11 +387,18 @@ try {
     const line=(await state()).conversation.line;
     for(let i=0;i<3&&(await state()).conversation.line===line;i++)await click('.report-conversation .conversation-window');
     assert.notEqual((await state()).conversation.line,line,'clicking the meeting message window advances dialogue');
-    assert.equal(await evaluate("getComputedStyle(document.querySelector('.report-accepted')).animationName"),'none','receipt does not animate again on the next line');
+    assert.equal(await evaluate("document.querySelector('[data-report-accepted]')?.dataset.reactionStarted||null"),reactionStarted,'success reaction does not restart on the next line');
     await screenshot('report-accepted');
   });
   assert.equal((await state()).phase,'complete');await screenshot('complete');
   assert.equal(await evaluate("Boolean(document.querySelector('[data-action=next-case]'))"),true,'chapter one offers chapter two');
+  await click('[data-action=next-case]');await waitFor("Boolean(document.querySelector('dialog.conversation[open]'))");
+  assert.equal(await evaluate("location.search"),'?case=approval-button');
+  assert.equal(await evaluate("JSON.parse(localStorage.getItem('report-drill.approval-button.v1')).conversation.ids[0]"),'02.intro');
+  assert.equal(await evaluate("Boolean(document.querySelector('.title-page'))"),false,'chapter two starts directly from the completed first chapter');
+  await screenshot('chapter2-direct-entry');
+  await evaluate("localStorage.removeItem('report-drill.approval-button.v1')");
+  await call('Page.navigate',{url});await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
   await click('[data-action=retry-case]');await settle();
   await investigate('wm.design');await investigate('wm.docs-detail');
   assert.equal(await evaluate("Boolean(document.querySelector('[data-card-id=\"wm.source-pdf\"]'))"),false);
@@ -453,12 +481,11 @@ try {
   await click('[data-action=continue]');
   assert.equal(await evaluate("document.querySelector('[data-action=next-case]').textContent"),'3章へ');
   const secondCaseSave=await evaluate("localStorage.getItem('report-drill.approval-button.v1')");
-  await click('[data-action=next-case]');await waitFor("Boolean(document.querySelector('[data-action=start]'))");
+  await click('[data-action=next-case]');await waitFor("Boolean(document.querySelector('dialog.conversation[open]'))");
   assert.equal(await evaluate("location.search"),'?case=bulk-import');
-  assert.equal(await evaluate("document.querySelector('.case-paper h2').textContent"),'一括登録機能');
-  assert.equal(await evaluate("document.querySelectorAll('.chapter-picker a').length"),3);
-  assert.equal(await evaluate("Boolean(document.querySelector('[data-action=continue]'))"),false);
-  await screenshot('chapter3-title');await click('[data-action=start]');
+  assert.equal(await evaluate("Boolean(document.querySelector('.title-page'))"),false,'next chapter enters its introduction without a title screen');
+  assert.equal(await evaluate("JSON.parse(localStorage.getItem('report-drill.bulk-import.v1')).conversation.ids[0]"),'03.intro');
+  await screenshot('chapter3-intro');
   for(let step=0;step<14&&await evaluate("document.querySelectorAll('.portrait').length<4");step++)await click('[data-action=scene-next]');
   await waitFor("document.querySelectorAll('.portrait').length===4&&[...document.querySelectorAll('.portrait img')].every(image=>image.complete&&image.naturalWidth)");
   for(const [width,height,mobile] of [[1440,1000,false],[1280,720,false],[390,844,true]]){
@@ -515,8 +542,16 @@ try {
   assert.equal((await chapter3State()).conversation.ids[0],'03.makabe-macro');
   await settle();assert.ok((await chapter3State()).evidence.includes('bi.macro'));
   assert.equal((await chapter3State()).evidence.includes('bi.business'),false,'macro advice does not confirm the department CSV preparation');
+  const nextChapterProgress=(await chapter3State()).evidence;
+  await call('Page.navigate',{url:url+'/?case=approval-button'});await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
+  await click('[data-action=next-case]');await waitFor("Boolean(document.querySelector('[data-card-id=\"bi.ask-makabe\"]'))");
+  assert.equal(await evaluate("Boolean(document.querySelector('.title-page'))"),false);
+  assert.deepEqual((await chapter3State()).evidence,nextChapterProgress,'entering the next chapter preserves and resumes its existing progress');
   assert.equal(await evaluate("localStorage.getItem('report-drill.pdf-incident.v1')"),firstCaseSave);
   assert.equal(await evaluate("localStorage.getItem('report-drill.approval-button.v1')"),secondCaseSave);
+  await evaluate("Promise.all([import('./data/content.mjs'),import('./engine.mjs')]).then(([{cases},{createEngine}])=>{const {problem,scenario}=cases.watermark;const s=createEngine(problem,scenario).fresh();s.history.push({day:1,time:540,ids:['01.q1-pass'],label:'Old report',selected:[],changes:{}});localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));})");
+  await call('Page.navigate',{url});await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
+  assert.equal(await evaluate("document.querySelector('.history-inline').textContent.includes('三田')"),true,'retired report dialogue remains readable in saved history');
   assert.deepEqual(errors,[],'no browser runtime errors');
   console.log('Browser: complete route, rejected report, replay, reload, carryover, timeout, mobile, keyboard cancel: OK');
   console.log('Screenshots: tests/artifacts/');

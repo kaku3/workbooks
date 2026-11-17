@@ -5,6 +5,8 @@
 | ファイル | 状態 |
 |---|---|
 | [01_watermark.md](01_watermark.md) | 第1面の試作用原稿 |
+| [archive/01_watermark_legacy.md](archive/01_watermark_legacy.md) | 廃止した旧3問形式の9場面。旧保存の履歴表示専用。本編では再生しない |
+| [shared/meeting.md](shared/meeting.md) | 全章共通の会議イベント。ミュートで話した際のやり取り |
 | [02_approval-button.md](02_approval-button.md) | 2章の編集正本・ビルド対象 |
 | [03_bulk-import.md](03_bulk-import.md) | 第3章の会話正本・ビルド対象。[分冊仕様](../chapter3/00_README.md)に沿って再作成済み |
 | [04_closing-automation.md](04_closing-automation.md) | 第4面の草案・取込対象外 |

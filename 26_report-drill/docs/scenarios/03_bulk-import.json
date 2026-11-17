@@ -1041,6 +1041,19 @@
           "text": "折原さん、もう見積書開いてる。早いな。"
         }
       ]
+    },
+    "meeting.muted": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "client",
+          "text": "マイクミュートでしゃべってますか？"
+        },
+        {
+          "speaker": "player",
+          "text": "あ、すいません、ミュートでした。"
+        }
+      ]
     }
   },
   "chat": [
@@ -1163,6 +1176,7 @@
     "gameover": "03.gameover",
     "extensionUsed": "03.extension-used",
     "nextDay": "03.next-day",
-    "dream": "03.dream"
+    "dream": "03.dream",
+    "microphoneMuted": "meeting.muted"
   }
 }

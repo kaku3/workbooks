@@ -41,8 +41,19 @@ for (const folder of folders) {
 }
 const [scenario, problem] = entries.map(entry => entry.data);
 if (scenario.caseId !== problem.caseId) throw new Error('caseId mismatch');
+const meeting = parseMarkdown(await readFile(new URL('docs/scenarios/shared/meeting.md', root), 'utf8'), 'meeting scenarios');
+for (const [id, scene] of Object.entries(meeting.scenes)) {
+  if (scenario.scenes[id]) throw new Error(`Duplicate shared scene: ${id}`);
+  scenario.scenes[id] = scene;
+}
+scenario.events.microphoneMuted = 'meeting.muted';
+if (stem === '01_watermark') {
+  const legacy = parseMarkdown(await readFile(new URL('docs/scenarios/archive/01_watermark_legacy.md', root), 'utf8'), 'legacy scenarios');
+  if (legacy.caseId !== scenario.caseId) throw new Error('legacy caseId mismatch');
+  scenario.legacyScenes = legacy.scenes;
+}
 const speakers = new Set(scenario.characters.map(character => character.id));
-for (const scene of Object.values(scenario.scenes)) {
+for (const scene of [...Object.values(scenario.scenes), ...Object.values(scenario.legacyScenes || {})]) {
   for (const line of scene.lines) if (!speakers.has(line.speaker)) throw new Error(`Unknown speaker: ${line.speaker}`);
 }
 function validateReferences(value) {

@@ -14,6 +14,18 @@ const answers=[['wm.case','wm.retired','wm.logs'],['wm.defaults','wm.debug','wm.
 const submit=(s,cards)=>{s.phase='report';s.selected=cards;assert.equal(e.report(s),true);finish(s);};
 const available=s=>problem.investigations.filter(a=>e.matches(a.unlock,s)).map(a=>a.id);
 
+test('chapter one keeps only referenced dialogue active and resolves retired reports separately',()=>{
+ const referenced=new Set();
+ const collect=value=>{if(typeof value==='string')referenced.add(value);else if(value&&typeof value==='object')Object.values(value).forEach(collect);};
+ collect(problem);collect(scenario.events);
+ for(const id of Object.keys(scenario.scenes))assert.ok(referenced.has(id),`Unreferenced active scene: ${id}`);
+ assert.equal(Object.keys(scenario.legacyScenes).length,9);
+ for(const id of Object.keys(scenario.legacyScenes)){assert.ok(!scenario.scenes[id]);assert.ok(!referenced.has(id));}
+ const s=start();s.history.push({day:1,time:540,ids:['01.q1-pass','01.q2-pass','01.q3-pass'],label:'old report',selected:[],changes:{}});
+ const restored=e.restore(JSON.stringify(s));
+ for(const id of restored.history.at(-1).ids)assert.ok((scenario.scenes[id]||scenario.legacyScenes[id]).lines.length);
+});
+
 test('opening conversation leads to a saved overview and work starts explicitly',()=>{
  const s=e.start();finish(s);assert.equal(s.phase,'briefing');
  assert.equal(e.elapse(s,300000),false);assert.equal(s.time,540);

@@ -613,6 +613,19 @@
           "text": "今回直すところと、含めないところが決まった。\nこの範囲の改修と試験を見積もればいい。"
         }
       ]
+    },
+    "meeting.muted": {
+      "version": 1,
+      "lines": [
+        {
+          "speaker": "client",
+          "text": "マイクミュートでしゃべってますか？"
+        },
+        {
+          "speaker": "player",
+          "text": "あ、すいません、ミュートでした。"
+        }
+      ]
     }
   },
   "chat": [
@@ -727,6 +740,7 @@
     "gameover": "02.gameover",
     "extensionUsed": "02.extension-used",
     "nextDay": "02.next-day",
-    "dream": "02.dream"
+    "dream": "02.dream",
+    "microphoneMuted": "meeting.muted"
   }
 }
