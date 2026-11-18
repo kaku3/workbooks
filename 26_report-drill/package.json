@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-content.mjs",
+    "deploy": "npm run build && powershell -NoProfile -Command \"Copy-Item -Path 'src/*' -Destination '../docs/report-drill' -Recurse -Force\"",
     "start": "node scripts/serve.mjs",
     "test": "node --test tests/engine.test.mjs tests/chapter2.test.mjs tests/chapter3.test.mjs tests/chat-read.test.mjs tests/dialogue-text.test.mjs",
     "test:browser": "node tests/browser.mjs"

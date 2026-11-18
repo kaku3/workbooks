@@ -12,7 +12,7 @@ const prepare=(last='permission')=>{const s=start();for(const id of ['business',
 test('v2 introduction explains why to investigate before estimating without revealing the answer cards',()=>{
  const intro=scenario.scenes[scenario.events.intro].lines;
  const thoughts=intro.filter(line=>line.kind==='thought').map(line=>line.text).join('\n');
- assert.match(thoughts,/経理に何をしたい/);assert.match(thoughts,/修正範囲を確定/);assert.match(thoughts,/見積もり根拠/);
+ assert.match(thoughts,/経理のご要望を確認/);assert.match(thoughts,/修正範囲を確定/);assert.match(thoughts,/見積もり根拠/);
  assert.doesNotMatch(thoughts,/ab\.|3枚|３枚|要約カード/);
  assert.match(problem.requestPurpose,/適正な見積もりの根拠/);
  const reply=scenario.scenes['02.report-purpose'].lines.find(line=>line.speaker==='client').text;

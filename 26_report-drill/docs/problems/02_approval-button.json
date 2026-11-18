@@ -3,7 +3,7 @@
   "caseId": "approval-button",
   "version": 1,
   "status": "prototype",
-  "title": "承認画面へのボタン追加",
+  "title": "ボタンの値段",
   "requestMemo": "経理から、承認画面に差戻しボタンを追加してほしいとの依頼。\n\n「ボタン一個だから簡単」と思われているが、本当にそうなのかは分からない。",
   "requestMemoTitle": "承認画面への差戻しボタン追加",
   "requestPurpose": "実現したいことと必要な修正範囲を調査し、適正な見積もりの根拠を佐伯さんに説明する。",
@@ -407,7 +407,7 @@
     {
       "id": "ab.permission",
       "title": "編集権限を調べる",
-      "description": "誰が、いつ、どこまで編集できるか調べる。",
+      "description": "誰が、いつ、どの画面で編集できるか調べる。",
       "unlock": {
         "flagsAll": [
           "ab.state"

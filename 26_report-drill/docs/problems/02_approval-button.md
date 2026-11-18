@@ -31,7 +31,7 @@
 ## title
 
 ```json
-"承認画面へのボタン追加"
+"ボタンの値段"
 ```
 
 ## requestMemo
@@ -475,7 +475,7 @@
   {
     "id": "ab.permission",
     "title": "編集権限を調べる",
-    "description": "誰が、いつ、どこまで編集できるか調べる。",
+    "description": "誰が、いつ、どの画面で編集できるか調べる。",
     "unlock": {
       "flagsAll": [
         "ab.state"
