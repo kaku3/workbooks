@@ -3,7 +3,7 @@
   "caseId": "bulk-import",
   "version": 2,
   "status": "prototype",
-  "title": "異常系と予算",
+  "title": "予算と異常系",
   "titleQuote": "「まとめて登録できないかしら？」",
   "closingNote": "両案の概算と前提、担当に残る作業を説明し、佐伯が利用部署へ持ち帰りました。採用判断と詳細設計はこれからです。",
   "requestMemoTitle": "朝の手入力をまとめたい",

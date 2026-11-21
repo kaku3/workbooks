@@ -29,7 +29,7 @@
 ## title
 
 ```json
-"異常系と予算"
+"予算と異常系"
 ```
 
 ## titleQuote
