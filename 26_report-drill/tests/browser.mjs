@@ -427,7 +427,8 @@ try {
     assert.equal(await evaluate("document.querySelector('[data-report-accepted]').textContent"),'👍');
     assert.equal(await evaluate("Boolean(document.querySelector('.report-accepted'))"),false,'success feedback does not consume message space');
     const reactionStarted=await evaluate("document.querySelector('[data-report-accepted]').dataset.reactionStarted");
-    assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').offsetHeight-document.querySelector('#dialogue-text').offsetHeight"),2,'accepted dialogue reserves no extra height for feedback or the next arrow');
+    assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().height"),meetingMessageHeight,'report dialogue keeps the same height regardless of text length');
+    assert.ok(await evaluate("(()=>{const frame=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),badge=document.querySelector('.report-conversation .conversation-speaker').getBoundingClientRect();return badge.top<frame.top&&badge.bottom>frame.top;})()"),'report speaker name sits on the window shoulder');
     assert.deepEqual(await evaluate("[...document.querySelectorAll('.self-panel [data-participant]')].map(item=>item.dataset.participant)"),['player','lead'],'the right gallery contains the player and Makabe');
     assert.equal(await evaluate("document.querySelector('.meeting-camera>img').alt"),'佐伯','Saeki remains fixed in the main camera');
     assert.equal(await evaluate("(()=>{const panel=document.querySelector('.self-panel'),gallery=panel.getBoundingClientRect(),style=getComputedStyle(panel),contentWidth=gallery.width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-parseFloat(style.borderLeftWidth)-parseFloat(style.borderRightWidth);return [...document.querySelectorAll('.self-panel [data-participant]')].every(item=>{const rect=item.getBoundingClientRect();return rect.top>=gallery.top-1&&rect.bottom<=gallery.bottom+1&&Math.abs(rect.width-contentWidth)<2;});})()"),true,'all participant windows fit vertically in the gallery');
@@ -599,6 +600,25 @@ try {
   await evaluate("Promise.all([import('./data/content.mjs'),import('./engine.mjs')]).then(([{cases},{createEngine}])=>{const {problem,scenario}=cases.watermark;const s=createEngine(problem,scenario).fresh();s.history.push({day:1,time:540,ids:['01.q1-pass'],label:'Old report',selected:[],changes:{}});localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));})");
   await call('Page.navigate',{url});await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
   assert.equal(await evaluate("document.querySelector('.history-inline').textContent.includes('三田')"),true,'retired report dialogue remains readable in saved history');
+  for(const [level,cards,emoji] of [
+    [0,['wm.screen','wm.architecture','wm.detail'],'😨'],
+    [1,['wm.defaults','wm.debug','wm.response'],'😟'],
+    [2,['wm.case','wm.retired','wm.logs'],'🤔']
+  ]){
+    await evaluate(`Promise.all([import('./data/content.mjs'),import('./engine.mjs')]).then(([{cases},{createEngine}])=>{const {problem,scenario}=cases.watermark,e=createEngine(problem,scenario),s=e.fresh();s.settings.instant=true;s.evidence=problem.evidence.map(card=>card.id);s.phase='report';s.selected=${JSON.stringify(cards)};e.report(s);s.conversation.line=scenario.scenes[s.conversation.ids[0]].lines.findIndex(line=>line.speaker==='client');localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));})`);
+    await call('Page.navigate',{url});await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
+    await waitFor("Boolean(document.querySelector('[data-report-rejected]'))");
+    assert.equal(await evaluate("document.querySelector('[data-report-rejected]').textContent"),emoji,'incorrect reports show an appropriately serious reaction');
+    assert.equal(await evaluate("Number(document.querySelector('[data-report-rejected]').dataset.reportLevel)"),level);
+    assert.equal(await evaluate("Boolean(document.querySelector('[data-report-accepted]'))"),false);
+    assert.ok(await evaluate("(()=>{const frame=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),arrow=document.querySelector('.report-conversation .conversation-next').getBoundingClientRect();return Math.abs(frame.bottom-arrow.bottom-11)<2&&Math.abs(frame.right-arrow.right-11)<2;})()"),'report next arrow stays in the bottom-right corner');
+    await screenshot(`report-reaction-${level}`);
+    const started=await evaluate("document.querySelector('[data-report-rejected]').dataset.reactionStarted");
+    await click('[data-action=meeting-camera]');
+    assert.equal(await evaluate("document.querySelector('[data-report-rejected]').dataset.reactionStarted"),started,'rerendering preserves the existing reaction rather than replaying it');
+    await call('Page.reload');await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
+    assert.equal(await evaluate("Boolean(document.querySelector('[data-report-rejected]'))"),false,'reloading does not replay an already shown reaction');
+  }
   assert.deepEqual(errors,[],'no browser runtime errors');
   console.log('Browser: complete route, rejected report, replay, reload, carryover, timeout, mobile, keyboard cancel: OK');
   console.log('Screenshots: tests/artifacts/');

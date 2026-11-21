@@ -86,7 +86,7 @@
 ### 01.docs-screen (version 2)
 
 - player: 画面右上はログイン利用者名、PDFの透かしは出力した利用者の氏名と書かれている。
-- player [thought]: さすがに透かしに田中太郎を出す仕様ではなかったな。まあ、そりゃそうか。\nコードがどうなってるかは分からないけど。
+- player [thought]: さすがに透かしに田中太郎を出す仕様ではなかったな。まあ、そりゃそうか。\n**コードがどうなってるかは分からないけど。**
 
 ### 01.docs-external (version 1)
 
@@ -96,12 +96,12 @@
 ### 01.docs-detail (version 2)
 
 - player: PDFの透かしにはwatermarkNameという氏名オプションがある。\n未設定時の説明は**【TBD】**。
-- player [thought]: 【TBD】…めっちゃ腹立つけど、俺の資料も遠くの空の下で誰かの腹を立てているかもしれないな。\nソースでwatermarkNameを検索してみよう。
+- player [thought]: 【TBD】…めっちゃ腹が立つけど、俺の資料も遠くの空の下で誰かの腹を立てているかもしれないな。\nソースでwatermarkNameを検索してみよう。
 
 ### 01.source-overview (version 1)
 
 - player: バックエンド、フロントエンド、共通処理の置き場所は分かった。\n大したことないアプリに見えるのにすごい量のソースだ。
-- player [thought]: 時計の針の音が大きく聞こえる。スマホの時計だからそんな音は鳴らないけど。
+- player [thought]: 時計の針の音が大きく聞こえる気がする。俺のスマホの時計からはそんな音は鳴らないけど。
 
 ### 01.backend (version 2)
 
@@ -140,7 +140,7 @@
 ### 01.logs (version 2)
 
 - player: 印刷資料に対応するPDFの出力記録は、三田さんのID U-204の最近の操作と一致していた。
-- player [thought]: これで三田さんが操作したことが確定した。\nやはり田中の亡霊ではなかったか。
+- player [thought]: これで三田さんが操作したことが確定した。\nやはり**田中の亡霊**ではなかったか。
 
 ### 01.logs-wide (version 1)
 

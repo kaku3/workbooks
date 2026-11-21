@@ -114,13 +114,19 @@ function meetingControls(){
   const control=(action,label,name,on)=>button(action,icon(name),'meeting-control '+(on?'on':'off'),`aria-label="${label}" title="${label}" aria-pressed="${on}"`);
   return `<div class="meeting-controls" aria-label="Web会議の操作">${control('meeting-mic',meeting.mic?'マイクをオフにする':'マイクをオンにする','mic',meeting.mic)}${control('meeting-camera',meeting.camera?'カメラをオフにする':'カメラをオンにする','video',meeting.camera)}${control('meeting-share',meeting.share?'画面共有をオフにする':'画面共有をオンにする','share',meeting.share)}${control('meeting-reaction','リアクション','smile',meeting.reaction)}${control('meeting-hand',meeting.hand?'手を下げる':'挙手する','hand',meeting.hand)}</div>`;
 }
+const reportReactions={
+  0:{icon:'😨',label:'報告内容に強い懸念'},
+  1:{icon:'😟',label:'報告内容に懸念'},
+  2:{icon:'🤔',label:'報告内容に疑問'}
+};
 function meetingReactionHTML(elapsed=0){
-  const status=meeting.acceptedReaction?'data-report-accepted role="status" aria-label="佐伯からいいね"':'aria-hidden="true"';
-  return `<div class="meeting-reaction-float" ${status} data-reaction-started="${meeting.reactionAt}" style="animation-delay:-${elapsed}ms">👍</div>`;
+  const reaction=reportReactions[meeting.reportReaction];
+  const status=meeting.acceptedReaction?`data-report-accepted role="status" aria-label="${esc(names.client||'佐伯')}からいいね"`:reaction?`data-report-rejected data-report-level="${meeting.reportReaction}" role="status" aria-label="${esc(names.client||'佐伯')}：${reaction.label}"`:'aria-hidden="true"';
+  return `<div class="meeting-reaction-float" ${status} data-reaction-started="${meeting.reactionAt}" style="animation-delay:-${elapsed}ms">${reaction?.icon||'👍'}</div>`;
 }
-function reactInMeeting(accepted=false){
+function reactInMeeting(accepted=false,level=null){
   const started=performance.now();
-  meeting.reaction=true;meeting.acceptedReaction=accepted;meeting.reactionAt=started;
+  meeting.reaction=true;meeting.acceptedReaction=accepted;meeting.reportReaction=level;meeting.reactionAt=started;
   document.querySelector('.meeting-reaction-float')?.remove();
   document.querySelector('.reporting')?.insertAdjacentHTML('beforeend',meetingReactionHTML());
   meetingLater(()=>{if(meeting?.reactionAt===started){meeting.reaction=false;meeting.acceptedReaction=false;render();}},1800);
@@ -600,6 +606,7 @@ function conversationNext(){
 }
 function sizeConversationText(target,text){
   target.dataset.fullDialogue=text;
+  if(target.classList.contains('meeting-dialogue')){target.style.height='';return;}
   const shown=target.innerHTML;
   target.style.height='auto';
   setDialogue(target,text);
@@ -611,6 +618,7 @@ function sizeConversationText(target,text){
 function positionConversationNext(){
   const target=document.querySelector('#dialogue-text'),next=target?.parentElement.querySelector('.conversation-next');
   if(!target||!next||next.hidden)return;
+  if(target.classList.contains('meeting-dialogue')){next.style.top='';return;}
   const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
   let last,node;
   while(node=walker.nextNode())if(node.textContent.trim())last=node;
@@ -636,6 +644,11 @@ function showMeetingConversation(){
   if(meetingLineProgress?.key!==key)meetingLineProgress={key,index:0};
   const accepted=!interrupted&&(id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client')));
   if(accepted&&!c.acceptedReactionShown){c.acceptedReactionShown=true;save();reactInMeeting(true);}
+  const level=state.history[c.historyIndex]?.report?.level;
+  const clientLine=scene.lines.findIndex(item=>item.speaker==='client');
+  if(!interrupted&&c.scene===0&&reportReactions[level]&&clientLine>=0&&c.line>=clientLine&&!c.rejectedReactionShown){
+    c.rejectedReactionShown=true;save();reactInMeeting(false,level);
+  }
   const window=document.querySelector('.report-conversation .conversation-window');
   window.innerHTML=`${conversationSpeaker(names[line.speaker],line.kind==='thought')}<div class="conversation-head">${conversationPagination(c,scene,interrupted&&c.muteInterruption.step===1&&!meeting.mic)}</div><p id="dialogue-text" class="meeting-dialogue ${line.kind==='thought'?'thought':''}" aria-label="${esc(plainDialogue(line.text))}"></p>${conversationNext()}`;
   const target=window.querySelector('#dialogue-text');
