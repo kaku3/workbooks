@@ -860,7 +860,7 @@
 .reporting.meeting-unshared .meeting-bottom>.meeting-command-panel{position:relative;right:auto;bottom:auto;margin:8px 0 0 auto}
 /* Anchor the cast to the viewport; only the message grows upward. */
 .conversation.with-portraits{inset:16px 0;height:calc(100dvh - 32px);max-height:calc(100dvh - 32px);margin:0 auto;padding:0;overflow:visible}
-.conversation.with-portraits>.portrait-stage{position:absolute;inset:0 8px 10px;max-width:1280px;overflow:hidden;mask-image:linear-gradient(to bottom,#000 calc(100% - 70px),transparent)}
+.conversation.with-portraits>.portrait-stage{position:absolute;inset:0 8px 90px;max-width:1280px;overflow:hidden;mask-image:linear-gradient(to bottom,#000 calc(100% - 70px),transparent)}
 .conversation.with-portraits>.conversation-window{position:absolute;left:8px;right:8px;bottom:10px;width:calc(100% - 16px);margin:0 auto}
 .conversation.with-portraits .portrait,.conversation.with-portraits .portrait.speaking{transform:none}
-@media(max-width:699px){.conversation.with-portraits{inset:8px 0;height:calc(100dvh - 16px);max-height:calc(100dvh - 16px)}.conversation.with-portraits>.portrait-stage{left:2px;right:2px;bottom:8px}.conversation.with-portraits>.conversation-window{left:2px;right:2px;bottom:8px;width:calc(100% - 4px)}}
+@media(max-width:699px){.conversation.with-portraits{inset:8px 0;height:calc(100dvh - 16px);max-height:calc(100dvh - 16px)}.conversation.with-portraits>.portrait-stage{left:2px;right:2px}.conversation.with-portraits>.conversation-window{left:2px;right:2px;bottom:8px;width:calc(100% - 4px)}}
