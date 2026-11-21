@@ -603,7 +603,16 @@ try {
   await click('[data-action=submit]');await settle();assert.equal((await chapter3State()).phase,'report');
   assert.equal((await chapter3State()).history.at(-1).ids[0],'03.report-operation');
   await click('[data-action="select:bi.screen"]');await click('[data-action="select:bi.business"]');
-  await screenshot('chapter3-report');await click('[data-action=submit]');await settle();
+  await screenshot('chapter3-report');await click('[data-action=submit]');
+  await click('[data-action=scene-next]');
+  assert.equal((await chapter3State()).conversation.line,1);
+  assert.equal(await evaluate("Boolean(document.querySelector('[data-report-accepted]'))"),false,'the first customer clarification is not yet the acceptance response');
+  await screenshot('chapter3-report-clarification');
+  const acknowledgementLine=await evaluate("import('./data/content.mjs').then(({cases})=>cases['bulk-import'].scenario.scenes['03.report-3'].lines.findLastIndex(line=>line.speaker==='client'))");
+  for(let step=0;step<30&&(await chapter3State()).conversation.line<acknowledgementLine;step++)await click('[data-action=scene-next]');
+  assert.equal((await chapter3State()).conversation.line,acknowledgementLine);
+  assert.equal(await evaluate("Boolean(document.querySelector('[data-report-accepted]'))"),true,'success reaction waits for the customer to understand and take both proposals back');
+  await screenshot('chapter3-report-acknowledged');await settle();
   assert.equal((await chapter3State()).phase,'complete');assert.equal((await chapter3State()).caseId,'bulk-import');
   assert.equal(await evaluate("Boolean(document.querySelector('[data-action=next-case]'))"),false,'last chapter has no broken next link');
   await screenshot('chapter3-complete');

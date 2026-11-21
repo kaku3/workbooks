@@ -689,7 +689,7 @@ function showMeetingConversation(){
   const muted=!interrupted&&!meeting.mic&&line.speaker==='player'&&line.kind!=='thought';
   const key=`${state.loop}:${c.historyIndex}:${c.scene}:${c.line}:${c.muteInterruption?.step??'main'}`;
   if(meetingLineProgress?.key!==key)meetingLineProgress={key,index:0};
-  const accepted=!interrupted&&(id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client')));
+  const accepted=!interrupted&&(id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findLastIndex(item=>item.speaker==='client')));
   if(accepted&&!c.acceptedReactionShown){c.acceptedReactionShown=true;save();reactInMeeting(true);}
   const level=state.history[c.historyIndex]?.report?.level;
   const clientLine=scene.lines.findIndex(item=>item.speaker==='client');
@@ -740,7 +740,7 @@ function advanceMeetingConversation(skip){
 function showConversation() {
   if(showSceneEffect())return;
   const c=state.conversation, id=c.ids[c.scene], scene=scenario.scenes[id], line=scene.lines[c.line];
-  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client'));
+  const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findLastIndex(item=>item.speaker==='client'));
   const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
   const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map(speaker=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
   openModal(`${conversationSpeaker(names[line.speaker],line.kind==='thought',true)}<div class="conversation-head">${conversationPagination(c,scene)}</div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p>${conversationNext()}`,action=>{

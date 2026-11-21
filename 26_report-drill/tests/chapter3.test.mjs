@@ -55,7 +55,7 @@ for(const [name,route,research] of [['business',business,320],['source',source,2
  assert.ok(problem.investigations.some(a=>e.matches(a.unlock,s)&&e.cardStatus(s,a.id)==='todo'));
  run(s,'lunch');assert.equal(report(s),'03.report-3');assert.equal(s.phase,'complete');assert.equal(s.time,540+research+70);
  const ending=scenario.scenes['03.report-3'].lines;
- assert.match(ending.find(l=>l.speaker==='client').text,/持ち帰って/);assert.match(ending.map(l=>l.text).join(''),/概算/);
+ assert.ok(ending.some(l=>l.speaker==='client'&&/持ち帰って/.test(l.text)));assert.match(ending.map(l=>l.text).join(''),/概算/);
  if(name==='source')assert.ok(!s.evidence.includes('bi.prototype'));
  if(name==='screen')assert.ok(!s.evidence.includes('bi.source'));
 });
