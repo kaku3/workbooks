@@ -3537,7 +3537,7 @@ export const cases = {
             },
             {
               "speaker": "lead",
-              "text": "何を何件入れるんだよ。……ああ、まだ見てないのか。現物見てから来て。"
+              "text": "何を何件入れるんだよ。……ああ、まだ見てないのか。確認してから来て。"
             },
             {
               "speaker": "player",
@@ -4644,7 +4644,7 @@ export const cases = {
       "caseId": "bulk-import",
       "version": 2,
       "status": "prototype",
-      "title": "一括登録機能",
+      "title": "異常系と予算",
       "titleQuote": "「まとめて登録できないかしら？」",
       "closingNote": "両案の概算と前提、担当に残る作業を説明し、佐伯が利用部署へ持ち帰りました。採用判断と詳細設計はこれからです。",
       "requestMemoTitle": "朝の手入力をまとめたい",

@@ -29,7 +29,7 @@
 ## title
 
 ```json
-"一括登録機能"
+"異常系と予算"
 ```
 
 ## titleQuote
