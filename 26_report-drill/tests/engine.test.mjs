@@ -11,6 +11,20 @@ const run=(s,id,q)=>{assert.equal(e.investigate(s,id,q),true,id);finish(s);};
 const route=['wm.purpose-check','wm.design','wm.docs-external','wm.docs-detail','wm.source','wm.logs','wm.source-backend','wm.source-pdf','wm.settings','wm.debugger','wm.verify','wm.response'];
 const ready=()=>{const s=start();route.forEach(id=>run(s,id));return s;};
 const answers=[['wm.case','wm.retired','wm.logs'],['wm.defaults','wm.debug','wm.repro'],['wm.defaults','wm.impact','wm.response']];
+test('retired intuition fields are absent from new saves and old saves remain readable',()=>{
+ const current=start();
+ assert.equal(Object.hasOwn(current,'intuition'),false);
+ assert.equal(Object.hasOwn(current,'grown'),false);
+ assert.doesNotThrow(()=>e.restore(JSON.stringify(current)));
+ const legacy=structuredClone(current);
+ legacy.intuition=3;legacy.grown=['wm.case'];legacy.history[0].changes.intuition=1;
+ const restored=e.restore(JSON.stringify(legacy));
+ assert.equal(Object.hasOwn(restored,'intuition'),false);
+ assert.equal(Object.hasOwn(restored,'grown'),false);
+ assert.equal(Object.hasOwn(restored.history[0].changes,'intuition'),false);
+ assert.equal(restored.phase,current.phase);
+ assert.deepEqual(restored.evidence,current.evidence);
+});
 const submit=(s,cards)=>{s.phase='report';s.selected=cards;assert.equal(e.report(s),true);finish(s);};
 const available=s=>problem.investigations.filter(a=>e.matches(a.unlock,s)).map(a=>a.id);
 

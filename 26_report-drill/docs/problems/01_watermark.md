@@ -62,14 +62,6 @@
 }
 ```
 
-## intuition
-
-```json
-{
-  "max": 3
-}
-```
-
 ## evidence
 
 ```json
@@ -940,8 +932,7 @@
     "wm.logs",
     "wm.defaults"
   ],
-  "maxMemories": 3,
-  "intuitionGainPerNewMemoryLoop": 1
+  "maxMemories": 3
 }
 ```
 

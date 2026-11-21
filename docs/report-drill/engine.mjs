@@ -12,8 +12,8 @@ export function createEngine(problem, scenario) {
       saveVersion: 1, reportModel: 2, caseId:problem.caseId, contentVersion: `${problem.version}:${scenario.version}`, phase: 'desk',
       time: minutes(problem.clock.start), loop: nextLoop ? (previous.loop || 1) + 1 : 1,
       knowledge: Object.fromEntries(Object.entries(problem.knowledge).map(([key, value]) => [key, value.initial])),
-      intuition: 0, memories: [],
-      grown: [], completed: false, seen: previous.seen || [],
+      memories: [],
+      completed: false, seen: previous.seen || [],
       settings: previous.settings || { instant: false, reduced: false },
       evidence: [], acquired: {}, flags: [], done: [], helpUsed: [], question: 0, selected: [], history: [],
       conversation: null, settled: false, board: {}, investigationResults: {}, progressReported: false,
@@ -27,7 +27,6 @@ export function createEngine(problem, scenario) {
         case 'evidenceAll': return value.every(id => state.evidence.includes(id));
         case 'memoryAny': return value.some(id => state.memories.includes(id));
         case 'knowledgeAtLeast': return Object.entries(value).every(([key, n]) => state.knowledge[key] >= n);
-        case 'intuitionAtLeast': return state.intuition >= value;
         case 'flagsAll': return value.every(id => state.flags.includes(id));
         case 'flagAbsent': return !state.flags.includes(value);
         case 'availabilityIn': return value.includes(scenario.schedules.lead.find(item => minutes(item.from) <= state.time && state.time < minutes(item.to))?.state);
@@ -49,7 +48,6 @@ export function createEngine(problem, scenario) {
       board: problem.investigations.filter(action=>cardStatus(before,action.id)!==cardStatus(state,action.id)).map(action=>({id:action.id,from:cardStatus(before,action.id),to:cardStatus(state,action.id)})),
       questions: state.question-before.question,
       progressReported: !before.progressReported && state.progressReported,
-      intuition: state.intuition-before.intuition,
       savings: findTimeSavings({matches},problem,before,state),
     };
   }
@@ -64,9 +62,6 @@ export function createEngine(problem, scenario) {
   function settle(state) {
     if (state.settled) return;
     const remembered = problem.loop.memoryCandidates.filter(id => state.memories.includes(id) || state.evidence.includes(id)).slice(0, problem.loop.maxMemories);
-    const newlyGrown = remembered.filter(id => !state.grown.includes(id));
-    if (newlyGrown.length) state.intuition = Math.min(problem.intuition.max, state.intuition + problem.loop.intuitionGainPerNewMemoryLoop);
-    state.grown = [...new Set([...state.grown, ...newlyGrown])];
     state.memories = remembered;
     state.settled = true;
   }
@@ -115,10 +110,7 @@ export function createEngine(problem, scenario) {
     state.conversation = null;
     state.phase = c.after;
     if (['loop', 'complete'].includes(state.phase)) {
-      const intuition=state.intuition;settle(state);
-      if(state.history[c.historyIndex] && state.intuition>intuition) {
-        const entry=state.history[c.historyIndex];entry.changes??={};entry.changes.intuition=(entry.changes.intuition||0)+state.intuition-intuition;
-      }
+      settle(state);
       if (state.phase === 'complete') state.completed = true;
     }
     if (['desk','report'].includes(state.phase) && state.time >= deadline && !c.replay) timeout(state);
@@ -258,7 +250,10 @@ export function createEngine(problem, scenario) {
       c.ids=c.ids.map(id=>id===scenario.events.dream?(extend?scenario.events.extension:state.loop>1?scenario.events.extensionUsed:scenario.events.gameover):id);
       c.after=extend?'loop':'gameover';
     }
-    for (const key of ['evidence','selected','memories','grown','seen','flags','done','helpUsed','history']) if (!Array.isArray(state[key])) throw new Error('保存データの形式が正しくありません。');
+    for (const key of ['evidence','selected','memories','seen','flags','done','helpUsed','history']) if (!Array.isArray(state[key])) throw new Error('保存データの形式が正しくありません。');
+    // Discard the retired stat while accepting saves made before its removal.
+    delete state.intuition;delete state.grown;
+    for(const entry of state.history)if(entry?.changes)delete entry.changes.intuition;
     state.board ??= {};
     state.investigationResults ??= {};
     // Earlier second-day saves retained yesterday's lunch flag after resetting its results.
@@ -283,7 +278,7 @@ export function createEngine(problem, scenario) {
     if (typeof state.board !== 'object' || Array.isArray(state.board) || Object.entries(state.board).some(([id,status])=>!problem.investigations.some(action=>action.id===id)||!['todo','working','done'].includes(status))) throw new Error('調査ボードの状態を読み取れません。');
     if (typeof state.investigationResults !== 'object' || Array.isArray(state.investigationResults) || Object.entries(state.investigationResults).some(([id,scene])=>!problem.investigations.some(action=>action.id===id && action.outcomes.some(outcome=>outcome.scene===scene)))) throw new Error('調査結果を読み取れません。');
     if (![...state.evidence,...state.memories,...state.selected].every(id => allCards.has(id)) || !state.selected.every(id => state.evidence.includes(id)) || new Set(state.selected).size !== state.selected.length) throw new Error('保存データの証拠品を読み取れません。');
-    if (!state.knowledge || !state.acquired || !state.settings || !Number.isInteger(state.loop) || state.loop < 1 || !Number.isInteger(state.intuition) || state.intuition < 0 || state.intuition > problem.intuition.max) throw new Error('保存データの状態を読み取れません。');
+    if (!state.knowledge || !state.acquired || !state.settings || !Number.isInteger(state.loop) || state.loop < 1) throw new Error('保存データの状態を読み取れません。');
     for (const [key, value] of Object.entries(problem.knowledge)) if (!Number.isInteger(state.knowledge[key]) || state.knowledge[key] < 0 || state.knowledge[key] > value.max) throw new Error('知識の値が不正です。');
     if (state.phase === 'scene') {
       const c = state.conversation;

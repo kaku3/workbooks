@@ -1,4 +1,5 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import {parseSceneLines} from './scenario-lines.mjs';
 
 const root = new URL('../', import.meta.url);
 const folders = ['scenarios', 'problems'];
@@ -12,12 +13,7 @@ function parseMarkdown(text, name) {
       data.scenes = {};
       for (const [, id, version, lines] of body.matchAll(/^### (\S+) \(version (\d+)\)\r?\n([\s\S]*?)(?=^### |$(?![\s\S]))/gm)) {
         if (Object.hasOwn(data.scenes, id)) throw new Error(`${name}: duplicate scene ${id}`);
-        const dialogue = [];
-        for (const line of lines.split(/\r?\n/).filter(line => line.trim())) {
-          const match = line.match(/^- (\w+)( \[thought\])?: (.+)$/);
-          if (!match) throw new Error(`${name}: invalid dialogue: ${line}`);
-          dialogue.push({ speaker: match[1], ...(match[2] ? { kind: 'thought' } : {}), text: match[3].replace(/\\n/g, '\n') });
-        }
+        const dialogue = parseSceneLines(lines,name);
         if (!dialogue.length) throw new Error(`${name}: empty scene ${id}`);
         data.scenes[id] = { version: Number(version), lines: dialogue };
       }
@@ -54,7 +50,7 @@ if (stem === '01_watermark') {
 }
 const speakers = new Set(scenario.characters.map(character => character.id));
 for (const scene of [...Object.values(scenario.scenes), ...Object.values(scenario.legacyScenes || {})]) {
-  for (const line of scene.lines) if (!speakers.has(line.speaker)) throw new Error(`Unknown speaker: ${line.speaker}`);
+  for (const line of scene.lines) if (!line.effect&&!speakers.has(line.speaker)) throw new Error(`Unknown speaker: ${line.speaker}`);
 }
 function validateReferences(value) {
   if (!value || typeof value !== 'object') return;

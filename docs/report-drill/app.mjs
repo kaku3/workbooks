@@ -24,6 +24,8 @@ import { updateChatRead } from './chat-read.mjs';
 import { playClueAcquisition } from './clue-effects.mjs';
 import { captureMeetingWindows, animateMeetingWindows } from './meeting-layout.mjs';
 import { preloadImages } from './image-preload.mjs';
+import { playTitleTransition } from './title-transition.mjs';
+import {playBlackout} from './scene-effects.mjs';
 
 const engine = createEngine(problem, scenario);
 const app = document.querySelector('#app');
@@ -36,6 +38,7 @@ const openingImages=['./assets/04_saeki-transparent.png','./assets/01_player-tra
 preloadImages(openingImages,'high');
 preloadImages([...new Set(Object.values(portraitFiles))].flatMap(file=>[`./assets/${file}-transparent.png`,`./assets/${file.slice(0,2)}_room.png`]));
 let starting=false;
+let sceneEffectRunning=false;
 let deployingTickets=false;
 const roomStyle = speaker => {
   const portrait=portraitFiles[names[speaker]];
@@ -62,7 +65,6 @@ const icons = {
   check: '<path d="m5 12 4 4L19 6"/>',
   business: '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 12a20 20 0 0 0 18 0M12 12v4"/>',
   system: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 9h6v6H9zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
-  intuition: '<path d="M9 18h6M10 21h4M8 14a6 6 0 1 1 8 0c-1 1-1 2-1 4H9c0-2 0-3-1-4M12 1v2M3 5l2 2M19 7l2-2"/>',
   layers: '<path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/>',
 };
 const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.file}</svg>`;
@@ -182,7 +184,6 @@ function statusEffects() {
     if(clues.length) pendingEffects.push({selector:'.deck-handle'});
     const unlocked=problem.investigations.filter(action=>!engine.matches(action.unlock,visualState)&&engine.matches(action.unlock,state)).length;
     if(unlocked)pendingEffects.push({selector:'.kanban'});
-    if(state.intuition>visualState.intuition) pendingEffects.push({selector:'.knowledge'});
     for (const action of problem.investigations) {
       const before=engine.cardStatus(visualState,action.id),after=engine.cardStatus(state,action.id);
       if(before!==after) pendingEffects.push({selector:`[data-card-id="${action.id}"]`});
@@ -267,22 +268,28 @@ async function start(nextLoop = false) {
   starting=true;app.setAttribute('aria-busy','true');
   const startButton=app.querySelector('[data-action=start],[data-action=next-loop],[data-action=retry-case]');
   if(startButton){startButton.disabled=true;startButton.textContent='準備中…';}
-  try { await preloadImages(openingImages,'high'); }
-  finally {starting=false;app.removeAttribute('aria-busy');}
-  deckSize='small';
-  visualState=null;pendingEffects=[];
-  pendingSavings.clear();deferredSavings.clear();
-  state = engine.start(state || saved || {}, nextLoop);
-  page = 'game'; tab = 'investigate'; resetChat(); save(); render();
+  try {
+    await preloadImages(openingImages,'high');
+    await playTitleTransition({app,modal,chapter:chapterNumber,reduced:Boolean((state||saved)?.settings?.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches),onEnter:()=>{
+      deckSize='small';
+      visualState=null;pendingEffects=[];
+      pendingSavings.clear();deferredSavings.clear();
+      state = engine.start(state || saved || {}, nextLoop);
+      page = 'game'; tab = 'investigate'; resetChat(); save(); render();
+    }});
+  }finally{starting=false;app.removeAttribute('aria-busy');syncTimer();}
 }
 async function resumeChapter(target){
   if(!saved||starting)return;
   starting=true;app.setAttribute('aria-busy','true');if(target)target.disabled=true;
   const actors=saved.conversation?.ids.flatMap(id=>scenario.scenes[id]?.lines.map(line=>portraitFiles[names[line.speaker]]).filter(Boolean)||[])||[];
   const rooms=saved.phase==='report'?['01_room','03_room','04_room']:[];
-  try{await preloadImages([...openingImages,...new Set(actors.map(file=>`./assets/${file}-transparent.png`)),...rooms.map(file=>`./assets/${file}.png`)],'high');}
-  finally{starting=false;app.removeAttribute('aria-busy');}
-  state=structuredClone(saved);page='game';resetChat();render();
+  try{
+    await preloadImages([...openingImages,...new Set(actors.map(file=>`./assets/${file}-transparent.png`)),...rooms.map(file=>`./assets/${file}.png`)],'high');
+    await playTitleTransition({app,modal,chapter:chapterNumber,reduced:Boolean(saved.settings?.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches),onEnter:()=>{
+      state=structuredClone(saved);page='game';resetChat();render();
+    }});
+  }finally{starting=false;app.removeAttribute('aria-busy');syncTimer();}
 }
 function header() {
   return `<header class="topbar"><button class="brand" data-action="title"><span class="brand-mark">${icon('file')}</span><span>確認して、回答します。<small>INVESTIGATION & REPORT</small></span></button><div class="top-right"><span class="prototype"><i></i> PROTOTYPE · ${chapterNumber}章</span>${button('settings', icon('settings'), 'icon-button', 'aria-label="設定"')}</div></header>`;
@@ -298,7 +305,7 @@ function titlePage() {
 function hasContinueSave(){return Boolean(saved&&(saved.history.length||saved.done.length||saved.phase!=='desk'));}
 function stats() {
   const memo=(problem.requestMemoTitle?`<h3>${esc(problem.requestMemoTitle)}</h3>`:'')+problem.requestMemo.split('\n\n').map(text=>`<p>${esc(text)}</p>`).join('')+(problem.requestPurpose?`<p><strong>今回の目的</strong></p><p>${esc(problem.requestPurpose)}</p>`:'');
-  return `<section class="panel memo"><p class="eyebrow">DESCRIPTION</p>${memo}</section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識'],['intuition','直感']].map(([key,label])=>{ const value = key === 'intuition' ? state.intuition : state.knowledge[key]; const max = key === 'intuition' ? problem.intuition.max : problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
+  return `<section class="panel memo"><p class="eyebrow">DESCRIPTION</p>${memo}</section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識']].map(([key,label])=>{ const value = state.knowledge[key]; const max = problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
 }
 function actionPlan(action) {
   const question = action.questionOptions?.filter(item=>engine.matches(item.unlock,state)).at(-1)?.id;
@@ -326,7 +333,8 @@ function investigations(overview=false) {
     const items = actions.filter(action=>status(action)===id);
     if(id==='todo'&&state.time>=minutes('12:00'))items.sort((a,b)=>Number(b.id===lunchId)-Number(a.id===lunchId));
     if(id==='done')items.sort((a,b)=>(completionOrder.get(a.id)??Infinity)-(completionOrder.get(b.id)??Infinity));
-    return `<section class="kanban-column ${id}" data-status="${id}" aria-labelledby="column-${id}"><h2 id="column-${id}"><i></i>${label}<span class="column-count">${items.length}</span></h2><div class="kanban-cards">${items.map(card).join('') || '<p class="column-empty">まだありません</p>'}</div></section>`;
+    const emptyLabel={todo:'未着手のカードを置く',working:'作業するカードを置く',done:'完了するカードを置く'}[id];
+    return `<section class="kanban-column ${id}" data-status="${id}" aria-labelledby="column-${id}"><h2 id="column-${id}"><i></i>${label}<span class="column-count">${items.length}</span></h2><div class="kanban-cards">${items.map(card).join('') || `<p class="column-empty">${emptyLabel}</p>`}</div></section>`;
   }).join('')}</div><p class="tiny muted">※ 作業中へ移すとイベント開始。完了・未着手への移動は時間を使いません。</p>`;
 }
 function evidenceCard(card, selectable = false) {
@@ -354,19 +362,18 @@ function reportPage() {
 }
 
 function historyEntry(item,index) {
-  return `<details class="history-entry" data-history-index="${index}"><summary class="history-item"><div class="history-copy"><h3>${esc(item.label.replace(/ · [0-9hm]+経過$/u,''))}</h3><small>${item.ids.length}件の会話 ${item.selected?.length?`· 手がかり ${item.selected.length}枚`:''}</small></div>${historyChanges(item)}${item.changes?.minutes>0?`<span class="history-duration" aria-label="消費時間 ${duration(item.changes.minutes)}">${duration(item.changes.minutes)}</span>`:''}</summary><div class="history-inline">${item.ids.map(id=>(scenario.scenes[id]||scenario.legacyScenes?.[id]).lines.map(line=>`<p><strong>${esc(names[line.speaker])}</strong> ${dialogueHTML(line.text)}</p>`).join('')).join('')}</div></details>`;
+  return `<details class="history-entry" data-history-index="${index}"><summary class="history-item"><div class="history-copy"><h3>${esc(item.label.replace(/ · [0-9hm]+経過$/u,''))}</h3><small>${item.ids.length}件の会話 ${item.selected?.length?`· 手がかり ${item.selected.length}枚`:''}</small></div>${historyChanges(item)}${item.changes?.minutes>0?`<span class="history-duration" aria-label="消費時間 ${duration(item.changes.minutes)}">${duration(item.changes.minutes)}</span>`:''}</summary><div class="history-inline">${item.ids.map(id=>(scenario.scenes[id]||scenario.legacyScenes?.[id]).lines.filter(line=>!line.effect).map(line=>`<p><strong>${esc(names[line.speaker])}</strong> ${dialogueHTML(line.text)}</p>`).join('')).join('')}</div></details>`;
 }
 function historyPage() {
   return `<div class="workspace-heading"><div><p class="eyebrow">WORK LOG</p><h1>調査と報告の記録。</h1></div></div><div class="history-list">${state.history.map((item,index)=>item.ids.length?historyEntry(item,index):'').join('') || '<p class="empty">まだ記録はありません。</p>'}</div>`;
 }
 function historyChanges(item) {
   const change=item.changes||{},gains=[];
-  for(const [key,value] of Object.entries(change.knowledge||{}))if(value)gains.push([key,`${{business:'業務知識',system:'システム知識',intuition:'直感'}[key]||key} +${value}`,`+${value}`]);
+  for(const [key,value] of Object.entries(change.knowledge||{}))if(value)gains.push([key,`${{business:'業務知識',system:'システム知識'}[key]||key} +${value}`,`+${value}`]);
   if(change.evidence?.length)gains.push(['book',`手がかり +${change.evidence.length}`,`+${change.evidence.length}`]);
   if(change.unlocked?.length)gains.push(['layers',`調査先 +${change.unlocked.length}`,`+${change.unlocked.length}`]);
   if(change.questions>0)gains.push(['check',`報告 ${change.questions}問成立`,`+${change.questions}`]);
   if(change.progressReported)gains.push(['chat','途中報告済み','✓']);
-  if(change.intuition>0)gains.push(['intuition',`直感 +${change.intuition}`,`+${change.intuition}`]);
   return `<span class="history-deltas">${gains.map(([name,label,value])=>`<span title="${esc(label)}" aria-label="${esc(label)}">${icon(name)}<b>${esc(value)}</b></span>`).join('')}</span><span class="history-savings">${(change.savings||[]).map(saving=>{
     const action=problem.investigations.find(action=>action.id===saving.id);
     const title=action && engine.matches(action.unlock,state)?action.title:'対応するソース（解放後に反映）';
@@ -596,7 +603,27 @@ function closeModal() {
   if(lastFocus?.isConnected) lastFocus.focus();
 }
 function conversationPagination(c,scene,blocked=false){
-  return `<div class="conversation-pagination"><span class="conversation-label">${esc(c.label)}</span><small>${c.line+1}/${scene.lines.length}</small>${blocked?'<span class="muted tiny">マイクをオンにすると再開します</span>':button('scene-skip','会話をスキップ','text-button')}</div>`;
+  const position=scene.lines.slice(0,c.line+1).filter(line=>!line.effect).length;
+  const total=scene.lines.filter(line=>!line.effect).length;
+  return `<div class="conversation-pagination"><span class="conversation-label">${esc(c.label)}</span><small>${position}/${total}</small>${blocked?'<span class="muted tiny">マイクをオンにすると再開します</span>':button('scene-skip','会話をスキップ','text-button')}</div>`;
+}
+function currentSceneEffect(){
+  const c=state?.phase==='scene'&&state.conversation;
+  return c&&scenario.scenes[c.ids[c.scene]].lines[c.line].effect;
+}
+function showSceneEffect(){
+  if(!currentSceneEffect())return false;
+  if(sceneEffectRunning)return true;
+  sceneEffectRunning=true;
+  const proceed=()=>{
+    // Adjacent blackouts share one cut, avoiding a flash between empty scenes.
+    while(currentSceneEffect()==='blackout')engine.advance(state);
+    save();render();
+  };
+  playBlackout({onDark:proceed,reduced:Boolean(state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)})
+    .catch(error=>{console.error(error);if(currentSceneEffect())proceed();})
+    .finally(()=>{sceneEffectRunning=false;syncTimer();});
+  return true;
 }
 function conversationSpeaker(name,thought=false,modalTitle=false){
   return `<h2 class="conversation-speaker" ${modalTitle?'id="modal-title"':''}><strong>${esc(name)}</strong>${thought?'<span>（心の声）</span>':''}</h2>`;
@@ -636,6 +663,7 @@ function syncConversationNext(){
   positionConversationNext();
 }
 function showMeetingConversation(){
+  if(showSceneEffect())return;
   if(modal.open)closeModal();
   const c=state.conversation,id=c.ids[c.scene],scene=scenario.scenes[id],line=meetingDialogue();
   const interrupted=Boolean(c.muteInterruption);
@@ -691,6 +719,7 @@ function advanceMeetingConversation(skip){
   engine.advance(state,skip);save();render();
 }
 function showConversation() {
+  if(showSceneEffect())return;
   const c=state.conversation, id=c.ids[c.scene], scene=scenario.scenes[id], line=scene.lines[c.line];
   const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client'));
   const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
@@ -754,7 +783,7 @@ function settings() {
       if(state){state.settings=next;save();}else{saved=saved||engine.fresh();saved.settings=next;try{localStorage.setItem(storageKey,JSON.stringify(saved));}catch{notify('設定を保存できません。');}}
       closeModal();render();
     }
-    if(action==='erase')confirmAction('すべての記録を消しますか？','進行、記憶、直感、完了記録を削除します。',()=>{try{eraseChapterClear(chapterStorage,caseIds,caseId);localStorage.removeItem(storageKey);}catch{notify('記録を削除できませんでした。');return;}state=null;saved=null;saveError='';page='title';render();},'記録を削除する');
+    if(action==='erase')confirmAction('すべての記録を消しますか？','進行、記憶、完了記録を削除します。',()=>{try{eraseChapterClear(chapterStorage,caseIds,caseId);localStorage.removeItem(storageKey);}catch{notify('記録を削除できませんでした。');return;}state=null;saved=null;saveError='';page='title';render();},'記録を削除する');
   });
 }
 function moveCard(id,status) {
@@ -846,6 +875,7 @@ app.addEventListener('dragend',()=>{
   app.querySelectorAll('.dragging,.drop-target').forEach(item=>item.classList.remove('dragging','drop-target'));
 });
 app.addEventListener('click',async event=>{
+  if(sceneEffectRunning)return;
   if(deployingTickets)return;
   if(isMeetingScene()&&event.target.closest('.report-conversation .conversation-window')&&!event.target.closest('[data-action]')){
     advanceMeetingConversation(false);return;
@@ -855,7 +885,7 @@ app.addEventListener('click',async event=>{
   if(action==='next-case'&&nextCaseId){location.search=`?case=${nextCaseId}&enter=1`;return;}
   if(action==='settings'){settings();return;}
   if(action==='title'){page='title';render();return;}
-  if(action==='start') {if(hasContinueSave()||saveError)confirmAction('はじめから進めますか？','今回の進行をやり直します。記憶・直感・完了記録は保持します。',()=>start(),'はじめから');else start();return;}
+  if(action==='start') {if(hasContinueSave()||saveError)confirmAction('はじめから進めますか？','今回の進行をやり直します。記憶・完了記録は保持します。',()=>start(),'はじめから');else start();return;}
   if(action==='continue'&&saved){
     await resumeChapter(target);return;
   }
@@ -910,6 +940,7 @@ app.addEventListener('click',async event=>{
   }
 });
 modal.addEventListener('click',event=>{
+  if(starting||sceneEffectRunning)return;
   const target=event.target.closest('[data-action]');
   if(target){if(!target.disabled)modalAction?.(target.dataset.action);return;}
   if(modal.classList.contains('conversation')){
@@ -923,6 +954,7 @@ modal.addEventListener('cancel',event=>{
   syncTimer();
 });
 document.addEventListener('keydown',event=>{
+  if(starting||sceneEffectRunning)return;
   const deckCard=event.target.closest('#shared-clue-deck [data-evidence-id]');
   if(deckSize==='large'&&deckCard&&event.altKey&&['ArrowLeft','ArrowRight'].includes(event.key)){
     event.preventDefault();const order=state.deckOrder,index=order.indexOf(deckCard.dataset.evidenceId),target=order[index+(event.key==='ArrowRight'?1:-1)];
@@ -949,7 +981,7 @@ if(new URLSearchParams(location.search).get('enter')==='1'){
 }else render();
 
 function timerEnabled(){
-  return page==='game' && state?.phase==='desk' && !deployingTickets && deckSize!=='large' && !modal.open;
+  return !starting && !sceneEffectRunning && page==='game' && state?.phase==='desk' && !deployingTickets && deckSize!=='large' && !modal.open;
 }
 function syncTimer(){
   const enabled=Boolean(timerEnabled());

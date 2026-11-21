@@ -23,9 +23,6 @@
       "max": 18
     }
   },
-  "intuition": {
-    "max": 3
-  },
   "evidence": [
     {
       "id": "bi.request",
@@ -3064,8 +3061,7 @@
   },
   "loop": {
     "memoryCandidates": [],
-    "maxMemories": 0,
-    "intuitionGainPerNewMemoryLoop": 0
+    "maxMemories": 0
   },
   "questions": [
     {

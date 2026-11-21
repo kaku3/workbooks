@@ -76,14 +76,6 @@
 }
 ```
 
-## intuition
-
-```json
-{
-  "max": 3
-}
-```
-
 ## evidence
 
 ```json
@@ -856,8 +848,7 @@
 ```json
 {
   "memoryCandidates": [],
-  "maxMemories": 0,
-  "intuitionGainPerNewMemoryLoop": 0
+  "maxMemories": 0
 }
 ```
 

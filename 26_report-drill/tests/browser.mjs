@@ -83,7 +83,16 @@ try {
   await evaluate("document.querySelectorAll('.title-cast').forEach(img=>{const animation=img.getAnimations()[0];animation.currentTime=4000;animation.play();})");
   await screenshot('title');
   await evaluate("import('./data/content.mjs').then(({cases})=>{const line=cases.watermark.scenario.scenes['01.intro'].lines[0];line.text='**'+line.text+'**';})");
-  await click('[data-action=start]');
+  await evaluate("document.querySelector('[data-action=start]').click()");
+  await waitFor("document.querySelector('.chapter-transition')?.dataset.phase==='chapter'&&Number(getComputedStyle(document.querySelector('.chapter-transition-heading')).opacity)>.95");
+  assert.equal(await evaluate("document.querySelector('.chapter-transition-heading').textContent"),'第一章');
+  assert.equal(await evaluate("Number(getComputedStyle(document.querySelector('#app')).opacity)"),0,'the title fades away before the chapter card');
+  assert.ok(await evaluate("(()=>{const note=document.querySelector('.chapter-transition-note'),rect=note.getBoundingClientRect(),matrix=new DOMMatrix(getComputedStyle(note).transform);return Math.abs(rect.left+rect.width/2-document.documentElement.clientWidth/2)<1&&Math.abs(rect.top+rect.height/2-document.documentElement.clientHeight/2)<1&&Math.abs(matrix.b)<.001;})()"),'the request paper is centered and horizontal');
+  assert.ok(await evaluate("document.querySelector('.chapter-transition-note .paper-label').textContent.includes('本日の依頼')"),'the large request paper is used for the transition');
+  assert.equal(await evaluate("document.querySelector('#app').inert"),true,'title controls cannot be activated during the transition');
+  await screenshot('chapter-transition');
+  await waitFor("document.querySelector('#app').getAttribute('aria-busy')!=='true'");
+  assert.equal(await evaluate("Boolean(document.querySelector('.chapter-transition'))"),false,'chapter transition cleans up after entering the game');
   await waitFor("Boolean(document.querySelector('.portrait img')?.complete && document.querySelector('.portrait img')?.naturalWidth)");
   await waitFor("Boolean(document.querySelector('#dialogue-text strong'))");
   assert.equal(await evaluate("Boolean(document.querySelector('.conversation-actions,.meeting-dialogue-actions'))"),false,'conversation has no footer or unread label');
@@ -293,7 +302,7 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.chat-panel .history-deltas')).flexDirection"),'row');
   assert.equal(await evaluate("document.querySelectorAll('.history-item>time').length"),0);
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.chat-panel .history-duration')).top"),'3px');
-  assert.equal(await evaluate("document.querySelectorAll('.stat-label svg').length"),3);
+  assert.equal(await evaluate("document.querySelectorAll('.stat-label svg').length"),2);
   await evaluate("(()=>{const chat=document.querySelector('.chat-scroll');chat.scrollTop=0;chat.dispatchEvent(new Event('scroll'));})()");
   await click('.chat-scroll .history-entry summary');
   assert.equal(await evaluate("Boolean(document.querySelector('.chat-scroll .history-entry[open]')) && !document.querySelector('dialog').open"),true,'history expands inside chat');
@@ -618,6 +627,36 @@ try {
     assert.equal(await evaluate("document.querySelector('[data-report-rejected]').dataset.reactionStarted"),started,'rerendering preserves the existing reaction rather than replaying it');
     await call('Page.reload');await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
     assert.equal(await evaluate("Boolean(document.querySelector('[data-report-rejected]'))"),false,'reloading does not replay an already shown reaction');
+  }
+  for(const [meetingMode,reduced] of [[false,false],[true,false],[false,true]]){
+    await evaluate(`Promise.all([import('./data/content.mjs'),import('./engine.mjs')]).then(([{cases},{createEngine}])=>{const {problem,scenario}=cases.watermark,e=createEngine(problem,scenario),s=e.fresh();s.settings.instant=true;e.queue(s,[scenario.events.intro],${JSON.stringify(meetingMode?'report':'briefing')},'Effect test');s.conversation.meeting=${meetingMode};localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));})`);
+    await call('Page.reload');await waitFor("Boolean(document.querySelector('[data-action=continue]'))");
+    await evaluate("import('./data/content.mjs').then(({cases})=>{const scenario=cases.watermark.scenario;scenario.scenes[scenario.events.intro].lines=[{speaker:'player',text:'Before cut'},{effect:'blackout'},{effect:'blackout'},{speaker:'client',text:'After cut'},{effect:'blackout'}];})");
+    if(reduced)await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+    await click('[data-action=continue]');
+    const time=(await state()).time;
+    await click('[data-action=scene-next]');
+    if(!reduced){
+      await waitFor("document.querySelector('.scene-blackout')?.dataset.phase==='dark'");
+      assert.equal(await evaluate("Number(getComputedStyle(document.querySelector('.scene-blackout')).opacity)"),1,'the scene is fully black when the next dialogue is prepared');
+      const line=(await state()).conversation.line;
+      await click('[data-action=scene-next]');
+      assert.equal((await state()).conversation.line,line,'clicks cannot advance dialogue during blackout');
+      await waitFor("!document.querySelector('.scene-blackout')");
+    }
+    assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent"),'After cut','adjacent blackout commands lead to the next spoken line');
+    assert.equal(await evaluate("document.querySelector('.conversation-pagination small').textContent"),'2/2','effects do not count as dialogue pages');
+    assert.equal((await state()).time,time,'blackout consumes no game time');
+    await click('[data-action=scene-next]');
+    await waitFor("!document.querySelector('.scene-blackout')");
+    assert.equal((await state()).phase,meetingMode?'report':'briefing','a final blackout finishes the scene');
+    if(!meetingMode&&!reduced){
+      await click('[data-action=begin-work]');await waitFor("!document.querySelector('.ticket-animation-layer')");
+      const history=await evaluate("document.querySelector('.history-inline').textContent");
+      assert.ok(history.includes('Before cut')&&history.includes('After cut'));
+      assert.equal(history.includes('undefined'),false,'effect commands never render as dialogue in history');
+    }
+    await call('Emulation.setEmulatedMedia',{features:[]});
   }
   assert.deepEqual(errors,[],'no browser runtime errors');
   console.log('Browser: complete route, rejected report, replay, reload, carryover, timeout, mobile, keyboard cancel: OK');

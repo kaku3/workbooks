@@ -954,9 +954,6 @@ export const cases = {
           "max": 8
         }
       },
-      "intuition": {
-        "max": 3
-      },
       "evidence": [
         {
           "id": "wm.case",
@@ -1804,8 +1801,7 @@ export const cases = {
           "wm.logs",
           "wm.defaults"
         ],
-        "maxMemories": 3,
-        "intuitionGainPerNewMemoryLoop": 1
+        "maxMemories": 3
       },
       "authorNotes": [
         "人物・障害・コード・ログはすべて架空。透かしの氏名だけで実行利用者を断定しない。",
@@ -1940,7 +1936,7 @@ export const cases = {
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "ユーザー目線だとあり得ない仕様だと思うけど、仕様書の通り作っている時は何も感じないのなんでだろう。"
+              "text": "**自分で使うと思うと**あり得ない仕様だと思うけど、\n**仕事で仕様書の通り作っている時は**何も感じないのなんでだろう。"
             }
           ]
         },
@@ -1954,7 +1950,7 @@ export const cases = {
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "昔ならこれだけ読めたらフルスタックエンジニアと言われて高い給料もらえたんだろうな…"
+              "text": "昔ならこれだけ読めたら**フルスタックエンジニア**と言われて高い給料もらえたんだろうな…"
             }
           ]
         },
@@ -2210,6 +2206,9 @@ export const cases = {
             {
               "speaker": "player",
               "text": "すみません。\n差戻した後の使い方と、ボタン以外に直すところを整理できていません。"
+            },
+            {
+              "effect": "blackout"
             }
           ]
         },
@@ -2624,9 +2623,6 @@ export const cases = {
           "initial": 0,
           "max": 10
         }
-      },
-      "intuition": {
-        "max": 3
       },
       "evidence": [
         {
@@ -3362,8 +3358,7 @@ export const cases = {
       },
       "loop": {
         "memoryCandidates": [],
-        "maxMemories": 0,
-        "intuitionGainPerNewMemoryLoop": 0
+        "maxMemories": 0
       },
       "questions": [
         {
@@ -4668,9 +4663,6 @@ export const cases = {
           "initial": 0,
           "max": 18
         }
-      },
-      "intuition": {
-        "max": 3
       },
       "evidence": [
         {
@@ -7710,8 +7702,7 @@ export const cases = {
       },
       "loop": {
         "memoryCandidates": [],
-        "maxMemories": 0,
-        "intuitionGainPerNewMemoryLoop": 0
+        "maxMemories": 0
       },
       "questions": [
         {

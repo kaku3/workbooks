@@ -19,9 +19,6 @@
       "max": 8
     }
   },
-  "intuition": {
-    "max": 3
-  },
   "evidence": [
     {
       "id": "wm.case",
@@ -869,8 +866,7 @@
       "wm.logs",
       "wm.defaults"
     ],
-    "maxMemories": 3,
-    "intuitionGainPerNewMemoryLoop": 1
+    "maxMemories": 3
   },
   "authorNotes": [
     "人物・障害・コード・ログはすべて架空。透かしの氏名だけで実行利用者を断定しない。",
