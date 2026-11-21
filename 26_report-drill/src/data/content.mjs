@@ -2463,7 +2463,7 @@ export const cases = {
             },
             {
               "speaker": "accountant",
-              "text": "それでお願いします。\n他にもクレームは来ているのですが…今回はなしで。"
+              "text": "それでお願いします。\n他にも要望は来ているのですが…今回はなしで。"
             },
             {
               "speaker": "player",
