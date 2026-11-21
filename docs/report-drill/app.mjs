@@ -1,9 +1,17 @@
 import {dialogueHTML,dialogueLength,plainDialogue,setDialogue} from './dialogue-text.mjs';
 import { cases } from './data/content.mjs';
-const requestedCase=new URLSearchParams(location.search).get('case');
-const caseId=Object.hasOwn(cases,requestedCase)?requestedCase:'watermark';
-const {problem,scenario}=cases[caseId];
+import {chapterSaveKey,unlockedChapters,recordChapterClear,eraseChapterClear} from './chapter-progress.mjs';
 const caseIds=Object.keys(cases);
+// Access to localStorage itself can be denied by browser settings.
+let chapterStorage;
+try{chapterStorage=localStorage;}catch{}
+const availableCases=unlockedChapters(chapterStorage,caseIds);
+const requestedCase=new URLSearchParams(location.search).get('case');
+const caseId=availableCases.includes(requestedCase)?requestedCase:caseIds[0];
+if(requestedCase&&!availableCases.includes(requestedCase)){
+  const url=new URL(location.href);url.searchParams.delete('case');url.searchParams.delete('enter');history.replaceState(null,'',url);
+}
+const {problem,scenario}=cases[caseId];
 const chapterNumber=caseIds.indexOf(caseId)+1;
 const nextCaseId=caseIds[chapterNumber];
 const caseLabel=String(chapterNumber).padStart(2,'0');
@@ -20,7 +28,7 @@ import { preloadImages } from './image-preload.mjs';
 const engine = createEngine(problem, scenario);
 const app = document.querySelector('#app');
 const modal = document.querySelector('#modal');
-const storageKey = caseId==='watermark'?'report-drill.pdf-incident.v1':`report-drill.${caseId}.v1`;
+const storageKey = chapterSaveKey(caseId);
 const names = Object.fromEntries(scenario.characters.map(item => [item.id, item.name]));
 const initials = { player: '私', sales: '折', lead: '真', client: '佐', accountant:'三', ai: 'AI' };
 const portraitFiles = { 主人公: '01_player', あなた: '01_player', 折原: '02_orihara', 真壁: '03_makabe', 佐伯: '04_saeki', 三田: '05_mita' };
@@ -199,14 +207,20 @@ function statusEffects() {
   if(savings.some(saving=>saving.revealed))stopCostEffects=playTimeSavings(savings.filter(saving=>saving.revealed),{format:duration,reduced:Boolean(state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches)});
 }
 
-try { const raw = localStorage.getItem(storageKey); if (raw) saved = engine.restore(raw); }
+try { const raw = localStorage.getItem(storageKey); if (raw) saved = engine.restore(raw);
+  if(saved?.completed||saved?.phase==='complete')recordChapterClear(chapterStorage,caseIds,caseId);
+}
 catch (error) { saveError = caseId==='bulk-import'&&error.message.includes('版')
   ? ''
   : `保存記録を読み込めません。${error.message} 再開始する場合は「はじめる」を選んでください。`; }
 
 function save() {
   if (!state) return;
-  try { localStorage.setItem(storageKey, JSON.stringify(state)); saved = structuredClone(state); saveError = ''; }
+  try {
+    // Keep the clear record even when the player starts this chapter again.
+    if(state.completed||state.phase==='complete')recordChapterClear(chapterStorage,caseIds,caseId);
+    localStorage.setItem(storageKey, JSON.stringify(state)); saved = structuredClone(state); saveError = '';
+  }
   catch { saveError = 'このブラウザには保存できません。閉じると今回の続きが失われます。'; }
 }
 function notify(text) { document.querySelector('#notice').textContent = text; }
@@ -268,9 +282,12 @@ function header() {
   return `<header class="topbar"><button class="brand" data-action="title"><span class="brand-mark">${icon('file')}</span><span>確認して、回答します。<small>INVESTIGATION & REPORT</small></span></button><div class="top-right"><span class="prototype"><i></i> PROTOTYPE · ${chapterNumber}章</span>${button('settings', icon('settings'), 'icon-button', 'aria-label="設定"')}</div></header>`;
 }
 function titlePage() {
+  const unlocked=unlockedChapters(chapterStorage,caseIds);
+  const cast=[...new Set(Object.values(portraitFiles))];
+  const backdrop=`<div class="title-backdrop" aria-hidden="true">${cast.map((file,index)=>`<img class="title-cast" src="./assets/${file}-transparent.png" alt="" decoding="async" style="--cast-delay:${index*8}s">`).join('')}</div>`;
   const resumable=hasContinueSave();
   const actions=`${resumable?button('continue','つづきから','primary'):''}${button('start',`はじめる ${icon('arrow')}`,resumable?'secondary':'primary')}`;
-  return `${header()}<main class="title-page"><div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>`<a ${p.caseId===caseId?'aria-current="page"':`href="?case=${p.caseId}"`}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${actions}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${problem.titleQuote|| (chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」')}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / ${String(caseIds.length).padStart(2,'0')} CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
+  return `${header()}<main class="title-page">${backdrop}<div class="title-copy"><p class="eyebrow">A SMALL ADVENTURE AT WORK</p><p class="title-pre">調べて、考えて、相手の問いに答える。</p><h1>確認して、<br>回答します<span>。</span></h1><p class="title-desc">依頼は曖昧。資料は長い。先輩は忙しい。<br>ここは、ごく普通のSES会社。<br>今日も「確認します」から、一日が始まる。</p><nav class="chapter-picker" aria-label="章を選択">${Object.values(cases).map(({problem:p},i)=>({p,i})).filter(({p})=>unlocked.includes(p.caseId)).map(({p,i})=>`<a ${p.caseId===caseId?'aria-current="page"':`href="?case=${p.caseId}"`}>${i+1}章：${esc(p.title)}</a>`).join('')}</nav><div class="title-actions">${actions}</div><p class="muted tiny">実時間5分でゲーム内1時間。会話イベント中は時計が止まります。</p>${saveError ? `<p class="warning">${esc(saveError)}</p>` : ''}</div><aside class="title-case"><div class="case-paper"><span class="paper-label">本日の依頼 / CASE ${caseLabel}</span><div class="paper-symbol">${icon('file')}</div><h2>${esc(problem.title)}</h2><p>${problem.titleQuote|| (chapterNumber===1?'「三田が印刷したのに、透かしは田中太郎？」':'「差戻しボタン、一個追加するだけですよね？」')}</p><div class="paper-line"></div><div class="paper-bottom"><span>依頼者：発注担当 佐伯</span><span>回答期限 <strong>今日 18:00</strong></span></div></div><div class="sticky-note">まず、何を知れば<br>答えられるんだろう。</div><span class="desk-caption">YOUR DESK, SOMEWHERE IN AN SES COMPANY.</span></aside></main><footer class="title-footer"><span>調査・報告ドリル</span><span>${caseLabel} / ${String(caseIds.length).padStart(2,'0')} CASES <span class="muted">— 次の依頼も届いています</span></span></footer>`;
 }
 function hasContinueSave(){return Boolean(saved&&(saved.history.length||saved.done.length||saved.phase!=='desk'));}
 function stats() {
@@ -422,11 +439,25 @@ async function beginWork(){
       cardLayer.append(clone);
       const x=destination.left-left,y=Math.max(column.top,Math.min(destination.top,column.bottom-destination.height))-top;
       const travel=`translate(${x}px,${y}px)`;
-      const animation=clone.animate([{transform:'scale(.88,.25)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:240,easing:'ease-out',fill:'both'});
-      row.animate([{opacity:1},{opacity:.15}],{duration:180,fill:'forwards'});
-      conversions.push(animation.finished.catch(()=>{}));
+      const rowFace=document.createElement('div');
+      rowFace.className='ticket-overview ticket-row-face';
+      rowFace.innerHTML=`<table><tbody>${row.outerHTML}</tbody></table>`;
+      rowFace.style.width=`${origin.width}px`;
+      [...rowFace.querySelectorAll('tr>*')].forEach((cell,i)=>cell.style.width=`${row.children[i].getBoundingClientRect().width}px`);
+      const cardContent=[...clone.children];
+      clone.append(rowFace);
+      const rowColor=getComputedStyle(sheet).backgroundColor,cardStyle=getComputedStyle(card);
+      const morph={duration:680,easing:'cubic-bezier(.22,.68,.25,1)',fill:'both'};
+      const animation=clone.animate([
+        {left:`${origin.left}px`,top:`${origin.top}px`,width:`${origin.width}px`,height:`${origin.height}px`,backgroundColor:rowColor,borderColor:'#344440',borderRadius:'0px'},
+        {left:`${left}px`,top:`${top}px`,width:`${destination.width}px`,height:`${destination.height}px`,backgroundColor:cardStyle.backgroundColor,borderColor:cardStyle.borderColor,borderRadius:cardStyle.borderRadius}
+      ],morph);
+      rowFace.animate([{opacity:1},{opacity:0,offset:.55},{opacity:0}],morph);
+      for(const child of cardContent)child.animate([{opacity:0},{opacity:0,offset:.3},{opacity:1}],morph);
+      row.animate([{opacity:1},{opacity:.15}],{duration:400,fill:'forwards'});
+      conversions.push(animation.finished.catch(()=>{}).finally(()=>rowFace.remove()));
       tickets.push({clone,card,travel,animation});
-      if(index<rows.length-1)await new Promise(resolve=>setTimeout(resolve,130));
+      if(index<rows.length-1)await new Promise(resolve=>setTimeout(resolve,190));
     }
     await Promise.all(conversions);
     cardLayer.dataset.phase='clearing';
@@ -558,6 +589,44 @@ function closeModal() {
   syncTimer();
   if(lastFocus?.isConnected) lastFocus.focus();
 }
+function conversationPagination(c,scene,blocked=false){
+  return `<div class="conversation-pagination"><span class="conversation-label">${esc(c.label)}</span><small>${c.line+1}/${scene.lines.length}</small>${blocked?'<span class="muted tiny">マイクをオンにすると再開します</span>':button('scene-skip','会話をスキップ','text-button')}</div>`;
+}
+function conversationSpeaker(name,thought=false,modalTitle=false){
+  return `<h2 class="conversation-speaker" ${modalTitle?'id="modal-title"':''}><strong>${esc(name)}</strong>${thought?'<span>（心の声）</span>':''}</h2>`;
+}
+function conversationNext(){
+  return button('scene-next','&gt;','conversation-next','aria-label="次へ" hidden');
+}
+function sizeConversationText(target,text){
+  target.dataset.fullDialogue=text;
+  const shown=target.innerHTML;
+  target.style.height='auto';
+  setDialogue(target,text);
+  const height=target.getBoundingClientRect().height;
+  target.style.height=`${height}px`;
+  target.parentElement.style.setProperty('--dialogue-height',`${height+2}px`);
+  target.innerHTML=shown;
+}
+function positionConversationNext(){
+  const target=document.querySelector('#dialogue-text'),next=target?.parentElement.querySelector('.conversation-next');
+  if(!target||!next||next.hidden)return;
+  const walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
+  let last,node;
+  while(node=walker.nextNode())if(node.textContent.trim())last=node;
+  const range=document.createRange();
+  if(last)range.selectNodeContents(last);else range.selectNodeContents(target);
+  const lines=[...range.getClientRects()],line=lines.at(-1),bounds=target.getBoundingClientRect(),frame=target.parentElement.getBoundingClientRect();
+  const half=next.offsetHeight/2;
+  const center=line?(line.top+line.bottom)/2:bounds.top+half;
+  next.style.top=`${Math.max(bounds.top+half,Math.min(center,bounds.bottom-half))-frame.top-1-half}px`;
+}
+function syncConversationNext(){
+  const interruption=state?.conversation?.muteInterruption;
+  const blocked=interruption?.step===1&&!meeting?.mic;
+  document.querySelectorAll('.conversation-next').forEach(next=>next.hidden=!typed||blocked);
+  positionConversationNext();
+}
 function showMeetingConversation(){
   if(modal.open)closeModal();
   const c=state.conversation,id=c.ids[c.scene],scene=scenario.scenes[id],line=meetingDialogue();
@@ -568,14 +637,17 @@ function showMeetingConversation(){
   const accepted=!interrupted&&(id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client')));
   if(accepted&&!c.acceptedReactionShown){c.acceptedReactionShown=true;save();reactInMeeting(true);}
   const window=document.querySelector('.report-conversation .conversation-window');
-  window.innerHTML=`<div class="meeting-speaker"><strong>${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</strong><small>${c.line+1} / ${scene.lines.length}</small></div><p id="dialogue-text" class="meeting-dialogue ${line.kind==='thought'?'thought':''}" aria-label="${esc(plainDialogue(line.text))}"></p><div class="meeting-dialogue-actions">${interrupted&&c.muteInterruption.step===1&&!meeting.mic?'<span class="muted tiny">マイクをオンにすると再開します</span>':button('scene-skip','会話をスキップ','text-button')}${button('scene-next','次へ','primary')}</div>`;
+  window.innerHTML=`${conversationSpeaker(names[line.speaker],line.kind==='thought')}<div class="conversation-head">${conversationPagination(c,scene,interrupted&&c.muteInterruption.step===1&&!meeting.mic)}</div><p id="dialogue-text" class="meeting-dialogue ${line.kind==='thought'?'thought':''}" aria-label="${esc(plainDialogue(line.text))}"></p>${conversationNext()}`;
   const target=window.querySelector('#dialogue-text');
+  sizeConversationText(target,line.text);
+  target.addEventListener('scroll',positionConversationNext);
   typed=Boolean(state.settings.instant||state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches);
   const length=dialogueLength(line.text),limit=muted?Math.min(5,length):length;
   if(typed)meetingLineProgress.index=limit;
   if(muted)meetingLineProgress.index=Math.min(meetingLineProgress.index,limit);
   setDialogue(target,line.text,meetingLineProgress.index);
   typed=meetingLineProgress.index>=length;
+  syncConversationNext();
   const scheduleInterruption=()=>{clearInterval(typeTimer);muteInterruptTimer=setTimeout(interruptMutedSpeech,350);};
   if(muted&&meetingLineProgress.index>=limit)scheduleInterruption();
   const voice=document.querySelector('.self-camera');
@@ -584,7 +656,7 @@ function showMeetingConversation(){
     if(!target.isConnected){voice?.classList.remove('voice-typing');clearInterval(typeTimer);return;}
     meetingLineProgress.index++;setDialogue(target,line.text,meetingLineProgress.index);
     if(muted&&meetingLineProgress.index>=limit){scheduleInterruption();return;}
-    if(meetingLineProgress.index>=dialogueLength(line.text)){typed=true;voice?.classList.remove('voice-typing');clearInterval(typeTimer);}
+    if(meetingLineProgress.index>=dialogueLength(line.text)){typed=true;syncConversationNext();voice?.classList.remove('voice-typing');clearInterval(typeTimer);}
   },20);
   document.querySelectorAll('.reporting [data-action=progress-report],.reporting [data-action=cannot-report]').forEach(button=>button.disabled=true);
 }
@@ -596,7 +668,7 @@ function advanceMeetingConversation(skip){
     setDialogue(document.querySelector('#dialogue-text'),line.text,meetingLineProgress.index);
     muteInterruptTimer=setTimeout(interruptMutedSpeech,200);return;
   }
-  if(!skip&&!typed){clearInterval(typeTimer);meetingLineProgress.index=dialogueLength(line.text);setDialogue(document.querySelector('#dialogue-text'),line.text);typed=true;document.querySelector('.self-camera')?.classList.remove('voice-typing');return;}
+  if(!skip&&!typed){clearInterval(typeTimer);meetingLineProgress.index=dialogueLength(line.text);setDialogue(document.querySelector('#dialogue-text'),line.text);typed=true;syncConversationNext();document.querySelector('.self-camera')?.classList.remove('voice-typing');return;}
   if(c.muteInterruption){
     if(c.muteInterruption.step===0)c.muteInterruption.step=1;
     else if(meeting.mic)delete c.muteInterruption;
@@ -610,8 +682,8 @@ function showConversation() {
   const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findIndex(item=>item.speaker==='client'));
   const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
   const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map(speaker=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
-  openModal(`<div class="conversation-head"><span>${esc(c.label)}</span><small>${c.line+1} / ${scene.lines.length}</small></div><div class="conversation-person">${avatar(line.speaker,true)}<div><p class="eyebrow">${line.kind==='thought'?'INNER VOICE':'CONVERSATION'}</p><h2 id="modal-title">${esc(names[line.speaker])}${line.kind==='thought'?'（心の声）':''}</h2></div></div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p><div class="conversation-actions"><span class="muted tiny">${state.seen.includes(`${id}:${scene.version}`)?'既読':'未読'}</span><div>${button('scene-skip','会話をスキップ','text-button')}${button('scene-next',`次へ ${icon('arrow')}`,'primary')}</div></div>`,action=>{
-    if(action==='scene-next'&&!typed) { clearInterval(typeTimer); setDialogue(document.querySelector('#dialogue-text'),line.text); typed=true; return; }
+  openModal(`${conversationSpeaker(names[line.speaker],line.kind==='thought',true)}<div class="conversation-head">${conversationPagination(c,scene)}</div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p>${conversationNext()}`,action=>{
+    if(action==='scene-next'&&!typed) { clearInterval(typeTimer); setDialogue(document.querySelector('#dialogue-text'),line.text); typed=true; syncConversationNext(); return; }
     if(['scene-next','scene-skip'].includes(action)) { closeModal(); engine.advance(state,action==='scene-skip'); save(); render(); }
   },'conversation');
   const window = document.createElement('div');
@@ -627,10 +699,17 @@ function showConversation() {
     window.insertAdjacentHTML('beforebegin',portraits);
   }
   const target=document.querySelector('#dialogue-text');
+  sizeConversationText(target,line.text);
+  target.addEventListener('scroll',positionConversationNext);
   typed=Boolean(state.settings.instant || state.settings.reduced || matchMedia('(prefers-reduced-motion: reduce)').matches);
   if(typed) setDialogue(target,line.text);
-  else { let n=0; typeTimer=setInterval(()=>{ setDialogue(target,line.text,++n); if(n>=dialogueLength(line.text)){clearInterval(typeTimer);typed=true;} },20); }
+  else { let n=0; typeTimer=setInterval(()=>{ setDialogue(target,line.text,++n); if(n>=dialogueLength(line.text)){clearInterval(typeTimer);typed=true;syncConversationNext();} },20); }
+  syncConversationNext();
 }
+window.addEventListener('resize',()=>{
+  const target=document.querySelector('#dialogue-text');
+  if(target?.dataset.fullDialogue){sizeConversationText(target,target.dataset.fullDialogue);positionConversationNext();}
+});
 function confirmAction(title, description, execute, label='実行する') {
   openModal(`<p class="eyebrow">CONFIRM</p><h2 id="modal-title">${esc(title)}</h2><p class="confirm-description">${esc(description)}</p><div class="modal-buttons">${button('cancel','戻る','secondary')}${button('confirm',esc(label),'primary')}</div>`,action=>{if(action==='cancel')closeModal();if(action==='confirm'){closeModal();execute();}});
 }
@@ -662,7 +741,7 @@ function settings() {
       if(state){state.settings=next;save();}else{saved=saved||engine.fresh();saved.settings=next;try{localStorage.setItem(storageKey,JSON.stringify(saved));}catch{notify('設定を保存できません。');}}
       closeModal();render();
     }
-    if(action==='erase')confirmAction('すべての記録を消しますか？','進行、記憶、直感、完了記録を削除します。',()=>{try{localStorage.removeItem(storageKey);}catch{notify('記録を削除できませんでした。');return;}state=null;saved=null;saveError='';page='title';render();},'記録を削除する');
+    if(action==='erase')confirmAction('すべての記録を消しますか？','進行、記憶、直感、完了記録を削除します。',()=>{try{eraseChapterClear(chapterStorage,caseIds,caseId);localStorage.removeItem(storageKey);}catch{notify('記録を削除できませんでした。');return;}state=null;saved=null;saveError='';page='title';render();},'記録を削除する');
   });
 }
 function moveCard(id,status) {

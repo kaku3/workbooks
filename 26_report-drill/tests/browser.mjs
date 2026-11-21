@@ -50,7 +50,7 @@ try {
   const state=()=>evaluate("JSON.parse(localStorage.getItem('report-drill.pdf-incident.v1'))");
   const settle=async(begin=true)=>{for(let i=0;i<12;i++){if(!await evaluate("Boolean(document.querySelector('dialog[open] [data-action=scene-skip],.reporting [data-action=scene-skip]'))")){if(begin&&await evaluate("Boolean(document.querySelector('[data-action=begin-work]'))")){await click('[data-action=begin-work]');await waitFor("!document.querySelector('.ticket-flight')");}return;}await click('dialog[open] [data-action=scene-skip],.reporting [data-action=scene-skip]');}throw new Error('Scene did not finish');};
   const screenshot=async name=>{const result=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});await writeFile(new URL(`${name}.png`,artifacts),Buffer.from(result.data,'base64'));};
-  const waitFor=async expression=>{for(let i=0;i<100;i++){if(await evaluate(expression))return;await delay(50);}throw new Error(`Wait failed: ${expression}`);};
+  const waitFor=async expression=>{for(let i=0;i<100;i++){if(await evaluate(expression))return;await delay(50);}throw new Error(`Wait failed: ${expression}\nBrowser errors: ${errors.join("\n")}`);};
   const size=(width,height,mobile=false)=>call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile});
   await call('Page.addScriptToEvaluateOnNewDocument',{source:`
     const nativeInterval=window.setInterval.bind(window),nativeNow=performance.now.bind(performance);
@@ -61,24 +61,65 @@ try {
   `});
   await call('Runtime.enable');await call('Page.enable');await size(1440,1000);
   await call('Page.navigate',{url});await waitFor("Boolean(document.querySelector('[data-action=start]'))");
+  assert.equal(await evaluate("document.querySelectorAll('.chapter-picker a').length"),1,'only chapter one is visible before a clear');
+  await call('Page.navigate',{url:url+'/?case=bulk-import&enter=1'});await waitFor("Boolean(document.querySelector('[data-action=start]'))");
+  assert.equal(await evaluate("location.search"),'','locked chapters cannot be opened through a direct URL');
   assert.equal(await evaluate("Boolean(document.querySelector('[data-action=continue]'))"),false,'no continue button without a save for this chapter');
   assert.equal(await evaluate("document.querySelector('[data-action=start]').classList.contains('primary')"),true);
-  assert.equal(await evaluate("Boolean(document.querySelector('.title-backdrop,.title-scene'))"),false,'title has no background images or blur animation');
+  await waitFor("[...document.querySelectorAll('.title-cast')].every(img=>img.complete && img.naturalWidth)");
+  assert.equal(await evaluate("document.querySelectorAll('.title-cast').length"),5,'all five characters appear in the opening');
+  for(let index=0;index<5;index++){
+    const frame=await evaluate(`(()=>{const images=[...document.querySelectorAll('.title-cast')];images.forEach(img=>{const animation=img.getAnimations()[0];animation.pause();animation.currentTime=${index*8000+4000};});return images.map(img=>({opacity:Number(getComputedStyle(img).opacity),x:new DOMMatrix(getComputedStyle(img).transform).m41}));})()`);
+    assert.equal(frame.filter(img=>img.opacity>.25).length,1,'one character is featured at a time');
+    assert.ok(frame[index].opacity>.25,'characters appear in order');
+  }
+  const drift=await evaluate("(()=>{const image=document.querySelector('.title-cast'),animation=image.getAnimations()[0];animation.currentTime=2000;const start=new DOMMatrix(getComputedStyle(image).transform).m41;animation.currentTime=6000;return new DOMMatrix(getComputedStyle(image).transform).m41-start;})()");
+  assert.ok(drift>40,'portraits slowly slide sideways');
+  await evaluate("document.querySelectorAll('.title-cast').forEach(img=>img.getAnimations()[0].currentTime=44000)");
+  assert.ok(await evaluate("Number(getComputedStyle(document.querySelector('.title-cast')).opacity)>.25"),'opening loops back to the first character');
+  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+  assert.equal(await evaluate("document.querySelector('.title-cast').getAnimations().length"),0,'reduced motion shows a still portrait');
+  await call('Emulation.setEmulatedMedia',{features:[]});
+  await evaluate("document.querySelectorAll('.title-cast').forEach(img=>{const animation=img.getAnimations()[0];animation.currentTime=4000;animation.play();})");
   await screenshot('title');
   await evaluate("import('./data/content.mjs').then(({cases})=>{const line=cases.watermark.scenario.scenes['01.intro'].lines[0];line.text='**'+line.text+'**';})");
   await click('[data-action=start]');
   await waitFor("Boolean(document.querySelector('.portrait img')?.complete && document.querySelector('.portrait img')?.naturalWidth)");
   await waitFor("Boolean(document.querySelector('#dialogue-text strong'))");
-  assert.equal(await evaluate("document.querySelector('.conversation-actions>.muted').textContent"),'未読');
+  assert.equal(await evaluate("Boolean(document.querySelector('.conversation-actions,.meeting-dialogue-actions'))"),false,'conversation has no footer or unread label');
+  assert.match(await evaluate("document.querySelector('.conversation-pagination small').textContent"),/^1\/\d+$/);
+  assert.equal(await evaluate("document.querySelector('.conversation-pagination [data-action=scene-skip]').textContent"),'会話をスキップ');
+  assert.equal(await evaluate("document.querySelector('.conversation-next').hidden"),true,'next arrow stays hidden while text types');
   await click('.conversation-window');
+  assert.equal(await evaluate("document.querySelector('.conversation-next').hidden"),false,'finishing the text reveals the floating next arrow');
+  assert.equal(await evaluate("document.querySelector('.conversation-next').textContent"),'>');
+  assert.equal(await evaluate("document.querySelector('.conversation-pagination .conversation-label').textContent"),'依頼を受けた');
+  assert.equal(await evaluate("document.querySelector('.conversation-head').children.length"),1,'the header contains only the right-aligned information');
+  assert.ok(await evaluate("(()=>{const header=document.querySelector('.conversation-head').getBoundingClientRect(),frame=document.querySelector('.conversation-window').getBoundingClientRect();return header.left>frame.left+frame.width/2&&header.right<=frame.right;})()"),'header information stays on the right');
+  assert.equal(await evaluate("document.querySelector('.conversation-speaker').textContent"),'佐伯');
+  assert.ok(await evaluate("(()=>{const header=document.querySelector('.conversation-head').getBoundingClientRect(),frame=document.querySelector('.conversation-window').getBoundingClientRect();return header.top<frame.top&&header.bottom>frame.top;})()"),'status window straddles the right shoulder');
+  assert.ok(await evaluate("(()=>{const badge=document.querySelector('.conversation-speaker').getBoundingClientRect(),frame=document.querySelector('.conversation-window').getBoundingClientRect();return badge.top<frame.top&&badge.bottom>frame.top;})()"),'speaker badge straddles the top edge');
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('.conversation-next'),'::after').animationName"),'conversation-next-ring');
   assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent.includes('**')"),false,'emphasis survives completing the typewriter without showing markers');
   const portraitWidth=await evaluate("document.querySelector('.portrait img').getBoundingClientRect().width");
   const introMessageHeight=await evaluate("document.querySelector('.conversation-window').getBoundingClientRect().height");
+  assert.ok(introMessageHeight<=290,'removing the footer saves eighty pixels of height');
+  assert.equal(await evaluate("document.querySelector('.conversation-window').offsetHeight-document.querySelector('#dialogue-text').offsetHeight"),2,'only the text and border determine window height');
+  assert.ok(await evaluate("(()=>{const text=document.querySelector('#dialogue-text'),range=document.createRange();range.selectNodeContents(text);const line=[...range.getClientRects()].at(-1),arrow=document.querySelector('.conversation-next').getBoundingClientRect();return Math.abs((line.top+line.bottom-arrow.top-arrow.bottom)/2)<24;})()"),'next arrow floats beside the final line');
   await screenshot('intro');
+  const fixedCast=await evaluate("(()=>{const image=document.querySelector('.portrait img'),frame=document.querySelector('.conversation-window').getBoundingClientRect(),stage=document.querySelector('.portrait-stage').getBoundingClientRect();return {top:image.getBoundingClientRect().top,stageBottom:stage.bottom,frameBottom:frame.bottom};})()");
+  assert.ok(fixedCast.stageBottom<=fixedCast.frameBottom,'the cast is clipped before the bottom of the message window');
+  for(const lines of [2,3]){
+    const changed=await evaluate(`(()=>{const text=document.querySelector('#dialogue-text'),image=document.querySelector('.portrait img');text.innerHTML=Array(${lines}).fill('人物の位置を確認').join('\\n');text.style.height='auto';return {top:image.getBoundingClientRect().top,height:text.parentElement.getBoundingClientRect().height};})()`);
+    assert.ok(Math.abs(changed.top-fixedCast.top)<1,'two- and three-line messages leave the cast in the same vertical position');
+  }
+  await click('.conversation-next');
+  assert.equal(await evaluate("document.querySelector('.conversation-next').hidden"),true,'advancing hides the arrow while the next line types');
+  await waitFor("document.querySelector('.conversation-next')?.hidden===false");
   for(let n=0;(await state()).conversation.line<3 && n<8;n++)await click('[data-action=scene-next]');
   await waitFor("[...document.querySelectorAll('.portrait img')].every(img=>img.complete && img.naturalWidth)");
   assert.equal(await evaluate("document.querySelector('.portrait img').getBoundingClientRect().width"),portraitWidth);
-  assert.equal(await evaluate("document.querySelector('.conversation-window').getBoundingClientRect().height"),introMessageHeight,'intro message height stays fixed between lines');
+  assert.equal(await evaluate("document.querySelector('.conversation-window').offsetHeight-document.querySelector('#dialogue-text').offsetHeight"),2,'later lines also have no space reserved for the next arrow');
   await screenshot('intro-player');await settle(false);
   assert.equal((await state()).phase,'briefing');
   assert.equal(await evaluate("document.querySelector('#ticket-briefing-title').textContent"),'Backlogチケット');
@@ -93,6 +134,12 @@ try {
   assert.equal(await evaluate("Boolean(document.querySelector('.ticket-source-sheet table'))"),true,'spreadsheet remains visible while converting rows');
   assert.equal(await evaluate("document.querySelector('.ticket-flight')?.classList.contains('action-card')"),true,'each row produces an actual game card');
   assert.equal(await evaluate("document.querySelector('.ticket-flight')?.dataset.ticketIndex"),'0','conversion starts with the top row');
+  assert.equal(await evaluate("Boolean(document.querySelector('.ticket-flight .ticket-row-face table'))"),true,'the moving card starts with its spreadsheet row');
+  assert.ok(await evaluate("(()=>{const frames=document.querySelector('.ticket-flight').getAnimations()[0].effect.getKeyframes();return parseFloat(frames[0].width)>parseFloat(frames.at(-1).width)&&parseFloat(frames[0].height)<parseFloat(frames.at(-1).height)&&frames[0].backgroundColor!==frames.at(-1).backgroundColor;})()"),'wide rows narrow, grow taller, and change color');
+  await evaluate("document.querySelector('.ticket-flight').getAnimations({subtree:true}).forEach(animation=>{animation.pause();animation.currentTime=340;})");
+  await screenshot('ticket-morph');
+  await evaluate("document.querySelector('.ticket-flight').getAnimations({subtree:true}).forEach(animation=>animation.play())");
+  await waitFor("document.querySelector('.ticket-animation-layer')?.dataset.phase==='clearing'");
   assert.equal(await evaluate(`(()=>{
     const moving=document.querySelector('.ticket-flight'),actual=document.querySelector('.todo [data-card-id="'+${JSON.stringify(initialTickets[0])}+'"]');
     return [['',['backgroundColor','backgroundImage','borderColor','padding','color','boxShadow']],['h3',['fontSize','color','lineHeight']],['.action-time',['position','fontSize','fontWeight','color']],['.card-icon',['backgroundColor','color']]].every(([selector,properties])=>{
@@ -313,7 +360,7 @@ try {
     const interruptedLine=(await state()).conversation.line,time=(await state()).time;
     if(await evaluate("document.querySelector('[data-action=meeting-mic]').getAttribute('aria-pressed')==='true'"))await click('[data-action=meeting-mic]');
     await waitFor("document.querySelector('#dialogue-text').textContent.length>0&&document.querySelector('#dialogue-text').textContent.length<=5");
-    await waitFor("document.querySelector('.meeting-speaker strong').textContent==='佐伯'&&document.querySelector('#dialogue-text').textContent==='マイクミュートでしゃべってますか？'");
+    await waitFor("document.querySelector('.report-conversation .conversation-speaker strong').textContent==='佐伯'&&document.querySelector('#dialogue-text').textContent==='マイクミュートでしゃべってますか？'");
     assert.equal((await state()).conversation.line,interruptedLine,'mute exchange holds the original dialogue position');
     await click('[data-action=scene-skip]');
     await waitFor("document.querySelector('#dialogue-text').textContent==='あ、すいません、ミュートでした。'");
@@ -325,7 +372,7 @@ try {
     assert.equal((await state()).conversation.muteInterruption,undefined);
     assert.equal((await state()).conversation.line,interruptedLine);
     assert.equal((await state()).time,time,'mute exchange and replay consume no game time');
-    assert.equal(await evaluate("document.querySelector('.meeting-speaker strong').textContent"),'主人公');
+    assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-speaker strong').textContent"),'主人公');
     assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent.length<=5"),true,'unmuting restarts the interrupted line from its beginning');
     await screenshot('meeting-muted-resumed');
   });assert.equal((await state()).question,0);assert.equal((await state()).phase,'report');assert.deepEqual((await state()).selected,['wm.case','wm.retired','wm.cache']);
@@ -380,7 +427,7 @@ try {
     assert.equal(await evaluate("document.querySelector('[data-report-accepted]').textContent"),'👍');
     assert.equal(await evaluate("Boolean(document.querySelector('.report-accepted'))"),false,'success feedback does not consume message space');
     const reactionStarted=await evaluate("document.querySelector('[data-report-accepted]').dataset.reactionStarted");
-    assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().height"),meetingMessageHeight,'accepted reports do not expand the message window');
+    assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').offsetHeight-document.querySelector('#dialogue-text').offsetHeight"),2,'accepted dialogue reserves no extra height for feedback or the next arrow');
     assert.deepEqual(await evaluate("[...document.querySelectorAll('.self-panel [data-participant]')].map(item=>item.dataset.participant)"),['player','lead'],'the right gallery contains the player and Makabe');
     assert.equal(await evaluate("document.querySelector('.meeting-camera>img').alt"),'佐伯','Saeki remains fixed in the main camera');
     assert.equal(await evaluate("(()=>{const panel=document.querySelector('.self-panel'),gallery=panel.getBoundingClientRect(),style=getComputedStyle(panel),contentWidth=gallery.width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-parseFloat(style.borderLeftWidth)-parseFloat(style.borderRightWidth);return [...document.querySelectorAll('.self-panel [data-participant]')].every(item=>{const rect=item.getBoundingClientRect();return rect.top>=gallery.top-1&&rect.bottom<=gallery.bottom+1&&Math.abs(rect.width-contentWidth)<2;});})()"),true,'all participant windows fit vertically in the gallery');
@@ -461,7 +508,7 @@ try {
   const firstCaseSave=await evaluate("localStorage.getItem('report-drill.pdf-incident.v1')");
   await call('Page.navigate',{url:url+'/?case=approval-button'});await waitFor("Boolean(document.querySelector('[data-action=start]'))");
   assert.equal(await evaluate("Boolean(document.querySelector('[data-action=continue]'))"),false,'chapter one progress does not show continue in chapter two');
-  assert.equal(await evaluate("document.querySelector('.case-paper h2').textContent"),'承認画面へのボタン追加');
+  assert.equal(await evaluate("document.querySelector('.case-paper h2').textContent"),'ボタンの値段');
   await screenshot('chapter2-title');await click('[data-action=start]');await settle();
   const chapter2State=()=>evaluate("JSON.parse(localStorage.getItem('report-drill.approval-button.v1'))");
   assert.equal((await chapter2State()).caseId,'approval-button');

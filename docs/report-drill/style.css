@@ -658,7 +658,7 @@
 .workspace-mode .time-status>strong{font-size:30px}
 .workspace-mode .desktop{height:auto;min-height:0;flex:1;width:100%;margin:0 auto}
 /* Keep the message frame steady while text types, wraps, or changes speaker. */
-.conversation>.conversation-window{width:100%;max-width:1280px;height:clamp(350px,40svh,370px);display:flex;flex-direction:column}
+.conversation>.conversation-window{width:100%;max-width:1280px;height:clamp(270px,calc(40svh - 80px),290px);display:flex;flex-direction:column}
 .conversation>.conversation-window>.dialogue-text{flex:1;min-height:0;max-height:none;overflow-y:auto}
 .conversation>.conversation-window>:not(.dialogue-text){flex-shrink:0}
 .reporting .meeting-bottom>.report-conversation{height:180px}
@@ -724,7 +724,7 @@
 .reporting .self-panel{padding:8px 8px 8px 12px;border:0;background:transparent;gap:8px}
 .reporting .meeting-command-panel .meeting-controls{padding:0;gap:10px}
 .chapter-picker{display:flex;flex-direction:column;gap:6px;margin:0 0 20px}
-.chapter-picker a{padding:7px 12px;border:1px solid #42565e;border-radius:5px;color:#b8ccd0;text-decoration:none;font-size:12px}
+.chapter-picker a{padding:7px 12px;border:1px solid #42565e;border-radius:5px;background:#1c2a33eb;color:#b8ccd0;text-decoration:none;font-size:12px}
 .chapter-picker a[aria-current=page]{border-color:#a8ccbd;background:#254039;color:#e4f6ec}
 :is(.dialogue-text,.meeting-dialogue,.report-request,.history-inline) strong{font-size:1.35em;font-weight:900;line-height:0;color:#ffdda2;text-shadow:0 0 10px #ffcf8526}
 .history-inline strong:first-child{font-size:inherit;color:inherit;text-shadow:none}
@@ -787,6 +787,21 @@
 @keyframes chat-entry-notify{0%,100%{box-shadow:inset 0 0 0 1px transparent}45%{background:#d4b98725;box-shadow:inset 0 0 0 1px #d4b987}}
 @media(prefers-reduced-motion:reduce){.mobile-tabs button.chat-notify{animation:none}}
 .title-page{position:relative;isolation:isolate}
+.title-backdrop{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;mask-image:linear-gradient(to bottom,transparent,#000 8%,#000 78%,transparent)}
+.title-backdrop:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#10151e99,transparent 45%,#10151e33)}
+.title-cast{position:absolute;top:0;left:calc(50% - 380px);width:clamp(440px,55vw,780px);height:100%;object-fit:cover;object-position:center 15%;opacity:0;filter:saturate(.55);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 78%,transparent);animation:title-cast-drift 40s linear var(--cast-delay) infinite}
+.title-cast:nth-child(even){left:calc(50% - 100px);--cast-from:65px;--cast-to:-65px}
+/* Each eight-second entrance overlaps the preceding portrait's fade-out. */
+@keyframes title-cast-drift{
+  0%{opacity:0;transform:translateX(var(--cast-from,-65px))}
+  4%{opacity:.3}
+  16%{opacity:.3}
+  22%{opacity:0;transform:translateX(var(--cast-to,65px))}
+  100%{opacity:0;transform:translateX(var(--cast-to,65px))}
+}
+@media(max-width:699px){.title-cast,.title-cast:nth-child(even){left:0;top:20px;width:100%;height:660px;object-position:center top}.title-backdrop:after{background:#10151e33}}
+@media(prefers-reduced-motion:reduce){.title-cast{animation:none}.title-cast:first-child{opacity:.16;transform:none}}
+.reduce-motion .title-cast:first-child{opacity:.16;transform:none}
 .title-page:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(#b8edda66 1px,transparent 1px),linear-gradient(90deg,#b8edda66 1px,transparent 1px);background-size:72px 72px;background-position:center top;mask-image:linear-gradient(135deg,transparent 40%,#000 49%,#000 51%,transparent 60%);mask-size:300% 300%;mask-repeat:no-repeat;animation:title-grid-sweep 12s linear infinite}
 @keyframes title-grid-sweep{from{mask-position:100% 100%}to{mask-position:0% 0%}}
 .chapter-picker a{transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
@@ -801,3 +816,51 @@
 .case-solved .chapter-ending-title{font-size:clamp(24px,3vw,32px);line-height:1.8}
 .ending.case-solved>.chapter-ending-mark{font-size:28px;letter-spacing:.18em;margin:20px 0 0;color:var(--text)}
 .case-solved .title-actions{margin-top:48px}
+.conversation-pagination{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;white-space:nowrap}
+.conversation-pagination small{font:11px var(--mono);color:#9db3c0}
+.conversation-pagination .text-button{padding:3px 0;font-size:11px}
+.conversation-next{position:absolute;right:18px;bottom:14px;z-index:3;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #a8d6c65c;border-radius:50%;background:#172a33ed;color:var(--accent);font:28px var(--mono);box-shadow:0 3px 12px #0003}
+.conversation-next[hidden]{display:none}
+.conversation-next:hover{background:#29453f;border-color:var(--accent)}
+.conversation>.conversation-window>.dialogue-text{padding-top:24px;padding-right:78px;padding-bottom:30px}
+.reporting .conversation-window>.meeting-dialogue{padding-top:20px;padding-right:66px;padding-bottom:20px}
+.reporting .conversation-next{width:36px;height:36px;right:10px;bottom:10px;font-size:24px}
+@media(max-width:699px){.conversation-pagination{gap:6px}.conversation-pagination .text-button,.conversation-pagination small{font-size:10px}.conversation-head{gap:8px}.conversation-head>span{min-width:0}.meeting-speaker{align-items:flex-start}.meeting-speaker>strong{flex-shrink:0}.conversation-next{right:12px;bottom:12px}.conversation>.conversation-window>.dialogue-text{padding-right:66px}}
+.conversation-window,.reporting .meeting-bottom .conversation-window{overflow:visible}
+.conversation-window>.conversation-head{position:absolute;top:0;right:22px;z-index:4;transform:translateY(-50%);display:flex;justify-content:flex-end;max-width:calc(100% - 220px);padding:5px 10px;border:1px solid #63776d;background:#1b2531;border-radius:6px;box-shadow:0 4px 12px #0003}
+.conversation-label{color:#9db3c0;font-size:11px;white-space:normal}
+.conversation-speaker{position:absolute;top:-20px;left:22px;z-index:4;display:flex;align-items:center;gap:4px;max-width:calc(100% - 44px);margin:0;padding:5px 12px;border:1px solid #819d90;border-radius:6px;background:#1b2531;box-shadow:0 4px 12px #0003;color:#c8e7da;font-size:17px;line-height:1.5}
+.conversation-speaker strong{font-weight:650}.conversation-speaker span{font-size:11px;font-weight:400}
+.reporting .conversation-speaker{top:-15px;left:14px;padding:3px 9px;background:#152c3c;font-size:14px}
+.reporting>.meeting-bottom{padding-top:18px}
+.reporting .meeting-bottom>.report-conversation{height:173px}
+.reporting .conversation-window>.conversation-head{right:14px;padding:4px 9px;background:#152c3c;border-color:#8eb7bd88}
+.reporting .meeting-bottom .report-request{padding-top:18px}
+.reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}
+.reporting.meeting-unshared .conversation-next{bottom:58px}
+.conversation-next::after{content:"";position:absolute;inset:-2px;border:1px solid var(--accent);border-radius:50%;pointer-events:none;animation:conversation-next-ring 2.2s ease-out infinite}
+@keyframes conversation-next-ring{0%{transform:scale(1.8);opacity:0}18%{opacity:.65}80%{transform:scale(1);opacity:.15}100%{transform:scale(1);opacity:0}}
+@media(min-width:700px) and (max-height:800px){.reporting .meeting-bottom>.report-conversation{height:150px}.reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}}
+@media(max-width:699px){.conversation-speaker{left:14px;top:-16px;font-size:15px;padding:3px 9px}.conversation-window>.conversation-head{right:12px;max-width:calc(100% - 160px);padding:4px 8px}.conversation-label{font-size:10px}.reporting .meeting-bottom>.report-conversation{height:177px}.reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}.reporting.meeting-unshared .conversation-next{bottom:90px}.reporting .conversation-window>.conversation-head{padding:4px 8px}.reporting .conversation-speaker{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.conversation-next::after{animation:none;display:none}}
+.reduce-motion .conversation-next::after{display:none}
+/* The arrow overlays the final text line and contributes no height. */
+.conversation>.conversation-window{height:auto}
+.conversation.with-portraits>.conversation-window{margin-top:max(clamp(-210px,-15vw,-90px),calc(20px - var(--dialogue-height,290px)))}
+@media(max-width:699px){.conversation.with-portraits>.conversation-window{margin-top:max(-45px,calc(20px - var(--dialogue-height,290px)))}}
+.conversation>.conversation-window>.dialogue-text{flex:none;min-height:0;max-height:34svh;padding-bottom:18px}
+.reporting .meeting-bottom:has(#dialogue-text)>.report-conversation{height:auto}
+.reporting .meeting-bottom .conversation-window:has(#dialogue-text){height:auto;padding-bottom:0}
+.reporting .meeting-bottom .meeting-dialogue{flex:none;min-height:0;max-height:24svh;padding-bottom:16px}
+.reporting.meeting-unshared .meeting-bottom .meeting-dialogue{box-sizing:border-box;height:auto;min-height:0;max-height:24svh;padding-top:20px;padding-bottom:16px}
+.conversation-window>.conversation-next,.reporting.meeting-unshared .conversation-next{bottom:auto}
+.ticket-row-face{position:absolute;inset:0;margin:0;border:0;border-radius:0;overflow:hidden;pointer-events:none}
+.ticket-row-face table{height:100%;table-layout:fixed;white-space:normal}
+.ticket-row-face tbody th{min-width:0}
+.reporting.meeting-unshared .meeting-bottom>.meeting-command-panel{position:relative;right:auto;bottom:auto;margin:8px 0 0 auto}
+/* Anchor the cast to the viewport; only the message grows upward. */
+.conversation.with-portraits{inset:16px 0;height:calc(100dvh - 32px);max-height:calc(100dvh - 32px);margin:0 auto;padding:0;overflow:visible}
+.conversation.with-portraits>.portrait-stage{position:absolute;inset:0 8px 10px;max-width:1280px;overflow:hidden;mask-image:linear-gradient(to bottom,#000 calc(100% - 70px),transparent)}
+.conversation.with-portraits>.conversation-window{position:absolute;left:8px;right:8px;bottom:10px;width:calc(100% - 16px);margin:0 auto}
+.conversation.with-portraits .portrait,.conversation.with-portraits .portrait.speaking{transform:none}
+@media(max-width:699px){.conversation.with-portraits{inset:8px 0;height:calc(100dvh - 16px);max-height:calc(100dvh - 16px)}.conversation.with-portraits>.portrait-stage{left:2px;right:2px;bottom:8px}.conversation.with-portraits>.conversation-window{left:2px;right:2px;bottom:8px;width:calc(100% - 4px)}}

@@ -17,7 +17,10 @@ test('v2 introduction explains why to investigate before estimating without reve
  assert.match(problem.requestPurpose,/適正な見積もりの根拠/);
  const reply=scenario.scenes['02.report-purpose'].lines.find(line=>line.speaker==='client').text;
  assert.match(reply,/ボタン一個分の見積もり/);
- assert.match(scenario.scenes['02.report-scope'].lines.find(line=>line.speaker==='client').text,/どこまで含める見積もり/);
+ assert.deepEqual(scenario.scenes['02.report-scope'].lines,[
+  {speaker:'client',text:'直すところが色々あるのは分かりました。\n経理とは合意が取れている内容ですか？'},
+  {speaker:'player',kind:'thought',text:'佐伯さんの立場ってよく分からないよな…\nその辺の調整をする仕事じゃないのかな…？'}
+ ]);
 });
 test('Makabe responds to his schedule and the preparation of the question',()=>{
  const s=start();assert.equal(e.preview(s,'ab.ask-makabe').result.id,'busy');
