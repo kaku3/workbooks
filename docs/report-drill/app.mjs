@@ -26,6 +26,7 @@ import { captureMeetingWindows, animateMeetingWindows } from './meeting-layout.m
 import { preloadImages } from './image-preload.mjs';
 import { playTitleTransition } from './title-transition.mjs';
 import {playBlackout} from './scene-effects.mjs';
+import {createOperationGuide} from './guide.mjs';
 
 const engine = createEngine(problem, scenario);
 const app = document.querySelector('#app');
@@ -79,6 +80,20 @@ let reportTextTimer, reportTextProgress=null;
 let meeting=null, meetingTimers=[];
 let meetingLineProgress=null;
 let muteInterruptTimer;
+const operationGuide=createOperationGuide({storage:chapterStorage,context:()=>{
+  const desk=page==='game'&&state?.phase==='desk'&&mobilePanel==='desk'&&deckSize!=='large';
+  const cards=[...document.querySelectorAll('.action-card[data-card-id]')];
+  return {
+    blocked:starting||sceneEffectRunning||deployingTickets||modal.open||page!=='game'||!['desk','report'].includes(state?.phase)||awaitingClues.size>0||Boolean(document.querySelector('.clue-acquisition-layer,.cost-effect-layer')),
+    desk,report:page==='game'&&state?.phase==='report',meeting,
+    reportRejected:Number.isInteger(state?.history.at(-1)?.report?.level)&&state.history.at(-1).report.level<3,
+    clueCount:state?.evidence.length||0,selected:state?.selected.length||0,
+    historyReady:page==='game'&&state?.phase==='desk'&&state.done.length>0&&deckSize!=='large',
+    chatShown:chatVisible(),historyEntry:[...document.querySelectorAll('.chat-scroll .history-entry')].at(-1),
+    startCards:desk?cards.filter(card=>card.closest('[data-status]')?.dataset.status==='todo'&&engine.preview(state,card.dataset.cardId)?.allowed):[],
+    doneCards:desk?cards.filter(card=>card.closest('[data-status]')?.dataset.status==='working'&&state.done.some(key=>key.startsWith(`${card.dataset.cardId}:`))):[],
+  };
+},onChange:()=>syncTimer(),onMove:(id,status)=>moveCard(id,status)});
 function meetingDialogue(){
   const c=state.conversation;
   return c.muteInterruption?scenario.scenes[scenario.events.microphoneMuted].lines[c.muteInterruption.step]:scenario.scenes[c.ids[c.scene]].lines[c.line];
@@ -96,7 +111,7 @@ function meetingLater(fn,ms){meetingTimers.push(setTimeout(()=>{if(meeting)fn();
 function ensureMeeting(){
   if(page!=='game'||meeting||!(state?.phase==='report'||isMeetingScene()))return;
   const resume=isMeetingScene();
-  meeting={phase:resume?'shared':'lobby',share:resume,mic:resume?state.conversation.meetingMic??!state.conversation.muteInterruption:true,camera:false,hand:false,reaction:false,autoShare:false,participants:['player','lead']};
+  meeting={phase:resume?'shared':'lobby',share:resume,mic:resume?state.conversation.meetingMic??!state.conversation.muteInterruption:true,camera:false,hand:false,reaction:false,requestReady:false,participants:['player','lead']};
   if(resume)return;
   reportTextProgress=null;
 }
@@ -107,9 +122,9 @@ function joinMeeting(){
   meetingLater(()=>{meeting.phase='speaking';render();},2600);
 }
 function finishMeetingRequest(){
-  if(meeting?.phase!=='speaking'||meeting.autoShare)return;
-  meeting.autoShare=true;
-  meetingLater(()=>{if(meeting.phase==='speaking'){meeting.phase='shared';meeting.share=true;render();}},400);
+  if(!meeting||meeting.requestReady)return;
+  meeting.requestReady=true;
+  operationGuide.update();
 }
 function meetingControls(){
   if(!meeting)return '';
@@ -484,7 +499,7 @@ async function beginWork(){
     });
     await Promise.all(flights);cardLayer.remove();
   }
-  deployingTickets=false;syncTimer();
+  deployingTickets=false;operationGuide.update();syncTimer();
   document.querySelector('.todo .action-card')?.focus({preventScroll:true});
 }
 function render() {
@@ -581,11 +596,15 @@ function render() {
       chatScroll=nextChat.scrollTop;chatBottom=nextChat.scrollHeight-nextChat.scrollTop-nextChat.clientHeight<40;
       if(chatBottom&&chatVisible())acknowledgeChat();
     });
-    nextChat.addEventListener('toggle',()=>{if(nextChat.isConnected && chatBottom)nextChat.scrollTop=nextChat.scrollHeight;},true);
+    nextChat.addEventListener('toggle',event=>{
+      if(nextChat.isConnected && chatBottom)nextChat.scrollTop=nextChat.scrollHeight;
+      if(event.target.matches('.history-entry')&&event.target.open){operationGuide.complete('history');operationGuide.update();}
+    },true);
   }
   if(page==='game'&&state.phase==='scene'){if(isMeetingScene())showMeetingConversation();else showConversation();}
   typeReportRequest();
   statusEffects();
+  operationGuide.update();
   syncTimer();
   if(page==='game'&&saveError)notify(saveError);
 }
@@ -783,11 +802,15 @@ function settings() {
       if(state){state.settings=next;save();}else{saved=saved||engine.fresh();saved.settings=next;try{localStorage.setItem(storageKey,JSON.stringify(saved));}catch{notify('設定を保存できません。');}}
       closeModal();render();
     }
-    if(action==='erase')confirmAction('すべての記録を消しますか？','進行、記憶、完了記録を削除します。',()=>{try{eraseChapterClear(chapterStorage,caseIds,caseId);localStorage.removeItem(storageKey);}catch{notify('記録を削除できませんでした。');return;}state=null;saved=null;saveError='';page='title';render();},'記録を削除する');
+    if(action==='erase')confirmAction('すべての記録を消しますか？','進行、記憶、完了記録、全章共通の操作ガイド履歴を削除します。',()=>{try{eraseChapterClear(chapterStorage,caseIds,caseId);localStorage.removeItem(storageKey);}catch{notify('記録を削除できませんでした。');return;}operationGuide.reset();state=null;saved=null;saveError='';page='title';render();},'記録を削除する');
   });
 }
 function moveCard(id,status) {
-  if(engine.moveCard(state,id,status)){save();render();}
+  const before=engine.cardStatus(state,id);
+  if(engine.moveCard(state,id,status)){
+    if(before!==status){if(status==='working')operationGuide.complete('task-start');if(status==='done')operationGuide.complete('task-done');}
+    save();render();
+  }
   else notify('このタスクは移動できません。');
 }
 let draggedCard = null;
@@ -815,6 +838,7 @@ function placeClue(id, index) {
   else if(from>=0)[slots[from],slots[index]]=[slots[index],slots[from]];
   else slots[index]=id;
   state.reportSlots=slots;state.selected=slots.filter(Boolean);
+  if(state.selected.length===3)operationGuide.complete('select');
   save();render();
 }
 app.addEventListener('dragstart',event=>{
@@ -905,13 +929,16 @@ app.addEventListener('click',async event=>{
       }
       save();
     }
-    if(key==='share')meeting.phase='shared';
+    if(key==='share'){
+      meeting.phase=meeting.share?'shared':'speaking';
+      if(meeting.share)operationGuide.complete('share');
+    }
     if(key==='reaction'){
       reactInMeeting();
     }
     render();return;
   }
-  if(action==='join-meeting'){joinMeeting();return;}
+  if(action==='join-meeting'){operationGuide.complete('join');joinMeeting();return;}
   if(action.startsWith('deck-size:')){setDeckSize(action.slice(10));return;}
   if(['scene','complete','loop','gameover'].includes(state.phase))return;
   if(action.startsWith('investigate:')){beginInvestigation(action.slice(12));return;}
@@ -924,8 +951,8 @@ app.addEventListener('click',async event=>{
   }
   if(action==='coffee'){beginInvestigation(coffeeId);return;}
   if(action==='toggle-deck'){setDeckSize(deckSize==='small'?'medium':'small');return;}
-  if(action==='report'){if(state.phase==='report')return;resetMeeting();deckSize='medium';state.reportSlots=Array.from({length:3},(_,i)=>state.selected[i]||null);state.phase='report';save();render();return;}
-  if(action==='submit'){if(engine.report(state)){state.conversation.meeting=true;state.conversation.meetingMic=meeting?.mic??true;save();render();}return;}
+  if(action==='report'){if(state.phase==='report')return;operationGuide.complete('report-tab');resetMeeting();deckSize='medium';state.reportSlots=Array.from({length:3},(_,i)=>state.selected[i]||null);state.phase='report';save();render();return;}
+  if(action==='submit'){if(!meeting?.share)return;if(engine.report(state)){operationGuide.complete('submit');state.conversation.meeting=true;state.conversation.meetingMic=meeting?.mic??true;save();render();}return;}
   if(action==='restart'){confirmAction('はじめからやり直しますか？','調査の進行と時刻を戻し、1日目から新しい試行を始めます。',()=>{start();},'やり直す');return;}
   if(action==='chat-latest'){
     unreadStartKey=state.chatRead?.unread[0]||unreadStartKey;acknowledgeChat();chatBottom=true;const chat=document.querySelector('.chat-scroll');
@@ -936,6 +963,7 @@ app.addEventListener('click',async event=>{
   if(action==='panel:desk'){showMobilePanel('desk');return;}
   if(action==='notebook'){showMobilePanel('desk');setDeckSize(deckSize==='small'?'medium':'small');return;}
   if(['investigate','desk'].includes(action)){
+    operationGuide.complete('back-to-investigate');
     mobilePanel='desk';tab=action==='desk'?'investigate':action;state.phase='desk';save();render();
   }
 });
@@ -981,7 +1009,7 @@ if(new URLSearchParams(location.search).get('enter')==='1'){
 }else render();
 
 function timerEnabled(){
-  return !starting && !sceneEffectRunning && page==='game' && state?.phase==='desk' && !deployingTickets && deckSize!=='large' && !modal.open;
+  return !starting && !sceneEffectRunning && page==='game' && state?.phase==='desk' && !deployingTickets && deckSize!=='large' && !modal.open && !operationGuide.active;
 }
 function syncTimer(){
   const enabled=Boolean(timerEnabled());

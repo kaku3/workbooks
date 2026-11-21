@@ -40,7 +40,7 @@ try {
   const click=async selector=>{
     await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(selector)});if(!el)throw new Error('Missing element: '+${JSON.stringify(selector)});if(el.disabled)throw new Error('Disabled element');el.click();return true;})()`);
     if(await evaluate("document.querySelector('#app').getAttribute('aria-busy')==='true'"))await waitFor("document.querySelector('#app').getAttribute('aria-busy')!=='true'");
-    if(['[data-action=report]','[data-action=continue]'].includes(selector)&&await evaluate("Boolean(document.querySelector('.reporting'))")){if(await evaluate("Boolean(document.querySelector('[data-action=join-meeting]'))"))await click('[data-action=join-meeting]');await waitFor("document.querySelector('.reporting')?.dataset.meetingPhase==='shared'");}
+    if(['[data-action=report]','[data-action=continue]'].includes(selector)&&await evaluate("Boolean(document.querySelector('.reporting'))")){if(await evaluate("Boolean(document.querySelector('[data-action=join-meeting]'))"))await click('[data-action=join-meeting]');await waitFor("['speaking','shared'].includes(document.querySelector('.reporting')?.dataset.meetingPhase)");if(await evaluate("document.querySelector('.reporting')?.classList.contains('meeting-unshared')"))await click('[data-action=meeting-share]');}
   };
   const expire=async()=>{
     await evaluate("(()=>{const s=JSON.parse(localStorage.getItem('report-drill.pdf-incident.v1'));s.time=1079;s.timerRemainder=0;s.phase='desk';s.conversation=null;localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));})()");
@@ -53,6 +53,7 @@ try {
   const waitFor=async expression=>{for(let i=0;i<100;i++){if(await evaluate(expression))return;await delay(50);}throw new Error(`Wait failed: ${expression}\nBrowser errors: ${errors.join("\n")}`);};
   const size=(width,height,mobile=false)=>call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile});
   await call('Page.addScriptToEvaluateOnNewDocument',{source:`
+    try{localStorage.setItem('report-drill.guides.v1',JSON.stringify({seen:['overview','task-start','clue','task-done','history','report-tab','back-to-investigate','join','share','select','submit'],pending:[]}));}catch{}
     const nativeInterval=window.setInterval.bind(window),nativeNow=performance.now.bind(performance);
     let timerCallback,offset=0;
     performance.now=()=>nativeNow()+offset;
@@ -328,6 +329,7 @@ try {
   assert.equal(await evaluate("Boolean(document.querySelector('.self-camera.camera-off>svg'))"),true);
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.report-board')).display"),'none');await screenshot('meeting-video');
   await waitFor("document.querySelector('.reporting')?.dataset.meetingPhase==='speaking'");
+  await click('[data-action=meeting-share]');
   await waitFor("document.querySelector('.reporting')?.dataset.meetingPhase==='shared'");
   const meetingMessageHeight=await evaluate("parseFloat(getComputedStyle(document.querySelector('.report-conversation .conversation-window')).height)");
   await evaluate('advanceGameTimer(600000)');assert.equal((await state()).time,beforeMeeting,'choosing clues in the report never advances real time');
@@ -362,6 +364,7 @@ try {
   await click('[data-action=meeting-mic]');assert.equal(await evaluate("document.querySelector('[data-action=meeting-mic]').getAttribute('aria-pressed')"),'false');
   await click('[data-action=meeting-hand]');assert.equal(await evaluate("document.querySelector('[data-action=meeting-hand]').getAttribute('aria-pressed')"),'true');
   assert.equal(await evaluate("parseFloat(getComputedStyle(document.querySelector('.self-camera .raised-hand-label')).fontSize)<=12"),true);
+  await click('[data-action=meeting-reaction]');
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.meeting-reaction-float')).animationName"),'meeting-reaction-rise');
   await waitFor("[...document.querySelectorAll('[data-meeting-window]')].every(element=>element.getAnimations().length===0)&&!document.querySelector('.meeting-window-ghost')");
   await screenshot('meeting-controls');assert.equal((await state()).time,beforeMeeting,'meeting controls do not consume game time');

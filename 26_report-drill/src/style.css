@@ -733,6 +733,9 @@
 .chapter-picker a[aria-current=page]{border-color:#a8ccbd;background:#254039;color:#e4f6ec}
 :is(.dialogue-text,.meeting-dialogue,.report-request,.history-inline) strong{font-size:1.35em;font-weight:900;line-height:0;color:#ffdda2;text-shadow:0 0 10px #ffcf8526}
 .history-inline strong:first-child{font-size:inherit;color:inherit;text-shadow:none}
+.chat-panel .history-inline p{color:#203446}
+.chat-panel .history-inline strong{color:#76420d;text-shadow:none}
+.chat-panel .history-inline p>strong:first-child{color:#204638}
 .memo>h3{font-size:13px;line-height:1.7;margin-bottom:12px}
 .memo>p:not(.eyebrow)+p{margin-top:12px}
 .reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}
@@ -890,3 +893,30 @@
 @media(max-width:699px){.conversation.with-portraits{inset:8px 0;height:calc(100dvh - 16px);max-height:calc(100dvh - 16px)}.conversation.with-portraits>.portrait-stage{left:2px;right:2px}.conversation.with-portraits>.conversation-window{left:2px;right:2px;bottom:8px;width:calc(100% - 4px)}}
 
 @media(max-width:699px){.knowledge{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Operation guides preserve the original controls and drag-and-drop handlers. */
+.operation-guide{position:fixed;inset:0;z-index:1000;pointer-events:none;animation:guide-appear .2s ease-out}
+.guide-shade{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.guide-card{position:fixed;box-sizing:border-box;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 48px);overflow:visible;border:1px solid #a8edcf;border-radius:12px;background:#14242b;color:#edf7f3;box-shadow:0 10px 40px #0008;pointer-events:auto;outline-offset:3px}
+.guide-card-body{padding:26px 20px 20px;max-height:calc(100dvh - 50px);overflow:auto;border-radius:inherit}
+.guide-card .guide-label{position:absolute;left:18px;top:0;transform:translateY(-50%);z-index:2;margin:0;padding:2px 10px;border:1px solid #a8edcf;border-radius:4px;background:#14242b;color:#a8edcf;font-size:14px;line-height:1.5}
+.guide-card h2{margin:0 0 12px;font-size:20px;line-height:1.4}
+.guide-card p{font-size:16px;line-height:1.7;margin:0 0 12px}
+.guide-card small{display:block;font-size:14px;line-height:1.6;color:#c4d8d2}
+.guide-card button{margin-top:8px;min-height:44px}
+.guide-overview .guide-card{width:min(480px,calc(100vw - 24px))}
+.guide-overview .guide-card-body{padding:28px}
+.guide-overview #guide-description{white-space:pre-line}
+.guide-overview .guide-card button{display:flex;margin:20px auto 0}
+.guide-open [data-guide-target]:focus-visible{outline:3px solid #a8edcf;outline-offset:-3px}
+.guide-open [data-guide-target][data-card-id]{touch-action:none}
+.guide-drag-ghost{position:fixed!important;z-index:1001!important;width:160px!important;max-height:180px;overflow:hidden;pointer-events:none!important;opacity:.85;transform:rotate(3deg)}
+.guide-focus-effects{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.guide-focus-target{position:absolute;pointer-events:none}
+.guide-focus-target>span{position:absolute;inset:0;border:2px solid #a8edcf;border-radius:8px;box-shadow:0 0 12px #a8edcf30;opacity:0;pointer-events:none;animation:guide-focus-in 2.4s cubic-bezier(.22,.65,.3,1) infinite}
+.guide-focus-target>span:nth-child(2){animation-delay:-.8s}
+.guide-focus-target>span:nth-child(3){animation-delay:-1.6s}
+@keyframes guide-focus-in{0%{inset:-40px;opacity:0}18%{opacity:.65}72%{inset:-2px;opacity:.65}90%,100%{inset:0;opacity:0}}
+@keyframes guide-appear{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.operation-guide{animation:none}.guide-focus-effects{display:none}}
+.reduce-motion .operation-guide{animation:none}
+.reduce-motion .guide-focus-effects{display:none}

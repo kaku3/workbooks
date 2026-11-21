@@ -3498,7 +3498,7 @@ export const cases = {
             },
             {
               "speaker": "sales",
-              "text": "切りよく**10万円**で引き受けられる？"
+              "text": "切りよく**１０万円**で引き受けられる？"
             },
             {
               "speaker": "player",

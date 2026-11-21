@@ -6,7 +6,8 @@
     "build": "node scripts/build-content.mjs",
     "deploy": "npm run build && powershell -NoProfile -Command \"Copy-Item -Path 'src/*' -Destination '../docs/report-drill' -Recurse -Force\"",
     "start": "node scripts/serve.mjs",
-    "test": "node --test tests/engine.test.mjs tests/chapter2.test.mjs tests/chapter3.test.mjs tests/chat-read.test.mjs tests/dialogue-text.test.mjs tests/chapter-progress.test.mjs tests/scenario-effects.test.mjs",
-    "test:browser": "node tests/browser.mjs"
+    "test": "node --test tests/engine.test.mjs tests/chapter2.test.mjs tests/chapter3.test.mjs tests/chat-read.test.mjs tests/dialogue-text.test.mjs tests/chapter-progress.test.mjs tests/scenario-effects.test.mjs tests/guide.test.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "test:guide-browser": "node tests/guide-browser.mjs"
   }
 }
