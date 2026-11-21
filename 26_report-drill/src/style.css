@@ -622,8 +622,11 @@
 .deck-sizes button:hover{outline:1px solid #e0eee2}
 .work-area{--deck-medium-height:320px}
 .work-area>.clue-drawer.deck-medium{height:var(--deck-medium-height);flex-basis:var(--deck-medium-height)}
-.clue-drawer.deck-medium #shared-clue-deck{height:calc(var(--deck-medium-height) - 36px)}
-.clue-drawer.deck-medium .evidence-grid>.evidence-card{height:calc(var(--deck-medium-height) - 58px);min-height:0}
+.clue-drawer.deck-medium{display:flex;flex-direction:column}
+.clue-drawer.deck-medium>.deck-toolbar{flex:0 0 36px}
+.clue-drawer.deck-medium #shared-clue-deck{height:auto;flex:1;min-height:0}
+.clue-drawer.deck-medium .evidence-grid{padding:8px 3px;overflow-x:auto;overflow-y:hidden}
+.clue-drawer.deck-medium .evidence-grid>.evidence-card{height:var(--clue-height);min-height:0}
 .reporting .deck-sizes{display:none}
 @media(max-width:699px),(min-width:700px) and (max-height:800px){.work-area{--deck-medium-height:270px}}
 .reporting[data-deck-size=small]{--meeting-deck-height:118px}
@@ -690,7 +693,7 @@
 }
 
 /* Three-line clues leave more room for investigation and the call. */
-.work-area{--clue-height:176px;--deck-medium-height:234px;--meeting-deck-height:var(--deck-medium-height)}
+.work-area{--clue-height:176px;--deck-medium-height:calc(var(--clue-height) + 70px);--meeting-deck-height:var(--deck-medium-height)}
 :is(.clue-drawer,.report-selection) .evidence-card{height:var(--clue-height,176px);min-height:0;padding:10px}
 :is(.clue-drawer,.report-selection) .evidence-card h3{height:40px;min-height:40px;font-size:13px;line-height:20px;padding-bottom:0}
 :is(.clue-drawer,.report-selection) .evidence-top{margin-top:6px;flex-shrink:0;line-height:18px}
@@ -698,14 +701,14 @@
 .reporting .meeting-bottom .report-request,.reporting .meeting-bottom .meeting-dialogue{font-size:20px;line-height:1.65}
 .reporting .meeting-speaker strong,.reporting .meeting-bottom .conversation-person h2{font-size:18px}
 @media(min-width:700px) and (max-height:800px){
-  .work-area{--clue-height:160px;--deck-medium-height:218px}
+  .work-area{--clue-height:160px;--deck-medium-height:calc(var(--clue-height) + 70px)}
   :is(.clue-drawer,.report-selection) .evidence-card{padding:8px}
   :is(.clue-drawer,.report-selection) .evidence-top{margin-top:4px}
   :is(.clue-drawer,.report-selection) .evidence-card>p{font-size:13px;line-height:20px;height:60px;min-height:60px;margin-top:6px}
   .reporting .meeting-bottom .report-request,.reporting .meeting-bottom .meeting-dialogue{font-size:18px}
 }
 @media(max-width:699px){
-  .work-area{--clue-height:160px;--deck-medium-height:218px}
+  .work-area{--clue-height:160px;--deck-medium-height:calc(var(--clue-height) + 70px)}
   :is(.clue-drawer,.report-selection) .evidence-card{padding:8px}
   :is(.clue-drawer,.report-selection) .evidence-top{margin-top:4px}
   :is(.clue-drawer,.report-selection) .evidence-card>p{font-size:13px;line-height:20px;height:60px;min-height:60px;margin-top:6px}
@@ -871,6 +874,12 @@
 .chapter-transition-heading{position:absolute;left:0;width:100%;margin:0;text-align:center;opacity:0;color:var(--accent);font-size:24px;font-weight:500;letter-spacing:.3em}
 .scene-blackout{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#000;opacity:0;overflow:hidden}
 .scene-blackout::backdrop{background:transparent;backdrop-filter:none}
+.reporting.meeting-unshared>.work-content.report-view{overflow:visible;position:static;z-index:auto}
+.reporting.meeting-unshared .report-stage>.meeting-camera{position:absolute;inset:0 0 var(--meeting-deck-height);width:100%;height:auto;min-height:0;z-index:0}
+.reporting.meeting-unshared .report-stage>.meeting-camera>img{height:240%;width:auto;left:50%;top:2%;transform:translateX(-50%)}
+.reporting.meeting-unshared>.meeting-bottom{display:flex;flex-direction:column;gap:18px;position:relative;z-index:4}
+.reporting.meeting-unshared .meeting-bottom>.meeting-command-panel{flex:none;align-self:flex-end;margin:0;z-index:5}
+.reporting.meeting-unshared .meeting-bottom>.report-conversation{flex:none;z-index:2}
 @media(min-width:700px) and (max-height:800px){.reporting{--report-message-height:150px}}
 @media(max-width:699px){.reporting{--report-message-height:177px}}
 /* Anchor the cast to the viewport; only the message grows upward. */

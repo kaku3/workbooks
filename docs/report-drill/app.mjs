@@ -358,7 +358,7 @@ function reportPage() {
   return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('client')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span class="share-indicator">${icon('layers')} 画面共有中</span><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをドラッグして配置</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
       const card=problem.evidence.find(item=>item.id===(state.reportSlots||state.selected)[i]);
       return `<div class="report-slot ${card?'occupied':''}" data-report-slot="${i}">${card?evidenceCard(card,true):`<span class="slot-number">0${i+1}</span><span>ここに手がかりを置く</span>`}</div>`;
-    }).join('')}</div></div><aside class="report-buttons"><span>${state.selected.length} / ${q.slots}枚</span>${button('submit',`<span>報告する</span><small>${duration(q.minutes)}</small>`,'primary',canSubmit?'':'disabled')}</aside></div><div class="report-conversation"><div class="conversation-window"><div class="conversation-person"><div><p class="eyebrow">REPORT REQUEST</p><h2>佐伯</h2></div></div><p class="report-request" aria-label="${esc(plainDialogue(q.prompt))}"><span class="report-request-text" aria-hidden="true">${esc(q.prompt)}</span></p><p class="report-hint">手がかりを3枚組み合わせ、相手に伝わる説明を組み立てる。</p></div></div></section>`;
+    }).join('')}</div></div><aside class="report-buttons"><span>${state.selected.length} / ${q.slots}枚</span>${button('submit',`<span>報告する</span><small>${duration(q.minutes)}</small>`,'primary',canSubmit?'':'disabled')}</aside></div><div class="report-conversation"><div class="conversation-window">${conversationSpeaker(names.client)}<p class="report-request" aria-label="${esc(plainDialogue(q.prompt))}"><span class="report-request-text" aria-hidden="true">${esc(q.prompt)}</span></p><p class="report-hint">手がかりを3枚組み合わせ、相手に伝わる説明を組み立てる。</p></div></div></section>`;
 }
 
 function historyEntry(item,index) {
@@ -536,7 +536,7 @@ function render() {
     if(submit){const submitBar=document.createElement('div');submitBar.className='share-submit';submitBar.append(submit);meetingArea.querySelector('.report-board').append(submitBar);}
     if(buttons)commands.append(buttons);
     commands.insertAdjacentHTML('beforeend',meetingControls());
-    if(meeting.share)meetingArea.querySelector('.report-stage').append(commands);else bottom.append(commands);
+    if(meeting.share)meetingArea.querySelector('.report-stage').append(commands);else bottom.prepend(commands);
     reportDeck.before(bottom);
     if(meeting.phase==='lobby')meetingArea.insertAdjacentHTML('beforeend',`<div class="meeting-lobby">${button('join-meeting','会議に参加する','primary')}</div>`);
     if(meeting.phase==='connecting')meetingArea.insertAdjacentHTML('beforeend','<div class="meeting-connecting" role="status"><p>会議が開始すると 誰かが入室を許可します</p></div>');

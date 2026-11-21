@@ -345,6 +345,19 @@ try {
   await click('[data-action=meeting-reaction]');assert.equal(await evaluate("document.querySelector('.meeting-reaction-float').textContent.includes('👍')"),true);
   await click('[data-action=meeting-share]');assert.equal(await evaluate("getComputedStyle(document.querySelector('.report-board')).display"),'none');
   assert.notEqual(await evaluate("getComputedStyle(document.querySelector('.reporting>.clue-drawer')).display"),'none','sharing off keeps clues visible');
+  await waitFor("!document.querySelector('.meeting-window-ghost')");
+  for(const [width,height,mobile] of [[1440,1000,false],[390,844,true]]){
+    await size(width,height,mobile);
+    await evaluate("document.querySelectorAll('[data-meeting-window]').forEach(element=>element.getAnimations().forEach(animation=>animation.finish()))");
+    assert.ok(await evaluate("(()=>{const controls=document.querySelector('.meeting-bottom>.meeting-command-panel').getBoundingClientRect(),message=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect();return controls.bottom<message.top;})()"),'unshared call controls are above the message');
+    assert.ok(await evaluate("(()=>{const camera=document.querySelector('.meeting-camera').getBoundingClientRect(),area=document.querySelector('.reporting').getBoundingClientRect(),deck=document.querySelector('.reporting>.clue-drawer').getBoundingClientRect();return Math.abs(camera.left-area.left)<2&&Math.abs(camera.right-area.right)<2&&Math.abs(camera.top-area.top)<2&&Math.abs(camera.bottom-deck.top)<2;})()"),'Saeki room fills the whole call area above the separate deck');
+    assert.ok(await evaluate("(()=>{const message=document.querySelector('.report-conversation .conversation-window'),rect=message.getBoundingClientRect();return message.contains(document.elementFromPoint(rect.left+rect.width/2,rect.top+rect.height/2));})()"),'message floats in front of the camera image');
+    assert.ok(await evaluate("(()=>{const grid=document.querySelector('#shared-clue-deck .evidence-grid');return grid.scrollHeight<=grid.clientHeight+1;})()"),'the spreadsheet card strip has no vertical overflow');
+    assert.ok(await evaluate("(()=>{const camera=document.querySelector('.meeting-camera').getBoundingClientRect(),image=document.querySelector('.meeting-camera>img').getBoundingClientRect();return image.height/camera.height>2.3&&image.height/camera.height<2.5;})()"),'Saeki is framed closely from just below the shoulders');
+    assert.ok(await evaluate("(()=>{const speaker=document.querySelector('.report-conversation .conversation-speaker').getBoundingClientRect(),message=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect();return speaker.top<message.top&&speaker.bottom>message.top;})()"),'speaker label sits on the left shoulder');
+    await screenshot(`meeting-unshared-${width}`);
+  }
+  await size(1440,1000);
   await click('[data-action=meeting-share]');assert.notEqual(await evaluate("getComputedStyle(document.querySelector('.report-board')).display"),'none');
   await click('[data-action=meeting-mic]');assert.equal(await evaluate("document.querySelector('[data-action=meeting-mic]').getAttribute('aria-pressed')"),'false');
   await click('[data-action=meeting-hand]');assert.equal(await evaluate("document.querySelector('[data-action=meeting-hand]').getAttribute('aria-pressed')"),'true');
