@@ -48,12 +48,12 @@ export const cases = {
             },
             {
               "speaker": "client",
-              "text": "調べたところ、田中太郎という社員は5年前に退職していて今はいなくて。"
+              "text": "調べたところ、田中太郎という社員は５年前に退職していて今はいなくて。"
             },
             {
               "speaker": "lead",
               "kind": "thought",
-              "text": "…これ、5年間、誰も気づかなかったのか…？"
+              "text": "…これ、５年間、誰も気づかなかったのか…？"
             },
             {
               "speaker": "sales",
@@ -234,7 +234,7 @@ export const cases = {
             {
               "speaker": "player",
               "kind": "thought",
-              "text": "……45分。小学校の授業の１コマが消えた。"
+              "text": "……４５分。小学校の授業の１コマが消えた。"
             }
           ]
         },

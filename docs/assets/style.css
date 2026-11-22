@@ -14,7 +14,8 @@ main > section{position:relative;padding:80px 0;border-bottom:1px solid var(--li
 /* Featured workbook: the same image/text grid as the carousel below. */
 .wb-pickup{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:32px;margin:0 0 32px;padding:0 0 32px;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
 .wb-pickup:focus-visible{outline:2px solid var(--green);outline-offset:6px;border-radius:4px}
-.wb-pickup img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:4px}
+.wb-pickup img,.wb-pickup video{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:4px}
+.wb-pickup video{aspect-ratio:16/9;object-fit:contain;background:#10151e}
 .wb-pickup-body{min-width:0;padding:16px 0}
 .wb-pickup-label{display:flex;align-items:center;gap:10px;color:var(--amber);font-size:.72rem;font-weight:600;letter-spacing:.08em}
 .wb-pickup-label::before{content:"";width:20px;height:1px;background:currentColor}
