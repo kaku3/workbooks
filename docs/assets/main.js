@@ -103,7 +103,7 @@
     var originalHTML = el.innerHTML.trim();
     var plainText = el.textContent;
 
-    if (reduceMotion || !("IntersectionObserver" in window)) {
+    if (reduceMotion || el.closest(".reading-notebook") || !("IntersectionObserver" in window)) {
       el.innerHTML = originalHTML;
       return;
     }
@@ -129,8 +129,9 @@
 
   /* ---- workbooks carousel + list + detail sync ---- */
   (function () {
-    var wrap = document.querySelector(".workbooks-wrap");
-    if (!wrap) return;
+    var wrap = document;
+    if (!wrap.querySelector(".wb-feature")) return;
+    var interactionAreas = [wrap.querySelector(".wb-feature"), wrap.querySelector(".wb-categories")];
 
     var slides = Array.prototype.slice.call(wrap.querySelectorAll(".wb-slide"));
     var dots = Array.prototype.slice.call(wrap.querySelectorAll(".wb-dot"));
@@ -141,7 +142,7 @@
     var nextBtn = wrap.querySelector(".wb-nav.next");
     var carousel = wrap.querySelector(".wb-carousel");
     var track = wrap.querySelector(".wb-carousel-track");
-    var channel = wrap.querySelector(".wb-channel");
+    var channels = wrap.querySelectorAll(".wb-channel, [data-wb-channel]");
     var motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     var detailBody = wrap.querySelector(".wb-detail-body");
     var detailTag = wrap.querySelector("[data-wb-tag]");
@@ -187,7 +188,9 @@
         d.setAttribute("aria-current", String(i === current));
       });
       items.forEach(function (it, i) { it.classList.toggle("is-active", i === current); });
-      channel.textContent = "CH " + String(current + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
+      channels.forEach(function (channel) {
+        channel.textContent = "CH " + String(current + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
+      });
       updateDetail(current);
     }
 
@@ -195,7 +198,10 @@
       if (autoTimer) { window.clearInterval(autoTimer); autoTimer = null; }
     }
     function resumeAuto() {
-      if (!autoTimer && !motionQuery.matches && !wrap.matches(":hover") && !wrap.contains(document.activeElement)) {
+      var interacting = interactionAreas.some(function (area) {
+        return area && (area.matches(":hover") || area.contains(document.activeElement));
+      });
+      if (!autoTimer && !motionQuery.matches && !interacting) {
         autoTimer = window.setInterval(function () { goTo(current + 1); }, 4500);
       }
     }
@@ -217,11 +223,14 @@
     if (prevBtn) prevBtn.addEventListener("click", function () { goTo(current - 1); restartAuto(); });
     if (nextBtn) nextBtn.addEventListener("click", function () { goTo(current + 1); restartAuto(); });
 
-    wrap.addEventListener("mouseenter", pauseAuto);
-    wrap.addEventListener("mouseleave", resumeAuto);
-    wrap.addEventListener("focusin", pauseAuto);
-    wrap.addEventListener("focusout", function (event) {
-      if (!wrap.contains(event.relatedTarget)) resumeAuto();
+    interactionAreas.forEach(function (area) {
+      if (!area) return;
+      area.addEventListener("mouseenter", pauseAuto);
+      area.addEventListener("mouseleave", resumeAuto);
+      area.addEventListener("focusin", pauseAuto);
+      area.addEventListener("focusout", function (event) {
+        if (!area.contains(event.relatedTarget)) resumeAuto();
+      });
     });
 
     carousel.addEventListener("keydown", function (event) {
