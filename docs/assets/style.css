@@ -6,7 +6,7 @@ header{position:relative;overflow:hidden;padding:34px 0 74px;background:var(--pa
 .hero{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;padding:62px 0 28px}.kicker{display:inline-flex;gap:9px;align-items:center;color:#728b80;font-size:.78rem;font-weight:800;letter-spacing:.13em}.kicker:before{content:"";width:25px;height:2px;background:var(--amber)}h1{margin:17px 0 0;font-size:clamp(2.45rem,5.5vw,4.2rem);line-height:1.18;letter-spacing:-.055em;font-weight:850}h1 em{font-style:normal;color:#789488}.lead{margin:25px 0 0;font-size:1.05rem;color:#66736d}.lead strong{color:var(--ink)}
 .hero-art{border-radius:4px;box-shadow:var(--shadow);overflow:hidden}.hero-art img{display:block;width:100%;height:auto}
 main{position:relative}.paper-card{margin-top:-10px;padding:42px clamp(24px,5vw,58px);background:var(--white);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow)}h2{margin:0;font-size:clamp(1.55rem,3vw,2.15rem);line-height:1.4;letter-spacing:-.035em}h2 small{display:block;margin-bottom:8px;color:var(--amber);font-size:.72rem;letter-spacing:.14em}p{margin:15px 0}.soft{color:var(--muted)}.quote{margin:28px 0 0;padding:23px 25px;background:var(--paper);border-radius:4px;border-left:2px solid var(--amber);font-size:1.02rem}.quote strong{font-size:1.12rem}
-main > section{position:relative;padding:80px 0;border-bottom:1px solid var(--line)}
+:where(.scene-inner > section){position:relative;padding:80px 0;border-bottom:1px solid var(--line)}
 .section-intro{max-width:710px;margin:12px 0 32px;color:var(--muted)}
 .section-title{display:flex;justify-content:space-between;align-items:end;gap:24px}
 .section-title .number{color:var(--muted);font-size:.72rem;font-weight:500;letter-spacing:.12em}
@@ -108,6 +108,7 @@ footer{padding:32px 20px 48px;text-align:center;color:#8b8b7f;font-size:.78rem;b
 .story{overflow:hidden}
 
 .type-target.typing:after{content:"";display:inline-block;width:2px;height:.95em;margin-left:2px;background:var(--amber);vertical-align:-.1em;animation:type-blink 1s steps(1) infinite}
+.type-target{display:inline-block;min-width:1ch;min-height:1.4em;max-width:100%}
 @keyframes type-blink{50%{opacity:0}}
 
 .reveal-group.is-visible>*{opacity:1;transform:translateY(0)}
@@ -172,9 +173,6 @@ footer{padding:32px 20px 48px;text-align:center;color:#8b8b7f;font-size:.78rem;b
 @media(max-width:540px){.wb-categories{gap:24px}.wb-categories .wb-list{grid-template-columns:minmax(0,1fr);gap:18px}.wb-categories .wb-item{transform:rotate(calc(var(--note-tilt) / 2))}.wb-categories .wb-item::before{width:38px;height:14px;top:-11px}.wb-categories .wb-item a{min-height:80px;padding:12px 14px}.wb-pickups{margin-bottom:36px}}
 
 .notebook-phrase{display:inline-block}
-/* Keep reading and the notebook invitation still; movement stays on the TV and labels. */
-.story-main.reveal-left,.story-side.reveal-right,.use.reveal-group>*,.story-side .mini-list span{opacity:1;transform:none;transition:none}
-.story-main .line{transform:none;transition:none}
 
 
 /* The large forms carry the theme; the copy and learning materials stay quiet. */
@@ -201,3 +199,30 @@ header{padding-bottom:40px}
 .story-main .line{background:#b66d6599;height:2px}
 @media(max-width:850px){.hero{grid-template-columns:minmax(0,1fr);gap:36px}.hero .wb-feature{width:100%;max-width:620px;justify-self:center}.hero h1{font-size:clamp(2.45rem,6vw,3.5rem)}}
 @media(max-width:540px){header{padding-bottom:24px}.hero{padding-top:36px;gap:30px}.hero h1{font-size:2.65rem}.hero .wb-detail-body{padding:14px 38px 14px 16px}.hero .wb-detail h3{font-size:1.1rem}.wb-board{margin:16px 0 36px;padding:20px 12px;border-width:2px;border-radius:6px;box-shadow:inset 0 -3px 0 #e3e9e6,0 3px 8px #26352f08}.reading-notebook{background-image:linear-gradient(90deg,transparent 11px,#b9828233 11px 12px,transparent 12px),linear-gradient(#7894880b 1px,transparent 1px)}.closing h2{font-size:1.35rem}.closing{padding:64px 0}.wb-tv-controls .wb-nav{height:44px;width:auto}}
+/* Scene backgrounds; only the studio circle moves on desktop. */
+:root{--studio:#e8f0e9;--classroom:#dde8eb;--reading:#f4eadc;--finish:#fafaf8}
+.scene{position:relative;isolation:isolate}
+.scene-inner{position:relative;z-index:1}
+.scene-studio{padding-bottom:96px;background:var(--studio)}
+.scene-studio>.wrap{position:relative;z-index:1}
+.scene-studio::before{content:"";position:absolute;z-index:0;top:-180px;right:calc(50% - 760px);width:760px;height:760px;border-radius:50%;background:#d6e6db;pointer-events:none}
+.scene-studio::after{content:"";position:absolute;z-index:0;bottom:0;left:0;width:100%;height:42px;background:var(--classroom);clip-path:polygon(0 100%,100% 0,100% 100%);pointer-events:none}
+.scene-classroom{padding:64px 0 104px;background:var(--classroom)}
+.scene-classroom .wb-board{margin:0 0 52px;box-shadow:inset 0 0 0 2px #edf1ef,inset 0 -5px 0 #e3e9e6,0 10px 24px #3b5b641a}
+.scene-classroom .wb-pickups{margin:0;padding:0;border-bottom:0}
+.scene-reading{padding:80px 0 76px;background:var(--reading)}
+.scene-reading::before{content:"";position:absolute;z-index:0;top:-24px;left:clamp(16px,4vw,64px);right:0;height:24px;border-top:1px solid #fff9;border-radius:5px 0 0 0;background:var(--reading);box-shadow:0 -4px 10px #26352f0a;pointer-events:none}
+.scene-reading .scene-inner>section{padding:44px 0 0;border-bottom:0}
+.scene-finish{padding-top:64px;background:var(--finish)}
+.scene-finish .scene-inner>section{padding:0 0 48px}
+.scene-finish .closing{padding:72px 0 80px}
+footer{background:var(--finish)}
+@media(max-width:850px){.scene-studio::before{top:160px;right:-200px;width:680px;height:680px}}
+@media(max-width:540px){.scene-studio{padding-bottom:56px}.scene-studio::before{top:260px;right:-150px;width:480px;height:480px;background:#d9e8de}.scene-studio::after{height:22px}.scene-classroom{padding:32px 0 68px}.scene-classroom .wb-board{margin-bottom:36px;box-shadow:inset 0 -3px 0 #e3e9e6,0 5px 12px #3b5b6414}.scene-reading{padding:52px 0 48px}.scene-reading::before{top:-12px;left:12px;height:12px;box-shadow:0 -3px 6px #26352f08}.scene-reading .scene-inner>section{padding-top:28px}.scene-finish{padding-top:40px}.scene-finish .scene-inner>section{padding-bottom:32px}.scene-finish .closing{padding:52px 0 60px}}
+
+/* Note entrance uses translate so the taped-on rotation stays intact. */
+.wb-item.wb-note-reveal{opacity:0;translate:0 16px;transition:opacity .45s ease var(--reveal-delay,0ms),translate .45s ease var(--reveal-delay,0ms),transform .15s ease,box-shadow .15s ease}
+.wb-item.wb-note-reveal.is-visible{opacity:1;translate:0 0}
+@media(min-width:851px) and (prefers-reduced-motion:no-preference){.scene-studio::before{transform:translate3d(0,var(--studio-shift,0px),0);will-change:transform}}
+@media(max-width:540px){.wb-item.wb-note-reveal{--reveal-delay:0ms!important}}
+@media(prefers-reduced-motion:reduce){.wb-item.wb-note-reveal{opacity:1;translate:none;transition:none}.scene-studio::before{transform:none}}

@@ -40,6 +40,12 @@
   document.querySelectorAll(".skills, .use")
     .forEach(function (el) { el.classList.add("reveal-group"); revealTargets.push(el); });
 
+  document.querySelectorAll(".wb-item").forEach(function (el) {
+    el.style.setProperty("--reveal-delay", (Number(el.dataset.index) % 3) * 60 + "ms");
+    markReveal(el, "wb-note-reveal");
+  });
+  document.querySelectorAll(".wb-pickup").forEach(function (el) { markReveal(el, "reveal"); });
+
   var workbooksGrid = document.querySelector(".workbooks");
   if (workbooksGrid) {
     workbooksGrid.classList.add("reveal-group");
@@ -103,7 +109,7 @@
     var originalHTML = el.innerHTML.trim();
     var plainText = el.textContent;
 
-    if (reduceMotion || el.closest(".reading-notebook") || !("IntersectionObserver" in window)) {
+    if (reduceMotion || !("IntersectionObserver" in window)) {
       el.innerHTML = originalHTML;
       return;
     }
@@ -333,44 +339,36 @@
     resumeAuto();
   })();
 
-  /* ---- parallax on hero art + story decoration ---- */
-  var heroArt = document.querySelector(".hero-art");
-  var storyMain = document.querySelector(".story-main");
+  /* ---- Background-only parallax; geometry is measured only on resize. ---- */
+  var studio = document.querySelector(".scene-studio");
+  var parallaxMedia = window.matchMedia("(min-width: 851px) and (prefers-reduced-motion: no-preference)");
+  var studioHeight = 1;
   var ticking = false;
 
-  function applyParallax() {
-    var y = window.scrollY || window.pageYOffset;
-
-    if (heroArt) {
-      var heroOffset = Math.min(y * 0.12, 60);
-      heroArt.style.transform = "rotate(1deg) translateY(" + heroOffset + "px)";
+  function applyScrollEffects() {
+    updateProgress();
+    if (studio) {
+      var offset = parallaxMedia.matches ? Math.min(Math.max(window.scrollY, 0) / studioHeight, 1) * 36 : 0;
+      studio.style.setProperty("--studio-shift", offset.toFixed(2) + "px");
     }
-
-    if (storyMain) {
-      var rect = storyMain.getBoundingClientRect();
-      var vh = window.innerHeight || document.documentElement.clientHeight;
-      if (rect.top < vh && rect.bottom > 0) {
-        var progressInView = (vh - rect.top) / (vh + rect.height);
-        var shift = (progressInView - 0.5) * 46;
-        storyMain.style.setProperty("--circle-shift", shift + "px");
-      }
-    }
-
     ticking = false;
   }
 
   function onScroll() {
-    updateProgress();
     if (!ticking) {
-      window.requestAnimationFrame(applyParallax);
       ticking = true;
+      window.requestAnimationFrame(applyScrollEffects);
     }
   }
 
-  if (!reduceMotion) {
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", applyParallax);
-    applyParallax();
+  function measureParallax() {
+    studioHeight = studio ? Math.max(studio.offsetHeight, 1) : 1;
+    onScroll();
   }
-  updateProgress();
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", measureParallax);
+  parallaxMedia.addEventListener("change", measureParallax);
+  if (document.fonts) document.fonts.ready.then(measureParallax);
+  measureParallax();
 })();

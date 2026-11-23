@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<header>
+<header class="scene scene-studio">
   <div class="wrap">
     <nav class="nav"><div class="brand">WORKBOOKS</div><a href="https://github.com/kaku3/workbooks" target="_blank" rel="noopener">GitHub ↗</a></nav>
     <div class="hero">
@@ -72,99 +72,113 @@
     </div>
   </div>
 </header>
-<main class="wrap">
-  <section id="workbooks" class="wb-board">
-    <div class="section-title"><h2><span class="type-target">Workbooks</span></h2><div class="number">TRY ONE</div></div>
-    <p class="section-intro fade">日常をちょっとよくする教養を。一人でも、先輩やAIと一緒でも。</p>
-    <div class="workbooks-wrap fade">
-      <div class="wb-categories">
-        <section class="wb-category" aria-labelledby="wb-category-casual">
-          <h3 class="wb-category-title" id="wb-category-casual">カジュアル</h3>
-          <ul class="wb-list">
-            <li class="wb-item is-active" data-index="0" data-desc="文章が何を決めているのかを考え、要求・要件・外部仕様・詳細設計に分類する。"><a href="design-layer-drill/"><span class="tag">設計・仕様整理</span><h3>設計の階層ドリル</h3></a></li>
-            <li class="wb-item" data-index="1" data-desc="4行の文章を並べ替えて、説明や文章の伝わる順番を身につける。"><a href="jyunban-drill/"><span class="tag">構成・順番</span><h3>順番のセンス</h3></a></li>
-            <li class="wb-item" data-index="2" data-desc="メモから必要な情報を集めて、並べて、つなぐ。散らかった頭の中を、図でととのえる。"><a href="organize-drill/"><span class="tag">整理・設計</span><h3>図で整理ドリル</h3></a></li>
-          </ul>
-        </section>
-        <section class="wb-category" aria-labelledby="wb-category-deep">
-          <h3 class="wb-category-title" id="wb-category-deep">じっくり</h3>
-          <ul class="wb-list">
-            <li class="wb-item" data-index="3" data-desc="文章の中にある「向き」や視点の違いを見つける。"><a href="shiten-drill"><span class="tag">読解・視点</span><h3>視点ドリル</h3></a></li>
-            <li class="wb-item" data-index="4" data-desc="文章を読み、情報を整理して「伝わる図」にする。"><a href="zukai-drill"><span class="tag">整理・図解</span><h3>図解ドリル</h3></a></li>
-          </ul>
-        </section>
-        <section class="wb-category" aria-labelledby="wb-category-thinking">
-          <h3 class="wb-category-title" id="wb-category-thinking">AI・思考</h3>
-          <ul class="wb-list">
-            <li class="wb-item" data-index="5" data-desc="AIが作った成果物を、そのまま受け取らずに読み、考え、レビューする。"><a href="learn-with-ai"><span class="tag">レビュー・AI</span><h3>AI時代のコードレビュー力試験</h3></a></li>
-            <li class="wb-item" data-index="6" data-desc="現象から原因を推測し、切り分けて考える。"><a href="think-lab-from-buggy-code"><span class="tag">論理・デバッグ</span><h3>ThinkLab from Buggy Code</h3></a></li>
-          </ul>
-        </section>
-        <section class="wb-category" aria-labelledby="wb-category-basics">
-          <h3 class="wb-category-title" id="wb-category-basics">基礎・社会人力</h3>
-          <ul class="wb-list">
-            <li class="wb-item" data-index="7" data-desc="IT現場のちょっと香ばしい文面を題材に、日本語を鍛える。"><a href="it-business-mail-typing"><span class="tag">日本語・実務</span><h3>香ばしビジメ ― 極タイピング</h3></a></li>
-            <li class="wb-item" data-index="8" data-desc="相手を観察し、伝え方や次の一手を考える。"><a href="commu-checker"><span class="tag">観察・コミュニケーション</span><h3>コミュ力診断</h3></a></li>
-          </ul>
-        </section>
-      </div>
-    </div>
-    <div class="wb-board-tools" aria-hidden="true">
-      <span class="wb-markers"><span class="wb-marker"></span><span class="wb-marker wb-marker-red"></span></span>
-      <span class="wb-eraser"></span>
-    </div>
-  </section>
+<main>
+  <div class="scene scene-classroom">
+    <div class="wrap scene-inner">
+      <section id="workbooks" class="wb-board">
+        <div class="section-title"><h2><span class="type-target">Workbooks</span></h2><div class="number">TRY ONE</div></div>
+        <p class="section-intro fade">日常をちょっとよくする教養を。一人でも、先輩やAIと一緒でも。</p>
+        <div class="workbooks-wrap fade">
+          <div class="wb-categories">
+            <section class="wb-category" aria-labelledby="wb-category-casual">
+              <h3 class="wb-category-title" id="wb-category-casual">カジュアル</h3>
+              <ul class="wb-list">
+                <li class="wb-item is-active" data-index="0" data-desc="文章が何を決めているのかを考え、要求・要件・外部仕様・詳細設計に分類する。"><a href="design-layer-drill/"><span class="tag">設計・仕様整理</span><h3>設計の階層ドリル</h3></a></li>
+                <li class="wb-item" data-index="1" data-desc="4行の文章を並べ替えて、説明や文章の伝わる順番を身につける。"><a href="jyunban-drill/"><span class="tag">構成・順番</span><h3>順番のセンス</h3></a></li>
+                <li class="wb-item" data-index="2" data-desc="メモから必要な情報を集めて、並べて、つなぐ。散らかった頭の中を、図でととのえる。"><a href="organize-drill/"><span class="tag">整理・設計</span><h3>図で整理ドリル</h3></a></li>
+              </ul>
+            </section>
+            <section class="wb-category" aria-labelledby="wb-category-deep">
+              <h3 class="wb-category-title" id="wb-category-deep">じっくり</h3>
+              <ul class="wb-list">
+                <li class="wb-item" data-index="3" data-desc="文章の中にある「向き」や視点の違いを見つける。"><a href="shiten-drill"><span class="tag">読解・視点</span><h3>視点ドリル</h3></a></li>
+                <li class="wb-item" data-index="4" data-desc="文章を読み、情報を整理して「伝わる図」にする。"><a href="zukai-drill"><span class="tag">整理・図解</span><h3>図解ドリル</h3></a></li>
+              </ul>
+            </section>
+            <section class="wb-category" aria-labelledby="wb-category-thinking">
+              <h3 class="wb-category-title" id="wb-category-thinking">AI・思考</h3>
+              <ul class="wb-list">
+                <li class="wb-item" data-index="5" data-desc="AIが作った成果物を、そのまま受け取らずに読み、考え、レビューする。"><a href="learn-with-ai"><span class="tag">レビュー・AI</span><h3>AI時代のコードレビュー力試験</h3></a></li>
+                <li class="wb-item" data-index="6" data-desc="現象から原因を推測し、切り分けて考える。"><a href="think-lab-from-buggy-code"><span class="tag">論理・デバッグ</span><h3>ThinkLab from Buggy Code</h3></a></li>
+              </ul>
+            </section>
+            <section class="wb-category" aria-labelledby="wb-category-basics">
+              <h3 class="wb-category-title" id="wb-category-basics">基礎・社会人力</h3>
+              <ul class="wb-list">
+                <li class="wb-item" data-index="7" data-desc="IT現場のちょっと香ばしい文面を題材に、日本語を鍛える。"><a href="it-business-mail-typing"><span class="tag">日本語・実務</span><h3>香ばしビジメ ― 極タイピング</h3></a></li>
+                <li class="wb-item" data-index="8" data-desc="相手を観察し、伝え方や次の一手を考える。"><a href="commu-checker"><span class="tag">観察・コミュニケーション</span><h3>コミュ力診断</h3></a></li>
+              </ul>
+            </section>
+          </div>
+        </div>
+        <div class="wb-board-tools" aria-hidden="true">
+          <span class="wb-markers"><span class="wb-marker"></span><span class="wb-marker wb-marker-red"></span></span>
+          <span class="wb-eraser"></span>
+        </div>
+      </section>
 
-  <section class="wb-pickups" aria-labelledby="wb-pickups-title">
-    <div class="section-title"><h2 id="wb-pickups-title">Pick Up</h2></div>
-    <article class="wb-pickup" aria-labelledby="wb-report-title">
-      <video controls playsinline preload="none" poster="report-drill/assets/ogp.png" aria-label="確認して、回答します。の紹介動画">
-        <source src="report-drill/assets/promo.mp4" type="video/mp4">
-        <a href="report-drill/assets/promo.mp4">紹介動画を開く</a>
-      </video>
-      <div class="wb-pickup-body">
-        <span class="wb-pickup-label">Pick Up</span>
-        <h3 id="wb-report-title">確認して、回答します。</h3>
-        <p>退職した社員の名前が、PDFの透かしに。<br>手がかりを集め、顧客に報告する調査・報告アドベンチャー。</p>
-        <a class="wb-pickup-cta" href="report-drill/">ドリルをはじめる <span aria-hidden="true">→</span></a>
-      </div>
-    </article>
-    <a class="wb-pickup" href="design-block-drill/">
-      <img src="design-block-drill/assets/ogp.png" alt="設計ブロックドリルのプレビュー" loading="lazy" width="1732" height="908">
-      <div class="wb-pickup-body">
-        <span class="wb-pickup-label">Pick Up</span>
-        <h3>設計ブロックドリル</h3>
-        <p>つないで、動かして、設計を身につける。<br>ブロックを組み立て、テストで確かめるブラウザゲーム。</p>
-        <span class="wb-pickup-cta">ドリルをはじめる <span aria-hidden="true">→</span></span>
-      </div>
-    </a>
-  </section>
+      <section class="wb-pickups" aria-labelledby="wb-pickups-title">
+        <div class="section-title"><h2 id="wb-pickups-title">Pick Up</h2></div>
+        <article class="wb-pickup" aria-labelledby="wb-report-title">
+          <video controls playsinline preload="none" poster="report-drill/assets/ogp.png" aria-label="確認して、回答します。の紹介動画">
+            <source src="report-drill/assets/promo.mp4" type="video/mp4">
+            <a href="report-drill/assets/promo.mp4">紹介動画を開く</a>
+          </video>
+          <div class="wb-pickup-body">
+            <span class="wb-pickup-label">Pick Up</span>
+            <h3 id="wb-report-title">確認して、回答します。</h3>
+            <p>退職した社員の名前が、PDFの透かしに。<br>手がかりを集め、顧客に報告する調査・報告アドベンチャー。</p>
+            <a class="wb-pickup-cta" href="report-drill/">ドリルをはじめる <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+        <a class="wb-pickup" href="design-block-drill/">
+          <img src="design-block-drill/assets/ogp.png" alt="設計ブロックドリルのプレビュー" loading="lazy" width="1732" height="908">
+          <div class="wb-pickup-body">
+            <span class="wb-pickup-label">Pick Up</span>
+            <h3>設計ブロックドリル</h3>
+            <p>つないで、動かして、設計を身につける。<br>ブロックを組み立て、テストで確かめるブラウザゲーム。</p>
+            <span class="wb-pickup-cta">ドリルをはじめる <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </section>
 
-  <div class="paper-card reading-notebook" id="about">
-    <h2><small>WHY WORKBOOKS?</small><span class="type-target">教える人も、教わる人も。</span></h2>
-    <p class="fade">自分の仕事で手一杯。それでも、2年目・3年目になると後輩を見る。</p>
-    <p class="fade">先輩は片手間。後輩は指示待ち。<strong>「言われたことをやる。終わったら、また指示を待つ。」</strong>それだけでは、仕事の中に学びが残りにくい。</p>
-    <p class="fade">だから、教える側だけに「育成」を背負わせない。教わる側だけにも「勉強」を押しつけない。</p>
-    <div class="quote fade"><strong>同じ問題を、一緒に考える。</strong><br>新人は新人なりに考える。先輩は「なぜそう考えるのか」を言葉にする。そこに、教える・教わるだけではない学びが生まれます。</div>
+    </div>
   </div>
 
-  <section>
-    <div class="story">
-      <div class="story-main reading-notebook"><h2><span class="type-target">AIが来たから、<br>始めたわけではない。</span></h2><div class="line"></div><p>この問題集を作り始めた理由は、もっと前にあります。</p><p>仕事の中で「もう少し練習できたら」と思ったことを、気軽に試せる場所がほしかった。</p><p>AIがコードを書けるようになった今も、読む・考える・整理する・伝えることは、人間の仕事として残ります。</p></div>
-      <div class="story-side reading-notebook"><h3><span class="type-target">AIに聞く前に、ひと呼吸。</span></h3><p>「いい感じに」では「思った通り」にはなりません。相手がAIでも人でもやることは同じです。</p><div class="mini-list"><span>読む</span><span>考える</span><span>疑う</span><span>伝える</span></div></div>
+  <div class="scene scene-reading">
+    <div class="wrap scene-inner">
+      <div class="paper-card reading-notebook" id="about">
+        <h2><small>WHY WORKBOOKS?</small><span class="type-target">教える人も、教わる人も。</span></h2>
+        <p class="fade">自分の仕事で手一杯。それでも、2年目・3年目になると後輩を見る。</p>
+        <p class="fade">先輩は片手間。後輩は指示待ち。<strong>「言われたことをやる。終わったら、また指示を待つ。」</strong>それだけでは、仕事の中に学びが残りにくい。</p>
+        <p class="fade">だから、教える側だけに「育成」を背負わせない。教わる側だけにも「勉強」を押しつけない。</p>
+        <div class="quote fade"><strong>同じ問題を、一緒に考える。</strong><br>新人は新人なりに考える。先輩は「なぜそう考えるのか」を言葉にする。そこに、教える・教わるだけではない学びが生まれます。</div>
+      </div>
+
+      <section>
+        <div class="story">
+          <div class="story-main reading-notebook"><h2><span class="type-target">AIが来たから、<br>始めたわけではない。</span></h2><div class="line"></div><p>この問題集を作り始めた理由は、もっと前にあります。</p><p>仕事の中で「もう少し練習できたら」と思ったことを、気軽に試せる場所がほしかった。</p><p>AIがコードを書けるようになった今も、読む・考える・整理する・伝えることは、人間の仕事として残ります。</p></div>
+          <div class="story-side reading-notebook"><h3><span class="type-target">AIに聞く前に、ひと呼吸。</span></h3><p>「いい感じに」では「思った通り」にはなりません。相手がAIでも人でもやることは同じです。</p><div class="mini-list"><span>読む</span><span>考える</span><span>疑う</span><span>伝える</span></div></div>
+        </div>
+      </section>
+
     </div>
-  </section>
+  </div>
 
-  <section>
-    <div class="section-title"><h2><span class="type-target">使い方も、ゆるく。</span></h2><div class="number">TOGETHER</div></div>
-    <p class="section-intro fade">正解に価値はない。考えたり話したりするきっかけとして使ってください。</p>
-    <div class="use"><article><strong>一人で</strong><p>仕事の合間に、気になった問題を一つだけ。</p></article><article><strong>メンターと</strong><p>新人だけに解かせず、先輩も一緒に考えてみる。</p></article><article><strong>AIと</strong><p>先に答えを聞くのではなく、自分の考えと比べてみる。</p></article></div>
-  </section>
+  <div class="scene scene-finish">
+    <div class="wrap scene-inner">
+      <section>
+        <div class="section-title"><h2><span class="type-target">使い方も、ゆるく。</span></h2><div class="number">TOGETHER</div></div>
+        <p class="section-intro fade">正解に価値はない。考えたり話したりするきっかけとして使ってください。</p>
+        <div class="use"><article><strong>一人で</strong><p>仕事の合間に、気になった問題を一つだけ。</p></article><article><strong>メンターと</strong><p>新人だけに解かせず、先輩も一緒に考えてみる。</p></article><article><strong>AIと</strong><p>先に答えを聞くのではなく、自分の考えと比べてみる。</p></article></div>
+      </section>
 
-  <div class="closing">
-    <h2><span class="notebook-phrase">「勉強しなきゃ」</span><span class="notebook-phrase">ではなく、</span><br><span class="notebook-phrase">「ちょっとやってみよう」</span><span class="notebook-phrase">から。</span></h2>
-    <p>仕事の「ちょっとうまくいかない」を、まずは5分。</p>
-    <a class="button" href="#workbooks">はじめる</a>
+      <div class="closing">
+        <h2><span class="notebook-phrase">「勉強しなきゃ」</span><span class="notebook-phrase">ではなく、</span><br><span class="notebook-phrase">「ちょっとやってみよう」</span><span class="notebook-phrase">から。</span></h2>
+        <p>仕事の「ちょっとうまくいかない」を、まずは5分。</p>
+        <a class="button" href="#workbooks">はじめる</a>
+      </div>
+    </div>
   </div>
 </main>
 <footer>
