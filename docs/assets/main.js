@@ -155,6 +155,35 @@
     var current = 0;
     var autoTimer = null;
     var switchTimer = null;
+    var imageLoadVersion = 0;
+    var stopWaitingForImage = null;
+
+    function updateImageLoading(index) {
+      var version = ++imageLoadVersion;
+      if (stopWaitingForImage) stopWaitingForImage();
+      var img = slides[index].querySelector("img");
+      function finish() {
+        if (version !== imageLoadVersion) return;
+        track.classList.remove("is-loading");
+        track.setAttribute("aria-busy", "false");
+        resumeAuto();
+      }
+      if (img.complete) { finish(); return; }
+      track.classList.add("is-loading");
+      track.setAttribute("aria-busy", "true");
+      pauseAuto();
+      function loaded() {
+        stopWaitingForImage();
+        if (img.naturalWidth && img.decode) img.decode().then(finish, finish);
+        else finish();
+      }
+      stopWaitingForImage = function () {
+        img.removeEventListener("load", loaded);
+        img.removeEventListener("error", loaded);
+      };
+      img.addEventListener("load", loaded);
+      img.addEventListener("error", loaded);
+    }
 
     // Reserve the tallest program card at the current width, without truncating copy.
     function sizeDetail() {
@@ -226,6 +255,7 @@
           (channel.hasAttribute("data-wb-channel") ? "" : " / " + String(total).padStart(2, "0"));
       });
       updateDetail(current);
+      updateImageLoading(current);
     }
 
     function pauseAuto() {
@@ -235,7 +265,7 @@
       var interacting = interactionAreas.some(function (area) {
         return area && (area.matches(":hover") || area.contains(document.activeElement));
       });
-      if (!autoTimer && !motionQuery.matches && !interacting) {
+      if (!autoTimer && !motionQuery.matches && !interacting && !track.classList.contains("is-loading")) {
         autoTimer = window.setInterval(function () { goTo(current + 1); }, 4500);
       }
     }
