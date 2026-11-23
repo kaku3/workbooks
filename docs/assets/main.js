@@ -156,6 +156,39 @@
     var autoTimer = null;
     var switchTimer = null;
 
+    // Reserve the tallest program card at the current width, without truncating copy.
+    function sizeDetail() {
+      if (!detailBody) return;
+      var measure = detailBody.cloneNode(true);
+      measure.removeAttribute("href");
+      measure.setAttribute("aria-hidden", "true");
+      measure.setAttribute("tabindex", "-1");
+      measure.inert = true;
+      measure.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;min-height:0;width:" + detailBody.getBoundingClientRect().width + "px";
+      detailBody.parentNode.appendChild(measure);
+      var tallest = 0;
+      items.forEach(function (item) {
+        measure.querySelector("[data-wb-tag]").textContent = item.querySelector(".tag").textContent;
+        measure.querySelector("[data-wb-title]").textContent = item.querySelector("h3").textContent;
+        measure.querySelector("[data-wb-desc]").textContent = item.dataset.desc || "";
+        tallest = Math.max(tallest, measure.getBoundingClientRect().height);
+      });
+      measure.remove();
+      detailBody.style.minHeight = Math.ceil(tallest) + "px";
+    }
+
+    if (detailBody && "ResizeObserver" in window) {
+      var detailWidth = 0;
+      new ResizeObserver(function (entries) {
+        var width = entries[0].contentRect.width;
+        if (width !== detailWidth) { detailWidth = width; sizeDetail(); }
+      }).observe(detailBody);
+    } else {
+      window.addEventListener("resize", sizeDetail);
+    }
+    if (document.fonts) document.fonts.ready.then(sizeDetail);
+    sizeDetail();
+
     function updateDetail(index) {
       if (!detailBody) return;
       var item = items[index];
@@ -189,7 +222,8 @@
       });
       items.forEach(function (it, i) { it.classList.toggle("is-active", i === current); });
       channels.forEach(function (channel) {
-        channel.textContent = "CH " + String(current + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
+        channel.textContent = "CH " + String(current + 1).padStart(2, "0") +
+          (channel.hasAttribute("data-wb-channel") ? "" : " / " + String(total).padStart(2, "0"));
       });
       updateDetail(current);
     }

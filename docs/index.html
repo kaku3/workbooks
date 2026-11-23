@@ -23,7 +23,6 @@
         <div class="kicker">FOR ENGINEERS, MENTORS &amp; MENTEES</div>
         <h1>仕事をしながら、<br><em>一緒に育つ。</em></h1>
         <p class="lead">読む。考える。整理する。伝える。<br><strong>仕事の「ちょっとうまくいかない」を、<span class="lead-duration">5分から。</span></strong></p>
-        <a class="button hero-cta" href="#workbooks">教材を見つける</a>
       </div>
       <div class="wb-feature">
         <div class="wb-carousel" role="group" aria-roledescription="カルーセル" aria-label="教材紹介テレビ" tabindex="0">
@@ -61,11 +60,12 @@
         </div>
         <div class="wb-detail">
           <a class="wb-detail-body" data-wb-link href="design-layer-drill/">
-            <span class="wb-program-channel" data-wb-channel aria-label="番組のチャンネル">CH 01 / 09</span>
-            <span class="tag" data-wb-tag>設計・仕様整理</span>
+            <span class="wb-detail-meta">
+              <span class="wb-program-channel" data-wb-channel aria-label="番組のチャンネル">CH 01</span>
+              <span class="tag" data-wb-tag>設計・仕様整理</span>
+            </span>
             <h3 data-wb-title>設計の階層ドリル</h3>
             <p data-wb-desc>文章が何を決めているのかを考え、要求・要件・外部仕様・詳細設計に分類する。</p>
-            <span class="wb-detail-cta">教材を開く</span>
           </a>
         </div>
       </div>
@@ -74,30 +74,8 @@
 </header>
 <main class="wrap">
   <section id="workbooks" class="wb-board">
-    <span class="board-magnets" aria-hidden="true"></span>
-    <div class="section-title"><h2><span class="type-target">Workbooks</span></h2><div class="number">02 / TRY ONE</div></div>
+    <div class="section-title"><h2><span class="type-target">Workbooks</span></h2><div class="number">TRY ONE</div></div>
     <p class="section-intro fade">日常をちょっとよくする教養を。一人でも、先輩やAIと一緒でも。</p>
-    <article class="wb-pickup" aria-labelledby="wb-report-title">
-      <video controls playsinline preload="none" poster="report-drill/assets/ogp.png" aria-label="確認して、回答します。の紹介動画">
-        <source src="report-drill/assets/promo.mp4" type="video/mp4">
-        <a href="report-drill/assets/promo.mp4">紹介動画を開く</a>
-      </video>
-      <div class="wb-pickup-body">
-        <span class="wb-pickup-label">Pick Up</span>
-        <h3 id="wb-report-title">確認して、回答します。</h3>
-        <p>退職した社員の名前が、PDFの透かしに。<br>手がかりを集め、顧客に報告する調査・報告アドベンチャー。</p>
-        <a class="wb-pickup-cta" href="report-drill/">ドリルをはじめる <span aria-hidden="true">→</span></a>
-      </div>
-    </article>
-    <a class="wb-pickup" href="design-block-drill/">
-      <img src="design-block-drill/assets/ogp.png" alt="設計ブロックドリルのプレビュー" loading="lazy" width="1732" height="908">
-      <div class="wb-pickup-body">
-        <span class="wb-pickup-label">Pick Up</span>
-        <h3>設計ブロックドリル</h3>
-        <p>つないで、動かして、設計を身につける。<br>ブロックを組み立て、テストで確かめるブラウザゲーム。</p>
-        <span class="wb-pickup-cta">ドリルをはじめる <span aria-hidden="true">→</span></span>
-      </div>
-    </a>
     <div class="workbooks-wrap fade">
       <div class="wb-categories">
         <section class="wb-category" aria-labelledby="wb-category-casual">
@@ -131,6 +109,35 @@
         </section>
       </div>
     </div>
+    <div class="wb-board-tools" aria-hidden="true">
+      <span class="wb-markers"><span class="wb-marker"></span><span class="wb-marker wb-marker-red"></span></span>
+      <span class="wb-eraser"></span>
+    </div>
+  </section>
+
+  <section class="wb-pickups" aria-labelledby="wb-pickups-title">
+    <div class="section-title"><h2 id="wb-pickups-title">Pick Up</h2></div>
+    <article class="wb-pickup" aria-labelledby="wb-report-title">
+      <video controls playsinline preload="none" poster="report-drill/assets/ogp.png" aria-label="確認して、回答します。の紹介動画">
+        <source src="report-drill/assets/promo.mp4" type="video/mp4">
+        <a href="report-drill/assets/promo.mp4">紹介動画を開く</a>
+      </video>
+      <div class="wb-pickup-body">
+        <span class="wb-pickup-label">Pick Up</span>
+        <h3 id="wb-report-title">確認して、回答します。</h3>
+        <p>退職した社員の名前が、PDFの透かしに。<br>手がかりを集め、顧客に報告する調査・報告アドベンチャー。</p>
+        <a class="wb-pickup-cta" href="report-drill/">ドリルをはじめる <span aria-hidden="true">→</span></a>
+      </div>
+    </article>
+    <a class="wb-pickup" href="design-block-drill/">
+      <img src="design-block-drill/assets/ogp.png" alt="設計ブロックドリルのプレビュー" loading="lazy" width="1732" height="908">
+      <div class="wb-pickup-body">
+        <span class="wb-pickup-label">Pick Up</span>
+        <h3>設計ブロックドリル</h3>
+        <p>つないで、動かして、設計を身につける。<br>ブロックを組み立て、テストで確かめるブラウザゲーム。</p>
+        <span class="wb-pickup-cta">ドリルをはじめる <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
   </section>
 
   <div class="paper-card reading-notebook" id="about">
@@ -149,7 +156,7 @@
   </section>
 
   <section>
-    <div class="section-title"><h2><span class="type-target">使い方も、ゆるく。</span></h2><div class="number">03 / TOGETHER</div></div>
+    <div class="section-title"><h2><span class="type-target">使い方も、ゆるく。</span></h2><div class="number">TOGETHER</div></div>
     <p class="section-intro fade">正解に価値はない。考えたり話したりするきっかけとして使ってください。</p>
     <div class="use"><article><strong>一人で</strong><p>仕事の合間に、気になった問題を一つだけ。</p></article><article><strong>メンターと</strong><p>新人だけに解かせず、先輩も一緒に考えてみる。</p></article><article><strong>AIと</strong><p>先に答えを聞くのではなく、自分の考えと比べてみる。</p></article></div>
   </section>
@@ -157,7 +164,7 @@
   <div class="closing">
     <h2><span class="notebook-phrase">「勉強しなきゃ」</span><span class="notebook-phrase">ではなく、</span><br><span class="notebook-phrase">「ちょっとやってみよう」</span><span class="notebook-phrase">から。</span></h2>
     <p>仕事の「ちょっとうまくいかない」を、まずは5分。</p>
-    <a class="button" href="#workbooks">問題を探す ↓</a>
+    <a class="button" href="#workbooks">はじめる</a>
   </div>
 </main>
 <footer>
