@@ -139,6 +139,10 @@
     });
     var prevBtn = wrap.querySelector(".wb-nav.prev");
     var nextBtn = wrap.querySelector(".wb-nav.next");
+    var carousel = wrap.querySelector(".wb-carousel");
+    var track = wrap.querySelector(".wb-carousel-track");
+    var channel = wrap.querySelector(".wb-channel");
+    var motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     var detailBody = wrap.querySelector(".wb-detail-body");
     var detailTag = wrap.querySelector("[data-wb-tag]");
     var detailTitle = wrap.querySelector("[data-wb-title]");
@@ -149,30 +153,41 @@
 
     var current = 0;
     var autoTimer = null;
+    var switchTimer = null;
 
     function updateDetail(index) {
       if (!detailBody) return;
       var item = items[index];
-      var apply = function () {
-        detailTag.textContent = item.querySelector(".tag").textContent;
-        detailTitle.textContent = item.querySelector("h3").textContent;
-        detailDesc.textContent = item.dataset.desc || "";
-        detailLink.setAttribute("href", item.querySelector("a").getAttribute("href"));
-        detailBody.classList.remove("is-swapping");
-      };
-      if (reduceMotion) {
-        apply();
-      } else {
-        detailBody.classList.add("is-swapping");
-        window.setTimeout(apply, 160);
-      }
+      detailTag.textContent = item.querySelector(".tag").textContent;
+      detailTitle.textContent = item.querySelector("h3").textContent;
+      detailDesc.textContent = item.dataset.desc || "";
+      detailLink.setAttribute("href", item.querySelector("a").getAttribute("href"));
     }
 
     function goTo(index) {
-      current = (index + total) % total;
-      slides.forEach(function (s, i) { s.classList.toggle("is-active", i === current); });
-      dots.forEach(function (d, i) { d.classList.toggle("is-active", i === current); });
+      var next = (index + total) % total;
+      if (next !== current && !motionQuery.matches) {
+        window.clearTimeout(switchTimer);
+        track.classList.remove("is-tuning");
+        // Restart the short effect, including when controls are pressed rapidly.
+        void track.offsetWidth;
+        track.classList.add("is-tuning");
+        switchTimer = window.setTimeout(function () {
+          track.classList.remove("is-tuning");
+          switchTimer = null;
+        }, 200);
+      }
+      current = next;
+      slides.forEach(function (s, i) {
+        s.classList.toggle("is-active", i === current);
+        s.setAttribute("aria-hidden", String(i !== current));
+      });
+      dots.forEach(function (d, i) {
+        d.classList.toggle("is-active", i === current);
+        d.setAttribute("aria-current", String(i === current));
+      });
       items.forEach(function (it, i) { it.classList.toggle("is-active", i === current); });
+      channel.textContent = "CH " + String(current + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
       updateDetail(current);
     }
 
@@ -180,7 +195,7 @@
       if (autoTimer) { window.clearInterval(autoTimer); autoTimer = null; }
     }
     function resumeAuto() {
-      if (!autoTimer && !reduceMotion) {
+      if (!autoTimer && !motionQuery.matches && !wrap.matches(":hover") && !wrap.contains(document.activeElement)) {
         autoTimer = window.setInterval(function () { goTo(current + 1); }, 4500);
       }
     }
@@ -204,6 +219,42 @@
 
     wrap.addEventListener("mouseenter", pauseAuto);
     wrap.addEventListener("mouseleave", resumeAuto);
+    wrap.addEventListener("focusin", pauseAuto);
+    wrap.addEventListener("focusout", function (event) {
+      if (!wrap.contains(event.relatedTarget)) resumeAuto();
+    });
+
+    carousel.addEventListener("keydown", function (event) {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      goTo(current + (event.key === "ArrowLeft" ? -1 : 1));
+      restartAuto();
+    });
+
+    var swipeStart = null;
+    track.addEventListener("pointerdown", function (event) {
+      if (!event.isPrimary || event.pointerType === "mouse") return;
+      swipeStart = { x: event.clientX, y: event.clientY };
+      track.setPointerCapture(event.pointerId);
+      pauseAuto();
+    });
+    track.addEventListener("pointerup", function (event) {
+      if (!swipeStart) return;
+      var dx = event.clientX - swipeStart.x;
+      var dy = event.clientY - swipeStart.y;
+      swipeStart = null;
+      if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy)) {
+        goTo(current + (dx < 0 ? 1 : -1));
+      }
+      restartAuto();
+    });
+    track.addEventListener("pointercancel", function () { swipeStart = null; resumeAuto(); });
+
+    motionQuery.addEventListener("change", function () {
+      window.clearTimeout(switchTimer);
+      track.classList.remove("is-tuning");
+      restartAuto();
+    });
 
     goTo(0);
     resumeAuto();

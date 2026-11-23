@@ -63,7 +63,7 @@
     </a>
     <div class="workbooks-wrap fade">
       <div class="wb-feature">
-        <div class="wb-carousel">
+        <div class="wb-carousel" role="group" aria-roledescription="カルーセル" aria-label="教材紹介テレビ" tabindex="0">
           <div class="wb-carousel-track">
             <figure class="wb-slide wb-slide-contain is-active" data-index="0"><img src="design-layer-drill/assets/ogp.png" alt="設計の階層ドリル。要求・要件・外部仕様・詳細設計の4つの箱"></figure>
             <figure class="wb-slide wb-slide-contain" data-index="1"><img src="jyunban-drill/assets/ogp.png" alt="順番のセンスのイメージ"></figure>
@@ -75,18 +75,24 @@
             <figure class="wb-slide" data-index="7"><img src="assets/thumbnail-it-business-mail-typing.png" alt="香ばしビジメ ― 極タイピングのイメージ"></figure>
             <figure class="wb-slide" data-index="8"><img src="assets/thumbnail-commu-checker.png" alt="コミュ力診断のイメージ"></figure>
           </div>
-          <button type="button" class="wb-nav prev" aria-label="前のプレビュー">‹</button>
-          <button type="button" class="wb-nav next" aria-label="次のプレビュー">›</button>
-          <div class="wb-dots">
-            <button type="button" class="wb-dot is-active" data-index="0" aria-label="1件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="1" aria-label="2件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="2" aria-label="3件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="3" aria-label="4件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="4" aria-label="5件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="5" aria-label="6件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="6" aria-label="7件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="7" aria-label="8件目を表示"></button>
-            <button type="button" class="wb-dot" data-index="8" aria-label="9件目を表示"></button>
+          <div class="wb-tv-label">
+            <span class="wb-tv-brand">WORKBOOKS TV</span>
+            <output class="wb-channel" aria-label="現在のチャンネル" aria-live="off">CH 01 / 09</output>
+          </div>
+          <div class="wb-tv-controls">
+            <button type="button" class="wb-nav prev" aria-label="前のチャンネル">CH −</button>
+            <div class="wb-dots">
+              <button type="button" class="wb-dot is-active" data-index="0" aria-label="1件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="1" aria-label="2件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="2" aria-label="3件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="3" aria-label="4件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="4" aria-label="5件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="5" aria-label="6件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="6" aria-label="7件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="7" aria-label="8件目を表示"></button>
+              <button type="button" class="wb-dot" data-index="8" aria-label="9件目を表示"></button>
+            </div>
+            <button type="button" class="wb-nav next" aria-label="次のチャンネル">CH +</button>
           </div>
         </div>
         <div class="wb-detail">
@@ -144,7 +150,12 @@
     <div class="use"><article><strong>一人で</strong><p>仕事の合間に、気になった問題を一つだけ。</p></article><article><strong>メンターと</strong><p>新人だけに解かせず、先輩も一緒に考えてみる。</p></article><article><strong>AIと</strong><p>先に答えを聞くのではなく、自分の考えと比べてみる。</p></article></div>
   </section>
 
-  <div class="closing"><h2><span class="type-target">「勉強しなきゃ」ではなく、<br>「ちょっとやってみよう」から。</span></h2><p class="fade">仕事の「ちょっとうまくいかない」を、まずは5分。</p><a class="button fade" href="#workbooks">問題を探す ↓</a></div>
+  <div class="closing learning-notebook">
+    <span class="notebook-check" aria-hidden="true"></span>
+    <h2><span class="notebook-phrase">「勉強しなきゃ」</span><span class="notebook-phrase">ではなく、</span><br><span class="notebook-phrase">「ちょっとやってみよう」</span><span class="notebook-phrase">から。</span></h2>
+    <p>仕事の「ちょっとうまくいかない」を、まずは5分。</p>
+    <a class="button" href="#workbooks">問題を探す ↓</a>
+  </div>
 </main>
 <footer>
   <a href="https://github.com/kaku3/workbooks"><strong>Workbooks</strong><br>エンジニアのためのお仕事問題集</a>
