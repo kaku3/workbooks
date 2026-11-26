@@ -829,6 +829,7 @@
 .conversation-pagination .text-button{padding:3px 0;font-size:11px}
 .conversation-next{position:absolute;right:18px;bottom:14px;z-index:3;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #a8d6c65c;border-radius:50%;background:#172a33ed;color:var(--accent);font:28px var(--mono);box-shadow:0 3px 12px #0003}
 .conversation-next[hidden]{display:none}
+.conversation-next svg{display:block;width:24px;height:24px}
 .conversation-next:hover{background:#29453f;border-color:var(--accent)}
 .conversation>.conversation-window>.dialogue-text{padding-top:24px;padding-right:78px;padding-bottom:30px}
 .reporting .conversation-window>.meeting-dialogue{padding-top:20px;padding-right:66px;padding-bottom:20px}
@@ -920,3 +921,52 @@
 @media(prefers-reduced-motion:reduce){.operation-guide{animation:none}.guide-focus-effects{display:none}}
 .reduce-motion .operation-guide{animation:none}
 .reduce-motion .guide-focus-effects{display:none}
+/* Description stays expanded on desktop and starts collapsed on mobile. */
+.memo summary{list-style:none;pointer-events:none}
+.memo summary::-webkit-details-marker{display:none}
+.memo summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.memo .memo-content>h3{font-size:13px;line-height:1.7;margin-bottom:12px}
+.memo .memo-content>p{font-size:12px;color:#b1bdc9;line-height:2}
+.memo .memo-content>p+p{margin-top:12px}
+@media(max-width:1099px){.memo .memo-content>p{font-size:11px}}
+@media(max-width:699px){
+  .memo summary.eyebrow{pointer-events:auto;cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:0}
+  .memo summary::after{content:'+';font-size:16px;line-height:1}
+  .memo details[open]>summary{margin-bottom:8px}
+  .memo details[open]>summary::after{content:'−'}
+  .memo .memo-content>p{line-height:1.9}
+  .left-rail .memo,.left-rail .sidebar-coffee,.left-rail .left-bottom{display:none}
+}
+/* Keep the phone viewport bounded; wide content scrolls inside its own panel. */
+.conversation-window>.conversation-next{border-radius:50%;aspect-ratio:1}
+@media(max-width:699px){
+  html,body{max-width:100%;overflow-x:clip}
+  #app,.desktop,.work-area,.work-content,.casebar,.case-actions,.report-stage,.meeting-bottom{min-width:0;max-width:100%}
+  .desktop,.work-area{width:100%}
+  .casebar>div,.casebar .case-actions{min-width:0;width:100%;flex-wrap:wrap}
+  .casebar>div>strong{min-width:0;overflow-wrap:anywhere;flex:1}
+  .case-actions .browser-tabs button{white-space:normal}
+  .workspace-mode .brand{min-width:0;font-size:11px}
+  .case-actions .time-status{gap:7px}
+  .kanban{min-width:0;max-width:100%;grid-template-columns:minmax(0,1fr);grid-auto-rows:minmax(240px,auto);overflow-x:hidden;overflow-y:auto;align-items:start;scroll-snap-type:none}
+  .kanban-column{min-width:0;min-height:240px;max-height:clamp(240px,50svh,420px)}
+  .work-content.board-view{overflow:hidden}
+  .ticket-briefing{width:100%;min-width:0;padding:16px 12px 0}
+  .ticket-briefing-heading h1{font-size:22px;overflow-wrap:anywhere}
+  .ticket-overview{width:100%;overflow-x:hidden}
+  .ticket-overview table,.ticket-overview tbody{display:block;width:100%;min-width:0}
+  .ticket-overview thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .ticket-overview tbody tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;padding:12px;border-bottom:1px solid #344440}
+  .ticket-overview tbody tr>*{min-width:0;padding:0;border:0;white-space:normal;overflow-wrap:anywhere}
+  .ticket-overview tbody tr>td:first-child{grid-column:1;grid-row:1}
+  .ticket-overview tbody tr>td:first-child::before{content:'No. '}
+  .ticket-overview tbody tr>td:last-child{grid-column:2;grid-row:1;white-space:normal}
+  .ticket-overview tbody tr>th{grid-column:1/-1;grid-row:2;font-size:13px}
+  .ticket-overview tbody tr>td:nth-child(3){grid-column:1/-1;grid-row:3;font-size:11px}
+  .ticket-briefing>footer .primary{min-width:0;width:100%}
+  .conversation.with-portraits>.portrait-stage{padding:0;left:0;right:0;mask-image:linear-gradient(to bottom,#000 calc(100% - 24px),transparent)}
+  .conversation.with-portraits .portrait{position:absolute;bottom:0;left:var(--cast-x,50%);width:min(30vw,22svh);transform:translateX(-50%);transform-origin:bottom center;filter:brightness(.6) saturate(.6)}
+  .conversation.with-portraits .portrait.speaking{left:50%;width:min(66vw,36svh,calc((100dvh - 120px)/2.1));transform:translateX(-50%);z-index:10;filter:brightness(1) drop-shadow(0 0 4px #a8d6c630)}
+  .conversation-next::after{display:none}
+  .conversation-window>.conversation-next,.reporting .conversation-window>.conversation-next{width:40px;height:40px;min-width:40px;min-height:40px;border-radius:50%}
+}

@@ -102,7 +102,8 @@ try {
   assert.equal(await evaluate("document.querySelector('.conversation-next').hidden"),true,'next arrow stays hidden while text types');
   await click('.conversation-window');
   assert.equal(await evaluate("document.querySelector('.conversation-next').hidden"),false,'finishing the text reveals the floating next arrow');
-  assert.equal(await evaluate("document.querySelector('.conversation-next').textContent"),'>');
+  assert.ok(await evaluate("Boolean(document.querySelector('.conversation-next svg path'))"));
+  assert.equal(await evaluate("document.querySelector('.conversation-next').textContent.trim()"),'');
   assert.equal(await evaluate("document.querySelector('.conversation-pagination .conversation-label').textContent"),'依頼を受けた');
   assert.equal(await evaluate("document.querySelector('.conversation-head').children.length"),1,'the header contains only the right-aligned information');
   assert.ok(await evaluate("(()=>{const header=document.querySelector('.conversation-head').getBoundingClientRect(),frame=document.querySelector('.conversation-window').getBoundingClientRect();return header.left>frame.left+frame.width/2&&header.right<=frame.right;})()"),'header information stays on the right');
@@ -563,7 +564,8 @@ try {
   await waitFor("document.querySelectorAll('.portrait').length===4&&[...document.querySelectorAll('.portrait img')].every(image=>image.complete&&image.naturalWidth)");
   for(const [width,height,mobile] of [[1440,1000,false],[1280,720,false],[390,844,true]]){
     await size(width,height,mobile);
-    assert.equal(await evaluate("(()=>{const dialog=document.querySelector('dialog.conversation'),bounds=dialog.getBoundingClientRect();return dialog.scrollWidth<=dialog.clientWidth+1&&[...dialog.querySelectorAll('.portrait img')].every(image=>{const r=image.getBoundingClientRect();return r.left>=bounds.left&&r.right<=bounds.right;});})()"),true,`four portraits fit without horizontal scrolling at ${width}px`);
+    if(mobile)assert.ok(await evaluate("(()=>{const dialog=document.querySelector('dialog.conversation'),stage=dialog.querySelector('.portrait-stage'),speaker=stage.querySelector('.speaking').getBoundingClientRect(),bounds=stage.getBoundingClientRect();return dialog.scrollWidth<=dialog.clientWidth+1&&getComputedStyle(stage).overflowX==='hidden'&&Math.abs(speaker.left+speaker.width/2-bounds.left-bounds.width/2)<1;})()"),'the mobile speaker is centered while the supporting cast stays clipped to the stage');
+    else assert.equal(await evaluate("(()=>{const dialog=document.querySelector('dialog.conversation'),bounds=dialog.getBoundingClientRect();return dialog.scrollWidth<=dialog.clientWidth+1&&[...dialog.querySelectorAll('.portrait img')].every(image=>{const r=image.getBoundingClientRect();return r.left>=bounds.left&&r.right<=bounds.right;});})()"),true,`four portraits fit without horizontal scrolling at ${width}px`);
     await screenshot(`chapter3-four-portraits-${width}`);
   }
   await size(1440,1000);await settle();

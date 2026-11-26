@@ -41,6 +41,19 @@ preloadImages([...new Set(Object.values(portraitFiles))].flatMap(file=>[`./asset
 let starting=false;
 let sceneEffectRunning=false;
 let deployingTickets=false;
+const memoViewport=matchMedia('(max-width:699px)');
+let mobileMemoOpen=false;
+let portraitPositions=new Map();
+let portraitSceneKey=null;
+app.addEventListener('toggle',event=>{
+  if(!event.target.matches('.memo>details'))return;
+  if(memoViewport.matches)mobileMemoOpen=event.target.open;
+  else if(!event.target.open)event.target.open=true;
+},true);
+memoViewport.addEventListener('change',event=>{
+  const details=app.querySelector('.memo>details');
+  if(details)details.open=!event.matches||mobileMemoOpen;
+});
 const roomStyle = speaker => {
   const portrait=portraitFiles[names[speaker]];
   return portrait?`style="--meeting-room:url('./assets/${portrait.slice(0,2)}_room.png')"`:'';
@@ -320,7 +333,7 @@ function titlePage() {
 function hasContinueSave(){return Boolean(saved&&(saved.history.length||saved.done.length||saved.phase!=='desk'));}
 function stats() {
   const memo=(problem.requestMemoTitle?`<h3>${esc(problem.requestMemoTitle)}</h3>`:'')+problem.requestMemo.split('\n\n').map(text=>`<p>${esc(text)}</p>`).join('')+(problem.requestPurpose?`<p><strong>今回の目的</strong></p><p>${esc(problem.requestPurpose)}</p>`:'');
-  return `<section class="panel memo"><p class="eyebrow">DESCRIPTION</p>${memo}</section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識']].map(([key,label])=>{ const value = state.knowledge[key]; const max = problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
+  return `<section class="panel memo"><details ${!memoViewport.matches||mobileMemoOpen?'open':''}><summary class="eyebrow">DESCRIPTION</summary><div class="memo-content">${memo}</div></details></section><section class="panel knowledge"><div class="section-label">STATUS</div>${[['business','業務知識'],['system','システム知識']].map(([key,label])=>{ const value = state.knowledge[key]; const max = problem.knowledge[key].max; return `<div class="stat" data-stat="${key}"><div><span class="stat-label">${icon(key)}${label}</span><small>${value} / ${max}</small></div><div class="pips">${Array.from({length:max},(_,i)=>`<i class="${i<value?'filled':''}"></i>`).join('')}</div></div>`; }).join('')}</section>${state.memories.length ? `<section class="panel memories"><p class="eyebrow">DÉJÀ VU</p><h3>前日の調査メモ</h3>${state.memories.map(id=>`<p>${esc(problem.evidence.find(card=>card.id===id).title)}</p>`).join('')}<small>調べた手がかりは引き継いでいます。</small></section>` : ''}`;
 }
 function actionPlan(action) {
   const question = action.questionOptions?.filter(item=>engine.matches(item.unlock,state)).at(-1)?.id;
@@ -648,7 +661,7 @@ function conversationSpeaker(name,thought=false,modalTitle=false){
   return `<h2 class="conversation-speaker" ${modalTitle?'id="modal-title"':''}><strong>${esc(name)}</strong>${thought?'<span>（心の声）</span>':''}</h2>`;
 }
 function conversationNext(){
-  return button('scene-next','&gt;','conversation-next','aria-label="次へ" hidden');
+  return button('scene-next','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>','conversation-next','aria-label="次へ" hidden');
 }
 function sizeConversationText(target,text){
   target.dataset.fullDialogue=text;
@@ -740,12 +753,18 @@ function advanceMeetingConversation(skip){
 function showConversation() {
   if(showSceneEffect())return;
   const c=state.conversation, id=c.ids[c.scene], scene=scenario.scenes[id], line=scene.lines[c.line];
+  const sceneKey=`${state.loop}:${c.historyIndex}:${c.scene}:${id}`;
+  const previousCast=sceneKey===portraitSceneKey?portraitPositions:new Map();
+  portraitSceneKey=sceneKey;
   const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findLastIndex(item=>item.speaker==='client'));
   const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
-  const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map(speaker=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
+  const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map((speaker,index)=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}" data-speaker="${esc(speaker)}" style="--cast-x:${speakers.length===1?50:15+index*70/(speakers.length-1)}%"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
   openModal(`${conversationSpeaker(names[line.speaker],line.kind==='thought',true)}<div class="conversation-head">${conversationPagination(c,scene)}</div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p>${conversationNext()}`,action=>{
     if(action==='scene-next'&&!typed) { clearInterval(typeTimer); setDialogue(document.querySelector('#dialogue-text'),line.text); typed=true; syncConversationNext(); return; }
-    if(['scene-next','scene-skip'].includes(action)) { closeModal(); engine.advance(state,action==='scene-skip'); save(); render(); }
+    if(['scene-next','scene-skip'].includes(action)) {
+      portraitPositions=new Map([...modal.querySelectorAll('.portrait[data-speaker]')].map(portrait=>[portrait.dataset.speaker,portrait.getBoundingClientRect()]));
+      closeModal(); engine.advance(state,action==='scene-skip'); save(); render();
+    }
   },'conversation');
   const window = document.createElement('div');
   window.className = 'conversation-window';
@@ -758,6 +777,16 @@ function showConversation() {
   if (portraits) {
     modal.classList.add('with-portraits');
     window.insertAdjacentHTML('beforebegin',portraits);
+    if(!state.settings.reduced&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+      modal.querySelectorAll('.portrait').forEach(portrait=>{
+        const before=previousCast.get(portrait.dataset.speaker),after=portrait.getBoundingClientRect();
+        if(!before)portrait.animate([{opacity:0},{opacity:1}],{duration:360,easing:'ease-out'});
+        else if(memoViewport.matches&&after.width)portrait.animate([
+          {transform:`translateX(calc(-50% + ${before.left+before.width/2-after.left-after.width/2}px)) scale(${before.width/after.width})`},
+          {transform:'translateX(-50%) scale(1)'}
+        ],{duration:480,easing:'cubic-bezier(0.16,1,0.3,1)'});
+      });
+    }
   }
   const target=document.querySelector('#dialogue-text');
   sizeConversationText(target,line.text);

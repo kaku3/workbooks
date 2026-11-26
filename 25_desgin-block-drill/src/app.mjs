@@ -8,12 +8,18 @@ import { resolveStoryDrill, stages, chapterNames, chapterUnlocked, readProgress 
 import { installStoryUI, stageURL } from './story-ui.mjs';
 import { installDashboardAmbient } from './dashboard-ambient.mjs';
 import { installSharing } from './sharing.mjs';
+import { installCanvasGestures } from './canvas-gestures.mjs';
 const requestedDrill = new URLSearchParams(location.search).get('drill');
 const storyMode = new URLSearchParams(location.search).get('mode') === 'story';
 const titleMode = !requestedDrill && !storyMode;
 const drill = drills.find(d => d.id === (storyMode ? resolveStoryDrill(requestedDrill) : requestedDrill)) || drills[0];
 const { initialGraph, tests } = drill;
 const $ = s => document.querySelector(s);
+const gameOverlays = document.createElement('div');
+gameOverlays.className = 'game-overlays';
+($('#plicyGameRoot') || document.body).append(gameOverlays);
+gameOverlays.append($('#testDrawer'), $('#blockDrawer'));
+const canvasView = installCanvasGestures($('.canvas-viewport'), $('#canvas'), { canDragNode: () => drill.allowMove, onBlankTap: () => { clearCanvasSelection(); renderNodes(); drawEdges(); } });
 const el = (tag, text, className) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (className) e.className = className; return e; };
 const KEY = `design-block-drill.v2.${drill.id}`;
 let graph = clone(initialGraph), selected = initialGraph.nodes[0].id, test = tests[0] || null, run, timer, selectedToken = 0;
@@ -52,6 +58,7 @@ try {
 if (!drill.allowMove) graph.nodes.forEach(n => { const position = initialGraph.nodes.find(x => x.id === n.id); n.x = position.x; n.y = position.y; });
 function pause() { clearInterval(timer); timer = null; }
 function openBlock(mode = 'block') {
+  if (matchMedia('(max-width:800px)').matches && drawerOpen) setDrawer(false, false);
   $('#editor').hidden = mode !== 'block';
   $('#blockSelection').hidden = mode !== 'block';
   $('.state-panel').hidden = mode !== 'state';
@@ -67,6 +74,7 @@ function openBlock(mode = 'block') {
 // 旧レイアウトの保存データも、接続・カードを保ったまま画面内へ収める。
 if (graph.nodes.some(n => n.y > 500)) graph.nodes.forEach(n => { const layout = catalog.find(x => x.id === n.id); n.x = layout.x; n.y = layout.y; });
 function setDrawer(open, focus = true) {
+  if (open && matchMedia('(max-width:800px)').matches && $('#blockDrawer').classList.contains('open')) $('#closeBlockDrawer').click();
   drawerOpen = open;
   $('#testDrawer').classList.toggle('open', open);
   $('#testDrawer').inert = !open;
@@ -82,10 +90,21 @@ function openTestDrawerForExecution(focus = true) {
   setDrawer(true, focus);
 }
 function positionTestDrawer() {
-  const top = Math.max(12, $('.tests.panel').getBoundingClientRect().bottom + 8);
-  const bottom = drawerSize === 'max' ? innerHeight - 12 : Math.min(innerHeight - 12, $('.log-panel').getBoundingClientRect().top);
+  const visual = window.visualViewport;
+  const height = Math.min(innerHeight, visual?.height || innerHeight), available = Math.max(36, height - 24);
+  const offsetTop = visual?.offsetTop || 0;
+  Object.assign(gameOverlays.style, {
+    left: `${visual?.offsetLeft || 0}px`, top: `${offsetTop}px`,
+    width: `${Math.min(document.documentElement.clientWidth, visual?.width || innerWidth)}px`, height: `${height}px`
+  });
+  const mobile = matchMedia('(max-width:800px)').matches;
+  const minimum = Math.min(120, available);
+  const top = mobile ? 12 : Math.min(Math.max(12, $('.tests.panel').getBoundingClientRect().bottom - offsetTop + 8), Math.max(12, height - 12 - minimum));
+  const bottom = drawerSize === 'max' ? height - 12 : Math.max(top + minimum, Math.min(height - 12, $('.log-panel').getBoundingClientRect().top - offsetTop));
+  const panelHeight = mobile ? drawerSize === 'max' ? available : Math.min(available, Math.max(180, height * .5)) : bottom - top;
   $('#testDrawer').style.setProperty('--test-drawer-top', `${top}px`);
-  $('#testDrawer').style.setProperty('--test-drawer-height', `${Math.max(36, bottom - top)}px`);
+  $('#testDrawer').style.setProperty('--test-drawer-height', `${Math.min(available, Math.max(36, panelHeight))}px`);
+  $('#blockDrawer').style.setProperty('--editor-viewport-height', `${Math.min(420, available)}px`);
 }
 function minimizeTestDrawer(minimized) { setTestDrawerSize(minimized ? 'min' : 'fit'); }
 function setTestDrawerSize(size) {
@@ -100,8 +119,8 @@ function fitCanvas() {
   const width = Math.max(910, $('.canvas-viewport').clientWidth, ...graph.nodes.map(n => n.x + 200));
   $('#canvas').style.width = `${width}px`;
   const scale = Math.min(1, $('.canvas-viewport').clientWidth / width);
-  $('#canvas').style.transform = `scale(${scale})`;
   $('.canvas-viewport').style.height = `${Math.max(420, 560 * scale + 40)}px`;
+  canvasView.fit(scale);
   fitEditorHeight();
   drawEdges();
 }
@@ -215,14 +234,28 @@ function renderNodes() {
       } else { selectedNodes.clear(); selected = n.id; openBlock(); scrollToBlockLog(n.id); }
       save(); renderNodes(); drawEdges(); renderEditor();
     };
-    const cancelDrag = e => { if (!drag || e.pointerId !== drag.pointerId) return; releaseDrag(); save(); drawEdges(); };
+    const cancelDrag = e => {
+      if (!drag || e.pointerId !== drag.pointerId) return;
+      const origins = drag.positions.length ? drag.positions : [{ id: n.id, x: drag.left, y: drag.top }];
+      for (const origin of origins) Object.assign(graph.nodes.find(node => node.id === origin.id), { x: origin.x, y: origin.y });
+      releaseDrag(); save(); renderNodes(); drawEdges(); renderTokens();
+    };
     return box;
   }));
 }
 function name(id) { return id === 'END' ? '(完了)' : graph.nodes.find(n => n.id === id)?.label || '(未設定)'; }
+function clearCanvasSelection() {
+  selected = null; selectedNodes.clear(); pendingRoutes = {}; routePreview = null;
+  $('.canvas-stage').classList.remove('block-panel-open');
+  $('#blockDrawer').classList.remove('open'); $('#blockDrawer').inert = true;
+  $('#blockDrawer').setAttribute('aria-hidden', 'true');
+  if ($('#operationFloatingHelp')) $('#operationFloatingHelp').hidden = true;
+  $('#logs').querySelectorAll('.selected-block-log').forEach(card => card.classList.remove('selected-block-log'));
+  fitCanvas();
+}
 // Drag empty canvas space to select intersecting blocks in canvas coordinates.
 $('.canvas-viewport').addEventListener('pointerdown', event => {
-  if (titleMode || event.button !== 0 || event.target.closest('.node,.token,button')) return;
+  if (titleMode || event.pointerType === 'touch' || event.button !== 0 || event.target.closest('.node,.token,button')) return;
   event.preventDefault(); pause();
   const canvas = $('#canvas'), previous = new Set(selectedNodes);
   const point = e => { const r = canvas.getBoundingClientRect(), scale = r.width / canvasWidth(); return { x: (e.clientX - r.left) / scale, y: (e.clientY - r.top) / scale }; };
@@ -250,13 +283,7 @@ $('.canvas-viewport').addEventListener('pointerdown', event => {
     if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
     marquee.remove();
     if (e.type !== 'pointercancel' && !dragged) {
-      selected = null; selectedNodes.clear(); pendingRoutes = {}; routePreview = null;
-      $('.canvas-stage').classList.remove('block-panel-open');
-      $('#blockDrawer').classList.remove('open'); $('#blockDrawer').inert = true;
-      $('#blockDrawer').setAttribute('aria-hidden', 'true');
-      if ($('#operationFloatingHelp')) $('#operationFloatingHelp').hidden = true;
-      $('#logs').querySelectorAll('.selected-block-log').forEach(card => card.classList.remove('selected-block-log'));
-      fitCanvas();
+      clearCanvasSelection();
     }
     renderNodes(); drawEdges();
   };
@@ -757,10 +784,19 @@ $('#caseFilters').addEventListener('click', event => {
   $('#caseFilters').querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
   renderCases();
 });
+let caseScrollbarTimer;
+$('#cases').addEventListener('scroll', () => {
+  const cases = $('#cases');
+  cases.classList.add('is-scrolling');
+  clearTimeout(caseScrollbarTimer);
+  caseScrollbarTimer = setTimeout(() => cases.classList.remove('is-scrolling'), 600);
+}, { passive: true });
 new ResizeObserver(fitCanvas).observe($('.canvas-viewport'));
 new ResizeObserver(fitEditorHeight).observe($('#blockPalette'));
 new ResizeObserver(positionTestDrawer).observe($('.tests.panel'));
 window.addEventListener('resize', positionTestDrawer);
+window.visualViewport?.addEventListener('resize', positionTestDrawer);
+window.visualViewport?.addEventListener('scroll', positionTestDrawer);
 window.addEventListener('scroll', positionTestDrawer, { passive: true });
 $('#drillSummary').textContent = drill.summary;
 $('#assignmentIntro').textContent = drill.chapter === 3 ? '社内ポータルの認証・セッション・管理機能を扱います。照合結果と時刻は入力で与えられるシミュレーションです。' : drill.chapter === 2 ? '上長承認後に経理確認を行い、振り込むシステムです。' : '在庫引当後に決済、決済後に出荷するシステムです。';
@@ -784,6 +820,7 @@ if (storyMode && requestedDrill && requestedDrill !== drill.id) $('#drillNotice'
 reset(); renderEditor();
 renderPalette();
 setDrawer(!titleMode && !!test, false); fitCanvas();
+if (!titleMode && matchMedia('(max-width:800px)').matches) setTestDrawerSize('min');
 const storyUI = installStoryUI(drills, drill, storyMode, titleMode);
 
 // Title demos use fresh graphs only; they never save designs or story progress.
@@ -877,6 +914,7 @@ function showAssignment() {
     typeAssignment();
     assignmentDialog.showModal();
     assignmentDialog.scrollTop = 0;
+    assignmentDialog.querySelector('.assignment').scrollTop = 0;
   }
   if (!storyMode && !titleMode) {
     try { localStorage.setItem(assignmentSeenKey, '1'); }

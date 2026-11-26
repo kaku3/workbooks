@@ -61,18 +61,28 @@ header{background:linear-gradient(100deg,#241e38ed,#151d30bd);border-bottom-colo
 #nodes .node-action::before{font-size:9px;margin-right:7px}
 
 .header-drill{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;min-width:0}.header-drill select{max-width:340px;width:100%}
-#assignmentDialog{width:min(860px,calc(100vw - 32px));max-height:85vh;padding:0;border:1px solid #c59ae780;border-radius:8px;background:#221d35;color:#dcebf5;box-shadow:0 15px 70px #0008}
+html:has(#assignmentDialog[open]),body:has(#assignmentDialog[open]){max-width:100%;overflow:hidden;overscroll-behavior:none}
+#assignmentDialog{box-sizing:border-box;inset:0;margin:auto;width:min(860px,calc(100vw - 24px));max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);padding:0;border:1px solid #c59ae780;border-radius:8px;background:#221d35;color:#dcebf5;box-shadow:0 15px 70px #0008;overflow:hidden;overscroll-behavior:contain}
 #assignmentDialog::backdrop{background:#080b19aa;backdrop-filter:blur(4px)}
-#assignmentDialog .assignment{margin:0;padding:26px 30px;border:0;background:transparent}
+#assignmentDialog .assignment{box-sizing:border-box;width:100%;min-width:0;max-width:100%;max-height:calc(100dvh - 26px);margin:0;padding:26px 30px;border:0;background:transparent;overflow-x:hidden;overflow-y:auto;overflow-wrap:anywhere;overscroll-behavior:contain}
 #assignmentDialog .assignment h2{display:flex;align-items:center;gap:10px;font-size:24px;color:#d8b9ff}
 #assignmentDialog .assignment h2::before{content:'';flex:none;width:24px;height:24px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Cpath d='M3 9h18M9 9v12M13 13h4M13 17h4'/%3E%3C/svg%3E") center/contain no-repeat}
-#assignmentDialog .assignment p,#assignmentDialog .assignment li{font-size:17px;line-height:1.9}
+#assignmentDialog .assignment p,#assignmentDialog .assignment li{min-width:0;max-width:100%;font-size:17px;line-height:1.9;white-space:normal;overflow-wrap:anywhere}
 #assignmentDialog #assignmentRules{margin:20px 0;padding:14px 18px 14px 38px;border:1px solid #c59ae72e;border-radius:8px;background:#302940}
 #assignmentDialog #assignmentRules li{padding:4px 0 4px 3px}
 #assignmentDialog #assignmentRules li::marker{color:#d8b9ff}
 #assignmentDialog .assignment .rule{font-size:15px}
 .assignment-readable{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .assignment-letter{visibility:hidden}
+@media(max-width:699px){
+  #assignmentDialog{width:calc(100vw - 24px);max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:hidden}
+  #assignmentDialog .assignment{min-width:0;max-width:100%;padding:18px 16px;overflow-wrap:anywhere}
+  #assignmentDialog .assignment h2{font-size:20px}
+  #assignmentDialog .assignment p,#assignmentDialog .assignment li{font-size:14px;line-height:1.8}
+  #assignmentDialog #assignmentRules{padding:10px 12px 10px 26px;margin:14px 0}
+  #assignmentDialog .assignment .rule{font-size:12px}
+  #assignmentDialog .assignment-actions button{min-width:0;max-width:100%;font-size:14px;padding:10px 18px}
+}
 #assignmentDialog #assignmentRules li.assignment-pending::marker{color:transparent}
 .assignment-actions{display:flex;justify-content:center;margin-top:24px}
 .assignment-actions button{min-width:180px;padding:12px 28px;font-size:16px}
@@ -351,9 +361,52 @@ body:not(.fixed-blocks) #canvas{touch-action:none}
 /* On narrow screens, edit blocks over the execution log. */
 @media(max-width:800px){
   .canvas-stage .block-drawer.inspector{
-    position:absolute;left:0;right:0;top:var(--canvas-log-top);bottom:auto;
-    width:100%;height:min(420px,65dvh);max-height:none;z-index:7;
+    position:fixed;left:12px;right:12px;top:auto;bottom:12px;
+    width:calc(100% - 24px);height:var(--editor-viewport-height,min(420px,calc(100dvh - 24px)));max-height:calc(100dvh - 24px);z-index:40;
     border:1px solid #a596cb66;border-radius:8px;
     box-shadow:0 8px 24px #0005;
   }
+  .test-drawer{position:fixed;top:auto;right:12px;bottom:12px;left:auto;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);height:var(--test-drawer-height,50dvh);z-index:30}
+  .test-drawer.minimized{top:auto;right:auto;bottom:12px;left:12px;height:auto}
+  .test-drawer .drawer-heading{min-width:0;flex-wrap:wrap}
+  .test-drawer .drawer-heading>div:first-child{min-width:0;flex:1}
+  .test-drawer .drawer-heading h2{overflow-wrap:anywhere}
+  .test-drawer .drawer-body{overflow-y:auto;touch-action:pan-y}
+}
+.canvas-navigation{position:absolute;right:10px;bottom:10px;z-index:8;display:flex;gap:4px;padding:4px;border:1px solid #a596cb66;border-radius:7px;background:#172c40ed;touch-action:manipulation}
+.canvas-navigation button{min-width:34px;min-height:34px;padding:3px 8px;font-size:14px}
+.canvas-viewport{cursor:grab}
+.canvas-viewport:active{cursor:grabbing}
+/* Panels float above the game and never reserve canvas or control width. */
+.canvas-stage.block-panel-open .canvas-viewport{width:auto;margin-left:0;margin-right:0}
+.canvas-stage.block-panel-open .toolbar{left:10px;max-width:calc(100% - 20px)}
+.canvas-stage.block-panel-open>.block-palette,.canvas-stage.block-panel-open .log-panel{margin-left:0}
+.game-overlays{position:fixed;top:0;left:0;right:auto;bottom:auto;width:100%;height:100dvh;z-index:30;overflow:hidden;pointer-events:none}
+.game-overlays>.test-drawer{position:absolute;left:auto;right:12px;top:var(--test-drawer-top,12px);bottom:auto;width:min(560px,calc(100% - 24px));max-width:calc(100% - 24px);max-height:calc(100% - 24px);margin:0;pointer-events:auto}
+.game-overlays>.block-drawer.inspector{position:absolute;left:auto;right:12px;top:auto;bottom:12px;display:block;width:min(360px,calc(100% - 24px));height:min(420px,calc(100% - 24px));max-height:calc(100% - 24px);margin:0;border:1px solid #a596cb66;border-radius:8px;overflow:hidden;pointer-events:auto;z-index:40;transform:translateX(calc(100% + 24px))}
+.game-overlays>.block-drawer.inspector.open{transform:none}
+@media(max-width:800px){
+  .game-overlays>.test-drawer{top:auto;bottom:12px}
+  .game-overlays>.test-drawer.minimized{left:12px;right:auto;width:max-content;height:auto}
+  .game-overlays>.block-drawer.inspector{width:calc(100% - 24px)}
+}
+/* Keep the test strip compact, with a scrollbar that never covers the cards. */
+.workspace>.tests.panel{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:4px 8px;height:auto;max-height:none;padding:6px 10px}
+.workspace>.tests .section-title{display:contents}
+.workspace>.tests .section-title h2{grid-column:1;grid-row:1;margin:0;font-size:11px;white-space:nowrap}
+.workspace>.tests #batch{grid-column:2;grid-row:1;align-self:center;width:auto;margin:0;padding:6px 8px;font-size:11px;white-space:nowrap}
+.workspace>.tests #cases{grid-column:3;grid-row:1;align-self:center;display:flex;flex-flow:row nowrap;align-items:stretch;gap:8px;width:100%;min-width:0;min-height:0;max-height:none;margin:0;padding:3px 2px 5px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-gutter:auto;scrollbar-color:transparent transparent}
+.workspace>.tests .case-filters{grid-column:4;grid-row:1;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:4px;margin:0}
+.workspace>.tests .case-filters button{padding:3px 5px;font-size:10px}
+.workspace>.tests #cases::-webkit-scrollbar{height:5px;background:transparent}
+.workspace>.tests #cases::-webkit-scrollbar-track{background:transparent}
+.workspace>.tests #cases::-webkit-scrollbar-thumb{background:transparent;border-radius:5px}
+.workspace>.tests #cases.is-scrolling{scrollbar-color:#8bb6caaa transparent}
+.workspace>.tests #cases.is-scrolling::-webkit-scrollbar-thumb{background:#8bb6caaa}
+@media(max-width:800px){
+  .workspace>.tests.panel{grid-template-columns:auto minmax(0,1fr)}
+  .workspace>.tests .section-title h2{grid-column:1;grid-row:1;font-size:10px}
+  .workspace>.tests #batch{grid-column:1;grid-row:2}
+  .workspace>.tests #cases{grid-column:2;grid-row:2}
+  .workspace>.tests .case-filters{grid-column:2;grid-row:1;justify-self:end}
 }

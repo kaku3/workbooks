@@ -1,5 +1,5 @@
 import { scenes, sceneVersions } from './story-data.mjs';
-import { typeDialogue } from './typewriter.mjs';
+import { typeDialogue, dialogueParts } from './typewriter.mjs';
 import { stages, chapterNames, readProgress, saveProgress, startStory, chapterUnlocked, completeStage } from './story.mjs';
 const element = (tag, text, className) => { const e = document.createElement(tag); if (text) e.textContent = text; if (className) e.className = className; return e; };
 const names = { player: 'あなた', sales: '営業・折原', lead: '先輩・真壁', client: '担当・佐伯', accountant: '経理・三田' };
@@ -66,6 +66,18 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     const eventId = `${key}.v${sceneVersions[key] || 1}`, lines = extraLines || scenes[key];
     if (!lines?.length || (!force && readProgress().seenEvents.includes(eventId))) { done(); return; }
     const dialog = document.querySelector('#storyDialog'); let index = 0, writer; active = true;
+    const text = document.querySelector('#storyText');
+    const sizeText = () => {
+      const shown = [...text.childNodes];
+      text.replaceChildren(...dialogueParts(lines[index].text).map(part => {
+        if (!part.strong) return document.createTextNode(part.text);
+        return element('strong', part.text);
+      }));
+      text.style.height = 'auto';
+      text.style.height = `${text.getBoundingClientRect().height}px`;
+      text.replaceChildren(...shown);
+    };
+    window.addEventListener('resize', sizeText);
     const imagesReady = Promise.all([...new Set(lines.map(line => line.speaker))].filter(id => portraits[id]).map(id => preparePortrait(id).ready));
     // A missing or stalled asset must not prevent the conversation from opening.
     let loadingTimeout;
@@ -78,10 +90,6 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
       if (!speakerIds.includes(id) || participants.includes(id)) return;
       participants.push(id);
       cast.style.setProperty('--cast-count', String(participants.length));
-      const totalWidth = participants.reduce((sum, id) => sum + portraits[id].width, 0);
-      cast.style.gridTemplateColumns = participants.map(id => `minmax(0,${portraits[id].width}fr)`).join(' ');
-      const castHeight = participants.length > 1 ? 480 : 640;
-      cast.style.width = `min(80%, ${totalWidth * castHeight / 1536}px, ${totalWidth * 64 / 1536}vh)`;
       const portrait = preparePortrait(id).image; portrait.className = 'story-portrait'; portrait.dataset.speaker = id;
       const { width } = portraits[id];
       portrait.alt = names[id]; portrait.width = width; portrait.height = 1536;
@@ -90,26 +98,47 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     }
     const finish = () => {
       writer?.destroy();
+      window.removeEventListener('resize', sizeText);
       const saved = readProgress(); if (!saved.seenEvents.includes(eventId)) saved.seenEvents.push(eventId);
       if (key === `${stage.id}.clear`) saved.pendingClear = null;
       if (key === 'palette') saved.seenEvents.push('palette.v1'); saveProgress(saved);
       active = false; dialog.close(); done();
     };
     const render = () => {
+      const previousCast=new Map([...cast.querySelectorAll('.story-portrait')].map(portrait=>[portrait.dataset.speaker,portrait.getBoundingClientRect()]));
+      cast.querySelectorAll('.story-portrait').forEach(portrait=>portrait.getAnimations().forEach(animation=>animation.cancel()));
       writer?.destroy(); const line = lines[index], button = document.querySelector('#storyAdvance');
       document.querySelector('#storySpeaker').textContent = names[line.speaker] || line.speaker;
       revealSpeaker(line.speaker);
-      cast.querySelectorAll('.story-portrait').forEach(portrait => {
+      cast.querySelectorAll('.story-portrait').forEach((portrait,position) => {
+        portrait.style.setProperty('--cast-x',`${participants.length===1?50:15+position*70/(participants.length-1)}%`);
         const speaking = portrait.dataset.speaker === line.speaker;
         portrait.classList.toggle('speaking', speaking);
         if (speaking) portrait.id = 'storyPortrait'; else portrait.removeAttribute('id');
       });
+      if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+        cast.querySelectorAll('.story-portrait').forEach(portrait=>{
+          const before=previousCast.get(portrait.dataset.speaker),after=portrait.getBoundingClientRect();
+          if(!before)portrait.animate([{opacity:0},{opacity:1}],{duration:360,easing:'ease-out'});
+          else if(matchMedia('(max-width:699px)').matches&&after.width)portrait.animate([
+            {transform:`translateX(calc(-50% + ${before.left+before.width/2-after.left-after.width/2}px)) scale(${before.width/after.width})`},
+            {transform:'translateX(-50%) scale(1)'}
+          ],{duration:480,easing:'cubic-bezier(0.16,1,0.3,1)'});
+        });
+      }
       document.querySelector('#storyPage').textContent = `${index + 1} / ${lines.length}`;
-      button.textContent = '全文表示';
-      writer = typeDialogue(document.querySelector('#storyText'), line.text, { onComplete: () => { button.textContent = index + 1 === lines.length ? '閉じる' : '次へ'; } });
+      button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>';
+      button.setAttribute('aria-label', index + 1 === lines.length ? '会話を閉じる' : '次へ');
+      sizeText();
+      writer = typeDialogue(text, line.text);
     };
     document.querySelector('#storyAdvance').onclick = () => { if (writer?.typing) { writer.finish(); return; } if (index + 1 < lines.length) { index++; render(); } else finish(); };
-    document.querySelector('#storySkip').onclick = finish; dialog.oncancel = e => { e.preventDefault(); finish(); }; render(); dialog.showModal();
+    dialog.onclick = event => {
+      if (event.target.closest('button')) return;
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX >= bounds.left && event.clientX <= bounds.right && event.clientY >= bounds.top && event.clientY <= bounds.bottom || event.target !== dialog) document.querySelector('#storyAdvance').click();
+    };
+    document.querySelector('#storySkip').onclick = finish; dialog.oncancel = e => { e.preventDefault(); finish(); }; dialog.showModal(); render();
   }
   function tutorial() {
     if (drill.chapter === 2 && !readProgress().seenEvents.includes('palette.v1')) dialogue('palette', false, showNext, [{ speaker: 'lead', text: 'パレットの部品を盤面へドラッグして配置できます。「配置」ボタンでも追加できます。配置後はブロックを選び、接続を設定してください。' }]);
