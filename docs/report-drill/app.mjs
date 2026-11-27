@@ -100,8 +100,10 @@ let muteInterruptTimer;
 const operationGuide=createOperationGuide({storage:chapterStorage,context:()=>{
   const desk=page==='game'&&state?.phase==='desk'&&mobilePanel==='desk'&&deckSize!=='large';
   const cards=[...document.querySelectorAll('.action-card[data-card-id]')];
+  const taskPopup=modal.open&&modal.classList.contains('task-detail');
   return {
-    blocked:starting||sceneEffectRunning||deployingTickets||modal.open||page!=='game'||!['desk','report'].includes(state?.phase)||awaitingClues.size>0||Boolean(document.querySelector('.clue-acquisition-layer,.cost-effect-layer')),
+    blocked:starting||sceneEffectRunning||deployingTickets||(modal.open&&!taskPopup)||page!=='game'||!['desk','report'].includes(state?.phase)||awaitingClues.size>0||Boolean(document.querySelector('.clue-acquisition-layer,.cost-effect-layer')),
+    taskDoneButton:taskPopup?modal.querySelector('[data-action="task-status:done"]'):null,
     desk,report:page==='game'&&state?.phase==='report',meeting,
     reportRejected:Number.isInteger(state?.history.at(-1)?.report?.level)&&state.history.at(-1).report.level<3,
     clueCount:state?.evidence.length||0,selected:state?.selected.length||0,
@@ -182,9 +184,11 @@ function reactInMeeting(accepted=false,level=null){
   meetingLater(()=>{if(meeting?.reactionAt===started){meeting.reaction=false;meeting.acceptedReaction=false;render();}},1800);
 }
 function typeReportRequest() {
-  const target=document.querySelector('.report-request-text');
-  if(!target||state.phase!=='report'||meeting&&['lobby','connecting','video'].includes(meeting.phase))return;
+  const request=document.querySelector('.report-request');
+  if(!request?.querySelector('.report-request-text')||state.phase!=='report'||meeting&&['lobby','connecting','video'].includes(meeting.phase))return;
   const text=problem.questions[state.question].prompt;
+  sizeConversationText(request,text);
+  const target=request.querySelector('.report-request-text');
   const key=`${state.loop}:${state.history.length}:${text}`;
   if(reportTextProgress?.key!==key)reportTextProgress={key,index:0};
   const textLength=dialogueLength(text);
@@ -722,8 +726,20 @@ function conversationNext(){
 }
 function sizeConversationText(target,text){
   target.dataset.fullDialogue=text;
-  if(target.classList.contains('meeting-dialogue')){target.style.height='';return;}
-  const shown=target.innerHTML;
+  const shown=[...target.childNodes];
+  if(target.matches('.meeting-dialogue,.report-request')){
+    const area=target.closest('.reporting');
+    area.style.removeProperty('--report-message-height');
+    const base=parseFloat(getComputedStyle(area).getPropertyValue('--report-message-height'));
+    const flex=target.style.flex;
+    target.style.flex='none';target.style.height='auto';
+    setDialogue(target,text);
+    const css=getComputedStyle(target),height=Math.max(target.getBoundingClientRect().height,target.scrollHeight);
+    const lines=(height-parseFloat(css.paddingTop)-parseFloat(css.paddingBottom))/parseFloat(css.lineHeight);
+    target.style.flex=flex;target.style.height='';
+    if(lines<=4.5)area.style.setProperty('--report-message-height',`${Math.max(base,Math.ceil(height)+3)}px`);
+    target.replaceChildren(...shown);return;
+  }
   target.style.height='auto';
   setDialogue(target,text);
   // Include painted inline content and round up: enlarged text can extend a
@@ -731,7 +747,7 @@ function sizeConversationText(target,text){
   const height=Math.ceil(Math.max(target.getBoundingClientRect().height,target.scrollHeight))+1;
   target.style.height=`${height}px`;
   target.parentElement.style.setProperty('--dialogue-height',`${height+2}px`);
-  target.innerHTML=shown;
+  target.replaceChildren(...shown);
 }
 function positionConversationNext(){
   const target=document.querySelector('#dialogue-text'),next=target?.parentElement.querySelector('.conversation-next');
@@ -846,26 +862,47 @@ function showConversation() {
   else { let n=0; typeTimer=setInterval(()=>{ setDialogue(target,line.text,++n); if(n>=dialogueLength(line.text)){clearInterval(typeTimer);typed=true;syncConversationNext();} },20); }
   syncConversationNext();
 }
+function refreshConversationSize(){
+  const target=document.querySelector('#dialogue-text,.report-request[data-full-dialogue]');
+  if(target?.dataset.fullDialogue){sizeConversationText(target,target.dataset.fullDialogue);positionConversationNext();}
+}
+document.fonts?.addEventListener('loadingdone',refreshConversationSize);
 window.addEventListener('resize',()=>{
   positionMobileMeeting();
   positionKnowledge();
   positionConversationTasks();
-  const target=document.querySelector('#dialogue-text');
-  if(target?.dataset.fullDialogue){sizeConversationText(target,target.dataset.fullDialogue);positionConversationNext();}
+  refreshConversationSize();
 });
 function confirmAction(title, description, execute, label='実行する') {
   openModal(`<p class="eyebrow">CONFIRM</p><h2 id="modal-title">${esc(title)}</h2><p class="confirm-description">${esc(description)}</p><div class="modal-buttons">${button('cancel','戻る','secondary')}${button('confirm',esc(label),'primary')}</div>`,action=>{if(action==='cancel')closeModal();if(action==='confirm'){closeModal();execute();}});
 }
-function beginInvestigation(id) {
+function taskDetails(id){
+  const action=problem.investigations.find(item=>item.id===id);
+  if(!action||state.phase!=='desk')return;
+  const current=engine.cardStatus(state,id);
+  const entries=state.history.map((item,index)=>({item,index})).filter(({item})=>item.ids.length&&(item.label===action.title||item.label.startsWith(`${action.title} ·`))).reverse();
+  const logs=entries.map(({item,index},order)=>`<article class="message bot-message"><span class="avatar bot-avatar" aria-label="chatbot">${icon('robot')}</span><div class="message-content"><div class="bot-byline"><strong>chatbot</strong><time>${item.day||1}日目 ${clock(item.time)}</time><span>APP</span></div>${historyEntry(item,index).replace('<details class="history-entry"',`<details ${order===0?'open':''} class="history-entry"`)}</div></article>`).join('');
+  openModal(`<div class="task-status-toolbar"><div class="task-status-buttons" role="group" aria-label="タスクのステータス">${[['todo','未着手'],['working','作業中'],['done','完了']].map(([status,label])=>button(`task-status:${status}`,label,'task-status-button',`data-status="${status}" aria-pressed="${current===status}" ${status==='working'?'title="再実行する"':''}`)).join('')}</div>${button('task-close','×','task-close','aria-label="閉じる"')}</div><h2 id="modal-title">${esc(action.title)}</h2><section class="task-log-list" aria-label="このタスクの作業ログ">${logs||'<p class="muted">まだ作業ログはありません。</p>'}</section>`,choice=>{
+    if(choice==='task-close'){closeModal();return;}
+    if(!choice.startsWith('task-status:'))return;
+    const status=choice.slice(12);
+    if(!['todo','working','done'].includes(status))return;
+    closeModal();
+    if(status==='working')beginInvestigation(id,true);
+    else moveCard(id,status);
+  },'task-detail');
+  operationGuide.update();
+}
+function beginInvestigation(id,rerun=false) {
   const action=problem.investigations.find(item=>item.id===id)||problem.help.cards.find(item=>item.id===id);
   if(!action || state.phase!=='desk')return;
-  if(engine.cardStatus(state,id)==='done')return;
+  if(!rerun&&engine.cardStatus(state,id)==='done')return;
   const questions=action.questionOptions?.filter(item=>engine.matches(item.unlock,state))||[];
   const prepare=question=>{
     const plan=engine.preview(state,id,question);
     if(!plan?.allowed){notify('このタスクは実行できません。');return;}
     const execute=()=>{if(engine.investigate(state,id,question,true)){save();render();}};
-    if(engine.cardStatus(state,id)==='working')confirmAction('もう一度実行しますか？',`${action.title}を再実行します。所要時間 ${duration(plan.minutes)}`,execute,'再実行する');
+    if(!rerun&&engine.cardStatus(state,id)==='working')confirmAction('もう一度実行しますか？',`${action.title}を再実行します。所要時間 ${duration(plan.minutes)}`,execute,'再実行する');
     else execute();
   };
   if(action.chooseQuestion&&questions.length>1){
@@ -1041,7 +1078,12 @@ app.addEventListener('click',async event=>{
   if(action==='join-meeting'){operationGuide.complete('join');joinMeeting();return;}
   if(action.startsWith('deck-size:')){setDeckSize(action.slice(10));return;}
   if(['scene','complete','loop','gameover'].includes(state.phase))return;
-  if(action.startsWith('investigate:')){beginInvestigation(action.slice(12));return;}
+  if(action.startsWith('investigate:')){
+    const id=action.slice(12);
+    if(['working','done'].includes(engine.cardStatus(state,id)))taskDetails(id);
+    else beginInvestigation(id);
+    return;
+  }
   if(action.startsWith('select:')){
     const id=action.slice(7); if(state.phase!=='report'||!state.evidence.includes(id))return;
     if(state.selected.includes(id))placeClue(id,null);

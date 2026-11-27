@@ -211,6 +211,7 @@ try {
   await screenshot('desk');
   const investigate=async id=>{
     await click(`[data-action="investigate:${id}"]`);
+    if(await evaluate("Boolean(document.querySelector('dialog.task-detail[open]'))"))await click('[data-action="task-status:working"]');
     if(await evaluate("Boolean(document.querySelector('dialog[open] [data-action=confirm]'))"))await click('[data-action=confirm]');
     await settle();
   };
@@ -407,7 +408,7 @@ try {
     assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent.length<=5"),true,'unmuting restarts the interrupted line from its beginning');
     await screenshot('meeting-muted-resumed');
   });assert.equal((await state()).question,0);assert.equal((await state()).phase,'report');assert.deepEqual((await state()).selected,['wm.case','wm.retired','wm.cache']);
-  assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().height"),meetingMessageHeight,'report requests and dialogue use the same fixed height');
+  assert.ok(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().bottom<=document.querySelector('.reporting>.clue-drawer').getBoundingClientRect().top+1"),'sized report dialogue stays above the clue deck');
   assert.equal((await state()).history.at(-1).report.level,1);
   assert.equal(await evaluate("document.querySelector('.chat-heading').textContent.includes('#pj-marunage')"),true);
   assert.equal(await evaluate("document.querySelector('.bot-byline strong').textContent"),'chatbot');
@@ -458,7 +459,7 @@ try {
     assert.equal(await evaluate("document.querySelector('[data-report-accepted]').textContent"),'👍');
     assert.equal(await evaluate("Boolean(document.querySelector('.report-accepted'))"),false,'success feedback does not consume message space');
     const reactionStarted=await evaluate("document.querySelector('[data-report-accepted]').dataset.reactionStarted");
-    assert.equal(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().height"),meetingMessageHeight,'report dialogue keeps the same height regardless of text length');
+    assert.ok(await evaluate("document.querySelector('.report-conversation .conversation-window').getBoundingClientRect().bottom<=document.querySelector('.reporting>.clue-drawer').getBoundingClientRect().top+1"),'sized report dialogue leaves the clue deck unobstructed');
     assert.ok(await evaluate("(()=>{const frame=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),badge=document.querySelector('.report-conversation .conversation-speaker').getBoundingClientRect();return badge.top<frame.top&&badge.bottom>frame.top;})()"),'report speaker name sits on the window shoulder');
     assert.deepEqual(await evaluate("[...document.querySelectorAll('.self-panel [data-participant]')].map(item=>item.dataset.participant)"),['player','lead'],'the right gallery contains the player and Makabe');
     assert.equal(await evaluate("document.querySelector('.meeting-camera>img').alt"),'佐伯','Saeki remains fixed in the main camera');

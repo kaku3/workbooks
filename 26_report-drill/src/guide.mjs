@@ -24,9 +24,9 @@ export const guideDefinitions=[
     actions:[],drop:'working'},
   {id:'clue',title:'手がかりを入手しました',text:'タスクによって、報告に使える手がかりが手に入ります。伝わる説明に必要な3枚が揃ったと思ったら、報告タブへ進みましょう。',
     ready:c=>c.desk&&c.clueCount>0,targets:()=>[document.querySelector('.deck-toolbar')],ack:true},
-  {id:'task-done',title:'終わったタスクを整理する',text:'実行したタスクを「完了」へドラッグしてください。あとで「未着手」や「作業中」に戻すこともできます。',
-    ready:c=>c.desk&&c.doneCards.length>0,targets:c=>[...c.doneCards,...document.querySelectorAll('[data-status="done"]')],
-    actions:[],drop:'done'},
+  {id:'task-done',title:'終わったタスクを整理する',text:c=>c.taskDoneButton?'ポップアップ上部の「完了」を押してください。タスクを完了へ移動できます。':'作業中のカードをクリックして、タスクのポップアップを開いてください。',
+    ready:c=>c.desk&&(c.doneCards.length>0||Boolean(c.taskDoneButton)),targets:c=>c.taskDoneButton?[c.taskDoneButton]:c.doneCards.slice(0,1),
+    actions:c=>c.taskDoneButton?['task-status:done']:c.doneCards.slice(0,1).map(card=>card.dataset.action),taskDone:true,reveal:true},
   {id:'history',title:'チャットで履歴を確認する',text:c=>c.chatShown?'調査や報告の記録は、チャット欄のchatbotが投稿します。投稿をクリックすると、そのときの会話を読み返せます。':'右上のチャットアイコンを押してチャット欄を開いてください。chatbotの投稿をクリックすると、調査や報告の会話を読み返せます。',
     ready:c=>c.historyReady&&Boolean(c.historyEntry),targets:c=>c.chatShown?[c.historyEntry.querySelector('summary')]:[document.querySelector('[data-action="panel:chat"]')],
     actions:['panel:chat'],history:true,reveal:true},
@@ -102,6 +102,9 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
     targets=nextTargets;
     document.querySelectorAll('[data-guide-target]').forEach(el=>el.removeAttribute('data-guide-target'));
     targets.forEach(el=>el.setAttribute('data-guide-target',''));
+    const host=active.taskDone&&c.taskDoneButton?c.taskDoneButton.closest('dialog'):document.body;
+    const portalChanged=layer&&layer.parentElement!==host;
+    if(portalChanged)host.append(layer);
     if(!layer){
       history.show(active.id);
       previousFocus=document.activeElement;
@@ -109,7 +112,7 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
       layer.classList.toggle('guide-overview',Boolean(active.overview));
       layer.classList.toggle('guide-drag',Boolean(active.drop));
       layer.innerHTML='<svg class="guide-shade" aria-hidden="true"><defs><mask id="operation-guide-mask"><rect width="100%" height="100%" fill="white"/><g></g></mask></defs><rect width="100%" height="100%" fill="black" fill-opacity=".78" mask="url(#operation-guide-mask)"/><g class="guide-outlines"></g></svg><div class="guide-focus-effects" aria-hidden="true"></div><section class="guide-card" role="region" aria-labelledby="guide-title" aria-describedby="guide-description" tabindex="-1"><p class="guide-label">操作ガイド</p><div class="guide-card-body"><h2 id="guide-title"></h2><p id="guide-description"></p></div></section>';
-      document.body.append(layer);card=layer.querySelector('.guide-card');mask=layer.querySelector('mask g');
+      host.append(layer);card=layer.querySelector('.guide-card');mask=layer.querySelector('mask g');
       card.querySelector('h2').textContent=active.title;card.querySelector('#guide-description').textContent=typeof active.text==='function'?active.text(c):active.text;
       const body=card.querySelector('.guide-card-body');
       if(active.ack){const id=active.id;const button=document.createElement('button');button.type='button';button.className='primary';button.textContent=typeof active.ack==='string'?active.ack:'確認した';button.onclick=()=>{complete(id);update();};body.append(button);}
@@ -118,6 +121,7 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
       card.focus({preventScroll:true});onChange();
     }
     const description=typeof active.text==='function'?active.text(c):active.text;
+    if(portalChanged)focusFirst();
     if(card.querySelector('#guide-description').textContent!==description){card.querySelector('#guide-description').textContent=description;lastLayout='';}
     const rects=targets.map(visibleRect).filter(Boolean);
     const layout=JSON.stringify([innerWidth,innerHeight,rects]);
@@ -145,7 +149,8 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
       if(active.history&&element.closest('summary.history-item'))return true;
       const action=element.closest('[data-action]')?.dataset.action;
       if(active.reorder&&action?.startsWith('select:'))return true;
-      return active.select?Boolean(action?.startsWith('select:')):Boolean(active.actions?.includes(action));
+      const actions=typeof active.actions==='function'?active.actions(context()):active.actions;
+      return active.select?Boolean(action?.startsWith('select:')):Boolean(actions?.includes(action));
     }
     if(['drop','dragover'].includes(event.type))return active.select||active.reorder||element.closest('[data-status]')?.dataset.status===active.drop;
     if(event.type==='dragstart')return active.select||active.reorder||targets.includes(element.closest('[data-card-id]'));

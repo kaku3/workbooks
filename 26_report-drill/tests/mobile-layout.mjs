@@ -70,7 +70,7 @@ try {
     const next=await evaluate("(()=>{const n=document.querySelector('.conversation-next'),r=n.getBoundingClientRect();return {width:r.width,height:r.height,radius:getComputedStyle(n).borderRadius};})()");
     assert.equal(next.radius,'0px','next arrow has no surrounding circle');
     assert.ok(await evaluate("(()=>{const n=document.querySelector('.conversation-next'),s=getComputedStyle(n);return s.borderTopWidth==='0px'&&s.backgroundColor==='rgba(0, 0, 0, 0)'&&s.boxShadow==='none'&&getComputedStyle(n,'::after').content==='none';})()"),'next arrow has no border, background, shadow or ring');
-    for(const sample of ['**拡大文字**を含むセリフです。','通常の文字と**大きな文字**\\n**強調した次の行**です。']){
+    for(const sample of ['**拡大文字**を含むセリフです。','通常の文字と**大きな文字**\\n**強調した次の行**です。',Array(4).fill('**強調**の台詞です。').join('\n')]){
       const dimensions=await evaluate(`import('./dialogue-text.mjs').then(({setDialogue})=>{const text=document.querySelector('#dialogue-text');text.dataset.fullDialogue=${JSON.stringify(sample)}.replaceAll('\\\\n','\\n');dispatchEvent(new Event('resize'));setDialogue(text,text.dataset.fullDialogue);return {scroll:text.scrollHeight,client:text.clientHeight,right:getComputedStyle(text).paddingRight};})`);
       assert.ok(dimensions.scroll<=dimensions.client,`short emphasized dialogue has no scrollbar at ${width}px: ${JSON.stringify(dimensions)}`);
       assert.equal(dimensions.right,'8px','mobile dialogue does not reserve a column for the caret');
@@ -90,6 +90,7 @@ try {
       }
       if(phase==='briefing')assert.ok(await evaluate("(()=>{const o=document.querySelector('.ticket-overview');return o.scrollWidth<=o.clientWidth+1&&o.getBoundingClientRect().right<=innerWidth;})()"),'overview fits without horizontal scrolling');
       if(phase==='report')assert.ok(await evaluate("(()=>{const text=document.querySelector('.report-request'),frame=text.closest('.conversation-window').getBoundingClientRect();return frame.height<=110&&text.scrollHeight<=text.clientHeight;})()"),'report message frame is compact and its request fits without scrolling');
+      if(phase==='report')assert.ok(await evaluate("import('./dialogue-text.mjs').then(({setDialogue})=>{const text=document.querySelector('.report-request'),span=text.querySelector('.report-request-text'),sample=Array(4).fill('**強調**の台詞です。').join('\\n');text.dataset.fullDialogue=sample;dispatchEvent(new Event('resize'));setDialogue(span,sample);return text.contains(span)&&text.scrollHeight<=text.clientHeight;})"),'four emphasized report lines fit without scrolling and keep the typewriter span connected');
       if(phase==='report'){
         if(width===320)await screenshot('mobile-meeting-layout-debug');
         const meetingLayout=await evaluate("JSON.stringify({stage:document.querySelector('.report-stage').getBoundingClientRect().toJSON(),controls:document.querySelector('.meeting-controls').getBoundingClientRect().toJSON(),people:[...document.querySelector('.self-panel').children].map(p=>p.getBoundingClientRect().toJSON())})");

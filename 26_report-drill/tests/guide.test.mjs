@@ -63,3 +63,16 @@ test('return guidance is only for an insufficient report and precedes meeting en
   assert.deepEqual(back.actions,['investigate']);
   assert.ok(guideDefinitions.indexOf(back)<guideDefinitions.findIndex(def=>def.id==='join'));
 });
+test('task completion guides clicking the working card and then the popup Done button',()=>{
+  const guide=guideDefinitions.find(def=>def.id==='task-done');
+  const card={dataset:{action:'investigate:wm.purpose-check'}},done={dataset:{action:'task-status:done'}};
+  const context={desk:true,doneCards:[card],taskDoneButton:null};
+  assert.equal(guide.drop,undefined);
+  assert.equal(guide.ready(context),true);
+  assert.deepEqual(guide.targets(context),[card]);
+  assert.deepEqual(guide.actions(context),['investigate:wm.purpose-check']);
+  context.taskDoneButton=done;
+  assert.deepEqual(guide.targets(context),[done]);
+  assert.deepEqual(guide.actions(context),['task-status:done']);
+  assert.ok(guide.text(context).includes('ポップアップ'));
+});
