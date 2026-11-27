@@ -43,6 +43,10 @@ try {
   await waitFor('Boolean(document.querySelector("#newStory"))&&!document.documentElement.classList.contains("booting")');
   await evaluate('document.querySelector("#newStory").click()');
   await waitFor('document.querySelector("#storyDialog")?.open');
+  assert.deepEqual(await evaluate('[...document.querySelectorAll("#storyCast img")].map(p=>p.dataset.speaker)'),['player','lead','sales','client'],'participants take their fixed seats before speaking');
+  assert.equal(await evaluate('document.querySelector("#storyCast").dataset.cameraSide'),'supplier');
+  assert.deepEqual(await evaluate('[...document.querySelectorAll("#storyCast img")].filter(p=>p.getBoundingClientRect().width>0).map(p=>p.dataset.speaker)'),['player','lead','sales'],'the camera sees only the speaker side');
+  assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyCast"),"::after").content'),'none','no table illustration');
   assert.ok(await evaluate('Boolean(document.querySelector("#storyAdvance svg path"))'));
   assert.equal(await evaluate('document.querySelector("#storyAdvance").textContent.trim()'),'');
   await evaluate('document.querySelector(".story-window").click()');
@@ -50,12 +54,16 @@ try {
   assert.equal(await evaluate('document.querySelector("#storyPage").textContent'),'1 / 5');
   await evaluate('document.querySelector(".story-message").click()');
   assert.equal(await evaluate('document.querySelector("#storyPage").textContent'),'2 / 5','window tap advances the conversation');
-  assert.ok(await evaluate('document.querySelector("#storyPortrait").getAnimations().some(a=>a.effect.getKeyframes().some(frame=>Number(frame.opacity)===0))'),'a newly appearing speaker fades in');
+  assert.ok(await evaluate('document.querySelector("#storyPortrait").getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.transform))'),'the camera moves between fixed seats');
   await evaluate('document.querySelector("#storyAdvance").click()');
   await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await evaluate('document.querySelector("#storyAdvance").click()');
-  assert.ok(await evaluate('[...document.querySelectorAll(".story-portrait")].some(p=>p.getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.transform)))'),'speaker changes animate the cast across the stage');
-  await delay(500);
+  assert.ok(await evaluate('document.querySelector("#storyPortrait").getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.transform&&frame.filter?.includes("blur(22px)")))'),'turning to the opposite side slides and blurs the new view');
+  assert.ok(await evaluate('document.querySelector(".story-camera-trail")?.getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.transform&&frame.filter?.includes("blur(22px)")))'),'the outgoing view sweeps away with motion blur');
+  assert.equal(await evaluate('document.querySelector("#storyCast").dataset.cameraSide'),'client','camera turns to the other side of the table');
+  assert.deepEqual(await evaluate('[...document.querySelectorAll("#storyCast img")].filter(p=>p.getBoundingClientRect().width>0).map(p=>p.dataset.speaker)'),['client'],'people behind the camera are hidden');
+  assert.ok(await evaluate('[...document.querySelectorAll("#storyCast img:not(.speaking)")].every(p=>getComputedStyle(p).filter.includes("brightness(0."))'),'listeners remain dark');
+  await evaluate('Promise.all([...document.querySelectorAll("#storyCast img")].flatMap(p=>p.getAnimations()).map(a=>a.finished.catch(()=>{})))');
   await evaluate('if(document.querySelector("#storyText").classList.contains("is-typing"))document.querySelector("#storyAdvance").click()');
   for(const [width,height] of [[320,568],[375,667],[390,844],[667,375]]){
     await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true});
@@ -75,14 +83,33 @@ try {
     assert.ok(await evaluate('document.querySelector("#storyDialog").scrollWidth<=document.querySelector("#storyDialog").clientWidth'));
     await evaluate('document.querySelectorAll("[data-test-clone]").forEach(el=>el.remove())');
   }
+  await evaluate('document.querySelector("#storyAdvance").click()');
+  assert.equal(await evaluate('document.querySelector("#storyCast").dataset.cameraSide'),'supplier');
+  assert.ok(await evaluate('document.querySelector("#storyPortrait").getAnimations().some(a=>a.effect.getKeyframes().some(frame=>/-\\s*[\\d.]+px/.test(frame.transform||"")&&frame.filter?.includes("blur(22px)")))'),'the return turn slides in the reverse direction');
   await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyAdvance")).animationName'),'none');
   await evaluate('document.querySelector("#storySkip").click()');
   assert.equal(await evaluate('document.querySelector("#storyDialog").open'),false,'skip closes the conversation');
+  assert.equal(await evaluate('document.querySelector(".story-camera-trail")'),null,'skip removes the outgoing view even during a turn');
   await call('Emulation.setDeviceMetricsOverride',{width:1500,height:1000,deviceScaleFactor:1,mobile:false});
   await evaluate('document.querySelector("#readStory").click()');
   await waitFor('document.querySelector("#storyDialog")?.open');
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyText")).fontSize'),'22px');
+  for(const speaker of ['sales','player']){
+    if(speaker==='player')await evaluate('if(document.querySelector("#storyText").classList.contains("is-typing"))document.querySelector("#storyAdvance").click();document.querySelector("#storyAdvance").click()');
+    assert.equal(await evaluate('document.querySelector("#storyPortrait").dataset.speaker'),speaker);
+    for(const [width,height] of [[1920,870],[1500,1000],[980,700],[700,900],[320,568],[390,844],[667,375]]){
+      await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:width<700});
+      assert.ok(await evaluate('(()=>{const cast=document.querySelector("#storyCast").getBoundingClientRect();return [...document.querySelectorAll("#storyCast img:not(.across-table)")].every(p=>{const r=p.getBoundingClientRect();return r.left>=cast.left+8&&r.right<=cast.right-8;});})()'),`all portraits fit with edge padding: ${speaker}, ${width}x${height}`);
+    }
+  }
+  await call('Emulation.setDeviceMetricsOverride',{width:1500,height:1000,deviceScaleFactor:1,mobile:false});
+  if(process.env.DIALOGUE_SCREENSHOT){
+    const {writeFile}=await import('node:fs/promises');
+    await delay(500);
+    const shot=await call('Page.captureScreenshot',{format:'png'});
+    await writeFile(process.env.DIALOGUE_SCREENSHOT,Buffer.from(shot.data,'base64'));
+  }
   assert.equal(await evaluate('[...document.querySelectorAll(".story-portrait")].some(p=>p.getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.opacity!==undefined)))'),false,'reduced motion skips entrance fades');
   assert.deepEqual(errors,[]);
   console.log('PASS: tap to finish/advance, circular blinking arrow, centered larger speaker, stage animation, variable message height, full-width mobile at four sizes, five participants, reduced motion, replay');

@@ -46,6 +46,14 @@ try {
     await evaluate('if(document.querySelector("#assignmentDialog").open){document.querySelector(".assignment").click();document.querySelector("#closeAssignment").click()}');
     await evaluate('for(let i=0;i<100&&document.querySelector("#caseFilters").hidden;i++)document.querySelector("#step").click()');
     assert.equal(await evaluate('document.querySelector("#caseFilters").hidden'),false,'filters appear after a real result');
+    assert.equal(await evaluate('document.querySelector(".test-result-stamp")?.dataset.result'),'fail','a failed run produces the Fail stamp');
+    assert.equal(await evaluate('document.querySelector(".test-result-stamp")?.parentElement.classList.contains("canvas-stage")'),width<=800,'mobile minimized card sends the stamp to the canvas');
+    await evaluate('document.querySelector("#closeTestDrawer").click()');
+    assert.ok(await evaluate('Boolean(document.querySelector(".canvas-stage>.test-result-stamp"))'),'minimizing the card moves an active stamp onto the canvas');
+    await delay(250);
+    assert.ok(await evaluate('(()=>{const s=document.querySelector(".canvas-stage>.test-result-stamp"),r=s.getBoundingClientRect(),c=document.querySelector(".canvas-viewport").getBoundingClientRect();return r.left+r.width/2>c.left+c.width/2&&r.top+r.height/2<c.top+c.height/2&&getComputedStyle(s).pointerEvents==="none";})()'),'the canvas stamp is in the top right and does not block interaction');
+    await evaluate('document.querySelector("#drawerSizes [data-size=fit]").click()');
+    assert.ok(await evaluate('Boolean(document.querySelector("#testDrawer>.test-result-stamp"))'),'expanding the card moves the stamp back to it');
     const layout=await evaluate('(()=>{const batch=document.querySelector("#batch").getBoundingClientRect(),cases=document.querySelector("#cases"),r=cases.getBoundingClientRect(),filters=[...document.querySelectorAll("#caseFilters button")].map(e=>e.getBoundingClientRect());return {batchRight:batch.right,casesLeft:r.left,overlapY:Math.min(batch.bottom,r.bottom)-Math.max(batch.top,r.top),filterTops:filters.map(r=>r.top),height:document.querySelector(".tests.panel").getBoundingClientRect().height,page:document.documentElement.scrollWidth,client:document.documentElement.clientWidth};})()');
     assert.ok(layout.batchRight<=layout.casesLeft&&layout.overlapY>0,'batch button sits alongside the case track');
     assert.ok(layout.filterTops.every(y=>Math.abs(y-layout.filterTops[0])<1),'filters stay on one horizontal line');
@@ -58,6 +66,10 @@ try {
     await delay(700);
     assert.equal(await evaluate('document.querySelector("#cases").classList.contains("is-scrolling")'),false,'scrollbar hides after scrolling stops');
     if(width===390){const shot=await call('Page.captureScreenshot',{format:'png'});await (await import('node:fs/promises')).writeFile(path.join(tmpdir(),'design-block-test-strip.png'),Buffer.from(shot.data,'base64'));}
+    await evaluate('document.querySelectorAll(".case")[1].click();for(let i=0;i<100&&!document.querySelector(".test-result-stamp");i++)document.querySelector("#step").click();document.querySelector("#closeTestDrawer").click()');
+    assert.equal(await evaluate('document.querySelector(".canvas-stage>.test-result-stamp")?.dataset.result'),'pass','a passing run also stamps the canvas while the card is minimized');
+    await evaluate('document.querySelector("#reset").click()');
+    assert.equal(await evaluate('document.querySelector(".test-result-stamp")'),null,'reset clears the stamp from either location');
   }
   assert.deepEqual(errors,[]);
   console.log('PASS: five widths, horizontal batch/cases and filters, case bottoms visible, scrollbar shows only while scrolling, stable compact height');

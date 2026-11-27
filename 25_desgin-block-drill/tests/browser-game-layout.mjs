@@ -49,6 +49,46 @@ try {
   const screenshot=async name=>{const shot=await call('Page.captureScreenshot',{format:'png'});await (await import('node:fs/promises')).writeFile(path.join(tmpdir(),name+'.png'),Buffer.from(shot.data,'base64'));};
   for(const [width,height] of [[320,568],[390,844],[667,375],[1024,600],[1440,900]]){
     await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:width<=800});await visit();
+    assert.deepEqual(await evaluate('["readStory","showAssignment","restore"].map(id=>document.getElementById(id).textContent)'),['導入','概要','リセット'],'PC and mobile use the same action labels');
+    assert.equal(await evaluate('document.querySelector("#nextStage")'),null,'there is no next-stage button');
+    if(width<=800){
+      await evaluate('window.scrollTo(0,0);new Promise(resolve=>requestAnimationFrame(resolve))');
+      assert.equal(await evaluate('getComputedStyle(document.querySelector("#headerMenu")).display'),'none','mobile header starts collapsed');
+      assert.ok(await evaluate('document.querySelector(".canvas-heading").getBoundingClientRect().height<=44'),'mobile header stays compact');
+      assert.ok(await evaluate('(()=>{const h=document.querySelector(".canvas-heading h2").getBoundingClientRect(),b=document.querySelector("#headerMenuToggle").getBoundingClientRect(),c=document.querySelector(".canvas-heading").getBoundingClientRect();return Math.abs(h.top+h.height/2-b.top-b.height/2)<1&&Math.abs(b.right-c.right)<1&&document.querySelector(".canvas-heading").contains(document.querySelector("#storyNavigation"));})()'),'canvas title and hamburger share a single row with the button at the right edge');
+      assert.ok(await evaluate('document.querySelector(".menu-actions").contains(document.querySelector("#restore"))&&document.querySelector(".menu-actions").contains(document.querySelector("#showAssignment"))&&Boolean(document.querySelector("#canvasMenuDetails>p"))'),'canvas actions precede the menu instructions');
+      assert.ok(await fits('#headerMenuToggle'),`hamburger fits on screen at ${width}x${height}: ${await evaluate('JSON.stringify(document.querySelector("#headerMenuToggle").getBoundingClientRect())')}`);
+      await evaluate('document.querySelector("#headerMenuToggle").click()');
+      assert.equal(await evaluate('document.querySelector("#headerMenuToggle").getAttribute("aria-expanded")'),'true');
+      assert.ok(await evaluate('document.querySelector("#backToTitle").getBoundingClientRect().width>0'),'menu actions appear when expanded');
+      assert.ok(await evaluate('document.querySelector("#restore").getBoundingClientRect().width>0&&document.querySelector("#showAssignment").getBoundingClientRect().width>0'),'canvas actions appear when expanded');
+      assert.deepEqual(await evaluate('[...document.querySelector(".menu-actions").children].map(b=>b.textContent)'),['導入','概要','リセット'],'menu actions have the requested order');
+      assert.ok(await evaluate('Math.abs(document.querySelector("#readStory").getBoundingClientRect().width-document.querySelector("#showAssignment").getBoundingClientRect().width)<2'),'intro and overview use matching button shapes');
+      assert.ok(await evaluate('(()=>{const home=document.querySelector("#backToTitle").getBoundingClientRect(),badge=document.querySelector(".badge").getBoundingClientRect(),title=document.querySelector("#storyStageLabel").getBoundingClientRect(),actions=document.querySelector(".menu-actions").getBoundingClientRect(),details=document.querySelector("#canvasMenuDetails").getBoundingClientRect();return badge.left>=home.right&&Math.abs(badge.left-title.left)<1&&badge.bottom<=title.top&&title.bottom<=actions.top&&actions.bottom<=details.top;})()'),'home sits beside stacked badge and title, followed by actions and explanation');
+      if(width===390)await screenshot('design-block-menu-mobile');
+      if(width===390){
+        await evaluate('document.querySelector("#readStory").click()');
+        await waitFor('document.querySelector("#storyDialog")?.open');
+        await evaluate('document.querySelector("#storySkip").click();document.querySelector("#headerMenuToggle").click()');
+      }
+      await evaluate('document.querySelector("#showAssignment").click()');
+      assert.equal(await evaluate('document.querySelector("#assignmentDialog").open'),true,'question button opens the assignment from the menu');
+      assert.equal(await evaluate('document.querySelector("#headerMenuToggle").getAttribute("aria-expanded")'),'false','choosing an action closes the menu');
+      await evaluate('document.querySelector(".assignment").click();document.querySelector("#closeAssignment").click()');
+      await waitFor('!document.querySelector("#assignmentDialog").open');
+      await evaluate('window.scrollTo(0,0);document.querySelector("#headerMenuToggle").click()');
+      assert.ok(await evaluate('document.querySelector(".canvas-heading").scrollWidth<=document.querySelector(".canvas-heading").clientWidth'),'expanded header does not overflow horizontally');
+      await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+      assert.equal(await evaluate('getComputedStyle(document.querySelector("#headerMenu")).display'),'none','Escape closes the menu');
+      assert.equal(await evaluate('document.activeElement.id'),'headerMenuToggle','Escape restores focus');
+      await evaluate('document.querySelector("#headerMenuToggle").click();document.querySelector(".canvas-heading").dispatchEvent(new PointerEvent("pointerdown",{bubbles:true}))');
+      assert.equal(await evaluate('document.querySelector("#headerMenuToggle").getAttribute("aria-expanded")'),'false','outside tap closes the menu');
+    }else{
+      assert.equal(await evaluate('getComputedStyle(document.querySelector("#headerMenuToggle")).display'),'none','desktop uses the full header');
+      assert.equal(await evaluate('getComputedStyle(document.querySelector("#headerMenu")).display'),'contents');
+      assert.ok(await evaluate('document.querySelector(".canvas-heading").contains(document.querySelector("#restore"))&&Boolean(document.querySelector(".canvas-heading>p"))'),'desktop keeps canvas instructions and actions in place');
+      assert.ok(await evaluate('(()=>{const header=document.querySelector("#storyNavigation"),intro=document.querySelector("#readStory"),overview=document.querySelector("#showAssignment"),a=intro.getBoundingClientRect(),b=overview.getBoundingClientRect();return header.contains(intro)&&header.contains(overview)&&a.width>0&&b.width>0&&Math.abs(a.top-b.top)<1;})()'),'desktop intro and overview sit on the header row');
+    }
     if(width<=800)assert.ok(await evaluate('document.querySelector("#testDrawer").classList.contains("minimized")'),'mobile starts with the test panel minimized');
     if(width===390)await screenshot('design-block-game-mobile');
     for(const size of ['fit','max','min']){

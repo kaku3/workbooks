@@ -83,6 +83,7 @@ function setDrawer(open, focus = true) {
   if (open && focus) $('#closeTestDrawer').focus({ preventScroll: true });
   renderCases();
   positionTestDrawer();
+  positionResultStamp();
 }
 function openTestDrawerForExecution(focus = true) {
   if (matchMedia('(max-width:800px)').matches) return;
@@ -113,6 +114,7 @@ function setTestDrawerSize(size) {
   $('#testDrawer .drawer-body').hidden = drawerMinimized;
   $('#drawerSizes').querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.size === size)));
   positionTestDrawer(); renderCases();
+  positionResultStamp();
 }
 function canvasWidth() { return parseFloat($('#canvas').style.width) || 910; }
 function fitCanvas() {
@@ -588,12 +590,19 @@ function renderState() {
   if (new Set(run.tokens.map(t => t.orderId)).size < run.tokens.length) area.append(el('p', '処理・通知の実行回数\u306f\u6ce8\u6587\u5358\u4f4d\u306e\u7d2f\u8a08\u3067\u3059\u3002\u540c\u3058\u6ce8\u6587\u306e\u8377\u7269\u306b\u306f\u540c\u3058\u4ef6\u6570\u3092\u8868\u793a\u3057\u307e\u3059\u3002', 'rule'));
 
 }
+function positionResultStamp() {
+  const stamp = $('.test-result-stamp');
+  if (!stamp) return;
+  const target = drawerOpen && !drawerMinimized ? $('#testDrawer') : $('.canvas-stage');
+  if (stamp.parentElement !== target) target.append(stamp);
+}
 function stampTestResult(passed) {
-  $('#testDrawer .test-result-stamp')?.remove();
+  $('.test-result-stamp')?.remove();
   const stamp = el('div', passed ? 'Pass' : 'Fail', 'test-result-stamp');
   stamp.dataset.result = passed ? 'pass' : 'fail';
   stamp.setAttribute('aria-hidden', 'true');
   $('#testDrawer').append(stamp);
+  positionResultStamp();
   setTimeout(() => stamp.remove(), 1900);
 }
 function renderResults() {
@@ -601,7 +610,7 @@ function renderResults() {
   drawer.dataset.result = 'pending'; area.replaceChildren();
   if (!test) return;
   const phase = resultPhase(run), final = phase === 'final' || phase === 'waiting', result = judge(run);
-  if (!final) { stampedRun = null; drawer.querySelector('.test-result-stamp')?.remove(); }
+  if (!final) { stampedRun = null; $('.test-result-stamp')?.remove(); }
   else if (stampedRun !== run) {
     stampedRun = run; stampTestResult(result.pass);
     if (!batchRun) {

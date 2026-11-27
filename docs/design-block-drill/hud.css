@@ -1,11 +1,39 @@
 /* Floating-window theme. Layout and colors are separate from the simulation. */
+.header-menu{display:contents}
+.story-navigation .mobile-header-title,.story-navigation #headerMenuToggle{display:none}
 .story-navigation{padding:10px 12px;border:1px solid #83d8f338;border-radius:7px;background:#163047b8;flex-wrap:nowrap;white-space:nowrap;overflow-x:auto}
 .story-navigation>*{flex-shrink:0}
 .story-navigation .home-button{margin:0;font-size:20px;padding:2px 8px}
 .story-navigation #storyStageLabel{margin-right:0}
 .story-navigation .badge{margin-right:0;padding:5px 10px;font-size:12px}
 .story-navigation .header-drill{margin:0;flex:0 1 340px}
+.story-navigation #showAssignment{width:auto;height:auto;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:400}
 @media(max-width:800px){.story-navigation .header-drill{margin:0;flex:1 1 240px}}
+@media(max-width:800px){
+  .canvas-heading{width:100%;gap:4px 8px;padding:0 0 6px}
+  .canvas-heading h2{margin:0}
+  .canvas-heading .story-navigation{display:contents;white-space:normal}
+  .story-navigation #headerMenuToggle{display:grid;place-items:center;flex:none;width:34px;height:34px;padding:6px;margin-left:auto}
+  #headerMenuToggle svg{width:20px;height:20px}
+  .story-navigation.menu-open #headerMenuToggle svg{transform:rotate(90deg)}
+  .story-navigation .header-menu{display:none;flex:1 0 100%;min-width:0;gap:10px;align-items:stretch;padding:12px 0 4px;border-top:1px solid #83d8f338}
+  .story-navigation.menu-open .header-menu{display:flex;flex-direction:column}
+  .story-navigation .header-menu>span{margin:0;white-space:normal;overflow-wrap:anywhere}
+  .story-navigation .header-menu button{min-height:44px}
+  .story-navigation .header-menu .home-button{align-self:center;min-width:44px;width:44px;height:44px;padding:0;font-size:24px}
+  .menu-summary{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:12px}
+  .menu-meta{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0}
+  .menu-meta .badge{margin:0;max-width:100%;white-space:normal}
+  .menu-meta #storyStageLabel{font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+  .menu-actions{display:flex;align-items:center;gap:8px;padding:4px 0 2px}
+  .menu-actions button{flex:0 0 auto;padding:7px 14px}
+  .menu-actions #showAssignment{width:auto;height:auto;border-radius:6px;padding:7px 14px;font-size:12px}
+  .menu-actions #restore{margin-left:auto}
+  .canvas-menu-details{display:flex;flex-direction:column;gap:12px;padding-top:10px;border-top:1px solid #83d8f338}
+  .canvas-menu-details>p{margin:0;font-size:12px;line-height:1.7;color:#96b4c6}
+  .canvas-menu-details .legend{justify-content:flex-start;gap:6px 10px;margin:0;padding:0;font-size:10px}
+  .canvas-menu-details .canvas-actions{display:flex;justify-content:flex-start;margin:0;gap:8px}
+}
 :root{color-scheme:dark;--green:#64d9ee;--orange:#ffb57e;color:#dcebf5;background:#0c1929}
 body{background:radial-gradient(ellipse at 20% 0,#193d55 0,transparent 65%),linear-gradient(145deg,#0b1524,#14283b);min-height:100vh}
 header{background:linear-gradient(100deg,#132c40d9,#102333a6);border-bottom:1px solid #6be2ff63;padding:20px 28px;box-shadow:0 8px 35px #0002}
@@ -155,6 +183,7 @@ html:has(#assignmentDialog[open]),body:has(#assignmentDialog[open]){max-width:10
 .test-result-stamp{position:absolute;z-index:50;right:30px;top:65px;pointer-events:none;user-select:none;border:4px double currentColor;border-radius:7px;padding:5px 22px;font-family:"Rajdhani",sans-serif;font-size:56px;font-weight:700;line-height:1;letter-spacing:.08em;color:#9be8ff;background:#10283ee8;box-shadow:0 5px 22px #0004;transform:rotate(-14deg);animation:test-stamp 1.9s ease-out forwards}
 .test-result-stamp[data-result="fail"]{color:#ffb0a1;background:#3c2532ed}
 .test-drawer.minimized .test-result-stamp{top:1px;right:110px;padding:1px 8px;font-size:22px;border-width:2px}
+.canvas-stage>.test-result-stamp{top:18px;right:22px;font-size:clamp(34px,6vw,56px)}
 @keyframes test-stamp{0%{opacity:0;transform:translateY(-25px) rotate(-23deg) scale(2)}12%{opacity:1;transform:translateY(2px) rotate(-14deg) scale(.94)}20%,75%{opacity:1;transform:translateY(0) rotate(-14deg) scale(1)}100%{opacity:0;transform:translateY(0) rotate(-14deg) scale(1)}}
 @media(prefers-reduced-motion:reduce){.test-result-stamp{animation:test-stamp-still 1.9s linear forwards}@keyframes test-stamp-still{0%,80%{opacity:1}100%{opacity:0}}}
 .test-drawer .drawer-body{min-height:0;flex:1}
