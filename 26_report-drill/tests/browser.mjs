@@ -84,6 +84,9 @@ try {
   await evaluate("document.querySelectorAll('.title-cast').forEach(img=>{const animation=img.getAnimations()[0];animation.currentTime=4000;animation.play();})");
   await screenshot('title');
   await evaluate("import('./data/content.mjs').then(({cases})=>{const line=cases.watermark.scenario.scenes['01.intro'].lines[0];line.text='**'+line.text+'**';})");
+  // Keep the first typewriter active through the chapter transition and CDP
+  // assertions; later lines retain their normal speed.
+  await evaluate("(()=>{const interval=window.setInterval;window.setInterval=(callback,delay,...args)=>{if(delay===20){window.setInterval=interval;return interval(callback,200,...args);}return interval(callback,delay,...args);};})()");
   await evaluate("document.querySelector('[data-action=start]').click()");
   await waitFor("document.querySelector('.chapter-transition')?.dataset.phase==='chapter'&&Number(getComputedStyle(document.querySelector('.chapter-transition-heading')).opacity)>.95");
   assert.equal(await evaluate("document.querySelector('.chapter-transition-heading').textContent"),'第一章');
@@ -94,7 +97,7 @@ try {
   await screenshot('chapter-transition');
   await waitFor("document.querySelector('#app').getAttribute('aria-busy')!=='true'");
   assert.equal(await evaluate("Boolean(document.querySelector('.chapter-transition'))"),false,'chapter transition cleans up after entering the game');
-  await waitFor("Boolean(document.querySelector('.portrait img')?.complete && document.querySelector('.portrait img')?.naturalWidth)");
+  await waitFor("Boolean(document.querySelector('.portrait.speaking img')?.complete && document.querySelector('.portrait.speaking img')?.naturalWidth)");
   await waitFor("Boolean(document.querySelector('#dialogue-text strong'))");
   assert.equal(await evaluate("Boolean(document.querySelector('.conversation-actions,.meeting-dialogue-actions'))"),false,'conversation has no footer or unread label');
   assert.match(await evaluate("document.querySelector('.conversation-pagination small').textContent"),/^1\/\d+$/);
@@ -104,24 +107,24 @@ try {
   assert.equal(await evaluate("document.querySelector('.conversation-next').hidden"),false,'finishing the text reveals the floating next arrow');
   assert.ok(await evaluate("Boolean(document.querySelector('.conversation-next svg path'))"));
   assert.equal(await evaluate("document.querySelector('.conversation-next').textContent.trim()"),'');
-  assert.equal(await evaluate("document.querySelector('.conversation-pagination .conversation-label').textContent"),'依頼を受けた');
+  assert.equal(await evaluate("document.querySelector('dialog[open]>.conversation-task').textContent"),'依頼を受けた');
   assert.equal(await evaluate("document.querySelector('.conversation-head').children.length"),1,'the header contains only the right-aligned information');
   assert.ok(await evaluate("(()=>{const header=document.querySelector('.conversation-head').getBoundingClientRect(),frame=document.querySelector('.conversation-window').getBoundingClientRect();return header.left>frame.left+frame.width/2&&header.right<=frame.right;})()"),'header information stays on the right');
   assert.equal(await evaluate("document.querySelector('.conversation-speaker').textContent"),'佐伯');
   assert.ok(await evaluate("(()=>{const header=document.querySelector('.conversation-head').getBoundingClientRect(),frame=document.querySelector('.conversation-window').getBoundingClientRect();return header.top<frame.top&&header.bottom>frame.top;})()"),'status window straddles the right shoulder');
   assert.ok(await evaluate("(()=>{const badge=document.querySelector('.conversation-speaker').getBoundingClientRect(),frame=document.querySelector('.conversation-window').getBoundingClientRect();return badge.top<frame.top&&badge.bottom>frame.top;})()"),'speaker badge straddles the top edge');
-  assert.equal(await evaluate("getComputedStyle(document.querySelector('.conversation-next'),'::after').animationName"),'conversation-next-ring');
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('.conversation-next'),'::after').content"),'none','next arrow has no surrounding ring');
   assert.equal(await evaluate("document.querySelector('#dialogue-text').textContent.includes('**')"),false,'emphasis survives completing the typewriter without showing markers');
-  const portraitWidth=await evaluate("document.querySelector('.portrait img').getBoundingClientRect().width");
+  const portraitWidth=await evaluate("document.querySelector('.portrait.speaking img').getBoundingClientRect().width");
   const introMessageHeight=await evaluate("document.querySelector('.conversation-window').getBoundingClientRect().height");
   assert.ok(introMessageHeight<=290,'removing the footer saves eighty pixels of height');
   assert.equal(await evaluate("document.querySelector('.conversation-window').offsetHeight-document.querySelector('#dialogue-text').offsetHeight"),2,'only the text and border determine window height');
   assert.ok(await evaluate("(()=>{const text=document.querySelector('#dialogue-text'),range=document.createRange();range.selectNodeContents(text);const line=[...range.getClientRects()].at(-1),arrow=document.querySelector('.conversation-next').getBoundingClientRect();return Math.abs((line.top+line.bottom-arrow.top-arrow.bottom)/2)<24;})()"),'next arrow floats beside the final line');
   await screenshot('intro');
-  const fixedCast=await evaluate("(()=>{const image=document.querySelector('.portrait img'),frame=document.querySelector('.conversation-window').getBoundingClientRect(),stage=document.querySelector('.portrait-stage').getBoundingClientRect();return {top:image.getBoundingClientRect().top,stageBottom:stage.bottom,frameBottom:frame.bottom};})()");
+  const fixedCast=await evaluate("(()=>{const image=document.querySelector('.portrait.speaking img'),frame=document.querySelector('.conversation-window').getBoundingClientRect(),stage=document.querySelector('.portrait-stage').getBoundingClientRect();return {top:image.getBoundingClientRect().top,stageBottom:stage.bottom,frameBottom:frame.bottom};})()");
   assert.ok(fixedCast.stageBottom<=fixedCast.frameBottom,'the cast is clipped before the bottom of the message window');
   for(const lines of [2,3]){
-    const changed=await evaluate(`(()=>{const text=document.querySelector('#dialogue-text'),image=document.querySelector('.portrait img');text.innerHTML=Array(${lines}).fill('人物の位置を確認').join('\\n');text.style.height='auto';return {top:image.getBoundingClientRect().top,height:text.parentElement.getBoundingClientRect().height};})()`);
+    const changed=await evaluate(`(()=>{const text=document.querySelector('#dialogue-text'),image=document.querySelector('.portrait.speaking img');text.innerHTML=Array(${lines}).fill('人物の位置を確認').join('\\n');text.style.height='auto';return {top:image.getBoundingClientRect().top,height:text.parentElement.getBoundingClientRect().height};})()`);
     assert.ok(Math.abs(changed.top-fixedCast.top)<1,'two- and three-line messages leave the cast in the same vertical position');
   }
   await click('.conversation-next');
@@ -129,7 +132,8 @@ try {
   await waitFor("document.querySelector('.conversation-next')?.hidden===false");
   for(let n=0;(await state()).conversation.line<3 && n<8;n++)await click('[data-action=scene-next]');
   await waitFor("[...document.querySelectorAll('.portrait img')].every(img=>img.complete && img.naturalWidth)");
-  assert.equal(await evaluate("document.querySelector('.portrait img').getBoundingClientRect().width"),portraitWidth);
+  await evaluate("Promise.all(document.querySelector('.portrait-stage').getAnimations({subtree:true}).map(a=>a.finished.catch(()=>{})))");
+  assert.equal(await evaluate("document.querySelector('.portrait.speaking img').getBoundingClientRect().width"),portraitWidth);
   assert.equal(await evaluate("document.querySelector('.conversation-window').offsetHeight-document.querySelector('#dialogue-text').offsetHeight"),2,'later lines also have no space reserved for the next arrow');
   await screenshot('intro-player');await settle(false);
   assert.equal((await state()).phase,'briefing');
@@ -169,7 +173,8 @@ try {
   await waitFor("!document.querySelector('.ticket-flight')");
   assert.deepEqual(await evaluate("[...document.querySelectorAll('.todo [data-card-id]')].map(card=>card.dataset.cardId)"),initialTickets);
   assert.equal((await state()).time,540);
-  assert.equal(await evaluate("document.querySelector('.topbar').getBoundingClientRect().height"),52,'compact header preserves game height');
+  assert.equal(await evaluate("document.querySelector('.topbar')"),null,'game header row is removed');
+  assert.ok(await evaluate("Boolean(document.querySelector('[data-action=menu-toggle]'))"),'game menu is available at the top right');
   assert.equal(await evaluate("Boolean(document.querySelector('.statusbar'))"),false,'game footer annotations are removed');
   assert.equal(await evaluate("Math.abs(document.querySelector('.desktop').getBoundingClientRect().bottom-innerHeight)<2"),true,'game area fills the space through the bottom of the viewport');
   assert.equal(await evaluate("document.querySelectorAll('.kanban-column').length"),3);
@@ -378,8 +383,8 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.chat-panel')).display"),'flex','jumping to latest keeps the mobile chat open');
   assert.equal(await evaluate("Boolean(document.querySelector('.chat-unread-divider'))"),true,'opening chat identifies the first unread post');
   assert.equal((await state()).chatRead.unread.length,0,'opening the unread position acknowledges it');
-  await screenshot('mobile-history');await size(1440,1000);await click('[data-action="panel:desk"]');
-  await click('[data-action=notebook]');await screenshot('notebook');
+  await screenshot('mobile-history');await click('[data-action="panel:chat"]');await size(1440,1000);
+  await click('[data-action="deck-size:medium"]');await screenshot('notebook');
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.evidence-card')).backgroundColor.match(/[0-9]+/g).slice(0,3).every(value=>Number(value)>140)"),true);
   const submit=async(cards,beforeSettle)=>{if((await state()).phase!=='report')await click('[data-action=report]');for(const id of (await state()).selected)await click(`[data-action="select:${id}"]`);for(const id of cards)await click(`[data-action="select:${id}"]`);await click('[data-action=submit]');assert.equal(await evaluate("document.querySelector('dialog').open"),false,'reports continue inside the meeting');assert.equal(await evaluate("Boolean(document.querySelector('.reporting .meeting-dialogue'))"),true);if(beforeSettle)await beforeSettle();await settle();};
   await submit(['wm.case','wm.retired','wm.cache'],async()=>{
@@ -422,7 +427,7 @@ try {
   const reportTime=(await state()).time;
   for(const [index,id] of ['wm.case','wm.retired','wm.logs'].entries())await dragClue(id,index);
   assert.deepEqual((await state()).selected,['wm.case','wm.retired','wm.logs']);
-  assert.equal(await evaluate("(()=>{const selected=document.querySelector('.report-slot .evidence-card').getBoundingClientRect(),deck=document.querySelector('#shared-clue-deck .evidence-card').getBoundingClientRect();return selected.width===deck.width&&selected.height===deck.height;})()"),true,'placed cards retain the deck card size');
+  assert.equal(await evaluate("Boolean(document.querySelector('.report-slot .report-clue-title'))&&!document.querySelector('.report-slot .evidence-card')"),true,'placed clues show their titles without card details');
   await dragClue('wm.case',1);assert.deepEqual((await state()).selected,['wm.retired','wm.case','wm.logs']);
   await dragClue('wm.cache',0);assert.deepEqual((await state()).selected,['wm.cache','wm.case','wm.logs']);
   for(const id of ['wm.cache','wm.case','wm.logs'])await dragClue(id,null);
@@ -505,7 +510,7 @@ try {
   await size(390,844,true);assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'),true);
   await screenshot('mobile-desk');await click('[data-action="panel:chat"]');
   assert.equal(await evaluate('getComputedStyle(document.querySelector(".chat-panel")).display'),'flex');
-  await screenshot('mobile-chat');await click('[data-action="panel:desk"]');
+  await screenshot('mobile-chat');await click('[data-action="panel:chat"]');
   const beforeCoffee=(await state()).time;
   await click('[data-action=coffee]');await settle();assert.equal((await state()).time,beforeCoffee+5);
   await click('[data-action=settings]');
@@ -565,7 +570,7 @@ try {
   for(const [width,height,mobile] of [[1440,1000,false],[1280,720,false],[390,844,true]]){
     await size(width,height,mobile);
     if(mobile)assert.ok(await evaluate("(()=>{const dialog=document.querySelector('dialog.conversation'),stage=dialog.querySelector('.portrait-stage'),speaker=stage.querySelector('.speaking').getBoundingClientRect(),bounds=stage.getBoundingClientRect();return dialog.scrollWidth<=dialog.clientWidth+1&&getComputedStyle(stage).overflowX==='hidden'&&Math.abs(speaker.left+speaker.width/2-bounds.left-bounds.width/2)<1;})()"),'the mobile speaker is centered while the supporting cast stays clipped to the stage');
-    else assert.equal(await evaluate("(()=>{const dialog=document.querySelector('dialog.conversation'),bounds=dialog.getBoundingClientRect();return dialog.scrollWidth<=dialog.clientWidth+1&&[...dialog.querySelectorAll('.portrait img')].every(image=>{const r=image.getBoundingClientRect();return r.left>=bounds.left&&r.right<=bounds.right;});})()"),true,`four portraits fit without horizontal scrolling at ${width}px`);
+    else assert.equal(await evaluate("(()=>{const dialog=document.querySelector('dialog.conversation'),bounds=dialog.getBoundingClientRect();return dialog.scrollWidth<=dialog.clientWidth+1&&[...dialog.querySelectorAll('.portrait:not(.across-table) img')].every(image=>{const r=image.getBoundingClientRect();return r.left>=bounds.left&&r.right<=bounds.right;});})()"),true,`four portraits fit without horizontal scrolling at ${width}px`);
     await screenshot(`chapter3-four-portraits-${width}`);
   }
   await size(1440,1000);await settle();
@@ -581,7 +586,7 @@ try {
   assert.equal((await chapter3State()).chatRead.unread.length,0);
   assert.equal(await evaluate("Boolean(document.querySelector('.chat-unread-divider'))"),true);
   assert.equal(await evaluate("Boolean(document.querySelector('.chat-unread-badge'))"),false);
-  await screenshot('chapter3-mobile-chat');await click('[data-action="panel:desk"]');await size(1440,1000);
+  await screenshot('chapter3-mobile-chat');await click('[data-action="panel:chat"]');await size(1440,1000);
   for(const id of ['workbook','screen','mapping','prototype','related','notification','retry','csv-preparation','operations'])await investigate('bi.'+id);
   await click('[data-action="investigate:bi.plan"]');
   assert.equal(await evaluate("document.querySelectorAll('.action-choices button').length"),2);
@@ -647,7 +652,7 @@ try {
     assert.equal(await evaluate("document.querySelector('[data-report-rejected]').textContent"),emoji,'incorrect reports show an appropriately serious reaction');
     assert.equal(await evaluate("Number(document.querySelector('[data-report-rejected]').dataset.reportLevel)"),level);
     assert.equal(await evaluate("Boolean(document.querySelector('[data-report-accepted]'))"),false);
-    assert.ok(await evaluate("(()=>{const frame=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),arrow=document.querySelector('.report-conversation .conversation-next').getBoundingClientRect();return Math.abs(frame.bottom-arrow.bottom-11)<2&&Math.abs(frame.right-arrow.right-11)<2;})()"),'report next arrow stays in the bottom-right corner');
+    assert.ok(await evaluate("(()=>{const frame=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),arrow=document.querySelector('.report-conversation .conversation-next').getBoundingClientRect();return Math.abs(frame.bottom-arrow.bottom-11)<2&&Math.abs(frame.right-arrow.right-2)<2;})()"),'report next arrow stays in the bottom-right corner');
     await screenshot(`report-reaction-${level}`);
     const started=await evaluate("document.querySelector('[data-report-rejected]').dataset.reactionStarted");
     await click('[data-action=meeting-camera]');

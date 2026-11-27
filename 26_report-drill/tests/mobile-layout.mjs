@@ -61,19 +61,78 @@ try {
   };
   for(const [width,height] of [[320,568],[375,667],[390,844],[667,375]]){
     await size(width,height,true);await seed('scene');
+    assert.ok(await evaluate("(()=>{const label=document.querySelector('dialog[open]>.conversation-task'),r=label?.getBoundingClientRect();return r&&Math.abs(r.left-12)<1&&Math.abs(r.top-12)<1&&r.right<=innerWidth-10&&!document.querySelector('dialog[open] .conversation-pagination .conversation-label');})()"),`mobile task label sits at the screen top left at ${width}px`);
     const cast=await evaluate("(()=>{const active=document.querySelector('.portrait.speaking').getBoundingClientRect(),stage=document.querySelector('.portrait-stage').getBoundingClientRect();return {center:active.left+active.width/2,stageCenter:stage.left+stage.width/2,width:active.width,otherWidths:[...document.querySelectorAll('.portrait:not(.speaking)')].map(p=>p.getBoundingClientRect().width)};})()");
     assert.ok(Math.abs(cast.center-cast.stageCenter)<1,'speaker is centered');
     assert.ok(cast.otherWidths.every(w=>w<cast.width),'speaker is larger than the supporting cast');
+    assert.deepEqual(await evaluate("[...document.querySelectorAll('.portrait:not(.across-table)')].map(p=>p.dataset.speaker)"),['player','lead','sales'],'fixed supplier seats are visible while the client side stays behind the camera');
+    assert.ok(await evaluate("(()=>{const s=document.querySelector('.portrait-stage').getBoundingClientRect();return [...document.querySelectorAll('.portrait:not(.across-table) img')].every(p=>{const r=p.getBoundingClientRect();return r.left>=s.left+8&&r.right<=s.right-8;});})()"),'all visible portraits fit inside the stage');
     const next=await evaluate("(()=>{const n=document.querySelector('.conversation-next'),r=n.getBoundingClientRect();return {width:r.width,height:r.height,radius:getComputedStyle(n).borderRadius};})()");
-    assert.equal(next.width,next.height);assert.equal(next.radius,'50%','next button is circular');
+    assert.equal(next.radius,'0px','next arrow has no surrounding circle');
+    assert.ok(await evaluate("(()=>{const n=document.querySelector('.conversation-next'),s=getComputedStyle(n);return s.borderTopWidth==='0px'&&s.backgroundColor==='rgba(0, 0, 0, 0)'&&s.boxShadow==='none'&&getComputedStyle(n,'::after').content==='none';})()"),'next arrow has no border, background, shadow or ring');
+    for(const sample of ['**拡大文字**を含むセリフです。','通常の文字と**大きな文字**\\n**強調した次の行**です。']){
+      const dimensions=await evaluate(`import('./dialogue-text.mjs').then(({setDialogue})=>{const text=document.querySelector('#dialogue-text');text.dataset.fullDialogue=${JSON.stringify(sample)}.replaceAll('\\\\n','\\n');dispatchEvent(new Event('resize'));setDialogue(text,text.dataset.fullDialogue);return {scroll:text.scrollHeight,client:text.clientHeight,right:getComputedStyle(text).paddingRight};})`);
+      assert.ok(dimensions.scroll<=dimensions.client,`short emphasized dialogue has no scrollbar at ${width}px: ${JSON.stringify(dimensions)}`);
+      assert.equal(dimensions.right,'8px','mobile dialogue does not reserve a column for the caret');
+    }
     if(width===390)await screenshot('mobile-centered-speaker');
     for(const phase of ['briefing','desk','report']){
       await seed(phase);
       assert.ok(await evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth+1'),`no page overflow in ${phase} at ${width}px`);
-      if(phase==='desk')assert.ok(await evaluate("(()=>{const board=document.querySelector('.kanban');return board.scrollWidth<=board.clientWidth+1;})()"),'the investigation board does not scroll horizontally');
+      if(phase==='desk')assert.ok(await evaluate("(()=>{const board=document.querySelector('.kanban'),r=board.getBoundingClientRect(),working=board.querySelector('[data-status=working]').getBoundingClientRect();return board.scrollWidth>board.clientWidth&&working.left<r.right;})()"),'the board scrolls internally and shows the neighboring status');
+      if(phase==='desk')assert.ok(await evaluate("!document.querySelector('.mobile-tabs')&&![...document.querySelectorAll('.board-view p')].some(p=>p.textContent.includes('イベント開始'))&&[...document.querySelectorAll('.kanban-column>h2')].every(h=>h.getBoundingClientRect().height<24)"),'subtabs and the instruction are removed, and column headers are compact');
+      if(phase==='desk')assert.equal(await evaluate("document.querySelectorAll('.menu-knowledge .stat').length"),2,'phone keeps knowledge statuses inside the menu');
+      if(phase==='desk'){
+        for(const deckSize of ['medium','small']){
+          await click(`[data-action="deck-size:${deckSize}"]`);
+          assert.ok(await evaluate("(()=>{const area=document.querySelector('.work-area').getBoundingClientRect(),board=document.querySelector('.board-view').getBoundingClientRect(),deck=document.querySelector('.clue-drawer').getBoundingClientRect();return Math.abs(board.top-area.top)<1&&Math.abs(board.bottom-deck.top)<1&&Math.abs(deck.bottom-innerHeight)<2&&Math.abs(board.height+deck.height-area.height)<2;})()"),`board fills remaining space at ${width}x${height}, ${deckSize} deck`);
+        }
+      }
       if(phase==='briefing')assert.ok(await evaluate("(()=>{const o=document.querySelector('.ticket-overview');return o.scrollWidth<=o.clientWidth+1&&o.getBoundingClientRect().right<=innerWidth;})()"),'overview fits without horizontal scrolling');
+      if(phase==='report')assert.ok(await evaluate("(()=>{const text=document.querySelector('.report-request'),frame=text.closest('.conversation-window').getBoundingClientRect();return frame.height<=110&&text.scrollHeight<=text.clientHeight;})()"),'report message frame is compact and its request fits without scrolling');
+      if(phase==='report'){
+        if(width===320)await screenshot('mobile-meeting-layout-debug');
+        const meetingLayout=await evaluate("JSON.stringify({stage:document.querySelector('.report-stage').getBoundingClientRect().toJSON(),controls:document.querySelector('.meeting-controls').getBoundingClientRect().toJSON(),people:[...document.querySelector('.self-panel').children].map(p=>p.getBoundingClientRect().toJSON())})");
+        assert.ok(await evaluate("(()=>{const stage=document.querySelector('.report-stage').getBoundingClientRect(),controls=document.querySelector('.meeting-controls').getBoundingClientRect(),people=[...document.querySelector('.self-panel').children].map(p=>p.getBoundingClientRect());return people.length===3&&people.every(p=>p.width>0&&p.height>0&&p.left>stage.left+stage.width/2&&p.right<=innerWidth)&&people.every((p,i)=>!i||p.top>=people[i-1].bottom)&&controls.left<=stage.left+10&&controls.top<=stage.top+8&&controls.right<=people[0].left;})()"),`sharing stacks three cameras on the right and puts controls in the top left: ${meetingLayout}`);
+        await click('[data-action=meeting-camera]');
+        assert.equal(await evaluate("document.querySelectorAll('.self-panel>*>img').length"),3,'all three face images appear when the camera is on');
+        await click('[data-action=meeting-share]');
+        assert.ok(await evaluate("(()=>{const area=document.querySelector('.reporting').getBoundingClientRect(),r=document.querySelector('.meeting-controls').getBoundingClientRect();return r.left<=area.left+10&&r.top<=area.top+8;})()"),'controls also stay in the upper left when not sharing');
+        await click('[data-action=meeting-share]');
+      }
       if(width===390)await screenshot(`mobile-${phase}`);
     }
+  }
+  await size(390,844,true);
+  await evaluate("Promise.all([import('./data/content.mjs'),import('./engine.mjs')]).then(([{cases},{createEngine}])=>{const {problem,scenario}=cases.watermark,e=createEngine(problem,scenario),s=e.start();while(s.phase==='scene')e.advance(s,true);e.beginWork(s);e.investigate(s,'wm.purpose-check');s.settings={instant:true,reduced:true};localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));})");
+  await call('Page.reload');await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
+  assert.equal(await evaluate("document.querySelector('dialog[open]>.conversation-task').textContent"),'依頼と現物を確認する - 20m経過');
+  await click('[data-action=scene-next]');
+  assert.equal(await evaluate("document.querySelectorAll('dialog[open]>.conversation-task').length"),1,'advancing updates the task label without duplicates');
+  await size(1024,768);
+  assert.equal(await evaluate("document.querySelectorAll('.left-rail .stat').length"),2,'resizing to desktop moves both statuses back to the left column');
+  assert.equal(await evaluate("document.querySelector('dialog[open]>.conversation-task').textContent"),'依頼と現物を確認する - 20m経過','desktop uses the same task label');
+  for(const [width,height] of [[1024,768],[1440,900]]){
+    await size(width,height);await seed('desk');
+    assert.equal(await evaluate("document.querySelectorAll('.left-rail .stat').length"),2,'desktop shows both statuses in the left column');
+    assert.equal(await evaluate("document.querySelectorAll('.menu-knowledge .stat').length"),0,'desktop menu does not duplicate the statuses');
+    const layout=await evaluate("(()=>{const area=document.querySelector('.work-area').getBoundingClientRect(),board=document.querySelector('.board-view').getBoundingClientRect(),deck=document.querySelector('.clue-drawer').getBoundingClientRect(),main=document.querySelector('.desktop').getBoundingClientRect(),chat=document.querySelector('.chat-panel').getBoundingClientRect();return {area:area.toJSON(),board:board.toJSON(),deck:deck.toJSON(),main:main.toJSON(),chat:chat.toJSON(),height:innerHeight};})()");
+    assert.ok(Math.abs(layout.board.top-layout.area.top)<1&&Math.abs(layout.board.bottom-layout.deck.top)<1&&Math.abs(layout.deck.bottom-height)<2,`desktop board fills available height at ${width}x${height}: ${JSON.stringify(layout)}`);
+    if(width===1024){
+      await click('[data-action="panel:chat"]');
+      assert.ok(await evaluate(`getComputedStyle(document.querySelector('.chat-panel')).display==='flex'&&Math.abs(document.querySelector('.board-view').getBoundingClientRect().height-${layout.board.height})<1`),'tablet chat opens without taking board height');
+      await click('[data-action="panel:chat"]');
+      assert.equal(await evaluate("getComputedStyle(document.querySelector('.chat-panel')).display"),'none','tablet chat closes with the same icon');
+    }
+  }
+  for(const [width,height] of [[1920,870],[1500,1000],[980,700],[700,900]]){
+    await size(width,height);await seed('scene');
+    assert.ok(await evaluate("(()=>{const r=document.querySelector('dialog[open]>.conversation-task').getBoundingClientRect();return Math.abs(r.left-12)<1&&Math.abs(r.top-12)<1;})()"),`desktop task label sits at the screen top left at ${width}px`);
+    assert.ok(await evaluate("(()=>{const s=document.querySelector('.portrait-stage').getBoundingClientRect();return [...document.querySelectorAll('.portrait:not(.across-table) img')].every(p=>{const r=p.getBoundingClientRect();return r.left>=s.left+8&&r.right<=s.right-8;});})()"),`desktop edge portraits fit at ${width}x${height}`);
+    assert.equal(await evaluate("document.querySelector('.portrait-stage').getAnimations({subtree:true}).length"),0,'reduced motion skips camera animations');
+    assert.ok(await evaluate("import('./dialogue-text.mjs').then(({setDialogue})=>{const text=document.querySelector('#dialogue-text');text.dataset.fullDialogue='**拡大文字**を含む短いセリフです。';dispatchEvent(new Event('resize'));setDialogue(text,text.dataset.fullDialogue);return text.scrollHeight<=text.clientHeight&&getComputedStyle(text).paddingRight==='16px';})"),`desktop emphasized text fits without scrolling at ${width}px`);
+    if(width===1500)await screenshot('desktop-seated-conversation');
+    if(width===700)assert.ok(await evaluate("import('./dialogue-text.mjs').then(({setDialogue})=>{const text=document.querySelector('#dialogue-text');text.dataset.fullDialogue=Array(30).fill('**長い会話**も最後まで読めます。').join('\\n');dispatchEvent(new Event('resize'));setDialogue(text,text.dataset.fullDialogue);return text.scrollHeight>text.clientHeight&&getComputedStyle(text).overflowY==='auto';})"),'genuinely long dialogue remains scrollable');
   }
   await size(390,844,true);await seed('scene');
   await evaluate("document.querySelector('[data-action=settings]')?.click()");
@@ -82,12 +141,19 @@ try {
   await call('Page.reload');await waitFor("Boolean(document.querySelector('[data-action=continue]'))");await click('[data-action=continue]');
   await click('[data-action=scene-next]');
   assert.ok(await evaluate("[...document.querySelectorAll('.portrait')].some(p=>p.getAnimations().length>0)"),'cast moves between stage positions when the speaker changes');
-  assert.equal(await evaluate("[...document.querySelectorAll('.portrait')].some(p=>p.getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.opacity!==undefined)))"),false,'returning speakers do not fade in again');
-  await click('[data-action=scene-next]');await click('[data-action=scene-next]');
-  assert.ok(await evaluate("document.querySelector('.portrait[data-speaker=player]').getAnimations().some(a=>a.effect.getKeyframes().some(frame=>Number(frame.opacity)===0))"),'a new speaker fades in');
+  assert.equal(await evaluate("document.querySelector('.portrait-stage').dataset.cameraSide"),'client');
+  assert.ok(await evaluate("document.querySelector('.portrait.speaking').getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.transform&&frame.filter?.includes('blur(22px)')))"),'opposite side slides in with a fast blur');
+  assert.ok(await evaluate("Boolean(document.querySelector('.conversation-camera-trail'))"),'the outgoing view sweeps away');
+  await click('[data-action=scene-next]');
+  assert.ok(await evaluate("document.querySelector('.portrait.speaking').getAnimations().some(a=>a.effect.getKeyframes().some(frame=>/-\\s*[\\d.]+px/.test(frame.transform||'')&&frame.filter?.includes('blur(22px)')))"),'returning to the supplier reverses the camera turn');
+  await click('[data-action=scene-next]');
+  assert.ok(await evaluate("document.querySelector('.portrait[data-speaker=player]').getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.transform))"),'the camera pans to the player in their existing seat');
   assert.equal(await evaluate("[...document.querySelectorAll('.portrait:not([data-speaker=player])')].some(p=>p.getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.opacity!==undefined)))"),false,'existing cast keeps moving without a new fade');
-  await delay(500);
+  await evaluate("Promise.all(document.querySelector('.portrait-stage').getAnimations({subtree:true}).map(a=>a.finished.catch(()=>{})))");
+  assert.ok(await evaluate("document.querySelector('.conversation-next svg').getAnimations().some(a=>a.effect.getKeyframes().some(f=>Number(f.opacity)===.3&&f.transform))"),'the caret pulses and moves sideways to distinguish it from overlapping text');
   assert.ok(await evaluate("(()=>{const p=document.querySelector('.portrait.speaking').getBoundingClientRect(),s=document.querySelector('.portrait-stage').getBoundingClientRect();return Math.abs(p.left+p.width/2-s.left-s.width/2)<1;})()"));
+  await click('[data-action=scene-skip]');
+  assert.equal(await evaluate("document.querySelector('.conversation-camera-trail')"),null,'skipping removes the outgoing view');
   assert.deepEqual(errors,[]);
-  console.log('PASS: centered larger speaker, stage animation, round next, overview, desk and meeting bounded at four mobile sizes');
+  console.log('PASS: fixed seating, blurred camera turns, portrait bounds, plain next arrow, emphasized dialogue without scrolling, overview, desk and meeting layouts');
 }finally{if(socket)socket.close();if(browser)browser.kill();server.kill();}

@@ -27,9 +27,12 @@ import { preloadImages } from './image-preload.mjs';
 import { playTitleTransition } from './title-transition.mjs';
 import {playBlackout} from './scene-effects.mjs';
 import {createOperationGuide} from './guide.mjs';
+import {conversationSeats,captureConversationView,animateConversationCamera,clearConversationCamera} from './conversation-camera.mjs';
+import {installTouchCardDrag} from './touch-card-drag.mjs';
 
 const engine = createEngine(problem, scenario);
 const app = document.querySelector('#app');
+let menuOpen=false;
 const modal = document.querySelector('#modal');
 const storageKey = chapterSaveKey(caseId);
 const names = Object.fromEntries(scenario.characters.map(item => [item.id, item.name]));
@@ -43,7 +46,7 @@ let sceneEffectRunning=false;
 let deployingTickets=false;
 const memoViewport=matchMedia('(max-width:699px)');
 let mobileMemoOpen=false;
-let portraitPositions=new Map();
+let portraitView=null;
 let portraitSceneKey=null;
 app.addEventListener('toggle',event=>{
   if(!event.target.matches('.memo>details'))return;
@@ -71,11 +74,12 @@ const icons = {
   file: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 12h6M9 16h6"/>',
   search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
   chat: '<path d="M4 4h16v12H9l-5 4z"/><path d="M8 8h8M8 12h5"/>',
+  home: '<path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9"/>',
   coffee: '<path d="M4 9h12v7a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4zM16 10h2a3 3 0 0 1 0 6h-2M7 3v3M12 3v3"/>',
   arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
   book: '<path d="M3 4h7l2 2 2-2h7v15h-7l-2 2-2-2H3zM12 6v15"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
-  settings: '<path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/>',
+  settings: '<path d="m9 3-.6 2.1-1.8 1L4.5 6.5l-2 3.5L4 11.6v2L2.5 15l2 3.5 2.1-.4 1.8 1L9 21h6l.6-1.9 1.8-1 2.1.4 2-3.5-1.5-1.4v-2L21.5 10l-2-3.5-2.1.6-1.8-1L15 3z"/><circle cx="12" cy="12" r="3"/>',
   check: '<path d="m5 12 4 4L19 6"/>',
   business: '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 12a20 20 0 0 0 18 0M12 12v4"/>',
   system: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 9h6v6H9zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
@@ -143,6 +147,22 @@ function meetingControls(){
   if(!meeting)return '';
   const control=(action,label,name,on)=>button(action,icon(name),'meeting-control '+(on?'on':'off'),`aria-label="${label}" title="${label}" aria-pressed="${on}"`);
   return `<div class="meeting-controls" aria-label="Web会議の操作">${control('meeting-mic',meeting.mic?'マイクをオフにする':'マイクをオンにする','mic',meeting.mic)}${control('meeting-camera',meeting.camera?'カメラをオフにする':'カメラをオンにする','video',meeting.camera)}${control('meeting-share',meeting.share?'画面共有をオフにする':'画面共有をオンにする','share',meeting.share)}${control('meeting-reaction','リアクション','smile',meeting.reaction)}${control('meeting-hand',meeting.hand?'手を下げる':'挙手する','hand',meeting.hand)}</div>`;
+}
+function positionMobileMeeting(){
+  const area=app.querySelector('.reporting');
+  if(!area||!meeting)return;
+  const stage=area.querySelector('.report-stage'),people=area.querySelector('.self-panel');
+  const camera=area.querySelector('.meeting-camera'),commands=area.querySelector('.meeting-command-panel');
+  if(!stage||!people||!camera||!commands)return;
+  if(memoViewport.matches){
+    stage.append(commands);
+    if(meeting.share){people.prepend(camera);camera.removeAttribute('data-meeting-window');}
+    else {stage.prepend(camera);camera.dataset.meetingWindow='remote';}
+  }else{
+    stage.prepend(camera);camera.dataset.meetingWindow='remote';
+    if(meeting.share)stage.append(commands);
+    else area.querySelector('.meeting-bottom').prepend(commands);
+  }
 }
 const reportReactions={
   0:{icon:'😨',label:'報告内容に強い懸念'},
@@ -262,7 +282,7 @@ function notify(text) { document.querySelector('#notice').textContent = text; }
 function button(action, text, className = '', extra = '') { return `<button type="button" data-action="${action}" class="${className}" ${extra}>${text}</button>`; }
 function avatar(speaker, large = false) { return `<span class="avatar ${speaker} ${large ? 'large' : ''}" aria-hidden="true">${initials[speaker] || '人'}</span>`; }
 function resetChat() { unread = 0; unreadStartKey=null;pendingUnreadScroll=false;chatScroll = 0; chatBottom = true; mobilePanel='desk'; seenFeedKeys=null; }
-function chatVisible(){return deckSize!=='large'&&(matchMedia('(min-width:700px)').matches||mobilePanel==='chat');}
+function chatVisible(){return deckSize!=='large'&&(matchMedia('(min-width:1100px)').matches||mobilePanel==='chat');}
 function syncChatRead(){
   chatPulse=false;
   if(page!=='game'||!state||['briefing','loop','complete','gameover'].includes(state.phase))return;
@@ -285,10 +305,10 @@ function openChatPanel(){
 function showMobilePanel(panel) {
   mobilePanel=panel;
   document.querySelector('.desktop')?.classList.toggle('show-chat',panel==='chat');
-  for(const button of document.querySelectorAll('.mobile-tabs [data-action^="panel:"]')) {
-    const active=button.dataset.action===`panel:${panel}`;
-    button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
-  }
+  const toggle=document.querySelector('.floating-chat');
+  toggle?.classList.toggle('active',panel==='chat');
+  toggle?.setAttribute('aria-expanded',String(chatVisible()));
+  toggle?.setAttribute('aria-label',matchMedia('(max-width:1099px)').matches&&panel==='chat'?'チャットを閉じる':'チャットを開く');
   if(panel==='chat'){const chat=document.querySelector('.chat-scroll');if(chat)chat.scrollTop=chatBottom?chat.scrollHeight:chatScroll;}
 }
 async function start(nextLoop = false) {
@@ -319,7 +339,25 @@ async function resumeChapter(target){
     }});
   }finally{starting=false;app.removeAttribute('aria-busy');syncTimer();}
 }
+function setGameMenu(open,focus=false){
+  menuOpen=open;
+  const toggle=app.querySelector('[data-action="menu-toggle"]'),panel=app.querySelector('#game-menu-panel');
+  if(panel)panel.hidden=!open;
+  toggle?.setAttribute('aria-expanded',String(open));
+  toggle?.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+  if(focus)toggle?.focus({preventScroll:true});
+}
+function positionKnowledge(){
+  const knowledge=app.querySelector('.knowledge'),rail=app.querySelector('.left-rail'),menu=app.querySelector('.menu-knowledge');
+  if(!knowledge||!rail||!menu)return;
+  menu.hidden=!memoViewport.matches;
+  if(memoViewport.matches)menu.append(knowledge);
+  else rail.querySelector('.memo').after(knowledge);
+}
+document.addEventListener('pointerdown',event=>{if(menuOpen&&!event.target.closest('.game-menu'))setGameMenu(false);},true);
+document.addEventListener('keydown',event=>{if(menuOpen&&event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();setGameMenu(false,true);}},true);
 function header() {
+  if(page==='game')return `<nav class="game-menu" aria-label="ゲームメニュー">${button('menu-toggle','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>','game-menu-toggle',`aria-label="メニューを開く" aria-expanded="${menuOpen}" aria-controls="game-menu-panel"`)}<div id="game-menu-panel" class="game-menu-panel" ${menuOpen?'':'hidden'}><div class="menu-knowledge"></div><div class="game-menu-actions">${button('title',icon('home'),'icon-button','aria-label="タイトルへ" title="タイトルへ"')}${button('settings',icon('settings'),'icon-button','aria-label="設定" title="設定"')}</div></div></nav>${button('panel:chat',icon('chat'),'floating-chat','aria-label="チャットを開く" aria-expanded="false"')}`;
   return `<header class="topbar"><button class="brand" data-action="title"><span class="brand-mark">${icon('file')}</span><span>確認して、回答します。<small>INVESTIGATION & REPORT</small></span></button><div class="top-right"><span class="prototype"><i></i> PROTOTYPE · ${chapterNumber}章</span>${button('settings', icon('settings'), 'icon-button', 'aria-label="設定"')}</div></header>`;
 }
 function titlePage() {
@@ -363,7 +401,7 @@ function investigations(overview=false) {
     if(id==='done')items.sort((a,b)=>(completionOrder.get(a.id)??Infinity)-(completionOrder.get(b.id)??Infinity));
     const emptyLabel={todo:'未着手のカードを置く',working:'作業するカードを置く',done:'完了するカードを置く'}[id];
     return `<section class="kanban-column ${id}" data-status="${id}" aria-labelledby="column-${id}"><h2 id="column-${id}"><i></i>${label}<span class="column-count">${items.length}</span></h2><div class="kanban-cards">${items.map(card).join('') || `<p class="column-empty">${emptyLabel}</p>`}</div></section>`;
-  }).join('')}</div><p class="tiny muted">※ 作業中へ移すとイベント開始。完了・未着手への移動は時間を使いません。</p>`;
+  }).join('')}</div>`;
 }
 function evidenceCard(card, selectable = false) {
   const selected = state.selected.includes(card.id);
@@ -385,7 +423,7 @@ function reportPage() {
   const canSubmit=state.phase==='report'&&state.selected.length===q.slots;
   return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('client')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span class="share-indicator">${icon('layers')} 画面共有中</span><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをドラッグして配置</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
       const card=problem.evidence.find(item=>item.id===(state.reportSlots||state.selected)[i]);
-      return `<div class="report-slot ${card?'occupied':''}" data-report-slot="${i}">${card?evidenceCard(card,true):`<span class="slot-number">0${i+1}</span><span>ここに手がかりを置く</span>`}</div>`;
+      return `<div class="report-slot ${card?'occupied':''}" data-report-slot="${i}">${card?`<button type="button" class="report-clue-title" draggable="true" data-evidence-id="${esc(card.id)}" data-action="select:${esc(card.id)}" aria-label="選択解除：${esc(card.title)}">${esc(card.title)}</button>`:`<span class="slot-number">0${i+1}</span><span>ここに手がかりを置く</span>`}</div>`;
     }).join('')}</div></div><aside class="report-buttons"><span>${state.selected.length} / ${q.slots}枚</span>${button('submit',`<span>報告する</span><small>${duration(q.minutes)}</small>`,'primary',canSubmit?'':'disabled')}</aside></div><div class="report-conversation"><div class="conversation-window">${conversationSpeaker(names.client)}<p class="report-request" aria-label="${esc(plainDialogue(q.prompt))}"><span class="report-request-text" aria-hidden="true">${esc(q.prompt)}</span></p><p class="report-hint">手がかりを3枚組み合わせ、相手に伝わる説明を組み立てる。</p></div></div></section>`;
 }
 
@@ -428,7 +466,7 @@ function workspace() {
   if(reporting)deckSize='medium';
   const progress = (state.time-minutes(problem.clock.start))/(engine.deadline-minutes(problem.clock.start))*100;
   const content=reporting?reportPage():investigations();
-  return `${header()}<div class="casebar"><div><span class="case-index">CASE ${caseLabel}</span><strong>${esc(problem.title)}</strong><span class="loop-label">${state.loop}日目</span></div><div class="case-actions"><nav class="report-actions browser-tabs" role="tablist" aria-label="作業画面">${button('investigate',`${icon('search')} 調査カンバン - Backlog`,reporting?'':'active',`role="tab" aria-selected="${!reporting}"`)}${button('report',`${icon('video')} 報告 - Meets`,reporting?'active':'',`role="tab" aria-selected="${reporting}"`)}</nav><div class="time-status">${icon('clock')}<strong class="game-clock">${clock(state.time).replace(':','<span class="clock-colon">:</span>')}</strong><span>回答期限 18:00</span><div class="time-track"><i style="width:${progress}%"></i></div></div></div></div><nav class="mobile-tabs" aria-label="表示パネル">${button('panel:desk','デスク','active')}${button('panel:chat','#pj-marunage')}${button('notebook','手がかり')}</nav><main class="desktop"><aside class="left-rail">${stats()}<div class="sidebar-coffee">${button('coffee',`${icon('coffee')} コーヒーを飲む <small>${state.helpUsed.includes(coffeeId)?'使用済み':'残り1回 · 5m'}</small>`,'coffee-button',state.helpUsed.includes(coffeeId)?'disabled':'')}</div><div class="left-bottom">${button('restart','はじめからやり直す','text-button')}</div></aside><section class="work-area ${reporting?'reporting':''}" data-deck-size="${deckSize}"><div class="work-content">${content}</div><section class="clue-drawer ${deckSize!=='small'?'open':''} deck-${deckSize}" aria-label="手元の手がかり">${deckToolbar()}<div id="shared-clue-deck" data-report-deck>${notebook(reporting)}</div></section></section>${chatPanel()}</main>`;
+  return `${header()}<div class="casebar"><div><span class="case-index">CASE ${caseLabel}</span><strong>${esc(problem.title)}</strong><span class="loop-label">${state.loop}日目</span></div><div class="case-actions"><nav class="report-actions browser-tabs" role="tablist" aria-label="作業画面">${button('investigate',`${icon('search')} 調査カンバン - Backlog`,reporting?'':'active',`role="tab" aria-selected="${!reporting}"`)}${button('report',`${icon('video')} 報告 - Meets`,reporting?'active':'',`role="tab" aria-selected="${reporting}"`)}</nav><div class="time-status">${icon('clock')}<strong class="game-clock">${clock(state.time).replace(':','<span class="clock-colon">:</span>')}</strong><span>回答期限 18:00</span><div class="time-track"><i style="width:${progress}%"></i></div></div></div></div><main class="desktop"><aside class="left-rail">${stats()}<div class="sidebar-coffee">${button('coffee',`${icon('coffee')} コーヒーを飲む <small>${state.helpUsed.includes(coffeeId)?'使用済み':'残り1回 · 5m'}</small>`,'coffee-button',state.helpUsed.includes(coffeeId)?'disabled':'')}</div><div class="left-bottom">${button('restart','はじめからやり直す','text-button')}</div></aside><section class="work-area ${reporting?'reporting':''}" data-deck-size="${deckSize}"><div class="work-content">${content}</div><section class="clue-drawer ${deckSize!=='small'?'open':''} deck-${deckSize}" aria-label="手元の手がかり">${deckToolbar()}<div id="shared-clue-deck" data-report-deck>${notebook(reporting)}</div></section></section>${chatPanel()}</main>`;
 }
 function ending() {
   const complete=state.phase==='complete';
@@ -546,6 +584,7 @@ function render() {
   document.body.classList.toggle('report-mode',page==='game'&&(state?.phase==='report'||isMeetingScene()));
   document.body.classList.toggle('workspace-mode',page==='game'&&state&&!['loop','complete','gameover'].includes(state.phase));
   app.innerHTML=page==='title'?titlePage():state.phase==='briefing'?briefingPage():['loop','complete','gameover'].includes(state.phase)?ending():workspace();
+  positionKnowledge();
   const chatEntry=app.querySelector('[data-action="panel:chat"]');
   if(chatEntry&&unread){chatEntry.insertAdjacentHTML('beforeend',`<span class="chat-unread-badge" aria-label="未読 ${unread}件">${unread}</span>`);chatEntry.classList.toggle('chat-notify',chatPulse);}
   const reportDialogue=document.querySelector('.report-conversation');
@@ -585,6 +624,7 @@ function render() {
       meetingArea.insertAdjacentHTML('beforeend',meetingReactionHTML(elapsed));
     }
   }
+  positionMobileMeeting();
   showMobilePanel(mobilePanel);
   const content=document.querySelector('.work-content'); if(content) {
     content.classList.toggle('board-view',Boolean(content.querySelector('.kanban')));
@@ -615,6 +655,7 @@ function render() {
     },true);
   }
   if(page==='game'&&state.phase==='scene'){if(isMeetingScene())showMeetingConversation();else showConversation();}
+  positionConversationTasks();
   typeReportRequest();
   statusEffects();
   operationGuide.update();
@@ -630,6 +671,7 @@ function openModal(html, handler, className='') {
   syncTimer();
 }
 function closeModal() {
+  clearConversationCamera(modal.querySelector('.portrait-stage'));
   clearInterval(typeTimer); modal.close(); modalAction=null;
   syncTimer();
   if(lastFocus?.isConnected) lastFocus.focus();
@@ -638,6 +680,21 @@ function conversationPagination(c,scene,blocked=false){
   const position=scene.lines.slice(0,c.line+1).filter(line=>!line.effect).length;
   const total=scene.lines.filter(line=>!line.effect).length;
   return `<div class="conversation-pagination"><span class="conversation-label">${esc(c.label)}</span><small>${position}/${total}</small>${blocked?'<span class="muted tiny">マイクをオンにすると再開します</span>':button('scene-skip','会話をスキップ','text-button')}</div>`;
+}
+function positionConversationTasks(){
+  for(const root of document.querySelectorAll('dialog.conversation,.reporting')){
+    const pagination=root.querySelector('.conversation-pagination');
+    const previous=root.querySelector(':scope>.conversation-task');
+    const fresh=pagination?.querySelector('.conversation-label');
+    if(!pagination){previous?.remove();continue;}
+    if(fresh&&previous)previous.remove();
+    const label=fresh||previous;
+    if(!label)continue;
+    label.dataset.taskLabel??=label.textContent;
+    label.classList.add('conversation-task');
+    label.textContent=label.dataset.taskLabel.replaceAll(' · ',' - ');
+    root.append(label);
+  }
 }
 function currentSceneEffect(){
   const c=state?.phase==='scene'&&state.conversation;
@@ -669,7 +726,9 @@ function sizeConversationText(target,text){
   const shown=target.innerHTML;
   target.style.height='auto';
   setDialogue(target,text);
-  const height=target.getBoundingClientRect().height;
+  // Include painted inline content and round up: enlarged text can extend a
+  // fraction beyond the line box, which otherwise creates a tiny scrollbar.
+  const height=Math.ceil(Math.max(target.getBoundingClientRect().height,target.scrollHeight))+1;
   target.style.height=`${height}px`;
   target.parentElement.style.setProperty('--dialogue-height',`${height+2}px`);
   target.innerHTML=shown;
@@ -754,15 +813,15 @@ function showConversation() {
   if(showSceneEffect())return;
   const c=state.conversation, id=c.ids[c.scene], scene=scenario.scenes[id], line=scene.lines[c.line];
   const sceneKey=`${state.loop}:${c.historyIndex}:${c.scene}:${id}`;
-  const previousCast=sceneKey===portraitSceneKey?portraitPositions:new Map();
+  const previousView=sceneKey===portraitSceneKey?portraitView:null;
   portraitSceneKey=sceneKey;
   const accepted=id===scenario.events.clear||Boolean(problem.questions.some(q=>q.reactions?.[3]===id)&&c.line>=scene.lines.findLastIndex(item=>item.speaker==='client'));
-  const speakers = [...new Set(scene.lines.slice(0,c.line+1).map(item=>item.speaker))].filter(speaker=>portraitFiles[names[speaker]]);
-  const portraits = speakers.length ? `<div class="portrait-stage" aria-label="会話中の人物">${speakers.map((speaker,index)=>`<figure class="portrait ${speaker===line.speaker?'speaking':''}" data-speaker="${esc(speaker)}" style="--cast-x:${speakers.length===1?50:15+index*70/(speakers.length-1)}%"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
+  const seating=conversationSeats(scene.lines,line.speaker);
+  const portraits = seating.seats.length ? `<div class="portrait-stage" data-camera-side="${seating.side}" style="--seat-span:${seating.span}" aria-label="会話中の人物">${seating.seats.filter(seat=>portraitFiles[names[seat.id]]).map(({id:speaker,across,offset})=>`<figure class="portrait ${speaker===line.speaker?'speaking':''} ${across?'across-table':''}" data-speaker="${esc(speaker)}" style="--seat-offset:${offset}"><img src="./assets/${portraitFiles[names[speaker]]}-transparent.png" alt="${esc(names[speaker])}" width="1024" height="1536"><figcaption>${esc(names[speaker])}</figcaption></figure>`).join('')}</div>` : '';
   openModal(`${conversationSpeaker(names[line.speaker],line.kind==='thought',true)}<div class="conversation-head">${conversationPagination(c,scene)}</div><p id="dialogue-text" class="dialogue-text ${line.kind==='thought'?'thought':''}"></p>${conversationNext()}`,action=>{
     if(action==='scene-next'&&!typed) { clearInterval(typeTimer); setDialogue(document.querySelector('#dialogue-text'),line.text); typed=true; syncConversationNext(); return; }
     if(['scene-next','scene-skip'].includes(action)) {
-      portraitPositions=new Map([...modal.querySelectorAll('.portrait[data-speaker]')].map(portrait=>[portrait.dataset.speaker,portrait.getBoundingClientRect()]));
+      portraitView=captureConversationView(modal.querySelector('.portrait-stage'));
       closeModal(); engine.advance(state,action==='scene-skip'); save(); render();
     }
   },'conversation');
@@ -777,16 +836,7 @@ function showConversation() {
   if (portraits) {
     modal.classList.add('with-portraits');
     window.insertAdjacentHTML('beforebegin',portraits);
-    if(!state.settings.reduced&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
-      modal.querySelectorAll('.portrait').forEach(portrait=>{
-        const before=previousCast.get(portrait.dataset.speaker),after=portrait.getBoundingClientRect();
-        if(!before)portrait.animate([{opacity:0},{opacity:1}],{duration:360,easing:'ease-out'});
-        else if(memoViewport.matches&&after.width)portrait.animate([
-          {transform:`translateX(calc(-50% + ${before.left+before.width/2-after.left-after.width/2}px)) scale(${before.width/after.width})`},
-          {transform:'translateX(-50%) scale(1)'}
-        ],{duration:480,easing:'cubic-bezier(0.16,1,0.3,1)'});
-      });
-    }
+    animateConversationCamera(modal.querySelector('.portrait-stage'),previousView,Boolean(state.settings.reduced||matchMedia('(prefers-reduced-motion: reduce)').matches));
   }
   const target=document.querySelector('#dialogue-text');
   sizeConversationText(target,line.text);
@@ -797,6 +847,9 @@ function showConversation() {
   syncConversationNext();
 }
 window.addEventListener('resize',()=>{
+  positionMobileMeeting();
+  positionKnowledge();
+  positionConversationTasks();
   const target=document.querySelector('#dialogue-text');
   if(target?.dataset.fullDialogue){sizeConversationText(target,target.dataset.fullDialogue);positionConversationNext();}
 });
@@ -845,6 +898,22 @@ function moveCard(id,status) {
 let draggedCard = null;
 let draggedClue = null;
 let draggedDeckClue = null;
+installTouchCardDrag(app,{
+  enabled:()=>page==='game'&&['desk','report'].includes(state?.phase)&&(!operationGuide.active||Boolean(document.querySelector('.operation-guide[data-guide="select"],.operation-guide[data-guide="submit"]')))&&!modal.open&&!menuOpen&&!deployingTickets,
+  describe:source=>{
+    if(source.hasAttribute('data-card-id')&&state.phase==='desk')return {kind:'task',id:source.dataset.cardId};
+    if(source.hasAttribute('data-evidence-id')){
+      if(deckSize==='large'&&source.closest('#shared-clue-deck'))return {kind:'reorder',id:source.dataset.evidenceId};
+      if(state.phase==='report')return {kind:'clue',id:source.dataset.evidenceId};
+    }
+    return null;
+  },
+  drop:(item,target)=>{
+    if(item.kind==='task')moveCard(item.id,target.dataset.status);
+    else if(item.kind==='reorder')reorderClue(item.id,target.dataset.evidenceId);
+    else placeClue(item.id,target.hasAttribute('data-report-slot')?Number(target.dataset.reportSlot):null);
+  },
+});
 function setDeckSize(size){
   if(state?.phase==='report'||isMeetingScene())return;
   if(!['small','medium','large'].includes(size))return;
@@ -935,6 +1004,8 @@ app.addEventListener('click',async event=>{
   }
   const target=event.target.closest('[data-action]'); if(!target)return;
   const action=target.dataset.action;
+  if(action==='menu-toggle'){setGameMenu(!menuOpen);return;}
+  if(target.closest('#game-menu-panel'))setGameMenu(false);
   if(action==='next-case'&&nextCaseId){location.search=`?case=${nextCaseId}&enter=1`;return;}
   if(action==='settings'){settings();return;}
   if(action==='title'){page='title';render();return;}
@@ -988,7 +1059,7 @@ app.addEventListener('click',async event=>{
     if(chat){chat.scrollTop=chat.scrollHeight;chatScroll=chat.scrollTop;}
     document.querySelector('.unread')?.remove();return;
   }
-  if(action==='panel:chat'){openChatPanel();return;}
+  if(action==='panel:chat'){if(matchMedia('(max-width:1099px)').matches&&mobilePanel==='chat')showMobilePanel('desk');else openChatPanel();return;}
   if(action==='panel:desk'){showMobilePanel('desk');return;}
   if(action==='notebook'){showMobilePanel('desk');setDeckSize(deckSize==='small'?'medium':'small');return;}
   if(['investigate','desk'].includes(action)){

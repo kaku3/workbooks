@@ -50,7 +50,7 @@ test('history guidance requires a completed task and adapts its explanation to t
   assert.equal(history.ready({historyReady:false,historyEntry:{}}),false);
   assert.equal(history.ready({historyReady:true,historyEntry:null}),false);
   assert.equal(history.ready({historyReady:true,historyEntry:{}}),true);
-  assert.ok(history.text({chatShown:false}).includes('#pj-marunage'));
+  assert.ok(history.text({chatShown:false}).includes('チャットアイコン'));
   assert.ok(history.text({chatShown:true}).includes('chatbot'));
   assert.ok(guideDefinitions.indexOf(history)>guideDefinitions.findIndex(def=>def.id==='task-done'));
   assert.ok(guideDefinitions.indexOf(history)<guideDefinitions.findIndex(def=>def.id==='report-tab'));

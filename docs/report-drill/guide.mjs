@@ -19,15 +19,15 @@ export function createGuideHistory(storage){
 export const guideDefinitions=[
   {id:'overview',title:'調べて、手がかりを集めて、報告しよう',text:'カンバンのタスクから、依頼への回答に必要そうなものを選んで調査しましょう。\n\n説明に必要な手がかりが揃ったと思ったら、報告タブへ。\nWeb会議で手がかりを3枚選び、依頼主に報告します。\n\nすべてのタスクをこなすと期限に間に合わないかもしれません。',
     ready:c=>c.desk,targets:()=>[],overview:true,ack:'了解した'},
-  {id:'task-start',title:'タスクを開始する',text:'調べたいタスクを選び、「作業中」へドラッグしてください。',hint:'キーボード：タスクにフォーカスして Alt＋→',
-    ready:c=>c.desk&&c.startCards.length>0,targets:c=>[...c.startCards,...document.querySelectorAll('[data-status="working"]')],
+  {id:'task-start',title:'タスクを開始する',text:'作業したいタスクを選び、「作業中」へドラッグしてください。',
+    ready:c=>c.desk&&c.startCards.length>0,targets:c=>[...c.startCards.slice(0,1),...document.querySelectorAll('[data-status="working"]')],
     actions:[],drop:'working'},
   {id:'clue',title:'手がかりを入手しました',text:'タスクによって、報告に使える手がかりが手に入ります。伝わる説明に必要な3枚が揃ったと思ったら、報告タブへ進みましょう。',
     ready:c=>c.desk&&c.clueCount>0,targets:()=>[document.querySelector('.deck-toolbar')],ack:true},
-  {id:'task-done',title:'終わったタスクを整理する',text:'実行したタスクを「完了」へドラッグしてください。あとで「未着手」や「作業中」に戻すこともできます。',hint:'キーボード：タスクにフォーカスして Alt＋→',
+  {id:'task-done',title:'終わったタスクを整理する',text:'実行したタスクを「完了」へドラッグしてください。あとで「未着手」や「作業中」に戻すこともできます。',
     ready:c=>c.desk&&c.doneCards.length>0,targets:c=>[...c.doneCards,...document.querySelectorAll('[data-status="done"]')],
     actions:[],drop:'done'},
-  {id:'history',title:'チャットで履歴を確認する',text:c=>c.chatShown?'調査や報告の記録は、チャット欄のchatbotが投稿します。投稿をクリックすると、そのときの会話を読み返せます。':'「#pj-marunage」を押してチャット欄を開いてください。chatbotの投稿をクリックすると、調査や報告の会話を読み返せます。',
+  {id:'history',title:'チャットで履歴を確認する',text:c=>c.chatShown?'調査や報告の記録は、チャット欄のchatbotが投稿します。投稿をクリックすると、そのときの会話を読み返せます。':'右上のチャットアイコンを押してチャット欄を開いてください。chatbotの投稿をクリックすると、調査や報告の会話を読み返せます。',
     ready:c=>c.historyReady&&Boolean(c.historyEntry),targets:c=>c.chatShown?[c.historyEntry.querySelector('summary')]:[document.querySelector('[data-action="panel:chat"]')],
     actions:['panel:chat'],history:true,reveal:true},
   {id:'report-tab',title:'報告タブを開く',text:'手がかりが3枚以上集まりました。報告タブを開いてみましょう。3枚あるだけで説明が伝わるとは限りません。内容を見て、自分で組み合わせを考えます。',
@@ -41,7 +41,7 @@ export const guideDefinitions=[
   {id:'select',title:'報告する手がかりを3枚選ぶ',text:'報告したい手がかりを3枚、枠へドラッグしてください。カードをクリックして選ぶこともできます。組み合わせは自由に考えてください。',
     ready:c=>c.report&&c.meeting?.share&&c.clueCount>=3&&c.selected<3,targets:()=>[document.querySelector('[data-report-deck]'),document.querySelector('.report-slots')],select:true},
   {id:'submit',title:'選んだ手がかりで報告する',text:'「報告する」を押してください。依頼主に伝われば回答完了です。うまく伝わらなかった時は、調査に戻って報告をやり直せます。',
-    ready:c=>c.report&&c.meeting?.share&&c.selected===3,targets:()=>[document.querySelector('[data-action="submit"]')],actions:['submit']},
+    ready:c=>c.report&&c.meeting?.share&&c.selected===3,targets:()=>[document.querySelector('[data-action="submit"]'),document.querySelector('.report-slots')],actions:['submit'],reorder:true},
 ];
 
 // Clip spotlight holes to the viewport and every scrolling ancestor.
@@ -107,11 +107,11 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
       previousFocus=document.activeElement;
       layer=document.createElement('div');layer.className='operation-guide';layer.dataset.guide=active.id;
       layer.classList.toggle('guide-overview',Boolean(active.overview));
+      layer.classList.toggle('guide-drag',Boolean(active.drop));
       layer.innerHTML='<svg class="guide-shade" aria-hidden="true"><defs><mask id="operation-guide-mask"><rect width="100%" height="100%" fill="white"/><g></g></mask></defs><rect width="100%" height="100%" fill="black" fill-opacity=".78" mask="url(#operation-guide-mask)"/><g class="guide-outlines"></g></svg><div class="guide-focus-effects" aria-hidden="true"></div><section class="guide-card" role="region" aria-labelledby="guide-title" aria-describedby="guide-description" tabindex="-1"><p class="guide-label">操作ガイド</p><div class="guide-card-body"><h2 id="guide-title"></h2><p id="guide-description"></p></div></section>';
       document.body.append(layer);card=layer.querySelector('.guide-card');mask=layer.querySelector('mask g');
       card.querySelector('h2').textContent=active.title;card.querySelector('#guide-description').textContent=typeof active.text==='function'?active.text(c):active.text;
       const body=card.querySelector('.guide-card-body');
-      if(active.hint){const hint=document.createElement('small');hint.textContent=active.hint;body.append(hint);}
       if(active.ack){const id=active.id;const button=document.createElement('button');button.type='button';button.className='primary';button.textContent=typeof active.ack==='string'?active.ack:'確認した';button.onclick=()=>{complete(id);update();};body.append(button);}
       document.body.classList.add('guide-open');
       // Announce the instructions before the player operates the highlighted controls.
@@ -128,7 +128,7 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
     layer.querySelector('.guide-outlines').innerHTML=holes.replaceAll('fill="black"','fill="none" stroke="#a8edcf" stroke-width="2"');
     layer.querySelector('.guide-focus-effects').innerHTML=rects.map(r=>`<div class="guide-focus-target" style="left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px"><span></span><span></span><span></span></div>`).join('');
     // Pick the position with least overlap with the actual operating areas.
-    const width=Math.min(active.overview?480:360,innerWidth-24),height=card.offsetHeight;
+    const width=card.getBoundingClientRect().width,height=card.offsetHeight;
     if(active.overview){Object.assign(card.style,{left:`${(innerWidth-width)/2}px`,top:`${Math.max(24,(innerHeight-height)/2)}px`});return;}
     const positions=[{left:12,top:24},{left:innerWidth-width-12,top:24},{left:12,top:innerHeight-height-24},{left:innerWidth-width-12,top:innerHeight-height-24},{left:(innerWidth-width)/2,top:24},{left:(innerWidth-width)/2,top:innerHeight-height-24}];
     const overlap=p=>rects.reduce((sum,r)=>sum+Math.max(0,Math.min(p.left+width,r.right)-Math.max(p.left,r.left))*Math.max(0,Math.min(p.top+height,r.bottom)-Math.max(p.top,r.top)),0);
@@ -144,10 +144,11 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
     if(event.type==='click'){
       if(active.history&&element.closest('summary.history-item'))return true;
       const action=element.closest('[data-action]')?.dataset.action;
+      if(active.reorder&&action?.startsWith('select:'))return true;
       return active.select?Boolean(action?.startsWith('select:')):Boolean(active.actions?.includes(action));
     }
-    if(['drop','dragover'].includes(event.type))return active.select||element.closest('[data-status]')?.dataset.status===active.drop;
-    if(event.type==='dragstart')return active.select||targets.includes(element.closest('[data-card-id]'));
+    if(['drop','dragover'].includes(event.type))return active.select||active.reorder||element.closest('[data-status]')?.dataset.status===active.drop;
+    if(event.type==='dragstart')return active.select||active.reorder||targets.includes(element.closest('[data-card-id]'));
     return true;
   }
   function guard(event){

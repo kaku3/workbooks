@@ -866,7 +866,7 @@
 .ticket-row-face table{height:100%;table-layout:fixed;white-space:normal}
 .ticket-row-face tbody th{min-width:0}
 .reporting.meeting-unshared .meeting-bottom>.meeting-command-panel{position:relative;right:auto;bottom:auto;margin:8px 0 0 auto}
-.reporting{--report-message-height:173px}
+.reporting{--report-message-height:128px}
 .reporting .meeting-bottom>.report-conversation,.reporting.meeting-unshared .meeting-bottom>.report-conversation{height:var(--report-message-height)}
 .reporting.meeting-unshared .meeting-bottom .conversation-window{height:100%;padding-bottom:0}
 .reporting.meeting-unshared .meeting-bottom .report-request{flex:1;box-sizing:border-box;height:auto;min-height:0;max-height:none}
@@ -884,8 +884,8 @@
 .reporting.meeting-unshared>.meeting-bottom{display:flex;flex-direction:column;gap:18px;position:relative;z-index:4}
 .reporting.meeting-unshared .meeting-bottom>.meeting-command-panel{flex:none;align-self:flex-end;margin:0;z-index:5}
 .reporting.meeting-unshared .meeting-bottom>.report-conversation{flex:none;z-index:2}
-@media(min-width:700px) and (max-height:800px){.reporting{--report-message-height:150px}}
-@media(max-width:699px){.reporting{--report-message-height:177px}}
+@media(min-width:700px) and (max-height:800px){.reporting{--report-message-height:116px}}
+@media(max-width:699px){.reporting{--report-message-height:108px}}
 /* Anchor the cast to the viewport; only the message grows upward. */
 .conversation.with-portraits{inset:16px 0;height:calc(100dvh - 32px);max-height:calc(100dvh - 32px);margin:0 auto;padding:0;overflow:visible}
 .conversation.with-portraits>.portrait-stage{position:absolute;inset:0 8px 90px;max-width:1280px;overflow:hidden;mask-image:linear-gradient(to bottom,#000 calc(100% - 70px),transparent)}
@@ -948,8 +948,8 @@
   .case-actions .browser-tabs button{white-space:normal}
   .workspace-mode .brand{min-width:0;font-size:11px}
   .case-actions .time-status{gap:7px}
-  .kanban{min-width:0;max-width:100%;grid-template-columns:minmax(0,1fr);grid-auto-rows:minmax(240px,auto);overflow-x:hidden;overflow-y:auto;align-items:start;scroll-snap-type:none}
-  .kanban-column{min-width:0;min-height:240px;max-height:clamp(240px,50svh,420px)}
+  .kanban{min-width:0;max-width:100%;grid-template-columns:repeat(3,calc((100% - 8px)*2/3));grid-auto-rows:minmax(0,1fr);gap:8px;overflow-x:auto;overflow-y:hidden;align-items:stretch;scroll-snap-type:x proximity;scroll-padding-inline:0}
+  .kanban-column{min-width:0;min-height:0;max-height:none;scroll-snap-align:start}
   .work-content.board-view{overflow:hidden}
   .ticket-briefing{width:100%;min-width:0;padding:16px 12px 0}
   .ticket-briefing-heading h1{font-size:22px;overflow-wrap:anywhere}
@@ -965,8 +965,101 @@
   .ticket-overview tbody tr>td:nth-child(3){grid-column:1/-1;grid-row:3;font-size:11px}
   .ticket-briefing>footer .primary{min-width:0;width:100%}
   .conversation.with-portraits>.portrait-stage{padding:0;left:0;right:0;mask-image:linear-gradient(to bottom,#000 calc(100% - 24px),transparent)}
-  .conversation.with-portraits .portrait{position:absolute;bottom:0;left:var(--cast-x,50%);width:min(30vw,22svh);transform:translateX(-50%);transform-origin:bottom center;filter:brightness(.6) saturate(.6)}
-  .conversation.with-portraits .portrait.speaking{left:50%;width:min(66vw,36svh,calc((100dvh - 120px)/2.1));transform:translateX(-50%);z-index:10;filter:brightness(1) drop-shadow(0 0 4px #a8d6c630)}
   .conversation-next::after{display:none}
   .conversation-window>.conversation-next,.reporting .conversation-window>.conversation-next{width:40px;height:40px;min-width:40px;min-height:40px;border-radius:50%}
+}
+
+/* The camera faces one fixed row from the center of the meeting table. */
+.conversation.with-portraits>.portrait-stage{padding:0;--listener-width:min(290px,34vh);--seat-gap:min(clamp(130px,30vw,300px),calc((50% - var(--listener-width)/2 - 16px)/var(--seat-span,1)))}
+.conversation.with-portraits .portrait{position:absolute;bottom:0;left:calc(50% + var(--seat-offset,0)*var(--seat-gap));width:var(--listener-width);transform:translateX(-50%);transform-origin:bottom center;filter:brightness(.48) saturate(.55);z-index:2;transition:filter .2s}
+.conversation.with-portraits .portrait.speaking{width:min(380px,44vh);transform:translateX(-50%);filter:brightness(1) drop-shadow(0 0 9px #a8d6c640);z-index:3}
+.conversation.with-portraits .portrait img{width:100%;left:0}
+.conversation.with-portraits .portrait.across-table{display:none}
+.conversation-camera-trail{position:absolute;inset:0;z-index:4;pointer-events:none}
+.conversation-camera-trail>div{position:absolute;background-size:100% 100%;background-repeat:no-repeat}
+@media(max-width:699px){
+  .conversation.with-portraits>.portrait-stage{--listener-width:min(60vw,36svh);--seat-gap:min(62vw,calc((50% - var(--listener-width)/2 - 12px)/var(--seat-span,1)))}
+  .conversation.with-portraits .portrait.speaking{width:min(92.4vw,50.4svh,calc((100dvh - 120px)/1.5),calc(100% - 24px));filter:brightness(1) drop-shadow(0 0 4px #a8d6c630)}
+}
+@media(prefers-reduced-motion:reduce){.conversation.with-portraits .portrait{transition:none}}
+
+/* The animated next arrow overlays the text rather than reserving a column. */
+:is(.dialogue-text,.meeting-dialogue) strong{line-height:1}
+:is(.conversation,.reporting) .conversation-window>.conversation-next{width:24px;height:36px;min-width:24px;min-height:36px;right:1px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;aspect-ratio:auto}
+:is(.conversation,.reporting) .conversation-window>.conversation-next:hover{background:transparent;border:0;box-shadow:none;color:#d5f4e5}
+.conversation-next::after{content:none;display:none;animation:none}
+.conversation-next svg{width:22px;height:22px;filter:drop-shadow(0 1px 2px #0b172b) drop-shadow(0 0 3px #0b172b);animation:conversation-caret 1.1s ease-in-out infinite}
+@keyframes conversation-caret{0%,100%{opacity:1;transform:translateX(-2px)}50%{opacity:.3;transform:translateX(2px)}}
+.conversation>.conversation-window>.dialogue-text{padding-left:16px;padding-right:16px}
+.reporting .conversation-window>.meeting-dialogue{padding-left:16px;padding-right:16px}
+@media(max-width:699px){.conversation>.conversation-window>.dialogue-text,.reporting .conversation-window>.meeting-dialogue{padding-left:8px;padding-right:8px}}
+@media(prefers-reduced-motion:reduce){.conversation-next svg{animation:none}}
+.reduce-motion .conversation-next svg{animation:none}
+.conversation-label.conversation-task{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));max-width:calc(100vw - 24px);z-index:20;box-sizing:border-box;margin:0;padding:7px 10px;border:1px solid #63776d;border-radius:6px;background:#1b2531ed;color:#c8e7da;font-size:12px;line-height:1.5;overflow-wrap:anywhere;pointer-events:none}
+.game-menu{position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:60}
+.game-menu-toggle{display:grid;place-items:center;width:36px;height:36px;padding:7px;border-radius:6px;background:#172a33ed}
+.game-menu-toggle svg{width:22px;height:22px}
+.game-menu-panel{position:absolute;top:44px;right:0;width:min(320px,calc(100vw - 24px));max-height:calc(100dvh - 70px);overflow:auto;padding:12px;border:1px solid #63776d;border-radius:9px;background:#14242bfa;box-shadow:0 10px 30px #0008}
+.game-menu .knowledge{display:flex;flex-direction:column;gap:16px;margin:0;padding:16px}
+.game-menu .stat{margin:0}.game-menu .stat>div:first-child{font-size:13px}
+.game-menu-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.game-menu-actions button{flex:1;min-height:40px;white-space:nowrap}
+.game-menu-panel:has(.menu-knowledge[hidden]) .game-menu-actions{margin-top:0}
+.reporting .meeting-bottom .conversation-window>:is(.report-request,.meeting-dialogue){padding-top:14px;padding-bottom:10px}
+.reporting .report-selection .report-slots{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;overflow-x:hidden;overflow-y:auto;padding:8px 0}
+.reporting .report-board .report-slot{display:flex;align-items:center;gap:8px;flex:0 0 auto;width:100%;min-width:0;min-height:44px;height:auto;padding:0;border-radius:6px}
+.reporting .report-selection{padding-top:0;padding-bottom:0}
+.report-clue-title{display:block;width:100%;min-height:44px;padding:10px;border:0;border-radius:5px;background:transparent;color:#40354c;text-align:left;font-size:13px;line-height:1.5;white-space:normal;overflow-wrap:anywhere;cursor:grab;touch-action:none}
+.reporting .report-slot>.slot-number{position:static;flex:none;padding:8px;font-size:11px;line-height:1.4;margin:0}
+.reporting .report-slot:not(.occupied)>span:not(.slot-number){font-size:12px;padding:8px 8px 8px 0}
+@media(max-width:699px){
+  .reporting:not(.meeting-unshared) .report-stage{grid-template-columns:minmax(0,1fr) 84px;position:relative}
+  .reporting:not(.meeting-unshared) .report-board{grid-column:1;grid-row:1;margin-left:0;padding-bottom:8px;padding-top:0}
+  .reporting:not(.meeting-unshared) .self-panel{grid-column:2;grid-row:1;grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:5px;padding:4px 0 4px 5px}
+  .reporting .self-panel>.meeting-camera{position:relative;inset:auto;width:100%;height:100%;min-height:0;grid-column:1;border-radius:6px}
+  .reporting .self-panel>.meeting-camera>img{height:350%;width:auto;max-width:none;left:50%;top:-12%;transform:translateX(-50%)}
+  .reporting .self-panel>.meeting-camera .camera-live{display:none}
+  .reporting .self-panel>.meeting-camera .camera-name{font-size:9px;padding:4px 7px}
+  .reporting .report-stage>.meeting-command-panel{position:absolute;grid-column:1/-1;grid-row:1;top:6px;left:8px;right:auto;bottom:auto;align-self:start;justify-self:start;width:max-content;max-width:calc(100% - 16px);margin:0;padding:0;gap:0;z-index:8}
+  .reporting .meeting-command-panel .meeting-controls{gap:4px;padding:5px;border:1px solid #92b6bf99;border-radius:12px;background:#17313be8;box-shadow:0 5px 15px #0005;backdrop-filter:blur(8px)}
+  .reporting .meeting-command-panel .meeting-control{width:32px;height:32px;min-width:32px;padding:5px}
+  .reporting:not(.meeting-unshared) .report-stage>.meeting-command-panel{top:-8px}
+  .reporting:not(.meeting-unshared) .share-header{padding:40px 8px 6px}
+}
+.workspace-mode .casebar{padding-right:64px}
+.action-card[draggable="true"],.evidence-card[draggable="true"]{touch-action:pan-y}
+.action-card .action-top,.evidence-card[draggable="true"] .evidence-top{touch-action:none;cursor:grab}
+.guide-open [data-guide-target][data-card-id]{touch-action:none}
+.touch-card-ghost{position:fixed!important;z-index:1100;pointer-events:none!important;opacity:.8;transform:rotate(3deg);max-height:240px;overflow:hidden}
+@media(max-width:699px){.left-rail:not(:has(.memories)){display:none}}
+.game-menu-actions .icon-button{flex:none;display:grid;place-items:center;width:40px;height:40px;padding:8px}
+.kanban-column>h2{font-size:11px;line-height:1.4;padding:0 1px 5px;min-height:0;margin:0}
+.kanban-column>h2 .column-count{font-size:10px;line-height:1.2;padding:1px 5px}
+.floating-chat{position:fixed;top:56px;right:max(10px,env(safe-area-inset-right));z-index:50;display:grid;place-items:center;width:36px;height:36px;padding:7px;border:1px solid #83b6bb88;border-radius:50%;background:#1c3745ed;color:#c8e7da;box-shadow:0 4px 16px #0005}
+.floating-chat svg{width:21px;height:21px}
+.floating-chat .chat-unread-badge{position:absolute;top:-5px;right:-5px;margin:0;min-width:17px;height:17px;padding:0 4px}
+.floating-chat.chat-notify{animation:chat-entry-notify 650ms ease-out}
+@media(prefers-reduced-motion:reduce){.floating-chat.chat-notify{animation:none}}
+/* The board takes all remaining height between the console and clue deck. */
+.kanban-column.todo:not(.drop-target){background:linear-gradient(#d78c7510,#d78c7510),#1b2735;border-color:#b58d7940}
+.kanban-column.working:not(.drop-target){background:linear-gradient(#d6bd6810,#d6bd6810),#1b2735;border-color:#b7a57240}
+.kanban-column.done:not(.drop-target){background:linear-gradient(#7ac7a31a,#7ac7a31a),#1b2735;border-color:#82bd9e50}
+.kanban-column.todo>h2 i{background:#cda08b}
+.kanban-column.working>h2 i{background:#d8c57e}
+.kanban-column.done>h2 i{background:#91c9ad}
+.workspace-mode .work-area:not(.reporting){display:flex;flex-direction:column;flex:1 1 0;min-height:0;overflow:hidden}
+.workspace-mode .work-area:not(.reporting)>.work-content.board-view{height:auto;flex:1 1 0;min-height:0;padding:8px 12px 0}
+.workspace-mode .work-area:not(.reporting)>.clue-drawer:not(.deck-large){flex-shrink:0}
+@media(max-width:699px){.workspace-mode .desktop.show-chat .work-area{display:none}}
+@media(min-width:700px) and (max-width:1099px){
+  .workspace-mode .desktop{grid-template-rows:minmax(0,1fr)}
+  .workspace-mode .chat-panel{display:none;position:fixed;top:104px;right:12px;bottom:12px;width:min(380px,calc(100vw - 24px));height:auto;z-index:45;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 30px #0006}
+  .workspace-mode .desktop.show-chat .chat-panel{display:flex}
+}
+@media(max-width:699px){
+  .guide-drag .guide-card{width:min(300px,calc((100vw - 24px)*2/3))}
+  .guide-drag .guide-card-body{padding:20px 12px 12px}
+  .guide-drag .guide-card h2{font-size:17px;margin-bottom:8px}
+  .guide-drag .guide-card p{font-size:14px;margin-bottom:0}
+  .guide-drag .guide-card .guide-label{left:10px;font-size:12px;padding:2px 6px}
 }
