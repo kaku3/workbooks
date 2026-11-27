@@ -40,7 +40,7 @@ export async function buildPlicy() {
           contents = `${imports.join('\n')}\nexport function mountApp() {\n${contents.replace(/^import .+;\r?\n/gm, '')}\n}`;
         } else {
           if (!contents.includes('clearTimeout(loadingTimeout);')) throw new Error('Dialogue guard insertion point changed');
-          contents = contents.replace('async function dialogue(key, force = false, done = showNext, extraLines) {', 'async function dialogue(key, force = false, done = showNext, extraLines) { const plicyMount = __plicyMountToken();');
+          contents = contents.replace('async function dialogue(key, force = false, done = () => {}, extraLines) {', 'async function dialogue(key, force = false, done = () => {}, extraLines) { const plicyMount = __plicyMountToken();');
           contents = contents.replace('clearTimeout(loadingTimeout);', 'clearTimeout(loadingTimeout); if (!__plicyIsMountCurrent(plicyMount)) return;');
         }
         return { contents, loader: 'js' };
