@@ -689,6 +689,7 @@
   .case-actions .browser-tabs{width:100%;padding:3px 0 0;align-self:auto}
   .case-actions .browser-tabs button{flex:1;min-width:0;padding:8px 5px;gap:5px;font-size:11px;white-space:nowrap}
   .case-actions .browser-tabs svg{width:13px;height:13px;flex-shrink:0}
+  .case-actions .browser-tabs .tab-app-name{display:none}
   .reporting .report-board{grid-template-columns:minmax(0,1fr) 57px;gap:5px}
   .reporting .share-submit>button{width:57px;height:57px;padding:3px;font-size:10px;gap:5px}
   .reporting .share-submit>button small{font-size:10px}
@@ -853,6 +854,8 @@
 .reporting>.meeting-bottom{padding-top:18px}
 .reporting .meeting-bottom>.report-conversation{height:173px}
 .reporting .conversation-window>.conversation-head{right:14px;padding:4px 9px;background:#152c3c;border-color:#8eb7bd88}
+.reporting .conversation-pagination>small,.reporting .conversation-pagination [data-action="scene-skip"]{display:none}
+.reporting .conversation-window>.conversation-head:not(:has(.muted)){display:none}
 .reporting .meeting-bottom .report-request{padding-top:18px}
 .reporting.meeting-unshared .meeting-bottom>.report-conversation{height:auto}
 .reporting.meeting-unshared .conversation-next{bottom:58px}
