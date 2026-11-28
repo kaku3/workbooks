@@ -924,6 +924,15 @@
 .guide-overview .guide-card button{display:flex;margin:20px auto 0}
 .guide-open [data-guide-target]:focus-visible{outline:3px solid #a8edcf;outline-offset:-3px}
 .guide-open [data-guide-target][data-card-id]{touch-action:none}
+.task-drag-handle{display:none}
+@media(max-width:699px){
+  .kanban .action-card{user-select:none;-webkit-user-drag:none}
+  .kanban .action-card .action-top{touch-action:auto;cursor:inherit}
+  .kanban .action-top h3{min-width:0}
+  .task-drag-handle{display:grid;place-items:center;flex:0 0 32px;width:32px;height:36px;margin:-4px -3px -4px 2px;border:1px solid #52707866;border-radius:5px;color:#456574;background:#ffffff45;font-size:24px;line-height:1;touch-action:none;cursor:grab}
+  .guide-open [data-guide-target][data-card-id]{touch-action:pan-y}
+  .board-view .kanban-cards{padding-right:10px}
+}
 .guide-drag-ghost{position:fixed!important;z-index:1001!important;width:160px!important;max-height:180px;overflow:hidden;pointer-events:none!important;opacity:.85;transform:rotate(3deg)}
 .guide-focus-effects{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .guide-focus-target{position:absolute;pointer-events:none}
@@ -1087,7 +1096,6 @@
 .workspace-mode .casebar{padding-right:64px}
 .action-card[draggable="true"],.evidence-card[draggable="true"]{touch-action:pan-y}
 .action-card .action-top,.evidence-card[draggable="true"] .evidence-top{touch-action:none;cursor:grab}
-.guide-open [data-guide-target][data-card-id]{touch-action:none}
 .touch-card-ghost{position:fixed!important;z-index:1100;pointer-events:none!important;opacity:.8;transform:rotate(3deg);max-height:240px;overflow:hidden}
 @media(max-width:699px){.left-rail:not(:has(.memories)){display:none}}
 .game-menu-actions .icon-button{flex:none;display:grid;place-items:center;width:40px;height:40px;padding:8px}

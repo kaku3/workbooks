@@ -107,7 +107,7 @@ const operationGuide=createOperationGuide({storage:chapterStorage,context:()=>{
   return {
     blocked:starting||sceneEffectRunning||deployingTickets||(modal.open&&!taskPopup)||page!=='game'||!['desk','report'].includes(state?.phase)||awaitingClues.size>0||Boolean(document.querySelector('.clue-acquisition-layer,.cost-effect-layer')),
     taskDoneButton:taskPopup?modal.querySelector('[data-action="task-status:done"]'):null,
-    desk,report:page==='game'&&state?.phase==='report',meeting,
+    desk,report:page==='game'&&state?.phase==='report',meeting,mobile:memoViewport.matches,
     reportRejected:Number.isInteger(state?.history.at(-1)?.report?.level)&&state.history.at(-1).report.level<3,
     clueCount:state?.evidence.length||0,selected:state?.selected.length||0,
     historyReady:page==='game'&&state?.phase==='desk'&&state.done.length>0&&deckSize!=='large',
@@ -417,7 +417,7 @@ function investigations(overview=false) {
     const hint=action.id==='wm.source-backend' && state.flags.includes('wm.source-hint');
     const remembered = plan.result.id==='remembered';
     const note = remembered?'前にも調べた気がする':hint?'真壁が言っていた出力経路':!plan.allowed?'使用回数の上限':action.repeatable?(action.repeatHint||'条件を絞って何度でも調査'):done&&!plan.replay?'再調査できる':'';
-    return `<button type="button" draggable="true" class="action-card ${hint?'hint':''} ${lunchDelay?'overdue':''} ${lunchDelay>=60?'overdue-long':''}" ${lunchDelay?`style="--lunch-delay-space:${lunchDelay*2}px"`:''} data-card-id="${esc(action.id)}" data-action="investigate:${esc(action.id)}"><div class="action-top"><span class="card-icon">${icon(actionIcon(action.id))}</span><h3>${esc(action.title)}</h3></div><p>${esc(action.description)}</p>${delayMark}${note?`<div class="action-bottom"><span>${note}</span></div>`:''}${plan.minutes>0?`<span class="action-time ${!plan.allowed?'too-late':''}">${duration(plan.minutes)}</span>`:''}</button>`;
+    return `<button type="button" draggable="true" class="action-card ${hint?'hint':''} ${lunchDelay?'overdue':''} ${lunchDelay>=60?'overdue-long':''}" ${lunchDelay?`style="--lunch-delay-space:${lunchDelay*2}px"`:''} data-card-id="${esc(action.id)}" data-action="investigate:${esc(action.id)}"><div class="action-top"><span class="card-icon">${icon(actionIcon(action.id))}</span><h3>${esc(action.title)}</h3><span class="task-drag-handle" aria-hidden="true" title="ドラッグして移動">⠿</span></div><p>${esc(action.description)}</p>${delayMark}${note?`<div class="action-bottom"><span>${note}</span></div>`:''}${plan.minutes>0?`<span class="action-time ${!plan.allowed?'too-late':''}">${duration(plan.minutes)}</span>`:''}</button>`;
   };
   return `<div class="kanban" aria-label="調査の進捗">${[['todo','未着手'],['working','作業中'],['done','完了']].map(([id,label])=>{
     const items = actions.filter(action=>status(action)===id);
@@ -1028,6 +1028,7 @@ app.addEventListener('dragstart',event=>{
   }
   const card=event.target.closest('[data-card-id]');
   if(!card || state?.phase!=='desk'){event.preventDefault();return;}
+  if(memoViewport.matches&&!event.target.closest('.task-drag-handle')){event.preventDefault();return;}
   draggedCard=card.dataset.cardId;
   event.dataTransfer.setData('text/plain',draggedCard);
   event.dataTransfer.effectAllowed='move';
@@ -1065,6 +1066,7 @@ app.addEventListener('dragend',()=>{
 app.addEventListener('click',async event=>{
   if(sceneEffectRunning)return;
   if(deployingTickets)return;
+  if(event.target.closest('.task-drag-handle'))return;
   if(isMeetingScene()&&event.target.closest('.report-conversation .conversation-window')&&!event.target.closest('[data-action]')){
     advanceMeetingConversation(false);return;
   }

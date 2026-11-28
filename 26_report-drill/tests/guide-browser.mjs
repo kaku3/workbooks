@@ -191,9 +191,10 @@ try {
   }
   await size(390,844,true);await delay(200);
   await screenshot('guide-task-mobile');
+  assert.ok(await evaluate("document.querySelector('#guide-description').textContent.includes('取っ手')&&getComputedStyle(document.querySelector('[data-guide-target][data-card-id]')).touchAction==='pan-y'"),'mobile task guide explains the handle and lets the card body scroll');
   const points=await evaluate(`(()=>{
     for(const el of document.querySelectorAll('[data-guide-target][data-card-id]')){
-      const r=el.getBoundingClientRect(),x=r.left+r.width/2;
+      const r=el.querySelector('.task-drag-handle').getBoundingClientRect(),x=r.left+r.width/2;
       for(let y=Math.max(r.top+10,10);y<Math.min(r.bottom-10,innerHeight-10);y+=20){
         if(el.contains(document.elementFromPoint(x,y))){const d=document.querySelector('[data-status="working"]').getBoundingClientRect();return {id:el.dataset.cardId,x,y,tx:(d.left+Math.min(d.right,innerWidth-10))/2,ty:y};}
       }
@@ -239,7 +240,16 @@ try {
   await screenshot('game-menu-mobile');
   await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape'});
   assert.equal(await evaluate("document.querySelector('#game-menu-panel').hidden"),true,'Escape closes the menu');
-  const freeDrag=await evaluate("(()=>{const source=document.querySelector('.todo [data-card-id]'),r=source.querySelector('.action-top').getBoundingClientRect(),d=document.querySelector('[data-status=working]').getBoundingClientRect();return {id:source.dataset.cardId,x:r.left+r.width/2,y:r.top+r.height/2,tx:(d.left+Math.min(d.right,innerWidth-12))/2};})()");
+  const bodySwipe=await evaluate("(()=>{const list=document.querySelector('.todo .kanban-cards'),card=list.querySelector('.action-card');for(let i=0;i<5;i++){const copy=card.cloneNode(true);copy.dataset.scrollFixture='';list.append(copy);}list.scrollTop=0;const r=card.querySelector('.action-top h3').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};})()");
+  await call('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[bodySwipe]});
+  for(let n=1;n<=8;n++){await call('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:bodySwipe.x,y:bodySwipe.y-100*n/8}]});await delay(16);}
+  await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await delay(100);
+  assert.ok(await evaluate("document.querySelector('.todo .kanban-cards').scrollTop>0"),'swiping the card title scrolls the column vertically');
+  assert.equal((await state()).phase,'desk','scrolling the card body does not start a task');
+  assert.equal(await evaluate("document.querySelector('.touch-card-ghost')"),null,'scrolling the body does not create a drag ghost');
+  await evaluate("document.querySelectorAll('[data-scroll-fixture]').forEach(el=>el.remove());document.querySelector('.todo .kanban-cards').scrollTop=0");await delay(100);
+  await screenshot('task-drag-handle-mobile');
+  const freeDrag=await evaluate("(()=>{const source=document.querySelector('.todo [data-card-id]'),r=source.querySelector('.task-drag-handle').getBoundingClientRect(),d=document.querySelector('[data-status=working]').getBoundingClientRect();return {id:source.dataset.cardId,x:r.left+r.width/2,y:r.top+r.height/2,tx:(d.left+Math.min(d.right,innerWidth-12))/2};})()");
   await call('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:freeDrag.x,y:freeDrag.y}]});
   for(let n=1;n<=6;n++)await call('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:freeDrag.x+(freeDrag.tx-freeDrag.x)*n/6,y:freeDrag.y}]});
   await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});

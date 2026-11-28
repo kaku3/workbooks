@@ -924,6 +924,15 @@
 .guide-overview .guide-card button{display:flex;margin:20px auto 0}
 .guide-open [data-guide-target]:focus-visible{outline:3px solid #a8edcf;outline-offset:-3px}
 .guide-open [data-guide-target][data-card-id]{touch-action:none}
+.task-drag-handle{display:none}
+@media(max-width:699px){
+  .kanban .action-card{user-select:none;-webkit-user-drag:none}
+  .kanban .action-card .action-top{touch-action:auto;cursor:inherit}
+  .kanban .action-top h3{min-width:0}
+  .task-drag-handle{display:grid;place-items:center;flex:0 0 32px;width:32px;height:36px;margin:-4px -3px -4px 2px;border:1px solid #52707866;border-radius:5px;color:#456574;background:#ffffff45;font-size:24px;line-height:1;touch-action:none;cursor:grab}
+  .guide-open [data-guide-target][data-card-id]{touch-action:pan-y}
+  .board-view .kanban-cards{padding-right:10px}
+}
 .guide-drag-ghost{position:fixed!important;z-index:1001!important;width:160px!important;max-height:180px;overflow:hidden;pointer-events:none!important;opacity:.85;transform:rotate(3deg)}
 .guide-focus-effects{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .guide-focus-target{position:absolute;pointer-events:none}
@@ -1087,7 +1096,6 @@
 .workspace-mode .casebar{padding-right:64px}
 .action-card[draggable="true"],.evidence-card[draggable="true"]{touch-action:pan-y}
 .action-card .action-top,.evidence-card[draggable="true"] .evidence-top{touch-action:none;cursor:grab}
-.guide-open [data-guide-target][data-card-id]{touch-action:none}
 .touch-card-ghost{position:fixed!important;z-index:1100;pointer-events:none!important;opacity:.8;transform:rotate(3deg);max-height:240px;overflow:hidden}
 @media(max-width:699px){.left-rail:not(:has(.memories)){display:none}}
 .game-menu-actions .icon-button{flex:none;display:grid;place-items:center;width:40px;height:40px;padding:8px}
@@ -1122,6 +1130,10 @@
 .reporting:not(.meeting-unshared)>.work-content.report-view{grid-column:1;grid-row:1;min-height:0;min-width:0}
 .reporting:not(.meeting-unshared) .report-stage{grid-template-columns:155px minmax(0,1fr);min-height:0;height:100%}
 .reporting:not(.meeting-unshared) .report-board{grid-column:2;grid-row:1;margin-left:0;grid-template-columns:minmax(0,1fr);padding-bottom:8px}
+.reporting .report-board{grid-template-rows:24px minmax(0,1fr);row-gap:4px}
+.reporting .report-board .share-header{justify-content:flex-end;align-self:start;margin:0;padding:2px 6px;border:0;background:transparent;color:#765396;font-size:10px;line-height:20px}
+.reporting.report-speaking .report-stage>.meeting-camera.camera-off{display:grid;place-items:center;background:#243945}
+.reporting.report-speaking .report-stage>.meeting-camera.camera-off>svg{width:clamp(64px,15vw,150px);height:clamp(64px,15vw,150px);color:#aac2cc}
 .reporting:not(.meeting-unshared)>.meeting-bottom{grid-column:1;grid-row:2;min-width:0;padding:18px 8px 8px}
 .reporting:not(.meeting-unshared)>.clue-drawer{grid-column:1/-1;grid-row:3}
 .meeting-sidebar{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;min-width:0;min-height:0;padding:8px 8px 8px 0;gap:8px}
@@ -1134,6 +1146,10 @@
   .reporting:not(.meeting-unshared){--participant-width:84px}
   .reporting:not(.meeting-unshared) .report-stage{grid-template-columns:minmax(0,1fr)}
   .reporting:not(.meeting-unshared) .report-board{grid-column:1}
+  .reporting .report-board{grid-template-rows:32px minmax(0,1fr)}
+  .reporting:not(.meeting-unshared) .report-stage>.meeting-command-panel{top:0;left:4px}
+  .reporting:not(.meeting-unshared) .meeting-command-panel .meeting-controls{gap:3px;padding:3px}
+  .reporting:not(.meeting-unshared) .meeting-command-panel .meeting-control{width:26px;height:26px;min-width:26px;padding:4px}
 }
 .reporting.selecting-clues{--report-message-height:84px}
 .reporting.selecting-clues .meeting-bottom .report-request{font-size:16px;line-height:1.55;padding-top:10px;padding-bottom:8px}

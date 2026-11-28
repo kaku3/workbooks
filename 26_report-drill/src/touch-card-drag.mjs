@@ -35,6 +35,7 @@ export function installTouchCardDrag(root,{enabled,describe,drop}){
     const source=event.target.closest('[draggable="true"]');
     const item=source&&describe(source);
     if(!item)return;
+    if(item.kind==='task'&&matchMedia('(max-width:699px)').matches&&!event.target.closest('.task-drag-handle'))return;
     clear();
     drag={...item,source,pointer:event.pointerId,startX:event.clientX,startY:event.clientY,x:event.clientX,y:event.clientY};
     source.setPointerCapture(event.pointerId);

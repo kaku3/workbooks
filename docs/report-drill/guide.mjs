@@ -19,7 +19,7 @@ export function createGuideHistory(storage){
 export const guideDefinitions=[
   {id:'overview',title:'調べて、手がかりを集めて、報告しよう',text:'カンバンのタスクから、依頼への回答に必要そうなものを選んで調査しましょう。\n\n説明に必要な手がかりが揃ったと思ったら、報告タブへ。\nWeb会議で手がかりを3枚選び、依頼主に報告します。\n\nすべてのタスクをこなすと期限に間に合わないかもしれません。',
     ready:c=>c.desk,targets:()=>[],overview:true,ack:'了解した'},
-  {id:'task-start',title:'タスクを開始する',text:'作業したいタスクを選び、「作業中」へドラッグしてください。',
+  {id:'task-start',title:'タスクを開始する',text:c=>c.mobile?'作業したいタスクの右上にある取っ手「⠿」をつかみ、「作業中」へドラッグしてください。カード本体では縦にスクロールできます。':'作業したいタスクを選び、「作業中」へドラッグしてください。',
     ready:c=>c.desk&&c.startCards.length>0,targets:c=>[...c.startCards.slice(0,1),...document.querySelectorAll('[data-status="working"]')],
     actions:[],drop:'working'},
   {id:'clue',title:'手がかりを入手しました',text:'タスクによって、報告に使える手がかりが手に入ります。伝わる説明に必要な3枚が揃ったと思ったら、報告タブへ進みましょう。',
@@ -160,7 +160,7 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
     if(!layer)return;
     if(event.type==='pointerdown'&&event.pointerType==='touch'&&active.drop){
       const source=event.target.closest('[data-card-id]');
-      if(targets.includes(source)){
+      if(targets.includes(source)&&(!context().mobile||event.target.closest('.task-drag-handle'))){
         event.preventDefault();source.setPointerCapture(event.pointerId);
         touchDrag={source,id:source.dataset.cardId,x:event.clientX,y:event.clientY,pointer:event.pointerId};return;
       }
