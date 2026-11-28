@@ -107,7 +107,7 @@ const operationGuide=createOperationGuide({storage:chapterStorage,context:()=>{
   return {
     blocked:starting||sceneEffectRunning||deployingTickets||(modal.open&&!taskPopup)||page!=='game'||!['desk','report'].includes(state?.phase)||awaitingClues.size>0||Boolean(document.querySelector('.clue-acquisition-layer,.cost-effect-layer')),
     taskDoneButton:taskPopup?modal.querySelector('[data-action="task-status:done"]'):null,
-    desk,report:page==='game'&&state?.phase==='report',meeting,mobile:memoViewport.matches,
+    desk,report:page==='game'&&state?.phase==='report',meeting,mobile:memoViewport.matches,reportDeckFull:deckSize==='large',
     reportRejected:Number.isInteger(state?.history.at(-1)?.report?.level)&&state.history.at(-1).report.level<3,
     clueCount:state?.evidence.length||0,selected:state?.selected.length||0,
     historyReady:page==='game'&&state?.phase==='desk'&&state.done.length>0&&deckSize!=='large',
@@ -439,6 +439,10 @@ function notebook(selectable = false) {
   return `<div class="evidence-grid ${selectable?'clue-carousel':''}" ${selectable?'tabindex="0" aria-label="報告する手がかりを横スクロールで選択"':''}>${cards.map(card=>evidenceCard(card,selectable)).join('') || `<div class="empty">${icon('book')}<h3>まだ、メモは白紙。</h3><p>調査で分かったことが、手がかりとしてここに残ります。</p></div>`}</div>`;
 }
 function deckToolbar(){
+  if(state.phase==='report'||isMeetingScene()){
+    const full=deckSize==='large';
+    return `<div class="deck-toolbar"><div class="deck-handle fixed-deck-label">${icon('sheet')} 調査.xlsx <span>${visibleClueCount()}</span></div>${full?`<span class="deck-selection-count" role="status">${state.selected.length} / 3枚 選択中</span>`:''}<div class="deck-sizes">${button(`deck-size:${full?'medium':'large'}`,full?'戻る':'全画面','',`aria-label="${full?'通常表示に戻る':'調査.xlsxを全画面表示'}"`)}</div></div>`;
+  }
   const sizes=[['small','小','<path d="M4 15h16v5H4z"/>'],['medium','中','<path d="M4 9h16v11H4z"/>'],['large','大','<path d="M4 4h16v16H4zM8 4v16"/>']];
   return `<div class="deck-toolbar"><div class="deck-handle fixed-deck-label">${icon('sheet')} 調査.xlsx <span>${visibleClueCount()}</span></div><div class="deck-sizes" role="group" aria-label="調査デッキの表示サイズ">${sizes.map(([size,label,path])=>button(`deck-size:${size}`,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">${path}</svg>`,size===deckSize?'active':'',`aria-label="${label}表示" title="${label}表示" aria-pressed="${size===deckSize}"`)).join('')}</div></div>`;
 }
@@ -493,7 +497,7 @@ function chatPanel() {
 }
 function workspace() {
   const reporting=state.phase==='report'||isMeetingScene();
-  if(reporting)deckSize='medium';
+  if(reporting&&(deckSize!=='large'||isMeetingScene()||meeting?.phase==='lobby'))deckSize='medium';
   const progress = (state.time-minutes(problem.clock.start))/(engine.deadline-minutes(problem.clock.start))*100;
   const content=reporting?reportPage():investigations();
   return `${header()}<div class="casebar"><div><span class="case-index">CASE ${caseLabel}</span><strong>${esc(problem.title)}</strong><span class="loop-label">${state.loop}日目</span></div><div class="case-actions"><nav class="report-actions browser-tabs" role="tablist" aria-label="作業画面">${button('investigate',`${icon('search')} 調査カンバン<span class="tab-app-name"> - Backlog</span>`,reporting?'':'active',`role="tab" aria-selected="${!reporting}"`)}${button('report',`${icon('video')} 報告<span class="tab-app-name"> - Meets</span>`,reporting?'active':'',`role="tab" aria-selected="${reporting}"`)}</nav><div class="time-status">${icon('clock')}<strong class="game-clock">${clock(state.time).replace(':','<span class="clock-colon">:</span>')}</strong><span>回答期限 18:00</span><div class="time-track"><i style="width:${progress}%"></i></div></div></div></div><main class="desktop"><aside class="left-rail">${stats()}<div class="sidebar-coffee">${button('coffee',`${icon('coffee')} コーヒーを飲む <small>${state.helpUsed.includes(coffeeId)?'使用済み':'残り1回 · 5m'}</small>`,'coffee-button',state.helpUsed.includes(coffeeId)?'disabled':'')}</div><div class="left-bottom">${button('restart','はじめからやり直す','text-button')}</div></aside><section class="work-area ${reporting?'reporting':''}" data-deck-size="${deckSize}"><div class="work-content">${content}</div><section class="clue-drawer ${deckSize!=='small'?'open':''} deck-${deckSize}" aria-label="手元の手がかり">${deckToolbar()}<div id="shared-clue-deck" data-report-deck>${notebook(reporting)}</div></section></section>${chatPanel()}</main>`;
@@ -994,7 +998,8 @@ installTouchCardDrag(app,{
   },
 });
 function setDeckSize(size){
-  if(state?.phase==='report'||isMeetingScene())return;
+  if(isMeetingScene())return;
+  if(state?.phase==='report'&&(!meeting?.share||size==='small'))return;
   if(!['small','medium','large'].includes(size))return;
   deckSize=size;render();
 }

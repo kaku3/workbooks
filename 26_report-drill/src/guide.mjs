@@ -38,10 +38,10 @@ export const guideDefinitions=[
     ready:c=>c.report&&c.meeting?.phase==='lobby',targets:()=>[document.querySelector('[data-action="join-meeting"]')],actions:['join-meeting']},
   {id:'share',title:'報告用の画面を共有する',text:'画面共有ボタンを押してください。共有した画面に、報告する手がかりを配置できます。',
     ready:c=>c.report&&c.meeting?.phase==='speaking'&&c.meeting.requestReady&&!c.meeting.share,targets:()=>[document.querySelector('[data-action="meeting-share"]')],actions:['meeting-share']},
-  {id:'select',title:'報告する手がかりを3枚選ぶ',text:'手元のカードを横にスクロールし、報告したい手がかりを3枚タップしてください。選択したカードをもう一度タップすると解除できます。組み合わせは自由に考えてください。',
-    ready:c=>c.report&&c.meeting?.share&&c.clueCount>=3&&c.selected<3,targets:()=>[document.querySelector('[data-report-deck]'),document.querySelector('.report-slots')],select:true},
-  {id:'submit',title:'選んだ手がかりで報告する',text:'「報告する」を押してください。依頼主に伝われば回答完了です。うまく伝わらなかった時は、調査に戻って報告をやり直せます。',
-    ready:c=>c.report&&c.meeting?.share&&c.selected===3,targets:()=>[document.querySelector('[data-action="submit"]'),document.querySelector('.report-slots')],actions:['submit'],deselect:true},
+  {id:'select',title:'報告する手がかりを3枚選ぶ',text:c=>c.reportDeckFull?'報告したい手がかりを3枚タップしてください。カードをもう一度タップすると解除できます。「戻る」で共有画面に戻ります。':'手元のカードを横にスクロールし、報告したい手がかりを3枚タップしてください。「全画面」で一覧を広げることもできます。選択したカードをもう一度タップすると解除できます。',
+    ready:c=>c.report&&c.meeting?.share&&c.clueCount>=3&&c.selected<3,targets:c=>c.reportDeckFull?[document.querySelector('.clue-drawer')]:[document.querySelector('.clue-drawer'),document.querySelector('.report-slots')],select:true,actions:['deck-size:large','deck-size:medium']},
+  {id:'submit',title:'選んだ手がかりで報告する',text:c=>c.reportDeckFull?'3枚選べました。「戻る」を押して共有画面に戻り、「報告する」を押してください。カードをもう一度タップすると選び直せます。':'「報告する」を押してください。依頼主に伝われば回答完了です。うまく伝わらなかった時は、調査に戻って報告をやり直せます。',
+    ready:c=>c.report&&c.meeting?.share&&c.selected===3,targets:c=>c.reportDeckFull?[document.querySelector('.clue-drawer')]:[document.querySelector('[data-action="submit"]'),document.querySelector('.report-slots'),document.querySelector('.clue-drawer')],actions:['submit','deck-size:medium','deck-size:large'],deselect:true},
 ];
 
 // Clip spotlight holes to the viewport and every scrolling ancestor.
@@ -51,7 +51,7 @@ function visibleRect(element){
   if(style.visibility==='hidden'||style.display==='none')return null;
   const rect=element.getBoundingClientRect();
   let left=Math.max(0,rect.left),top=Math.max(0,rect.top),right=Math.min(innerWidth,rect.right),bottom=Math.min(innerHeight,rect.bottom);
-  for(let parent=element.parentElement;parent;parent=parent.parentElement){
+  for(let parent=style.position==='fixed'?null:element.parentElement;parent;parent=parent.parentElement){
     const css=getComputedStyle(parent),bounds=parent.getBoundingClientRect();
     if(/auto|scroll|hidden|clip/.test(css.overflowX)){left=Math.max(left,bounds.left);right=Math.min(right,bounds.right);}
     if(/auto|scroll|hidden|clip/.test(css.overflowY)){top=Math.max(top,bounds.top);bottom=Math.min(bottom,bounds.bottom);}
@@ -121,6 +121,9 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
       card.focus({preventScroll:true});onChange();
     }
     const description=typeof active.text==='function'?active.text(c):active.text;
+    const fullReport=Boolean(c.reportDeckFull&&(active.select||active.deselect));
+    layer.classList.toggle('guide-report-full',fullReport);
+    document.querySelector('.clue-drawer.deck-large')?.style.setProperty('--report-guide-height',`${fullReport?card.offsetHeight+36:16}px`);
     if(portalChanged)focusFirst();
     if(card.querySelector('#guide-description').textContent!==description){card.querySelector('#guide-description').textContent=description;lastLayout='';}
     const rects=targets.map(visibleRect).filter(Boolean);
@@ -133,6 +136,7 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
     layer.querySelector('.guide-focus-effects').innerHTML=rects.map(r=>`<div class="guide-focus-target" style="left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px"><span></span><span></span><span></span></div>`).join('');
     // Pick the position with least overlap with the actual operating areas.
     const width=card.getBoundingClientRect().width,height=card.offsetHeight;
+    if(fullReport){Object.assign(card.style,{left:`${Math.max(12,innerWidth-width-12)}px`,top:`${Math.max(24,innerHeight-height-16)}px`});return;}
     if(active.overview){Object.assign(card.style,{left:`${(innerWidth-width)/2}px`,top:`${Math.max(24,(innerHeight-height)/2)}px`});return;}
     const positions=[{left:12,top:24},{left:innerWidth-width-12,top:24},{left:12,top:innerHeight-height-24},{left:innerWidth-width-12,top:innerHeight-height-24},{left:(innerWidth-width)/2,top:24},{left:(innerWidth-width)/2,top:innerHeight-height-24}];
     const overlap=p=>rects.reduce((sum,r)=>sum+Math.max(0,Math.min(p.left+width,r.right)-Math.max(p.left,r.left))*Math.max(0,Math.min(p.top+height,r.bottom)-Math.max(p.top,r.top)),0);
@@ -150,7 +154,7 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
       const action=element.closest('[data-action]')?.dataset.action;
       if(active.deselect&&action?.startsWith('select:'))return true;
       const actions=typeof active.actions==='function'?active.actions(context()):active.actions;
-      return active.select?Boolean(action?.startsWith('select:')):Boolean(actions?.includes(action));
+      return Boolean(active.select&&action?.startsWith('select:')||actions?.includes(action));
     }
     if(['drop','dragover'].includes(event.type))return Boolean(active.drop&&element.closest('[data-status]')?.dataset.status===active.drop);
     if(event.type==='dragstart')return Boolean(active.drop&&targets.includes(element.closest('[data-card-id]')));

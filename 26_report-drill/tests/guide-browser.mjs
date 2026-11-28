@@ -143,7 +143,23 @@ try {
     await screenshot(`guide-select-${width}`);
   }
   await size(1440,1000);await delay(200);
-  for(const id of (await state()).evidence.slice(0,3))await click(`#shared-clue-deck [data-action="select:${id}"]`);
+  await click('[data-action="deck-size:large"]');
+  assert.ok(await evaluate("Boolean(document.querySelector('.reporting>.clue-drawer.deck-large'))"),'report workbook opens full-screen during the selection guide');
+  const fullScreenClues=(await state()).evidence.slice(0,3);
+  for(const id of fullScreenClues)await click(`#shared-clue-deck [data-action="select:${id}"]`);
+  assert.deepEqual((await state()).selected,fullScreenClues,'three clues can be selected without leaving full-screen');
+  for(const [width,height] of [[1440,1000],[390,844]]){
+    await size(width,height,width<700);await delay(200);
+    assert.ok(await evaluate("(()=>{const deck=document.querySelector('.clue-drawer.deck-large'),r=deck.getBoundingClientRect(),list=deck.querySelector('.evidence-grid');return r.top===0&&r.left===0&&Math.abs(r.width-innerWidth)<1&&Math.abs(r.height-innerHeight)<1&&deck.querySelector('.deck-selection-count').textContent.includes('3 / 3')&&deck.querySelectorAll('[draggable=true]').length===0&&parseFloat(getComputedStyle(list).paddingBottom)>document.querySelector('.guide-card').getBoundingClientRect().height;})()"),`full-screen selection fits the viewport and keeps space for the guide at ${width}px`);
+    await screenshot(`report-fullscreen-${width}`);
+  }
+  await click(`#shared-clue-deck [data-action="select:${fullScreenClues[0]}"]`);
+  assert.equal((await state()).selected.length,2,'full-screen tap deselects a clue');
+  await click(`#shared-clue-deck [data-action="select:${fullScreenClues[0]}"]`);
+  await click('[data-action="deck-size:medium"]');
+  assert.deepEqual((await state()).selected,fullScreenClues,'returning to the shared view preserves all three clues');
+  assert.equal(await evaluate("document.querySelector('.clue-drawer.deck-large')"),null);
+  await size(1440,1000);
   await waitGuide('submit');await screenshot('guide-submit');
   await click('[data-action=submit]');assert.equal((await state()).phase,'scene');
   assert.equal(await guide(),null,'return guide waits until report feedback finishes');
