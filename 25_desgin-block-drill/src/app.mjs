@@ -24,7 +24,7 @@ const el = (tag, text, className) => { const e = document.createElement(tag); if
 const KEY = `design-block-drill.v2.${drill.id}`;
 let graph = clone(initialGraph), selected = initialGraph.nodes[0].id, test = tests[0] || null, run, timer, selectedToken = 0;
 let results = {};
-const individualPasses = new Set();
+let needsBatchReview = false;
 let caseFilter = 'all';
 let selectedNodes = new Set();
 let logSource = null;
@@ -159,7 +159,7 @@ function renderPalette() {
 function reset() { pause(); clearProcessingEffects(); batchRun = null; run = test ? createRun(graph, test) : { tokens: [], logs: [], step: 0, status: 'ready' }; selectedToken = 0; render(); }
 function changed() { save(); reset(); renderEditor(); renderPalette(); }
 function renderCases() {
-  $('#batch').classList.toggle('batch-ready', !batchRun && tests.length > 0 && tests.every(t => individualPasses.has(t.id)));
+  $('#batch').classList.toggle('batch-ready', !batchRun && needsBatchReview && tests.length > 0 && tests.every(t => results[t.id] === true));
   $('#caseFilters').hidden = !Object.keys(results).length && !batchRun;
   const counts = { all: tests.length, pass: Object.values(results).filter(value => value === true).length, fail: Object.values(results).filter(value => value === false).length };
   const filterLabels = { all: 'すべて', pass: 'Pass', fail: 'Fail' };
@@ -613,10 +613,7 @@ function renderResults() {
   if (!final) { stampedRun = null; $('.test-result-stamp')?.remove(); }
   else if (stampedRun !== run) {
     stampedRun = run; stampTestResult(result.pass);
-    if (!batchRun) {
-      if (result.pass) individualPasses.add(test.id);
-      else individualPasses.delete(test.id);
-    }
+    if (!batchRun) needsBatchReview = true;
   }
   if (final) { drawer.dataset.result = result.pass ? 'pass' : 'fail'; results[test.id] = result.pass; }
   $('#drawerTitle').textContent = `${test.id} ${test.title}`;
@@ -716,13 +713,13 @@ $('#speed').onclick = event => {
 };
 $('#reset').onclick = reset;
 $('#restore').onclick = () => {
-  individualPasses.clear();
+  needsBatchReview = false;
   results = {}; caseFilter = 'all'; assertionFilter = 'all'; selectedNodes.clear();
   $('#caseFilters').querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === 'all')));
   graph = clone(initialGraph); selected = graph.nodes[0].id; changed();
 };
 $('#batch').onclick = () => {
-  individualPasses.clear();
+  needsBatchReview = false;
   pause(); results = {}; test = tests[0]; reset();
   
   openTestDrawerForExecution(); batchRun = { index: 0, nextAt: 0 };
