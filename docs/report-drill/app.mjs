@@ -296,7 +296,13 @@ function save() {
   }
   catch { saveError = 'このブラウザには保存できません。閉じると今回の続きが失われます。'; }
 }
-function notify(text) { document.querySelector('#notice').textContent = text; }
+let noticeTimer;
+function notify(text,timeout=0) {
+  clearTimeout(noticeTimer);
+  const notice=document.querySelector('#notice');
+  notice.textContent=text;
+  if(timeout>0)noticeTimer=setTimeout(()=>{notice.textContent='';},timeout);
+}
 function button(action, text, className = '', extra = '') { return `<button type="button" data-action="${action}" class="${className}" ${extra}>${text}</button>`; }
 function avatar(speaker, large = false) { return `<span class="avatar ${speaker} ${large ? 'large' : ''}" aria-hidden="true">${initials[speaker] || '人'}</span>`; }
 function resetChat() { unread = 0; unreadStartKey=null;pendingUnreadScroll=false;chatScroll = 0; chatBottom = true; mobilePanel='desk'; seenFeedKeys=null; }
@@ -441,7 +447,8 @@ function notebook(selectable = false) {
 function deckToolbar(){
   if(state.phase==='report'||isMeetingScene()){
     const full=deckSize==='large';
-    return `<div class="deck-toolbar"><div class="deck-handle fixed-deck-label">${icon('sheet')} 調査.xlsx <span>${visibleClueCount()}</span></div>${full?`<span class="deck-selection-count" role="status">${state.selected.length} / 3枚 選択中</span>`:''}<div class="deck-sizes">${button(`deck-size:${full?'medium':'large'}`,full?'戻る':'全画面','',`aria-label="${full?'通常表示に戻る':'調査.xlsxを全画面表示'}"`)}</div></div>`;
+    const controls=state.phase==='report'&&meeting?.share?`<div class="deck-sizes">${button(`deck-size:${full?'medium':'large'}`,full?'戻る':'全画面','',`aria-label="${full?'通常表示に戻る':'調査.xlsxを全画面表示'}"`)}</div>`:'';
+    return `<div class="deck-toolbar"><div class="deck-handle fixed-deck-label">${icon('sheet')} 調査.xlsx <span>${visibleClueCount()}</span></div>${full?`<span class="deck-selection-count" role="status">${state.selected.length} / 3枚 選択中</span>`:''}${controls}</div>`;
   }
   const sizes=[['small','小','<path d="M4 15h16v5H4z"/>'],['medium','中','<path d="M4 9h16v11H4z"/>'],['large','大','<path d="M4 4h16v16H4zM8 4v16"/>']];
   return `<div class="deck-toolbar"><div class="deck-handle fixed-deck-label">${icon('sheet')} 調査.xlsx <span>${visibleClueCount()}</span></div><div class="deck-sizes" role="group" aria-label="調査デッキの表示サイズ">${sizes.map(([size,label,path])=>button(`deck-size:${size}`,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">${path}</svg>`,size===deckSize?'active':'',`aria-label="${label}表示" title="${label}表示" aria-pressed="${size===deckSize}"`)).join('')}</div></div>`;
@@ -1125,7 +1132,7 @@ app.addEventListener('click',async event=>{
     const id=action.slice(7); if(state.phase!=='report'||!state.evidence.includes(id))return;
     if(state.selected.includes(id))placeClue(id,null);
     else if(state.selected.length<3){const slots=state.reportSlots||Array.from({length:3},(_,i)=>state.selected[i]||null);placeClue(id,slots.findIndex(item=>!item));}
-    else notify('手がかりは3枚までです。選択を外して入れ替えてください。');
+    else notify('手がかりは3枚までです。選択を外して入れ替えてください。',3000);
     return;
   }
   if(action==='coffee'){beginInvestigation(coffeeId);return;}
