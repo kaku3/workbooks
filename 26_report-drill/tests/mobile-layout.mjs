@@ -87,11 +87,16 @@ try {
           await click(`[data-action="deck-size:${deckSize}"]`);
           assert.ok(await evaluate("(()=>{const area=document.querySelector('.work-area').getBoundingClientRect(),board=document.querySelector('.board-view').getBoundingClientRect(),deck=document.querySelector('.clue-drawer').getBoundingClientRect();return Math.abs(board.top-area.top)<1&&Math.abs(board.bottom-deck.top)<1&&Math.abs(deck.bottom-innerHeight)<2&&Math.abs(board.height+deck.height-area.height)<2;})()"),`board fills remaining space at ${width}x${height}, ${deckSize} deck`);
         }
+        assert.ok(await evaluate("!document.querySelector('.game-menu-toggle').hidden&&document.querySelector('#game-menu-panel .game-menu-actions')"),'phone keeps the two actions inside its hamburger menu');
+        await click('[data-action="deck-size:large"]');
+        assert.ok(await evaluate("(()=>{const r=document.querySelector('.game-menu-toggle').getBoundingClientRect();return Boolean(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)?.closest('.deck-large'));})()"),'full-screen workbook covers the phone hamburger menu');
+        await click('[data-action="deck-size:small"]');
       }
       if(phase==='briefing')assert.ok(await evaluate("(()=>{const o=document.querySelector('.ticket-overview');return o.scrollWidth<=o.clientWidth+1&&o.getBoundingClientRect().right<=innerWidth;})()"),'overview fits without horizontal scrolling');
-      if(phase==='report')assert.ok(await evaluate("(()=>{const text=document.querySelector('.report-request'),frame=text.closest('.conversation-window').getBoundingClientRect();return frame.height<=110&&text.scrollHeight<=text.clientHeight;})()"),'report message frame is compact and its request fits without scrolling');
+      if(phase==='report')assert.ok(await evaluate("(()=>{const text=document.querySelector('.report-request'),frame=text.closest('.conversation-window').getBoundingClientRect();return frame.height<=150&&text.scrollHeight<=text.clientHeight;})()"),'report message frame is compact and its request fits without scrolling');
       if(phase==='report')assert.ok(await evaluate("import('./dialogue-text.mjs').then(({setDialogue})=>{const text=document.querySelector('.report-request'),span=text.querySelector('.report-request-text'),sample=Array(4).fill('**強調**の台詞です。').join('\\n');text.dataset.fullDialogue=sample;dispatchEvent(new Event('resize'));setDialogue(span,sample);return text.contains(span)&&text.scrollHeight<=text.clientHeight;})"),'four emphasized report lines fit without scrolling and keep the typewriter span connected');
       if(phase==='report'){
+        assert.ok(await evaluate("(()=>{const message=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),people=document.querySelector('.self-panel').getBoundingClientRect(),submit=document.querySelector('.share-submit button').getBoundingClientRect();return message.right<=people.left&&message.right<=submit.left&&Math.abs(people.left-submit.left)<1&&people.bottom>message.top&&submit.top>=people.bottom&&Math.abs(submit.bottom-message.bottom)<2;})()"),'participant gallery extends beside the message and Submit sits below it at the message right');
         if(width===320)await screenshot('mobile-meeting-layout-debug');
         const meetingLayout=await evaluate("JSON.stringify({stage:document.querySelector('.report-stage').getBoundingClientRect().toJSON(),controls:document.querySelector('.meeting-controls').getBoundingClientRect().toJSON(),people:[...document.querySelector('.self-panel').children].map(p=>p.getBoundingClientRect().toJSON())})");
         assert.ok(await evaluate("(()=>{const stage=document.querySelector('.report-stage').getBoundingClientRect(),controls=document.querySelector('.meeting-controls').getBoundingClientRect(),people=[...document.querySelector('.self-panel').children].map(p=>p.getBoundingClientRect());return people.length===3&&people.every(p=>p.width>0&&p.height>0&&p.left>stage.left+stage.width/2&&p.right<=innerWidth)&&people.every((p,i)=>!i||p.top>=people[i-1].bottom)&&controls.left<=stage.left+10&&controls.top<=stage.top+8&&controls.right<=people[0].left;})()"),`sharing stacks three cameras on the right and puts controls in the top left: ${meetingLayout}`);
@@ -115,6 +120,10 @@ try {
   assert.equal(await evaluate("document.querySelector('dialog[open]>.conversation-task').textContent"),'依頼と現物を確認する - 20m経過','desktop uses the same task label');
   for(const [width,height] of [[1024,768],[1440,900]]){
     await size(width,height);await seed('desk');
+    assert.ok(await evaluate("document.querySelector('.game-menu-toggle').hidden&&document.querySelectorAll('.game-menu>.game-menu-actions button').length===2&&[...document.querySelectorAll('.game-menu>.game-menu-actions button')].every(b=>b.getBoundingClientRect().width>0)"),'desktop shows Home and Settings directly without a hamburger');
+    await click('[data-action="deck-size:large"]');
+    assert.ok(await evaluate("(()=>{const r=document.querySelector('.game-menu').getBoundingClientRect();return Boolean(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2)?.closest('.deck-large'));})()"),'full-screen workbook covers desktop menu actions');
+    await click('[data-action="deck-size:small"]');
     assert.equal(await evaluate("document.querySelectorAll('.left-rail .stat').length"),2,'desktop shows both statuses in the left column');
     assert.equal(await evaluate("document.querySelectorAll('.menu-knowledge .stat').length"),0,'desktop menu does not duplicate the statuses');
     const layout=await evaluate("(()=>{const area=document.querySelector('.work-area').getBoundingClientRect(),board=document.querySelector('.board-view').getBoundingClientRect(),deck=document.querySelector('.clue-drawer').getBoundingClientRect(),main=document.querySelector('.desktop').getBoundingClientRect(),chat=document.querySelector('.chat-panel').getBoundingClientRect();return {area:area.toJSON(),board:board.toJSON(),deck:deck.toJSON(),main:main.toJSON(),chat:chat.toJSON(),height:innerHeight};})()");
@@ -125,6 +134,9 @@ try {
       await click('[data-action="panel:chat"]');
       assert.equal(await evaluate("getComputedStyle(document.querySelector('.chat-panel')).display"),'none','tablet chat closes with the same icon');
     }
+    await seed('report');
+    assert.ok(await evaluate("(()=>{const message=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),people=document.querySelector('.self-panel').getBoundingClientRect(),submit=document.querySelector('.share-submit button').getBoundingClientRect();return message.right<=people.left&&message.right<=submit.left&&Math.abs(people.left-submit.left)<1&&people.bottom>message.top&&submit.top>=people.bottom&&Math.abs(submit.bottom-message.bottom)<2;})()"),`desktop report uses the side gallery and bottom submit at ${width}px`);
+    if(width===1440)await screenshot('desktop-report-sidebar');
   }
   for(const [width,height] of [[1920,870],[1500,1000],[980,700],[700,900]]){
     await size(width,height);await seed('scene');

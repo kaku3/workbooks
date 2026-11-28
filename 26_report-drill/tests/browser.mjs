@@ -174,7 +174,7 @@ try {
   assert.deepEqual(await evaluate("[...document.querySelectorAll('.todo [data-card-id]')].map(card=>card.dataset.cardId)"),initialTickets);
   assert.equal((await state()).time,540);
   assert.equal(await evaluate("document.querySelector('.topbar')"),null,'game header row is removed');
-  assert.ok(await evaluate("Boolean(document.querySelector('[data-action=menu-toggle]'))"),'game menu is available at the top right');
+  assert.ok(await evaluate("document.querySelector('[data-action=menu-toggle]').hidden&&document.querySelectorAll('.game-menu>.game-menu-actions button').length===2"),'desktop menu actions are directly available at the top right');
   assert.equal(await evaluate("Boolean(document.querySelector('.statusbar'))"),false,'game footer annotations are removed');
   assert.equal(await evaluate("Math.abs(document.querySelector('.desktop').getBoundingClientRect().bottom-innerHeight)<2"),true,'game area fills the space through the bottom of the viewport');
   assert.equal(await evaluate("document.querySelectorAll('.kanban-column').length"),3);
@@ -346,7 +346,7 @@ try {
   assert.equal(await evaluate("document.querySelector('.fixed-deck-label').textContent.includes('調査.xlsx')"),true);
   assert.equal(await evaluate("getComputedStyle(document.querySelector('#shared-clue-deck')).backgroundImage.includes('linear-gradient')"),true);
   assert.equal(await evaluate("document.querySelectorAll('[data-action=progress-report],[data-action=cannot-report]').length"),0);
-  assert.equal(await evaluate("(()=>{const b=document.querySelector('.share-submit button').getBoundingClientRect(),slots=document.querySelector('.report-slots').getBoundingClientRect();return Math.abs(b.width-b.height)<1&&b.left>=slots.right;})()"),true);
+  assert.equal(await evaluate("(()=>{const b=document.querySelector('.share-submit button').getBoundingClientRect(),message=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),gallery=document.querySelector('.self-panel').getBoundingClientRect();return b.left>=message.right&&b.top>=gallery.bottom&&Math.abs(b.bottom-message.bottom)<2;})()"),true,'Submit sits below the gallery, beside the message');
   assert.equal(await evaluate("Boolean(document.querySelector('.meeting-camera').getAnimations().length)"),true,'windows resize when sharing starts');
   await click('[data-action=meeting-camera]');assert.equal(await evaluate("Boolean(document.querySelector('.self-camera img'))"),true);
   await click('[data-action=meeting-camera]');assert.equal(await evaluate("Boolean(document.querySelector('.self-camera img'))"),false);
@@ -428,7 +428,7 @@ try {
   const reportTime=(await state()).time;
   for(const [index,id] of ['wm.case','wm.retired','wm.logs'].entries())await dragClue(id,index);
   assert.deepEqual((await state()).selected,['wm.case','wm.retired','wm.logs']);
-  assert.equal(await evaluate("Boolean(document.querySelector('.report-slot .report-clue-title'))&&!document.querySelector('.report-slot .evidence-card')"),true,'placed clues show their titles without card details');
+  assert.equal(await evaluate("Boolean(document.querySelector('.report-slot .evidence-card h3'))&&Boolean(document.querySelector('.report-slot .evidence-card p'))"),true,'desktop placed clues show full cards');
   await dragClue('wm.case',1);assert.deepEqual((await state()).selected,['wm.retired','wm.case','wm.logs']);
   await dragClue('wm.cache',0);assert.deepEqual((await state()).selected,['wm.cache','wm.case','wm.logs']);
   for(const id of ['wm.cache','wm.case','wm.logs'])await dragClue(id,null);

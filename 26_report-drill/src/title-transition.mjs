@@ -33,6 +33,7 @@ export async function playTitleTransition({app,modal,chapter,reduced,onEnter}){
     await Promise.all([finished(fade),finished(layer.querySelector('.chapter-transition-dark').animate([{opacity:0},{opacity:1}],{duration:450,fill:'forwards'}))]);
     layer.dataset.phase='centering';
     await finished(paper.animate([{transform:origin},{transform:center}],{duration:850,easing:'cubic-bezier(.22,.68,.25,1)',fill:'forwards'}));
+    paper.classList.add('tape-attaching');
     layer.dataset.phase='chapter';
     await finished(heading.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'},{opacity:1,transform:'translateY(0)'}],{duration:1000,easing:'ease-out',fill:'forwards'}));
     layer.dataset.phase='leaving';

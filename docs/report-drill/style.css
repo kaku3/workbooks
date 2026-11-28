@@ -447,7 +447,7 @@
 .reporting .report-conversation .conversation-window{margin-left:0}
 .reporting .report-request{white-space:pre-line;min-height:5.6em;font-size:17px}
 @media(min-width:700px) and (max-height:800px){.meeting-camera{width:166px;height:220px}.reporting .report-board{margin-left:178px;padding:7px 9px;gap:5px 8px}.share-header{padding-bottom:5px}.reporting .report-request{min-height:4.7em;font-size:15px}.camera-name{font-size:12px}.camera-name>span{display:none}}
-@media(max-width:699px){.meeting-camera{width:96px;height:135px;border-radius:6px}.meeting-camera>img{width:215%;left:-58%;top:-8%}.camera-live{font-size:7px;left:5px;top:5px;padding:2px 4px}.camera-name{font-size:12px;padding:6px}.camera-name>span{display:none}.reporting .report-board{margin-left:106px;padding:6px;gap:7px;grid-template-columns:minmax(0,1fr)}.reporting .report-buttons{padding-top:0;gap:5px}.reporting .report-buttons>span{display:none}.reporting .report-buttons button{min-height:33px;padding:5px;font-size:11px}.share-header{font-size:8px;gap:4px}.share-header>span:last-child{display:none}.share-indicator{font-size:10px}.reporting .report-stage{min-height:420px}.reporting .report-request{font-size:15px;min-height:5.5em}}
+@media(max-width:699px){.meeting-camera{width:96px;height:135px;border-radius:6px}.meeting-camera>img{width:215%;left:-58%;top:-8%}.camera-live{font-size:7px;left:5px;top:5px;padding:2px 4px}.camera-name{font-size:12px;padding:6px}.camera-name>span{display:none}.reporting .report-board{margin-left:106px;padding:6px;gap:7px;grid-template-columns:minmax(0,1fr)}.reporting .report-buttons{padding-top:0;gap:5px}.reporting .report-buttons>span{display:none}.reporting .report-buttons button{min-height:33px;padding:5px;font-size:11px}.share-header{font-size:8px;gap:4px}.share-indicator{font-size:10px}.reporting .report-stage{min-height:420px}.reporting .report-request{font-size:15px;min-height:5.5em}}
 .reporting>.report-conversation{position:relative;flex:0 0 auto;margin:0;padding:0 20px;z-index:4}
 .reporting .report-selection>.eyebrow{display:none}
 .reporting .report-buttons{padding-top:0}
@@ -573,10 +573,10 @@
 @media(max-width:699px){.self-camera .meeting-response{top:4px;right:4px;padding:3px 4px}.self-camera .raised-hand-label{font-size:9px}.meeting-reaction-float{left:14px;font-size:34px}}
 .self-camera .raised-hand-label{position:static;display:inline;padding:0;background:none;color:inherit}
 /* Shared notes, participant gallery, and conversation inside the meeting. */
-.reporting .report-board{background:#f7f2e9;border:1px solid #b7a5ca;border-top:4px solid #855ba7;color:#3d354b;box-shadow:0 7px 20px #0003}
+.reporting .report-board{background-color:#fcf9f2;background-image:linear-gradient(to right,transparent 16px,#d6a9bd 16px,#d6a9bd 18px,transparent 18px),repeating-linear-gradient(to bottom,transparent 0,transparent 24px,#d6cfe180 24px,#d6cfe180 25px);border:1px solid #b7a5ca;border-top:4px solid #855ba7;color:#3d354b;box-shadow:0 7px 20px #0003}
 .reporting .report-board .share-header{background:#765396;margin:-9px -9px 0;padding:8px 10px;color:#efe3fa;border-bottom:1px solid #b6a1cc}
 .reporting .report-board .share-indicator{color:#fff3ff}
-.reporting .report-selection{background-color:#fcf9f2;background-image:linear-gradient(#d6cfe180 1px,transparent 1px);background-size:100% 25px;border-left:3px solid #d6a9bd;padding-left:8px}
+.reporting .report-selection{background:transparent;padding-left:8px}
 .reporting .report-slot{background:#f3ecfa55;border-color:#bbaec8}
 .reporting .report-slot>.slot-number{color:#8b749c}
 .reporting .report-slot>span{color:#7c6a88}
@@ -771,7 +771,14 @@
 
 @media(max-width:699px){.title-page .title-actions>button{min-width:0;flex:1;padding:11px 12px}}
 .title-case .case-paper{transform-origin:50% 8%;animation:case-paper-attach 750ms cubic-bezier(.2,.7,.25,1) both}
+.title-case .case-paper::before{transform-origin:left center;animation:case-tape-attach 240ms cubic-bezier(.65,0,.15,1) 790ms both}
 .title-case .sticky-note{transform-origin:45% 15%;animation:sticky-note-attach 700ms cubic-bezier(.2,.7,.25,1) 480ms both}
+@keyframes case-tape-attach{
+  0%{opacity:0;clip-path:inset(0 100% 0 0);transform:rotate(-6deg) scaleY(1)}
+  8%{opacity:1;clip-path:inset(0 100% 0 0)}
+  76%{opacity:1;clip-path:inset(0);transform:rotate(-6deg) scaleY(1.08)}
+  100%{opacity:1;clip-path:inset(0);transform:rotate(-6deg) scaleY(1)}
+}
 @keyframes case-paper-attach{
   0%{opacity:0;transform:translate(18px,-48px) rotate(-5deg) scale(1.09);box-shadow:22px 32px 0 #0a0f1640,0 45px 90px #0006}
   30%{opacity:1}
@@ -786,7 +793,7 @@
   88%{transform:translate(1px,-1px) rotate(-10deg) scale(1.005)}
   100%{opacity:1;transform:translate(0,0) rotate(-9deg) scale(1);box-shadow:4px 6px 16px #0005}
 }
-@media(prefers-reduced-motion:reduce){.title-case .case-paper,.title-case .sticky-note{animation:none}}
+@media(prefers-reduced-motion:reduce){.title-case .case-paper,.title-case .case-paper::before,.title-case .sticky-note{animation:none}}
 .title-page{max-width:none;background-image:linear-gradient(#a8d6c61a 1px,transparent 1px),linear-gradient(90deg,#a8d6c61a 1px,transparent 1px);background-size:72px 72px;background-position:center top}
 @media(min-width:1100px){.title-page{padding-left:max(45px,calc((100% - 1060px)/2));padding-right:max(45px,calc((100% - 1060px)/2))}}
 .chat-unread-badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:10px;background:#d4b987;color:#17212b;font:700 10px var(--mono)}
@@ -875,6 +882,8 @@
 .chapter-transition::backdrop{background:transparent;backdrop-filter:none}
 .chapter-transition-dark{position:absolute;inset:0;background:var(--bg);opacity:0}
 .chapter-transition-note{position:absolute;left:0;top:0;box-sizing:border-box;transform-origin:center;text-align:left}
+.chapter-transition-note::before{opacity:0;transform-origin:left center}
+.chapter-transition-note.tape-attaching::before{animation:case-tape-attach 240ms cubic-bezier(.65,0,.15,1) both}
 .chapter-transition-heading{position:absolute;left:0;width:100%;margin:0;text-align:center;opacity:0;color:var(--accent);font-size:24px;font-weight:500;letter-spacing:.3em}
 .scene-blackout{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#000;opacity:0;overflow:hidden}
 .scene-blackout::backdrop{background:transparent;backdrop-filter:none}
@@ -1012,6 +1021,22 @@
 .report-clue-title{display:block;width:100%;min-height:44px;padding:10px;border:0;border-radius:5px;background:transparent;color:#40354c;text-align:left;font-size:13px;line-height:1.5;white-space:normal;overflow-wrap:anywhere;cursor:grab;touch-action:none}
 .reporting .report-slot>.slot-number{position:static;flex:none;padding:8px;font-size:11px;line-height:1.4;margin:0}
 .reporting .report-slot:not(.occupied)>span:not(.slot-number){font-size:12px;padding:8px 8px 8px 0}
+.reporting .report-selection .report-slots{flex:1 1 0;gap:6px;padding:6px 0;height:auto;max-height:none}
+.reporting .report-selection{align-self:stretch}
+.reporting .report-board .report-slot{flex-direction:row;flex:1 0 32px;min-height:32px;height:auto;gap:0}
+.reporting .report-clue-title{align-self:stretch;min-height:32px;height:auto;padding:5px 8px;border:1px solid #94ad9a;border-top:3px solid #5a8d70;border-radius:5px;background:#e0eee2;box-shadow:0 2px 4px #26364522;font-size:12px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reporting .report-clue-title.reference{background:#e2eaf5;border-color:#96a8c1;border-top-color:#647fa7}
+.reporting .report-clue-title.proposal{background:#f3e8cf;border-color:#bcae89;border-top-color:#a58949}
+.reporting .report-slot>.slot-number{padding:0 8px;font-size:10px}
+.reporting .report-slot:not(.occupied)>span:not(.slot-number){min-width:0;padding:0 8px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(min-width:700px){
+  .reporting .report-selection{padding-top:12px;padding-bottom:44px}
+  .reporting .report-selection .report-slots{flex-direction:row;align-items:stretch;gap:10px;padding:3px 3px 9px;overflow-x:auto;overflow-y:hidden}
+  .reporting .report-board .report-slot{flex:0 0 var(--clue-width);width:var(--clue-width);height:100%;min-height:0;flex-direction:column;gap:14px}
+  .reporting .report-slot>.evidence-card{overflow:hidden}
+  .reporting .report-slot>.slot-number{font-size:24px;padding:0}
+  .reporting .report-slot:not(.occupied)>span:not(.slot-number){padding:0;font-size:13px;white-space:normal}
+}
 .task-detail{width:min(720px,calc(100vw - 24px));max-height:calc(100dvh - 32px);padding:18px;overflow:hidden}
 .task-detail[open]{display:flex;flex-direction:column}
 .task-status-toolbar,.task-detail>h2{flex:0 0 auto}
@@ -1027,6 +1052,12 @@
 .task-log-list .message{padding:12px 0;align-items:flex-start}
 .task-log-list .message-content{flex:1;min-width:0}
 .task-log-list .history-entry{margin-top:6px}
+.task-log-list .history-item{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:10px 12px}
+.task-log-list .history-copy{grid-column:1;min-width:0;padding-right:60px}
+.task-log-list .history-copy h3{font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.task-log-list .history-savings{grid-column:1;grid-row:2;min-width:0}
+.task-log-list .history-deltas{grid-column:1;grid-row:3;flex-direction:row;flex-wrap:wrap;max-width:100%;margin:0;justify-content:flex-start}
+.task-log-list .history-item .history-duration{font-size:36px}
 .task-log-list .history-inline{max-height:none;overflow:visible;background:#edf2f1;color:#324951}
 .task-log-list .history-inline p{font-size:13px;line-height:1.8;color:#324951}
 .task-log-list .history-inline strong{color:#76420d;text-shadow:none}
@@ -1061,12 +1092,12 @@
 .floating-chat.chat-notify{animation:chat-entry-notify 650ms ease-out}
 @media(prefers-reduced-motion:reduce){.floating-chat.chat-notify{animation:none}}
 /* The board takes all remaining height between the console and clue deck. */
-.kanban-column.todo:not(.drop-target){background:linear-gradient(#d78c7510,#d78c7510),#1b2735;border-color:#b58d7940}
-.kanban-column.working:not(.drop-target){background:linear-gradient(#d6bd6810,#d6bd6810),#1b2735;border-color:#b7a57240}
-.kanban-column.done:not(.drop-target){background:linear-gradient(#7ac7a31a,#7ac7a31a),#1b2735;border-color:#82bd9e50}
-.kanban-column.todo>h2 i{background:#cda08b}
-.kanban-column.working>h2 i{background:#d8c57e}
-.kanban-column.done>h2 i{background:#91c9ad}
+.kanban-column.todo:not(.drop-target){background:linear-gradient(#d87b8514,#d87b8514),#1b2735;border-color:#c0808940}
+.kanban-column.working:not(.drop-target){background:linear-gradient(#e2a16d14,#e2a16d14),#1b2735;border-color:#c2967140}
+.kanban-column.done:not(.drop-target){background:linear-gradient(#79aee51a,#79aee51a),#1b2735;border-color:#88aed450}
+.kanban-column.todo>h2 i{background:#cd919c}
+.kanban-column.working>h2 i{background:#d8ae83}
+.kanban-column.done>h2 i{background:#91b6da}
 .workspace-mode .work-area:not(.reporting){display:flex;flex-direction:column;flex:1 1 0;min-height:0;overflow:hidden}
 .workspace-mode .work-area:not(.reporting)>.work-content.board-view{height:auto;flex:1 1 0;min-height:0;padding:8px 12px 0}
 .workspace-mode .work-area:not(.reporting)>.clue-drawer:not(.deck-large){flex-shrink:0}
@@ -1075,6 +1106,30 @@
   .workspace-mode .desktop{grid-template-rows:minmax(0,1fr)}
   .workspace-mode .chat-panel{display:none;position:fixed;top:104px;right:12px;bottom:12px;width:min(380px,calc(100vw - 24px));height:auto;z-index:45;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 30px #0006}
   .workspace-mode .desktop.show-chat .chat-panel{display:flex}
+}
+/* The right gallery spans the shared view and message, ending at Submit. */
+.reporting:not(.meeting-unshared){--participant-width:190px;display:grid;grid-template-columns:minmax(0,1fr) var(--participant-width);grid-template-rows:minmax(0,1fr) auto auto}
+.reporting:not(.meeting-unshared)>.work-content.report-view{grid-column:1;grid-row:1;min-height:0;min-width:0}
+.reporting:not(.meeting-unshared) .report-stage{grid-template-columns:155px minmax(0,1fr);min-height:0;height:100%}
+.reporting:not(.meeting-unshared) .report-board{grid-column:2;grid-row:1;margin-left:0;grid-template-columns:minmax(0,1fr);padding-bottom:8px}
+.reporting:not(.meeting-unshared)>.meeting-bottom{grid-column:1;grid-row:2;min-width:0;padding:18px 8px 8px}
+.reporting:not(.meeting-unshared)>.clue-drawer{grid-column:1/-1;grid-row:3}
+.meeting-sidebar{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;min-width:0;min-height:0;padding:8px 8px 8px 0;gap:8px}
+.reporting:not(.meeting-unshared)>.meeting-sidebar>.self-panel{flex:1;min-height:0;height:auto;width:100%;padding:0;align-self:stretch}
+.meeting-sidebar>.share-submit{flex:none;align-self:stretch;margin:0;padding:0;border:0;background:transparent}
+.reporting .meeting-sidebar>.share-submit>button{width:100%;height:56px;min-width:0;min-height:56px;padding:6px;gap:3px;font-size:12px}
+.reporting .meeting-sidebar>.share-submit>button small{font-size:11px}
+@media(min-width:700px) and (max-height:800px){.reporting:not(.meeting-unshared){--participant-width:165px}.reporting:not(.meeting-unshared) .report-stage{grid-template-columns:110px minmax(0,1fr)}}
+@media(max-width:699px){
+  .reporting:not(.meeting-unshared){--participant-width:84px}
+  .reporting:not(.meeting-unshared) .report-stage{grid-template-columns:minmax(0,1fr)}
+  .reporting:not(.meeting-unshared) .report-board{grid-column:1}
+}
+.reporting.selecting-clues{--report-message-height:84px}
+.reporting.selecting-clues .meeting-bottom .report-request{font-size:16px;line-height:1.55;padding-top:10px;padding-bottom:8px}
+@media(max-width:699px){
+  .reporting.selecting-clues{--report-message-height:76px}
+  .reporting.selecting-clues .meeting-bottom .report-request{font-size:13px}
 }
 @media(max-width:699px){
   .guide-drag .guide-card{width:min(300px,calc((100vw - 24px)*2/3))}

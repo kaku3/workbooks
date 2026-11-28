@@ -271,7 +271,28 @@ try {
   assert.equal(await evaluate("document.querySelectorAll('.report-clue-title').length"),3,'all three selected clues are represented by titles');
   await evaluate("(()=>{const source=document.querySelector('[data-report-slot=\"0\"] .report-clue-title'),target=document.querySelector('[data-report-slot=\"2\"]'),dataTransfer=new DataTransfer();source.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer}));target.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer}));target.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer}));source.dispatchEvent(new DragEvent('dragend',{bubbles:true,dataTransfer}));})()");
   assert.deepEqual((await state()).reportSlots,[thirdClue,clueDrag.id,secondClue],'native drag and drop swaps titles in a full three-item list');
+  let previousCardHeight=0;
+  for(const [width,height] of [[375,667],[390,844],[430,932]]){
+    await size(width,height,true);
+    const layout=await evaluate("(()=>{const list=document.querySelector('.report-slots'),cards=[...list.querySelectorAll('.report-clue-title')];return {height:cards[0].getBoundingClientRect().height,scroll:list.scrollHeight,client:list.clientHeight,cardBackground:getComputedStyle(cards[0]).backgroundColor,noteBackground:getComputedStyle(document.querySelector('.report-board')).backgroundImage};})()");
+    assert.ok(layout.height>previousCardHeight,`selected cards grow with the available height at ${width}x${height}`);
+    assert.ok(layout.scroll<=layout.client+1,'selected cards fit inside the shared view');
+    assert.notEqual(layout.cardBackground,'rgba(0, 0, 0, 0)','selected titles have a paper card background');
+    assert.ok(layout.noteBackground.includes('repeating-linear-gradient'),'notebook rules cover the shared app body');
+    previousCardHeight=layout.height;
+    await screenshot(`selected-cards-mobile-${width}`);
+  }
+  await size(390,844,true);
   await screenshot('selected-title-list-mobile');
+  for(const width of [1024,1440]){
+    await size(width,900);
+    await waitFor("document.querySelectorAll('.report-slot .evidence-card').length===3");
+    assert.ok(await evaluate("(()=>{const cards=[...document.querySelectorAll('.report-slot .evidence-card')],rows=cards.map(c=>c.getBoundingClientRect()),message=document.querySelector('.report-conversation .conversation-window').getBoundingClientRect(),submit=document.querySelector('.share-submit button').getBoundingClientRect();return rows.every((r,i)=>r.height>=160&&Math.abs(r.top-rows[0].top)<1&&(!i||r.left>rows[i-1].left))&&cards.every(c=>c.querySelector('h3')&&c.querySelector('p'))&&message.right<=submit.left&&Math.abs(message.bottom-submit.bottom)<2;})()"),`desktop shares full cards horizontally and keeps Submit beside the message at ${width}px`);
+    if(width===1440)await screenshot('selected-cards-desktop');
+  }
+  await size(390,844,true);
+  await waitFor("document.querySelectorAll('.report-clue-title').length===3");
+  assert.deepEqual((await state()).reportSlots,[thirdClue,clueDrag.id,secondClue],'resizing preserves the selected order');
   await click('[data-action=submit]');await settle();
   if(await guide()==='back-to-investigate')await click('[data-action=investigate]');
   if(await guide()==='report-tab')await click('[data-action=report]');
@@ -294,6 +315,8 @@ try {
   assert.equal((await state()).time,taskTime,'status movement consumes no time');
   await click(`[data-action="investigate:${freeDrag.id}"]`);
   assert.equal(await evaluate("document.querySelector('.task-status-button[aria-pressed=true]').dataset.status"),'done','completed task also opens the popup with its active status');
+  await size(1440,1000);
+  assert.ok(await evaluate("(()=>{const summary=document.querySelector('.task-log-list .history-item'),title=summary.querySelector('.history-copy').getBoundingClientRect(),gains=summary.querySelector('.history-deltas')?.getBoundingClientRect(),savings=summary.querySelector('.history-savings')?.getBoundingClientRect();return getComputedStyle(summary).display==='grid'&&title.width>300&&title.height<80&&(!gains||!gains.height||gains.top>=title.bottom)&&(!savings||!savings.height||savings.top>=title.bottom);})()"),'desktop task log title retains its width and the gains and savings sit below it');
   await evaluate("(()=>{const logs=document.querySelector('.task-log-list'),entry=logs.firstElementChild;for(let i=0;i<4;i++)logs.append(entry.cloneNode(true));})()");
   for(const [width,height] of [[320,568],[390,844],[1440,1000]]){
     await size(width,height,width<700);

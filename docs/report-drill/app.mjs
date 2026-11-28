@@ -56,6 +56,9 @@ app.addEventListener('toggle',event=>{
 memoViewport.addEventListener('change',event=>{
   const details=app.querySelector('.memo>details');
   if(details)details.open=!event.matches||mobileMemoOpen;
+  app.querySelectorAll('[data-report-slot]').forEach(slot=>{
+    slot.innerHTML=reportSlotContent(Number(slot.dataset.reportSlot));
+  });
 });
 const roomStyle = speaker => {
   const portrait=portraitFiles[names[speaker]];
@@ -164,6 +167,17 @@ function positionMobileMeeting(){
     stage.prepend(camera);camera.dataset.meetingWindow='remote';
     if(meeting.share)stage.append(commands);
     else area.querySelector('.meeting-bottom').prepend(commands);
+  }
+  const submit=area.querySelector('.share-submit');
+  let sidebar=area.querySelector(':scope>.meeting-sidebar');
+  if(meeting.share){
+    if(!sidebar){sidebar=document.createElement('aside');sidebar.className='meeting-sidebar';sidebar.setAttribute('aria-label','参加者と報告');area.insertBefore(sidebar,area.querySelector(':scope>.clue-drawer'));}
+    sidebar.append(people);
+    if(submit)sidebar.append(submit);
+  }else if(sidebar){
+    stage.append(people);
+    if(submit)area.querySelector('.report-board').append(submit);
+    sidebar.remove();
   }
 }
 const reportReactions={
@@ -422,12 +436,18 @@ function deckToolbar(){
   const sizes=[['small','小','<path d="M4 15h16v5H4z"/>'],['medium','中','<path d="M4 9h16v11H4z"/>'],['large','大','<path d="M4 4h16v16H4zM8 4v16"/>']];
   return `<div class="deck-toolbar"><div class="deck-handle fixed-deck-label">${icon('sheet')} 調査.xlsx <span>${visibleClueCount()}</span></div><div class="deck-sizes" role="group" aria-label="調査デッキの表示サイズ">${sizes.map(([size,label,path])=>button(`deck-size:${size}`,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">${path}</svg>`,size===deckSize?'active':'',`aria-label="${label}表示" title="${label}表示" aria-pressed="${size===deckSize}"`)).join('')}</div></div>`;
 }
+function reportSlotContent(index){
+  const card=problem.evidence.find(item=>item.id===(state.reportSlots||state.selected)[index]);
+  if(!card)return `<span class="slot-number">0${index+1}</span><span>ここに手がかりを置く</span>`;
+  if(!memoViewport.matches)return evidenceCard(card,true);
+  return `<button type="button" class="report-clue-title ${esc(card.kind)}" draggable="true" data-evidence-id="${esc(card.id)}" data-action="select:${esc(card.id)}" aria-label="選択解除：${esc(card.title)}" title="${esc(card.title)}">${esc(card.title)}</button>`;
+}
 function reportPage() {
   const q=problem.questions[state.question]||problem.questions.at(-1);
   const canSubmit=state.phase==='report'&&state.selected.length===q.slots;
-  return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('client')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span class="share-indicator">${icon('layers')} 画面共有中</span><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをドラッグして配置</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
+  return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('client')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをドラッグして配置</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
       const card=problem.evidence.find(item=>item.id===(state.reportSlots||state.selected)[i]);
-      return `<div class="report-slot ${card?'occupied':''}" data-report-slot="${i}">${card?`<button type="button" class="report-clue-title" draggable="true" data-evidence-id="${esc(card.id)}" data-action="select:${esc(card.id)}" aria-label="選択解除：${esc(card.title)}">${esc(card.title)}</button>`:`<span class="slot-number">0${i+1}</span><span>ここに手がかりを置く</span>`}</div>`;
+      return `<div class="report-slot ${card?'occupied':''}" data-report-slot="${i}">${reportSlotContent(i)}</div>`;
     }).join('')}</div></div><aside class="report-buttons"><span>${state.selected.length} / ${q.slots}枚</span>${button('submit',`<span>報告する</span><small>${duration(q.minutes)}</small>`,'primary',canSubmit?'':'disabled')}</aside></div><div class="report-conversation"><div class="conversation-window">${conversationSpeaker(names.client)}<p class="report-request" aria-label="${esc(plainDialogue(q.prompt))}"><span class="report-request-text" aria-hidden="true">${esc(q.prompt)}</span></p><p class="report-hint">手がかりを3枚組み合わせ、相手に伝わる説明を組み立てる。</p></div></div></section>`;
 }
 
@@ -596,6 +616,7 @@ function render() {
   if(reportDialogue&&reportDeck)reportDeck.before(reportDialogue);
   const meetingArea=document.querySelector('.reporting');
   if(meetingArea&&meeting){
+    meetingArea.classList.toggle('selecting-clues',state.phase==='report');
     meetingArea.dataset.meetingPhase=meeting.phase;
     meetingArea.classList.toggle('meeting-unshared',!meeting.share);
     meetingArea.dataset.meetingLayout=`${meeting.phase}:${meeting.share}:${meeting.camera}`;
