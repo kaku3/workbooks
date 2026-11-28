@@ -387,6 +387,7 @@ function positionKnowledge(){
 document.addEventListener('pointerdown',event=>{if(menuOpen&&!event.target.closest('.game-menu'))setGameMenu(false);},true);
 document.addEventListener('keydown',event=>{if(menuOpen&&event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();setGameMenu(false,true);}},true);
 function header() {
+  if(page==='game'&&state?.phase==='complete')return '';
   if(page==='game')return `<nav class="game-menu" aria-label="ゲームメニュー">${button('menu-toggle','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>','game-menu-toggle',`aria-label="メニューを開く" aria-expanded="${menuOpen}" aria-controls="game-menu-panel"`)}<div id="game-menu-panel" class="game-menu-panel" ${menuOpen?'':'hidden'}><div class="menu-knowledge"></div><div class="game-menu-actions">${button('title',icon('home'),'icon-button','aria-label="タイトルへ" title="タイトルへ"')}${button('settings',icon('settings'),'icon-button','aria-label="設定" title="設定"')}</div></div></nav>${button('panel:chat',icon('chat'),'floating-chat','aria-label="チャットを開く" aria-expanded="false"')}`;
   return `<header class="topbar"><button class="brand" data-action="title"><span class="brand-mark">${icon('file')}</span><span>確認して、回答します。<small>INVESTIGATION & REPORT</small></span></button><div class="top-right"><span class="prototype"><i></i> PROTOTYPE · ${chapterNumber}章</span>${button('settings', icon('settings'), 'icon-button', 'aria-label="設定"')}</div></header>`;
 }
