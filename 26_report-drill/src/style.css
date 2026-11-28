@@ -908,7 +908,7 @@
 /* Operation guides preserve the original controls and drag-and-drop handlers. */
 .operation-guide{position:fixed;inset:0;z-index:1000;pointer-events:none;animation:guide-appear .2s ease-out}
 .guide-shade{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.guide-card{position:fixed;box-sizing:border-box;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 48px);overflow:visible;border:1px solid #a8edcf;border-radius:12px;background:#14242b;color:#edf7f3;box-shadow:0 10px 40px #0008;pointer-events:auto;outline-offset:3px}
+.guide-card{position:fixed;box-sizing:border-box;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 48px);overflow:visible;border:1px solid #a8edcf;border-radius:12px;background:#14242bd9;color:#edf7f3;box-shadow:0 10px 40px #0008;pointer-events:auto;outline-offset:3px}
 .guide-card-body{padding:26px 20px 20px;max-height:calc(100dvh - 50px);overflow:auto;border-radius:inherit}
 .guide-card .guide-label{position:absolute;left:18px;top:0;transform:translateY(-50%);z-index:2;margin:0;padding:2px 10px;border:1px solid #a8edcf;border-radius:4px;background:#14242b;color:#a8edcf;font-size:14px;line-height:1.5}
 .guide-card h2{margin:0 0 12px;font-size:20px;line-height:1.4}
@@ -1021,7 +1021,8 @@
 .reporting .report-selection .report-slots{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;overflow-x:hidden;overflow-y:auto;padding:8px 0}
 .reporting .report-board .report-slot{display:flex;align-items:center;gap:8px;flex:0 0 auto;width:100%;min-width:0;min-height:44px;height:auto;padding:0;border-radius:6px}
 .reporting .report-selection{padding-top:0;padding-bottom:0}
-.report-clue-title{display:block;width:100%;min-height:44px;padding:10px;border:0;border-radius:5px;background:transparent;color:#40354c;text-align:left;font-size:13px;line-height:1.5;white-space:normal;overflow-wrap:anywhere;cursor:grab;touch-action:none}
+.report-clue-title{display:block;width:100%;min-height:44px;padding:10px;border:0;border-radius:5px;background:transparent;color:#40354c;text-align:left;font-size:13px;line-height:1.5;white-space:normal;overflow-wrap:anywhere;cursor:pointer;touch-action:auto}
+.reporting .report-slot>.evidence-card,.reporting #shared-clue-deck .evidence-card{cursor:pointer;touch-action:auto}
 .reporting .report-slot>.slot-number{position:static;flex:none;padding:8px;font-size:11px;line-height:1.4;margin:0}
 .reporting .report-slot:not(.occupied)>span:not(.slot-number){font-size:12px;padding:8px 8px 8px 0}
 .reporting .report-selection .report-slots{flex:1 1 0;gap:6px;padding:6px 0;height:auto;max-height:none}
@@ -1135,7 +1136,9 @@
 .reporting.selecting-clues .meeting-bottom .report-request{font-size:16px;line-height:1.55;padding-top:10px;padding-bottom:8px}
 @media(max-width:699px){
   .reporting.selecting-clues{--report-message-height:76px}
-  .reporting.selecting-clues .meeting-bottom .report-request{font-size:13px}
+  .conversation>.conversation-window>.dialogue-text{font-size:18px}
+  .reporting .meeting-bottom .meeting-dialogue,.reporting .meeting-bottom .report-request{font-size:14px}
+  .reporting.selecting-clues .meeting-bottom .report-request{font-size:12px}
 }
 @media(max-width:699px){
   .guide-drag .guide-card{width:min(300px,calc((100vw - 24px)*2/3))}

@@ -136,6 +136,7 @@ try {
   await reload();await waitFor("Boolean(document.querySelector('[data-action=join-meeting]'))");
   await click('[data-action=join-meeting]');await waitGuide('share');
   await click('[data-action=meeting-share]');await waitGuide('select');
+  assert.ok(await evaluate("(()=>{const card=document.querySelector('.guide-card'),text=card.querySelector('#guide-description').textContent,alpha=Number(getComputedStyle(card).backgroundColor.match(/[\\d.]+/g).at(-1));return text.includes('タップ')&&!text.includes('ドラッグ')&&alpha<1&&alpha>.75;})()"),'guide explains tap selection and has a slightly translucent background');
   for(const [width,height] of [[1440,1000],[390,844]]){
     await size(width,height,width<600);await delay(200);
     assert.equal(await evaluate("(()=>{const r=document.querySelector('.guide-card').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&r.top>=0&&r.bottom<=innerHeight+1;})()"),true,'guide text stays inside viewport');
@@ -244,24 +245,22 @@ try {
   if(await evaluate("Boolean(document.querySelector('[data-action=join-meeting]'))"))await click('[data-action=join-meeting]');
   await waitFor("document.querySelector('.reporting')?.dataset.meetingPhase==='speaking'");
   await click('[data-action=meeting-share]');
-  assert.equal(await guide(),null,'report drag is also tested outside the guide');
-  const clueDrag=await evaluate("(()=>{const source=document.querySelector('#shared-clue-deck [data-evidence-id]'),r=source.querySelector('.evidence-top').getBoundingClientRect(),d=document.querySelector('[data-report-slot]').getBoundingClientRect(),view=document.querySelector('.report-slots').getBoundingClientRect();return {id:source.dataset.evidenceId,x:r.left+r.width/2,y:r.top+r.height/2,tx:(Math.max(d.left,view.left)+Math.min(d.right,view.right))/2,ty:(Math.max(d.top,view.top)+Math.min(d.bottom,view.bottom))/2};})()");
-  await screenshot('ordinary-clue-drag-before');
+  assert.equal(await guide(),null,'tap selection is also tested outside the guide');
+  assert.equal(await evaluate("document.querySelectorAll('.reporting [draggable=true]').length"),0,'report cards are not draggable');
+  const clueDrag=await evaluate("(()=>{const source=document.querySelector('#shared-clue-deck [data-evidence-id]'),r=source.querySelector('.evidence-top').getBoundingClientRect();return {id:source.dataset.evidenceId,x:Math.min(r.right-12,180),y:r.top+r.height/2};})()");
   await call('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:clueDrag.x,y:clueDrag.y}]});
-  for(let n=1;n<=6;n++)await call('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:clueDrag.x+(clueDrag.tx-clueDrag.x)*n/6,y:clueDrag.y+(clueDrag.ty-clueDrag.y)*n/6}]});
-  await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-  assert.ok((await state()).selected.includes(clueDrag.id),`ordinary touch drag places a clue into the report slot: ${JSON.stringify(clueDrag)}; ${await evaluate('JSON.stringify({selected:JSON.parse(localStorage.getItem("report-drill.pdf-incident.v1")).selected,source:document.elementFromPoint('+clueDrag.x+','+clueDrag.y+')?.outerHTML?.slice(0,250),target:document.elementFromPoint('+clueDrag.tx+','+clueDrag.ty+')?.outerHTML?.slice(0,250)})')}`);
+  for(let n=1;n<=8;n++){await call('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:clueDrag.x-140*n/8,y:clueDrag.y}]});await delay(16);}
+  await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await delay(150);
+  assert.ok(await evaluate("document.querySelector('#shared-clue-deck .evidence-grid').scrollLeft>0"),'swiping a card header scrolls the hand horizontally');
+  assert.equal((await state()).selected.length,0,'swiping does not select a card');
+  assert.equal(await evaluate("document.querySelector('.touch-card-ghost')"),null,'swiping creates no drag ghost');
+  await click(`#shared-clue-deck [data-action="select:${clueDrag.id}"]`);
+  assert.ok((await state()).selected.includes(clueDrag.id),'tap selects a clue');
   const secondClue=await evaluate("document.querySelectorAll('#shared-clue-deck [data-evidence-id]')[1].dataset.evidenceId");
-  await click(`[data-action="select:${secondClue}"]`);
-  const titleDrag=await evaluate("(()=>{const source=document.querySelector('[data-report-slot=\"0\"] .report-clue-title').getBoundingClientRect(),target=document.querySelector('[data-report-slot=\"1\"]').getBoundingClientRect();return {x:source.left+source.width/2,y:source.top+source.height/2,tx:target.left+target.width/2,ty:target.top+target.height/2};})()");
-  assert.ok(titleDrag.ty>titleDrag.y,'selected titles are stacked vertically');
-  assert.equal(await evaluate("document.querySelector('.report-slot .evidence-card')"),null,'selected clues contain no detail cards');
-  await call('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:titleDrag.x,y:titleDrag.y}]});
-  for(let n=1;n<=6;n++)await call('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:titleDrag.x+(titleDrag.tx-titleDrag.x)*n/6,y:titleDrag.y+(titleDrag.ty-titleDrag.y)*n/6}]});
-  await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-  assert.deepEqual((await state()).reportSlots.slice(0,2),[secondClue,clueDrag.id],'touch drag swaps the selected titles');
-  // This short route obtains two clues. Add a known clue to the saved fixture
-  // to exercise reordering a full three-item selection independently of grading.
+  await click(`#shared-clue-deck [data-action="select:${secondClue}"]`);
+  assert.deepEqual((await state()).reportSlots.slice(0,2),[clueDrag.id,secondClue],'tap fills the next available slot');
+  assert.equal(await evaluate("document.querySelector('.report-slot .evidence-card')"),null,'mobile selected clues contain titles');
+  // Add a third known clue to the short fixture to check a full selection.
   const thirdClue=await evaluate("import('./data/content.mjs').then(({cases})=>{const s=JSON.parse(localStorage.getItem('report-drill.pdf-incident.v1')),id=cases.watermark.problem.evidence.find(c=>!s.evidence.includes(c.id)).id;s.evidence.push(id);s.acquired[id]=s.time;localStorage.setItem('report-drill.pdf-incident.v1',JSON.stringify(s));return id;})");
   await reload();
   if(await evaluate("Boolean(document.querySelector('[data-action=join-meeting]'))"))await click('[data-action=join-meeting]');
@@ -270,7 +269,7 @@ try {
   await click(`[data-action="select:${thirdClue}"]`);
   assert.equal(await evaluate("document.querySelectorAll('.report-clue-title').length"),3,'all three selected clues are represented by titles');
   await evaluate("(()=>{const source=document.querySelector('[data-report-slot=\"0\"] .report-clue-title'),target=document.querySelector('[data-report-slot=\"2\"]'),dataTransfer=new DataTransfer();source.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer}));target.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer}));target.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer}));source.dispatchEvent(new DragEvent('dragend',{bubbles:true,dataTransfer}));})()");
-  assert.deepEqual((await state()).reportSlots,[thirdClue,clueDrag.id,secondClue],'native drag and drop swaps titles in a full three-item list');
+  assert.deepEqual((await state()).reportSlots,[clueDrag.id,secondClue,thirdClue],'dragging does not change a full three-item selection');
   let previousCardHeight=0;
   for(const [width,height] of [[375,667],[390,844],[430,932]]){
     await size(width,height,true);
@@ -292,7 +291,7 @@ try {
   }
   await size(390,844,true);
   await waitFor("document.querySelectorAll('.report-clue-title').length===3");
-  assert.deepEqual((await state()).reportSlots,[thirdClue,clueDrag.id,secondClue],'resizing preserves the selected order');
+  assert.deepEqual((await state()).reportSlots,[clueDrag.id,secondClue,thirdClue],'resizing preserves the selected order');
   await click('[data-action=submit]');await settle();
   if(await guide()==='back-to-investigate')await click('[data-action=investigate]');
   if(await guide()==='report-tab')await click('[data-action=report]');

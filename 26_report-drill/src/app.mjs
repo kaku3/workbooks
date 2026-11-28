@@ -429,7 +429,7 @@ function investigations(overview=false) {
 }
 function evidenceCard(card, selectable = false) {
   const selected = state.selected.includes(card.id);
-  return `<${selectable?'button':'article'} data-clue-id="${esc(card.id)}" ${awaitingClues.has(card.id)?'aria-hidden="true"':''} class="evidence-card ${awaitingClues.has(card.id)?'clue-awaiting':''} ${card.kind} ${selected?'selected':''}" ${selectable?`type="button" draggable="true" data-evidence-id="${esc(card.id)}" data-action="select:${esc(card.id)}" aria-pressed="${selected}"`:(deckSize==='large'?`draggable="true" tabindex="0" data-evidence-id="${esc(card.id)}"`:'')}><div class="evidence-top"><span class="tag">${esc(kindNames[card.kind])}</span><span>${selectable?(selected?'選択中 ✓':''):clock(state.acquired[card.id] || state.time)}</span></div><h3>${esc(card.title)}</h3><p>${esc(card.text)}</p></${selectable?'button':'article'}>`;
+  return `<${selectable?'button':'article'} data-clue-id="${esc(card.id)}" ${awaitingClues.has(card.id)?'aria-hidden="true"':''} class="evidence-card ${awaitingClues.has(card.id)?'clue-awaiting':''} ${card.kind} ${selected?'selected':''}" ${selectable?`type="button" data-evidence-id="${esc(card.id)}" data-action="select:${esc(card.id)}" aria-pressed="${selected}"`:(deckSize==='large'?`draggable="true" tabindex="0" data-evidence-id="${esc(card.id)}"`:'')}><div class="evidence-top"><span class="tag">${esc(kindNames[card.kind])}</span><span>${selectable?(selected?'選択中 ✓':''):clock(state.acquired[card.id] || state.time)}</span></div><h3>${esc(card.title)}</h3><p>${esc(card.text)}</p></${selectable?'button':'article'}>`;
 }
 function notebook(selectable = false) {
   const order=state.deckOrder||[];
@@ -444,14 +444,14 @@ function deckToolbar(){
 }
 function reportSlotContent(index){
   const card=problem.evidence.find(item=>item.id===(state.reportSlots||state.selected)[index]);
-  if(!card)return `<span class="slot-number">0${index+1}</span><span>ここに手がかりを置く</span>`;
+  if(!card)return `<span class="slot-number">0${index+1}</span><span>手がかりを選択してください</span>`;
   if(!memoViewport.matches)return evidenceCard(card,true);
-  return `<button type="button" class="report-clue-title ${esc(card.kind)}" draggable="true" data-evidence-id="${esc(card.id)}" data-action="select:${esc(card.id)}" aria-label="選択解除：${esc(card.title)}" title="${esc(card.title)}">${esc(card.title)}</button>`;
+  return `<button type="button" class="report-clue-title ${esc(card.kind)}" data-evidence-id="${esc(card.id)}" data-action="select:${esc(card.id)}" aria-label="選択解除：${esc(card.title)}" title="${esc(card.title)}">${esc(card.title)}</button>`;
 }
 function reportPage() {
   const q=problem.questions[state.question]||problem.questions.at(-1);
   const canSubmit=state.phase==='report'&&state.selected.length===q.slots;
-  return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('client')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをドラッグして配置</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
+  return `<section class="report-stage"><aside class="meeting-camera" ${roomStyle('client')} aria-label="佐伯のカメラ映像"><div class="camera-live"><i></i> LIVE</div><img src="./assets/04_saeki-transparent.png" alt="佐伯" width="1024" height="1536"><div class="camera-name">佐伯 <span>カメラオン</span></div></aside><div class="report-board"><div class="share-header"><span>調査報告</span></div><div class="report-selection"><p class="eyebrow">手がかりをタップして選択</p><div class="report-slots">${Array.from({length:q.slots},(_,i)=>{
       const card=problem.evidence.find(item=>item.id===(state.reportSlots||state.selected)[i]);
       return `<div class="report-slot ${card?'occupied':''}" data-report-slot="${i}">${reportSlotContent(i)}</div>`;
     }).join('')}</div></div><aside class="report-buttons"><span>${state.selected.length} / ${q.slots}枚</span>${button('submit',`<span>報告する</span><small>${duration(q.minutes)}</small>`,'primary',canSubmit?'':'disabled')}</aside></div><div class="report-conversation"><div class="conversation-window">${conversationSpeaker(names.client)}<p class="report-request" aria-label="${esc(plainDialogue(q.prompt))}"><span class="report-request-text" aria-hidden="true">${esc(q.prompt)}</span></p><p class="report-hint">手がかりを3枚組み合わせ、相手に伝わる説明を組み立てる。</p></div></div></section>`;
@@ -960,22 +960,19 @@ function moveCard(id,status) {
   else notify('このタスクは移動できません。');
 }
 let draggedCard = null;
-let draggedClue = null;
 let draggedDeckClue = null;
 installTouchCardDrag(app,{
-  enabled:()=>page==='game'&&['desk','report'].includes(state?.phase)&&(!operationGuide.active||Boolean(document.querySelector('.operation-guide[data-guide="select"],.operation-guide[data-guide="submit"]')))&&!modal.open&&!menuOpen&&!deployingTickets,
+  enabled:()=>page==='game'&&state?.phase==='desk'&&!operationGuide.active&&!modal.open&&!menuOpen&&!deployingTickets,
   describe:source=>{
     if(source.hasAttribute('data-card-id')&&state.phase==='desk')return {kind:'task',id:source.dataset.cardId};
     if(source.hasAttribute('data-evidence-id')){
       if(deckSize==='large'&&source.closest('#shared-clue-deck'))return {kind:'reorder',id:source.dataset.evidenceId};
-      if(state.phase==='report')return {kind:'clue',id:source.dataset.evidenceId};
     }
     return null;
   },
   drop:(item,target)=>{
     if(item.kind==='task')moveCard(item.id,target.dataset.status);
     else if(item.kind==='reorder')reorderClue(item.id,target.dataset.evidenceId);
-    else placeClue(item.id,target.hasAttribute('data-report-slot')?Number(target.dataset.reportSlot):null);
   },
 });
 function setDeckSize(size){
@@ -1005,14 +1002,10 @@ function placeClue(id, index) {
 }
 app.addEventListener('dragstart',event=>{
   const clue=event.target.closest('[data-evidence-id]');
+  if(clue&&state?.phase==='report'){event.preventDefault();return;}
   if(clue&&deckSize==='large'&&clue.closest('#shared-clue-deck')){
     draggedDeckClue=clue.dataset.evidenceId;
     event.dataTransfer.setData('text/plain',draggedDeckClue);event.dataTransfer.effectAllowed='move';
-    clue.classList.add('dragging');return;
-  }
-  if(clue&&state?.phase==='report'){
-    draggedClue=clue.dataset.evidenceId;
-    event.dataTransfer.setData('text/plain',draggedClue);event.dataTransfer.effectAllowed='move';
     clue.classList.add('dragging');return;
   }
   const card=event.target.closest('[data-card-id]');
@@ -1028,10 +1021,6 @@ app.addEventListener('dragover',event=>{
     if(target){event.preventDefault();event.dataTransfer.dropEffect='move';app.querySelectorAll('.drop-target').forEach(item=>item.classList.remove('drop-target'));target.classList.add('drop-target');}
     return;
   }
-  if(draggedClue){
-    const target=event.target.closest('[data-report-slot],[data-report-deck]');
-    if(target){event.preventDefault();event.dataTransfer.dropEffect='move';app.querySelectorAll('.drop-target').forEach(item=>item.classList.remove('drop-target'));target.classList.add('drop-target');}return;
-  }
   const column=event.target.closest('[data-status]');
   if(!column || !draggedCard)return;
   event.preventDefault();event.dataTransfer.dropEffect='move';
@@ -1044,10 +1033,6 @@ app.addEventListener('drop',event=>{
     if(target){event.preventDefault();const id=draggedDeckClue;draggedDeckClue=null;reorderClue(id,target.dataset.evidenceId);}
     return;
   }
-  if(draggedClue){
-    const target=event.target.closest('[data-report-slot],[data-report-deck]');
-    if(target){event.preventDefault();const id=draggedClue;draggedClue=null;placeClue(id,target.hasAttribute('data-report-slot')?Number(target.dataset.reportSlot):null);}return;
-  }
   const column=event.target.closest('[data-status]');
   if(!column || !draggedCard)return;
   event.preventDefault();
@@ -1056,7 +1041,6 @@ app.addEventListener('drop',event=>{
 });
 app.addEventListener('dragend',()=>{
   draggedDeckClue=null;
-  draggedClue=null;
   draggedCard=null;
   app.querySelectorAll('.dragging,.drop-target').forEach(item=>item.classList.remove('dragging','drop-target'));
 });

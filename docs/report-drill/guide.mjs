@@ -38,10 +38,10 @@ export const guideDefinitions=[
     ready:c=>c.report&&c.meeting?.phase==='lobby',targets:()=>[document.querySelector('[data-action="join-meeting"]')],actions:['join-meeting']},
   {id:'share',title:'報告用の画面を共有する',text:'画面共有ボタンを押してください。共有した画面に、報告する手がかりを配置できます。',
     ready:c=>c.report&&c.meeting?.phase==='speaking'&&c.meeting.requestReady&&!c.meeting.share,targets:()=>[document.querySelector('[data-action="meeting-share"]')],actions:['meeting-share']},
-  {id:'select',title:'報告する手がかりを3枚選ぶ',text:'報告したい手がかりを3枚、枠へドラッグしてください。カードをクリックして選ぶこともできます。組み合わせは自由に考えてください。',
+  {id:'select',title:'報告する手がかりを3枚選ぶ',text:'手元のカードを横にスクロールし、報告したい手がかりを3枚タップしてください。選択したカードをもう一度タップすると解除できます。組み合わせは自由に考えてください。',
     ready:c=>c.report&&c.meeting?.share&&c.clueCount>=3&&c.selected<3,targets:()=>[document.querySelector('[data-report-deck]'),document.querySelector('.report-slots')],select:true},
   {id:'submit',title:'選んだ手がかりで報告する',text:'「報告する」を押してください。依頼主に伝われば回答完了です。うまく伝わらなかった時は、調査に戻って報告をやり直せます。',
-    ready:c=>c.report&&c.meeting?.share&&c.selected===3,targets:()=>[document.querySelector('[data-action="submit"]'),document.querySelector('.report-slots')],actions:['submit'],reorder:true},
+    ready:c=>c.report&&c.meeting?.share&&c.selected===3,targets:()=>[document.querySelector('[data-action="submit"]'),document.querySelector('.report-slots')],actions:['submit'],deselect:true},
 ];
 
 // Clip spotlight holes to the viewport and every scrolling ancestor.
@@ -111,7 +111,7 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
       layer=document.createElement('div');layer.className='operation-guide';layer.dataset.guide=active.id;
       layer.classList.toggle('guide-overview',Boolean(active.overview));
       layer.classList.toggle('guide-drag',Boolean(active.drop));
-      layer.innerHTML='<svg class="guide-shade" aria-hidden="true"><defs><mask id="operation-guide-mask"><rect width="100%" height="100%" fill="white"/><g></g></mask></defs><rect width="100%" height="100%" fill="black" fill-opacity=".78" mask="url(#operation-guide-mask)"/><g class="guide-outlines"></g></svg><div class="guide-focus-effects" aria-hidden="true"></div><section class="guide-card" role="region" aria-labelledby="guide-title" aria-describedby="guide-description" tabindex="-1"><p class="guide-label">操作ガイド</p><div class="guide-card-body"><h2 id="guide-title"></h2><p id="guide-description"></p></div></section>';
+      layer.innerHTML='<svg class="guide-shade" aria-hidden="true"><defs><mask id="operation-guide-mask"><rect width="100%" height="100%" fill="white"/><g></g></mask></defs><rect width="100%" height="100%" fill="black" fill-opacity=".55" mask="url(#operation-guide-mask)"/><g class="guide-outlines"></g></svg><div class="guide-focus-effects" aria-hidden="true"></div><section class="guide-card" role="region" aria-labelledby="guide-title" aria-describedby="guide-description" tabindex="-1"><p class="guide-label">操作ガイド</p><div class="guide-card-body"><h2 id="guide-title"></h2><p id="guide-description"></p></div></section>';
       host.append(layer);card=layer.querySelector('.guide-card');mask=layer.querySelector('mask g');
       card.querySelector('h2').textContent=active.title;card.querySelector('#guide-description').textContent=typeof active.text==='function'?active.text(c):active.text;
       const body=card.querySelector('.guide-card-body');
@@ -148,12 +148,12 @@ export function createOperationGuide({storage,context,onChange=()=>{},onMove=()=
     if(event.type==='click'){
       if(active.history&&element.closest('summary.history-item'))return true;
       const action=element.closest('[data-action]')?.dataset.action;
-      if(active.reorder&&action?.startsWith('select:'))return true;
+      if(active.deselect&&action?.startsWith('select:'))return true;
       const actions=typeof active.actions==='function'?active.actions(context()):active.actions;
       return active.select?Boolean(action?.startsWith('select:')):Boolean(actions?.includes(action));
     }
-    if(['drop','dragover'].includes(event.type))return active.select||active.reorder||element.closest('[data-status]')?.dataset.status===active.drop;
-    if(event.type==='dragstart')return active.select||active.reorder||targets.includes(element.closest('[data-card-id]'));
+    if(['drop','dragover'].includes(event.type))return Boolean(active.drop&&element.closest('[data-status]')?.dataset.status===active.drop);
+    if(event.type==='dragstart')return Boolean(active.drop&&targets.includes(element.closest('[data-card-id]')));
     return true;
   }
   function guard(event){
