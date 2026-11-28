@@ -49,6 +49,7 @@ try {
   const screenshot=async name=>{const shot=await call('Page.captureScreenshot',{format:'png'});await (await import('node:fs/promises')).writeFile(path.join(tmpdir(),name+'.png'),Buffer.from(shot.data,'base64'));};
   for(const [width,height] of [[320,568],[390,844],[667,375],[1024,600],[1440,900]]){
     await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:width<=800});await visit();
+    assert.ok(await evaluate('(()=>{const toolbar=document.querySelector(".toolbar"),hidden=toolbar.hidden;toolbar.hidden=false;const buttons=[...document.querySelectorAll(".speed-buttons button")].map(b=>b.getBoundingClientRect()),controls=document.querySelector(".controls").getBoundingClientRect(),row=getComputedStyle(document.querySelector(".controls")).flexDirection;toolbar.hidden=hidden;return buttons.every(r=>Math.abs(r.width-buttons[0].width)<1)&&row==="row"&&controls.right<=innerWidth&&getComputedStyle(document.querySelector(".test-drawer .drawer-body")).scrollbarWidth==="none";})()'),`equal speed buttons, horizontal controls, and hidden test scrollbars at ${width}px`);
     assert.deepEqual(await evaluate('["readStory","showAssignment","restore"].map(id=>document.getElementById(id).textContent)'),['導入','概要','リセット'],'PC and mobile use the same action labels');
     assert.equal(await evaluate('document.querySelector("#nextStage")'),null,'there is no next-stage button');
     if(width<=800){

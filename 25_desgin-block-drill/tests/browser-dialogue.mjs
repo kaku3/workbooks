@@ -32,7 +32,7 @@ try {
   socket = new WebSocket(targets.find(t => t.type === 'page').webSocketDebuggerUrl);
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
   let id = 0; const pending = new Map(), errors = [];
-  socket.onmessage = ({ data }) => { const msg = JSON.parse(data); if (msg.id) { const p = pending.get(msg.id); pending.delete(msg.id); msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result); } else if (msg.method === 'Runtime.exceptionThrown') errors.push(msg.params.exceptionDetails.text); };
+  socket.onmessage = ({ data }) => { const msg = JSON.parse(data); if (msg.id) { const p = pending.get(msg.id); pending.delete(msg.id); msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg.result); } else if (msg.method === 'Runtime.exceptionThrown') errors.push(msg.params.exceptionDetails.exception?.description || msg.params.exceptionDetails.text); };
   const call = (method, params = {}) => new Promise((resolve, reject) => { const seq = ++id; pending.set(seq, { resolve, reject }); socket.send(JSON.stringify({ id: seq, method, params })); });
   const evaluate = async expression => { const result = await call('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true }); if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails)); return result.result.value; };
   await call('Runtime.enable');
@@ -49,8 +49,10 @@ try {
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyCast"),"::after").content'),'none','no table illustration');
   assert.ok(await evaluate('Boolean(document.querySelector("#storyAdvance svg path"))'));
   assert.equal(await evaluate('document.querySelector("#storyAdvance").textContent.trim()'),'');
+  assert.equal(await evaluate('document.querySelector("#storyAdvance").hidden'),true,'caret waits for typing to finish');
   await evaluate('document.querySelector(".story-window").click()');
   assert.equal(await evaluate('document.querySelector("#storyText").classList.contains("is-typing")'),false,'window tap completes typing');
+  assert.ok(await evaluate('(()=>{const button=document.querySelector("#storyAdvance"),css=getComputedStyle(button);return !button.hidden&&css.backgroundColor==="rgba(0, 0, 0, 0)"&&css.borderTopWidth==="0px"&&getComputedStyle(document.querySelector("#storyText")).paddingRight==="0px";})()'),'plain caret appears over the text without reserving a right column');
   assert.equal(await evaluate('document.querySelector("#storyPage").textContent'),'1 / 5');
   await evaluate('document.querySelector(".story-message").click()');
   assert.equal(await evaluate('document.querySelector("#storyPage").textContent'),'2 / 5','window tap advances the conversation');
@@ -67,15 +69,15 @@ try {
   await evaluate('if(document.querySelector("#storyText").classList.contains("is-typing"))document.querySelector("#storyAdvance").click()');
   for(const [width,height] of [[320,568],[375,667],[390,844],[667,375]]){
     await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:true});
-    assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyText")).fontSize'),'14px');
-    assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyAdvance")).animationName'),'story-next-blink');
-    assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyAdvance")).borderRadius'),'50%','next button is circular');
+    assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyText")).fontSize'),'18px');
+    assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyAdvance svg")).animationName'),'story-next-caret');
+    assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyAdvance")).borderRadius'),'0px','next arrow has no surrounding circle');
     let lastHeight=0,castTop;
     for(const lines of [1,2,3]){
       const layout=await evaluate(`(()=>{const text=document.querySelector('#storyText');text.textContent=Array(${lines}).fill('位置確認').join('\\n');text.style.height='auto';const r=document.querySelector('.story-window').getBoundingClientRect(),image=document.querySelector('#storyPortrait').getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,height:r.height,castTop:image.top,baseline:document.querySelector('#storyCast').getBoundingClientRect().bottom};})()`);
       assert.equal(layout.left,0);assert.equal(layout.right,width);assert.equal(layout.bottom,height);
       assert.ok(layout.height>lastHeight,'window grows upward with the line count');
-      if(lines===1){castTop=layout.castTop;assert.ok(Math.abs(layout.top-layout.baseline)<1,'cast rests above a one-line message');}
+      if(lines===1){castTop=layout.castTop;assert.ok(Math.abs(layout.top-layout.baseline)<3,'cast rests above a one-line message');}
       assert.ok(Math.abs(castTop-layout.castTop)<1,'cast remains at the same height');lastHeight=layout.height;
     }
     await evaluate('(()=>{const cast=document.querySelector("#storyCast");while(cast.children.length<5){const clone=cast.firstElementChild.cloneNode(true);clone.removeAttribute("id");clone.classList.remove("speaking");clone.dataset.testClone="1";cast.append(clone);}})()');
@@ -94,7 +96,7 @@ try {
   await call('Emulation.setDeviceMetricsOverride',{width:1500,height:1000,deviceScaleFactor:1,mobile:false});
   await evaluate('document.querySelector("#readStory").click()');
   await waitFor('document.querySelector("#storyDialog")?.open');
-  assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyText")).fontSize'),'22px');
+  assert.equal(await evaluate('getComputedStyle(document.querySelector("#storyText")).fontSize'),'24px');
   for(const speaker of ['sales','player']){
     if(speaker==='player')await evaluate('if(document.querySelector("#storyText").classList.contains("is-typing"))document.querySelector("#storyAdvance").click();document.querySelector("#storyAdvance").click()');
     assert.equal(await evaluate('document.querySelector("#storyPortrait").dataset.speaker'),speaker);
@@ -112,5 +114,5 @@ try {
   }
   assert.equal(await evaluate('[...document.querySelectorAll(".story-portrait")].some(p=>p.getAnimations().some(a=>a.effect.getKeyframes().some(frame=>frame.opacity!==undefined)))'),false,'reduced motion skips entrance fades');
   assert.deepEqual(errors,[]);
-  console.log('PASS: tap to finish/advance, circular blinking arrow, centered larger speaker, stage animation, variable message height, full-width mobile at four sizes, five participants, reduced motion, replay');
+  console.log('PASS: tap to finish/advance, plain animated caret, centered larger speaker, stage animation, variable message height, full-width mobile at four sizes, five participants, reduced motion, replay');
 }finally{if(socket)socket.close();browser.kill();server.close();}

@@ -117,6 +117,19 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     if (!lines?.length || (!force && readProgress().seenEvents.includes(eventId))) { done(); return; }
     const dialog = document.querySelector('#storyDialog'); let index = 0, writer; active = true;
     const text = document.querySelector('#storyText');
+    const advance = document.querySelector('#storyAdvance');
+    const positionNext = () => {
+      if (advance.hidden || !dialog.open) return;
+      const walker = document.createTreeWalker(text, NodeFilter.SHOW_TEXT);
+      let last, node;
+      while (node = walker.nextNode()) if (node.textContent.trim()) last = node;
+      const range = document.createRange();
+      if (last) range.selectNodeContents(last); else range.selectNodeContents(text);
+      const line = [...range.getClientRects()].at(-1), bounds = text.getBoundingClientRect();
+      const frame = advance.offsetParent.getBoundingClientRect(), half = advance.offsetHeight / 2;
+      const center = line ? (line.top + line.bottom) / 2 : bounds.top + half;
+      advance.style.top = `${Math.max(bounds.top + half, Math.min(center, bounds.bottom - half)) - frame.top - 1 - half}px`;
+    };
     const sizeText = () => {
       const shown = [...text.childNodes];
       text.replaceChildren(...dialogueParts(lines[index].text).map(part => {
@@ -124,10 +137,16 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
         return element('strong', part.text);
       }));
       text.style.height = 'auto';
-      text.style.height = `${text.getBoundingClientRect().height}px`;
+      text.style.height = `${Math.ceil(Math.max(text.getBoundingClientRect().height, text.scrollHeight)) + 1}px`;
+      const css = getComputedStyle(text), frame = getComputedStyle(text.closest('.story-window'));
+      const baseline = Math.ceil(parseFloat(css.lineHeight)) + 1 + ['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'].reduce((sum, key) => sum + parseFloat(frame[key]), 0);
+      dialog.style.setProperty('--story-baseline', `${baseline}px`);
       text.replaceChildren(...shown);
+      positionNext();
     };
     window.addEventListener('resize', sizeText);
+    document.fonts?.addEventListener('loadingdone', sizeText);
+    text.addEventListener('scroll', positionNext);
     const imagesReady = Promise.all([...new Set(lines.map(line => line.speaker))].filter(id => portraits[id]).map(id => preparePortrait(id).ready));
     // A missing or stalled asset must not prevent the conversation from opening.
     let loadingTimeout;
@@ -158,6 +177,8 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
       clearCameraTrail();
       cast.querySelectorAll('.story-portrait').forEach(portrait => portrait.getAnimations().forEach(animation => animation.cancel()));
       window.removeEventListener('resize', sizeText);
+      document.fonts?.removeEventListener('loadingdone', sizeText);
+      text.removeEventListener('scroll', positionNext);
       const saved = readProgress(); if (!saved.seenEvents.includes(eventId)) saved.seenEvents.push(eventId);
       if (key === `${stage.id}.clear`) saved.pendingClear = null;
       if (key === 'palette') saved.seenEvents.push('palette.v1'); saveProgress(saved);
@@ -236,8 +257,9 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
       document.querySelector('#storyPage').textContent = `${index + 1} / ${lines.length}`;
       button.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg>';
       button.setAttribute('aria-label', index + 1 === lines.length ? '会話を閉じる' : '次へ');
+      button.hidden = true;
       sizeText();
-      writer = typeDialogue(text, line.text);
+      writer = typeDialogue(text, line.text, { onComplete: () => { button.hidden = false; positionNext(); } });
     };
     document.querySelector('#storyAdvance').onclick = () => { if (writer?.typing) { writer.finish(); return; } if (index + 1 < lines.length) { index++; render(); } else finish(); };
     dialog.onclick = event => {
