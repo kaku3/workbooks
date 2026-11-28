@@ -108,7 +108,7 @@ export function installStoryUI(drills, drill, storyMode, titleMode) {
     }
   });
   mobileHeader.addEventListener('change', () => { setMenu(false); placeCanvasDetails(); });
-  const hasClearScene = stage.chapter >= 2 && !!scenes[`${stage.id}.clear`];
+  const hasClearScene = !!scenes[`${stage.id}.clear`]?.length;
   const proceed = () => { const following = stages[stages.indexOf(stage) + 1]; if (following) location.assign(stageURL(following.drillId, true)); else home.click(); };
   let active = false;
   async function dialogue(key, force = false, done = () => {}, extraLines) {

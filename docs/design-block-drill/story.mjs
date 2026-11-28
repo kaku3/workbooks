@@ -1,12 +1,14 @@
 export const stages = ['order-basics', 'cancel-consistency', 'shared-stock', 'order-system', 'approval-basics', 'approval-return', 'approval-retry', 'approval-system', 'security-login', 'security-lock', 'security-session', 'security-system'].map((drillId, i) => ({ drillId, id: `${String(Math.floor(i / 4) + 1).padStart(2, '0')}-0${i % 4 + 1}`, chapter: Math.floor(i / 4) + 1 }));
 export const chapterNames = { 1: '注文システム', 2: '経費精算・承認', 3: '認証・セッション・権限' };
+import { scenes } from './story-data.mjs';
+const clearStages = stages.filter(stage => scenes[`${stage.id}.clear`]?.length).map(stage => stage.id);
 export const STORY_KEY = 'design-block-drill.story.v1';
 let memory;
 export function cleanProgress(value) {
   const ids = stages.map(s => s.id);
   const knownEvent = id => typeof id === 'string' && (id === 'palette.v1' || ids.some(stage => new RegExp(`^${stage}\\.(intro|clear)\\.v[1-9][0-9]*$`).test(id)));
   const completedStages = [...new Set((Array.isArray(value?.completedStages) ? value.completedStages : []).filter(id => ids.includes(id)))];
-  const pendingClear = ['02-04', '03-04'].includes(value?.pendingClear) ? value.pendingClear : null;
+  const pendingClear = clearStages.includes(value?.pendingClear) ? value.pendingClear : null;
   let currentStage = ids.includes(value?.currentStage) ? value.currentStage : ids[0];
   if (currentStage === '02-04' && completedStages.includes('02-04') && !pendingClear) currentStage = '03-01';
   return { completedStages, seenEvents: [...new Set((Array.isArray(value?.seenEvents) ? value.seenEvents : []).filter(id => knownEvent(id)))], currentStage, pendingClear, started: value?.started === true };
@@ -30,7 +32,7 @@ export function completeStage(drillId) {
   const p = readProgress(), stage = stages.find(s => s.drillId === drillId);
   if (!stage || !storyAllowed(stage, p)) return p;
   if (!p.completedStages.includes(stage.id)) p.completedStages.push(stage.id);
-  p.pendingClear = ['02-04', '03-04'].includes(stage.id) ? stage.id : null;
+  p.pendingClear = clearStages.includes(stage.id) ? stage.id : null;
   p.currentStage = stages[Math.min(stages.indexOf(stage) + 1, stages.length - 1)].id; p.started = true;
   return saveProgress(p);
 }

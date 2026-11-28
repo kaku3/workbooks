@@ -15,6 +15,8 @@ for (const stage of stages) {
     assert.ok(lines.every(l => l.speaker && l.text));
   }
   completeStage(stage.drillId);
+  assert.equal(readProgress().pendingClear, scenes[`${stage.id}.clear`]?.length ? stage.id : null, 'authored clear events remain pending in every chapter');
+  if (scenes[`${stage.id}.clear`]?.length) assert.equal(resolveStoryDrill(undefined), stage.drillId, 'continue resumes the pending chapter clear');
 }
 assert.equal(readProgress().completedStages.length, 12);
 assert.equal(chapterUnlocked(2), true);
@@ -27,6 +29,7 @@ assert.deepEqual(cleanProgress({ completedStages: ['bogus'], seenEvents: [1], cu
 assert.deepEqual(cleanProgress({ seenEvents: ['01-02.intro.v1', '01-02.intro.v2'] }).seenEvents, ['01-02.intro.v1', '01-02.intro.v2']);
 assert.equal(cleanProgress({ completedStages: stages.slice(0, 8).map(s => s.id), currentStage: '02-04', started: true }).currentStage, '03-01');
 assert.equal(cleanProgress({ completedStages: ['02-04'], pendingClear: '02-04', currentStage: '03-01' }).pendingClear, '02-04');
+assert.equal(cleanProgress({ completedStages: ['01-04'], pendingClear: '01-04', currentStage: '02-01' }).pendingClear, '01-04');
 assert.equal(chapterUnlocked(3, { completedStages: ['02-04'] }), false);
 assert.equal(chapterUnlocked(3, { completedStages: ['03-04'] }), true);
 assert.equal(storyAllowed(stages[8], { completedStages: ['02-04'] }), true);
