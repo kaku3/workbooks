@@ -366,6 +366,12 @@ function setGameMenu(open,focus=false){
   if(focus)toggle?.focus({preventScroll:true});
 }
 function positionKnowledge(){
+  const nav=app.querySelector('.game-menu'),panel=nav?.querySelector('#game-menu-panel'),actions=nav?.querySelector('.game-menu-actions'),toggle=nav?.querySelector('.game-menu-toggle');
+  if(nav&&panel&&actions&&toggle){
+    toggle.hidden=!memoViewport.matches;
+    if(memoViewport.matches)panel.append(actions);
+    else {setGameMenu(false);nav.append(actions);}
+  }
   const knowledge=app.querySelector('.knowledge'),rail=app.querySelector('.left-rail'),menu=app.querySelector('.menu-knowledge');
   if(!knowledge||!rail||!menu)return;
   menu.hidden=!memoViewport.matches;

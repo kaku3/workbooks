@@ -636,6 +636,8 @@
 .clue-drawer.deck-large>.deck-toolbar{height:44px;flex-basis:44px}
 .clue-drawer.deck-large #shared-clue-deck{height:auto;flex:1;min-height:0;overflow:hidden;padding:12px}
 .clue-drawer.deck-large #shared-clue-deck .evidence-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(210px,100%),1fr));grid-auto-rows:var(--clue-height,280px);align-content:start;gap:14px;padding:3px 3px 16px;overflow-x:hidden;overflow-y:auto;height:100%;width:100%}
+.clue-drawer.deck-large #shared-clue-deck .evidence-grid{scrollbar-width:none}
+.clue-drawer.deck-large #shared-clue-deck .evidence-grid::-webkit-scrollbar{display:none}
 .clue-drawer.deck-large .evidence-grid>.evidence-card{width:100%;min-width:0;height:100%;min-height:0;cursor:grab;touch-action:pan-y}
 .clue-drawer.deck-large .evidence-card.dragging{opacity:.4}
 .clue-drawer.deck-large .evidence-card.drop-target{outline:3px solid #216547;outline-offset:-3px}
@@ -1005,8 +1007,9 @@
 @media(prefers-reduced-motion:reduce){.conversation-next svg{animation:none}}
 .reduce-motion .conversation-next svg{animation:none}
 .conversation-label.conversation-task{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));max-width:calc(100vw - 24px);z-index:20;box-sizing:border-box;margin:0;padding:7px 10px;border:1px solid #63776d;border-radius:6px;background:#1b2531ed;color:#c8e7da;font-size:12px;line-height:1.5;overflow-wrap:anywhere;pointer-events:none}
-.game-menu{position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:60}
+.game-menu{position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:45}
 .game-menu-toggle{display:grid;place-items:center;width:36px;height:36px;padding:7px;border-radius:6px;background:#172a33ed}
+.game-menu-toggle[hidden]{display:none}
 .game-menu-toggle svg{width:22px;height:22px}
 .game-menu-panel{position:absolute;top:44px;right:0;width:min(320px,calc(100vw - 24px));max-height:calc(100dvh - 70px);overflow:auto;padding:12px;border:1px solid #63776d;border-radius:9px;background:#14242bfa;box-shadow:0 10px 30px #0008}
 .game-menu .knowledge{display:flex;flex-direction:column;gap:16px;margin:0;padding:16px}
@@ -1084,6 +1087,9 @@
 .touch-card-ghost{position:fixed!important;z-index:1100;pointer-events:none!important;opacity:.8;transform:rotate(3deg);max-height:240px;overflow:hidden}
 @media(max-width:699px){.left-rail:not(:has(.memories)){display:none}}
 .game-menu-actions .icon-button{flex:none;display:grid;place-items:center;width:40px;height:40px;padding:8px}
+.game-menu>.game-menu-actions{margin:0;gap:6px;flex-wrap:nowrap}
+.game-menu>.game-menu-actions .icon-button{width:36px;height:36px;min-height:36px;background:#172a33ed}
+@media(min-width:700px){.workspace-mode .casebar{padding-right:104px}}
 .kanban-column>h2{font-size:11px;line-height:1.4;padding:0 1px 5px;min-height:0;margin:0}
 .kanban-column>h2 .column-count{font-size:10px;line-height:1.2;padding:1px 5px}
 .floating-chat{position:fixed;top:56px;right:max(10px,env(safe-area-inset-right));z-index:50;display:grid;place-items:center;width:36px;height:36px;padding:7px;border:1px solid #83b6bb88;border-radius:50%;background:#1c3745ed;color:#c8e7da;box-shadow:0 4px 16px #0005}
