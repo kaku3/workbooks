@@ -147,6 +147,11 @@ try {
   await waitGuide('submit');await screenshot('guide-submit');
   await click('[data-action=submit]');assert.equal((await state()).phase,'scene');
   assert.equal(await guide(),null,'return guide waits until report feedback finishes');
+  for(let step=0;step<3&&(await state()).phase==='scene';step++){
+    assert.ok(await evaluate("import('./data/content.mjs').then(({cases})=>{const s=JSON.parse(localStorage.getItem('report-drill.pdf-incident.v1')),c=s.conversation,line=cases.watermark.scenario.scenes[c.ids[c.scene]].lines[c.line],area=document.querySelector('.reporting'),camera=area.querySelector('.report-stage>.meeting-camera');return area.classList.contains('meeting-unshared')&&area.classList.contains('report-speaking')&&getComputedStyle(area.querySelector('.report-board')).display==='none'&&camera.dataset.speaker===(line.speaker||'client')&&camera.getBoundingClientRect().width>innerWidth/3;})"),'report dialogue stops sharing and enlarges the current speaker');
+    if(step===0){await screenshot('report-speaker-desktop');await size(390,844,true);await screenshot('report-speaker-mobile');await size(1440,1000);}
+    await click('[data-action=scene-next]');
+  }
   await settle();await waitGuide('back-to-investigate');
   const rejectedState=await state();
   assert.equal(await evaluate("document.querySelector('[data-guide-target]').dataset.action"),'investigate','return guide highlights the Backlog tab');

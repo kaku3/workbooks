@@ -1122,6 +1122,10 @@
 .reporting:not(.meeting-unshared)>.work-content.report-view{grid-column:1;grid-row:1;min-height:0;min-width:0}
 .reporting:not(.meeting-unshared) .report-stage{grid-template-columns:155px minmax(0,1fr);min-height:0;height:100%}
 .reporting:not(.meeting-unshared) .report-board{grid-column:2;grid-row:1;margin-left:0;grid-template-columns:minmax(0,1fr);padding-bottom:8px}
+.reporting .report-board{grid-template-rows:24px minmax(0,1fr);row-gap:4px}
+.reporting .report-board .share-header{justify-content:flex-end;align-self:start;margin:0;padding:2px 6px;border:0;background:transparent;color:#765396;font-size:10px;line-height:20px}
+.reporting.report-speaking .report-stage>.meeting-camera.camera-off{display:grid;place-items:center;background:#243945}
+.reporting.report-speaking .report-stage>.meeting-camera.camera-off>svg{width:clamp(64px,15vw,150px);height:clamp(64px,15vw,150px);color:#aac2cc}
 .reporting:not(.meeting-unshared)>.meeting-bottom{grid-column:1;grid-row:2;min-width:0;padding:18px 8px 8px}
 .reporting:not(.meeting-unshared)>.clue-drawer{grid-column:1/-1;grid-row:3}
 .meeting-sidebar{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;min-width:0;min-height:0;padding:8px 8px 8px 0;gap:8px}
@@ -1134,6 +1138,10 @@
   .reporting:not(.meeting-unshared){--participant-width:84px}
   .reporting:not(.meeting-unshared) .report-stage{grid-template-columns:minmax(0,1fr)}
   .reporting:not(.meeting-unshared) .report-board{grid-column:1}
+  .reporting .report-board{grid-template-rows:32px minmax(0,1fr)}
+  .reporting:not(.meeting-unshared) .report-stage>.meeting-command-panel{top:0;left:4px}
+  .reporting:not(.meeting-unshared) .meeting-command-panel .meeting-controls{gap:3px;padding:3px}
+  .reporting:not(.meeting-unshared) .meeting-command-panel .meeting-control{width:26px;height:26px;min-width:26px;padding:4px}
 }
 .reporting.selecting-clues{--report-message-height:84px}
 .reporting.selecting-clues .meeting-bottom .report-request{font-size:16px;line-height:1.55;padding-top:10px;padding-bottom:8px}

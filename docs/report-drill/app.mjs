@@ -133,7 +133,7 @@ function meetingLater(fn,ms){meetingTimers.push(setTimeout(()=>{if(meeting)fn();
 function ensureMeeting(){
   if(page!=='game'||meeting||!(state?.phase==='report'||isMeetingScene()))return;
   const resume=isMeetingScene();
-  meeting={phase:resume?'shared':'lobby',share:resume,mic:resume?state.conversation.meetingMic??!state.conversation.muteInterruption:true,camera:false,hand:false,reaction:false,requestReady:false,participants:['player','lead']};
+  meeting={phase:resume?'speaking':'lobby',share:false,reporting:resume,resumeShareAfterReport:resume,mic:resume?state.conversation.meetingMic??!state.conversation.muteInterruption:true,camera:false,hand:false,reaction:false,requestReady:false,participants:['player','lead']};
   if(resume)return;
   reportTextProgress=null;
 }
@@ -588,6 +588,13 @@ function render() {
   const oldMeetingLayout=document.querySelector('.reporting')?.dataset.meetingLayout;
   if(page!=='game'||!['report','scene'].includes(state?.phase))resetMeeting();
   ensureMeeting();
+  if(meeting&&isMeetingScene()){
+    if(!meeting.reporting)meeting.resumeShareAfterReport=meeting.share;
+    meeting.reporting=true;meeting.share=false;meeting.phase='speaking';
+  }else if(meeting?.reporting){
+    meeting.reporting=false;meeting.share=meeting.resumeShareAfterReport;
+    meeting.phase=meeting.share?'shared':'speaking';
+  }
   clearInterval(reportTextTimer);
   clearTimeout(muteInterruptTimer);
   stopCostEffects?.();stopCostEffects=null;
@@ -623,6 +630,7 @@ function render() {
   const meetingArea=document.querySelector('.reporting');
   if(meetingArea&&meeting){
     meetingArea.classList.toggle('selecting-clues',state.phase==='report');
+    meetingArea.classList.toggle('report-speaking',isMeetingScene());
     meetingArea.dataset.meetingPhase=meeting.phase;
     meetingArea.classList.toggle('meeting-unshared',!meeting.share);
     meetingArea.dataset.meetingLayout=`${meeting.phase}:${meeting.share}:${meeting.camera}`;
@@ -638,9 +646,19 @@ function render() {
     reportDeck.before(bottom);
     if(meeting.phase==='lobby')meetingArea.insertAdjacentHTML('beforeend',`<div class="meeting-lobby">${button('join-meeting','会議に参加する','primary')}</div>`);
     if(meeting.phase==='connecting')meetingArea.insertAdjacentHTML('beforeend','<div class="meeting-connecting" role="status"><p>会議が開始すると 誰かが入室を許可します</p></div>');
-    meetingArea.querySelector('.report-stage').insertAdjacentHTML('beforeend',`<aside class="self-panel" aria-label="その他の参加者"><div class="self-camera ${meeting.camera?'':'camera-off'}" ${roomStyle('player')}>${meeting.camera?'<img src="./assets/01_player-transparent.png" alt="自分のカメラ映像">':icon('people')}<span>あなた${meeting.camera?'':' · カメラオフ'}</span></div></aside>`);
+    meetingArea.querySelector('.report-stage').insertAdjacentHTML('beforeend',`<aside class="self-panel" aria-label="その他の参加者"><div class="self-camera ${meeting.camera?'':'camera-off'}" ${roomStyle('player')}>${meeting.camera?'<img src="./assets/01_player-transparent.png" alt="自分のカメラ映像">':icon('people')}<span>あなた</span></div></aside>`);
     const activeLine=isMeetingScene()?meetingDialogue():null;
     const active=activeLine?.speaker||'client';
+    const camera=meetingArea.querySelector('.meeting-camera');
+    camera.dataset.speaker=active;
+    if(activeLine){
+      const name=active==='player'?'あなた':names[active],file=portraitFiles[names[active]];
+      const cameraOff=active==='player'&&!meeting.camera;
+      camera.classList.toggle('camera-off',cameraOff);
+      camera.setAttribute('aria-label',`${name}のカメラ映像`);
+      if(file)camera.style.setProperty('--meeting-room',`url('./assets/${file.slice(0,2)}_room.png')`);
+      camera.innerHTML=`${cameraOff?icon('people'):file?`<img src="./assets/${file}-transparent.png" alt="${esc(name)}" width="1024" height="1536">`:avatar(active)}<div class="camera-name">${esc(name)}</div>`;
+    }
     const participants=meetingArea.querySelector('.self-panel');
     for(const speaker of meeting.participants.filter(id=>id!=='player')){
       const file=portraitFiles[names[speaker]];
@@ -1069,6 +1087,7 @@ app.addEventListener('click',async event=>{
   if(isMeetingScene()&&['scene-next','scene-skip'].includes(action)){advanceMeetingConversation(action==='scene-skip');return;}
   if(action.startsWith('meeting-')&&meeting){
     const key=action.slice(8);
+    if(key==='share'&&isMeetingScene())return;
     if(['mic','camera','share','hand'].includes(key))meeting[key]=!meeting[key];
     if(key==='mic'&&isMeetingScene()){
       state.conversation.meetingMic=meeting.mic;
